@@ -48,53 +48,30 @@ with Glib; use Glib;
 
 package Cairo is
 
-   type Cairo_Bool is new Boolean;
-
-   --   Cairo_Context:
-   --
-   --   A Cairo_Context contains the current state of the rendering device,
-   --   including coordinates of yet to be drawn shapes.
-   --
-   --   Cairo contexts, as Cairo_Context objects are named, are central to
-   --   cairo and all drawing with cairo is always done to a Cairo_Context
-   --   object.
-   --
-   --   Memory management of Cairo_Context is done with subprograms
-   --   Reference and Destroy, see below.
-
    type Cairo_Context is private;
-
-   --   Cairo_Surface:
+   --  A Cairo_Context contains the current state of the rendering device,
+   --  including coordinates of yet to be drawn shapes.
    --
-   --   A Cairo_Surface represents an image, either as the destination
-   --   of a drawing operation or as source when drawing onto another
-   --   surface.  To draw to a Cairo_Surface, create a cairo context
-   --   with the surface as the target, using Create.
+   --  Cairo contexts, as Cairo_Context objects are named, are central to
+   --  cairo and all drawing with cairo is always done to a Cairo_Context
+   --  object.
    --
-   --   There are different subtypes of Cairo_Surface for
-   --   different drawing backends; for example, Cairo.Image_Surface.Create
-   --   creates a bitmap image in memory.
-   --   The type of a surface can be queried with Cairo.Surface.Get_Type.
-   --
-   --   Memory management of Cairo_Surface is done with
-   --   Cairo.Surface.Reference and Cairo.Surface.Destroy.
+   --  Memory management of Cairo_Context is done with subprograms
+   --  Reference and Destroy, see below.
 
    type Cairo_Surface is private;
-
-   --   Cairo_Matrix:
-   --   Xx: Xx component of the affine transformation
-   --   Yx: Yx component of the affine transformation
-   --   Xy: Xy component of the affine transformation
-   --   Yy: Yy component of the affine transformation
-   --   X0: X translation component of the affine transformation
-   --   Y0: Y translation component of the affine transformation
+   --  A Cairo_Surface represents an image, either as the destination
+   --  of a drawing operation or as source when drawing onto another
+   --  surface.  To draw to a Cairo_Surface, create a cairo context
+   --  with the surface as the target, using Create.
    --
-   --   A Cairo_Matrix holds an affine transformation, such as a scale,
-   --   rotation, shear, or a combination of those. The transformation of
-   --   a point (X, Y) is given by:
+   --  There are different subtypes of Cairo_Surface for
+   --  different drawing backends; for example, Cairo.Image_Surface.Create
+   --  creates a bitmap image in memory.
+   --  The type of a surface can be queried with Cairo.Surface.Get_Type.
    --
-   --       X_New = Xx * X + Xy * Y + X0;
-   --       Y_New = Yx * X + Yy * Y + Y0;
+   --  Memory management of Cairo_Surface is done with
+   --  Cairo.Surface.Reference and Cairo.Surface.Destroy.
 
    type Cairo_Matrix is record
       Xx : aliased Gdouble;
@@ -104,68 +81,69 @@ package Cairo is
       X0 : aliased Gdouble;
       Y0 : aliased Gdouble;
    end record;
+   --  Xx: Xx component of the affine transformation
+   --  Yx: Yx component of the affine transformation
+   --  Xy: Xy component of the affine transformation
+   --  Yy: Yy component of the affine transformation
+   --  X0: X translation component of the affine transformation
+   --  Y0: Y translation component of the affine transformation
+   --
+   --  A Cairo_Matrix holds an affine transformation, such as a scale,
+   --  rotation, shear, or a combination of those. The transformation of
+   --  a point (X, Y) is given by:
+   --
+   --      X_New = Xx * X + Xy * Y + X0;
+   --      Y_New = Yx * X + Yy * Y + Y0;
    pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
 
    type Cairo_Matrix_Access is access Cairo_Matrix;
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
      (Cairo_Matrix, Cairo_Matrix_Access);
 
-   --   Cairo_Pattern:
-   --
-   --   A Cairo_Pattern represents a source when drawing onto a
-   --   surface. There are different subtypes of Cairo_Pattern,
-   --   for different types of sources; for example,
-   --   Cairo.Pattern.Create_Rgb creates a pattern for a solid
-   --   opaque color.
-   --
-   --   Other than various Cairo.Pattern.Create_<type>
-   --   functions, some of the pattern types can be implicitly created
-   --   using various Set_Source_<type> functions; for example Set_Source_Rgb.
-   --
-   --   The type of a pattern can be queried with Cairo.Pattern.Get_Type.
-   --
-   --   Memory management of Cairo_Pattern is done with
-   --   Cairo.Pattern.Reference and Cairo.Pattern.Destroy.
-
    type Cairo_Pattern is private;
-
-   --   Cairo_Destroy_Func:
-   --   Data: The Data element being destroyed.
+   --  A Cairo_Pattern represents a source when drawing onto a
+   --  surface. There are different subtypes of Cairo_Pattern,
+   --  for different types of sources; for example,
+   --  Cairo.Pattern.Create_Rgb creates a pattern for a solid
+   --  opaque color.
    --
-   --   Cairo_destroy_func the type of function which is called when a
-   --   data element is destroyed. It is passed the pointer to the data
-   --   element and should free any memory and resources allocated for it.
+   --  Other than various Cairo.Pattern.Create_<type>
+   --  functions, some of the pattern types can be implicitly created
+   --  using various Set_Source_<type> functions; for example Set_Source_Rgb.
+   --
+   --  The type of a pattern can be queried with Cairo.Pattern.Get_Type.
+   --
+   --  Memory management of Cairo_Pattern is done with
+   --  Cairo.Pattern.Reference and Cairo.Pattern.Destroy.
 
    type Cairo_Destroy_Func is access procedure (Arg1 : System.Address);
-   pragma Convention (C, Cairo_Destroy_Func);
-
-   --   Cairo_User_Data_Key:
-   --   Unused: not used; ignore.
+   --  Data: The Data element being destroyed.
    --
-   --   Cairo_user_data_key is used for attaching user data to cairo
-   --   data structures.  The actual contents of the struct is never used,
-   --   and there is no need to initialize the object; only the unique
-   --   address of a Cairo_data_key object is used.  Typically, you
-   --   would just use the address of a static Cairo_data_key object.
-   --
+   --  Cairo_destroy_func the type of function which is called when a
+   --  data element is destroyed. It is passed the pointer to the data
+   --  element and should free any memory and resources allocated for it.
 
    type Cairo_User_Data_Key is record
       Unused : aliased Gint;
    end record;
+   --  Unused: not used; ignore.
+   --
+   --  Cairo_user_data_key is used for attaching user data to cairo
+   --  data structures.  The actual contents of the struct is never used,
+   --  and there is no need to initialize the object; only the unique
+   --  address of a Cairo_data_key object is used.  Typically, you
+   --  would just use the address of a static Cairo_data_key object.
+
    pragma Convention (C_Pass_By_Copy, Cairo_User_Data_Key);
 
-   --   Cairo_Status:
+   --  Cairo_Status is used to indicate errors that can occur when
+   --  using Cairo. In some cases it is returned directly by functions.
+   --  but when using Cairo_T, the last error, if any, is stored in
+   --  the context and can be retrieved with Cairo_Status.
    --
-   --   Cairo_status is used to indicate errors that can occur when
-   --   using Cairo. In some cases it is returned directly by functions.
-   --   but when using Cairo_T, the last error, if any, is stored in
-   --   the context and can be retrieved with Cairo_Status.
-   --
-   --   New entries may be added in future versions.  Use
-   --   Cairo_Status_To_String
-   --   to get a human-readable representation of an error message.
-   --
-
+   --  New entries may be added in future versions.  Use
+   --  Cairo_Status_To_String
+   --  to get a human-readable representation of an error message.
    type Cairo_Status is
      (
       Cairo_Status_Success,
@@ -257,7 +235,7 @@ package Cairo is
 
       Cairo_Status_Invalid_Clusters,
       --  input clusters do not represent the accompanying text and glyph
-      --   array (Since 1.8)
+      --  array (Since 1.8)
 
       Cairo_Status_Invalid_Slant,
       --  invalid value for an input Cairo_Font_Slant (Since 1.8)
@@ -266,69 +244,24 @@ package Cairo is
       --  invalid value for an input Cairo_Font_Weight (Since 1.8)
      );
 
-   --   Cairo_Content:
-   --
-   --   Cairo_content is used to describe the content that a surface will
-   --   contain, whether color information, alpha information (translucence
-   --   vs. opacity), or both.
-   --
-   --   Note: The large values here are designed to keep Cairo_Content
-   --   values distinct from Cairo_Format values so that the
-   --   implementation can detect the error if users confuse the two types.
-
    subtype Cairo_Content is Guint;
+   --  Cairo_content is used to describe the content that a surface will
+   --  contain, whether color information, alpha information (translucence
+   --  vs. opacity), or both.
+   --
+   --  Note: The large values here are designed to keep Cairo_Content
+   --  values distinct from Cairo_Format values so that the
+   --  implementation can detect the error if users confuse the two types.
 
    Cairo_Content_Color       : constant Cairo_Content := 4096;
-   --   The surface will hold color content only.
+   --  The surface will hold color content only.
 
    Cairo_Content_Alpha       : constant Cairo_Content := 8192;
-   --   CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
+   --  CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
 
    Cairo_Content_Color_Alpha : constant Cairo_Content := 12288;
-   --   CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha
-   --   content.
-
-   --   Cairo_Write_Func:
-   --   Closure: the output Closure
-   --   Data: the buffer containing the Data to write
-   --   Length: the amount of data to write
-   --
-   --   Cairo_write_func is the type of function which is called when a
-   --   backend needs to write data to an output stream.  It is passed the
-   --   closure which was specified by the user at the time the write
-   --   function was registered, the data to write and the length of the
-   --   data in bytes.  The write function should return
-   --   CAIRO_STATUS_SUCCESS if all the data was successfully written,
-   --   CAIRO_STATUS_WRITE_ERROR otherwise.
-   --
-   --   Returns: the status code of the write operation
-
-   type Cairo_Write_Func is access function
-     (Arg1 : System.Address;
-      Arg2 : access Guchar;
-      Arg3 : Guint)
-      return Cairo_Status;
-
-   --   Cairo_Read_Func:
-   --   Closure: the input Closure
-   --   Data: the buffer into which to read the Data
-   --   Length: the amount of data to read
-   --
-   --   Cairo_read_func is the type of function which is called when a
-   --   backend needs to read data from an input stream.  It is passed the
-   --   closure which was specified by the user at the time the read
-   --   function was registered, the buffer to read the data into and the
-   --   length of the data in bytes.  The read function should return
-   --   CAIRO_STATUS_SUCCESS if all the data was successfully read,
-   --   CAIRO_STATUS_READ_ERROR otherwise.
-   --
-   --   Returns: the status code of the read operation
-
-   type Cairo_Read_Func is access function
-     (Arg1 : System.Address;
-      Arg2 : access Guchar;
-      Arg3 : Guint)
-      return Cairo_Status;
+   --  CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha
+   --  content.
 
    function Create (Target : Cairo_Surface) return Cairo_Context;
    --  Target: Target surface for the context
@@ -343,13 +276,13 @@ package Cairo is
    --  maintain a separate reference to it.
    --
    --  Return value: a newly allocated Cairo_Context with a reference
-   --   count of 1. The initial reference count should be released
-   --   with Destroy when you are done using the Cairo_Context.
-   --   This function never returns NULL. If memory cannot be
-   --   allocated, a special Cairo_Context object will be returned on
-   --   which Status returns Cairo_Status_No_Memory.
-   --   You can use this object normally, but no drawing will
-   --   be done.
+   --  count of 1. The initial reference count should be released
+   --  with Destroy when you are done using the Cairo_Context.
+   --  This function never returns NULL. If memory cannot be
+   --  allocated, a special Cairo_Context object will be returned on
+   --  which Status returns Cairo_Status_No_Memory.
+   --  You can use this object normally, but no drawing will
+   --  be done.
 
    function Reference (Cr : Cairo_Context) return Cairo_Context;
    --  Cr: a Cairo_Context
@@ -546,27 +479,24 @@ package Cairo is
    --
    --  Since: 1.2
 
-   --   Cairo_Operator:
+   --  Cairo_operator is used to set the compositing operator for all cairo
+   --  drawing operations.
    --
-   --   Cairo_operator is used to set the compositing operator for all cairo
-   --   drawing operations.
+   --  The default operator is Cairo_Operator_Over.
    --
-   --   The default operator is Cairo_Operator_Over.
+   --  The operators marked as "unbounded" modify their destination even
+   --  outside of the mask layer (that is, their effect is not bound by the
+   --  mask layer). However, their effect can still be limited by way of
+   --  clipping.
    --
-   --   The operators marked as "unbounded" modify their destination even
-   --   outside of the mask layer (that is, their effect is not bound by the
-   --   mask layer). However, their effect can still be limited by way of
-   --   clipping.
+   --  To keep things simple, the operator descriptions here document the
+   --  behavior for when both source and destination are either fully
+   --  transparent or fully opaque. The actual implementation works for
+   --  translucent layers too.
    --
-   --   To keep things simple, the operator descriptions here document the
-   --   behavior for when both source and destination are either fully
-   --   transparent or fully opaque. The actual implementation works for
-   --   translucent layers too.
-   --
-   --   For a more detailed explanation of the effects of each operator,
-   --   including the mathematical definitions, see
-   --   http://cairographics.org/operators/
-
+   --  For a more detailed explanation of the effects of each operator,
+   --  including the mathematical definitions, see
+   --  http://cairographics.org/operators/
    type Cairo_Operator is
      (Cairo_Operator_Clear,
       --  clear destination layer (bounded)
@@ -723,10 +653,7 @@ package Cairo is
    --  the prescribed tolerance is restricted to the smallest
    --  representable internal value.
 
-   --   Cairo_Antialias:
-   --
-   --   Specifies the type of antialiasing to do when rendering text or shapes.
-
+   --  Specifies the type of antialiasing to do when rendering text or shapes.
    type Cairo_Antialias is
      (
       Cairo_Antialias_Default,
@@ -758,22 +685,18 @@ package Cairo is
    --  Note that this option does not affect text rendering, instead see
    --  Cairo.Font_Options.Set_Antialias.
 
-   --   Cairo_Fill_Rule:
+   --  Cairo_Fill_Rule is used to select how paths are filled. For both
+   --  fill rules, whether or not a point is included in the fill is
+   --  determined by taking a ray from that point to infinity and looking
+   --  at intersections with the path. The ray can be in any direction,
+   --  as long as it doesn't pass through the end point of a segment
+   --  or have a tricky intersection such as intersecting tangent to the path.
+   --  (Note that filling is not actually implemented in this way. This
+   --  is just a description of the rule that is applied.)
    --
-   --   Cairo_Fill_Rule is used to select how paths are filled. For both
-   --   fill rules, whether or not a point is included in the fill is
-   --   determined by taking a ray from that point to infinity and looking
-   --   at intersections with the path. The ray can be in any direction,
-   --   as long as it doesn't pass through the end point of a segment
-   --   or have a tricky intersection such as intersecting tangent to the path.
-   --   (Note that filling is not actually implemented in this way. This
-   --   is just a description of the rule that is applied.)
+   --  The default fill rule is Cairo_Fill_Rule_Winding.
    --
-   --   The default fill rule is Cairo_Fill_Rule_Winding.
-   --
-   --   New entries may be added in future versions.
-   --
-
+   --  New entries may be added in future versions.
    type Cairo_Fill_Rule is
      (Cairo_Fill_Rule_Winding,
       --  If the path crosses the ray from left-to-right, counts +1. If the
@@ -826,12 +749,6 @@ package Cairo is
    --
    --  The default line width value is 2.0.
 
-   --   Cairo_Line_Cap:
-   --
-   --   Specifies how to render the endpoints of the path when stroking.
-   --
-   --   The default line cap style is Cairo_Line_Cap_Butt.
-
    type Cairo_Line_Cap is
      (Cairo_Line_Cap_Butt,
       --  start(stop) the line exactly at the start(end) point
@@ -842,6 +759,9 @@ package Cairo is
       Cairo_Line_Cap_Square
       --  use squared ending, the center of the square is the end point
      );
+   --  Specifies how to render the endpoints of the path when stroking.
+   --
+   --  The default line cap style is Cairo_Line_Cap_Butt.
 
    procedure Set_Line_Cap (Cr : Cairo_Context; Line_Cap : Cairo_Line_Cap);
    --  Cr: a cairo context
@@ -857,12 +777,6 @@ package Cairo is
    --
    --  The default line cap style is Cairo_Line_Cap_Butt.
 
-   --   Cairo_Line_Join:
-   --
-   --   Specifies how to render the junction of two lines when stroking.
-   --
-   --   The default line join style is Cairo_Line_Join_Miter.
-
    type Cairo_Line_Join is
      (Cairo_Line_Join_Miter,
       --  use a sharp (angled) corner, see Set_Miter_Limit
@@ -874,6 +788,9 @@ package Cairo is
       --  use a cut-off join, the join is cut off at half the line width from
       --  the joint point
      );
+   --  Specifies how to render the junction of two lines when stroking.
+   --
+   --  The default line join style is Cairo_Line_Join_Miter.
 
    procedure Set_Line_Join
      (Cr        : Cairo_Context;
@@ -1125,7 +1042,7 @@ package Cairo is
    --  X3: the X coordinate of the end of the curve
    --  Y3: the Y coordinate of the end of the curve
    --
-   --  Adds a cubic Bézier spline to the path from the current point to
+   --  Adds a cubic BÃ©zier spline to the path from the current point to
    --  position (X3, Y3) in user-space coordinates, using (X1, Y1) and
    --  (X2, Y2) as the control points. After this call the current point
    --  will be (X3, Y3).
@@ -1255,7 +1172,7 @@ package Cairo is
    --  Dy3: the Y offset to the end of the curve
    --
    --  Relative-coordinate version of Cairo_Curve_To. All offsets are
-   --  relative to the current point. Adds a cubic Bézier spline to the
+   --  relative to the current point. Adds a cubic BÃ©zier spline to the
    --  path from the current point to a point offset from the current
    --  point by (Dx3, Dy3), using points offset by (Dx1, Dy1) and
    --  (Dx2, Dy2) as the control points. After this call the current
@@ -1472,7 +1389,12 @@ package Cairo is
    --  This is a convenience function that simply calls
    --  Cairo.Surface.Show_Page on cr's target.
 
-   --  Insideness testing
+   ------------------------
+   -- Insideness testing --
+   ------------------------
+
+   type Cairo_Bool is new Boolean;
+
    function In_Stroke
      (Cr   : Cairo_Context;
       X    : Gdouble;
@@ -1653,32 +1575,20 @@ package Cairo is
    --
    --  Since: 1.4
 
-   --   Cairo_Rectangle:
-   --   X: X coordinate of the left side of the rectangle
-   --   Y: Y coordinate of the the top side of the rectangle
-   --   Width: Width of the rectangle
-   --   Height: Height of the rectangle
-   --
-   --   A data structure for holding a rectangle.
-   --
-   --   Since: 1.4
-
    type Cairo_Rectangle is record
       X      : aliased Gdouble;
       Y      : aliased Gdouble;
       Width  : aliased Gdouble;
       Height : aliased Gdouble;
    end record;
-
-   --   Cairo_Rectangle_List:
-   --   Status: Error Status of the rectangle list
-   --   Rectangles: Array containing the Rectangles
-   --   Num_Rectangles: Number of rectangles in this list
+   --  X: X coordinate of the left side of the rectangle
+   --  Y: Y coordinate of the the top side of the rectangle
+   --  Width: Width of the rectangle
+   --  Height: Height of the rectangle
    --
-   --   A data structure for holding a Dynamically allocated
-   --   array of rectangles.
+   --  A data structure for holding a rectangle.
    --
-   --   Since: 1.4
+   --  Since: 1.4
 
    type Cairo_Rectangle_Array is array (Natural) of Cairo_Rectangle;
    type Cairo_Rectangle_Array_Access is access all Cairo_Rectangle_Array;
@@ -1692,6 +1602,14 @@ package Cairo is
       --  and Num_Rectanges-1.
       Num_Rectangles : aliased Gint;
    end record;
+   --  Status: Error Status of the rectangle list
+   --  Rectangles: Array containing the Rectangles
+   --  Num_Rectangles: Number of rectangles in this list
+   --
+   --  A data structure for holding a Dynamically allocated
+   --  array of rectangles.
+   --
+   --  Since: 1.4
    pragma Convention (C_Pass_By_Copy, Cairo_Rectangle_List);
 
    function Copy_Clip_Rectangle_List
@@ -1728,56 +1646,47 @@ package Cairo is
    -- Font/Text functions --
    -------------------------
 
-   --   Cairo_Scaled_Font:
-   --
-   --   A Cairo_Scaled_Font is a font scaled to a particular size and device
-   --   resolution. A Cairo_Scaled_Font is most useful for low-level font
-   --   usage where a library or application wants to cache a reference
-   --   to a scaled font to speed up the computation of metrics.
-   --
-   --   There are various types of scaled fonts, depending on the font backend
-   --   they use. The type of a scaled font can be queried using
-   --   Cairo.Scaled_Font.Get_Type.
-   --
-   --   Memory management of Cairo_Scaled_Font is done with
-   --   Cairo.Scaled_Font.Reference and Cairo.Scaled_Font.Destroy.
-
    type Cairo_Scaled_Font is private;
-
-   --   Cairo_Font_Face:
+   --  A Cairo_Scaled_Font is a font scaled to a particular size and device
+   --  resolution. A Cairo_Scaled_Font is most useful for low-level font
+   --  usage where a library or application wants to cache a reference
+   --  to a scaled font to speed up the computation of metrics.
    --
-   --   A Cairo_Font_Face specifies all aspects of a font other
-   --   than the size or font matrix (a font matrix is used to distort
-   --   a font by sheering it or scaling it unequally in the two
-   --   directions) . A font face can be set on a Cairo_Context by using
-   --   Set_Font_Face; the size and font matrix are set with
-   --   Set_Font_Size and Set_Font_Matrix.
+   --  There are various types of scaled fonts, depending on the font backend
+   --  they use. The type of a scaled font can be queried using
+   --  Cairo.Scaled_Font.Get_Type.
    --
-   --   There are various types of font faces, depending on the font backend
-   --   they use. The type of a font face can be queried using
-   --   Cairo.Font_Face.Get_Type.
-   --
-   --   Memory management of Cairo_Font_Face is done with
-   --   Cairo.Font_Face.Reference and Cairo.Font_Face.Destroy.
+   --  Memory management of Cairo_Scaled_Font is done with
+   --  Cairo.Scaled_Font.Reference and Cairo.Scaled_Font.Destroy.
 
    type Cairo_Font_Face is private;
-
-   --   Cairo_Glyph:
+   --  A Cairo_Font_Face specifies all aspects of a font other
+   --  than the size or font matrix (a font matrix is used to distort
+   --  a font by sheering it or scaling it unequally in the two
+   --  directions) . A font face can be set on a Cairo_Context by using
+   --  Set_Font_Face; the size and font matrix are set with
+   --  Set_Font_Size and Set_Font_Matrix.
    --
-   --   The Cairo_glyph structure holds information about a single glyph when
-   --   drawing or measuring text. A font is (in simple terms) a collection of
-   --   shapes used to draw text. A glyph is one of these shapes. There can be
-   --   multiple glyphs for a single character (alternates to be used in
-   --   different contexts, for example), or a glyph can be a ligature of
-   --   multiple characters. Cairo doesn't expose any way of converting input
-   --   text into glyphs, so in order to use the Cairo interfaces that take
-   --   arrays of glyphs, you must directly access the appropriate underlying
-   --   font system.
+   --  There are various types of font faces, depending on the font backend
+   --  they use. The type of a font face can be queried using
+   --  Cairo.Font_Face.Get_Type.
    --
-   --   Note that the offsets given by X and Y are not cumulative. When
-   --   drawing or measuring text, each glyph is individually positioned
-   --   with respect to the overall origin
-
+   --  Memory management of Cairo_Font_Face is done with
+   --  Cairo.Font_Face.Reference and Cairo.Font_Face.Destroy.
+   --
+   --  The Cairo_glyph structure holds information about a single glyph when
+   --  drawing or measuring text. A font is (in simple terms) a collection of
+   --  shapes used to draw text. A glyph is one of these shapes. There can be
+   --  multiple glyphs for a single character (alternates to be used in
+   --  different contexts, for example), or a glyph can be a ligature of
+   --  multiple characters. Cairo doesn't expose any way of converting input
+   --  text into glyphs, so in order to use the Cairo interfaces that take
+   --  arrays of glyphs, you must directly access the appropriate underlying
+   --  font system.
+   --
+   --  Note that the offsets given by X and Y are not cumulative. When
+   --  drawing or measuring text, each glyph is individually positioned
+   --  with respect to the overall origin
    type Cairo_Glyph is record
       Index : aliased Gulong;
       --  Glyph Index in the font. The exact interpretation of the
@@ -1793,23 +1702,6 @@ package Cairo is
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Glyph);
 
-   --   Cairo_Text_Cluster:
-   --
-   --   The Cairo_text_cluster structure holds information about a single text
-   --   cluster. A text cluster is a minimal mapping of some glyphs
-   --   corresponding to some UTF-8 text.
-   --
-   --   For a cluster to be valid, both num_bytes and num_glyphs should
-   --   be non-negative, and at least one should be non-zero.
-   --   Note that clusters with zero glyphs are not as well supported as
-   --   normal clusters.  For example, PDF rendering applications typically
-   --   ignore those clusters when PDF text is being selected.
-   --
-   --   See Show_Text_Glyphs for how clusters are used in advanced
-   --   text operations.
-   --
-   --   Since: 1.8
-
    type Cairo_Text_Cluster is record
       Num_Bytes  : aliased Gint;
       --  The number of bytes of UTF-8 text covered by cluster
@@ -1817,29 +1709,30 @@ package Cairo is
       Num_Glyphs : aliased Gint;
       --  The number of glyphs covered by cluster
    end record;
+   --  The Cairo_text_cluster structure holds information about a single text
+   --  cluster. A text cluster is a minimal mapping of some glyphs
+   --  corresponding to some UTF-8 text.
+   --
+   --  For a cluster to be valid, both num_bytes and num_glyphs should
+   --  be non-negative, and at least one should be non-zero.
+   --  Note that clusters with zero glyphs are not as well supported as
+   --  normal clusters.  For example, PDF rendering applications typically
+   --  ignore those clusters when PDF text is being selected.
+   --
+   --  See Show_Text_Glyphs for how clusters are used in advanced
+   --  text operations.
+   --
+   --  Since: 1.8
    pragma Convention (C_Pass_By_Copy, Cairo_Text_Cluster);
 
-   --   Cairo_Text_Cluster_Flags:
-   --
-   --   Specifies properties of a text cluster mapping.
-   --
-   --   Since: 1.8
-
    subtype Cairo_Text_Cluster_Flags is Guint;
-   Cairo_Text_Cluster_Flag_Backward : constant Cairo_Text_Cluster_Flags := 1;
-   --   The clusters in the cluster array map to glyphs in the glyph array from
-   --   end to start.
-
-   --   Cairo_Text_Extents:
+   --  Specifies properties of a text cluster mapping.
    --
-   --   The Cairo_text_extents structure stores the extents of a single glyph
-   --   or a string of glyphs in user-space coordinates. Because text extents
-   --   are in user-space coordinates, they are mostly, but not entirely,
-   --   independent of the current transformation matrix. If you call
-   --   Scale (Cr, 2.0, 2.0), text will be drawn twice as big, but the reported
-   --   text extents will not be doubled. They will change slightly due to
-   --   hinting (so you can't assume that metrics are independent of the
-   --   transformation matrix), but otherwise will remain unchanged.
+   --  Since: 1.8
+
+   Cairo_Text_Cluster_Flag_Backward : constant Cairo_Text_Cluster_Flags := 1;
+   --  The clusters in the cluster array map to glyphs in the glyph array from
+   --  end to start.
 
    type Cairo_Text_Extents is record
       X_Bearing : aliased Gdouble;
@@ -1867,21 +1760,15 @@ package Cairo is
       --  after drawing these glyphs. Will typically be zero except
       --  for vertical text layout as found in East-Asian languages.
    end record;
+   --  The Cairo_text_extents structure stores the extents of a single glyph
+   --  or a string of glyphs in user-space coordinates. Because text extents
+   --  are in user-space coordinates, they are mostly, but not entirely,
+   --  independent of the current transformation matrix. If you call
+   --  Scale (Cr, 2.0, 2.0), text will be drawn twice as big, but the reported
+   --  text extents will not be doubled. They will change slightly due to
+   --  hinting (so you can't assume that metrics are independent of the
+   --  transformation matrix), but otherwise will remain unchanged.
    pragma Convention (C_Pass_By_Copy, Cairo_Text_Extents);
-
-   --   Cairo_Font_Extents:
-   --
-   --   The Cairo_font_extents structure stores metric information for
-   --   a font. Values are given in the current user-space coordinate
-   --   system.
-   --
-   --   Because font metrics are in user-space coordinates, they are
-   --   mostly, but not entirely, independent of the current transformation
-   --   matrix. If you call Scale (Cr, 2.0, 2.0), text will be drawn twice as
-   --   big, but the reported text extents will not be doubled. They will
-   --   change slightly due to hinting (so you can't assume that metrics are
-   --   independent of the transformation matrix), but otherwise will remain
-   --   unchanged.
 
    type Cairo_Font_Extents is record
       Ascent        : aliased Gdouble;
@@ -1919,73 +1806,63 @@ package Cairo is
       --  writing. (The scripts of East Asia are sometimes written
       --  vertically.)
    end record;
+   --  The Cairo_font_extents structure stores metric information for
+   --  a font. Values are given in the current user-space coordinate
+   --  system.
+   --
+   --  Because font metrics are in user-space coordinates, they are
+   --  mostly, but not entirely, independent of the current transformation
+   --  matrix. If you call Scale (Cr, 2.0, 2.0), text will be drawn twice as
+   --  big, but the reported text extents will not be doubled. They will
+   --  change slightly due to hinting (so you can't assume that metrics are
+   --  independent of the transformation matrix), but otherwise will remain
+   --  unchanged.
    pragma Convention (C_Pass_By_Copy, Cairo_Font_Extents);
 
-   --   Cairo_Font_Slant:
-   --
-   --   Specifies variants of a font face based on their slant.
-
    type Cairo_Font_Slant is (
-      Cairo_Font_Slant_Normal,
-      Cairo_Font_Slant_Italic,
-      Cairo_Font_Slant_Oblique);
+                             Cairo_Font_Slant_Normal,
+                             Cairo_Font_Slant_Italic,
+                             Cairo_Font_Slant_Oblique);
+   --  Specifies variants of a font face based on their slant.
    pragma Convention (C, Cairo_Font_Slant);
 
-   --   Cairo_Font_Weight:
-   --
-   --   Specifies variants of a font face based on their weight.
-
    type Cairo_Font_Weight is (
-      Cairo_Font_Weight_Normal,
-      Cairo_Font_Weight_Bold);
+                              Cairo_Font_Weight_Normal,
+                              Cairo_Font_Weight_Bold);
+   --  Specifies variants of a font face based on their weight.
    pragma Convention (C, Cairo_Font_Weight);
-
-   --   Cairo_Subpixel_Order:
-   --
-   --   The subpixel order specifies the order of color elements within
-   --   each pixel on the display device when rendering with an
-   --   antialiasing mode of CAIRO_ANTIALIAS_SUBPIXEL.
-   --
 
    type Cairo_Subpixel_Order is
      (Cairo_Subpixel_Order_Default,
-      --   Use the default subpixel order for the target device
+      --  Use the default subpixel order for the target device
 
       Cairo_Subpixel_Order_Rgb,
-      --   Subpixel elements are arranged horizontally with red at the left
+      --  Subpixel elements are arranged horizontally with red at the left
 
       Cairo_Subpixel_Order_Bgr,
-      --   Subpixel elements are arranged horizontally with blue at the left
+      --  Subpixel elements are arranged horizontally with blue at the left
 
       Cairo_Subpixel_Order_Vrgb,
       --  Subpixel elements are arranged vertically with red at the top
 
       Cairo_Subpixel_Order_Vbgr
       --  Subpixel elements are arranged vertically with blue at the top
-   );
+     );
+   --  The subpixel order specifies the order of color elements within
+   --  each pixel on the display device when rendering with an
+   --  antialiasing mode of CAIRO_ANTIALIAS_SUBPIXEL.
    pragma Convention (C, Cairo_Subpixel_Order);
-
-   --   Cairo_Hint_Style:
-   --
-   --   Specifies the type of hinting to do on font outlines. Hinting
-   --   is the process of fitting outlines to the pixel grid in order
-   --   to improve the appearance of the result. Since hinting outlines
-   --   involves distorting them, it also reduces the faithfulness
-   --   to the original outline shapes. Not all of the outline hinting
-   --   styles are supported by all font backends.
-   --
-   --   New entries may be added in future versions.
 
    type Cairo_Hint_Style is
      (Cairo_Hint_Style_Default,
-      --   Use the default hint style for font backend and target device
+      --  Use the default hint style for font backend and target device
 
       Cairo_Hint_Style_None,
-      --   Do not hint outlines
+      --  Do not hint outlines
 
       Cairo_Hint_Style_Slight,
-      --   Hint outlines slightly to improve contrast while retaining good
-      --   fidelity to the original shapes.
+      --  Hint outlines slightly to improve contrast while retaining good
+      --  fidelity to the original shapes.
 
       Cairo_Hint_Style_Medium,
       --  Hint outlines with medium strength giving a compromise between
@@ -1994,15 +1871,15 @@ package Cairo is
       Cairo_Hint_Style_Full
       --  Hint outlines to maximize contrast
      );
-   pragma Convention (C, Cairo_Hint_Style);
-
-   --   Cairo_Hint_Metrics:
+   --  Specifies the type of hinting to do on font outlines. Hinting
+   --  is the process of fitting outlines to the pixel grid in order
+   --  to improve the appearance of the result. Since hinting outlines
+   --  involves distorting them, it also reduces the faithfulness
+   --  to the original outline shapes. Not all of the outline hinting
+   --  styles are supported by all font backends.
    --
-   --   Specifies whether to hint font metrics; hinting font metrics
-   --   means quantizing them so that they are integer values in
-   --   device space. Doing this improves the consistency of
-   --   letter and line spacing, however it also means that text
-   --   will be laid out differently at different zoom factors.
+   --  New entries may be added in future versions.
+   pragma Convention (C, Cairo_Hint_Style);
 
    type Cairo_Hint_Metrics is
      (Cairo_Hint_Metrics_Default,
@@ -2015,28 +1892,30 @@ package Cairo is
       Cairo_Hint_Metrics_On
       --  Hint font metrics
      );
+   --  Specifies whether to hint font metrics; hinting font metrics
+   --  means quantizing them so that they are integer values in
+   --  device space. Doing this improves the consistency of
+   --  letter and line spacing, however it also means that text
+   --  will be laid out differently at different zoom factors.
    pragma Convention (C, Cairo_Hint_Metrics);
 
-   --   Cairo_Font_Options:
-   --
-   --   An opaque structure holding all options that are used when
-   --   rendering fonts.
-   --
-   --   Individual features of a Cairo_Font_Options can be set or
-   --   accessed using functions named
-   --   Cairo.Font_Options.Set_<feature_Name> and
-   --   Cairo.Font_Options.Get_<feature_Name>, like
-   --   Cairo.Font_Options.Set_Antialias and
-   --   Cairo.Font_Options.Get_Antialias.
-   --
-   --   New features may be added to a Cairo_font_options in the
-   --   future.  For this reason, Cairo.Font_Options.Copy,
-   --   Cairo.Font_Options.Equal, Cairo.Font_Options.Merge, and
-   --   Cairo.Font_Options.Hash should be used to copy, check
-   --   for equality, merge, or compute a hash value of
-   --   Cairo_Font_Options objects.
-
    type Cairo_Font_Options is private;
+   --  An opaque structure holding all options that are used when
+   --  rendering fonts.
+   --
+   --  Individual features of a Cairo_Font_Options can be set or
+   --  accessed using functions named
+   --  Cairo.Font_Options.Set_<feature_Name> and
+   --  Cairo.Font_Options.Get_<feature_Name>, like
+   --  Cairo.Font_Options.Set_Antialias and
+   --  Cairo.Font_Options.Get_Antialias.
+   --
+   --  New features may be added to a Cairo_font_options in the
+   --  future.  For this reason, Cairo.Font_Options.Copy,
+   --  Cairo.Font_Options.Equal, Cairo.Font_Options.Merge, and
+   --  Cairo.Font_Options.Hash should be used to copy, check
+   --  for equality, merge, or compute a hash value of
+   --  Cairo_Font_Options objects.
 
    --  This interface is for dealing with text as text, not caring about the
    --  font object inside the the Cairo_Context.
@@ -2234,47 +2113,6 @@ package Cairo is
    --  rendered according to the current font face, font size
    --  (font matrix), and font options.
 
---     procedure Show_Text_Glyphs
---       (Cr            : Cairo_Context;
---        Utf8          : Interfaces.C.Strings.chars_ptr;
---        Utf8_Len      : Gint;
---        Glyphs        : access constant Cairo_Glyph;
---        Num_Glyphs    : Gint;
---        Clusters      : access constant Cairo_Text_Cluster;
---        Num_Clusters  : Gint;
---        Cluster_Flags : Cairo_Text_Cluster_Flags);
-   --  Cr: a cairo context
-   --  Utf8: a string of text encoded in UTF-8
-   --  Utf8_Len: length of utf8 in bytes, or -1 if it is NUL-terminated
-   --  Glyphs: array of Glyphs to show
-   --  Num_Glyphs: number of glyphs to show
-   --  Clusters: array of cluster mapping information
-   --  Num_Clusters: number of clusters in the mapping
-   --  Cluster_Flags: cluster mapping flags
-   --
-   --  This operation has rendering effects similar to Show_Glyphs
-   --  but, if the target surface supports it, uses the provided text and
-   --  cluster mapping to embed the text for the glyphs shown in the output.
-   --  If the target does not support the extended attributes, this function
-   --  acts like the basic Show_Glyphs as if it had been passed
-   --  Glyphs and Num_Glyphs.
-   --
-   --  The mapping between Utf8 and Glyphs is provided by an array of
-   --  clusters.  Each cluster covers a number of
-   --  text bytes and glyphs, and neighboring clusters cover neighboring
-   --  areas of utf8 and glyphs.  The clusters should collectively cover Utf8
-   --  and Glyphs in entirety.
-   --
-   --  The first cluster always covers bytes from the beginning of utf8.
-   --  If cluster_flags do not have the Cairo_Text_Cluster_Flag_Backward
-   --  set, the first cluster also covers the beginning
-   --  of glyphs, otherwise it covers the end of the glyphs array and
-   --  following clusters move backward.
-   --
-   --  See Cairo_Text_Cluster for constraints on valid clusters.
-   --
-   --  Since: 1.8
-
    procedure Text_Path
      (Cr   : Cairo_Context;
       Utf8 : String);
@@ -2299,18 +2137,6 @@ package Cairo is
    --  and simple programs, but it is not expected to be adequate for
    --  serious text-using applications. See Glyph_Path for the
    --  "real" text path API in cairo.
-
---     procedure Glyph_Path
---       (Cr         : Cairo_Context;
---        Glyphs     : access constant Cairo_Glyph;
---        Num_Glyphs : Gint);
-   --  Cr: a cairo context
-   --  Glyphs: array of Glyphs to show
-   --  Num_Glyphs: number of glyphs to show
-   --
-   --  Adds closed paths for the glyphs to the current path.  The generated
-   --  path if filled, achieves an effect similar to that of
-   --  Show_Glyphs.
 
    procedure Text_Extents
      (Cr      : Cairo_Context;
@@ -2364,38 +2190,6 @@ package Cairo is
    --
    --  Gets the font extents for the currently selected font.
 
-   --   Cairo_Font_Type:
-   --
-   --   Cairo_font_type is used to describe the type of a given font
-   --   face or scaled font. The font types are also known as "font
-   --   backends" within Cairo.
-   --
-   --   The type of a font face is determined by the function used to
-   --   create it, which will generally be of the form
-   --   <type>_Font_Face_Create. The font face type
-   --   can be queried
-   --   with Cairo.Font_Face.Get_Type
-   --
-   --   The various Cairo_Font_Face functions can be used with a font face
-   --   of any type.
-   --
-   --   The type of a scaled font is determined by the type of the font
-   --   face passed to Cairo.Scaled_Font.Create. The scaled font type can
-   --   be queried with Cairo.Scaled_Font.Get_Type
-   --
-   --   The various Cairo_scaled_font functions can be used with scaled
-   --   fonts of any type, but some font backends also provide
-   --   type-specific functions that must only be called with a scaled font
-   --   of the appropriate type. These functions have names that begin with
-   --   <type>_Scaled_Font such as Ft_Scaled_Font_Lock_Face.
-   --
-   --   The behavior of calling a type-specific function with a scaled font
-   --   of the wrong type is undefined.
-   --
-   --   New entries may be added in future versions.
-   --
-   --   Since: 1.2
-
    type Cairo_Font_Type is
      (Cairo_Font_Type_Toy,
       --  The font was created using cairo's toy font api (Since: 1.8)
@@ -2412,6 +2206,35 @@ package Cairo is
       Cairo_Font_Type_User
       --  The font was create using cairo's user font api
      );
+   --  Cairo_font_type is used to describe the type of a given font
+   --  face or scaled font. The font types are also known as "font
+   --  backends" within Cairo.
+   --
+   --  The type of a font face is determined by the function used to
+   --  create it, which will generally be of the form
+   --  <type>_Font_Face_Create. The font face type
+   --  can be queried
+   --  with Cairo.Font_Face.Get_Type
+   --
+   --  The various Cairo_Font_Face functions can be used with a font face
+   --  of any type.
+   --
+   --  The type of a scaled font is determined by the type of the font
+   --  face passed to Cairo.Scaled_Font.Create. The scaled font type can
+   --  be queried with Cairo.Scaled_Font.Get_Type
+   --
+   --  The various Cairo_scaled_font functions can be used with scaled
+   --  fonts of any type, but some font backends also provide
+   --  type-specific functions that must only be called with a scaled font
+   --  of the appropriate type. These functions have names that begin with
+   --  <type>_Scaled_Font such as Ft_Scaled_Font_Lock_Face.
+   --
+   --  The behavior of calling a type-specific function with a scaled font
+   --  of the wrong type is undefined.
+   --
+   --  New entries may be added in future versions.
+   --
+   --  Since: 1.2
    pragma Convention (C, Cairo_Font_Type);
 
    ---------------------
@@ -2588,95 +2411,28 @@ package Cairo is
    --
    --  Since: 1.2
 
-   --   Cairo_Path_Data_Type:
-   --
-   --   Cairo_path_data is used to describe the type of one portion
-   --   of a path when represented as a Cairo_Path.
-   --   See Cairo_Path_Data for details.
-
    type Cairo_Path_Data_Type is
      (Cairo_Path_Move_To,    --  A move-to operation
       Cairo_Path_Line_To,    --  A line-to operation
       Cairo_Path_Curve_To,   --  A curve-to operation
       Cairo_Path_Close_Path  --  A close-path operation
      );
+   --  Cairo_path_data is used to describe the type of one portion
+   --  of a path when represented as a Cairo_Path.
+   --  See Cairo_Path_Data for details.
    pragma Convention (C, Cairo_Path_Data_Type);
-
-   --   Cairo_Path_Data:
-   --
-   --   Cairo_path_data is used to represent the path data inside a
-   --   Cairo_path.
-   --
-   --   The data structure is designed to try to balance the demands of
-   --   efficiency and ease-of-use. A path is represented as an array of
-   --   Cairo_Path_Data, which is a union of headers and points.
-   --
-   --   Each portion of the path is represented by one or more elements in
-   --   the array, (one header followed by 0 or more points). The length
-   --   value of the header is the number of array elements for the current
-   --   portion including the header, (ie. length == 1 +  of points), and
-   --   where the number of points for each element type is as follows:
-   --
-   --       Cairo_Path_Move_To:     1 point
-   --       Cairo_Path_Line_To:     1 point
-   --       Cairo_Path_Curve_To:    3 points
-   --       Cairo_Path_Close_Path:  0 points
-   --
-   --   The semantics and ordering of the coordinate values are consistent
-   --   with Move_To, Line_To, Curve_To, and Close_Path.
-   --
-   --   Here is sample code for iterating through a Cairo_Path:
-   --
-   --     declare
-   --        J    : Gint;
-   --        Path : Cairo_Path;
-   --        Data : Cairo_Path_Data;
-   --      begin
-   --        Path = Copy_Path (Cr);
-   --
-   --        J := 0;
-   --        while J < Path.Num_Data loop
-   --           Data := Path.Data(J);
-   --
-   --           case Data.Header.Path_Type is
-   --
-   --               when Cairo_Path_Move_To =>
-   --                  Do_Move_To_Things (Data(1).Point.X, Data(1).Point.Y);
-   --
-   --               when Cairo_Path_Line_To =>
-   --                  Do_Line_To_Things (Data(1).Point.X, Data(1).Point.Y);
-   --
-   --               when Cairo_Path_Curve_To =>
-   --                  Do_Curve_To_Things (Data(1).Point.X, Data(1).Point.Y,
-   --                                      Data(2).Point.X, Data(2).Point.Y,
-   --                                      Data(3).Point.X, Data(3).Point.Y);
-   --
-   --               when Cairo_Path_Curve_To =>
-   --                  Do_Close_Path_Things;
-   --           end case;
-   --
-   --           J := J + Path.Data[J].Header.Length;
-   --        end loop;
-   --
-   --        Path_Destroy (Path);
-   --     end;
-   --
-   --   As of cairo 1.4, cairo does not mind if there are more elements in
-   --   a portion of the path than needed.  Such elements can be used by
-   --   users of the cairo API to hold extra values in the path data
-   --   structure.  For this reason, it is recommended that applications
-   --   always use Data.Header.Length to iterate over the path data, instead of
-   --   hardcoding the number of elements for each element type.
 
    type Header_Type is record
       Path_Type : aliased Cairo_Path_Data_Type;
       Length    : aliased Gint;
    end record;
+   --  A Path header. See Cairo_Path_Data for details.
 
    type Point_Type is record
       X : aliased Gdouble;
       Y : aliased Gdouble;
    end record;
+   --  A geometrical point. See Cairo_Path_Data for details.
 
    type Cairo_Path_Data (Discr : Guint := 0) is record
       case Discr is
@@ -2686,23 +2442,69 @@ package Cairo is
             Point : aliased Point_Type;
       end case;
    end record;
-
-   --   Cairo_Path:
-   --   Status: the current error Status
-   --   Data: the elements in the path
-   --   Num_Data: the number of elements in the data array
+   --  Cairo_path_data is used to represent the path data inside a
+   --  Cairo_path.
    --
-   --   A data structure for holding a path. This data structure serves as the
-   --   return value for Copy_Path and Copy_Path_Flat as well the input value
-   --   for Append_Path.
+   --  The data structure is designed to try to balance the demands of
+   --  efficiency and ease-of-use. A path is represented as an array of
+   --  Cairo_Path_Data, which is a union of headers and points.
    --
-   --   See Cairo_Path_Data for hints on how to iterate over the
-   --   actual data within the path.
+   --  Each portion of the path is represented by one or more elements in
+   --  the array, (one header followed by 0 or more points). The length
+   --  value of the header is the number of array elements for the current
+   --  portion including the header, (ie. length == 1 +  of points), and
+   --  where the number of points for each element type is as follows:
    --
-   --   The num_data member gives the number of elements in the data
-   --   array. This number is larger than the number of independent path
-   --   portions (defined in Cairo_Path_Data_Type), since the data
-   --   includes both headers and coordinates for each portion.
+   --      Cairo_Path_Move_To:     1 point
+   --      Cairo_Path_Line_To:     1 point
+   --      Cairo_Path_Curve_To:    3 points
+   --      Cairo_Path_Close_Path:  0 points
+   --
+   --  The semantics and ordering of the coordinate values are consistent
+   --  with Move_To, Line_To, Curve_To, and Close_Path.
+   --
+   --  Here is sample code for iterating through a Cairo_Path:
+   --
+   --    declare
+   --       J    : Gint;
+   --       Path : Cairo_Path;
+   --       Data : Cairo_Path_Data;
+   --     begin
+   --       Path = Copy_Path (Cr);
+   --
+   --       J := 0;
+   --       while J < Path.Num_Data loop
+   --          Data := Path.Data(J);
+   --
+   --          case Data.Header.Path_Type is
+   --
+   --              when Cairo_Path_Move_To =>
+   --                 Do_Move_To_Things (Data(1).Point.X, Data(1).Point.Y);
+   --
+   --              when Cairo_Path_Line_To =>
+   --                 Do_Line_To_Things (Data(1).Point.X, Data(1).Point.Y);
+   --
+   --              when Cairo_Path_Curve_To =>
+   --                 Do_Curve_To_Things (Data(1).Point.X, Data(1).Point.Y,
+   --                                     Data(2).Point.X, Data(2).Point.Y,
+   --                                     Data(3).Point.X, Data(3).Point.Y);
+   --
+   --              when Cairo_Path_Curve_To =>
+   --                 Do_Close_Path_Things;
+   --          end case;
+   --
+   --          J := J + Path.Data[J].Header.Length;
+   --       end loop;
+   --
+   --       Path_Destroy (Path);
+   --    end;
+   --
+   --  As of cairo 1.4, cairo does not mind if there are more elements in
+   --  a portion of the path than needed.  Such elements can be used by
+   --  users of the cairo API to hold extra values in the path data
+   --  structure.  For this reason, it is recommended that applications
+   --  always use Data.Header.Length to iterate over the path data, instead of
+   --  hardcoding the number of elements for each element type.
 
    type Path_Data_Array is array (Natural) of Cairo_Path_Data;
    type Path_Data_Array_Access is access all Path_Data_Array;
@@ -2716,6 +2518,21 @@ package Cairo is
       --  0 and Num_Data-1.
       Num_Data : aliased Gint;
    end record;
+   --  Status: the current error Status
+   --  Data: the elements in the path
+   --  Num_Data: the number of elements in the data array
+   --
+   --  A data structure for holding a path. This data structure serves as the
+   --  return value for Copy_Path and Copy_Path_Flat as well the input value
+   --  for Append_Path.
+   --
+   --  See Cairo_Path_Data for hints on how to iterate over the
+   --  actual data within the path.
+   --
+   --  The num_data member gives the number of elements in the data
+   --  array. This number is larger than the number of independent path
+   --  portions (defined in Cairo_Path_Data_Type), since the data
+   --  includes both headers and coordinates for each portion.
 
    function Copy_Path (Cr : Cairo_Context) return access Cairo_Path;
    --  Cr: a cairo context
@@ -2810,6 +2627,7 @@ package Cairo is
 
 private
 
+   pragma Convention (C, Cairo_Destroy_Func);
    pragma Convention (C, Cairo_Bool);
    pragma Convention (C, Cairo_Status);
    pragma Convention (C, Cairo_Operator);
@@ -2829,22 +2647,22 @@ private
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
-      Cairo_Context (System.Null_Address);
+     Cairo_Context (System.Null_Address);
    type Cairo_Surface is new System.Address;
    Null_Surface : constant Cairo_Surface :=
-      Cairo_Surface (System.Null_Address);
+     Cairo_Surface (System.Null_Address);
    type Cairo_Pattern is new System.Address;
    Null_Pattern : constant Cairo_Pattern :=
-      Cairo_Pattern (System.Null_Address);
+     Cairo_Pattern (System.Null_Address);
    type Cairo_Scaled_Font is new System.Address;
    Null_Scaled_Font : constant Cairo_Scaled_Font :=
-      Cairo_Scaled_Font (System.Null_Address);
+     Cairo_Scaled_Font (System.Null_Address);
    type Cairo_Font_Face is new System.Address;
    Null_Font_Face : constant Cairo_Font_Face :=
-      Cairo_Font_Face (System.Null_Address);
+     Cairo_Font_Face (System.Null_Address);
    type Cairo_Font_Options is new System.Address;
    Null_Font_Options : constant Cairo_Font_Options :=
-      Cairo_Font_Options (System.Null_Address);
+     Cairo_Font_Options (System.Null_Address);
    pragma Import (C, Create, "cairo_create");
    pragma Import (C, Reference, "cairo_reference");
    pragma Import (C, Destroy, "cairo_destroy");
@@ -2934,8 +2752,8 @@ private
    pragma Import (C, Set_Scaled_Font, "cairo_set_scaled_font");
    pragma Import (C, Get_Scaled_Font, "cairo_get_scaled_font");
    pragma Import (C, Show_Glyphs, "cairo_show_glyphs");
---     pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
---     pragma Import (C, Glyph_Path, "cairo_glyph_path");
+   --     pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
+   --     pragma Import (C, Glyph_Path, "cairo_glyph_path");
    pragma Import (C, Text_Extents, "cairo_text_extents");
    pragma Import (C, Glyph_Extents, "cairo_glyph_extents");
    pragma Import (C, Font_Extents, "cairo_font_extents");
