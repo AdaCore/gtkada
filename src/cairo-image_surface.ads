@@ -39,13 +39,10 @@ pragma Ada_2005;
 
 package Cairo.Image_Surface is
 
-   --   Cairo_Format:
+   --  Cairo_Format is used to identify the memory format of
+   --  image data.
    --
-   --   Cairo_Format is used to identify the memory format of
-   --   image data.
-   --
-   --   New entries may be added in future versions.
-
+   --  New entries may be added in future versions.
    type Cairo_Format is
      (Cairo_Format_ARGB32,
       --  Each pixel is a 32-bit quantity, with
