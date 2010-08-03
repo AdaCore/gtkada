@@ -72,9 +72,9 @@ package body Cairo.Image_Surface is
          Stride);
    end Create_For_Data_RGB24;
 
-   ----------------------
-   -- Create_For_Data_ --
-   ----------------------
+   ------------------------
+   -- Create_For_Data_A8 --
+   ------------------------
 
    function Create_For_Data_A8
      (Data   : Byte_Array_Access;

@@ -30,7 +30,7 @@ pragma Ada_2005;
 
 package Cairo.Png is
 
-   function Cairo_Surface_Write_To_Png
+   function Write_To_Png
      (Surface  : Cairo_Surface;
       Filename : String)
       return     Cairo_Status;
@@ -47,7 +47,7 @@ package Cairo.Png is
    --  pixel contents, or Cairo_Status_Write_Error if an I/O error occurs
    --  while attempting to write the file.
 
-   function Cairo_Image_Surface_Create_From_Png
+   function Create_From_Png
      (Filename : String)
       return     Cairo_Surface;
    --  Filename: name of PNG file to load

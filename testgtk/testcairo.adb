@@ -546,7 +546,7 @@ procedure Testcairo is
                Paint (Cr);
 
                Put ("Writing to PNG ... ");
-               Status := Cairo_Surface_Write_To_Png (Image_Surface, "try.png");
+               Status := Write_To_Png (Image_Surface, "try.png");
                Put_Line (Status'Img);
             end;
       end case;

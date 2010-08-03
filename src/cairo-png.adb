@@ -28,11 +28,11 @@
 
 package body Cairo.Png is
 
-   --------------------------------
-   -- Cairo_Surface_Write_To_Png --
-   --------------------------------
+   ------------------
+   -- Write_To_Png --
+   ------------------
 
-   function Cairo_Surface_Write_To_Png
+   function Write_To_Png
      (Surface  : Cairo_Surface;
       Filename : String)
       return Cairo_Status
@@ -50,13 +50,13 @@ package body Cairo.Png is
       return C_Cairo_Surface_Write_To_Png
         (Surface, S (S'First)'Address);
 
-   end Cairo_Surface_Write_To_Png;
+   end Write_To_Png;
 
-   -----------------------------------------
-   -- Cairo_Image_Surface_Create_From_Png --
-   -----------------------------------------
+   ---------------------
+   -- Create_From_Png --
+   ---------------------
 
-   function Cairo_Image_Surface_Create_From_Png
+   function Create_From_Png
      (Filename : String)
       return     Cairo_Surface
    is
@@ -71,6 +71,6 @@ package body Cairo.Png is
       S : constant String := Filename & ASCII.NUL;
    begin
       return C_Cairo_Image_Surface_Create_From_Png (S (S'First)'Address);
-   end Cairo_Image_Surface_Create_From_Png;
+   end Create_From_Png;
 
 end Cairo.Png;
