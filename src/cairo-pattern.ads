@@ -48,8 +48,6 @@ package Cairo.Pattern is
    -- Pattern creation functions --
    --------------------------------
 
-   --  Cairo_Pattern_Type:
-   --
    --  Cairo_Pattern_Type is used to describe the type of a given pattern.
    --
    --  The type of a pattern is determined by the function used to create
@@ -70,14 +68,13 @@ package Cairo.Pattern is
    --  New entries may be added in future versions.
    --
    --  Since: 1.2
-
    type Cairo_Pattern_Type is
      (Cairo_Pattern_Type_Solid,
       --  The pattern is a solid (uniform) color. It may be opaque or
       --  translucent.
 
       Cairo_Pattern_Type_Surface,
-      --   The pattern is a based on a surface (an image).
+      --  The pattern is a based on a surface (an image).
 
       Cairo_Pattern_Type_Linear,
       --  The pattern is a linear gradient.
@@ -87,18 +84,15 @@ package Cairo.Pattern is
      );
    pragma Convention (C, Cairo_Pattern_Type);
 
-   --   Cairo_Extend:
+   --  Cairo_extend is used to describe how pattern color/alpha will be
+   --  determined for areas "outside" the pattern's natural area, (for
+   --  example, outside the surface bounds or outside the gradient
+   --  geometry).
    --
-   --   Cairo_extend is used to describe how pattern color/alpha will be
-   --   determined for areas "outside" the pattern's natural area, (for
-   --   example, outside the surface bounds or outside the gradient
-   --   geometry).
+   --  The default extend mode is CAIRO_EXTEND_NONE for surface patterns
+   --  and CAIRO_EXTEND_PAD for gradient patterns.
    --
-   --   The default extend mode is CAIRO_EXTEND_NONE for surface patterns
-   --   and CAIRO_EXTEND_PAD for gradient patterns.
-   --
-   --   New entries may be added in future versions.
-
+   --  New entries may be added in future versions.
    type Cairo_Extend is
      (Cairo_Extend_None,
       --  Pixels outside of the source pattern are fully transparent
@@ -117,13 +111,10 @@ package Cairo.Pattern is
      );
    pragma Convention (C, Cairo_Extend);
 
-   --   Cairo_Filter:
-   --
-   --   Cairo_filter is used to indicate what filtering should be
-   --   applied when reading pixel values from patterns. See
-   --   Cairo.Pattern.Set_Source for indicating the desired filter to be
-   --   used with a particular pattern.
-
+   --  Cairo_filter is used to indicate what filtering should be
+   --  applied when reading pixel values from patterns. See
+   --  Cairo.Pattern.Set_Source for indicating the desired filter to be
+   --  used with a particular pattern.
    type Cairo_Filter is
      (Cairo_Filter_Fast,
       --  A high-performance filter, with quality similar to
