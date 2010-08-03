@@ -1042,7 +1042,7 @@ package Cairo is
    --  X3: the X coordinate of the end of the curve
    --  Y3: the Y coordinate of the end of the curve
    --
-   --  Adds a cubic Bézier spline to the path from the current point to
+   --  Adds a cubic Bezier spline to the path from the current point to
    --  position (X3, Y3) in user-space coordinates, using (X1, Y1) and
    --  (X2, Y2) as the control points. After this call the current point
    --  will be (X3, Y3).
@@ -1172,7 +1172,7 @@ package Cairo is
    --  Dy3: the Y offset to the end of the curve
    --
    --  Relative-coordinate version of Cairo_Curve_To. All offsets are
-   --  relative to the current point. Adds a cubic Bézier spline to the
+   --  relative to the current point. Adds a cubic Bezier spline to the
    --  path from the current point to a point offset from the current
    --  point by (Dx3, Dy3), using points offset by (Dx1, Dy1) and
    --  (Dx2, Dy2) as the control points. After this call the current
