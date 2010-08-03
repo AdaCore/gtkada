@@ -45,6 +45,7 @@
 --  </description>
 --  <c_version>2.16.6</c_version>
 
+with Glib.GSlist;
 with Gtk.Object;
 
 package Gtk.Recent_Filter is
@@ -54,6 +55,12 @@ package Gtk.Recent_Filter is
    type Gtk_Recent_Filter is access all Gtk_Recent_Filter_Record'Class;
 
    function Get_Type return GType;
+
+   function Convert (Widget : Gtk_Recent_Filter) return System.Address;
+   function Convert (Widget : System.Address) return Gtk_Recent_Filter;
+   package Gtk_Recent_Filter_List is
+     new Glib.GSlist.Generic_SList (Gtk_Recent_Filter);
+   --  Instantiation of a singly-linked list of Gtk_Recent_Filter's.
 
    procedure Gtk_New (Widget : out Gtk_Recent_Filter);
    procedure Initialize (Widget : access Gtk_Recent_Filter_Record'Class);

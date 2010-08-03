@@ -132,6 +132,25 @@ package body Gtk.Recent_Manager is
       return Boolean'Val (Internal (Get_Object (Manager), Uri & ASCII.NUL));
    end Add_Item;
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (Widget : Gtk_Recent_Info) return System.Address is
+   begin
+      return Get_Object (Widget);
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (Widget : System.Address) return Gtk_Recent_Info is
+      Stub : Gtk_Recent_Info_Record;
+   begin
+      return Gtk_Recent_Info (Get_User_Data (Widget, Stub));
+   end Convert;
+
    ---------------
    -- Get_Limit --
    ---------------
@@ -310,16 +329,14 @@ package body Gtk.Recent_Manager is
 
    function Get_Items
      (Manager : access Gtk_Recent_Manager_Record)
-      return Glib.Object.Object_Simple_List.Glist
+      return Gtk_Recent_Info_List.Glist
    is
-      use Glib.Object.Object_Simple_List;
-
       function Internal (Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_manager_get_items");
 
-      Tmp : Glist;
+      Tmp : Gtk_Recent_Info_List.Glist;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Manager)));
+      Gtk_Recent_Info_List.Set_Object (Tmp, Internal (Get_Object (Manager)));
       return Tmp;
    end Get_Items;
 
@@ -572,13 +589,13 @@ package body Gtk.Recent_Manager is
    function Remove_Item
      (Manager : access Gtk_Recent_Manager_Record;
       Uri     : String;
-      Error   : Glib.Error.GError_Access)
+      Error   : Glib.Error.GError)
       return Boolean
    is
       function Internal
         (Manager : System.Address;
          Uri     : String;
-         Error   : Glib.Error.GError_Access)
+         Error   : Glib.Error.GError)
          return Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_remove_item");
    begin

@@ -72,6 +72,7 @@
 with GNAT.Strings;
 
 with Glib.Error;
+with Glib.Glist;
 with Glib.Properties;
 with Glib.Object;
 with Gdk.Pixbuf;
@@ -96,6 +97,13 @@ package Gtk.Recent_Manager is
    type Gtk_Recent_Info_Record is
      new Glib.Object.GObject_Record with private;
    type Gtk_Recent_Info is access all Gtk_Recent_Info_Record'Class;
+
+   function Convert (Widget : Gtk_Recent_Info) return System.Address;
+   function Convert (Widget : System.Address) return Gtk_Recent_Info;
+
+   package Gtk_Recent_Info_List is
+     new Glib.Glist.Generic_List (Gtk_Recent_Info);
+   --  Instantiation of a list of Gtk_Recent_Info objects.
 
    function Get_Type_Recent_Info return GType;
    --  Return the internal value associated with a Gtk_Recent_Info widget.
@@ -310,7 +318,7 @@ package Gtk.Recent_Manager is
 
    function Get_Items
      (Manager : access Gtk_Recent_Manager_Record)
-      return Glib.Object.Object_Simple_List.Glist;
+      return Gtk_Recent_Info_List.Glist;
    --  Gets the list of recently used resources.  Use Unref on each item
    --  inside the list, and then free the list itself using
    --  Glib.Object.Object_Simple_List.Free.
@@ -365,7 +373,7 @@ package Gtk.Recent_Manager is
    function Remove_Item
      (Manager : access Gtk_Recent_Manager_Record;
       Uri     : UTF8_String;
-      Error   : Glib.Error.GError_Access)
+      Error   : Glib.Error.GError)
       return Boolean;
    --  Removes a resource pointed by Uri from the recently used resources
    --  list handled by a recent manager.

@@ -121,6 +121,25 @@ package body Gtk.Recent_Filter is
       Internal (Get_Object (Filter));
    end Add_Pixbuf_Formats;
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (Widget : Gtk_Recent_Filter) return System.Address is
+   begin
+      return Get_Object (Widget);
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (Widget : System.Address) return Gtk_Recent_Filter is
+      Stub : Gtk_Recent_Filter_Record;
+   begin
+      return Gtk_Recent_Filter (Get_User_Data (Widget, Stub));
+   end Convert;
+
    --------------
    -- Get_Name --
    --------------

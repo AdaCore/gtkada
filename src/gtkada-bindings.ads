@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006, AdaCore                   --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,6 +55,11 @@ package Gtkada.Bindings is
      is access ICS.chars_ptr_array (Interfaces.C.size_t);
    pragma Convention (C, chars_ptr_array_access);
    --  Suitable for a C function that returns a gchar**
+
+   procedure g_strfreev (Str_Array : chars_ptr_array_access);
+   --  Thin binding to C function of the same name.  Frees a null-terminated
+   --  array of strings, and the array itself.  If called on a null value,
+   --  simply return.
 
    function To_String_List
      (C : ICS.chars_ptr_array) return GNAT.Strings.String_List;
@@ -167,4 +172,5 @@ package Gtkada.Bindings is
 
 private
 --   pragma Import (C, g_free, "g_free");
+   pragma Import (C, g_strfreev, "g_strfreev");
 end Gtkada.Bindings;
