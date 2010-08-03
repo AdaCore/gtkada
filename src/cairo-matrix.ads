@@ -57,8 +57,8 @@ package Cairo.Matrix is
    --  Xx, Yx, Xy, Yy, X0, Y0. The transformation is given
    --  by:
    --
-   --   X_new = Xx * X + Xy * Y + X0;
-   --   Y_new = Yx * X + Yy * Y + Y0;
+   --    X_new = Xx * X + Xy * Y + X0;
+   --    Y_new = Yx * X + Yy * Y + Y0;
 
    procedure Init_Identity (Matrix : access Cairo_Matrix);
    --  Matrix: a Cairo_Matrix
