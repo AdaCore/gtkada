@@ -26,6 +26,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A set of utilities to handle the Cairo_Font_Face type, and the Cairo
+--  'toy' text API.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 with System;

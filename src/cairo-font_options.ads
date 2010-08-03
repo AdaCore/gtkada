@@ -26,6 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A set of utilities to manipulate font options.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 package Cairo.Font_Options is

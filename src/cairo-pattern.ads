@@ -26,6 +26,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A Cairo_Pattern is the paintbrush with which cairo draws. The primary use
+--  of patterns is as the source for all cairo drawing operations.
+--
+--  A cairo pattern is created by using one of the many constructors, of the
+--  form Cairo_Pattern.Create_<type> or implicitly through
+--  Cairo.Set_Source_<type> subprograms.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 with System;
@@ -48,7 +60,7 @@ package Cairo.Pattern is
    --
    --  The pattern type can be queried with Cairo.Pattern.Get_Type
    --
-   --  Most Cairo_pattern functions can be called with a pattern of any type,
+   --  Most Cairo_Pattern functions can be called with a pattern of any type,
    --  (though trying to change the extend or filter for a solid pattern will
    --  have no effect). A notable exception is Cairo.Pattern.Add_Color_Stop_Rgb
    --  and Cairo.Pattern.Add_Color_Stop_Rgba which must only be called with

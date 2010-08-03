@@ -26,6 +26,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Bindings to the Cairo 2D graphics library.
+--  The Cairo_Context is the main object used when drawing with cairo. To draw
+--  with Cairo, you create a Context, set the target surface, and drawing
+--  options for the Cairo_Context, create shapes with functions like Move_To
+--  and Line_To, and then draw shapes with Stroke or Fill.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 with Ada.Unchecked_Deallocation;

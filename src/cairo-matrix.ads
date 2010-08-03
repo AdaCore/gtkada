@@ -26,6 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Generic matrix operations.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 package Cairo.Matrix is

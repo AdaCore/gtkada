@@ -26,6 +26,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A Cairo_Surface is the abstract type representing all different drawing
+--  targets that cairo can render to. The actual drawings are performed using a
+--  Cairo_Context.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 with System;

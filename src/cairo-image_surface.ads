@@ -26,11 +26,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Image surfaces provide the ability to render to memory buffers either
+--  allocated by Cairo or by the calling code. The supported image formats are
+--  those defined in Cairo_Format.
+--  </description>
+--
+--  <c_version>1.8.8</c_version>
+--  <group>Cairo</group>
+
 pragma Ada_2005;
 
 package Cairo.Image_Surface is
-
-   --  Image-surface functions
 
    --   Cairo_Format:
    --
