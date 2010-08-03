@@ -1,8 +1,6 @@
 body
 {
-   background: #F4F4F4;
    font-family: arial, verdana;
-   font-size: 90%;
    margin: 0px 0px 10px 205px;
    height: 100%;
 }
@@ -27,7 +25,7 @@ a:active,
 a:visited
 {
    text-decoration: none;
-   color: blue;
+   color: #0000BB;
 }
 a:hover
 {
@@ -39,8 +37,26 @@ a.hide:active,
 a.hide:hover,
 a.hide:visited
 {
-   color: black;
-   margin-right: 5px;
+color:grey;
+font-size:8px;
+}
+
+h4 a.hide
+{
+  margin: 0 3px 0 2px;
+}
+
+div.classtree a.hide:link,
+div.classtree a.hide:active,
+div.classtree a.hide:hover,
+div.classtree a.hide:visited
+{
+color:grey;
+font-size:8px;
+left:4px;
+margin-top:3px;
+margin-right:0;
+position:absolute;
 }
 
 *:target
@@ -255,23 +271,24 @@ div.titleTopBar
 
 div.subprograms
 {
-   font-size: 90%;
    margin: 10px 0px 0px 0px;
 }
 
 div.subprograms .class
 {
-   border: 1px solid #c0c0c0;
    margin-top: 5px;
+   margin-left: 20px;
+   margin-bottom: 10px;
    padding: 0px;
 }
 
 div.subprograms .name
 {
-   color: red;
+   color: #007F62;
 }
 div.subprograms h3
 {
+   font-weight:normal;
    background: #dae3fe;
    padding: 0px 0px 0px 5px;
    margin: 0px 0px 0px 0px;
@@ -289,6 +306,7 @@ div.subprograms div.profile
 }
 div.subprograms div.details
 {
+   font-size:10px;
    font-family: courier new, courier;
    padding-top: 0px;
    padding-left: 5px;
@@ -320,12 +338,14 @@ div.subprograms div.details span.comment
 }
 div.subprograms div.comment
 {
+   font-size:10px;
    border-top: 1px dotted #c0c0c0;
    background: white;
    padding-left: 5px;
    padding-top: 0px;
    padding-bottom: 0px;
    white-space: pre-wrap;
+   font-family: monospace;
 }
 div.subprograms div.comment *
 {
@@ -367,35 +387,34 @@ div.classtree
 }
 div.classroot
 {
-   background: transparent url(../support/images/tree_root.png) no-repeat left 0px;
-   margin-bottom: 3px;
+   margin-bottom: 0px;
+   color: #444444;
+   white-space:nowrap;
 }
 div.classtree
 {
-   background: transparent url(../support/images/tree_item.png) no-repeat left 0px;
 }
 div.classtreechildren
 {
    position: relative;
-   top: -4px;
+   top: 0px;
    margin: 0px 0px 0px 8px;
-   padding: 0px 0px 7px 0px;
-   background: transparent url(../support/images/treechildren_bg_bottom.png) no-repeat left bottom;
+   padding: 0px 0px 0px 0px;
 }
 div.classtreechildreninside
 {
    margin: 0px 0px 0px 0px;
-   padding: 0px 0px 5px 8px;
-   background: transparent url(../support/images/treechildren_bg.png) repeat-y left;
+   padding: 0px 0px 0px 8px;
 }
 div.classroot h3,
 div.classtree h3
 {
    position: relative;
-   height: 30px;
+   height: 15px;
    font-weight: normal;
+   font-size:12px;
    padding: 4px 0px 0px 15px;
-   margin: 0px 0px -6px 0px;
+   margin: 0px 0px 0px 0px;
    z-index: 5;
 }
 
@@ -406,10 +425,8 @@ div.classtree h3
   height:2.5em;
   margin:0;
   list-style-type:none;
-  padding-right:12px;
-  background: transparent url(../support/images/link.png) no-repeat center right;
-  text-decoration: underline;
 }
+
 .droplink ul
 {
   visibility:hidden;
