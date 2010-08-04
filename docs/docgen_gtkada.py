@@ -105,6 +105,7 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
 
 def on_gps_start (hook):
    GPS.Docgen.register_tag_handler (ScreenshotTagHandler ())
+   GPS.Docgen.register_css (GPS.File ("gtkada.css"))
    GPS.Project.root().generate_doc (True)
    GPS.Timeout (500, wait_doc)
 
