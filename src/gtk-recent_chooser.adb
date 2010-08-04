@@ -72,8 +72,14 @@ package body Gtk.Recent_Chooser is
    function Get_Current_Uri (Chooser : Gtk_Recent_Chooser) return String is
       function Internal (Chooser : Gtk_Recent_Chooser) return chars_ptr;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_uri");
+      C : chars_ptr;
    begin
-      return Value (Internal (Chooser));
+      C := Internal (Chooser);
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Get_Current_Uri;
 
    ----------------

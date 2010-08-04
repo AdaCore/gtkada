@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -4382,6 +4382,28 @@ ada_gtk_file_chooser_dialog_new_with_backend
 {
   return gtk_file_chooser_dialog_new_with_backend
     (title, parent, action, backend, NULL, (char *)NULL);
+}
+
+/***********************************************************
+ ** Gtk_Recent_Chooser_Dialog
+***********************************************************/
+
+GtkWidget*
+ada_gtk_recent_chooser_dialog_new
+  (const gchar *title,
+   GtkWindow   *parent)
+{
+  return gtk_recent_chooser_dialog_new (title, parent, NULL, NULL);
+}
+
+GtkWidget*
+ada_gtk_recent_chooser_dialog_new_for_manager
+  (const gchar      *title,
+   GtkWindow        *parent,
+   GtkRecentManager *manager)
+{
+  return gtk_recent_chooser_dialog_new_for_manager
+    (title, parent, manager, NULL, NULL);
 }
 
 /**************************************************************

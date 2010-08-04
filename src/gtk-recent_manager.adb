@@ -253,7 +253,7 @@ package body Gtk.Recent_Manager is
          Count'Access,
          Time'Access));
 
-      AI.App_Exec := new String'(Interfaces.C.Strings.Value (App_Exec));
+      AI.App_Exec := new String'(Value (App_Exec));
       AI.Count    := Count;
       AI.Time     := Time;
 
@@ -270,8 +270,14 @@ package body Gtk.Recent_Manager is
    is
       function Internal (Info : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_description");
+      C : chars_ptr;
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Info)));
+      C := Internal (Get_Object (Info));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Get_Description;
 
    ----------------------
@@ -283,8 +289,14 @@ package body Gtk.Recent_Manager is
    is
       function Internal (Info : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_display_name");
+      C : chars_ptr;
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Info)));
+      C := Internal (Get_Object (Info));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Get_Display_Name;
 
    --------------------
@@ -349,8 +361,14 @@ package body Gtk.Recent_Manager is
    is
       function Internal (Info : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_mime_type");
+      C : chars_ptr;
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Info)));
+      C := Internal (Get_Object (Info));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Get_Mime_Type;
 
    ------------------
@@ -386,8 +404,14 @@ package body Gtk.Recent_Manager is
    function Get_Uri (Info : access Gtk_Recent_Info_Record) return String is
       function Internal (Info : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_uri");
+      C : chars_ptr;
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Info)));
+      C := Internal (Get_Object (Info));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (Internal (Get_Object (Info)));
+      end if;
    end Get_Uri;
 
    -----------------
