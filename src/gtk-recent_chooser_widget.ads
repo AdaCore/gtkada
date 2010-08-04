@@ -75,4 +75,5 @@ private
      new Gtk.Box.Gtk_Vbox_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_recent_chooser_widget_get_type");
+
 end Gtk.Recent_Chooser_Widget;

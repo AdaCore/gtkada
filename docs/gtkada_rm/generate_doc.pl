@@ -129,9 +129,22 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		      "Gtk_Border_Combo" => "Gtk.Extra.Border_Combo",
 		      "Gtk_Font_Combo"   => "Gtk.Extra.Font_Combo",
 		      "Gtk_IEntry"       => "Gtk.Extra.Item_Entry",
+		      "Gtk_Item_Entry"   => "Gtk.Extra.Item_Entry",
 		      "Gtk_Entry"        => "Gtk.GEntry",
                       "Gtk_Plot_Canvas_Child" => "Gtk.Extra.Plot_Canvas",
-		      "Gtk_Range"        => "Gtk.Grange");
+		      "Gtk_Range"        => "Gtk.Grange",
+		      "Gtk_Hbox"         => "Gtk.Box",
+		      "Gtk_Vbox"         => "Gtk.Box",
+		      "Gtk_Hpaned"       => "Gtk.Paned",
+		      "Gtk_Vpaned"       => "Gtk.Paned",
+		      "Gtk_Hruler"       => "Gtk.Ruler",
+		      "Gtk_Vruler"       => "Gtk.Ruler",
+		      "Gtk_Hscale"       => "Gtk.Scale",
+		      "Gtk_Vscale"       => "Gtk.Scale",
+		      "Gtk_Hscrollbar"   => "Gtk.Scrollbar",
+		      "Gtk_Vscrollbar"   => "Gtk.Scrollbar",
+		      "Gtk_Hseparator"   => "Gtk.Separator",
+		      "Gtk_Vseparator"   => "Gtk.Separator");
 
 ## Contains the parent of each widget
 %parent = ();
@@ -524,14 +537,33 @@ sub find_type_in_package () {
     my (@content) = @_;
     my ($line, $origin, $p);
 
-    # Look into the private part only
-    while (@content && $line !~ /^private/) {
-	$line = shift @content;
-    }
-
     # If $type is unspecified, return the main type
     if ($type eq "") {
        $type = "[^ \t]+";
+    }
+
+    # Ignore everything except for the private part (but see exception below)
+    while (@content && $line !~ /^private/) {
+	$line = shift @content;
+
+	# Special Case: subtype declarations in the public part.
+	if ($line =~ /subtype/) {
+	    # get the rest of the line
+	    while (@content && $line !~ /;/) {
+		$line .= shift @content;
+	    }
+
+	    # Extract hierarchy information from a "recognized" declaration
+	    if ($line =~ /subtype ($type)_Record\s+is\s+([^;\s]+)/) {
+		$origin = $1;
+
+		unless ($parent{$origin}) {
+		    $p = $2;
+		    $p =~ s/_Record//;
+		    $p =~ s/.*\.([^.]+)/$1/;
+		}
+	    }
+	}
     }
 
     # Find the name of the type in the package @content
