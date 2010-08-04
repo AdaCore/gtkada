@@ -8,6 +8,12 @@ div#leftSide div#leftSideInside, div#rightSideInside, div.topBarInside
  background:none;
 }
 
+div#leftSide, div#rightSide
+{
+  width:200px;
+  padding-bottom:10px;
+}
+
 #documentation {
   padding:0;
   margin: 0 215px 10px 5px;
@@ -15,7 +21,7 @@ div#leftSide div#leftSideInside, div#rightSideInside, div.topBarInside
 
 div#rightSide, div.topBar, div#leftSide
 {
- background:#F0F0F0;
+ background:#F3F3F3;
  border:1px solid grey;
  margin:3px;
 }
@@ -24,6 +30,12 @@ div.topBar {
   margin-left:215px;
   right:5px;
   width:auto;
+}
+
+div#Index li
+{
+  border:none;
+  margin-bottom:2px;
 }
 
 div.entity
@@ -77,7 +89,7 @@ div.subprograms h1
 div.subprograms .class
 {
    border: none;
-   margin: 10px 0px 20px 20px;
+   margin: 10px 0px 20px 15px;
 }
 div.subprograms .name
 {
@@ -143,14 +155,34 @@ div.classtree h3
   background: none;
 }
 
-.droplink ul, .droplink:hover ul
+.default .droplink ul, .default .droplink:hover ul
 {
   visibility:visible;
-  overflow:visible;
+  overflow:none;
   height:auto;
-  display:inline-block;
+  display:inline;
   position:static;
   background:none;
   border:none;
+  width:auto;
+  float:right;
 }
 
+.default .droplink ul li
+{
+ display:inline;
+ float:none;
+}
+
+.default .droplink ul li a
+{
+  font-variant:normal;
+  font-family:arial,verdana;
+  font-size:10px;
+  color:#4444BB;
+}
+
+.default .droplink ul li a:hover
+{
+  color:red;
+}
