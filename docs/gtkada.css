@@ -3,16 +3,33 @@ body
    background: white;
 }
 
-div#leftSide, div#leftSide div#leftSideInside
+div#leftSide div#leftSideInside, div#rightSideInside, div.topBarInside
 {
  background:none;
 }
 
-div#rightSide, div#rightSideInside
-{
- background:#E0E0E0;
+#documentation {
+  padding:0;
+  margin: 0 215px 10px 5px;
 }
 
+div#rightSide, div.topBar, div#leftSide
+{
+ background:#F0F0F0;
+ border:1px solid grey;
+ margin:3px;
+}
+
+div.topBar {
+  margin-left:215px;
+  right:5px;
+  width:auto;
+}
+
+div.entity
+{
+ color:#666666;
+}
 a:link,
 a:active,
 a:visited
@@ -51,24 +68,26 @@ margin-top:3px;
 margin-right:0;
 position:absolute;
 }
-
-div.subprograms
+div.subprograms h1
 {
-  font-size: 100%;
+   margin-top:20px;
+   border-bottom: 2px solid black;
+   margin-left:2px;
 }
 div.subprograms .class
 {
    border: none;
-   margin: 10px 0px 10px 20px;
+   margin: 10px 0px 20px 20px;
 }
 div.subprograms .name
 {
    color: #007F62;
 }
-div.subprograms h3
+div.subprograms h3, div.subprograms h4, div.subprograms div a
 {
    padding:2px;
    font-weight:normal;
+   font-size:12px;
    font-family: Courier, Courier New;
 }
 div.subprograms div {
@@ -87,7 +106,7 @@ div.subprograms div.comment
 div.classroot
 {
    margin-bottom: 0px;
-   color: #444444;
+   color: #666666;
    white-space:nowrap;
    background:none;
 }
@@ -124,4 +143,14 @@ div.classtree h3
   background: none;
 }
 
+.droplink ul, .droplink:hover ul
+{
+  visibility:visible;
+  overflow:visible;
+  height:auto;
+  display:inline-block;
+  position:static;
+  background:none;
+  border:none;
+}
 
