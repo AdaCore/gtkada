@@ -2,6 +2,8 @@ with "../src/gtkada_src";
 with "../shared";
 
 project Generate_Docs is
-   for Object_Dir use "html";
-   package IDE renames Shared.IDE;
+
+   package Ide renames Shared.Ide;
+
 end Generate_Docs;
+
