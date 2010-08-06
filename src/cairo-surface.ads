@@ -35,8 +35,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 with System;
 
 package Cairo.Surface is
@@ -196,8 +194,7 @@ package Cairo.Surface is
 
    function Get_User_Data
      (Surface : Cairo_Surface;
-      Key     : access constant Cairo_User_Data_Key)
-      return    System.Address;
+      Key     : access Cairo_User_Data_Key) return System.Address;
    --  Surface: a Cairo_Surface
    --  Key: the address of the Cairo_User_Data_Key the user data was
    --  attached to
@@ -210,10 +207,9 @@ package Cairo.Surface is
 
    function Set_User_Data
      (Surface   : Cairo_Surface;
-      Key       : access constant Cairo_User_Data_Key;
+      Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : access procedure (Arg1 : System.Address))
-      return      Cairo_Status;
+      Destroy   : Cairo_Destroy_Func) return Cairo_Status;
    --  Surface: a Cairo_Surface
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
    --  User_Data: the user data to attach to the surface

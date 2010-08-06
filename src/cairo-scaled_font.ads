@@ -33,8 +33,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 with Interfaces.C.Strings;
 
 package Cairo.Scaled_Font is
@@ -129,7 +127,7 @@ package Cairo.Scaled_Font is
 
    procedure Glyph_Extents
      (Scaled_Font : Cairo_Scaled_Font;
-      Glyphs      : access constant Cairo_Glyph;
+      Glyphs      : access Cairo_Glyph;
       Num_Glyphs  : Gint;
       Extents     : Cairo_Text_Extents);
    --  Scaled_Font: a Cairo_Scaled_Font

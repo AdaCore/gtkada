@@ -38,8 +38,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 with System;
 
 package Cairo.Pattern is
@@ -307,8 +305,7 @@ package Cairo.Pattern is
 
    function Get_User_Data
      (Pattern : Cairo_Pattern;
-      Key     : access constant Cairo_User_Data_Key)
-      return    System.Address;
+      Key     : access Cairo_User_Data_Key) return System.Address;
    --  Pattern: a Cairo_Pattern
    --  Key: the address of the Cairo_User_Data_Key the user data was
    --  attached to
@@ -323,10 +320,9 @@ package Cairo.Pattern is
 
    function Set_User_Data
      (Pattern   : Cairo_Pattern;
-      Key       : access constant Cairo_User_Data_Key;
+      Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : Cairo_Destroy_Func)
-      return      Cairo_Status;
+      Destroy   : Cairo_Destroy_Func) return Cairo_Status;
    --  Pattern: a Cairo_Pattern
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
    --  User_Data: the user data to attach to the Cairo_Pattern
@@ -418,7 +414,7 @@ package Cairo.Pattern is
 
    procedure Set_Matrix
      (Pattern : Cairo_Pattern;
-      Matrix  : access constant Cairo_Matrix);
+      Matrix  : access Cairo_Matrix);
    --  Pattern: a Cairo_Pattern
    --  Matrix: a Cairo_Matrix
    --

@@ -34,8 +34,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 with System;
 with Interfaces.C.Strings;
 
@@ -92,8 +90,7 @@ package Cairo.Font_Face is
 
    function Get_User_Data
      (Font_Face : Cairo_Font_Face;
-      Key       : access constant Cairo_User_Data_Key)
-      return      System.Address;
+      Key       : access Cairo_User_Data_Key) return System.Address;
    --  Font_Face: a Cairo_Font_Face
    --  Key: the address of the Cairo_User_Data_Key the user data was
    --  attached to
@@ -106,10 +103,9 @@ package Cairo.Font_Face is
 
    function Set_User_Data
      (Font_Face : Cairo_Font_Face;
-      Key       : access constant Cairo_User_Data_Key;
+      Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : Cairo_Destroy_Func)
-      return      Cairo_Status;
+      Destroy   : Cairo_Destroy_Func) return Cairo_Status;
    --  Font_Face: a Cairo_Font_Face
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
    --  User_Data: the user data to attach to the font face

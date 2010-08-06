@@ -33,8 +33,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 package Cairo.Font_Options is
 
    function Create return Cairo_Font_Options;

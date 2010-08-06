@@ -68,8 +68,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 with Ada.Unchecked_Deallocation;
 
 with System;
@@ -346,7 +344,7 @@ package Cairo is
 
    function Get_User_Data
      (Cr   : Cairo_Context;
-      Key  : access constant Cairo_User_Data_Key)
+      Key  : access Cairo_User_Data_Key)
       return System.Address;
    --  Cr: a Cairo_Context
    --  Key: the address of the Cairo_User_Data_Key the user data was
@@ -362,7 +360,7 @@ package Cairo is
 
    function Set_User_Data
      (Cr        : Cairo_Context;
-      Key       : access constant Cairo_User_Data_Key;
+      Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
       Destroy   : Cairo_Destroy_Func)
       return      Cairo_Status;
@@ -937,7 +935,7 @@ package Cairo is
 
    procedure Transform
      (Cr     : Cairo_Context;
-      Matrix : access constant Cairo_Matrix);
+      Matrix : access Cairo_Matrix);
    --  Cr: a cairo context
    --  Matrix: a transformation to be applied to the user-space axes
    --
@@ -947,7 +945,7 @@ package Cairo is
 
    procedure Set_Matrix
      (Cr     : Cairo_Context;
-      Matrix : access constant Cairo_Matrix);
+      Matrix : access Cairo_Matrix);
    --  Cr: a cairo context
    --  Matrix: a transformation Matrix from user space to device space
    --
@@ -1643,9 +1641,11 @@ package Cairo is
    --  Since: 1.4
    pragma Convention (C_Pass_By_Copy, Cairo_Rectangle_List);
 
+   type Cairo_Rectangle_List_Access is access all Cairo_Rectangle_List;
+
    function Copy_Clip_Rectangle_List
      (Cr   : Cairo_Context)
-      return access Cairo_Rectangle_List;
+      return Cairo_Rectangle_List_Access;
    --  Cr: a cairo context
    --
    --  Gets the current clip region as a list of rectangles in user
@@ -2001,7 +2001,7 @@ package Cairo is
 
    procedure Set_Font_Matrix
      (Cr     : Cairo_Context;
-      Matrix : access constant Cairo_Matrix);
+      Matrix : access Cairo_Matrix);
    --  Cr: a Cairo_Context
    --  Matrix: a Cairo_Matrix describing a transform to be applied to
    --  the current font.
@@ -2074,7 +2074,7 @@ package Cairo is
 
    procedure Set_Scaled_Font
      (Cr          : Cairo_Context;
-      Scaled_Font : access constant Cairo_Scaled_Font);
+      Scaled_Font : access Cairo_Scaled_Font);
    --  Cr: a Cairo_Context
    --  Scaled_Font: a Cairo_Scaled_Font
    --
@@ -2134,7 +2134,7 @@ package Cairo is
 
    procedure Show_Glyphs
      (Cr         : Cairo_Context;
-      Glyphs     : access constant Cairo_Glyph;
+      Glyphs     : access Cairo_Glyph;
       Num_Glyphs : Gint);
    --  Cr: a cairo context
    --  Glyphs: array of Glyphs to show
@@ -2193,7 +2193,7 @@ package Cairo is
 
    procedure Glyph_Extents
      (Cr         : Cairo_Context;
-      Glyphs     : access constant Cairo_Glyph;
+      Glyphs     : access Cairo_Glyph;
       Num_Glyphs : Gint;
       Extents    : access Cairo_Text_Extents);
    --  Cr: a Cairo_Context
@@ -2549,6 +2549,7 @@ package Cairo is
       --  0 and Num_Data-1.
       Num_Data : aliased Gint;
    end record;
+   type Cairo_Path_Access is access all Cairo_Path;
    --  Status: the current error Status
    --  Data: the elements in the path
    --  Num_Data: the number of elements in the data array
@@ -2565,7 +2566,7 @@ package Cairo is
    --  portions (defined in Cairo_Path_Data_Type), since the data
    --  includes both headers and coordinates for each portion.
 
-   function Copy_Path (Cr : Cairo_Context) return access Cairo_Path;
+   function Copy_Path (Cr : Cairo_Context) return Cairo_Path_Access;
    --  Cr: a cairo context
    --
    --  Creates a copy of the current path and returns it to the user as a
@@ -2586,7 +2587,7 @@ package Cairo is
    --  Return value: the copy of the current path. The caller owns the
    --  returned object and should call Path_Destroy when finished with it.
 
-   function Copy_Path_Flat (Cr : Cairo_Context) return access Cairo_Path;
+   function Copy_Path_Flat (Cr : Cairo_Context) return Cairo_Path_Access;
    --  Cr: a cairo context
    --
    --  Gets a flattened copy of the current path and returns it to the
@@ -2617,7 +2618,7 @@ package Cairo is
 
    procedure Append_Path
      (Cr   : Cairo_Context;
-      Path : access constant Cairo_Path);
+      Path : access Cairo_Path);
    --  Cr: a cairo context
    --  Path: Path to be appended
    --

@@ -33,8 +33,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 package Cairo.Matrix is
 
    procedure Init
@@ -148,8 +146,8 @@ package Cairo.Matrix is
 
    procedure Multiply
      (Result : access Cairo_Matrix;
-      A      : access constant Cairo_Matrix;
-      B      : access constant Cairo_Matrix);
+      A      : access Cairo_Matrix;
+      B      : access Cairo_Matrix);
    --  Result: a Cairo_Matrix in which to store the Result
    --  A: a Cairo_Matrix
    --  B: a Cairo_Matrix
@@ -163,7 +161,7 @@ package Cairo.Matrix is
    --  It is allowable for result to be identical to either a or b.
 
    procedure Transform_Distance
-     (Matrix : access constant Cairo_Matrix;
+     (Matrix : access Cairo_Matrix;
       Dx     : access Gdouble;
       Dy     : access Gdouble);
    --  Matrix: a Cairo_Matrix
@@ -184,7 +182,7 @@ package Cairo.Matrix is
    --  (X1+Dx2,Y1+Dy2) for all values of X1 and X2.
 
    procedure Transform_Point
-     (Matrix : access constant Cairo_Matrix;
+     (Matrix : access Cairo_Matrix;
       X      : access Gdouble;
       Y      : access Gdouble);
    --  Matrix: a Cairo_Matrix

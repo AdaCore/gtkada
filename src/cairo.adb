@@ -26,8 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-pragma Ada_2005;
-
 package body Cairo is
 
    --------------

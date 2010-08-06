@@ -35,8 +35,6 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-pragma Ada_2005;
-
 package Cairo.Image_Surface is
 
    --  Cairo_Format is used to identify the memory format of
