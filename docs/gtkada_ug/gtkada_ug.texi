@@ -6,8 +6,8 @@
 
 @dircategory User Interface Toolkit
 @direntry
-* GtkAda_Ug: (gtkada_ug).           Ada95 graphical tookit based on GTK+ (User's Guide)
-@end direntry 
+* GtkAda_Ug: (gtkada_ug).          Ada2005 graphical tookit based on GTK+ (User's Guide)
+@end direntry
 
 @set GtkAdaVersion 2.18.0
 
@@ -118,7 +118,7 @@ toolkit, one of the official GNU toolkits. It makes it easy to create
 portable user interfaces for multiple platforms, including most
 platforms that have a X11 server and Win32 platforms.
 
-Although it is based on a C library, GtkAda uses some advanced Ada95
+Although it is based on a C library, GtkAda uses some advanced Ada2005
 features such as tagged types, generic packages, access to subprograms,
 and exceptions to make it easier to use and design interfaces.
 For efficiency reasons, it does not use controlled types, but takes care
@@ -147,14 +147,15 @@ document OpenGL at all, see any book on OpenGL, or the specification
 that came with your OpenGL library, for more information.
 
 The following Internet sites will always contain the latest public
-packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
+packages for @code{GtkAda}, @code{gtk+}, @code{Glade} and @code{Cairo}
 
-     @uref{http://libre.act-europe.fr/GtkAda/}
+     @uref{http://libre.adacore.com/libre/tools/GtkAda/}
 
      @uref{http://www.gtk.org/}
 
      @uref{http://glade.gnome.org/}
-     
+
+     @uref{http://www.cairographics.org/}
 
 The scheme used for GtkAda's version numbers is the following: the major
 and minor version number is the same as for the underlying gtk+ library
@@ -312,7 +313,7 @@ $ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
 Since GtkAda depends on Gtk+, you usually need to distribute some Gtk+
 libraries along with your application.
 
-Under some OSes such as Linux, Gtk+ comes preinstalled, so in this case, 
+Under some OSes such as Linux, Gtk+ comes preinstalled, so in this case,
 a simple solution is to rely on the preinstalled Gtk+ libraries. See
 below for more information on the gtkada library itself.
 
@@ -357,9 +358,10 @@ your own application.
 
 @item @file{testgtk/} directory:
 
-This directory contains an application that tests all the widgets in GtkAda.
-It gives you a quick overview of what can be found in the toolkit, as well
-as some detailed information on the widgets and their parameters.
+This directory contains the application @code{testgtk} that tests all the
+widgets in GtkAda. It gives you a quick overview of what can be found in the
+toolkit, as well as some detailed information on the widgets and their
+parameters.
 
 Each demo is associated with contextual help pointing to aspects worth
 studying.
@@ -370,9 +372,12 @@ OpenGL.
 This program is far more extensive that its C counterpart, and the GtkAda
 team has added a lot of new examples.
 
+This directory also contains the application @code{testcairo} which
+demonstrates the use of various Cairo functions in GtkAda.
+
 @item @file{examples/} directory:
 
-This directory contains some small examples, unrelated to @file{testgtk}. 
+This directory contains some small examples, unrelated to @file{testgtk}.
 For instance, this is where you will find some sample XML files for
 @code{Gate} and @code{Dgate}, as well as some new widgets created
 directly in Ada, as examples of how to create your own callback
@@ -511,26 +516,38 @@ if GtkAda was installed under @file{c:\gtkada}.
 
 @noindent
 The gtk+ toolkit has been designed from the beginning to be portable.
-It is made of three libraries: @code{gtk}, @code{gdk} and @code{glib}.
+It is made of two libraries: @code{gtk} and @code{gdk}.
+In addition, GtkAda provides binding to three supporting libraries:
+@code{pango}, @code{cairo} and @code{glib}.
 
 @code{Glib} is a non-graphical library that includes support for lists,
 h-tables, threads, and so on. It is a highly optimized,
 platform-independent library. Since most of its contents are already
 available in Ada (or in the @file{GNAT.*} hierarchy in the GNAT
-distribution), GtkAda does not include a complete binding to it. 
+distribution), GtkAda does not include a complete binding to it.
 For the parts of @code{Glib} that we do depend on, we provide
 @file{Glib.*} packages in the GtkAda distribution.
 
 @code{Gdk} is the platform-dependent part of gtk+, and so there are
 different implementations (for instance, for Win32 and X11 based
-systems) that implement a common API. @code{Gdk} provides primitive
+systems) that implement a common API. @code{Gdk} provides basic
 graphical functionality to, for instance, draw lines, rectangles and
 pixmaps on the screen, as well as manipulate colors. The @file{Gdk.*}
 packages provide a full Ada interface to @code{Gdk}.
 
+@code{Pango} is a modern font handling system. Bindings in GtkAda
+gives access to the API to manipulate font descriptions and text
+attributes.
+
+@code{Cairo} is the low-level 2D drawing library used by @code{Gdk} to
+render widgets. @code{Cairo} provides a rich set of vector drawing
+features, supporting anti-aliasing, transparency, and 2D matrix
+transformations.The @file{Cairo.*} packages provide a complete Ada
+binding to @code{Cairo}.
+
 @code{Gtk} is the top level library. It is platform independent, and
-does all its drawing through calls to Gdk. This is where the high-level
-widgets are defined. It also includes support for callbacks. Its
+does all its drawing through calls to Gdk and Cairo. This is where the
+high-level widgets are defined. It also includes support for callbacks. Its
 equivalent in the GtkAda libraries are the @file{Gtk.*} packages. It is
 made of a fully object-oriented hierarchy of widgets (see @ref{Widgets
 Hierarchy}).
@@ -539,17 +556,19 @@ Since your application only calls GtkAda, it is fully portable, and can
 be recompiled as-is on other platforms.
 
 @smallexample
-+---------------------------------------------+
-|             Your Application                |
-+---------------------------------------------+
-|                 GtkAda                      |
-|               +-----------------------------+
-|               |            GTK              |
-|       +-------+-----------------------------+
-|       |           GDK                       |
-+-------+--------------+--+-------------------+
-|          GLIB        |  | X-Window / Win32  |
-+----------------------+  +-------------------+
++------------------------------- ----------+
+|             Your Application             |
++------------------------------------------+
+|                 GtkAda                   |
+|              +-----------------+         |
+|              |      GTK        |         |
+|         +----+-----------------+----+    |
+|         |           GDK             |    |
+|    +----+------+         +----------+----+
+|    |   Pango   |         |     Cairo     |
++----+-----------+----+----+---------------+
+|        GLIB         |   X-Window / Win32  |
++---------------------+--------------------+
 @end smallexample
 
 Although the packages have been evolving a lot since the first versions
@@ -557,7 +576,7 @@ of GtkAda, the specs are stabilizing now. We will try as much as possible
 to provide backward compatibility whenever possible.
 
 Since GtkAda is based on gtk+ we have tried to stay as close to it as possible
-while using high-level features of the Ada95 language. It is
+while using high-level features of the Ada2005 language. It is
 thus relatively easy to convert external examples from C to Ada.
 
 We have tried to adopt a consistent naming scheme for Ada identifiers:
@@ -711,7 +730,7 @@ for an example on how to do that.
 @noindent
 In GtkAda, the interaction between the interface and the core
 application is done via signals. Most user actions on the graphical
-application trigger some signals to be @samp{emitted}. 
+application trigger some signals to be @samp{emitted}.
 
 A signal is a message that an object wants to broadcast. It is
 identified by its name, and each one is associated with certain events
@@ -763,7 +782,7 @@ For instance, consider the following extract from gtkbutton.h:
 @b{struct} _GtkButtonClass
 @{
   GtkBinClass        parent_class;
-  
+
   @b{void} (* pressed)  (GtkButton *button);
   @b{void} (* released) (GtkButton *button);
   @b{void} (* clicked)  (GtkButton *button);
@@ -886,7 +905,7 @@ always be performed at the library level, and not inside any inner block.
 @c ??? library level, and not inside any inner block or subprogram."?
 
 @smallexample
-package Files_Cb is new 
+package Files_Cb is new
   Handlers.Callback (Gtk_File_Selection_Record);
 @end smallexample
 
@@ -1228,15 +1247,15 @@ in the application.
 
 In GtkAda itself, a ``user_data'' is associated with each object
 allocated by a @code{Gtk_New} procedure. A ``destroy'' callback is also
-associated, to be called when the object to which the 
+associated, to be called when the object to which the
 user_data belongs is destroyed.
 Thus, every time a C object is destroyed, the equivalent Ada structure is also
 destroyed (see @code{Gtk.Free_User_Data}).
- 
-Concerning widgets containing children, 
+
+Concerning widgets containing children,
 every container holds a reference to its children, whose reference counting is
-thus different from 0 (and generally 1). When the container is destroyed, the 
-reference of all its children and grand-children is decremented, and they are 
+thus different from 0 (and generally 1). When the container is destroyed, the
+reference of all its children and grand-children is decremented, and they are
 destroyed in turn if needed. So the deallocation of a widget hierarchy is also
 performed automatically.
 
@@ -1273,7 +1292,7 @@ any task other than the one that started the outer level main loop.
 Note that @code{Gdk.Threads} assumes that you are using a tasking run time
 that maps Ada tasks to native threads.
 
-A minimal main program for a tasking GtkAda application looks like: 
+A minimal main program for a tasking GtkAda application looks like:
 
 @smallexample
 @b{with} Gdk.Threads;
@@ -1362,13 +1381,13 @@ widgets, and even how to create your own widgets.
 
 @subsection Why should I use object-oriented programming ?
 
-Every widget in GtkAda is a tagged type with a number of
-primitive subprograms that are inherited by all of its children.
+Every widget in the @code{Gtk.*} packages in GtkAda is a tagged type with a
+number of primitive subprograms that are inherited by all of its children.
 Tagged types in Ada make it possible to perform safe, automatic type
-conversions without using explicit casts (such as is necessary when
-coding in C). It is also possible for the compiler to verify whether
-or not these type conversions are valid. Most errors are found
-at compile time, which leads to a safer and more robust application.
+conversions without using explicit casts (such as is necessary when coding in
+C). It is also possible for the compiler to verify whether or not these type
+conversions are valid. Most errors are found at compile time, which leads to a
+safer and more robust application.
 
 As a further example, imagine a table that has been populated by some widgets.
 It is possible to query for this table's children and operate on these widgets
