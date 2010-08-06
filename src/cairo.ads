@@ -32,6 +32,37 @@
 --  with Cairo, you create a Context, set the target surface, and drawing
 --  options for the Cairo_Context, create shapes with functions like Move_To
 --  and Line_To, and then draw shapes with Stroke or Fill.
+--
+--  All drawing in Cairo is done on a Cairo_Context.
+--
+--  Drawing on on-screen Gtk widgets should be done in a callback to the
+--  "expose" event:
+--
+--  When the widget has been created, connect a drawing function:
+--
+--  <code>
+--     declare
+--        Area : Gtk_Drawing_Area;
+--
+--        package Event_Cb is new Gtk.Handlers.Return_Callback
+--            (Gtk_Drawing_Area_Record, Boolean);
+--     begin
+--        Gtk_New (Area);
+--        Event_Cb.Connect (Area, "expose_event",
+--                          Event_Cb.To_Marshaller (Expose_Cb'Access));
+--     end;
+--  </code>
+--
+--  In the callback, first get the context of the drawable on which you
+--  need to draw, using Gdk.Cairo.Create. Then do the drawing operations, and
+--  release the memory allocated to Cr using Cairo.Destroy.
+--
+--  In addition to drawing on on-screen widgets, drawing can also be done using
+--  the same Cairo calls to pixbufs (see Gdk.Cairo) to memory
+--  (see Cairo.Image_Surface), and to PNG files (see Cairo.Png).
+--
+--  Code samples demonstrating how to use various functionalities of Cairo
+--  can be found in the testcairo example, shipped with GtkAda.
 --  </description>
 --
 --  <c_version>1.8.8</c_version>
@@ -1042,7 +1073,7 @@ package Cairo is
    --  X3: the X coordinate of the end of the curve
    --  Y3: the Y coordinate of the end of the curve
    --
-   --  Adds a cubic Bezier spline to the path from the current point to
+   --  Adds a cubic Bézier spline to the path from the current point to
    --  position (X3, Y3) in user-space coordinates, using (X1, Y1) and
    --  (X2, Y2) as the control points. After this call the current point
    --  will be (X3, Y3).
@@ -1172,7 +1203,7 @@ package Cairo is
    --  Dy3: the Y offset to the end of the curve
    --
    --  Relative-coordinate version of Cairo_Curve_To. All offsets are
-   --  relative to the current point. Adds a cubic Bezier spline to the
+   --  relative to the current point. Adds a cubic Bézier spline to the
    --  path from the current point to a point offset from the current
    --  point by (Dx3, Dy3), using points offset by (Dx1, Dy1) and
    --  (Dx2, Dy2) as the control points. After this call the current
