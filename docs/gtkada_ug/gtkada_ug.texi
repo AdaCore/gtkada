@@ -6,10 +6,10 @@
 
 @dircategory User Interface Toolkit
 @direntry
-* GtkAda_Ug: (gtkada_ug).          Ada2005 graphical tookit based on GTK+ (User's Guide)
+* GtkAda_Ug: (gtkada_ug).          Ada graphical tookit based on GTK+ (User's Guide)
 @end direntry
 
-@set GtkAdaVersion 2.18.0
+@set GtkAdaVersion 2.16.0
 
 @titlepage
 
@@ -118,7 +118,7 @@ toolkit, one of the official GNU toolkits. It makes it easy to create
 portable user interfaces for multiple platforms, including most
 platforms that have a X11 server and Win32 platforms.
 
-Although it is based on a C library, GtkAda uses some advanced Ada2005
+Although it is based on a C library, GtkAda uses some advanced Ada
 features such as tagged types, generic packages, access to subprograms,
 and exceptions to make it easier to use and design interfaces.
 For efficiency reasons, it does not use controlled types, but takes care
@@ -159,7 +159,7 @@ packages for @code{GtkAda}, @code{gtk+}, @code{Glade} and @code{Cairo}
 
 The scheme used for GtkAda's version numbers is the following: the major
 and minor version number is the same as for the underlying gtk+ library
-(e.g 2.18).
+(e.g 2.16).
 The micro version number depends on GtkAda's release number.
 
 This toolkit was tested on the following systems:
@@ -174,7 +174,7 @@ This toolkit was tested on the following systems:
 with the latest version of the @code{GNAT} compiler, developed and supported by
 Ada Core Technologies (see @uref{http://www.adacore.com}).
 
-This version of GtkAda is known to be compatible with @code{gtk+} @b{2.18.x}.
+This version of GtkAda is known to be compatible with @code{gtk+} @b{2.16.x}.
 This release may or may not be compatible with older versions of gtk+.
 
 This version of GtkAda is compatible with @code{Glade} @b{version
@@ -576,7 +576,7 @@ of GtkAda, the specs are stabilizing now. We will try as much as possible
 to provide backward compatibility whenever possible.
 
 Since GtkAda is based on gtk+ we have tried to stay as close to it as possible
-while using high-level features of the Ada2005 language. It is
+while using high-level features of the Ada language. It is
 thus relatively easy to convert external examples from C to Ada.
 
 We have tried to adopt a consistent naming scheme for Ada identifiers:
