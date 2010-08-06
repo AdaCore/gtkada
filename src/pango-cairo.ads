@@ -26,6 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Interfacing between Pango and Cairo.
+--  </description>
+--
+--  <c_version>2.16.6</c_version>
+--  <group>Cairo</group>
+
 with Cairo; use Cairo;
 with Pango.Layout; use Pango.Layout;
 
