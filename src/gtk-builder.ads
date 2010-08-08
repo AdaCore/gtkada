@@ -79,7 +79,7 @@ package Gtk.Builder is
    function Error_Quark return GQuark;
 
    function Add_From_File
-     (Builder  : Gtk_Builder;
+     (Builder  : access Gtk_Builder_Record;
       Filename : String)
       return Glib.Error.GError;
    --  Parses a file containing a Gtk_Builder UI definition and merges it with
@@ -87,7 +87,7 @@ package Gtk.Builder is
    --  Returns: A GError if an error occured, otherwise null.
 
    function Add_From_String
-     (Builder : Gtk_Builder;
+     (Builder : access Gtk_Builder_Record;
       Buffer  : String;
       Length  : Gsize)
       return Glib.Error.GError;
@@ -96,7 +96,7 @@ package Gtk.Builder is
    --  Returns: A GError if an error occured, otherwise null.
 
    function Get_Object
-     (Builder     : Gtk_Builder;
+     (Builder     : access Gtk_Builder_Record;
       Object_Name : String)
       return Glib.Object.GObject;
    --  Gets the object named Object_Name. Note that this function does not
@@ -133,7 +133,7 @@ package Gtk.Builder is
    --     User_Data:      user data
 
    procedure Connect_Signals_Full
-     (Builder         : Gtk_Builder;
+     (Builder         : access Gtk_Builder_Record;
       Signal_Function : Gtk_Builder_Connect_Func;
       User_Data       : System.Address);
    --  This function can be thought of the interpreted language binding

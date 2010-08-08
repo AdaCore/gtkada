@@ -46,7 +46,7 @@ package body Gtk.Builder is
    -------------------
 
    function Add_From_File
-     (Builder  : Gtk_Builder;
+     (Builder  : access Gtk_Builder_Record;
       Filename : String)
       return Glib.Error.GError
    is
@@ -72,7 +72,7 @@ package body Gtk.Builder is
    ---------------------
 
    function Add_From_String
-     (Builder : Gtk_Builder;
+     (Builder : access Gtk_Builder_Record;
       Buffer  : String;
       Length  : Gsize)
       return Glib.Error.GError
@@ -101,7 +101,7 @@ package body Gtk.Builder is
    --------------------------
 
    procedure Connect_Signals_Full
-     (Builder         : Gtk_Builder;
+     (Builder         : access Gtk_Builder_Record;
       Signal_Function : Gtk_Builder_Connect_Func;
       User_Data       : System.Address)
    is
@@ -122,7 +122,7 @@ package body Gtk.Builder is
    ----------------
 
    function Get_Object
-     (Builder     : Gtk_Builder;
+     (Builder     : access Gtk_Builder_Record;
       Object_Name : String)
       return Glib.Object.GObject
    is
