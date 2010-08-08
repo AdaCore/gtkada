@@ -31,7 +31,7 @@
 --  This package contains a number of types that are shared by several
 --  widgets in GtkAda.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 
 with Glib;
 with Glib.Generic_Properties;  use Glib.Generic_Properties;
@@ -194,6 +194,18 @@ package Gtk.Enums is
    --  Gtk+ has builtin knowledge of all of the above.
    --  Note that a paragraph is defined as a new-line ended line.
 
+   type Gtk_Number_Up_Layout is
+     (Left_To_Right_Top_To_Bottom,   --  nick=lrtb
+      Left_To_Right_Bottom_To_Top,   --  nick=lrbt
+      Right_To_Left_Top_To_Bottom,   --  nick=rltb
+      Right_To_Left_Bottom_To_Top,   --  nick=rlbt
+      Top_To_Bottom_Left_To_Right,   --  nick=tblr
+      Top_To_Bottom_Right_To_Left,   --  nick=tbrl
+      Bottom_To_Top_Left_To_Right,   --  nick=btlr
+      Bottom_To_Top_Right_To_Left);  --  nick=btrl
+   --  Used to determine the layout of pages on a sheet when printing multiple
+   --  pages per sheet.
+
    type Gtk_Scroll_Step is
      (Scroll_Steps,
       Scroll_Pages,
@@ -207,6 +219,13 @@ package Gtk.Enums is
    --  Orientation of widgets. Most widgets have no such notion, but for
    --  instance toolbars can display different kind of information depending
    --  on their current orientation
+
+   type Gtk_Page_Orientation is
+     (Page_Orientation_Portrait,
+      Page_Orientation_Landscape,
+      Page_Orientation_Reverse_Portrait,
+      Page_Orientation_Reverse_Landscape);
+   --  Orientation of a printed page.
 
    type Gtk_Corner_Type is
      (Corner_Top_Left,
@@ -252,6 +271,31 @@ package Gtk.Enums is
       Pos_Top,
       Pos_Bottom);
    --  Use to define the position of children within a container
+
+   type Gtk_Page_Set is
+     (Page_Set_All,
+      Page_Set_Even,
+      Page_Set_Odd);
+   --  The set of pages to print
+
+   type Gtk_Print_Duplex is
+     (Print_Duplex_Simplex,
+      Print_Duplex_Horizontal,
+      Print_Duplex_Vertical);
+   --  Whether/how to print on both sides of a sheet.
+
+   type Gtk_Print_Pages is
+     (Print_Pages_All,
+      Print_Pages_Current,
+      Print_Pages_Ranges);
+   --  Which pages to print.
+
+   type Gtk_Print_Quality is
+     (Print_Quality_Low,
+      Print_Quality_Normal,
+      Print_Quality_High,
+      Print_Quality_Draft);
+   --  Quality of printed output.
 
    type Gtk_Relief_Style is (Relief_Normal, Relief_Half, Relief_None);
    --  Explains how the border of widgets should be displayed
@@ -325,6 +369,9 @@ package Gtk.Enums is
       Toolbar_Both_Horiz);
    --  The style of toolbars. Toolbar_Both_Horiz indicates that both icon and
    --  text should be displayed, arranged horizontally.
+
+   type Gtk_Unit is (Pixel, Points, Inch, MM);
+   --  Unit of distance measurement.
 
    type Gtk_Update_Type is
      (Update_Continuous,
@@ -432,11 +479,17 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Menu_Direction_Type);
    pragma Convention (C, Gtk_Metric_Type);
    pragma Convention (C, Gtk_Movement_Step);
+   pragma Convention (C, Gtk_Number_Up_Layout);
    pragma Convention (C, Gtk_Orientation);
+   pragma Convention (C, Gtk_Page_Orientation);
    pragma Convention (C, Gtk_Corner_Type);
    pragma Convention (C, Gtk_Pack_Type);
    pragma Convention (C, Gtk_Policy_Type);
    pragma Convention (C, Gtk_Position_Type);
+   pragma Convention (C, Gtk_Page_Set);
+   pragma Convention (C, Gtk_Print_Duplex);
+   pragma Convention (C, Gtk_Print_Pages);
+   pragma Convention (C, Gtk_Print_Quality);
    pragma Convention (C, Gtk_Relief_Style);
    pragma Convention (C, Gtk_Resize_Mode);
    pragma Convention (C, Gtk_Scroll_Type);
@@ -447,6 +500,7 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Text_Window_Type);
    pragma Convention (C, Gtk_Toolbar_Style);
    pragma Convention (C, Gtk_Update_Type);
+   pragma Convention (C, Gtk_Unit);
    pragma Convention (C, Gtk_Visibility);
    pragma Convention (C, Gtk_Window_Position);
    pragma Convention (C, Gtk_Window_Type);

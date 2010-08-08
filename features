@@ -355,22 +355,28 @@ J510-028 API Additions
       Startup_Id_Property
       Transient_For_Property
 
-  Glib.G_Icon: new package
+  NEW PACKAGES:
+    Glib.G_Icon
+    Glib.Key_File
 
-  Gtk.Assistant: new package
-  Gtk.Cell_Renderer_Accel: new package
-  Gtk.Cell_Renderer_Spin: new package
-  Gtk.Link_Button: new package
-  Gtk.Recent_Action: new package
-  Gtk.Recent_Chooser: new package
-  Gtk.Recent_Chooser_Dialog: new package
-  Gtk.Recent_Chooser_Widget: new package
-  Gtk.Recent_Filter: new package
-  Gtk.Recent_Manager: new package
-  Gtk.Scale_Button: new package
-  Gtk.Status_Icon: new package
-  Gtk.Volume_Button: new package
-  Gtk.Tooltip: new package
+    Gtk.Assistant
+    Gtk.Cell_Renderer_Accel
+    Gtk.Cell_Renderer_Spin
+    Gtk.Link_Button
+    Gtk.Page_Setup
+    Gtk.Paper_Size
+    Gtk.Print_Operation
+    Gtk.Print_Settings
+    Gtk.Recent_Action
+    Gtk.Recent_Chooser
+    Gtk.Recent_Chooser_Dialog
+    Gtk.Recent_Chooser_Widget
+    Gtk.Recent_Filter
+    Gtk.Recent_Manager
+    Gtk.Scale_Button
+    Gtk.Status_Icon
+    Gtk.Volume_Button
+    Gtk.Tooltip
 
 IC11-012 Support for Gtk+ 2.18.x
 
