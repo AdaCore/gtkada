@@ -111,6 +111,7 @@ with Create_Plot_3D;
 with Create_Plot_Realtime;
 with Create_Preview_Color;
 with Create_Preview_Gray;
+with Create_Print;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
@@ -326,6 +327,8 @@ package body Main_Windows is
                                          Create_Preview_Color.Help'Access),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
                                          Create_Preview_Gray.Help'Access),
+      (NS ("printing"),         Base,    Create_Print.Run'Access,
+                                         Create_Print.Help'Access),
       (NS ("progress bar"),     Complex, Create_Progress.Run'Access,
                                          Create_Progress.Help'Access),
       (NS ("progressive loading"), Pixbuf, null, null),
