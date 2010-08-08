@@ -89,6 +89,16 @@ package Gtk.Print_Settings is
       return Gtk_Print_Settings;
    --  Copies a Gtk_Print_Settings object.
 
+   -----------------
+   -- Basic Types --
+   -----------------
+
+   function Has_Key
+     (Settings : access Gtk_Print_Settings_Record;
+      Key      : String)
+      return Boolean;
+   --  Returns True, if a value is associated with Key.
+
    function Get
      (Settings : access Gtk_Print_Settings_Record;
       Key      : String)
@@ -98,6 +108,12 @@ package Gtk.Print_Settings is
       Key      : String;
       Value    : String := "");
    --  Manipulate string value associated with Key.
+
+   procedure Unset
+     (Settings : access Gtk_Print_Settings_Record;
+      Key      : String);
+   --  Removes any value associated with Key.
+   --  This has the same effect as setting the value to null.
 
    function Get_Bool
      (Settings : access Gtk_Print_Settings_Record;
@@ -109,30 +125,6 @@ package Gtk.Print_Settings is
       Value    : Boolean);
    --  Gets/Sets the boolean represented by the value
    --  that is associated with Key.
-
-   function Get_Collate
-     (Settings : access Gtk_Print_Settings_Record)
-      return Boolean;
-   procedure Set_Collate
-     (Settings : access Gtk_Print_Settings_Record;
-      Collate  : Boolean);
-   --  Whether to collate the printed pages
-
-   function Get_Default_Source
-     (Settings : access Gtk_Print_Settings_Record)
-      return String;
-   procedure Set_Default_Source
-     (Settings       : access Gtk_Print_Settings_Record;
-      Default_Source : String);
-   --  The default source
-
-   function Get_Dither
-     (Settings : access Gtk_Print_Settings_Record)
-      return String;
-   procedure Set_Dither
-     (Settings : access Gtk_Print_Settings_Record;
-      Dither   : String);
-   --  Gets/Sets the dithering that is used
 
    function Get_Double
      (Settings : access Gtk_Print_Settings_Record;
@@ -148,22 +140,6 @@ package Gtk.Print_Settings is
    --  if the value does not represent a floating point number.
    --
    --  Floating point numbers are parsed with g_ascii_strtod().
-
-   function Get_Duplex
-     (Settings : access Gtk_Print_Settings_Record)
-      return Gtk.Enums.Gtk_Print_Duplex;
-   procedure Set_Duplex
-     (Settings : access Gtk_Print_Settings_Record;
-      Duplex   : Gtk.Enums.Gtk_Print_Duplex);
-   --  Whether to print the output in duplex.
-
-   function Get_Finishings
-     (Settings : access Gtk_Print_Settings_Record)
-      return String;
-   procedure Set_Finishings
-     (Settings   : access Gtk_Print_Settings_Record;
-      Finishings : String);
-   --  The finishings
 
    function Get_Int
      (Settings : access Gtk_Print_Settings_Record;
@@ -189,6 +165,50 @@ package Gtk.Print_Settings is
       Unit     : Gtk.Enums.Gtk_Unit);
    --  Gets/Sets the value associated with Key, interpreted
    --  as a length. The returned value is converted to Units.
+
+   --------------------
+   -- Print Settings --
+   --------------------
+
+   function Get_Collate
+     (Settings : access Gtk_Print_Settings_Record)
+      return Boolean;
+   procedure Set_Collate
+     (Settings : access Gtk_Print_Settings_Record;
+      Collate  : Boolean);
+   --  Whether to collate the printed pages
+
+   function Get_Default_Source
+     (Settings : access Gtk_Print_Settings_Record)
+      return String;
+   procedure Set_Default_Source
+     (Settings       : access Gtk_Print_Settings_Record;
+      Default_Source : String);
+   --  The default source
+
+   function Get_Dither
+     (Settings : access Gtk_Print_Settings_Record)
+      return String;
+   procedure Set_Dither
+     (Settings : access Gtk_Print_Settings_Record;
+      Dither   : String);
+   --  Gets/Sets the dithering that is used
+
+   function Get_Duplex
+     (Settings : access Gtk_Print_Settings_Record)
+      return Gtk.Enums.Gtk_Print_Duplex;
+   procedure Set_Duplex
+     (Settings : access Gtk_Print_Settings_Record;
+      Duplex   : Gtk.Enums.Gtk_Print_Duplex);
+   --  Whether to print the output in duplex.
+
+   function Get_Finishings
+     (Settings : access Gtk_Print_Settings_Record)
+      return String;
+   procedure Set_Finishings
+     (Settings   : access Gtk_Print_Settings_Record;
+      Finishings : String);
+   --  The finishings
 
    function Get_Media_Type
      (Settings : access Gtk_Print_Settings_Record)
@@ -337,7 +357,7 @@ package Gtk.Print_Settings is
    function Get_Resolution_Y
      (Settings : access Gtk_Print_Settings_Record)
       return Gint;
-   procedure Set_Resolution_Xy
+   procedure Set_Resolution_XY
      (Settings     : access Gtk_Print_Settings_Record;
       Resolution_X : Gint;
       Resolution_Y : Gint);
@@ -367,11 +387,9 @@ package Gtk.Print_Settings is
       Use_Color : Boolean);
    --  Returns whether to use color
 
-   function Has_Key
-     (Settings : access Gtk_Print_Settings_Record;
-      Key      : String)
-      return Boolean;
-   --  Returns True, if a value is associated with Key.
+   -----------------------------------
+   -- Saving and Restoring Settings --
+   -----------------------------------
 
    function Load_File
      (Settings  : access Gtk_Print_Settings_Record;
@@ -405,12 +423,6 @@ package Gtk.Print_Settings is
       Group_Name : String := "");
    --  This function adds the print settings from Settings to Key_File.
    --  if Group_Name is not specified, it defaults to "Print Settings".
-
-   procedure Unset
-     (Settings : access Gtk_Print_Settings_Record;
-      Key      : String);
-   --  Removes any value associated with Key.
-   --  This has the same effect as setting the value to null.
 
 private
 

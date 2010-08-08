@@ -1146,10 +1146,10 @@ package body Gtk.Print_Settings is
    end Set_Resolution;
 
    -----------------------
-   -- Set_Resolution_Xy --
+   -- Set_Resolution_XY --
    -----------------------
 
-   procedure Set_Resolution_Xy
+   procedure Set_Resolution_XY
      (Settings     : access Gtk_Print_Settings_Record;
       Resolution_X : Gint;
       Resolution_Y : Gint)
@@ -1161,7 +1161,7 @@ package body Gtk.Print_Settings is
       pragma Import (C, Internal, "gtk_print_settings_set_resolution_xy");
    begin
       Internal (Get_Object (Settings), Resolution_X, Resolution_Y);
-   end Set_Resolution_Xy;
+   end Set_Resolution_XY;
 
    -----------------
    -- Set_Reverse --
