@@ -61,6 +61,8 @@ package body Create_Print is
       Add (Frame, Box);
 
       Gtk_New (Print_Op);
+      Set_Current_Page (Print_Op, 1);
+      Set_N_Pages (Print_Op, 10);
       Result :=
         Run (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
       Put_Line ("Result is " & Result'Img);
