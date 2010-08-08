@@ -64,6 +64,7 @@ package body Create_Print is
       Result :=
         Run (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
       Put_Line ("Result is " & Result'Img);
+      Put_Line ("Print status: " & Get_Status (Print_Op));
 
       Show_All (Frame);
    end Run;

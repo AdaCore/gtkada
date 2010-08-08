@@ -394,11 +394,11 @@ package body Gtk.Print_Operation is
       Internal (Get_Object (Op), Boolean'Pos (Full_Page));
    end Set_Use_Full_Page;
 
-   -------------------------------------
-   -- Gtk_Print_Run_Page_Setup_Dialog --
-   -------------------------------------
+   ---------------------------
+   -- Run_Page_Setup_Dialog --
+   ---------------------------
 
-   function Gtk_Print_Run_Page_Setup_Dialog
+   function Run_Page_Setup_Dialog
      (Parent     : access Gtk.Window.Gtk_Window_Record;
       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
       Settings   : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
@@ -415,6 +415,6 @@ package body Gtk.Print_Operation is
       return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal
         (Get_Object (Parent), Get_Object (Page_Setup), Get_Object (Settings)),
          Stub));
-   end Gtk_Print_Run_Page_Setup_Dialog;
+   end Run_Page_Setup_Dialog;
 
 end Gtk.Print_Operation;

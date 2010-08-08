@@ -337,7 +337,7 @@ package Gtk.Print_Operation is
    --  This page setup will be used by Run, but it can be overridden on a
    --  per-page basis by connecting to the request-page-setup signal.
 
-   function Gtk_Print_Run_Page_Setup_Dialog
+   function Run_Page_Setup_Dialog
      (Parent     : access Gtk.Window.Gtk_Window_Record;
       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
       Settings   : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
