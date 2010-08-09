@@ -20,6 +20,17 @@ J624-014 New package Gtk.Builder
 
   Contributed by Robert ter Vehn <robert.tervehn@saabgroup.com>.
 
+J614-014 Bindings to Cairo
+
+  GtkAda now provides bindings to Cairo.
+
+  From http://www.cairographics.org:
+  "The cairo API provides operations similar to the drawing operators of
+  PostScript and PDF. Operations in cairo including stroking and filling
+  cubic Bézier splines, transforming and compositing translucent images,
+  and antialiased text rendering. All drawing operations can be transformed
+  by any affine transformation (scale, rotation, shear, etc.)"
+
 J609-002 New signal GtkAda.MDI.Signal_Child_State_Changed
 
   This signal can be used to monitor state changes for windows. In
