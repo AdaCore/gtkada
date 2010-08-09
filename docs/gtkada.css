@@ -10,7 +10,7 @@ div#leftSide div#leftSideInside, div#rightSideInside, div.topBarInside
 
 div#leftSide, div#rightSide
 {
-  width:200px;
+  width:205px;
   padding-bottom:10px;
 }
 
@@ -68,15 +68,15 @@ h4 a.hide
   margin: 0 3px 0 2px;
 }
 
-div.classtree a.hide:link,
-div.classtree a.hide:active,
-div.classtree a.hide:hover,
-div.classtree a.hide:visited
+div.classroot a.hide:link,
+div.classroot a.hide:active,
+div.classroot a.hide:hover,
+div.classroot a.hide:visited
 {
 color:grey;
-font-size:8px;
-left:4px;
-margin-top:3px;
+font-size:10px;
+left:3px;
+margin-top:2px;
 margin-right:0;
 position:absolute;
 }
@@ -95,12 +95,20 @@ div.subprograms .name
 {
    color: #007F62;
 }
+div.subprograms .name_emphasis
+{
+   color: #007F62;
+   font-weight:normal;
+}
+div.subprograms div.details span.keyword
+{
+   font-weight:normal;
+}
+
 div.subprograms h3, div.subprograms h4, div.subprograms div a
 {
-   padding:2px;
    font-weight:normal;
-   font-size:12px;
-   font-family: Courier, Courier New;
+   font-family: monospace;
 }
 div.subprograms div {
    margin-left:15px;
@@ -109,16 +117,17 @@ div.subprograms div.details
 {
    font-size:10px;
 }
-div.subprograms div.comment
+div.subprograms div.comment *, div.subprograms div.comment
 {
    border:0px;
    font-size:10px;
    font-family: monospace;
+   font-style:normal;
 }
 div.classroot
 {
    margin-bottom: 0px;
-   color: #666666;
+   color: white;
    white-space:nowrap;
    background:none;
 }
