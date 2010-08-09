@@ -1,17 +1,9 @@
 """
-Handling of custom tags. This script can be used as is or as a basis for
- your own documentation tags.
+   Docgen plugin to generate the GtkAda Reference Manual.
 
-The list of custom tags is:
-- description
-- summary
-- parameter (attribute "name" is expected)
-- exception
-- seealso
-- c_version
-- group (this builds a custom index from all <group>A Group</group> tags)
-- screenshot (this builds a custom index with all screenshots, and also
-   display the actual image instead of the tag).
+   Invoke with:
+      gps -Pgenerate_docs.gpr  --load=python:docgen_gtkada.py
+
 """
 
 import GPS, re, os
@@ -103,9 +95,21 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
 
       docgen.generate_index_file ("Widget Screenshots", "screenshots.html", content);
 
+class ExampleTagHandler (GPS.DocgenTagHandler):
+   """Handling for <example> tags"""
+   def __init__ (self):
+      GPS.DocgenTagHandler.__init__ (
+        self, "example",
+        on_match = self.on_match)
+
+   def on_match (self, docgen, attrs, value, entity_name, entity_href):
+      return """<div class="code">%s</div>""" % value
+
 def on_gps_start (hook):
    GPS.Docgen.register_tag_handler (ScreenshotTagHandler ())
+   GPS.Docgen.register_tag_handler (ExampleTagHandler ())
    GPS.Docgen.register_css (GPS.File ("gtkada.css"))
+   GPS.Docgen.register_main_index (GPS.File ("html/groups.html"))
    GPS.Project.root().generate_doc (True)
    GPS.Timeout (500, wait_doc)
 
