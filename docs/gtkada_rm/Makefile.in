@@ -8,7 +8,12 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 
-gtkada_rm: ps html partial_clean
+gtkada_rm: docgen ps html partial_clean
+
+docgen:
+	gprbuild -Pgenerate_docs.gpr
+	gps -Pgenerate_docs.gpr  --load=python:docgen_gtkada.py
+	rm -rf doc_obj/*
 
 partial_clean::
 	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
