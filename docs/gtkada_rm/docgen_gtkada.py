@@ -106,6 +106,9 @@ class ExampleTagHandler (GPS.DocgenTagHandler):
       return """<div class="code">%s</div>""" % value
 
 def on_gps_start (hook):
+   # Disable launching of browser on exit
+   GPS.Preference ("Doc-Spawn-Browser").set(False)
+
    GPS.Docgen.register_tag_handler (ScreenshotTagHandler ())
    GPS.Docgen.register_tag_handler (ExampleTagHandler ())
    GPS.Docgen.register_css (GPS.File ("gtkada.css"))

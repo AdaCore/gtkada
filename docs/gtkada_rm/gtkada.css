@@ -3,6 +3,11 @@ body
    background: white;
 }
 
+div.page
+{
+   margin:0px 0px 0px 10px;
+}
+
 div#leftSide div#leftSideInside, div#rightSideInside, div.topBarInside
 {
  background:none;
@@ -115,6 +120,7 @@ div.subprograms div {
 }
 div.subprograms div.details
 {
+   background:#EAEAEA;
    font-size:10px;
 }
 div.subprograms div.comment *, div.subprograms div.comment
