@@ -15,7 +15,7 @@ project Generate_Docs is
    end Builder;
 
    package IDE is
-      for Documentation_Dir use "html";
+      for Documentation_Dir use "gtkada_rm";
    end IDE;
 
 end Generate_Docs;
