@@ -117,6 +117,12 @@ def on_gps_start (hook):
 def wait_doc(timeout):
    if len (GPS.Task.list()) > 0:
       return True
+ 
+   # Log the output in log.txt
+   f=open("log.txt", "w")
+   f.write(GPS.Console ("Messages").get_text())
+   f.close()
+
    GPS.exit()
 
 GPS.Hook ("gps_started").add (on_gps_start)
