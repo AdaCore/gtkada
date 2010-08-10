@@ -24,12 +24,12 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
    def on_match (self, docgen, attrs, value, entity_name, entity_href):
       file = docgen.get_current_file()
       srcdir = os.path.normpath (GPS.Project.root().file().directory())
-      fullfile = os.path.join (srcdir, value)
+      fullfile = os.path.join (srcdir, value.strip())
 
       screenshot_found = False
       for extension in ["", ".png", ".jpg"]:
           if os.path.exists(fullfile + extension):
-              pict = value + extension
+              pict = value.strip() + extension
               screenshot_found = True
               break
       if not screenshot_found:
