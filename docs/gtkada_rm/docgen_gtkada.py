@@ -23,9 +23,7 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
 
    def on_match (self, docgen, attrs, value, entity_name, entity_href):
       file = docgen.get_current_file()
-      srcdir = os.path.normpath (
-         os.path.join (GPS.Project.root().file().directory(),
-                       "..", "docs", "gtkada_rm"))
+      srcdir = os.path.normpath (GPS.Project.root().file().directory())
       fullfile = os.path.join (srcdir, value)
 
       try:
@@ -112,7 +110,7 @@ def on_gps_start (hook):
    GPS.Docgen.register_tag_handler (ScreenshotTagHandler ())
    GPS.Docgen.register_tag_handler (ExampleTagHandler ())
    GPS.Docgen.register_css (GPS.File ("gtkada.css"))
-   GPS.Docgen.register_main_index (GPS.File ("html/groups.html"))
+   GPS.Docgen.register_main_index (GPS.File ("gtkada_rm/groups.html"))
    GPS.Project.root().generate_doc (True)
    GPS.Timeout (500, wait_doc)
 
