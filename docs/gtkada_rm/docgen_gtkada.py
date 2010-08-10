@@ -26,20 +26,15 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
       srcdir = os.path.normpath (GPS.Project.root().file().directory())
       fullfile = os.path.join (srcdir, value)
 
-      try:
-         os.stat(fullfile)
-         pict = value
-      except:
-         try:
-            os.stat(fullfile+".png")
-            pict = value + ".png"
-         except:
-            try:
-               os.stat(fullfile+".jpg")
-               pict = value + ".jpg"
-            except:
-               GPS.Console ("Messages").write ("could not find screenshot %s\n" % (fullfile))
-               return ""
+      screenshot_found = False
+      for extension in ["", ".png", ".jpg"]:
+          if os.path.exists(fullfile + extension):
+              pict = value + extension
+              screenshot_found = True
+              break
+      if not screenshot_found:
+          GPS.Console ("Messages").write ("could not find screenshot %s\n" % (fullfile))
+          return ""
 
       docdir = os.path.join (docgen.get_doc_dir ().name(), "screenshots")
       if not os.path.exists (docdir):
