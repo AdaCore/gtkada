@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 2.18.0
 -----------------------------
 
+J819-004 New bindings to stock items
+
+  Bindings to Gtk.Stock have been upgraded to correspond to
+  stock items defined in Gtk+ 2.16.6.
+
 J624-014 New package Gtk.Builder
 
   A Gtk_Builder can be used to create a graphical user interface from
