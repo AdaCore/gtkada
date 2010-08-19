@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +33,7 @@
 --  See the function Gtk.Widget.Render_Icon for a convenience function that
 --  converts a stock icon to an actual pixmap/pixbuf.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 
 with Gdk.Types;
 with Gtkada.Types;
@@ -108,6 +108,8 @@ package Gtk.Stock is
    Stock_Apply            : aliased constant String := "gtk-apply";
    Stock_Bold             : aliased constant String := "gtk-bold";
    Stock_Cancel           : aliased constant String := "gtk-cancel";
+   Stock_Caps_Lock_Warning : aliased constant String :=
+     "gtk-caps-lock-warning";
    Stock_Cdrom            : aliased constant String := "gtk-cdrom";
    Stock_Clear            : aliased constant String := "gtk-clear";
    Stock_Close            : aliased constant String := "gtk-close";
@@ -118,7 +120,9 @@ package Gtk.Stock is
    Stock_Cut              : aliased constant String := "gtk-cut";
    Stock_Delete           : aliased constant String := "gtk-delete";
    Stock_Directory        : aliased constant String := "gtk-directory";
+   Stock_Discard          : aliased constant String := "gtk-discard";
    Stock_Disconnect       : aliased constant String := "gtk-disconnect";
+   Stock_Edit             : aliased constant String := "gtk-edit";
    Stock_Execute          : aliased constant String := "gtk-execute";
    Stock_File             : aliased constant String := "gtk-file";
    Stock_Find             : aliased constant String := "gtk-find";
@@ -161,10 +165,23 @@ package Gtk.Stock is
    Stock_No               : aliased constant String := "gtk-no";
    Stock_Ok               : aliased constant String := "gtk-ok";
    Stock_Open             : aliased constant String := "gtk-open";
+   Stock_Orientation_Portrait          : aliased constant String :=
+     "gtk-orientation-portrait";
+   Stock_Orientation_Landscape         : aliased constant String :=
+     "gtk-orientation-landscape";
+   Stock_Orientation_Reverse_Landscape : aliased constant String :=
+     "gtk-orientation-reverse-landscape";
+   Stock_Orientation_Reverse_Portrait  : aliased constant String :=
+     "gtk-orientation-reverse-portrait";
+   Stock_Page_Setup       : aliased constant String := "gtk-page-setup";
    Stock_Paste            : aliased constant String := "gtk-paste";
    Stock_Preferences      : aliased constant String := "gtk-preferences";
    Stock_Print            : aliased constant String := "gtk-print";
+   Stock_Print_Error      : aliased constant String := "gtk-print-error";
+   Stock_Print_Paused     : aliased constant String := "gtk-print-paused";
    Stock_Print_Preview    : aliased constant String := "gtk-print-preview";
+   Stock_Print_Report     : aliased constant String := "gtk-print-report";
+   Stock_Print_Warning    : aliased constant String := "gtk-print-warning";
    Stock_Properties       : aliased constant String := "gtk-properties";
    Stock_Quit             : aliased constant String := "gtk-quit";
    Stock_Redo             : aliased constant String := "gtk-redo";
@@ -173,6 +190,7 @@ package Gtk.Stock is
    Stock_Revert_To_Saved  : aliased constant String := "gtk-revert-to-saved";
    Stock_Save             : aliased constant String := "gtk-save";
    Stock_Save_As          : aliased constant String := "gtk-save-as";
+   Stock_Select_All       : aliased constant String := "gtk-select-all";
    Stock_Select_Color     : aliased constant String := "gtk-select-color";
    Stock_Select_Font      : aliased constant String := "gtk-select-font";
    Stock_Sort_Ascending   : aliased constant String := "gtk-sort-ascending";
