@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2008, AdaCore                   --
+--                Copyright (C) 2001-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -286,8 +286,8 @@ private
    pragma Import (C, Get_Approximate_Digit_Width,
                   "pango_font_metrics_get_approximate_digit_width");
 
-   pragma Import (C, Get_Style, "pango_font_description_get_size");
-   pragma Import (C, Set_Style, "pango_font_description_set_size");
+   pragma Import (C, Get_Style, "pango_font_description_get_style");
+   pragma Import (C, Set_Style, "pango_font_description_set_style");
    pragma Import (C, Get_Variant, "pango_font_description_get_variant");
    pragma Import (C, Set_Variant, "pango_font_description_set_variant");
    pragma Import (C, Get_Weight, "pango_font_description_get_weight");

@@ -1,5 +1,11 @@
 Known problems fixed in GtkAda 2.18.0
 
+- J813-008 Wrong binding for Pango.Font.Get_Style, Pango.Font.Set_Style
+  Problem:    Calling these subprograms does not have the expected behavior
+              and may cause instability.
+  Workaround: Fix the bindings from pango_font_description_(get|set)_size
+              to pango_font_description_(get|set)_style.
+
 - J702-017 Crash in MDI when loading desktop
   Problem:    If the desktop restored by calling Restore_Desktop contains
               a notebook with no raised child (ie a <child> node with
