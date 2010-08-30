@@ -3813,7 +3813,7 @@ package body Gtkada.MDI is
       if Notebook /= null then
          Note   := Notebook;
 
-      elsif Child.Group = Group_Default then
+      elsif Child.Group = Group_Default and then MDI.Central /= null then
          Note := Find_Current_In_Central
            (MDI.Central, MDI, Child.Group, Initial_Position);
 
