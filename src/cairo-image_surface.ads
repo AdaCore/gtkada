@@ -263,30 +263,26 @@ private
    BOP  : constant := System.Bit_Order'Pos (System.Default_Bit_Order);
    NBOP : constant := 1 - BOP;
 
-   for ARGB32_Data use
-      record
-         Alpha at BOP * 3 + NBOP * 0 range 0 .. 7;
-         Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
-         Green at BOP * 1 + NBOP * 2 range 0 .. 7;
-         Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
-      end record;
+   for ARGB32_Data use record
+      Alpha at BOP * 3 + NBOP * 0 range 0 .. 7;
+      Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
+      Green at BOP * 1 + NBOP * 2 range 0 .. 7;
+      Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
+   end record;
 
-   for RGB24_Data use
-      record
-         Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
-         Green at BOP * 1 + NBOP * 2 range 0 .. 7;
-         Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
-      end record;
+   for RGB24_Data use record
+      Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
+      Green at BOP * 1 + NBOP * 2 range 0 .. 7;
+      Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
+   end record;
    for RGB24_Data'Size use 32;
 
    pragma Import (C, Create, "cairo_image_surface_create");
    pragma Import
-     (C,
-      Cairo_Format_Stride_For_Width,
-      "cairo_format_stride_for_width");
+     (C, Cairo_Format_Stride_For_Width, "cairo_format_stride_for_width");
 
-   pragma Import (C, Create_For_Data_Generic,
-                  "cairo_image_surface_create_for_data");
+   pragma Import
+     (C, Create_For_Data_Generic, "cairo_image_surface_create_for_data");
 
    pragma Import (C, Get_Data_Generic, "cairo_image_surface_get_data");
    pragma Import (C, Get_Format, "cairo_image_surface_get_format");
