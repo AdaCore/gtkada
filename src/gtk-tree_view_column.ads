@@ -55,7 +55,6 @@
 --  The renderers are then divided into lines, which are typically pointed to
 --  by iterators (Gtk_Tree_Iter).
 --  </description>
-
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 
