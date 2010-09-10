@@ -48,8 +48,8 @@ install: force
 	$(MKDIR) $(examples)
 	$(MKDIR) $(examples)/opengl
 	$(RM) b~*
-	-$(INSTALL_PROGRAM) testgtk $(examples)
-	-$(INSTALL_PROGRAM) testcairo $(examples)
+	-$(INSTALL_PROGRAM) testgtk$(EXEEXT) $(examples)
+	-$(INSTALL_PROGRAM) testcairo$(EXEEXT) $(examples)
 	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml $(examples)
 	$(CP) opengl/*.ad? opengl/*.[ch] $(examples)/opengl
 
