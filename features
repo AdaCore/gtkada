@@ -222,6 +222,7 @@ J510-028 API Additions
       Get_Monitor
       Set_Accel_Path
       Popup (which accepts C_Gtk_Menu_Position_Func)
+      Set_Screen
     added new properties:
       Accel_Group_Property
       Accel_Path_Property

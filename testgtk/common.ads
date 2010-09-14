@@ -4,6 +4,7 @@
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                     Copyright (C) 2003 ACT Europe                 --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +32,7 @@
 with Glib;             use Glib;
 with Gtk;              use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Label;        use Gtk.Label;
@@ -44,7 +46,7 @@ with Gtk.Extra.Plot;
 
 package Common is
 
-   --  This package is created to avoid the instanciation of the
+   --  This package is created to avoid the instantiation of the
    --  generic packages for callbacks. This provides a much smaller
    --  executable
 
@@ -57,20 +59,19 @@ package Common is
    package Label_Handler  is new Handlers.Callback (Gtk_Label_Record);
    package Adj_Handler    is new Handlers.Callback (Gtk_Adjustment_Record);
    package Check_Handler  is new Handlers.Callback (Gtk_Check_Button_Record);
-
+   package Button_Handler is new Handlers.Callback (Gtk_Button_Record);
 
    type Gtk_Window_Access is access all Gtk_Window;
    package Destroy_Handler is new Handlers.User_Callback
      (Gtk_Window_Record, Gtk_Window_Access);
    procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
-                             Ptr : in Gtk_Window_Access);
-
+                             Ptr : Gtk_Window_Access);
 
    type Gtk_Dialog_Access is access all Gtk_Dialog;
    package Destroy_Dialog_Handler is new Handlers.User_Callback
      (Gtk_Dialog_Record, Gtk_Dialog_Access);
    procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
-                             Ptr : in     Gtk_Dialog_Access);
+                             Ptr : Gtk_Dialog_Access);
 
    procedure Build_Option_Menu
      (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
@@ -82,7 +83,7 @@ package Common is
    --  If 'History' is in Items'Range, then item number 'History'
    --  will be set to active.
 
-   function Image_Of (I : in Gint) return String;
+   function Image_Of (I : Gint) return String;
    --  Returns the image of the given Gint. The leading spaces are
    --  stripped.
 

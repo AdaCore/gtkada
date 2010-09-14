@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000-2003                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-2006 AdaCore               --
+--                  Copyright (C) 2004-2010, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -77,8 +77,6 @@ with Ada.Text_IO;       use Ada.Text_IO;
 
 package body Create_Sheet is
 
-   package Button_Cb is new Gtk.Handlers.Callback
-     (Gtk_Button_Record);
    package Sheet_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Sheet_Record, Boolean);
    package Item_Handler is new Gtk.Handlers.User_Callback
@@ -502,9 +500,10 @@ package body Create_Sheet is
    -- Clipboard_Handler --
    -----------------------
 
-   function Clipboard_Handler (Sheet : access Gtk_Sheet_Record'Class;
-                               Key   : in Gdk_Event)
-                              return Boolean
+   function Clipboard_Handler
+     (Sheet : access Gtk_Sheet_Record'Class;
+      Key   : Gdk_Event)
+      return Boolean
    is
    begin
       if (Get_State (Key) and Control_Mask) /= 0 then
@@ -1024,8 +1023,9 @@ package body Create_Sheet is
       Set_USize (Show_Button, 100, 60);
       Attach (Sheet, Show_Button, 12, 2);
 
-      Button_Cb.Connect (Show_Button, "clicked",
-                         Button_Cb.To_Marshaller (Show_Child'Access));
+      Button_Handler.Connect
+        (Show_Button, "clicked",
+         Button_Handler.To_Marshaller (Show_Child'Access));
    end Build_Example1;
 
    ---------------
@@ -1317,18 +1317,18 @@ package body Create_Sheet is
       Pack_Start (Show_Hide_Box, Hide_Column_Titles, True, True, 0);
       Pack_Start (Show_Hide_Box, Show_Row_Titles, True, True, 0);
       Pack_Start (Show_Hide_Box, Show_Column_Titles, True, True, 0);
-      Button_Cb.Connect
+      Button_Handler.Connect
         (Hide_Row_Titles, "clicked",
-         Button_Cb.To_Marshaller (Do_Hide_Row_Titles'Access));
-      Button_Cb.Connect
+         Button_Handler.To_Marshaller (Do_Hide_Row_Titles'Access));
+      Button_Handler.Connect
         (Hide_Column_Titles, "clicked",
-         Button_Cb.To_Marshaller (Do_Hide_Column_Titles'Access));
-      Button_Cb.Connect
+         Button_Handler.To_Marshaller (Do_Hide_Column_Titles'Access));
+      Button_Handler.Connect
         (Show_Row_Titles, "clicked",
-         Button_Cb.To_Marshaller (Do_Show_Row_Titles'Access));
-      Button_Cb.Connect
+         Button_Handler.To_Marshaller (Do_Show_Row_Titles'Access));
+      Button_Handler.Connect
         (Show_Column_Titles, "clicked",
-         Button_Cb.To_Marshaller (Do_Show_Column_Titles'Access));
+         Button_Handler.To_Marshaller (Do_Show_Column_Titles'Access));
 
       Pack_Start (Main_Vbox, Show_Hide_Box, False, True, 0);
 

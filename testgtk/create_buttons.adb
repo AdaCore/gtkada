@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,10 +37,9 @@ with Gtk.Frame;    use Gtk.Frame;
 with Gtk.Handlers; use Gtk.Handlers;
 with Gtk.Table;    use Gtk.Table;
 with Gtk.Widget;   use Gtk.Widget;
+with Common;       use Common;
 
 package body Create_Buttons is
-
-   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    procedure Button_Window (Widget : access Gtk_Button_Record'Class);
    --  Toggles the visibility of Widget
@@ -100,9 +100,9 @@ package body Create_Buttons is
       end loop;
 
       for J in Button'Range loop
-         Button_Cb.Object_Connect
+         Button_Handler.Object_Connect
            (Button (J), "clicked",
-            Button_Cb.To_Marshaller (Button_Window'Access),
+            Button_Handler.To_Marshaller (Button_Window'Access),
             Button ((J + 1) mod Button'Length));
          Attach (Table, Button (J),
                  Left_A (J), Right_A (J),
@@ -115,4 +115,3 @@ package body Create_Buttons is
    end Run;
 
 end Create_Buttons;
-

@@ -46,12 +46,13 @@ with Gtk.Text_Buffer;      use Gtk.Text_Buffer;
 with Gtk.Text_View;        use Gtk.Text_View;
 with Gtk.Widget;
 
+with Common;               use Common;
+
 package body Create_Builder is
 
    Default_Filename : constant String := "gtkbuilder_example.xml";
    --  This is the file from which we'll read our UI description.
 
-   package Button_Cb is new Gtk.Handlers.Callback (Gtk_Button_Record);
    procedure On_Button_Clicked (Button : access Gtk_Button_Record'Class);
    --  Callback for a button click
 
@@ -333,7 +334,7 @@ package body Create_Builder is
       Add (Frame, Box1);
 
       Gtk_New (Button1, "Invoke Builder with file " & Default_Filename);
-      Button_Cb.Connect (Button1, "clicked", On_Button_Clicked'Access);
+      Button_Handler.Connect (Button1, "clicked", On_Button_Clicked'Access);
       Pack_Start
         (Box1, Button1, Expand => False, Fill => False, Padding => 10);
 

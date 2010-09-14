@@ -3,6 +3,7 @@
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
 --                Copyright (C) 2000-2002 ACT-Europe                 --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,6 +42,7 @@ with Gtk.Tooltips;      use Gtk.Tooltips;
 with Gtk.Widget;        use Gtk.Widget;
 with Gtk;               use Gtk;
 with Ada.Text_IO;
+with Common;            use Common;
 
 package body Create_Tooltips is
 
@@ -52,7 +54,6 @@ package body Create_Tooltips is
      (Gtk_Tips_Query_Record, Gtk_Toggle_Button);
    package Selected_Cb is new Handlers.Return_Callback
      (Gtk_Tips_Query_Record, Gint);
-   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    ----------
    -- Help --
@@ -72,8 +73,8 @@ package body Create_Tooltips is
    --------------------
 
    procedure Widget_Entered (Tips_Query  : access Gtk_Tips_Query_Record'Class;
-                             Params      : in Gtk.Arguments.Gtk_Args;
-                             Toggle      : in Gtk_Toggle_Button)
+                             Params      : Gtk.Arguments.Gtk_Args;
+                             Toggle      : Gtk_Toggle_Button)
    is
       --  Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
       Tip_Text    : constant String := To_String (Params, 2);
@@ -96,7 +97,7 @@ package body Create_Tooltips is
    ---------------------
 
    function Widget_Selected (Tips_Query  : access Gtk_Tips_Query_Record'Class;
-                             Params      : in Gtk.Arguments.Gtk_Args)
+                             Params      : Gtk.Arguments.Gtk_Args)
                             return Gint
    is
       Widget    : constant Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
@@ -182,8 +183,9 @@ package body Create_Tooltips is
                &" probably won't fit on a single line and will therefore "
                & "need to be wrapped. Hopefully the wrapping will work "
                & "correctly.", "ContextHelp/buttons/2");
-      Button_Cb.Connect (Button, "clicked",
-                         Button_Cb.To_Marshaller (Get_Data_Cb'Access));
+      Button_Handler.Connect
+        (Button, "clicked",
+         Button_Handler.To_Marshaller (Get_Data_Cb'Access));
 
       Gtk_New (Toggle, "Override TipsQuery Label");
       Pack_Start (Box2, Toggle, False, False, 0);
@@ -220,4 +222,3 @@ package body Create_Tooltips is
    end Run;
 
 end Create_Tooltips;
-

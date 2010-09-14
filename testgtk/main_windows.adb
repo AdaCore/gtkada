@@ -126,6 +126,7 @@ with Create_Sources;
 with Create_Spin;
 with Create_Splittable;
 with Create_Status;
+with Create_Status_Icons;
 with Create_Test_Idle;
 with Create_Test_Timeout;
 with Create_Text_View;
@@ -359,6 +360,8 @@ package body Main_Windows is
                                          Create_Spin.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
                                          Create_Status.Help'Access),
+      (NS ("status icons"),     Base,    Create_Status_Icons.Run'Access,
+                                         Create_Status_Icons.Help'Access),
       (NS ("stock icons"),      Pixbuf,  null, null),
       (NS ("test idle"),        Misc,    Create_Test_Idle.Run'Access,
                                          Create_Test_Idle.Help'Access),

@@ -50,6 +50,8 @@ with Gtk.Stock;           use Gtk.Stock;
 with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
 with Gtk.Widget;          use Gtk.Widget;
 
+with Common;              use Common;
+
 package body Create_Assistant is
 
    -----------------
@@ -76,7 +78,6 @@ package body Create_Assistant is
    -------------------------------------
 
    package Time_Cb is new Glib.Main.Generic_Sources (Gtk_Assistant);
-   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
    package Assistant_Cb is new Handlers.Callback (Gtk_Assistant_Record);
    package Check_Button_Widget_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Widget);
@@ -681,12 +682,12 @@ package body Create_Assistant is
 
       procedure Add
         (Description : String;
-         Callback    : Button_Cb.Simple_Handler)
+         Callback    : Button_Handler.Simple_Handler)
       is
          Button : Gtk_Button;
       begin
          Gtk_New (Button, Description);
-         Button_Cb.Connect (Button, "clicked", Callback);
+         Button_Handler.Connect (Button, "clicked", Callback);
          Pack_Start
            (Box1, Button, Expand => False, Fill => False, Padding => 10);
       end Add;

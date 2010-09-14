@@ -561,4 +561,20 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Monitor_Num);
    end Set_Monitor;
 
+   ----------------
+   -- Set_Screen --
+   ----------------
+
+   procedure Set_Screen
+     (Menu   : access Gtk_Menu_Record;
+      Screen : access Gdk.Screen.Gdk_Screen_Record'Class)
+   is
+      procedure Internal
+        (Menu   : System.Address;
+         Screen : System.Address);
+      pragma Import (C, Internal, "gtk_menu_set_screen");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Screen));
+   end Set_Screen;
+
 end Gtk.Menu;

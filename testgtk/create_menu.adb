@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,32 +27,33 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
+with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
 
+with Gtk;                   use Gtk;
 with Gtk.Handlers;
-with Gtkada.Handlers; use Gtkada.Handlers;
+with Gtkada.Handlers;       use Gtkada.Handlers;
 
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Menu; use Gtk.Menu;
-with Gtk.Menu_Bar; use Gtk.Menu_Bar;
-with Gtk.Menu_Item; use Gtk.Menu_Item;
+with Gtk.Box;               use Gtk.Box;
+with Gtk.Button;            use Gtk.Button;
+with Gtk.Menu;              use Gtk.Menu;
+with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
+with Gtk.Menu_Item;         use Gtk.Menu_Item;
 
 --  Gtk.Option_Menu is obsolescent, but we would still like to test it.
 --  Deactivate obsolencence warning.
 pragma Warnings (Off);
-with Gtk.Option_Menu; use Gtk.Option_Menu;
+with Gtk.Option_Menu;       use Gtk.Option_Menu;
 pragma Warnings (On);
-with Gtk.Spin_Button; use Gtk.Spin_Button;
-with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
+
+with Gtk.Spin_Button;       use Gtk.Spin_Button;
+with Gtk.Radio_Menu_Item;   use Gtk.Radio_Menu_Item;
 with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gtk.Widget;            use Gtk.Widget;
+
+with Common;                use Common;
 
 package body Create_Menu is
-
-   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    package My_Popup is new Gtk.Menu.User_Menu_Popup (Gint);
    use My_Popup;
@@ -297,9 +298,9 @@ package body Create_Menu is
       Gtk_New (Button, "Popup at 0,0 coordinates");
       Pack_Start (Box1, Button, False, False, 3);
 
-      Button_Cb.Connect
+      Button_Handler.Connect
         (Button, "clicked",
-         Button_Cb.To_Marshaller (Popup'Access));
+         Button_Handler.To_Marshaller (Popup'Access));
 
       Gtk_New_Hbox (Box2, False, 10);
                Pack_Start (Box1, Box2, False, False, 0);

@@ -61,6 +61,7 @@
 --  <group>Menus and Toolbars</group>
 --  <testgtk>create_menu.adb</testgtk>
 
+with Gdk.Screen;
 with Glib.Properties;
 with Gtk.Accel_Group;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
@@ -274,6 +275,11 @@ package Gtk.Menu is
    function Get_Monitor (Menu : access Gtk_Menu_Record) return Gint;
    --  Retrieves the number of the monitor on which to show the menu, or
    --  -1 if no monitor has been set.
+
+   procedure Set_Screen
+     (Menu   : access Gtk_Menu_Record;
+      Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
+   --  Sets the Gdk_Screen on which the menu will be displayed.
 
    --------------------------------
    -- Modifying the accelerators --
@@ -530,5 +536,3 @@ end Gtk.Menu;
 --  <example>
 --  <include>../examples/documentation/contextual.adb</include>
 --  </example>
-
---  No binding: gtk_menu_set_screen
