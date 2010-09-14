@@ -47,6 +47,9 @@ with Common; use Common;
 
 package body Create_Status_Icons is
 
+   Initialized  : Boolean := False;
+   --  Whether we have already initialized our library-level variables.
+
    Display      : Gdk_Display;
    Num_Displays : Gint;
    --  Parameters that we'll set when Run is called.  Treat these as
@@ -69,10 +72,8 @@ package body Create_Status_Icons is
 
    procedure Blink_Icon_Cb
      (Check_Button : access Gtk_Check_Button_Record'Class);
-   procedure Change_Icon_Cb
-     (Button : access Gtk_Button_Record'Class);
-   procedure Popup_Menu_Cb
-     (Status_Icon : access Gtk_Status_Icon_Record'Class);
+   procedure Change_Icon_Cb (Button : access Gtk_Button_Record'Class);
+   procedure Popup_Menu_Cb (Status_Icon : access Gtk_Status_Icon_Record'Class);
    procedure Show_Icon_Cb
      (Check_Button : access Gtk_Check_Button_Record'Class);
    --  Callback procedures
@@ -191,23 +192,32 @@ package body Create_Status_Icons is
       Check_Button1 : Gtk_Check_Button;
       Label1        : Gtk_Label;
    begin
-      --  We can't define these as constants (i.e. at elaboration time)
-      --  because it's too early then.  Define them now, when the
-      --  infrastructure is active and after this test is invoked.
-      Display := Get_Default;
-      Num_Displays := Get_N_Screens (Display);
+      if not Initialized then
+         --  We can't define these as constants (i.e. at elaboration time)
+         --  because it's too early then.  Define them now, when the
+         --  infrastructure is active and after this test is invoked.
+         Display := Get_Default;
+         Num_Displays := Get_N_Screens (Display);
 
-      --  Create and dock all of our status icons.  Start them off as
-      --  hidden.
-      Icons := new Icon_Array (1 .. Num_Displays);
+         --  Create and dock all of our status icons.  Start them off as
+         --  hidden.
+         Icons := new Icon_Array (1 .. Num_Displays);
+         for I in 1 .. Num_Displays loop
+            Gtk_New (Icons (I));
+            Set_Screen (Icons (I), Get_Screen (Display, I - 1));
+            Status_Icon_Handler.Connect
+              (Icons (I), "popup-menu", Popup_Menu_Cb'Access);
+         end loop;
+
+         Initialized := True;
+      end if;
+
+      --  Reset all of our icons' variable settings.
       for I in 1 .. Num_Displays loop
-         Gtk_New (Icons (I));
-         Set_Screen (Icons (I), Get_Screen (Display, I - 1));
          Set_From_Icon_Name (Icons (I), Stock_Dialog_Info);
          Set_Tooltip_Text (Icons (I), "Some Information ...");
-         Set_Visible (Icons (I), False);
-         Status_Icon_Handler.Connect
-           (Icons (I), "popup-menu", Popup_Menu_Cb'Access);
+         Set_Visible (Icons (I), True);
+         Set_Blinking (Icons (I), False);
       end loop;
 
       Gtk.Frame.Set_Label (Frame, "Status_Icons");
@@ -227,6 +237,7 @@ package body Create_Status_Icons is
 
       Gtk_New (Check_Button1, "Blink Icon");
       Check_Handler.Connect (Check_Button1, "clicked", Blink_Icon_Cb'Access);
+      Set_Active (Check_Button1, False);
       Pack_Start (Box1, Check_Button1, False, False, 0);
 
       Gtk_New (Button1, "Change Icon (Info/Warning/Error)");
