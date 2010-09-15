@@ -5045,6 +5045,14 @@ package body Gtkada.MDI is
            ("Parse_Notebook_Node: created new notebook "
             & System.Address_Image (Notebook.all'Address));
 
+         --  Make sure Width and Height are not too small: that could happen
+         --  if the main window has not been resized yet (thus has a size 1x1)
+         --  and we load a perspective (since keeping place for the children
+         --  windows might end up with negative sizes.
+
+         Width := Gint'Max (Width, -1);
+         Height := Gint'Max (Height, -1);
+
          Set_Size_Request (Notebook, Width, Height);
          Set_Tab_Pos (Notebook, Pos);
          Set_Child_Visible (Notebook, True);
