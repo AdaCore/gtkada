@@ -1,0 +1,12 @@
+--- configure.old
++++ configure
+20548,20554c20548
+< if test "x$ac_cv_header_Carbon_Carbon_h" = x""yes; then
+<   have_atsui=true
+< else
+<   have_atsui=false
+< fi
+< 
+< 
+---
+> have_atsui=true
