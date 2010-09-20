@@ -8,7 +8,8 @@
 
 	* gio/gunixmounts.c: Use "gtk-cdrom" as icon for optical drives,
 	fixes error messages with Gtk+ versions that do not provide
-	"drive-optical".
+	"drive-optical". Use "gtk-floppy" rather than "media-floppy" for
+	the same reason.
 
 --- gio/gsocket.c.old	2010-01-07 01:19:12.000000000 +0100
 +++ gio/gsocket.c	2010-01-29 13:07:02.275043000 +0100
@@ -88,3 +89,22 @@
         break;
       case G_UNIX_MOUNT_TYPE_NFS:
         /* TODO: Would like a better icon here... */
+*** gio/gunixmounts.c.orig	2010-09-20 11:12:06.000000000 +0200
+--- gio/gunixmounts.c	2010-09-20 11:12:54.000000000 +0200
+***************
+*** 1782,1788 ****
+        if (is_mount_point)
+          icon_name = "drive-removable-media";
+        else
+!         icon_name = "media-floppy";
+        break;
+      case G_UNIX_MOUNT_TYPE_CDROM:
+        if (is_mount_point)
+--- 1782,1788 ----
+        if (is_mount_point)
+          icon_name = "drive-removable-media";
+        else
+!         icon_name = "gtk-floppy";
+        break;
+      case G_UNIX_MOUNT_TYPE_CDROM:
+        if (is_mount_point)
