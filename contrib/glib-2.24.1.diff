@@ -10,6 +10,9 @@
 	fixes error messages with Gtk+ versions that do not provide
 	"drive-optical". Use "gtk-floppy" rather than "media-floppy" for
 	the same reason.
+	* gio/glocalfileinfo.c: Use "gtk-directory" instead of "user-home"
+	as icon representing the home, since "user-home" is not present
+	in gtk+-2.16. Same thing for "user-desktop".
 
 --- gio/gsocket.c.old	2010-01-07 01:19:12.000000000 +0100
 +++ gio/gsocket.c	2010-01-29 13:07:02.275043000 +0100
@@ -108,3 +111,41 @@
         break;
       case G_UNIX_MOUNT_TYPE_CDROM:
         if (is_mount_point)
+*** gio/glocalfileinfo.c.orig	2010-09-16 17:29:43.000000000 +0200
+--- gio/glocalfileinfo.c	2010-09-16 17:36:00.000000000 +0200
+***************
+*** 1596,1602 ****
+  	      GIcon *icon;
+  
+                if (strcmp (path, g_get_home_dir ()) == 0)
+!                 icon = g_themed_icon_new ("user-home");
+                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
+                  icon = g_themed_icon_new ("user-desktop");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
+--- 1596,1602 ----
+  	      GIcon *icon;
+  
+                if (strcmp (path, g_get_home_dir ()) == 0)
+!                 icon = g_themed_icon_new ("gtk-directory");
+                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
+                  icon = g_themed_icon_new ("user-desktop");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
+*** gio/glocalfileinfo.c.orig	2010-09-21 19:18:04.000000000 +0200
+--- gio/glocalfileinfo.c	2010-09-21 19:18:37.000000000 +0200
+***************
+*** 1598,1604 ****
+                if (strcmp (path, g_get_home_dir ()) == 0)
+                  icon = g_themed_icon_new ("gtk-directory");
+                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
+!                 icon = g_themed_icon_new ("user-desktop");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
+                  icon = g_themed_icon_new_with_default_fallbacks ("folder-documents");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOWNLOAD)) == 0)
+--- 1598,1604 ----
+                if (strcmp (path, g_get_home_dir ()) == 0)
+                  icon = g_themed_icon_new ("gtk-directory");
+                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
+!                 icon = g_themed_icon_new ("gtk-directory");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
+                  icon = g_themed_icon_new_with_default_fallbacks ("folder-documents");
+                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOWNLOAD)) == 0)
