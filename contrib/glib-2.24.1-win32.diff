@@ -3,10 +3,6 @@
 	* glib/convert.c, glib/gmem.c: Do not crash when trying to convert
 	a huge file, return NULL instead.
 
-	* gio/glocalfileinfo.c: Use "gtk-directory" instead of "user-home"
-	as icon representing the home, since "user-home" is not present
-	in gtk+-2.16.
-
 --- glib/gconvert.c.old	2007-01-26 17:16:07.171875000 +0100
 +++ glib/gconvert.c	2007-01-26 17:17:35.812500000 +0100
 @@ -610,7 +610,15 @@ g_convert_with_iconv (const gchar *str,
@@ -49,22 +45,3 @@
  
  echo 'BEGIN {' >"$tmp/subs1.awk" &&
  _ACEOF
-*** gio/glocalfileinfo.c.orig	2010-09-16 17:29:43.000000000 +0200
---- gio/glocalfileinfo.c	2010-09-16 17:36:00.000000000 +0200
-***************
-*** 1596,1602 ****
-  	      GIcon *icon;
-  
-                if (strcmp (path, g_get_home_dir ()) == 0)
-!                 icon = g_themed_icon_new ("user-home");
-                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
-                  icon = g_themed_icon_new ("user-desktop");
-                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
---- 1596,1602 ----
-  	      GIcon *icon;
-  
-                if (strcmp (path, g_get_home_dir ()) == 0)
-!                 icon = g_themed_icon_new ("gtk-directory");
-                else if (strcmp (path, g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP)) == 0)
-                  icon = g_themed_icon_new ("user-desktop");
-                else if (g_strcmp0 (path, g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS)) == 0)
