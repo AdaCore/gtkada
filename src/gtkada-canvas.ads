@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -330,6 +330,14 @@ package Gtkada.Canvas is
    --  Same as above, but using the canvas coordinates of the event, taking
    --  into account the current zoom level and current scrolling
 
+   procedure Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record;
+      Event  : Gdk.Event.Gdk_Event;
+      Item   : out Canvas_Item;
+      X, Y   : out Glib.Gint);
+   --  Same as above, but also returns the coordinates (X, Y) within the item.
+   --  The coordinates are not set if Item is null on exit.
+
    procedure Clear (Canvas : access Interactive_Canvas_Record);
    --  Remove all items from the canvas
 
@@ -561,8 +569,8 @@ package Gtkada.Canvas is
 
    procedure Configure
      (Link  : access Canvas_Link_Record;
-      Arrow : in Arrow_Type := End_Arrow;
-      Descr : in Glib.UTF8_String := "");
+      Arrow : Arrow_Type := End_Arrow;
+      Descr : Glib.UTF8_String := "");
    --  Configure a link.
    --  The link is an oriented bound between two items on the canvas.
    --  If Descr is not the empty string, it will be displayed in the middle
@@ -612,8 +620,8 @@ package Gtkada.Canvas is
       Link   : access Canvas_Link_Record'Class;
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
-      Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in Glib.UTF8_String := "");
+      Arrow  : Arrow_Type := End_Arrow;
+      Descr  : Glib.UTF8_String := "");
    --  Add Link in the canvas. This connects the two items Src and Dest.
    --  Simpler procedure to add a standard link.
    --  This takes care of memory allocation, as well as adding the link to

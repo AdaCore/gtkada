@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -173,7 +173,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Orthogonal_Link
      (Canvas          : access Interactive_Canvas_Record'Class;
-      GC              : in Gdk.GC.Gdk_GC;
+      GC              : Gdk.GC.Gdk_GC;
       Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean);
    --  Draw a link on the screen, as possibly several orthogonal lines.
@@ -182,7 +182,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Straight_Link
      (Canvas          : access Interactive_Canvas_Record'Class;
-      GC              : in Gdk.GC.Gdk_GC;
+      GC              : Gdk.GC.Gdk_GC;
       Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean);
    --  Draw Link on the screen as a straight line.
@@ -191,7 +191,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Arc_Link
      (Canvas          : access Interactive_Canvas_Record'Class;
-      GC              : in Gdk.GC.Gdk_GC;
+      GC              : Gdk.GC.Gdk_GC;
       Link            : access Canvas_Link_Record'Class;
       Offset          : Gint;
       Show_Annotation : Boolean);
@@ -203,7 +203,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Self_Link
      (Canvas          : access Interactive_Canvas_Record'Class;
-      GC              : in Gdk.GC.Gdk_GC;
+      GC              :  Gdk.GC.Gdk_GC;
       Link            : access Canvas_Link_Record'Class;
       Offset          : Gint;
       Show_Annotation : Boolean);
@@ -219,7 +219,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       GC     : Gdk.GC.Gdk_GC;
       X, Y   : Gint;
-      Angle  : in Float);
+      Angle  : Float);
    --  Draw an arrow head at the position (X, Y) on the canvas. The position
    --  is given in pixels, and should include zoom processing.
    --  Angle is the angle of the main axis of the arrow.
@@ -1351,9 +1351,9 @@ package body Gtkada.Canvas is
 
    procedure Draw_Arrow_Head
      (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
+      GC     : Gdk.GC.Gdk_GC;
       X, Y   : Gint;
-      Angle  : in Float)
+      Angle  : Float)
    is
       Length : constant Float :=
                  Float (To_Canvas_Coordinates (Canvas, Canvas.Arrow_Length));
@@ -1376,7 +1376,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Annotation
      (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
+      GC     : Gdk.GC.Gdk_GC;
       X, Y   : Gint;
       Link   : access Canvas_Link_Record'Class)
    is
@@ -1868,7 +1868,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Straight_Link
      (Canvas          : access Interactive_Canvas_Record'Class;
-      GC              : in Gdk.GC.Gdk_GC;
+      GC              : Gdk.GC.Gdk_GC;
       Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean)
    is
@@ -2604,6 +2604,30 @@ package body Gtkada.Canvas is
         (Canvas, Gint (Get_Y (Event))) + Ybase;
    begin
       return Item_At_Coordinates (Canvas, X, Y);
+   end Item_At_Coordinates;
+
+   -------------------------
+   -- Item_At_Coordinates --
+   -------------------------
+
+   procedure Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record;
+      Event  : Gdk.Event.Gdk_Event;
+      Item   : out Canvas_Item;
+      X, Y   : out Glib.Gint)
+   is
+      Xbase   : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase   : constant Gint := Top_World_Coordinates (Canvas);
+      Xcanvas : constant Gint := To_World_Coordinates
+        (Canvas, Gint (Get_X (Event))) + Xbase;
+      Ycanvas : constant Gint := To_World_Coordinates
+        (Canvas, Gint (Get_Y (Event))) + Ybase;
+   begin
+      Item := Item_At_Coordinates (Canvas, Xcanvas, Ycanvas);
+      if Item /= null then
+         X := Xcanvas - Item.Coord.X;
+         Y := Ycanvas - Item.Coord.Y;
+      end if;
    end Item_At_Coordinates;
 
    --------------------
@@ -3485,8 +3509,8 @@ package body Gtkada.Canvas is
 
    procedure Configure
      (Link   : access Canvas_Link_Record;
-      Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in UTF8_String := "") is
+      Arrow  : Arrow_Type := End_Arrow;
+      Descr  : UTF8_String := "") is
    begin
       Link.Arrow := Arrow;
       Free (Link.Descr);
@@ -3502,8 +3526,8 @@ package body Gtkada.Canvas is
       Link   : access Canvas_Link_Record'Class;
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
-      Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in UTF8_String := "") is
+      Arrow  : Arrow_Type := End_Arrow;
+      Descr  : UTF8_String := "") is
    begin
       Configure (Link, Arrow, Descr);
       Add_Edge (Canvas.Children, Link, Src, Dest);
