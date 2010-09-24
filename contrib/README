@@ -27,8 +27,6 @@ pango-1.26.2.diff: ditto for pango
 pango-1.20.3-win32.diff: ditto for pango under Windows
 pango-1.26.2-win32.diff: ditto for pango under Windows
 
-Python-2.6.4.diff: patch to build python with --without-threads
-
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
 
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
