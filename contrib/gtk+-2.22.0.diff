@@ -10,12 +10,6 @@
 	This prevents a segmentation fault which can happen if the
 	text_view happens to get the focus before it has been realized.
 
-2010-02-24  Arnaud Charlet  <charlet@adacore.com>
-
-	* gdk/x11/gdkdnd-x11.c: Fix build on Solaris 8.
-	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=610966
-	Committed in Gtk+ 2.20.1
-
 2010-01-11  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/gdkwindow.c (gdk_window_get_composite_drawable): Protect
@@ -144,16 +138,6 @@
      {
        GdkWindowPaint *paint = list->data;
  
---- gdk/x11/gdkdnd-x11.c.old	2010-02-13 01:28:51.000000000 +0100
-+++ gdk/x11/gdkdnd-x11.c	2010-02-24 17:05:07.428011000 +0100
-@@ -27,6 +27,7 @@
- #include "config.h"
- #include <X11/Xlib.h>
- #include <X11/Xatom.h>
-+#include <X11/Xutil.h>
- #include <X11/extensions/shape.h>
- 
- #include <string.h>
 *** gtk/gtktextview.c.orig	Wed Mar 24 14:47:16 2010
 --- gtk/gtktextview.c	Wed Mar 24 14:47:19 2010
 *************** gtk_text_view_check_cursor_blink (GtkTex
