@@ -9,7 +9,7 @@
 * GtkAda_Ug: (gtkada_ug).          Ada graphical tookit based on GTK+ (User's Guide)
 @end direntry
 
-@set GtkAdaVersion 2.18.0
+@set GtkAdaVersion 2.22.0
 
 @titlepage
 
@@ -24,7 +24,7 @@
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2009, AdaCore
+Copyright @copyright{} 2000-2010, AdaCore
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1
@@ -52,7 +52,7 @@ Date: $Date$
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2009, AdaCore
+Copyright @copyright{} 2000-2010, AdaCore
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1
