@@ -3003,7 +3003,7 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-  min_gtk_version=2.2.0
+  min_gtk_version=2.16.0
   echo "$as_me:$LINENO: checking for GTK - version >= $min_gtk_version" >&5
 echo $ECHO_N "checking for GTK - version >= $min_gtk_version... $ECHO_C" >&6
   no_gtk=""
