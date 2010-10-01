@@ -1233,7 +1233,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Current release settings
 GTKADA_MAJOR_VERSION=2
-GTKADA_MINOR_VERSION=18
+GTKADA_MINOR_VERSION=22
 GTKADA_MICRO_VERSION=0
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
@@ -3003,7 +3003,7 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-  min_gtk_version=2.2.0
+  min_gtk_version=2.16.0
   echo "$as_me:$LINENO: checking for GTK - version >= $min_gtk_version" >&5
 echo $ECHO_N "checking for GTK - version >= $min_gtk_version... $ECHO_C" >&6
   no_gtk=""
