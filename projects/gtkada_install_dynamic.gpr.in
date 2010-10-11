@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--           GtkAda - Ada binding for the Gimp Toolkit               --
 --                                                                   --
---                      Copyright (C) 2007                           --
---                            AdaCore                                --
+--                Copyright (C) 2007-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,15 +43,17 @@ project GtkAda_Install_Dynamic is
         "-lgdk-win32-2.0",
         "-latk-1.0",
         "-lgdk_pixbuf-2.0",
-        "-lpangowin32-1.0",
-        "-lgdi32",
-        "-lpangocairo-1.0",
-        "-lpango-1.0",
         "-ljpeg",
         "-lpng",
+        "-lpangocairo-1.0",
+        "-lgio-2.0",
         "-lcairo",
+        "-lpangowin32-1.0",
+        "-lgdi32",
+        "-lpango-1.0",
         "-lgobject-2.0",
         "-lgmodule-2.0",
+        "-lgthread-2.0",
         "-lglib-2.0",
         "-lintl",
         "-liconv",
