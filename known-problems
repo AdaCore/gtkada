@@ -1,60 +1,8 @@
-Known problems fixed in GtkAda 2.18.0
+Known problems fixed in GtkAda 2.22.0
 
 - JA07-011 GtkAda.MDI.Raise_Child and floating windows
   Problem:    When a window is floating and Raise_Child is called, the
               window is not systematically made visible if you ask not
               to give the focus.
   Workaround: see Give_Focus to True when calling Raise_Child
-
-- J813-008 Wrong binding for Pango.Font.Get_Style, Pango.Font.Set_Style
-  Problem:    Calling these subprograms does not have the expected behavior
-              and may cause instability.
-  Workaround: Fix the bindings from pango_font_description_(get|set)_size
-              to pango_font_description_(get|set)_style.
-
-- J702-017 Crash in MDI when loading desktop
-  Problem:    If the desktop restored by calling Restore_Desktop contains
-              a notebook with no raised child (ie a <child> node with
-              an attribute Raised="True"), then an error (fatal on Windows
-              systems) would occur later on.
-  Workaround: Upon a crash, the simplest is to destroy the perspectives.xml
-              file, although this will also lost saved desktops
-
-- J504-027 Bug in implementation of Gtk.Icon_View.Get_Model
-  Problem:    Calling this function might cause a Gtk_Critical error or
-              memory corruption.
-  Workaround: Avoid calling this function, or manually change line 296 to
-              "return Gtk_Tree_Model (Get_User_Data (M, Stub));"
-
-Known problems fixed in GtkAda 2.14.1
-
-- I128-040 Wrong code generated with GUI builder for signal
-  Problem:    When using the GUI builder to define signals, wrong code might
-              be generated, with calls to "Object_Connect" appearing in the
-              Initialize procedure before all widgets are initialized.
-  Workaround: Move manually the calls to Object_Connect to the end of the
-              Initialize procedure.
-
-- I116-034 Building problem with File Chooser Dialog
-  Problem:    When building with the project mechanim, the package for the
-              file chooser dialog is not found by the compiler.
-  Workaround: Add mention of gtkada-file_chooser_dialog.ad[sb] in
-              <prefix>/lib/gnat/gtkada/gtkada.lgpr
-
-- H123-001 Memory leak in Gdk.Color.Copy (when using Set_Property)
-  Problem:    If you are using Set_Property to change the color properties of
-              various widgets (a Text_Tag for instance), this results in a
-              memory leak
-  Workaround: There is no real workaround. The best is to reduce the number of
-              calls to Set_Property
-
-Known problems fixed in GtkAda 2.12.0
-
-- H421-008 GtkAda static library support broken on Windows.
-  Problem:    It is not possible to use the GtkAda project file to build a
-              application linked statically with GtkAda on Windows. This is
-              because the libgtkada.a library is specified using an hard
-              coded path into the project file.
-  Workaround: Build the application manually or edit lib/gnat/gtkada.gpr to
-              fix the offending path.
 
