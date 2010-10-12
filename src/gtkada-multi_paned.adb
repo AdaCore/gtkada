@@ -2250,7 +2250,7 @@ package body Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True) is
    begin
       Split_Internal
@@ -2268,7 +2268,7 @@ package body Gtkada.Multi_Paned is
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After       : Boolean := True) is
    begin
       Split_Internal
@@ -2286,7 +2286,7 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True) is
    begin
       Split_Internal

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2006 AdaCore                   --
+--                 Copyright (C) 2003-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,7 +83,7 @@ package Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
@@ -102,7 +102,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Split the pane containing Ref_Widget, and add New_Child
    --  in the new pane (on the right or at the bottom if After is True, on the
@@ -136,7 +136,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Split Ref_Pane to display New_Child to one of its sides.
    --  See the comments for Root_Pane above.
