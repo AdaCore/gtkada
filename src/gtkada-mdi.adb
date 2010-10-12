@@ -3068,6 +3068,12 @@ package body Gtkada.MDI is
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
+
+      else
+         --  We still need to raise the window, but don't give it the focus
+         --  on systems where it is possible.
+         Gdk.Window.Gdk_Raise
+            (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
       end if;
 
       --  Give the focus to the Focus_Child, since the notebook page switch
