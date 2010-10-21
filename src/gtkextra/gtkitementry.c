@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009, AdaCore
+ * Copyright (C) 2009-2010, AdaCore
  */
 
 /* GTK - The GIMP Toolkit
@@ -149,7 +149,7 @@ static void         gtk_entry_draw_cursor              (GtkEntry       *entry,
 static PangoLayout *gtk_entry_ensure_layout            (GtkEntry       *entry,
                                                         gboolean        include_preedit);
 static void         gtk_entry_queue_draw               (GtkEntry       *entry);
-static void         gtk_entry_reset_im_context         (GtkEntry       *entry);
+static void         gtk_entry_reset_im_context_extra   (GtkEntry       *entry);
 static void         gtk_entry_recompute                (GtkEntry       *entry);
 static void         gtk_entry_get_cursor_locations     (GtkEntry       *entry,
 							CursorType      type,
@@ -698,7 +698,7 @@ gtk_entry_real_set_position (GtkEditable *editable,
   if (position != entry->current_pos ||
       position != entry->selection_bound)
     {
-      gtk_entry_reset_im_context (entry);
+      gtk_entry_reset_im_context_extra (entry);
       gtk_entry_set_positions (entry, position, position);
     }
 }
@@ -899,7 +899,7 @@ gtk_entry_move_cursor (GtkEntry       *entry,
 {
   gint new_pos = entry->current_pos;
 
-  gtk_entry_reset_im_context (entry);
+  gtk_entry_reset_im_context_extra (entry);
 
   if (entry->current_pos != entry->selection_bound && !extend_selection)
     {
@@ -993,7 +993,7 @@ gtk_entry_insert_at_cursor (GtkEntry    *entry,
 
   if (entry->editable)
     {
-      gtk_entry_reset_im_context (entry);
+      gtk_entry_reset_im_context_extra (entry);
 
       gtk_editable_insert_text (editable, str, -1, &pos);
       gtk_editable_set_position (editable, pos);
@@ -1009,7 +1009,7 @@ gtk_entry_delete_from_cursor (GtkEntry       *entry,
   gint start_pos = entry->current_pos;
   gint end_pos = entry->current_pos;
 
-  gtk_entry_reset_im_context (entry);
+  gtk_entry_reset_im_context_extra (entry);
 
   if (!entry->editable)
     return;
@@ -1781,7 +1781,7 @@ gtk_entry_queue_draw (GtkEntry *entry)
 }
 
 static void
-gtk_entry_reset_im_context (GtkEntry *entry)
+gtk_entry_reset_im_context_extra (GtkEntry *entry)
 {
   if (entry->need_im_reset)
     {
