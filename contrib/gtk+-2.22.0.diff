@@ -6,7 +6,7 @@
 	When extending the selection in SELECT_LINES granularity, include
 	the EOL character(s) in the selection.
 
-	Submitted at <https://bugzilla.gnome.org/show_bug.cgi?id=630825
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
 
 2010-03-27  Arnaud Charlet  <charlet@adacore.com>
 
