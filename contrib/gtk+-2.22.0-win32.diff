@@ -73,6 +73,7 @@
  @HAVE_INTROSPECTION_TRUE@introspection_files = $(filter-out \
  @HAVE_INTROSPECTION_TRUE@	gdkkeysyms-compat.h, \
  @HAVE_INTROSPECTION_TRUE@	$(gdk_public_h_sources)) \
+--- gdk/win32/gdkgc-win32.c.orig
 +++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
 @@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 
        if (rect->bottom > rgndata->rdh.rcBound.bottom)
