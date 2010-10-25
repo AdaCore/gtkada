@@ -114,7 +114,7 @@ package Gtk.Paper_Size is
    function Copy (Other : Gtk_Paper_Size) return Gtk_Paper_Size;
    --  Copies an existing Gtk_Paper_Size.
 
-   procedure Free (Size : in out Gtk_Paper_Size);
+   procedure Free (Size : Gtk_Paper_Size);
    --  Free the given Gtk_Paper_Size object.
 
    function Get_Default return String;

@@ -155,6 +155,7 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/gicon/g_icon/;
   $adafile =~ s/scalebutton/scale_button/;
   $adafile =~ s/volumebutton/volume_button/;
+  $adafile =~ s/printcontext/print_context/;
   $adafile =~ s/printoperation/print_operation/;
   $adafile =~ s/printsettings/print_settings/;
   $adafile =~ s/__/_/g;

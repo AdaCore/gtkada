@@ -12,3 +12,9 @@ of the feature.
 New features in GtkAda 2.22.0
 -----------------------------
 
+JA07-018 Bindings to GTK+ printing API
+
+  In addition to bindings already added as part of J510-028, additional
+  packages have been provided so that full use of the printing API provided
+  by GTK+ is possible.  The existing printing example in testgtk has been
+  enhanced to demonstrate how to use the new API.
