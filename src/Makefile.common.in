@@ -89,8 +89,8 @@ module_install_shared: force
 	$(RM) $(libdir)/$(LIBNAME)
 ifneq (${OS},Windows_NT)
 	$(LN) $(SONAME) $(alidir)/relocatable/$(LIBNAME)
-	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(LIBNAME)
-	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(SONAME)
+	$(LN) gtkada/relocatable/$(INC_SUBDIR)/$(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) gtkada/relocatable/$(INC_SUBDIR)/$(SONAME) $(libdir)/$(SONAME)
 endif
 	${CP} ${OBJ_DIR}/*.ali ${alidir}/relocatable
 
