@@ -55,9 +55,11 @@ with Gdk.Window;   use Gdk.Window;
 
 with Gtk.Main;
 with Gtk.Box;           use Gtk.Box;
+with Gtk.Button;        use Gtk.Button;
 with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gtk.Label;         use Gtk.Label;
 
+with Gtk.Widget;   use Gtk.Widget;
 with Gtk.Window;   use Gtk.Window;
 with Gtk.Handlers; use Gtk.Handlers;
 
@@ -67,7 +69,10 @@ with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
 with Gtk.Tree_Store;         use Gtk.Tree_Store;
 with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
-with Gtk.Widget; use Gtk.Widget;
+
+with Gtkada.Printing;        use Gtkada.Printing;
+with Gtk.Print_Operation;    use Gtk.Print_Operation;
+with Gtk.Print_Context;      use Gtk.Print_Context;
 
 procedure Testcairo is
 
@@ -77,8 +82,14 @@ procedure Testcairo is
                       Paths, Patterns, Clip_And_Paint,
                       Surface_And_Png, Toy_Text, Pango_Text);
 
-   function Pretty (T : Test_Type) return String;
-   --  Pretty print T
+   package Event_Cb is new Gtk.Handlers.Return_Callback
+     (Gtk_Drawing_Area_Record, Boolean);
+
+   package Button_Cb is new Gtk.Handlers.Callback
+     (Gtk_Button_Record);
+
+   package Selection_Cb is new Gtk.Handlers.Callback
+     (Gtk_Tree_Selection_Record);
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
@@ -91,15 +102,28 @@ procedure Testcairo is
    Area : Gtk_Drawing_Area;
    Test : Test_Type := Test_Type'First;
 
-   package Event_Cb is new Gtk.Handlers.Return_Callback
-     (Gtk_Drawing_Area_Record, Boolean);
+   -----------------------
+   -- Local subprograms --
+   -----------------------
 
-   package Selection_Cb is new Gtk.Handlers.Callback
-     (Gtk_Tree_Selection_Record);
+   function Pretty (T : Test_Type) return String;
+   --  Pretty print T
 
    function Expose_Cb (Area  : access Gtk_Drawing_Area_Record'Class;
                        Event : Gdk_Event) return Boolean;
    --  Callback on an expose event on Win
+
+   procedure On_Print_Cb  (Widget : access Gtk_Button_Record'Class);
+   --  Callback on a click on the "Print" button
+
+   procedure Draw_On_Context (Cr : Cairo_Context; Test : Test_Type);
+   --  Draw the test type on Cr.
+
+   procedure Draw_Page
+     (Op          : Gtkada_Print_Operation;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint);
+   --  Print Test on Context
 
    type Doc_Array is array (Test_Type) of Unbounded_String;
 
@@ -129,6 +153,35 @@ procedure Testcairo is
    is
       pragma Unreferenced (Event);
       Cr : Cairo_Context;
+
+   begin
+      Cr := Create (Get_Window (Area));
+      Draw_On_Context (Cr, Test);
+      Destroy (Cr);
+      return False;
+   end Expose_Cb;
+
+   ---------------
+   -- Draw_Page --
+   ---------------
+
+   procedure Draw_Page
+     (Op          : Gtkada_Print_Operation;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint)
+   is
+      pragma Unreferenced (Page_Number, Op);
+      Cr : Cairo_Context;
+   begin
+      Cr := Context.Get_Cairo_Context;
+      Draw_On_Context (Cr, Test);
+   end Draw_Page;
+
+   ---------------------
+   -- Draw_On_Context --
+   ---------------------
+
+   procedure Draw_On_Context (Cr : Cairo_Context; Test : Test_Type) is
       D, D2, D3 : Gdouble;
       M, M2, M3 : Cairo_Matrix_Access;
 
@@ -139,7 +192,6 @@ procedure Testcairo is
       Status : Cairo_Status;
 
    begin
-      Cr := Create (Get_Window (Area));
 
       case Test is
          when Rectangles =>
@@ -550,10 +602,7 @@ procedure Testcairo is
                Put_Line (Status'Img);
             end;
       end case;
-
-      Destroy (Cr);
-      return False;
-   end Expose_Cb;
+   end Draw_On_Context;
 
    Tree    : Gtk_Tree_View;
    Model   : Gtk_Tree_Store;
@@ -562,11 +611,33 @@ procedure Testcairo is
    Col_Num : Gint;
    Iter    : Gtk_Tree_Iter;
    Label   : Gtk_Label;
+   Button  : Gtk_Button;
 
    Box     : Gtk_Box;
+   Hbox    : Gtk_Box;
    Vbox    : Gtk_Box;
 
    pragma Unreferenced (Col_Num);
+
+   -----------------
+   -- On_Print_Cb --
+   -----------------
+
+   procedure On_Print_Cb (Widget : access Gtk_Button_Record'Class) is
+      Print_Op : Gtkada_Print_Operation;
+      Result   : Gtk_Print_Operation_Result;
+      pragma Unreferenced (Result);
+   begin
+      Gtk_New (Print_Op);
+
+      Print_Op.Set_N_Pages (1);
+      Print_Op.Install_Draw_Page_Handler (Draw_Page'Unrestricted_Access);
+
+      --  Call up the print operation dialog
+      Result :=
+        Connect_And_Run (Print_Op, Action_Print_Dialog,
+             Gtk_Window (Get_Toplevel (Widget)));
+   end On_Print_Cb;
 
    ------------
    -- Pretty --
@@ -661,8 +732,19 @@ begin
    Gtk_New_Vbox (Vbox);
    Vbox.Pack_Start (Area, True, True, 3);
 
+   Gtk_New_Hbox (Hbox);
+   Vbox.Pack_Start (Hbox, False, False, 3);
+
    Gtk_New (Label);
-   Vbox.Pack_Start (Label, False, False, 3);
+   Hbox.Pack_Start (Label, True, True, 3);
+
+   Gtk_New (Button, "Print");
+   Hbox.Pack_End (Button, False, False, 3);
+   Button_Cb.Connect
+     (Button,
+      Gtk.Button.Signal_Clicked,
+      On_Print_Cb'Access,
+      After => True);
 
    Box.Pack_Start (Vbox, True, True, 3);
 
