@@ -154,4 +154,21 @@ package body Gtk.Builder is
       Set_Object (Builder, Internal);
    end Initialize;
 
+   ----------------
+   -- Get_Widget --
+   ----------------
+
+   function Get_Widget
+     (Builder : access Gtk_Builder_Record;
+      Name    : String) return Gtk.Widget.Gtk_Widget
+   is
+      Object : constant GObject := Get_Object (Builder, Name);
+   begin
+      if Object = null then
+         return null;
+      else
+         return Gtk.Widget.Convert (Glib.Object.Convert (Object));
+      end if;
+   end Get_Widget;
+
 end Gtk.Builder;

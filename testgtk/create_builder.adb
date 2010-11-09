@@ -213,21 +213,10 @@ package body Create_Builder is
 
       --  Look up widgets for which we have callbacks, and store the
       --  information in Widget_Collection_Record structure.
-      Widgets.Term1 :=
-        Gtk.GEntry.Gtk_Entry
-          (Gtk.Widget.Convert
-            (Glib.Object.Convert
-              (Get_Object (Builder1, "term1"))));
-      Widgets.Term2 :=
-        Gtk.GEntry.Gtk_Entry
-          (Gtk.Widget.Convert
-            (Glib.Object.Convert
-              (Get_Object (Builder1, "term2"))));
-      Widgets.Text_Field :=
-        Gtk.Text_View.Gtk_Text_View
-          (Gtk.Widget.Convert
-            (Glib.Object.Convert
-              (Get_Object (Builder1, "textField"))));
+      Widgets.Term1 := Gtk.GEntry.Gtk_Entry (Get_Widget (Builder1, "term1"));
+      Widgets.Term2 := Gtk.GEntry.Gtk_Entry (Get_Widget (Builder1, "term2"));
+      Widgets.Text_Field := Gtk.Text_View.Gtk_Text_View
+        (Get_Widget (Builder1, "textField"));
 
       --  Connect signal handlers
       Connect_Signals_Full
@@ -236,9 +225,7 @@ package body Create_Builder is
          Glib.Object.Get_Object (Widgets));
 
       --  Find our main window, then display it and all of its children.
-      Gtk.Widget.Show_All
-        (Gtk.Widget.Convert
-          (Glib.Object.Convert (Get_Object (Builder1, "window1"))));
+      Gtk.Widget.Show_All (Get_Widget (Builder1, "window1"));
    end On_Button_Clicked;
 
    --------------------------------

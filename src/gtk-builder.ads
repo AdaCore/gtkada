@@ -59,11 +59,14 @@
 --  <c_version>2.16.6</c_version>
 
 with System;
+with Interfaces.C.Strings;
+
 with Glib;
 with Glib.Error;
 with Glib.Object;
 with Glib.Properties;
-with Interfaces.C.Strings;
+
+with Gtk.Widget;
 
 package Gtk.Builder is
 
@@ -139,6 +142,12 @@ package Gtk.Builder is
    --  This function can be thought of the interpreted language binding
    --  version of Connect_Signals, except that it does not require GModule
    --  to function correctly.
+
+   function Get_Widget
+     (Builder : access Gtk_Builder_Record;
+      Name    : String) return Gtk.Widget.Gtk_Widget;
+   --  Utility function to retrieve a widget created by Builder.
+   --  Returns null if no widget was found with the given name.
 
    ----------------
    -- Properties --
