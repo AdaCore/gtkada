@@ -57,10 +57,11 @@ with System;
 with Glib; use Glib;
 with Glib.Error;
 
-with Gtk.Page_Setup;      use Gtk.Page_Setup;
-with Gtk.Print_Context;   use Gtk.Print_Context;
-with Gtk.Print_Operation; use Gtk.Print_Operation;
-with Gtk.Window;
+with Gtk.Page_Setup;              use Gtk.Page_Setup;
+with Gtk.Print_Context;           use Gtk.Print_Context;
+with Gtk.Print_Operation;         use Gtk.Print_Operation;
+with Gtk.Print_Operation_Preview; use Gtk.Print_Operation_Preview;
+with Gtk.Window;                  use Gtk.Window;
 
 package Gtkada.Printing is
 
@@ -75,7 +76,7 @@ package Gtkada.Printing is
    function Connect_And_Run
      (Op        : access Gtkada_Print_Operation_Record'Class;
       Action    : Gtk_Print_Operation_Action;
-      Parent    : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent    : access Gtk_Window_Record'Class;
       Error     : Glib.Error.GError := null)
       return Gtk_Print_Operation_Result;
    --  Runs the print operation, using the handlers installed in Op.
@@ -188,6 +189,39 @@ package Gtkada.Printing is
       Handler : Paginate_Handler);
    --  Install a Paginate_Handler.
 
+   -------------
+   -- preview --
+   -------------
+
+   type Preview_Handler is access function
+     (Op          : Gtkada_Print_Operation;
+      Preview     : Gtk_Print_Operation_Preview;
+      Context     : Gtk_Print_Context;
+      Parent      : Gtk_Window)
+     return Boolean;
+   --  Called when a preview is requested from the native dialog.
+   --  Returns True if the listener wants to take over control of the preview.
+   --
+   --  The default handler for this signal uses an external viewer
+   --  application to preview.
+   --
+   --  To implement a custom print preview, an application must return
+   --  True from its handler for this signal. In order to use the
+   --  provided Context for the preview implementation, it must be
+   --  given a suitable cairo context with Gtk.Print_Context.Set_Cairo_Context.
+   --
+   --  The custom preview implementation can use
+   --  Gtk.Print_Operation_Preview.Is_Selected and
+   --  Gtk.Print_Operation_Preview.Render_Page to find pages which
+   --  are selected for print and render them. The preview must be
+   --  finished by calling Gtk.Print_Operation_Preview.End_Preview
+   --  (typically in response to the user clicking a close button).
+
+   procedure Install_Preview_Handler
+     (Op      : access Gtkada_Print_Operation_Record'Class;
+      Handler : Preview_Handler);
+   --  Install a Preview_Handler.
+
    ------------------------
    -- request-page-setup --
    ------------------------
@@ -233,6 +267,7 @@ private
       Draw_Page          : Draw_Page_Handler          := null;
       End_Print          : End_Print_Handler          := null;
       Paginate           : Paginate_Handler           := null;
+      Preview            : Preview_Handler            := null;
       Request_Page_Setup : Request_Page_Setup_Handler := null;
       Status_Changed     : Status_Changed_Handler     := null;
    end record;

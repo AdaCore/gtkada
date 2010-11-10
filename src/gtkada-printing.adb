@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Unchecked_Conversion;
+
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 
@@ -69,6 +71,12 @@ package body Gtkada.Printing is
       Args : Glib.Values.GValues)
      return Gboolean;
    --  Wrapper around callback for "paginate".
+
+   function Preview_Handler_Wrapper
+     (Op   : access Gtkada_Print_Operation_Record'Class;
+      Args : Glib.Values.GValues)
+     return Gboolean;
+   --  Wrapper around callback for "preview".
 
    procedure Request_Page_Setup_Handler_Wrapper
      (Op   : access Gtkada_Print_Operation_Record'Class;
@@ -232,6 +240,18 @@ package body Gtkada.Printing is
       Op.Paginate := Handler;
    end Install_Paginate_Handler;
 
+   -----------------------------
+   -- Install_Preview_Handler --
+   -----------------------------
+
+   procedure Install_Preview_Handler
+     (Op      : access Gtkada_Print_Operation_Record'Class;
+      Handler : Preview_Handler)
+   is
+   begin
+      Op.Preview := Handler;
+   end Install_Preview_Handler;
+
    ----------------------------------------
    -- Install_Request_Page_Setup_Handler --
    ----------------------------------------
@@ -277,6 +297,43 @@ package body Gtkada.Printing is
          return Boolean'Pos (False);
       end if;
    end Paginate_Handler_Wrapper;
+
+   -----------------------------
+   -- Preview_Handler_Wrapper --
+   -----------------------------
+
+   function Preview_Handler_Wrapper
+     (Op   : access Gtkada_Print_Operation_Record'Class;
+      Args : Glib.Values.GValues)
+     return Gboolean
+   is
+      --  ???  ugly, but otherwise correct.
+      function To_Preview is
+        new Unchecked_Conversion (System.Address, Gtk_Print_Operation_Preview);
+      Preview_Addr : constant System.Address := To_Address (Args, 1);
+      Preview      : constant Gtk_Print_Operation_Preview :=
+        To_Preview (Preview_Addr);
+
+      Context_Addr : constant System.Address := To_Address (Args, 2);
+      Context_Stub : Gtk_Print_Context_Record;
+      Context      : constant Gtk_Print_Context :=
+        Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
+
+      Parent_Addr  : constant System.Address := To_Address (Args, 3);
+      Parent_Stub  : Gtk_Window_Record;
+      Parent       : constant Gtk_Window :=
+        Gtk_Window (Get_User_Data (Parent_Addr, Parent_Stub));
+
+   begin
+      if Op.Preview /= null then
+         return Boolean'Pos
+           (Op.Preview
+             (Gtkada_Print_Operation (Op), Preview, Context, Parent));
+      else
+         --  Do not request to take over the print preview dialog.
+         return Boolean'Pos (False);
+      end if;
+   end Preview_Handler_Wrapper;
 
    ----------------------------------------
    -- Request_Page_Setup_Handler_Wrapper --
@@ -355,6 +412,11 @@ package body Gtkada.Printing is
       if Op.Paginate /= null then
          Object_Boolean_Return_Callback.Connect
            (Op, "paginate", Paginate_Handler_Wrapper'Access);
+      end if;
+
+      if Op.Preview /= null then
+         Object_Boolean_Return_Callback.Connect
+           (Op, "preview", Preview_Handler_Wrapper'Access);
       end if;
 
       if Op.Request_Page_Setup /= null then
