@@ -139,7 +139,7 @@ package Gtkada.Printing is
    --  Called after all pages have been rendered.
    --
    --  This handler can clean up any resources that have been allocated
-   --  in the ::begin-print handler.
+   --  in the "begin-print" handler.
 
    procedure Install_End_Print_Handler
      (Op      : access Gtkada_Print_Operation_Record'Class;
@@ -154,18 +154,18 @@ package Gtkada.Printing is
      (Op      : Gtkada_Print_Operation;
       Context : Gtk_Print_Context)
      return Boolean;
-   --  Called after the ::begin-print signal, but before the actual rendering
+   --  Called after the "begin-print" signal, but before the actual rendering
    --  starts. It keeps getting emitted until a connected signal handler
    --  returns True.
    --
-   --  The ::paginate signal is intended to be used for paginating a document
+   --  The "paginate" signal is intended to be used for paginating a document
    --  in small chunks, to avoid blocking the user interface for a long
    --  time. The signal handler should update the number of pages using
    --  Gtk.Print_Operation.Set_N_Pages, and return True if the document
    --  has been completely paginated.
    --
    --  If you don't need to do pagination in chunks, you can simply do
-   --  it all in the ::begin-print handler, and set the number of pages
+   --  it all in the "begin-print" handler, and set the number of pages
    --  from there.
 
    procedure Install_Paginate_Handler
