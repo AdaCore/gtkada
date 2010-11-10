@@ -27,13 +27,28 @@
 -----------------------------------------------------------------------
 
 --  <description>
+--  This package provides a ready-to-use high level printing object.
+--  Use functionality from Gtk.Print_Operation to manipulate the
+--  printing object, and the functionality in this package to connect
+--  signal handlers and run a printing operation.
 --
---  This package provides a ready to use high level printing object.
+--  Typically, to use this high-level printing API, create a new
+--  Gtkada_Print_Operation object with Gtk_New when the user wants to print.
+--  Then, set some properties on it (e.g. the page size, any Gtk_Print_Settings
+--  from previous print operations, the number of pages, and the current page).
+--  Use functionality from the Gtk.Print_Operation package to manipulate a
+--  Gtkada_Print_Operation.
 --
---  To use this package,
+--  You may also connect various callbacks using the Install_*_Handler
+--  procedures in this package, which are called at various stages of the
+--  printing process.
 --
---      ??? to be completed
---
+--  Finally, you start the print operation by calling Connect_And_Run.  It
+--  will then show a dialog, and let the user select a printer and options.
+--  When the user finishes the dialog, various signals will be emitted on the
+--  Gtkada_Print_Operation, the main one being "draw-page" which invokes the
+--  installed Draw_Page_Handler.  The Draw_Page_Handler renders the requested
+--  page on the provided Gtk_Print_Context using Cairo.
 --  </description>
 --  <group>Miscellaneous</group>
 

@@ -32,9 +32,7 @@ with Ada.Text_IO;         use Ada.Text_IO;
 
 with Glib;                use Glib;
 with Glib.Object;         use Glib.Object;
-with Glib.Values;         use Glib.Values;
 
-with Gtk.Arguments;       use Gtk.Arguments;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
@@ -44,7 +42,7 @@ with Gtk.Print_Context;   use Gtk.Print_Context;
 with Gtk.Print_Operation; use Gtk.Print_Operation;
 with Gtk.Window;          use Gtk.Window;
 
-with Gtkada.Handlers;     use Gtkada.Handlers;
+with Gtkada.Printing;     use Gtkada.Printing;
 
 with Cairo;               use Cairo;
 
@@ -56,10 +54,10 @@ package body Create_Print is
 
    function Help return String is
    begin
-      return "This is a very simple demo to demonstrate GTK+'s high-level,"
-        & " portable printing API.  On some platforms, Gtk_Print_Operation"
+      return "This is a very simple demo to demonstrate GtkAda's high-level,"
+        & " portable printing API.  On some platforms, Gtkada_Print_Operation"
         & " uses the native print dialog.  On platforms which do not provide"
-        & " a native print dialog, GTK+ uses its own.";
+        & " a native print dialog, GtkAda uses GTK+'s own.";
    end Help;
 
    ---------------
@@ -67,18 +65,12 @@ package body Create_Print is
    ---------------
 
    procedure Draw_Page
-     (Print_Operation : access Glib.Object.GObject_Record'Class;
-      Args            : Glib.Values.GValues)
+     (Print_Operation : Gtkada_Print_Operation;
+      Context         : Gtk_Print_Context;
+      Page_Num        : Gint)
    is
-      Context_Addr : constant System.Address := To_Address (Args, 1);
-      Context_Stub : Gtk_Print_Context_Record;
-      Context  : constant Gtk_Print_Context :=
-        Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
-      Page_Num : constant Gint := To_Gint (Args, 2);
-
       pragma Unreferenced (Print_Operation);
       pragma Unreferenced (Page_Num);
-
       Cr : Cairo_Context;
    begin
       Cr := Get_Cairo_Context (Context);
@@ -106,21 +98,15 @@ package body Create_Print is
    ------------------------
 
    procedure Request_Page_Setup
-     (Print_Operation : access Glib.Object.GObject_Record'Class;
-      Args            : Glib.Values.GValues)
+     (Print_Operation : Gtkada_Print_Operation;
+      Context         : Gtk_Print_Context;
+      Page_Num        : Gint;
+      Setup           : Gtk_Page_Setup;
+      User_Data       : System.Address)
    is
-      Context_Addr : constant System.Address := To_Address (Args, 1);
-      Context_Stub : Gtk_Print_Context_Record;
-      Context  : constant Gtk_Print_Context :=
-        Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
-      Page_Num : constant Gint := To_Gint (Args, 2);
-      Setup_Addr : constant System.Address := To_Address (Args, 3);
-      Setup_Stub : Gtk_Page_Setup_Record;
-      Setup : constant Gtk_Page_Setup :=
-        Gtk_Page_Setup (Get_User_Data (Setup_Addr, Setup_Stub));
-
       pragma Unreferenced (Print_Operation);
       pragma Unreferenced (Context);
+      pragma Unreferenced (User_Data);
 
       A5_Size : Gtk_Paper_Size;
    begin
@@ -139,7 +125,7 @@ package body Create_Print is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box      : Gtk_Box;
-      Print_Op : Gtk_Print_Operation;
+      Print_Op : Gtkada_Print_Operation;
       Result   : Gtk_Print_Operation_Result;
    begin
       Set_Label (Frame, "Printing");
@@ -154,13 +140,12 @@ package body Create_Print is
       Set_Unit (Print_Op, Inch);
 
       --  Connect signals
-      Object_Callback.Connect (Print_Op, "draw_page", Draw_Page'Access);
-      Object_Callback.Connect
-        (Print_Op, "request_page_setup", Request_Page_Setup'Access);
+      Install_Draw_Page_Handler (Print_Op, Draw_Page'Access);
+      Install_Request_Page_Setup_Handler (Print_Op, Request_Page_Setup'Access);
 
       --  Call up the print operation dialog
-      Result :=
-        Run (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
+      Result := Connect_And_Run
+        (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
       Put_Line ("Result is " & Result'Img);
       Put_Line ("Print status: " & Get_Status (Print_Op));
 
