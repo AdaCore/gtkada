@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
 with Ada.Numerics;
 with Ada.Text_IO;         use Ada.Text_IO;
 
@@ -47,6 +46,13 @@ with Gtkada.Printing;     use Gtkada.Printing;
 with Cairo;               use Cairo;
 
 package body Create_Print is
+
+   procedure Request_Page_Setup
+     (Print_Operation : Gtkada_Print_Operation;
+      Context         : Gtk_Print_Context;
+      Page_Num        : Gint;
+      Setup           : Gtk_Page_Setup);
+   --  Callback to setup page layout when printing.
 
    ----------
    -- Help --
@@ -101,12 +107,10 @@ package body Create_Print is
      (Print_Operation : Gtkada_Print_Operation;
       Context         : Gtk_Print_Context;
       Page_Num        : Gint;
-      Setup           : Gtk_Page_Setup;
-      User_Data       : System.Address)
+      Setup           : Gtk_Page_Setup)
    is
       pragma Unreferenced (Print_Operation);
       pragma Unreferenced (Context);
-      pragma Unreferenced (User_Data);
 
       A5_Size : Gtk_Paper_Size;
    begin
