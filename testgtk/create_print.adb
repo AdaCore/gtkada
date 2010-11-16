@@ -77,23 +77,53 @@ package body Create_Print is
    is
       pragma Unreferenced (Print_Operation);
       pragma Unreferenced (Page_Num);
-      Cr : Cairo_Context;
+      Cr      : Cairo_Context;
+      X, Y, Z : Gdouble;
    begin
       Cr := Get_Cairo_Context (Context);
 
-      --  Draw a red rectangle, as wide as the paper (inside the margins)
-      Set_Source_Rgb (Cr, 1.0, 0.0, 0.0);
-      Rectangle (Cr, 0.0, 0.0, Get_Width (Context), 1.5);
+      --  Draw a thin light gray bar, as wide as the paper, inside the margins
+      Set_Source_Rgb (Cr, 0.8, 0.8, 0.8);
+      Rectangle
+        (Cr     => Cr,
+         X      => 0.0,
+         Y      => 0.0,
+         Width  => Get_Width (Context),
+         Height => 0.2);
       Cairo.Fill (Cr);
 
-      --  Draw some lines
-      Move_To (Cr, 1.0, 0.5);
-      Line_To (Cr, 2.0, 1.0);
-      Arc (Cr, 3.0, 3.0, 1.0, 0.0, Ada.Numerics.Pi * 1.5);
-      Line_To (Cr, 4.0, 1.0);
+      --  Circles
+      for Xi in 1 .. 10 loop
+         X := Gdouble (Xi) / 10.0;
+         for Yi in 1 .. 10 loop
+            Y := Gdouble (Yi) / 10.0;
+            for Zi in 1 .. 10 loop
+               Z := Gdouble (Zi) / 10.0;
 
-      Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
-      Set_Line_Width (Cr, 1.0/32.0);
+               Set_Source_Rgb (Cr, X, Y, Z);
+               Arc
+                 (Cr     => Cr,
+                  Xc     => 2.5 + X * 3.0,
+                  Yc     => 1.0 + Y * 3.0,
+                  Radius => 0.2,
+                  Angle1 => 2.0 * Ada.Numerics.Pi * (Z - 0.1),
+                  Angle2 => 2.0 * Ada.Numerics.Pi * Z);
+               Set_Line_Width (Cr, 1.0 / 32.0);
+               Cairo.Stroke (Cr);
+
+            end loop;
+         end loop;
+      end loop;
+
+      --  Draw some lines
+      Move_To (Cr, 2.0, 0.5);
+      Curve_To (Cr, 2.0, 1.5, 6.0, -0.5, 6.2, 0.5);
+      Line_To (Cr, 6.2, 4.75);
+      Curve_To (Cr, 6.2, 3.75, 2.0, 5.75, 2.0, 4.75);
+      Close_Path (Cr);
+
+      Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
+      Set_Line_Width (Cr, 1.0/16.0);
       Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
       Set_Line_Join (Cr, Cairo_Line_Join_Round);
       Cairo.Stroke (Cr);
