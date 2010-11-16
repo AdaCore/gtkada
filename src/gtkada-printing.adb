@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
 with Unchecked_Conversion;
 
 with Glib.Object; use Glib.Object;
@@ -352,12 +353,11 @@ package body Gtkada.Printing is
       Setup_Stub   : Gtk_Page_Setup_Record;
       Setup        : constant Gtk_Page_Setup :=
          Gtk_Page_Setup (Get_User_Data (Setup_Addr, Setup_Stub));
-      User_Data    : constant System.Address := To_Address (Args, 4);
 
    begin
       if Op.Request_Page_Setup /= null then
          Op.Request_Page_Setup
-           (Gtkada_Print_Operation (Op), Context, Page_Num, Setup, User_Data);
+           (Gtkada_Print_Operation (Op), Context, Page_Num, Setup);
       end if;
    end Request_Page_Setup_Handler_Wrapper;
 

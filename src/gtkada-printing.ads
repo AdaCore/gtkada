@@ -52,8 +52,6 @@
 --  </description>
 --  <group>Miscellaneous</group>
 
-with System;
-
 with Glib; use Glib;
 with Glib.Error;
 
@@ -230,8 +228,7 @@ package Gtkada.Printing is
      (Op          : Gtkada_Print_Operation;
       Context     : Gtk_Print_Context;
       Page_Number : Gint;
-      Setup       : Gtk_Page_Setup;
-      User_Data   : System.Address);
+      Setup       : Gtk_Page_Setup);
    --  Called once for every page that is printed, to give the application
    --  a chance to modify the page setup. Any changes done to setup will be
    --  in force only for printing this page.
