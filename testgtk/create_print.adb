@@ -47,12 +47,21 @@ with Cairo;               use Cairo;
 
 package body Create_Print is
 
+   type Print_Op_Record is new Gtkada_Print_Operation_Record with null record;
+   type Print_Op_Access is access all Print_Op_Record'Class;
+
    procedure Request_Page_Setup
-     (Print_Operation : Gtkada_Print_Operation;
+     (Print_Operation : access Print_Op_Record;
       Context         : Gtk_Print_Context;
       Page_Num        : Gint;
       Setup           : Gtk_Page_Setup);
-   --  Callback to setup page layout when printing.
+   --  (Overriding) Callback to setup page layout when printing.
+
+   procedure Draw_Page
+     (Print_Operation : access Print_Op_Record;
+      Context         : Gtk_Print_Context;
+      Page_Num        : Gint);
+   --  (Overriding) Callback to draw the pages as they are being printed.
 
    ----------
    -- Help --
@@ -71,7 +80,7 @@ package body Create_Print is
    ---------------
 
    procedure Draw_Page
-     (Print_Operation : Gtkada_Print_Operation;
+     (Print_Operation : access Print_Op_Record;
       Context         : Gtk_Print_Context;
       Page_Num        : Gint)
    is
@@ -134,7 +143,7 @@ package body Create_Print is
    ------------------------
 
    procedure Request_Page_Setup
-     (Print_Operation : Gtkada_Print_Operation;
+     (Print_Operation : access Print_Op_Record;
       Context         : Gtk_Print_Context;
       Page_Num        : Gint;
       Setup           : Gtk_Page_Setup)
@@ -159,7 +168,7 @@ package body Create_Print is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box      : Gtk_Box;
-      Print_Op : Gtkada_Print_Operation;
+      Print_Op : Print_Op_Access;
       Result   : Gtk_Print_Operation_Result;
    begin
       Set_Label (Frame, "Printing");
@@ -168,14 +177,12 @@ package body Create_Print is
       Add (Frame, Box);
 
       --  Set up print operation basics
-      Gtk_New (Print_Op);
+      Print_Op := new Print_Op_Record;
+      Gtkada.Printing.Initialize (Print_Op);
+
       Set_Current_Page (Print_Op, 1);
       Set_N_Pages (Print_Op, 2);
       Set_Unit (Print_Op, Inch);
-
-      --  Connect signals
-      Install_Draw_Page_Handler (Print_Op, Draw_Page'Access);
-      Install_Request_Page_Setup_Handler (Print_Op, Request_Page_Setup'Access);
 
       --  Call up the print operation dialog
       Result := Connect_And_Run

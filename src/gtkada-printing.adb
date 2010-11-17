@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with System.Assertions; use System.Assertions;
 with Unchecked_Conversion;
 
 with Glib.Object; use Glib.Object;
@@ -89,6 +90,111 @@ package body Gtkada.Printing is
       Args : Glib.Values.GValues);
    --  Wrapper around callback for "status-changed".
 
+   -----------------------------
+   -- Default implementations --
+   -----------------------------
+
+   ---------------
+   -- Draw_Page --
+   ---------------
+
+   procedure Draw_Page
+     (Op          : access Gtkada_Print_Operation_Record;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint) is
+   begin
+      --  This procedure should be overridden.
+      Raise_Assert_Failure ("Subprogram ""Draw_Page"" should be overridden");
+   end Draw_Page;
+
+   -----------------
+   -- Begin_Print --
+   -----------------
+
+   procedure Begin_Print
+     (Op      : access Gtkada_Print_Operation_Record;
+      Context : Gtk_Print_Context) is
+   begin
+      --  Default implementation : do nothing
+      null;
+   end Begin_Print;
+
+   ----------
+   -- Done --
+   ----------
+
+   procedure Done
+     (Op     : access Gtkada_Print_Operation_Record;
+      Result : Gtk_Print_Operation_Result) is
+   begin
+      --  Default implementation : do nothing
+      null;
+   end Done;
+
+   ---------------
+   -- End_Print --
+   ---------------
+
+   procedure End_Print
+     (Op      : access Gtkada_Print_Operation_Record;
+      Context : Gtk_Print_Context) is
+   begin
+      --  Default implementation : do nothing
+      null;
+   end End_Print;
+
+   --------------
+   -- Paginate --
+   --------------
+
+   function Paginate
+     (Op      : access Gtkada_Print_Operation_Record;
+      Context : Gtk_Print_Context) return Boolean is
+      pragma Unreferenced (Op, Context);
+   begin
+      --  Default implementation : do nothing
+      return True;
+   end Paginate;
+
+   -------------
+   -- Preview --
+   -------------
+
+   function Preview
+     (Op          : access Gtkada_Print_Operation_Record;
+      Preview     : Gtk_Print_Operation_Preview;
+      Context     : Gtk_Print_Context;
+      Parent      : Gtk_Window) return Boolean is
+      pragma Unreferenced (Op, Preview, Context, Parent);
+   begin
+      --  Default implementation: do not override the Gtk+ preview mechanism.
+      return False;
+   end Preview;
+
+   ------------------------
+   -- Request_Page_Setup --
+   ------------------------
+
+   procedure Request_Page_Setup
+     (Op          : access Gtkada_Print_Operation_Record;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint;
+      Setup       : Gtk_Page_Setup) is
+   begin
+      --  Default implementation : do nothing
+      null;
+   end Request_Page_Setup;
+
+   --------------------
+   -- Status_Changed --
+   --------------------
+
+   procedure Status_Changed (Op : access Gtkada_Print_Operation_Record) is
+   begin
+      --  Default implementation : do nothing
+      null;
+   end Status_Changed;
+
    ---------------------------------
    -- Begin_Print_Handler_Wrapper --
    ---------------------------------
@@ -102,9 +208,7 @@ package body Gtkada.Printing is
       Context      : constant Gtk_Print_Context :=
         Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
    begin
-      if Op.Begin_Print /= null then
-         Op.Begin_Print (Gtkada_Print_Operation (Op), Context);
-      end if;
+      Begin_Print (Op, Context);
    end Begin_Print_Handler_Wrapper;
 
    --------------------------
@@ -116,11 +220,9 @@ package body Gtkada.Printing is
       Args : Glib.Values.GValues)
    is
       Result : constant Gtk_Print_Operation_Result :=
-        Gtk_Print_Operation_Result'Val (To_Guint (Args, 1));
+        Gtk_Print_Operation_Result'Val (Get_Enum (Nth (Args, 1)));
    begin
-      if Op.Done /= null then
-         Op.Done (Gtkada_Print_Operation (Op), Result);
-      end if;
+      Done (Op, Result);
    end Done_Handler_Wrapper;
 
    -------------------------------
@@ -138,9 +240,7 @@ package body Gtkada.Printing is
       Page_Num : constant Gint := To_Gint (Args, 2);
 
    begin
-      if Op.Draw_Page /= null then
-         Op.Draw_Page (Gtkada_Print_Operation (Op), Context, Page_Num);
-      end if;
+      Draw_Page (Op, Context, Page_Num);
    end Draw_Page_Handler_Wrapper;
 
    -------------------------------
@@ -156,9 +256,7 @@ package body Gtkada.Printing is
       Context      : constant Gtk_Print_Context :=
         Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
    begin
-      if Op.End_Print /= null then
-         Op.End_Print (Gtkada_Print_Operation (Op), Context);
-      end if;
+      End_Print (Op, Context);
    end End_Print_Handler_Wrapper;
 
    -------------
@@ -181,102 +279,6 @@ package body Gtkada.Printing is
       Gtk.Print_Operation.Initialize (Widget);
    end Initialize;
 
-   ---------------------------------
-   -- Install_Begin_Print_Handler --
-   ---------------------------------
-
-   procedure Install_Begin_Print_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Begin_Print_Handler)
-   is
-   begin
-      Op.Begin_Print := Handler;
-   end Install_Begin_Print_Handler;
-
-   --------------------------
-   -- Install_Done_Handler --
-   --------------------------
-
-   procedure Install_Done_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Done_Handler)
-   is
-   begin
-      Op.Done := Handler;
-   end Install_Done_Handler;
-
-   -------------------------------
-   -- Install_Draw_Page_Handler --
-   -------------------------------
-
-   procedure Install_Draw_Page_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Draw_Page_Handler)
-   is
-   begin
-      Op.Draw_Page := Handler;
-   end Install_Draw_Page_Handler;
-
-   -------------------------------
-   -- Install_End_Print_Handler --
-   -------------------------------
-
-   procedure Install_End_Print_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : End_Print_Handler)
-   is
-   begin
-      Op.End_Print := Handler;
-   end Install_End_Print_Handler;
-
-   ------------------------------
-   -- Install_Paginate_Handler --
-   ------------------------------
-
-   procedure Install_Paginate_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Paginate_Handler)
-   is
-   begin
-      Op.Paginate := Handler;
-   end Install_Paginate_Handler;
-
-   -----------------------------
-   -- Install_Preview_Handler --
-   -----------------------------
-
-   procedure Install_Preview_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Preview_Handler)
-   is
-   begin
-      Op.Preview := Handler;
-   end Install_Preview_Handler;
-
-   ----------------------------------------
-   -- Install_Request_Page_Setup_Handler --
-   ----------------------------------------
-
-   procedure Install_Request_Page_Setup_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Request_Page_Setup_Handler)
-   is
-   begin
-      Op.Request_Page_Setup := Handler;
-   end Install_Request_Page_Setup_Handler;
-
-   ------------------------------------
-   -- Install_Status_Changed_Handler --
-   ------------------------------------
-
-   procedure Install_Status_Changed_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Status_Changed_Handler)
-   is
-   begin
-      Op.Status_Changed := Handler;
-   end Install_Status_Changed_Handler;
-
    ------------------------------
    -- Paginate_Handler_Wrapper --
    ------------------------------
@@ -291,12 +293,7 @@ package body Gtkada.Printing is
       Context      : constant Gtk_Print_Context :=
         Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
    begin
-      if Op.Paginate /= null then
-         return Boolean'Pos
-           (Op.Paginate (Gtkada_Print_Operation (Op), Context));
-      else
-         return Boolean'Pos (False);
-      end if;
+      return Boolean'Pos (Paginate (Op, Context));
    end Paginate_Handler_Wrapper;
 
    -----------------------------
@@ -312,7 +309,7 @@ package body Gtkada.Printing is
       function To_Preview is
         new Unchecked_Conversion (System.Address, Gtk_Print_Operation_Preview);
       Preview_Addr : constant System.Address := To_Address (Args, 1);
-      Preview      : constant Gtk_Print_Operation_Preview :=
+      Preview_Op   : constant Gtk_Print_Operation_Preview :=
         To_Preview (Preview_Addr);
 
       Context_Addr : constant System.Address := To_Address (Args, 2);
@@ -326,14 +323,7 @@ package body Gtkada.Printing is
         Gtk_Window (Get_User_Data (Parent_Addr, Parent_Stub));
 
    begin
-      if Op.Preview /= null then
-         return Boolean'Pos
-           (Op.Preview
-             (Gtkada_Print_Operation (Op), Preview, Context, Parent));
-      else
-         --  Do not request to take over the print preview dialog.
-         return Boolean'Pos (False);
-      end if;
+      return Boolean'Pos (Preview (Op, Preview_Op, Context, Parent));
    end Preview_Handler_Wrapper;
 
    ----------------------------------------
@@ -355,10 +345,7 @@ package body Gtkada.Printing is
          Gtk_Page_Setup (Get_User_Data (Setup_Addr, Setup_Stub));
 
    begin
-      if Op.Request_Page_Setup /= null then
-         Op.Request_Page_Setup
-           (Gtkada_Print_Operation (Op), Context, Page_Num, Setup);
-      end if;
+      Request_Page_Setup (Op, Context, Page_Num, Setup);
    end Request_Page_Setup_Handler_Wrapper;
 
    ------------------------------------
@@ -371,9 +358,7 @@ package body Gtkada.Printing is
    is
       pragma Unreferenced (Args);
    begin
-      if Op.Status_Changed /= null then
-         Op.Status_Changed (Gtkada_Print_Operation (Op));
-      end if;
+      Status_Changed (Op);
    end Status_Changed_Handler_Wrapper;
 
    ---------
@@ -390,48 +375,31 @@ package body Gtkada.Printing is
    begin
       --  Connect all handlers
 
-      if Op.Begin_Print /= null then
-         Object_Callback.Connect
-           (Op, "begin-print", Begin_Print_Handler_Wrapper'Access);
-      end if;
+      Object_Callback.Connect
+        (Op, "begin-print", Begin_Print_Handler_Wrapper'Access);
 
-      if Op.Done /= null then
-         Object_Callback.Connect (Op, "done", Done_Handler_Wrapper'Access);
-      end if;
+      Object_Callback.Connect
+        (Op, "done", Done_Handler_Wrapper'Access);
 
-      if Op.Draw_Page /= null then
-         Object_Callback.Connect
-           (Op, "draw-page", Draw_Page_Handler_Wrapper'Access);
-      end if;
+      Object_Callback.Connect
+        (Op, "draw-page",
+         Draw_Page_Handler_Wrapper'Access);
 
-      if Op.End_Print /= null then
-         Object_Callback.Connect
-           (Op, "end-print", End_Print_Handler_Wrapper'Access);
-      end if;
+      Object_Callback.Connect
+        (Op, "end-print", End_Print_Handler_Wrapper'Access);
 
-      if Op.Paginate /= null then
-         Object_Boolean_Return_Callback.Connect
-           (Op, "paginate", Paginate_Handler_Wrapper'Access);
-      end if;
+      Object_Boolean_Return_Callback.Connect
+        (Op, "paginate", Paginate_Handler_Wrapper'Access);
 
-      if Op.Preview /= null then
-         Object_Boolean_Return_Callback.Connect
+      Object_Boolean_Return_Callback.Connect
            (Op, "preview", Preview_Handler_Wrapper'Access);
-      end if;
 
-      if Op.Request_Page_Setup /= null then
-         Object_Callback.Connect
-           (Op,
-            "request-page-setup",
-            Request_Page_Setup_Handler_Wrapper'Access);
-      end if;
+      Object_Callback.Connect
+        (Op, "request-page-setup",
+         Request_Page_Setup_Handler_Wrapper'Access);
 
-      if Op.Status_Changed /= null then
-         Object_Callback.Connect
-           (Op, "status-changed", Status_Changed_Handler_Wrapper'Access);
-      end if;
-
-      --  ??? Add other connections here
+      Object_Callback.Connect
+        (Op, "status-changed", Status_Changed_Handler_Wrapper'Access);
 
       return Gtk.Print_Operation.Run
         (Gtk_Print_Operation (Op), Action, Parent, Error);

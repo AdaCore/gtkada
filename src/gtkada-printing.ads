@@ -29,27 +29,65 @@
 --  <description>
 --  This package provides a ready-to-use high level printing object.
 --  Use functionality from Gtk.Print_Operation to manipulate the
---  printing object, and the functionality in this package to connect
---  signal handlers and run a printing operation.
+--  printing object, and the functionality in this package to provide
+--  the handlers for the printing operation.
 --
---  Typically, to use this high-level printing API, create a new
---  Gtkada_Print_Operation object with Gtk_New when the user wants to print.
---  Then, set some properties on it (e.g. the page size, any Gtk_Print_Settings
---  from previous print operations, the number of pages, and the current page).
---  Use functionality from the Gtk.Print_Operation package to manipulate a
---  Gtkada_Print_Operation.
---
---  You may also connect various callbacks using the Install_*_Handler
---  procedures in this package, which are called at various stages of the
---  printing process.
---
---  Finally, you start the print operation by calling Connect_And_Run.  It
---  will then show a dialog, and let the user select a printer and options.
+--  Typically, to use this high-level printing API:
+--    - derive from the Gtkada_Print_Operation_Record object
+--    - override the Draw_Page operation
+--    - (optional) override any other operation useful to you
+--    - start the print operation by
+--          - first setting the number of pages through Set_N_Pages
+--          - then calling Connect_And_Run.
+--  A dialog will be displayed, letting the user select a printer and options.
 --  When the user finishes the dialog, various signals will be emitted on the
---  Gtkada_Print_Operation, the main one being "draw-page" which invokes the
---  installed Draw_Page_Handler.  The Draw_Page_Handler renders the requested
---  page on the provided Gtk_Print_Context using Cairo.
+--  Gtkada_Print_Operation, which will call the operations on your object.
+--
 --  </description>
+--  <example>
+--
+--     --  Create a derived type
+--
+--     type Print_Op_Record is new Gtkada_Print_Operation_Record
+--     with record
+--        My_Data : My_Type;
+--     end record;
+--     type Print_Op_Access is access all Print_Op_Record'Class;
+--
+--     --  Override Draw_Page
+--
+--     procedure Draw_Page
+--       (Print_Operation : access Print_Op_Record;
+--        Context         : Gtk_Print_Context;
+--        Page_Num        : Gint)
+--     is
+--        Cr : Cairo_Context;
+--     begin
+--        Cr := Get_Cairo_Context (Context);
+--
+--        --  Do drawing here
+--
+--     end Draw_Page;
+--
+--
+--     --  Do the printing
+--     declare
+--        Print_Op : Print_Op_Access;
+--        Result   : Gtk_Print_Operation_Result;
+--     begin
+--        --  Initialize
+--        Print_Op := new Print_Op_Record;
+--        Print_Op.My_Data := Some_Data;
+--
+--        --  Set the number of pages to print
+--        Set_N_Pages (Print_Op, 2);
+--
+--        --  Launch the printing
+--        Result := Connect_And_Run
+--          (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
+--     end;
+--
+--  </example>
 --  <group>Miscellaneous</group>
 
 with Glib; use Glib;
@@ -80,12 +118,31 @@ package Gtkada.Printing is
    --  Runs the print operation, using the handlers installed in Op.
    --  See Gtk.Print_Operations.Run.
 
-   -----------------
-   -- begin-print --
-   -----------------
+   -------------------------
+   -- Printing operations --
+   -------------------------
 
-   type Begin_Print_Handler is access procedure
-     (Op      : Gtkada_Print_Operation;
+   --  The following primitive operations are called by the printing procedure.
+   --  By default, these operations do nothing.
+   --  It is mandatory to override Draw_Page, the other callbacks are optional.
+
+   procedure Draw_Page
+     (Op          : access Gtkada_Print_Operation_Record;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint);
+   --  Called for every page that is printed. This handler must render the
+   --  page Page_Number onto the cairo context obtained from Context using
+   --  Gtk.Print_Context.Get_Cairo_Context.
+   --
+   --  Use Gtk.Print_Operation.Set_Use_Full_Page and
+   --  Gtk.Print_Operation.Set_Unit before starting the print operation to set
+   --  up the transformation of the cairo context according to your needs.
+   --
+   --  This is the main printing handler. This has to be overriden for the
+   --  printing operation to work.
+
+   procedure Begin_Print
+     (Op      : access Gtkada_Print_Operation_Record;
       Context : Gtk_Print_Context);
    --  Called after the user has finished changing print settings in the
    --  dialog, before the actual rendering starts.
@@ -94,17 +151,8 @@ package Gtkada.Printing is
    --  Gtk_Print_Context and paginate the document accordingly, and then
    --  set the number of pages with Gtk.Print_Operation.Set_N_Pages.
 
-   procedure Install_Begin_Print_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Begin_Print_Handler);
-   --  Install a Begin_Print_Handler.
-
-   ----------
-   -- done --
-   ----------
-
-   type Done_Handler is access procedure
-     (Op     : Gtkada_Print_Operation;
+   procedure Done
+     (Op     : access Gtkada_Print_Operation_Record;
       Result : Gtk_Print_Operation_Result);
    --  Called when the print operation run has finished doing everything
    --  required for printing.
@@ -117,64 +165,23 @@ package Gtkada.Printing is
    --  Gtk.Print_Operation.Is_Finished may still return False after
    --  done was emitted.
 
-   procedure Install_Done_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Done_Handler);
-   --  Install a Done_Handler.
-
-   ---------------
-   -- draw-page --
-   ---------------
-
-   type Draw_Page_Handler is access procedure
-     (Op          : Gtkada_Print_Operation;
-      Context     : Gtk_Print_Context;
-      Page_Number : Gint);
-   --  Called for every page that is printed. This handler must render the
-   --  page Page_Number onto the cairo context obtained from Context using
-   --  Gtk.Print_Context.Get_Cairo_Context.
-   --
-   --  Use Gtk.Print_Operation.Set_Use_Full_Page and
-   --  Gtk.Print_Operation.Set_Unit before starting the print operation to set
-   --  up the transformation of the cairo context according to your needs.
-
-   procedure Install_Draw_Page_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Draw_Page_Handler);
-   --  Install a Draw_Page_Handler.
-
-   ---------------
-   -- end-print --
-   ---------------
-
-   type End_Print_Handler is access procedure
-     (Op      : Gtkada_Print_Operation;
+   procedure End_Print
+     (Op      : access Gtkada_Print_Operation_Record;
       Context : Gtk_Print_Context);
    --  Called after all pages have been rendered.
    --
    --  This handler can clean up any resources that have been allocated
-   --  in the "begin-print" handler.
+   --  in Begin_Print.
 
-   procedure Install_End_Print_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : End_Print_Handler);
-   --  Install an End_Print_Handler.
-
-   --------------
-   -- paginate --
-   --------------
-
-   type Paginate_Handler is access function
-     (Op      : Gtkada_Print_Operation;
-      Context : Gtk_Print_Context)
-     return Boolean;
+   function Paginate
+     (Op      : access Gtkada_Print_Operation_Record;
+      Context : Gtk_Print_Context) return Boolean;
    --  Called after the "begin-print" signal, but before the actual rendering
-   --  starts. It keeps getting emitted until a connected signal handler
-   --  returns True.
+   --  starts. It keeps getting called until it returns True.
    --
    --  The "paginate" signal is intended to be used for paginating a document
    --  in small chunks, to avoid blocking the user interface for a long
-   --  time. The signal handler should update the number of pages using
+   --  time. This function should update the number of pages using
    --  Gtk.Print_Operation.Set_N_Pages, and return True if the document
    --  has been completely paginated.
    --
@@ -182,31 +189,23 @@ package Gtkada.Printing is
    --  it all in the "begin-print" handler, and set the number of pages
    --  from there.
 
-   procedure Install_Paginate_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Paginate_Handler);
-   --  Install a Paginate_Handler.
-
-   -------------
-   -- preview --
-   -------------
-
-   type Preview_Handler is access function
-     (Op          : Gtkada_Print_Operation;
+   function Preview
+     (Op          : access Gtkada_Print_Operation_Record;
       Preview     : Gtk_Print_Operation_Preview;
       Context     : Gtk_Print_Context;
       Parent      : Gtk_Window)
      return Boolean;
    --  Called when a preview is requested from the native dialog.
-   --  Returns True if the listener wants to take over control of the preview.
+   --  This should return True if the in order to take over control of the
+   --  preview.
    --
    --  The default handler for this signal uses an external viewer
    --  application to preview.
    --
-   --  To implement a custom print preview, an application must return
-   --  True from its handler for this signal. In order to use the
-   --  provided Context for the preview implementation, it must be
-   --  given a suitable cairo context with Gtk.Print_Context.Set_Cairo_Context.
+   --  To implement a custom print preview, the overridden implementation
+   --  should return True
+   --  In order to use the provided Context for the preview implementation, it
+   --  must be given a suitable cairo context with Set_Cairo_Context.
    --
    --  The custom preview implementation can use
    --  Gtk.Print_Operation_Preview.Is_Selected and
@@ -215,17 +214,8 @@ package Gtkada.Printing is
    --  finished by calling Gtk.Print_Operation_Preview.End_Preview
    --  (typically in response to the user clicking a close button).
 
-   procedure Install_Preview_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Preview_Handler);
-   --  Install a Preview_Handler.
-
-   ------------------------
-   -- request-page-setup --
-   ------------------------
-
-   type Request_Page_Setup_Handler is access procedure
-     (Op          : Gtkada_Print_Operation;
+   procedure Request_Page_Setup
+     (Op          : access Gtkada_Print_Operation_Record;
       Context     : Gtk_Print_Context;
       Page_Number : Gint;
       Setup       : Gtk_Page_Setup);
@@ -233,40 +223,15 @@ package Gtkada.Printing is
    --  a chance to modify the page setup. Any changes done to setup will be
    --  in force only for printing this page.
 
-   procedure Install_Request_Page_Setup_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Request_Page_Setup_Handler);
-   --  Install a Request_Page_Setup_Handler.
-
-   --------------------
-   -- status-changed --
-   --------------------
-
-   type Status_Changed_Handler is access procedure
-     (Op : Gtkada_Print_Operation);
+   procedure Status_Changed (Op : access Gtkada_Print_Operation_Record);
    --  Called between the various phases of the print operation.
    --  See Gtk_Print_Status for the phases that are being discriminated.
    --  Use Gtk.Print_Operation.Get_Status to find out the current
    --  status.
 
-   procedure Install_Status_Changed_Handler
-     (Op      : access Gtkada_Print_Operation_Record'Class;
-      Handler : Status_Changed_Handler);
-   --  Install a Status_Changed_Handler.
-
 private
 
-   type Gtkada_Print_Operation_Record is
-     new Gtk_Print_Operation_Record
-   with record
-      Begin_Print        : Begin_Print_Handler        := null;
-      Done               : Done_Handler               := null;
-      Draw_Page          : Draw_Page_Handler          := null;
-      End_Print          : End_Print_Handler          := null;
-      Paginate           : Paginate_Handler           := null;
-      Preview            : Preview_Handler            := null;
-      Request_Page_Setup : Request_Page_Setup_Handler := null;
-      Status_Changed     : Status_Changed_Handler     := null;
-   end record;
+   type Gtkada_Print_Operation_Record is new Gtk_Print_Operation_Record with
+     null record;
 
 end Gtkada.Printing;
