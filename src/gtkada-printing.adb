@@ -42,7 +42,7 @@ package body Gtkada.Printing is
      (Gtkada_Print_Operation_Record);
 
    package Object_Boolean_Return_Callback is new Gtk.Handlers.Return_Callback
-     (Gtkada_Print_Operation_Record, Gboolean);
+     (Gtkada_Print_Operation_Record, Boolean);
 
    -----------------------
    -- Local subprograms --
@@ -71,13 +71,13 @@ package body Gtkada.Printing is
    function Paginate_Handler_Wrapper
      (Op   : access Gtkada_Print_Operation_Record'Class;
       Args : Glib.Values.GValues)
-     return Gboolean;
+     return Boolean;
    --  Wrapper around callback for "paginate".
 
    function Preview_Handler_Wrapper
      (Op   : access Gtkada_Print_Operation_Record'Class;
       Args : Glib.Values.GValues)
-     return Gboolean;
+     return Boolean;
    --  Wrapper around callback for "preview".
 
    procedure Request_Page_Setup_Handler_Wrapper
@@ -286,14 +286,14 @@ package body Gtkada.Printing is
    function Paginate_Handler_Wrapper
      (Op   : access Gtkada_Print_Operation_Record'Class;
       Args : Glib.Values.GValues)
-     return Gboolean
+     return Boolean
    is
       Context_Addr : constant System.Address := To_Address (Args, 1);
       Context_Stub : Gtk_Print_Context_Record;
       Context      : constant Gtk_Print_Context :=
         Gtk_Print_Context (Get_User_Data (Context_Addr, Context_Stub));
    begin
-      return Boolean'Pos (Paginate (Op, Context));
+      return Paginate (Op, Context);
    end Paginate_Handler_Wrapper;
 
    -----------------------------
@@ -303,7 +303,7 @@ package body Gtkada.Printing is
    function Preview_Handler_Wrapper
      (Op   : access Gtkada_Print_Operation_Record'Class;
       Args : Glib.Values.GValues)
-     return Gboolean
+     return Boolean
    is
       --  ???  ugly, but otherwise correct.
       function To_Preview is
@@ -323,7 +323,7 @@ package body Gtkada.Printing is
         Gtk_Window (Get_User_Data (Parent_Addr, Parent_Stub));
 
    begin
-      return Boolean'Pos (Preview (Op, Preview_Op, Context, Parent));
+      return Preview (Op, Preview_Op, Context, Parent);
    end Preview_Handler_Wrapper;
 
    ----------------------------------------
