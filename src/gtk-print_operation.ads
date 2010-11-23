@@ -45,6 +45,10 @@
 --  the dialog various signals will be emitted on the Gtk_Print_Operation, the
 --  main one being draw-page, which you are supposed to catch and render the
 --  page on the provided Gtk_Print_Context using Cairo.
+--
+--  Note: on UNIX/Linux, Gtk+ is loading at run-time the libraries for printing
+--  support. You will need to point the environment variable GTK_EXE_PREFIX
+--  to the root directory of your Gtk+ install before calling Run.
 --  </description>
 --  <c_version>2.16.6</c_version>
 

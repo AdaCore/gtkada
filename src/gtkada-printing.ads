@@ -43,6 +43,9 @@
 --  When the user finishes the dialog, various signals will be emitted on the
 --  Gtkada_Print_Operation, which will call the operations on your object.
 --
+--  Note: on UNIX/Linux, Gtk+ is loading at run-time the libraries for printing
+--  support. You will need to point the environment variable GTK_EXE_PREFIX
+--  to the root directory of your Gtk+ install before calling Connect_And_Run.
 --  </description>
 --  <example>
 --
