@@ -305,6 +305,14 @@ using bash:
 $ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
 @end smallexample
 
+If your application is using printing, on UNIX and Linux you will need to
+point your environment variable GTK_EXE_PREFIX to the root directory of your
+Gtk+ installation:
+
+@smallexample
+$ export GTK_EXE_PREFIX=/opt/gtk/
+@end smallexample
+
 @c ---------------------------------------------------------------------
 @node How to distribute a GtkAda application
 @section How to distribute a GtkAda application
