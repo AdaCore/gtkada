@@ -101,6 +101,7 @@ with Create_Link_Buttons;
 with Create_List;
 with Create_Main_Loop;
 with Create_Menu;
+with Create_MDI;
 with Create_Notebook;
 with Create_Opacity;
 with Create_Paned;
@@ -306,6 +307,8 @@ package body Main_Windows is
                                          Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
                                          Create_Menu.Help'Access),
+      (NS ("mdi"),              Gtkada,  Create_MDI.Run'Access,
+                                         Create_MDI.Help'Access),
       (NS ("modal window"),     Base,    null, null),
       (NS ("multi paned"),      Gtkada,  Create_Splittable.Run'Access,
                                          Create_Splittable.Help'Access),

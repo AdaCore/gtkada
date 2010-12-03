@@ -850,11 +850,17 @@ package body Gtkada.MDI is
          Title_Bar_Color   => MDI.Title_Bar_Color,
          Focus_Title_Color => MDI.Focus_Title_Color);
 
+      --  Create a default empty central area. That will be overridden if the
+      --  user loads a perspective later on
+
+      Gtk_New (MDI.Central);
+      Add_Child (MDI, MDI.Central);
+
       --  Put an empty notebook in the MDI, which will act as a recipient for
       --  the Position_Default widgets
 
       Add_Child
-        (MDI, New_Child => Create_Notebook (MDI),
+        (MDI.Central, New_Child => Create_Notebook (MDI),
          Width       => -1,
          Height      => -1,
          Orientation => Orientation_Vertical);
@@ -1929,7 +1935,9 @@ package body Gtkada.MDI is
             Child_Drag_Finished (C);
 
          when In_Drag =>
-            Set_Border_Width (C.MDI.Central, 0);
+            if C.MDI.Central /= null then
+               Set_Border_Width (C.MDI.Central, 0);
+            end if;
 
             Destroy_Dnd_Window (C.MDI);
             Draw_Dnd_Rectangle (C.MDI, Mode => Destroy);
@@ -2087,7 +2095,9 @@ package body Gtkada.MDI is
                      end if;
 
                   when Position_Automatic =>
-                     if Current = Gtk_Widget (C.MDI.Central) then
+                     if C.MDI.Central /= null
+                        and then Current = Gtk_Widget (C.MDI.Central)
+                     then
                         Add_Child
                           (Win         => C.MDI.Central,
                            New_Child   => Note,
@@ -2299,7 +2309,9 @@ package body Gtkada.MDI is
                   return False;
                end if;
 
-               Set_Border_Width (C.MDI.Central, 10);
+               if C.MDI.Central /= null then
+                  Set_Border_Width (C.MDI.Central, 10);
+               end if;
 
                C.MDI.In_Drag := In_Drag;
                Pointer_Ungrab (Time => 0);
@@ -3975,6 +3987,11 @@ package body Gtkada.MDI is
       end if;
 
       if Note = null then
+         if Traces then
+            Print_Debug ("no notebook yet, Position="
+                         & Child_Position'Image (Initial_Position));
+         end if;
+
          case Initial_Position is
             when Position_Bottom =>
                Note := Create_Notebook (MDI);
@@ -4794,8 +4811,6 @@ package body Gtkada.MDI is
 
          --  Prevent changing perspective when setting "Active" on the buttons
          MDI.Loading_Desktop := True;
-
-         Set_Submenu (MDI.Perspective_Menu_Item, Null_Submenu);
 
          Gtk_New (Submenu);
          Set_Submenu (MDI.Perspective_Menu_Item, Submenu);
@@ -7073,7 +7088,7 @@ package body Gtkada.MDI is
             return;
          end if;
 
-         if Current = Gtk_Widget (MDI) then
+         if Current = Gtk_Widget (MDI) and then MDI.Central /= null then
             Current := Gtk_Widget (MDI.Central);
 
             --  Central area not empty ? We have therefore passed the mouse on
