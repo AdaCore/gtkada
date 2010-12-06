@@ -1,3 +1,9 @@
+2010-12-06  Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/x11/gdkdnd-x11.c (gdk_window_cache_new): Disable use of
+	XCompositeGetOverlayWindow/XCompositeReleaseOverlayWindow, apparently
+	not available on older linux distribs.
+
 2010-10-25  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtkcombo.c (gtk_combo_popup_button_press): Fix typo.
@@ -280,3 +286,21 @@
  
    gtk_grab_add (combo->popwin);
  
+--- gdk/x11/gdkdnd-x11.c.old	Thu Sep 23 05:00:36 2010
++++ gdk/x11/gdkdnd-x11.c	Mon Dec  6 17:27:50 2010
+@@ -570,6 +570,7 @@ gdk_window_cache_new (GdkScreen *screen)
+ 
+   g_free (children);
+ 
++#if 0
+ #ifdef HAVE_XCOMPOSITE
+   /*
+    * Add the composite overlay window to the cache, as this can be a reasonable
+@@ -584,6 +585,7 @@ gdk_window_cache_new (GdkScreen *screen)
+       gdk_window_cache_add (result, cow, 0, 0, gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
+       XCompositeReleaseOverlayWindow (xdisplay, GDK_WINDOW_XWINDOW (root_window));
+     }
++#endif
+ #endif
+ 
+   return result;
