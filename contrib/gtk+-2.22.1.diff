@@ -1,3 +1,24 @@
+2010-12-06  Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/x11/gdkdnd-x11.c (gdk_window_cache_new): Disable use of
+	XCompositeGetOverlayWindow/XCompositeReleaseOverlayWindow, apparently
+	not available on older linux distribs.
+
+2010-10-25  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkcombo.c (gtk_combo_popup_button_press): Fix typo.
+	Submited at https://bugzilla.gnome.org/show_bug.cgi?id=633089
+
+2010-09-28  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (extend_selection): Fix typo in documentation.
+	When extending the selection in SELECT_WORDS granularity past the
+	end of a line, select only the EOL character(s).
+	When extending the selection in SELECT_LINES granularity, include
+	the EOL character(s) in the selection.
+
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
+
 2010-03-27  Arnaud Charlet  <charlet@adacore.com>
 
 	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
@@ -9,12 +30,6 @@
 	register a cursor blink if the text view if not realized.
 	This prevents a segmentation fault which can happen if the
 	text_view happens to get the focus before it has been realized.
-
-2010-02-24  Arnaud Charlet  <charlet@adacore.com>
-
-	* gdk/x11/gdkdnd-x11.c: Fix build on Solaris 8.
-	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=610966
-	Committed in Gtk+ 2.20.1
 
 2010-01-11  Arnaud Charlet  <charlet@adacore.com>
 
@@ -144,16 +159,6 @@
      {
        GdkWindowPaint *paint = list->data;
  
---- gdk/x11/gdkdnd-x11.c.old	2010-02-13 01:28:51.000000000 +0100
-+++ gdk/x11/gdkdnd-x11.c	2010-02-24 17:05:07.428011000 +0100
-@@ -27,6 +27,7 @@
- #include "config.h"
- #include <X11/Xlib.h>
- #include <X11/Xatom.h>
-+#include <X11/Xutil.h>
- #include <X11/extensions/shape.h>
- 
- #include <string.h>
 *** gtk/gtktextview.c.orig	Wed Mar 24 14:47:16 2010
 --- gtk/gtktextview.c	Wed Mar 24 14:47:19 2010
 *************** gtk_text_view_check_cursor_blink (GtkTex
@@ -169,7 +174,7 @@
         text_view->cursor_visible &&
         GTK_WIDGET_HAS_FOCUS (text_view))
       {
-!       if (cursor_blinks (text_view) && GTK_WIDGET_REALIZED (text_view))
+!       if (cursor_blinks (text_view) && gtk_widget_get_realized (text_view))
   	{
   	  if (text_view->blink_timeout == 0)
   	    {
@@ -186,4 +191,126 @@
 +      gtk_editable_set_position (GTK_EDITABLE (entry), 0);
 +      gtk_entry_recompute (entry);
 +    }
+ }
+
+ 
+--- gtk/gtktextview.c.orig	2010-09-28 16:24:33.000000000 +0200
++++ gtk/gtktextview.c	2010-09-28 17:13:53.000000000 +0200
+@@ -6115,7 +6115,7 @@ typedef enum 
+ /*
+  * Move @start and @end to the boundaries of the selection unit (indicated by 
+  * @granularity) which contained @start initially.
+- * If the selction unit is SELECT_WORDS and @start is not contained in a word
++ * If the selection unit is SELECT_WORDS and @start is not contained in a word
+  * the selection is extended to all the white spaces between the end of the 
+  * word preceding @start and the start of the one following.
+  */
+@@ -6144,26 +6144,37 @@ extend_selection (GtkTextView *text_view
+ 	{
+ 	  GtkTextIter tmp;
+ 
+-	  tmp = *start;
+-	  if (gtk_text_iter_backward_visible_word_start (&tmp))
+-	    gtk_text_iter_forward_visible_word_end (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
+-	    *start = tmp;
+-	  else
+-	    gtk_text_iter_set_line_offset (start, 0);
+-
+-	  tmp = *end;
+-	  if (!gtk_text_iter_forward_visible_word_end (&tmp))
+-	    gtk_text_iter_forward_to_end (&tmp);
+-
+-	  if (gtk_text_iter_ends_word (&tmp))
+-	    gtk_text_iter_backward_visible_word_start (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
+-	    *end = tmp;
++	  if (gtk_text_iter_ends_line (start))
++	    {
++	      /* start is at an end of line: simply extend the
++	       * selection to include the end-of-line character(s).
++	       */   
++	      if (!gtk_text_iter_forward_line (end))
++		gtk_text_iter_forward_to_end (end);
++	    }
+ 	  else
+-	    gtk_text_iter_forward_to_line_end (end);
++	    {  
++	      tmp = *start;
++	      if (gtk_text_iter_backward_visible_word_start (&tmp))
++		gtk_text_iter_forward_visible_word_end (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
++		*start = tmp;
++	      else
++		gtk_text_iter_set_line_offset (start, 0);
++
++	      tmp = *end;
++	      if (!gtk_text_iter_forward_visible_word_end (&tmp))
++		gtk_text_iter_forward_to_end (&tmp);
++
++	      if (gtk_text_iter_ends_word (&tmp))
++		gtk_text_iter_backward_visible_word_start (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
++		*end = tmp;
++	      else
++		gtk_text_iter_forward_to_line_end (end);
++	    }
+ 	}
+     }
+   else if (granularity == SELECT_LINES) 
+@@ -6186,6 +6197,12 @@ extend_selection (GtkTextView *text_view
+ 	  if (!gtk_text_view_starts_display_line (text_view, end))
+ 	    gtk_text_view_forward_display_line_end (text_view, end);
+ 	}
++	
++      /* At this point end points at the end of a line:
++       * include the end-of-line character(s) in the selection. 
++       */
++      if (!gtk_text_iter_forward_line (end))
++	gtk_text_iter_forward_to_end (end);
+     }
+ }
+  
+--- gtk/gtkcombo.c.orig	2010-10-25 12:08:06.000000000 +0200
++++ gtk/gtkcombo.c	2010-10-25 12:08:14.000000000 +0200
+@@ -668,7 +668,7 @@ gtk_combo_popup_button_press (GtkWidget 
+   popup_grab_on_window (combo->popwin->window,
+ 			gtk_get_current_event_time ());
+ 
+-  g_signal_emit_by_name (button, "depressed");
++  g_signal_emit_by_name (button, "pressed");
+ 
+   gtk_grab_add (combo->popwin);
+ 
+--- gdk/x11/gdkdnd-x11.c.old	2010-12-08 02:37:19.678401484 -0500
++++ gdk/x11/gdkdnd-x11.c	2010-12-08 02:35:39.119808966 -0500
+@@ -30,7 +30,9 @@
+ #include <X11/Xutil.h>
+ #include <X11/Xatom.h>
+ #include <X11/extensions/shape.h>
++#ifdef HAVE_XCOMPOSITE
+ #include <X11/extensions/Xcomposite.h>
++#endif
+ 
+ #include <string.h>
+ 
+@@ -570,6 +572,7 @@ gdk_window_cache_new (GdkScreen *screen)
+ 
+   g_free (children);
+ 
++#if 0
+ #ifdef HAVE_XCOMPOSITE
+   /*
+    * Add the composite overlay window to the cache, as this can be a reasonable
+@@ -585,6 +588,7 @@ gdk_window_cache_new (GdkScreen *screen)
+       XCompositeReleaseOverlayWindow (xdisplay, GDK_WINDOW_XWINDOW (root_window));
+     }
+ #endif
++#endif
+ 
+   return result;
  }
