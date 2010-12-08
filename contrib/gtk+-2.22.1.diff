@@ -286,9 +286,19 @@
  
    gtk_grab_add (combo->popwin);
  
---- gdk/x11/gdkdnd-x11.c.old	Thu Sep 23 05:00:36 2010
-+++ gdk/x11/gdkdnd-x11.c	Mon Dec  6 17:27:50 2010
-@@ -570,6 +570,7 @@ gdk_window_cache_new (GdkScreen *screen)
+--- gdk/x11/gdkdnd-x11.c.old	2010-12-08 02:37:19.678401484 -0500
++++ gdk/x11/gdkdnd-x11.c	2010-12-08 02:35:39.119808966 -0500
+@@ -30,7 +30,9 @@
+ #include <X11/Xutil.h>
+ #include <X11/Xatom.h>
+ #include <X11/extensions/shape.h>
++#ifdef HAVE_XCOMPOSITE
+ #include <X11/extensions/Xcomposite.h>
++#endif
+ 
+ #include <string.h>
+ 
+@@ -570,6 +572,7 @@ gdk_window_cache_new (GdkScreen *screen)
  
    g_free (children);
  
@@ -296,11 +306,11 @@
  #ifdef HAVE_XCOMPOSITE
    /*
     * Add the composite overlay window to the cache, as this can be a reasonable
-@@ -584,6 +585,7 @@ gdk_window_cache_new (GdkScreen *screen)
-       gdk_window_cache_add (result, cow, 0, 0, gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
+@@ -585,6 +588,7 @@ gdk_window_cache_new (GdkScreen *screen)
        XCompositeReleaseOverlayWindow (xdisplay, GDK_WINDOW_XWINDOW (root_window));
      }
-+#endif
  #endif
++#endif
  
    return result;
+ }
