@@ -399,7 +399,7 @@ package body Gtk.Print_Operation is
    ---------------------------
 
    function Run_Page_Setup_Dialog
-     (Parent     : access Gtk.Window.Gtk_Window_Record;
+     (Parent     : access Gtk.Window.Gtk_Window_Record'Class;
       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
       Settings   : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
       return Gtk.Page_Setup.Gtk_Page_Setup
