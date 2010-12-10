@@ -1080,7 +1080,7 @@ package Gtk.Widget is
 
    function Get_Snapshot
      (Widget    : access Gtk_Widget_Record;
-      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle_Access)
       return Gdk.Pixmap.Gdk_Pixmap;
    --  Create a Gdk_Pixmap of the contents of the widget and its children.
    --

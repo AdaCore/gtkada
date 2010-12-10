@@ -28,7 +28,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk.Bitmap;         use Gdk.Bitmap;
 with Gdk.Color;          use Gdk.Color;
+with Gdk.Pixmap;         use Gdk.Pixmap;
 with Gtk;                use Gtk;
 with Gtk.Accel_Group;    use Gtk.Accel_Group;
 with Gtk.Box;            use Gtk.Box;
@@ -41,7 +43,10 @@ with Gtkada.MDI;         use Gtkada.MDI;
 with Gtk.Toolbar;        use Gtk.Toolbar;
 with Gtkada.Handlers;    use Gtkada.Handlers;
 with Gtk.Toggle_Tool_Button;  use Gtk.Toggle_Tool_Button;
+with Gtk.Tool_Button;    use Gtk.Tool_Button;
 with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Window;         use Gtk.Window;
+with Gtk.Image;          use Gtk.Image;
 
 package body Create_MDI is
 
@@ -49,6 +54,7 @@ package body Create_MDI is
 
    function Create_Child return MDI_Child;
    procedure On_Opaque  (Button : access Gtk_Widget_Record'Class);
+   procedure On_Snapshot  (Button : access Gtk_Widget_Record'Class);
    procedure Do_Configure (MDI : access MDI_Window_Record'Class);
 
    MDI    : MDI_Window;
@@ -126,6 +132,38 @@ package body Create_MDI is
       Do_Configure (MDI);
    end On_Opaque;
 
+   -----------------
+   -- On_Snapshot --
+   -----------------
+
+   Iterator : Child_Iterator;
+
+   procedure On_Snapshot (Button : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Button);
+      Child : MDI_Child;
+      Pixmap : Gdk_Pixmap;
+      Window : Gtk_Window;
+      Image  : Gtk_Image;
+   begin
+      Child := Get (Iterator);
+
+      if Child = null then
+         Iterator := First_Child (MDI);
+         Child := Get (Iterator);
+      else
+         Next (Iterator);
+      end if;
+
+      Pixmap := Get_Snapshot (Child, null);
+
+      Gtk_New (Window);
+      Set_Default_Size (Window, 800, 600);
+
+      Gtk_New (Image, Pixmap, Null_Bitmap);
+      Add (Window, Image);
+      Show_All (Window);
+   end On_Snapshot;
+
    ------------------
    -- Create_Child --
    ------------------
@@ -164,6 +202,7 @@ package body Create_MDI is
       Bar    : Gtk_Toolbar;
       Box    : Gtk_Box;
       Toggle : Gtk_Toggle_Tool_Button;
+      Button : Gtk_Tool_Button;
       Group  : Gtk_Accel_Group;
 
       Menu   : Gtk_Menu;
@@ -193,6 +232,12 @@ package body Create_MDI is
       Gtk_New (Menu_Button, Label => "Menu");
       Set_Menu (Menu_Button, Menu);
       Insert (Bar, Menu_Button);
+
+      Gtk_New (Button, Label => "Snapshot");
+      Insert (Bar, Button);
+      Widget_Callback.Connect (Button, "clicked", On_Snapshot'Access);
+      --  Pressing "snapshot will cycle through the MDI children and take
+      --  a pixmap of the MDI children.
 
       --  Setup a minimal desktop. This is a required call to finish the
       --  setup of the MDI

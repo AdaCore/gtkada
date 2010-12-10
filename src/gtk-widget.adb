@@ -841,12 +841,12 @@ package body Gtk.Widget is
 
    function Get_Snapshot
      (Widget    : access Gtk_Widget_Record;
-      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle_Access)
       return Gdk.Pixmap.Gdk_Pixmap
    is
       function Internal
         (Widget    : System.Address;
-         Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+         Clip_Rect : Gdk.Rectangle.Gdk_Rectangle_Access)
          return Gdk.Pixmap.Gdk_Pixmap;
       pragma Import (C, Internal, "gtk_widget_get_snapshot");
    begin
