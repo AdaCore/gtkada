@@ -1712,9 +1712,13 @@ package body Gtkada.MDI is
             X := X + W + 1;
          end if;
 
-         Set_Text (Child.MDI.Title_Layout, Child.Title.all);
-         Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
+         if Child.MDI.Use_Short_Titles_For_Floats then
+            Set_Text (Child.MDI.Title_Layout, Child.Short_Title.all);
+         else
+            Set_Text (Child.MDI.Title_Layout, Child.Title.all);
+         end if;
 
+         Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
          Set_Source_Color (Cr, Get_White (Get_Style (Child.MDI)));
          Move_To (Cr, Gdouble (X), 0.0);
          Show_Layout (Cr, Child.MDI.Title_Layout);
@@ -3438,7 +3442,7 @@ package body Gtkada.MDI is
                end loop;
 
                Gtk_New (Diag,
-                        Title  => Child.Title.all,
+                        Title  => "",
                         Parent => Parent,
                         Flags  => No_Separator or Destroy_With_Parent);
             end;
@@ -3448,14 +3452,13 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Get_Vbox (Diag));
          else
             Gtk_New (Win);
-
-            if Child.MDI.Use_Short_Titles_For_Floats then
-               Set_Title (Win, Locale_From_UTF8 (Child.Short_Title.all));
-            else
-               Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
-            end if;
-
             Cont := Gtk_Container (Win);
+         end if;
+
+         if Child.MDI.Use_Short_Titles_For_Floats then
+            Set_Title (Win, Locale_From_UTF8 (Child.Short_Title.all));
+         else
+            Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
          end if;
 
          Set_Default_Size (Win, W, H);

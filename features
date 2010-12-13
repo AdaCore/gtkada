@@ -12,6 +12,13 @@ of the feature.
 New features in GtkAda 2.22.0
 -----------------------------
 
+JC10-012 MDI: short titles also applies to title bars
+
+  The MDI can be configured so that floating windows use a short title
+  rather than a full title (in particular, for file names, this will generally
+  be the base name rather than full path name). This preference now also
+  applies to title bars for non-floating windows.
+
 JA07-018 Bindings to GTK+ printing API
 
   In addition to bindings already added as part of J510-028, additional

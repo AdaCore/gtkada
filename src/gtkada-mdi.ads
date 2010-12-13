@@ -547,8 +547,9 @@ package Gtkada.MDI is
 
    procedure Use_Short_Titles_For_Floats
      (MDI : access MDI_Window_Record; Short_Titles : Boolean);
-   --  If Short_Titles is set to true, all floating children will use their
-   --  short titles.
+   --  If Short_Titles is set to true, only short titles will ever be used
+   --  either in the title bars (in notebooks) or as the title for floating
+   --  windows.
 
    ---------------------------
    -- Reorganizing children --
