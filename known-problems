@@ -1,8 +1,2 @@
 Known problems fixed in GtkAda 2.22.0
 
-- JA07-011 GtkAda.MDI.Raise_Child and floating windows
-  Problem:    When a window is floating and Raise_Child is called, the
-              window is not systematically made visible if you ask not
-              to give the focus.
-  Workaround: see Give_Focus to True when calling Raise_Child
-
