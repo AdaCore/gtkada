@@ -4419,7 +4419,7 @@ package body Gtkada.MDI is
       if Get_Active (C.Menu_Item) then
          --  If C is floating, raise the window.
          if C.State = Floating then
-            Raise_Child (C, False);
+            Raise_Child (C, True);
          end if;
 
          Set_Focus_Child (C);
