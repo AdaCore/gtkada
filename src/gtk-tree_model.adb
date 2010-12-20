@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2009, AdaCore                  --
+--                 Copyright (C) 2001-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -268,10 +268,8 @@ package body Gtk.Tree_Model is
 
    function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter is
       Result : Gtk_Tree_Iter;
-
    begin
       Get_Tree_Iter (Val, Result);
-
       return Result;
    end Get_Tree_Iter;
 
