@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2001-2009, AdaCore                    --
+--               Copyright (C) 2001-2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -265,7 +265,7 @@ package Gtk.Tree_Model is
    --  Extract the iterator from the given GValue.
 
    function To_Address (Iter : Gtk_Tree_Iter) return System.Address;
-   --  Returns address of the specified iterator.
+   --  Return address of the specified iterator.
 
    function Get_Iter
      (Tree_Model : access Gtk_Tree_Model_Record;
@@ -495,6 +495,12 @@ package Gtk.Tree_Model is
 
 private
    pragma Convention (C, Tree_Model_Flags);
+
+   pragma Convention (C, To_Address);
+   --  Note: To_Address needs a pass-by-reference semantic to work properly
+   --  On some ABIs (e.g. IA64), Gtk_Tree_Iter is passed by copy, since it's
+   --  a "small enough" record.
+
    Tree_Model_Iters_Persist : constant Tree_Model_Flags := 2 ** 0;
    Tree_Model_List_Only     : constant Tree_Model_Flags := 2 ** 1;
 
