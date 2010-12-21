@@ -1,2 +1,9 @@
 Known problems fixed in GtkAda 2.22.0
 
+- JC10-011 Gtkada.MDI gives focus when raising a window
+  Problem:    When selecting a floating window via the /Window
+              menu, there were a number of cases where the window was
+              not properly raised (depending on your window manager and
+              system). The MDI will now additionally give the text focus
+              to that window.
+  Workaround: Call Raise_Child manually to make sure the window was raised
