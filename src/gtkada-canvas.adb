@@ -2290,11 +2290,16 @@ package body Gtkada.Canvas is
 
    begin
       if Grid >= 5 then
-         --  Do not dispatch on Get_Window, since we only want to display the
-         --  grid on real canvas, not when e.g. copying the contents to a
-         --  pixbuf.
-
          Window := Get_Window (Canvas);
+
+         if Window /= Get_Window (Interactive_Canvas (Canvas)) then
+            --  We only want to display the grid on real canvas, not when e.g.
+            --  copying the contents to a pixmap, in which case, Get_Window
+            --  (dispatching call) will return a different result than
+            --  Gtk.Widget.Get_Window.
+
+            return;
+         end if;
 
          X := To_World_Coordinates (Canvas, Screen_Rect.X) + X_Left;
          X := X - X mod Gint (Canvas.Grid_Size);
