@@ -1,5 +1,10 @@
 2011-01-03  Nicolas Setton  <setton@adacore.com>
 
+	* glade-gtk.c (glade_gtk_window_deep_post_create): Backport fix from
+	Glade-3.7.2.
+
+2011-01-03  Nicolas Setton  <setton@adacore.com>
+
 	* glade-app.c (build_package_paths): Improve relocatability, by allowing
 	the user to set the prefix for icons through the GLADE_BASE_DIR environment
 	variable.
@@ -56,3 +61,22 @@
   #endif
   }
   
+*** plugins/gtk+/glade-gtk.c.orig	2011-01-03 18:12:14.000000000 +0100
+--- plugins/gtk+/glade-gtk.c	2011-01-03 18:12:20.000000000 +0100
+*************** glade_gtk_window_deep_post_create (Glade
+*** 4971,4977 ****
+  	/* Chain her up first */
+  	GWA_GET_CLASS (GTK_TYPE_CONTAINER)->deep_post_create (adaptor, object, reason);
+  
+! 	g_signal_connect (object, "delete", G_CALLBACK (gtk_widget_show), NULL);
+  }
+  
+  #define GLADE_TAG_ACCEL_GROUPS "accel-groups"
+--- 4971,4977 ----
+  	/* Chain her up first */
+  	GWA_GET_CLASS (GTK_TYPE_CONTAINER)->deep_post_create (adaptor, object, reason);
+  
+! 	g_signal_connect (object, "delete-event", G_CALLBACK (gtk_widget_show), NULL);
+  }
+  
+  #define GLADE_TAG_ACCEL_GROUPS "accel-groups"
