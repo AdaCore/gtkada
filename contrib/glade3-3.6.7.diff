@@ -1,0 +1,58 @@
+2011-01-03  Nicolas Setton  <setton@adacore.com>
+
+	* glade-app.c (build_package_paths): Improve relocatability, by allowing
+	the user to set the prefix for icons through the GLADE_BASE_DIR environment
+	variable.
+
+*** gladeui/glade-app.c.orig	2011-01-03 11:53:56.000000000 +0100
+--- gladeui/glade-app.c	2011-01-03 16:31:57.000000000 +0100
+***************
+*** 43,48 ****
+--- 43,50 ----
+  #include "glade-accumulators.h"
+  
+  #include <string.h>
++ #include <stdlib.h>
++ 
+  #include <glib.h>
+  #include <glib/gstdio.h>
+  #include <glib/gi18n-lib.h>
+*************** build_package_paths (void)
+*** 385,395 ****
+  
+  	g_free (prefix);
+  #else
+! 	catalogs_dir = g_strdup (GLADE_CATALOGSDIR);
+! 	modules_dir  = g_strdup (GLADE_MODULESDIR);
+! 	plugins_dir  = g_strdup (GLADE_PLUGINSDIR);
+! 	pixmaps_dir  = g_strdup (GLADE_PIXMAPSDIR);
+! 	locale_dir   = g_strdup (GLADE_LOCALEDIR);
+  #endif
+  }
+  
+--- 387,411 ----
+  
+  	g_free (prefix);
+  #else
+! 	gchar *prefix;
+! 
+! 	prefix = getenv("GLADE_BASE_DIR");
+! 
+! 	if (prefix) 
+! 		{
+! 			pixmaps_dir  = g_build_filename (prefix, "share", PACKAGE, "pixmaps", NULL);
+! 			catalogs_dir = g_build_filename (prefix, "share", PACKAGE, "catalogs", NULL);
+! 			modules_dir  = g_build_filename (prefix, "lib", PACKAGE, "modules", NULL);
+! 			locale_dir   = g_build_filename (prefix, "share", "locale", NULL);			
+! 		}
+! 	else
+! 		{
+! 			catalogs_dir = g_strdup (GLADE_CATALOGSDIR);
+! 			modules_dir  = g_strdup (GLADE_MODULESDIR);
+! 			plugins_dir  = g_strdup (GLADE_PLUGINSDIR);
+! 			pixmaps_dir  = g_strdup (GLADE_PIXMAPSDIR);
+! 			locale_dir   = g_strdup (GLADE_LOCALEDIR);
+! 		}
+  #endif
+  }
+  
