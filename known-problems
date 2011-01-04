@@ -7,3 +7,10 @@ Known problems fixed in GtkAda 2.22.0
               system). The MDI will now additionally give the text focus
               to that window.
   Workaround: Call Raise_Child manually to make sure the window was raised
+
+- JC09-041 Gtk.Widget.Get_Snapshot fails and causes crashes
+  Problem:    Calling Gtk.Widget.Get_Snapshot causes memory corruption and
+              potentially crashes.
+  Workaround: Fix the binding to Get_Snapshot: parameter Clip_Rect should be
+              a Gdk.Rectangle.Gdk_Rectangle_Access rather than 
+              a Gtk.Rectangle.Gdk_Rectangle.
