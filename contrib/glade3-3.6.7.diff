@@ -1,3 +1,9 @@
+2011-01-04  Nicolas Setton  <setton@adacore.com>
+
+	* glade-widget-adaptor.c (glade_gtk_window_deep_post_create): disable
+	harmless warnings.
+	(gwa_displayable_values_check): Disable harmless messages.
+
 2011-01-03  Nicolas Setton  <setton@adacore.com>
 
 	* glade-gtk.c (glade_gtk_window_deep_post_create): Backport fix from
@@ -80,3 +86,25 @@
   }
   
   #define GLADE_TAG_ACCEL_GROUPS "accel-groups"
+*** gladeui/glade-widget-adaptor.c.orig	2011-01-03 17:40:53.000000000 +0100
+--- gladeui/glade-widget-adaptor.c	2011-01-04 16:02:21.000000000 +0100
+*************** create_icon_name_for_object_class (const
+*** 2019,2025 ****
+  	if (!gtk_icon_theme_has_icon (gtk_icon_theme_get_default (), name))
+  	{
+  		GladeWidgetAdaptor *parent = glade_widget_adaptor_get_parent_adaptor_by_type (class_type);
+- 		g_warning ("No icon named '%s' was found for object class '%s'.", name, class_name);
+  		g_free (name);
+  		
+  		name = g_strdup ((parent && parent->icon_name) ?
+--- 2019,2024 ----
+*************** gwa_displayable_values_check (GladeWidge
+*** 2045,2050 ****
+--- 2044,2050 ----
+  		    klass->pspec->value_type != GLADE_TYPE_STOCK_IMAGE)
+  		{
+  			/* We do not need displayable values if the property is not visible */
++                         if (0)
+  			g_message ("No displayable values for %sproperty %s::%s", 
+  				   (packing) ? "child " : "",
+  				   adaptor->name, klass->id);
