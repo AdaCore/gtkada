@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,6 +70,7 @@ with Create_Arrow;
 with Create_Assistant;
 with Create_Box;
 with Create_Builder;
+with Create_Gtkada_Builder;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
@@ -245,6 +246,8 @@ package body Main_Windows is
                                          Create_Box.Help'Access),
       (NS ("builder"),          Complex, Create_Builder.Run'Access,
                                          Create_Builder.Help'Access),
+      (NS ("gtkada builder"),   Complex, Create_Gtkada_Builder.Run'Access,
+                                         Create_Gtkada_Builder.Help'Access),
       (NS ("button box"),       Box,     Create_Button_Box.Run'Access,
                                          Create_Button_Box.Help'Access),
       (NS ("buttons"),          Base,    Create_Buttons.Run'Access,

@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <interface>
   <requires lib="gtk+" version="2.14"/>
-  <!-- interface-naming-policy toplevel-contextual -->
+<!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window1">
     <signal name="destroy" handler="on_window1_destroy"/>
     <signal name="delete_event" handler="on_window1_delete_event"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkFrame" id="frame_params">
             <property name="visible">True</property>
@@ -70,16 +71,37 @@
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkButton" id="btn_calculate">
-                        <property name="label" translatable="yes">_Concatenate</property>
+                      <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_underline">True</property>
-                        <signal name="clicked" handler="on_btn_concatenate_clicked"/>
+                        <child>
+                          <object class="GtkButton" id="button_print_on_console">
+                            <property name="label" translatable="yes">print on console</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="xalign">0.4699999988079071</property>
+                            <signal name="clicked" handler="on_print_to_console" object="term1"/>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_calculate">
+                            <property name="label" translatable="yes">_Concatenate</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <signal name="clicked" handler="on_btn_concatenate_clicked"/>
+                          </object>
+                          <packing>
+                            <property name="padding">3</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="padding">3</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
