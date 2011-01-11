@@ -19,6 +19,12 @@ JC10-012 MDI: short titles also applies to title bars
   be the base name rather than full path name). This preference now also
   applies to title bars for non-floating windows.
 
+JB09-025 High-level API for using Glade-3 and Gtk.Builder
+
+  A new package Gtkada.Builder has been introduced. This provides a
+  high-level API for developing GtkAda applications using the Glade-3
+  GUI builder.
+
 JA07-018 Bindings to GTK+ printing API
 
   In addition to bindings already added as part of J510-028, additional
