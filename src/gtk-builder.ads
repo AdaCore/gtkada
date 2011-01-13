@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                  Copyright (C) 2010-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,11 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  Gtk.Builder - Build an interface from an XML UI definition
+--  Gtk.Builder - Build an interface from an XML UI definition as produced by
+--  the Glade-3 GUI builder.
+--
+--  Note that GtkAda provides a higher-level API for using the GUI builder,
+--  in Gtkada.Builder.
 --
 --  A Gtk_Builder is an auxiliary object that reads textual descriptions of a
 --  user interface and instantiates the described objects. To pass a
@@ -42,8 +46,8 @@
 --  the responsibility of the user to call Gtk.Widget.Destroy to get rid of
 --  them and all the widgets they contain.
 --
---  The subprogram Get_Object can be used to access the widgets in the
---  interface by the names assigned to them inside the UI description.
+--  The subprograms Get_Object and Get_Widget can be used to access the widgets
+--  in the interface by the names assigned to them inside the UI description.
 --  Toplevel windows returned by this subprogram will stay around until the
 --  user explicitly destroys them with Gtk.Widget.Destroy.
 --  Other widgets will either be part of a larger hierarchy constructed by
@@ -56,6 +60,7 @@
 --  The subprogram Connect_Signals_Full can be used to connect handlers to the
 --  named signals in the description.
 --  </description>
+--  <group>GUI Builder</group>
 --  <c_version>2.16.6</c_version>
 
 with System;
@@ -105,14 +110,23 @@ package Gtk.Builder is
    --  Gets the object named Object_Name. Note that this function does not
    --  increment the reference count of the returned object.  Returns null
    --  if it could not be found in the object tree.
+   --  See also Get_Widget below.
+
+   function Get_Widget
+     (Builder : access Gtk_Builder_Record;
+      Name    : String) return Gtk.Widget.Gtk_Widget;
+   --  Utility function to retrieve a widget created by Builder.
+   --  Returns null if no widget was found with the given name.
 
    ------------------------
    -- Connecting signals --
    ------------------------
 
    --  The following is a low-level binding to Gtk+.
-   --  See create_builder.adb in the testgtk source for an example of how
-   --  to use this low-level binding in an applications.
+   --
+   --  You should not need to use this directly. Instead, use a
+   --  Gtkada.Builder.Gtkada_Builder and use the procedures Register_Handler
+   --  to connect your callbacks to signals defined in the GUI builder.
 
    type Gtk_Builder_Connect_Func is access procedure
      (Builder        : System.Address;
@@ -142,12 +156,6 @@ package Gtk.Builder is
    --  This function can be thought of the interpreted language binding
    --  version of Connect_Signals, except that it does not require GModule
    --  to function correctly.
-
-   function Get_Widget
-     (Builder : access Gtk_Builder_Record;
-      Name    : String) return Gtk.Widget.Gtk_Widget;
-   --  Utility function to retrieve a widget created by Builder.
-   --  Returns null if no widget was found with the given name.
 
    ----------------
    -- Properties --
