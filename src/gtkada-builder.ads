@@ -73,6 +73,7 @@
 --             associated with the Builder.
 --
 --  </description>
+--  <group>GUI Builder</group>
 
 pragma Ada_2005;
 
