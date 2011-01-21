@@ -25,5 +25,5 @@ pango-1.28.3-win32.diff: ditto for pango under Windows
 
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
 
-glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
+glade3-3.7.3.diff: a patch to glade3 3.7.3
 
