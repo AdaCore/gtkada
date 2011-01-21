@@ -1,5 +1,9 @@
 2011-01-21  Nicolas Setton  <setton@adacore.com>
 
+	* src/Makefile.in: Link glade-3 with -mwindows.
+
+2011-01-21  Nicolas Setton  <setton@adacore.com>
+
 	* configure: Add missing file to the list of config_files.
 
 *** configure.original	2011-01-21 14:52:41.000000000 +0100
@@ -21,3 +25,22 @@
   
   
   cat >confcache <<\_ACEOF
+*** src/Makefile.in.orig	2011-01-21 16:57:31.000000000 +0100
+--- src/Makefile.in	2011-01-21 16:57:52.000000000 +0100
+***************
+*** 67,73 ****
+  am__v_lt_0 = --silent
+  glade_3_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+  	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(glade_3_CFLAGS) \
+! 	$(CFLAGS) $(glade_3_LDFLAGS) $(LDFLAGS) -o $@
+  DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+  depcomp = $(SHELL) $(top_srcdir)/depcomp
+  am__depfiles_maybe = depfiles
+--- 67,73 ----
+  am__v_lt_0 = --silent
+  glade_3_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+  	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(glade_3_CFLAGS) \
+! 	$(CFLAGS) $(glade_3_LDFLAGS) $(LDFLAGS) -mwindows -o $@
+  DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+  depcomp = $(SHELL) $(top_srcdir)/depcomp
+  am__depfiles_maybe = depfiles
