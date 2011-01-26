@@ -12,6 +12,10 @@ of the feature.
 New features in GtkAda 2.22.0
 -----------------------------
 
+K125-039 Glade-3 GUI builder
+
+  The GUI builder shiped with GtkAda has been upgraded to Glade-3.
+
 JC10-012 MDI: short titles also applies to title bars
 
   The MDI can be configured so that floating windows use a short title
