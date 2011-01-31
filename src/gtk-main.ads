@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,14 +61,6 @@ package Gtk.Main is
    --  Initialize GtkAda's internal structures.
    --  Return False if there was an error (no access to the display, etc.)
 
-   function Set_Locale return String;
-   --  Read and parse the local settings, such as time format, ...
-   --  Return the name of the local settings, which can also be set with
-   --  the environment variable LOCALE
-
-   procedure Set_Locale;
-   --  Read and parse the local settings, such as time format, ...
-
    procedure Disable_Setlocale;
    --  Prevents Init, Init_Check and Parse_Args from automatic calling
    --  Set_Locale (LC_ALL, ""). You would want to use this function if you
@@ -121,11 +113,6 @@ package Gtk.Main is
    --  Function called just before starting the main loop.
    --  This can be registered with Init_Add below.
 
-   procedure Init_Add (Func : Init_Function; Data : System.Address);
-   --  Register a function to be called just before starting a main loop.
-   --  This function is called only once, even if a new main loop is started
-   --  recursively.
-
    type Quit_Handler_Id is new Guint;
    --  registration ID for functions that will be called before the
    --  main loop exits.
@@ -134,17 +121,6 @@ package Gtk.Main is
    --  Type of function that can be called when the main loop exits.
    --  It should return False if it should not be called again when another
    --  main loop exits.
-
-   function Quit_Add
-     (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id;
-   --  Register a new function to be called when the current main loop exits.
-   --  The function will be called once when the current main loop exists.
-   --  If it returns False, it will then be deleted from the list of
-   --  quit functions, and won't be called again next time a main loop is
-   --  exited.
-   --  The function will only be called when exiting a main loop at level
-   --  Main_Level. If Main_Level is 0, the function will be called for the
-   --  current main_loop.
 
    --  <doc_ignore>
    generic
@@ -167,16 +143,6 @@ package Gtk.Main is
    --  !!Warning!!: This package needs to be instantiated at library level
    --  since it calls some internal functions as callback.
    --  </doc_ignore>
-
-   function Quit_Add_Destroy
-     (Main_Level : Guint;
-      Object     : access Gtk.Object.Gtk_Object_Record'Class)
-      return Quit_Handler_Id;
-   --  Ensure that Object is destroyed when exiting the main loop at Main_Level
-   --  (or the current main loop level is 0).
-
-   procedure Quit_Remove (Id : Quit_Handler_Id);
-   --  Remove a Quit Handler, that has been previously set by Quit_Add.
 
    -------------------
    -- The main loop --
@@ -396,14 +362,14 @@ package Gtk.Main is
    generic
       type Data_Type (<>) is private;
    package Idle is
-      type Callback is access function (D : in Data_Type) return Boolean;
+      type Callback is access function (D : Data_Type) return Boolean;
       type Destroy_Callback is access procedure (D : in out Data_Type);
 
       function Add
-        (Cb       : in Callback;
-         D        : in Data_Type;
-         Priority : in Idle_Priority := Priority_Default_Idle;
-         Destroy  : in Destroy_Callback := null)
+        (Cb       : Callback;
+         D        : Data_Type;
+         Priority : Idle_Priority := Priority_Default_Idle;
+         Destroy  : Destroy_Callback := null)
          return Idle_Handler_Id;
       pragma Obsolescent ("Use Glib.Main.Idle");
 
@@ -418,7 +384,7 @@ package Gtk.Main is
    --  In particular, it is also called if the idle is destroyed through a call
    --  to Idle_Remove.
 
-   procedure Idle_Remove (Id : in Idle_Handler_Id);
+   procedure Idle_Remove (Id : Idle_Handler_Id);
    pragma Obsolescent ("Use Glib.Main.Idle_Remove"); --  Idle_Remove
    --  Remove an idle callback, when its Id is known.
 
@@ -433,7 +399,7 @@ package Gtk.Main is
    --  as possible, False if it should be unregistered.
 
    function Timeout_Add
-     (Interval : in Guint32;
+     (Interval : Guint32;
       Func : Timeout_Callback) return Timeout_Handler_Id;
    pragma Obsolescent ("Use Glib.Main.Timeout_Add");  --  Timeout_Add_Full
    --  Add a new timeout. Func will be called after Interval milliseconds.
@@ -442,14 +408,14 @@ package Gtk.Main is
    generic
       type Data_Type (<>) is private;
    package Timeout is
-      type Callback is access function (D : in Data_Type) return Boolean;
+      type Callback is access function (D : Data_Type) return Boolean;
       type Destroy_Callback is access procedure (D : in out Data_Type);
 
       function Add
         (Interval : Guint32;
          Func     : Callback;
          D        : Data_Type;
-         Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id;
+         Destroy  : Destroy_Callback := null) return Timeout_Handler_Id;
       pragma Obsolescent ("Use Glib.Main.Timeout");
       --  Adds a new timeout. Func will be called after Interval milliseconds.
 
@@ -464,6 +430,46 @@ package Gtk.Main is
    procedure Timeout_Remove (Id : Timeout_Handler_Id);
    pragma Obsolescent ("Use Glib.Main.Timeout_Remove");  --  Timeout_Remove
    --  Unregister a timeout function.
+
+   function Set_Locale return String;
+   pragma Obsolescent; --  Set_Locale
+   --  Read and parse the local settings, such as time format, ...
+   --  Return the name of the local settings, which can also be set with
+   --  the environment variable LOCALE
+
+   procedure Set_Locale;
+   pragma Obsolescent; --  Set_Locale
+   --  Read and parse the local settings, such as time format, ...
+
+   procedure Init_Add (Func : Init_Function; Data : System.Address);
+   pragma Obsolescent; --  Init_Add
+   --  Register a function to be called just before starting a main loop.
+   --  This function is called only once, even if a new main loop is started
+   --  recursively.
+
+   function Quit_Add
+     (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id;
+   pragma Obsolescent; --  Quit_Add_Full
+   --  Register a new function to be called when the current main loop exits.
+   --  The function will be called once when the current main loop exists.
+   --  If it returns False, it will then be deleted from the list of
+   --  quit functions, and won't be called again next time a main loop is
+   --  exited.
+   --  The function will only be called when exiting a main loop at level
+   --  Main_Level. If Main_Level is 0, the function will be called for the
+   --  current main_loop.
+
+   function Quit_Add_Destroy
+     (Main_Level : Guint;
+      Object     : access Gtk.Object.Gtk_Object_Record'Class)
+      return Quit_Handler_Id;
+   pragma Obsolescent; --  Quit_Add_Destroy
+   --  Ensure that Object is destroyed when exiting the main loop at Main_Level
+   --  (or the current main loop level is 0).
+
+   procedure Quit_Remove (Id : Quit_Handler_Id);
+   pragma Obsolescent; --  Quit_Remove
+   --  Remove a Quit Handler, that has been previously set by Quit_Add.
 
    --  </doc_ignore>
 

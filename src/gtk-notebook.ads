@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---               Copyright (C) 2000-2010, AdaCore                    --
+--               Copyright (C) 2000-2011, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -183,6 +183,7 @@ package Gtk.Notebook is
      (Func     : Gtk_Notebook_Window_Creation_Func;
       Data     : System.Address;
       Destroy  : Glib.G_Destroy_Notify_Address);
+   pragma Obsolescent; --  Set_Window_Creation_Hook
    --  Install a global function used to create a window when a detached tab
    --  is dropped in an empty area.
 
@@ -383,6 +384,7 @@ package Gtk.Notebook is
       Expand     : out Boolean;
       Fill       : out Boolean;
       Pack_Type  : out Gtk.Enums.Gtk_Pack_Type);
+   pragma Obsolescent; --  Query_Tab_Label_Packing
    --  Return the packing used for the tab associated with the page
    --  that contains Child.
    --  See the Gtk.Box package for more information on the parameters.
@@ -393,6 +395,7 @@ package Gtk.Notebook is
       Expand    : Boolean;
       Fill      : Boolean;
       Pack_Type : Gtk.Enums.Gtk_Pack_Type);
+   pragma Obsolescent; --  Set_Tab_Label_Packing
    --  Modify the packing used for the tab associated with the page that
    --  contains Child.
 
@@ -443,9 +446,11 @@ package Gtk.Notebook is
 
    function Get_Group (Notebook : access Gtk_Notebook_Record)
       return Gtk_Notebook_Group;
+   pragma Obsolescent; --  Get_Group
    procedure Set_Group
      (Notebook : access Gtk_Notebook_Record;
       Group    : Gtk_Notebook_Group);
+   pragma Obsolescent; --  Set_Group
    --  Gets/Sets a group identificator pointer for Notebook, notebooks sharing
    --  the same group identificator pointer will be able to exchange tabs
    --  via drag and drop. A notebook with a null group identificator will

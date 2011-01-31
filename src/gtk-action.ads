@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2010, AdaCore                   --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -241,6 +241,7 @@ package Gtk.Action is
 
    function Gtk_Widget_Get_Action
      (Widget : access Gtk.Widget.Gtk_Widget_Record) return Gtk_Action;
+   pragma Obsolescent; --  Gtk_Widget_Get_Action
    --  Returns the action that Widget is a proxy for.
    --  See also Get_Proxies.
    --  Since: 2.10
@@ -248,9 +249,11 @@ package Gtk.Action is
    procedure Connect_Proxy
      (Action : access Gtk_Action_Record;
       Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent; --  Connect_Proxy
    procedure Disconnect_Proxy
      (Action : access Gtk_Action_Record;
       Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent; --  Disconnect_Proxy
    --  Connects a widget to an action object as a proxy. Synchronises various
    --  properties of the action with the widget (such as label text, icon,
    --  tooltip, etc), and attaches a callback so that the action gets activated
@@ -269,9 +272,11 @@ package Gtk.Action is
    procedure Block_Activate_From
      (Action : access Gtk_Action_Record;
       Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent; --  Block_Activate_From
    procedure Unblock_Activate_From
      (Action : access Gtk_Action_Record;
       Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent; --  Unblock_Activate_From
    --  Disables calls to the Activate function by signals on the given proxy
    --  widget. This is used to break notification loops for things like check
    --  or radio actions.

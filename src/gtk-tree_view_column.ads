@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2010, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -145,6 +145,7 @@ package Gtk.Tree_View_Column is
    function Get_Cell_Renderers
      (Tree_Column : access Gtk_Tree_View_Column_Record)
       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
+   pragma Obsolescent; --  Get_Cell_Renderers
    --  Return the list of cell renderers set in the column. The returned list
    --  must be freed by the caller.
 
