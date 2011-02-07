@@ -327,7 +327,7 @@ package Gtk.Main is
    --  <doc_ignore>
 
    procedure Gtk_Exit (Error_Code : Gint);
-   pragma Obsolescent;  --  Exit
+   pragma Obsolescent (Gtk_Exit);
    --  Terminate GtkAda.
    --  Deprecated, use Main_Quit instead.
 
@@ -356,7 +356,7 @@ package Gtk.Main is
      (Cb       : Idle_Callback;
       Priority : Idle_Priority := Priority_Default_Idle)
       return Idle_Handler_Id;
-   pragma Obsolescent ("Use Glib.Main.Idle_Add");  --  Idle_Add_Full
+   pragma Obsolescent (Idle_Add, "Use Glib.Main.Idle_Add");  --  Idle_Add_Full
    --  Register an idle callback with no user data.
 
    generic
@@ -371,7 +371,7 @@ package Gtk.Main is
          Priority : Idle_Priority := Priority_Default_Idle;
          Destroy  : Destroy_Callback := null)
          return Idle_Handler_Id;
-      pragma Obsolescent ("Use Glib.Main.Idle");
+      pragma Obsolescent (Add, "Use Glib.Main.Idle");
 
    private
       procedure Free_Data (D : System.Address);
@@ -385,7 +385,7 @@ package Gtk.Main is
    --  to Idle_Remove.
 
    procedure Idle_Remove (Id : Idle_Handler_Id);
-   pragma Obsolescent ("Use Glib.Main.Idle_Remove"); --  Idle_Remove
+   pragma Obsolescent (Idle_Remove, "Use Glib.Main.Idle_Remove");
    --  Remove an idle callback, when its Id is known.
 
    type Timeout_Handler_Id is new Guint;
@@ -401,7 +401,7 @@ package Gtk.Main is
    function Timeout_Add
      (Interval : Guint32;
       Func : Timeout_Callback) return Timeout_Handler_Id;
-   pragma Obsolescent ("Use Glib.Main.Timeout_Add");  --  Timeout_Add_Full
+   pragma Obsolescent (Timeout_Add, "Use Glib.Main.Timeout_Add");
    --  Add a new timeout. Func will be called after Interval milliseconds.
    --  The function will be called as long as it returns True.
 
@@ -416,7 +416,7 @@ package Gtk.Main is
          Func     : Callback;
          D        : Data_Type;
          Destroy  : Destroy_Callback := null) return Timeout_Handler_Id;
-      pragma Obsolescent ("Use Glib.Main.Timeout");
+      pragma Obsolescent (Add, "Use Glib.Main.Timeout");
       --  Adds a new timeout. Func will be called after Interval milliseconds.
 
    private
@@ -428,28 +428,28 @@ package Gtk.Main is
    end Timeout;
 
    procedure Timeout_Remove (Id : Timeout_Handler_Id);
-   pragma Obsolescent ("Use Glib.Main.Timeout_Remove");  --  Timeout_Remove
+   pragma Obsolescent (Timeout_Remove, "Use Glib.Main.Timeout_Remove");
    --  Unregister a timeout function.
 
    function Set_Locale return String;
-   pragma Obsolescent; --  Set_Locale
+   pragma Obsolescent (Set_Locale);
    --  Read and parse the local settings, such as time format, ...
    --  Return the name of the local settings, which can also be set with
    --  the environment variable LOCALE
 
    procedure Set_Locale;
-   pragma Obsolescent; --  Set_Locale
+   pragma Obsolescent (Set_Locale);
    --  Read and parse the local settings, such as time format, ...
 
    procedure Init_Add (Func : Init_Function; Data : System.Address);
-   pragma Obsolescent; --  Init_Add
+   pragma Obsolescent (Init_Add);
    --  Register a function to be called just before starting a main loop.
    --  This function is called only once, even if a new main loop is started
    --  recursively.
 
    function Quit_Add
      (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id;
-   pragma Obsolescent; --  Quit_Add_Full
+   pragma Obsolescent (Quit_Add);
    --  Register a new function to be called when the current main loop exits.
    --  The function will be called once when the current main loop exists.
    --  If it returns False, it will then be deleted from the list of
@@ -463,12 +463,12 @@ package Gtk.Main is
      (Main_Level : Guint;
       Object     : access Gtk.Object.Gtk_Object_Record'Class)
       return Quit_Handler_Id;
-   pragma Obsolescent; --  Quit_Add_Destroy
+   pragma Obsolescent (Quit_Add_Destroy);
    --  Ensure that Object is destroyed when exiting the main loop at Main_Level
    --  (or the current main loop level is 0).
 
    procedure Quit_Remove (Id : Quit_Handler_Id);
-   pragma Obsolescent; --  Quit_Remove
+   pragma Obsolescent (Quit_Remove);
    --  Remove a Quit Handler, that has been previously set by Quit_Add.
 
    --  </doc_ignore>

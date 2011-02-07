@@ -63,12 +63,12 @@ package Gtk.File_Chooser_Widget is
      (Widget  : out Gtk_File_Chooser_Widget;
       Action  : Gtk.File_Chooser.File_Chooser_Action;
       Backend : String);
-   pragma Obsolescent; --  Gtk_New_With_Backend
+   pragma Obsolescent (Gtk_New_With_Backend);
    procedure Initialize_With_Backend
      (Widget  : access Gtk_File_Chooser_Widget_Record'Class;
       Action  : Gtk.File_Chooser.File_Chooser_Action;
       Backend : String);
-   pragma Obsolescent; --  Initialize_With_Backend
+   pragma Obsolescent (Initialize_With_Backend);
    --  Creates a new file chooser with a specified backend.  This is
    --  especially useful if you use Gtk.File_Chooser.Set_Local_Only to allow
    --  non-local files.  This is a file chooser widget that can be embedded in

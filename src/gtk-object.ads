@@ -105,12 +105,6 @@ package Gtk.Object is
    type Gtk_Object_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Object is access all Gtk_Object_Record'Class;
 
-   procedure Sink (Object : access Gtk_Object_Record);
-   pragma Obsolescent; --  Sink
-   --  Sink the object.
-   --  If the object is floating (does not have a parent yet), it is unref-ed
-   --  once and the floating flag is cleared.
-
    procedure Destroy (Object : access Gtk_Object_Record);
    --  Destroy the object.
    --  This emits a "destroy" signal, calls all your handlers, and then
@@ -250,6 +244,12 @@ package Gtk.Object is
    --  To find out whether your code uses any of these, we recommend compiling
    --  with the -gnatwj switch
    --  <doc_ignore>
+
+   procedure Sink (Object : access Gtk_Object_Record);
+   pragma Obsolescent (Sink);
+   --  Sink the object.
+   --  If the object is floating (does not have a parent yet), it is unref-ed
+   --  once and the floating flag is cleared.
 
    --  </doc_ignore>
 

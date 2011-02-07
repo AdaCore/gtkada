@@ -183,7 +183,7 @@ package Gtk.Notebook is
      (Func     : Gtk_Notebook_Window_Creation_Func;
       Data     : System.Address;
       Destroy  : Glib.G_Destroy_Notify_Address);
-   pragma Obsolescent; --  Set_Window_Creation_Hook
+   pragma Obsolescent (Set_Window_Creation_Hook);
    --  Install a global function used to create a window when a detached tab
    --  is dropped in an empty area.
 
@@ -384,7 +384,7 @@ package Gtk.Notebook is
       Expand     : out Boolean;
       Fill       : out Boolean;
       Pack_Type  : out Gtk.Enums.Gtk_Pack_Type);
-   pragma Obsolescent; --  Query_Tab_Label_Packing
+   pragma Obsolescent (Query_Tab_Label_Packing);
    --  Return the packing used for the tab associated with the page
    --  that contains Child.
    --  See the Gtk.Box package for more information on the parameters.
@@ -395,7 +395,7 @@ package Gtk.Notebook is
       Expand    : Boolean;
       Fill      : Boolean;
       Pack_Type : Gtk.Enums.Gtk_Pack_Type);
-   pragma Obsolescent; --  Set_Tab_Label_Packing
+   pragma Obsolescent (Set_Tab_Label_Packing);
    --  Modify the packing used for the tab associated with the page that
    --  contains Child.
 
@@ -446,11 +446,11 @@ package Gtk.Notebook is
 
    function Get_Group (Notebook : access Gtk_Notebook_Record)
       return Gtk_Notebook_Group;
-   pragma Obsolescent; --  Get_Group
+   pragma Obsolescent (Get_Group);
    procedure Set_Group
      (Notebook : access Gtk_Notebook_Record;
       Group    : Gtk_Notebook_Group);
-   pragma Obsolescent; --  Set_Group
+   pragma Obsolescent (Set_Group);
    --  Gets/Sets a group identificator pointer for Notebook, notebooks sharing
    --  the same group identificator pointer will be able to exchange tabs
    --  via drag and drop. A notebook with a null group identificator will
@@ -481,45 +481,45 @@ package Gtk.Notebook is
 
    function Get_Children
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Children);
    --  Return the list of all pages in the notebook.
 
    procedure Set_Homogeneous_Tabs
      (Notebook    : access Gtk_Notebook_Record;
       Homogeneous : Boolean := True);
-   pragma Obsolescent;  --  Set_Homogeneous_Tabs
+   pragma Obsolescent (Set_Homogeneous_Tabs);
    --  Indicate whether all the tabs should have the same size (width or
    --  height, depending on which side they are displayed on).
 
    procedure Set_Tab_Border
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : Gint);
-   pragma Obsolescent;  --  Set_Tab_Border
+   pragma Obsolescent (Set_Tab_Border);
    --  Change the width of the tabs' borders.
    --  This modifies both the horizontal border and the vertical border.
 
    procedure Set_Tab_Hborder
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : Gint);
-   pragma Obsolescent;  --  Set_Tab_Hborder
+   pragma Obsolescent (Set_Tab_Hborder);
    --  Modify the width of the horizontal borders of the tabs.
 
    procedure Set_Tab_Vborder
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : Gint);
-   pragma Obsolescent;  --  Set_Tab_Vborder
+   pragma Obsolescent (Set_Tab_Vborder);
    --  Modify the height of the vertical borders of the tabs.
 
    procedure Set_Group_Id
      (Notebook : access Gtk_Notebook_Record; Group_Id : Gint);
-   pragma Obsolescent; --  Set_Group_Id
+   pragma Obsolescent (Set_Group_Id);
    --  Set a group identificator for Notebook. Notebooks sharing
    --  the same group identificator will be able to exchange tabs
    --  via drag and drop. A notebook with group identificator -1 will
    --  not be able to exchange tabs with any other notebook.
 
    function Get_Group_Id (Notebook : access Gtk_Notebook_Record) return Gint;
-   pragma Obsolescent; --  Get_Group_Id
+   pragma Obsolescent (Get_Group_Id);
    --  Gets the current group identificator for Notebook or -1 if not set.
 
    --  </doc_ignore>
