@@ -1,12 +1,3 @@
-GATE_SRC      = gate.adb
-GATE_EX       = gate-in.exe
-
-ifeq ($(OS),Windows_NT)
-  GATE        = gate.bat
-else
-  GATE        = gate
-endif
-
 GDIALOG       = gtkada-dialog
 GTKADA_CONFIG = gtkada-config
 
@@ -26,13 +17,11 @@ all: force
 	${GNATMAKE} -Ptools ${GPR_BUILD} ${GNATMAKELDFLAGS}
 
 install: force
-	-${CHMOD} +x ${GATE} ${GTKADA_CONFIG}
-	${INSTALL_SCRIPT} ${GATE} ${bindir}
+	-${CHMOD} +x ${GTKADA_CONFIG}
 	${INSTALL_SCRIPT} ${GTKADA_CONFIG} ${bindir}
-	${INSTALL_PROGRAM} ${OBJ_DIR}/${GATE_EX} ${bindir}
 	${INSTALL_PROGRAM} ${OBJ_DIR}/${GDIALOG} ${bindir}
 
 clean: module_clean
 
 distclean: module_distclean
-	-${RM} gate ${GTKADA_CONFIG}
+	-${RM} ${GTKADA_CONFIG}
