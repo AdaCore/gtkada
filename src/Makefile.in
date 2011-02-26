@@ -38,9 +38,9 @@ libs: ada ${c_objects_dir} gtkextra
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
-libs: ${OBJ_DIR}/${ARCHIVENAME} opengl glade gnome
+libs: ${OBJ_DIR}/${ARCHIVENAME} opengl gnome
 
-opengl gtkextra glade gnome tools: force
+opengl gtkextra gnome tools: force
 	$(MAKE) -C $@
 
 ## Private targets
@@ -92,7 +92,6 @@ install: force
 	   $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir)/static; \
 	   $(CP) $(OBJ_DIR)/cairo*.ali $(alidir)/static; \
            $(MAKE) -C opengl install; \
-           $(MAKE) -C glade install; \
            $(MAKE) -C gnome install; \
            $(MAKE) -C tools install; \
 	   $(CHMOD) ugo-w $(alidir)/static/*.ali; \
@@ -107,7 +106,6 @@ clean:
 	-${RM} .\#*
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
-	$(MAKE) -C glade clean
 	$(MAKE) -C gnome clean
 	$(MAKE) -C tools clean
 
@@ -115,7 +113,6 @@ distclean: force
 	-${RM} Makefile
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
-	$(MAKE) -C glade distclean
 	$(MAKE) -C gnome distclean
 	$(MAKE) -C tools distclean
 	-$(RM) Makefile.common
