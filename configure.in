@@ -24,7 +24,7 @@ AC_PROG_RANLIB
 CHECK_BUILD_TYPE
 
 # checking for gtk
-AM_PATH_GTK(2.16.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+AM_PATH_GTK(2.22.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # checking for PANGO_UNDERLINE_ERROR
 AM_PANGO_UNDERLINE_ERROR
@@ -35,9 +35,6 @@ AM_GNU_GETTEXT
 
 # try to find OpenGL if present
 AM_CHECK_OPENGL
-
-# try to find libglade if present
-AM_CHECK_LIBGLADE
 
 # try to find gnome if present
 AM_CHECK_GNOME
@@ -52,4 +49,4 @@ AC_SUBST(BUILD_TYPE)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/gate src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/gate src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)

@@ -10,7 +10,6 @@ project Shared is
    Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
    Build_Opengl : Boolean_Type := external ("OPENGL", "True");
    Build_Extra  : Boolean_Type := external ("EXTRA",  "True");
-   Build_Glade  : Boolean_Type := external ("GLADE",  "True");
 
    for Source_Files use ();
 

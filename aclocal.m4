@@ -721,40 +721,6 @@ AC_DEFUN(AM_CHECK_GNOME,
 
 #############################################################
 #
-#  Checking for libglade2
-#
-#############################################################
-
-AC_DEFUN(AM_CHECK_LIBGLADE,
-[   
-  AC_MSG_CHECKING(for libglade2)
-
-  if test "$PKG_CONFIG" = "no" ; then
-    AC_MSG_RESULT(no)
-    HAVE_LIBGLADE="False"
-  else
-    LIBGLADE="libglade-2.0"
-    LIBGLADE_PREFIX=`$PKG_CONFIG $LIBGLADE --variable=prefix`
-    if test "x$LIBGLADE_PREFIX" = "x"; then
-      HAVE_LIBGLADE="False"
-      AC_MSG_RESULT(no)
-    else
-      AC_MSG_RESULT(yes)
-      HAVE_LIBGLADE="True"
-      LIBGLADE_CFLAGS=`$PKG_CONFIG $LIBGLADE --cflags`
-      LIBGLADE_LIBS=`$PKG_CONFIG $LIBGLADE --libs`
-      LIBGLADE_STATIC_LIBS="$LIBGLADE_PREFIX/lib/libglade-2.0.a $LIBGLADE_PREFIX/lib/libxml2.a"
-    fi
-  fi
-
-  AC_SUBST(LIBGLADE_CFLAGS)
-  AC_SUBST(LIBGLADE_LIBS)
-  AC_SUBST(LIBGLADE_STATIC_LIBS)
-  AC_SUBST(HAVE_LIBGLADE)
-])
-
-#############################################################
-#
 #  A small macro to create a file after preprocessing it using gnatprep
 #
 #############################################################
