@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2010, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -173,8 +173,7 @@ package Gtkada.MDI is
    --  for a window. But you can create your own groups as needed, so that for
    --  instance editors tend to be grouped with other editors, graphs with
    --  other graphs,... depending on your application.
-   --  The group has an impact when a the last window from a notebook is
-   --  closed:
+   --  The group has an impact when the last window from a notebook is closed:
    --  If the window belongs to Group_Default, and it is the last of its group,
    --  then the space currently occupied by that window is not reclaimed, and
    --  therefore an empty area will exist in the MDI. The idea is that for
