@@ -387,8 +387,7 @@ demonstrates the use of various Cairo functions in GtkAda.
 @item @file{examples/} directory:
 
 This directory contains some small examples, unrelated to @file{testgtk}.
-For instance, this is where you will find some sample XML files for
-@code{Gate} and @code{Dgate}, as well as some new widgets created
+For instance, this is where you will find new widgets created
 directly in Ada, as examples of how to create your own callback
 marshallers.
 
