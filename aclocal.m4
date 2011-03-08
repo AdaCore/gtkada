@@ -15,11 +15,11 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    AC_ARG_ENABLE(shared,
      [AC_HELP_STRING(
         [--disable-shared],
-        [Disable building of shared libraries])
+        [Disable building of shared libraries (default is to build them if supported on the target)])
 AC_HELP_STRING(
         [--enable-shared],
-        [Build shared libraries if supported on the target
-Make them the installation default])],
+        [Build shared libraries if supported on the target and
+make them preselected in project files (static libraries are preselected by default])],
      [CAN_BUILD_SHARED=$enableval
       if test $enableval = yes; then
          DEFAULT_LIBRARY_TYPE=relocatable
