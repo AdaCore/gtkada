@@ -22,6 +22,7 @@ c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
 c_extra_objects = ../gtkextra/obj/gtk*.o
 
 SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects} ${c_extra_objects}
+GTKADA_LIBS=
 EXTERNAL_LIBS=
 include Makefile.common
 

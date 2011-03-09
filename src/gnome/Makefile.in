@@ -3,6 +3,7 @@ LIBNAME       = libgnomeada$(SO_EXT)
 SONAME        = libgnomeada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 ARCHIVENAME   = libgnomeada.a
 SRC_FILES     = gnome.o gnome-*.o bonobo*.o
+GTKADA_LIBS   = -L../../lib-obj -lgtkada  # relative to OBJ_DIR
 EXTERNAL_LIBS = @GNOME_LIBS@
 GPRFILE       = gnome
 

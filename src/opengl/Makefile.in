@@ -12,6 +12,8 @@ OPENGL_C_OBJECTS = gtkglarea.o gdkgl.o
 OPENGL_C_OBJECTS_DIR = ${OPENGL_C_OBJECTS:%=${OBJ_DIR}/%}
 ifeq ($(OS),Windows_NT)
     GTKADA_LIBS  = ../../lib-obj/libgtkada.dll
+else
+    GTKADA_LIBS  = -L../../lib-obj -lgtkada  # relative to OBJ_DIR
 endif
 EXTERNAL_LIBS    = @GL_LIBS@
 OPENGL_FLAGS     = @GL_CFLAGS@
