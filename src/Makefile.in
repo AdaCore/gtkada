@@ -38,7 +38,10 @@ libs: ada ${c_objects_dir} gtkextra
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
-libs: ${OBJ_DIR}/${ARCHIVENAME} opengl gnome
+ifeq ($(BUILD_STATIC),yes)
+libs: ${OBJ_DIR}/${ARCHIVENAME}
+endif
+libs: opengl gnome
 
 opengl gtkextra gnome tools: force
 	$(MAKE) -C $@
@@ -61,11 +64,13 @@ install: force
 	   $(MKDIR) $(bindir); \
 	   $(MKDIR) $(libdir); \
 	   $(MKDIR) $(incdir); \
-	   $(MKDIR) $(alidir)/static; \
-	   $(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static; \
-	   $(RM) $(libdir)/$(ARCHIVENAME); \
-	   if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	     $(RANLIB) $(alidir)/static/$(ARCHIVENAME); \
+	   if [ ${BUILD_STATIC} = yes ]; then \
+	      $(MKDIR) $(alidir)/static; \
+	      $(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static; \
+	      $(RM) $(libdir)/$(ARCHIVENAME); \
+	      if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	         $(RANLIB) $(alidir)/static/$(ARCHIVENAME); \
+	      fi; \
 	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 	        $(MKDIR) $(alidir)/relocatable; \
@@ -88,13 +93,17 @@ install: force
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
 	   $(CP) pango*.ads pango*.adb $(incdir); \
 	   $(CP) cairo*.ads cairo*.adb $(incdir); \
-	   $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali $(alidir)/static; \
-	   $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir)/static; \
-	   $(CP) $(OBJ_DIR)/cairo*.ali $(alidir)/static; \
+	   if [ ${BUILD_STATIC} = yes ]; then \
+	      $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali $(alidir)/static; \
+	      $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir)/static; \
+	      $(CP) $(OBJ_DIR)/cairo*.ali $(alidir)/static; \
+	   fi; \
            $(MAKE) -C opengl install; \
            $(MAKE) -C gnome install; \
            $(MAKE) -C tools install; \
-	   $(CHMOD) ugo-w $(alidir)/static/*.ali; \
+	   if [ ${BUILD_STATIC} = yes ]; then \
+	      $(CHMOD) ugo-w $(alidir)/static/*.ali; \
+	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 	      $(CHMOD) ugo-w $(alidir)/relocatable/*.ali; \
 	   fi; \

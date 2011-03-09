@@ -12,6 +12,19 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    TARGET_LFLAGS=
    DEFAULT_LIBRARY_TYPE=static
 
+   AC_ARG_ENABLE(static,
+     [AC_HELP_STRING(
+        [--disable-static],
+        [Disable building of static libraries.])
+AC_HELP_STRING(
+        [--enable-static],
+        [Build static libraries (default).])],
+     [BUILD_STATIC=$enableval
+      if test $enableval = no; then
+         DEFAULT_LIBRARY_TYPE=relocatable
+      fi],
+     [BUILD_STATIC=yes])
+
    AC_ARG_ENABLE(shared,
      [AC_HELP_STRING(
         [--disable-shared],
@@ -98,6 +111,7 @@ make them preselected in project files (static libraries are preselected by defa
 
   AC_SUBST(DEFAULT_LIBRARY_TYPE)
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
+  AC_SUBST(BUILD_STATIC)
   AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)
   AC_SUBST(SO_OPTS)

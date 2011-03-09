@@ -272,7 +272,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="src/glib.ads"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os DEFAULT_LIBRARY_TYPE OS_SPECIFIC_LINK_OPTIONS BUILD_SHARED SO_EXT SO_OPTS FPIC TARGET_LFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GNATMAKE PERL SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RANLIB ac_ct_RANLIB PKG_CONFIG GTK_PREFIX GTK_CFLAGS GTK_LIBS DEFINE_UNDERLINE_ERROR USE_NLS GETTEXT_INTL HAVE_GETTEXT GL_LIBS GL_CFLAGS HAVE_OPENGL GNOME_CFLAGS GNOME_LIBS GNOME_STATIC_LIBS HAVE_GNOME GTKADA_VERSION GTKADA_MAJOR_VERSION GTKADA_MINOR_VERSION GTKADA_MICRO_VERSION BUILD_TYPE EXEC_PREFIX LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os DEFAULT_LIBRARY_TYPE OS_SPECIFIC_LINK_OPTIONS BUILD_STATIC BUILD_SHARED SO_EXT SO_OPTS FPIC TARGET_LFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GNATMAKE PERL SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RANLIB ac_ct_RANLIB PKG_CONFIG GTK_PREFIX GTK_CFLAGS GTK_LIBS DEFINE_UNDERLINE_ERROR USE_NLS GETTEXT_INTL HAVE_GETTEXT GL_LIBS GL_CFLAGS HAVE_OPENGL GNOME_CFLAGS GNOME_LIBS GNOME_STATIC_LIBS HAVE_GNOME GTKADA_VERSION GTKADA_MAJOR_VERSION GTKADA_MINOR_VERSION GTKADA_MICRO_VERSION BUILD_TYPE EXEC_PREFIX LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -804,6 +804,8 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --disable-static        Disable building of static libraries.
+  --enable-static         Build static libraries (default).
   --disable-shared        Disable building of shared libraries (default is to
                           build them if supported on the target)
   --enable-shared         Build shared libraries if supported on the target
@@ -1353,6 +1355,17 @@ test -n "$target_alias" &&
    TARGET_LFLAGS=
    DEFAULT_LIBRARY_TYPE=static
 
+   # Check whether --enable-static or --disable-static was given.
+if test "${enable_static+set}" = set; then
+  enableval="$enable_static"
+  BUILD_STATIC=$enableval
+      if test $enableval = no; then
+         DEFAULT_LIBRARY_TYPE=relocatable
+      fi
+else
+  BUILD_STATIC=yes
+fi;
+
    # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -1433,6 +1446,7 @@ fi;
   if test x$BUILD_SHARED = xno ; then
      DEFAULT_LIBRARY_TYPE=static
   fi
+
 
 
 
@@ -4155,6 +4169,7 @@ s,@target_vendor@,$target_vendor,;t t
 s,@target_os@,$target_os,;t t
 s,@DEFAULT_LIBRARY_TYPE@,$DEFAULT_LIBRARY_TYPE,;t t
 s,@OS_SPECIFIC_LINK_OPTIONS@,$OS_SPECIFIC_LINK_OPTIONS,;t t
+s,@BUILD_STATIC@,$BUILD_STATIC,;t t
 s,@BUILD_SHARED@,$BUILD_SHARED,;t t
 s,@SO_EXT@,$SO_EXT,;t t
 s,@SO_OPTS@,$SO_OPTS,;t t

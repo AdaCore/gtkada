@@ -5,6 +5,7 @@ PWD = $(shell pwd)
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
+BUILD_STATIC = @BUILD_STATIC@
 BUILD_SHARED = @BUILD_SHARED@
 SO_EXT   = @SO_EXT@
 SO_OPTS  = @SO_OPTS@
@@ -62,12 +63,15 @@ alidir        = $(prefix)/lib/gtkada
 
 all:
 
-ifeq ($(BUILD_SHARED),yes)
-module_all:     module_ada ${OBJ_DIR}/${ARCHIVENAME} ${OBJ_DIR}/${SONAME}
-module_install: module_install_common module_install_shared
-else
-module_all:     module_ada ${OBJ_DIR}/${ARCHIVENAME}
+module_all:     module_ada
 module_install: module_install_common
+ifeq (${BUILD_STATIC},yes)
+module_all:     ${OBJ_DIR}/${ARCHIVENAME}
+module_install: module_install_static
+endif
+ifeq (${BUILD_SHARED},yes)
+module_all:     ${OBJ_DIR}/${SONAME}
+module_install: module_install_shared
 endif
 
 module_ada: force
@@ -75,11 +79,13 @@ module_ada: force
 
 ifneq (${SONAME},)
 module_install_common: force
+	$(MKDIR) $(incdir)/$(INC_SUBDIR)
+	$(CP) *.ads *.adb $(incdir)/$(INC_SUBDIR)
+
+module_install_static: force
 	$(MKDIR) $(alidir)/static/$(INC_SUBDIR)/
 	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static/$(INC_SUBDIR)/
 	$(RM) $(libdir)/$(ARCHIVENAME)
-	$(MKDIR) $(incdir)/$(INC_SUBDIR)
-	$(CP) *.ads *.adb $(incdir)/$(INC_SUBDIR)
 	${CP} ${OBJ_DIR}/*.ali ${alidir}/static
 
 module_install_shared: force
