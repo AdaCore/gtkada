@@ -95,7 +95,7 @@ module_install_static: force
 
 module_install_shared: force
 	$(MKDIR) "${DESTDIR}$(alidir)/relocatable/$(INC_SUBDIR)/"
-	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) "${DESTDIR}$(alidir)/relocatable/$(INC_SUBDIR)/"
+	$(INSTALL_PROGRAM) ${OBJ_DIR}/$(SONAME) "${DESTDIR}$(alidir)/relocatable/$(INC_SUBDIR)/"
 	$(RM) "${DESTDIR}$(libdir)/$(LIBNAME)"
 ifneq (${OS},Windows_NT)
 	$(LN) $(SONAME) "${DESTDIR}$(alidir)/relocatable/$(LIBNAME)"

@@ -79,7 +79,7 @@ install: force
 		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) "${DESTDIR}$(bindir)"; \
 		     $(CHMOD) +x "${DESTDIR}$(bindir)/$(SONAME)"; \
 		else \
-	             $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) "${DESTDIR}$(alidir)/relocatable"; \
+	             $(INSTALL_PROGRAM) ${OBJ_DIR}/$(SONAME) "${DESTDIR}$(alidir)/relocatable"; \
 		     $(RM) "${DESTDIR}$(libdir)/$(LIBNAME)"; \
 		     $(LN) $(SONAME) "${DESTDIR}$(alidir)/relocatable/$(LIBNAME)"; \
 		     $(LN) gtkada/relocatable/$(SONAME) "${DESTDIR}$(libdir)/$(LIBNAME)"; \
