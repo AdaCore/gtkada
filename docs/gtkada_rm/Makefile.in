@@ -5,6 +5,7 @@ MKDIR = mkdir -p
 CP=cp -p
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+DESTDIR =
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 
@@ -20,10 +21,10 @@ docgen_clean:
 	$(RM) -rf log.txt doc_obj/*
 
 install:
-	-$(MKDIR) $(docdir)
+	-$(MKDIR) "${DESTDIR}$(docdir)"
 	-for i in gtkada_rm/*; \
 	do \
-	  $(INSTALL_DATA) $$i $(docdir); \
+	  $(INSTALL_DATA) $$i "${DESTDIR}$(docdir)"; \
 	done
 
 clean: docgen_clean

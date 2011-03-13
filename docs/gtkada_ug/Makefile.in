@@ -4,6 +4,7 @@ docdir = $(prefix)/share/doc/gtkada/gtkada_ug
 MKDIR = mkdir -p
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+DESTDIR =
 
 all: gtkada_ug.texi gfdl.texi
 	echo x | tex gtkada_ug.texi
@@ -17,10 +18,10 @@ all: gtkada_ug.texi gfdl.texi
 	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 
 install:
-	-$(MKDIR) $(docdir)
+	-$(MKDIR) "${DESTDIR}$(docdir)"
 	for i in `ls *.html *.info* *.ps *.texi *.txt *.tex *.gif *.jpg`; \
 	do \
-	   $(INSTALL_DATA) $$i $(docdir); \
+	   $(INSTALL_DATA) $$i "${DESTDIR}$(docdir)"; \
 	done
 
 clean:

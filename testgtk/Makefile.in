@@ -45,13 +45,13 @@ lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
 
 install: force
-	$(MKDIR) $(examples)
-	$(MKDIR) $(examples)/opengl
+	$(MKDIR) "${DESTDIR}$(examples)"
+	$(MKDIR) "${DESTDIR}$(examples)/opengl"
 	$(RM) b~*
-	-$(INSTALL_PROGRAM) testgtk$(EXEEXT) $(examples)
-	-$(INSTALL_PROGRAM) testcairo$(EXEEXT) $(examples)
-	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml $(examples)
-	$(CP) opengl/*.ad? opengl/*.[ch] $(examples)/opengl
+	-$(INSTALL_PROGRAM) testgtk$(EXEEXT) "${DESTDIR}$(examples)"
+	-$(INSTALL_PROGRAM) testcairo$(EXEEXT) "${DESTDIR}$(examples)"
+	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml "${DESTDIR}$(examples)"
+	$(CP) opengl/*.ad? opengl/*.[ch] "${DESTDIR}$(examples)/opengl"
 
 clean: module_clean
 

@@ -44,13 +44,13 @@ all: ${DIRECTORIES}
 	done
 
 install:
-	mkdir -p $(examples)
+	mkdir -p "${DESTDIR}$(examples)"
 	-for dir in ${DIRECTORIES} ${TUTORIAL_DIRS}; do \
-	  mkdir -p $(examples)/$${dir}; \
+	  mkdir -p "${DESTDIR}$(examples)/$${dir}"; \
 	  rm -f $${dir}/b~*; \
-	  cp -p $${dir}/*.ad? $${dir}/*.gpr $(examples)/$${dir} 2>/dev/null; \
-	  cp -p $${dir}/Makefile $(examples)/$${dir} 2>/dev/null; \
-	  cp -p $${dir}/README $(examples)/$${dir} 2>/dev/null; \
+	  cp -p $${dir}/*.ad? $${dir}/*.gpr "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
+	  cp -p $${dir}/Makefile "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
+	  cp -p $${dir}/README "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
 	done
 
 clean::

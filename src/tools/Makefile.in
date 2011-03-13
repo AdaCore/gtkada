@@ -18,8 +18,8 @@ all: force
 
 install: force
 	-${CHMOD} +x ${GTKADA_CONFIG}
-	${INSTALL_SCRIPT} ${GTKADA_CONFIG} ${bindir}
-	${INSTALL_PROGRAM} ${OBJ_DIR}/${GDIALOG}${EXEEXT} ${bindir}
+	${INSTALL_SCRIPT} ${GTKADA_CONFIG} "${DESTDIR}${bindir}"
+	${INSTALL_PROGRAM} ${OBJ_DIR}/${GDIALOG}${EXEEXT} "${DESTDIR}${bindir}"
 
 clean: module_clean
 
