@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2010, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1655,7 +1655,8 @@ package body Gtkada.MDI is
       else
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
-         Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
+         Set_USize (Child.Title_Box, -1, -1);
+         Set_Size_Request (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
       end if;
    end Set_Child_Title_Bar;
 
@@ -1694,7 +1695,7 @@ package body Gtkada.MDI is
            (Cr,
             0.0, 0.0,
             Gdouble (Get_Allocation_Width (Child.Title_Area)),
-            Gdouble (Child.MDI.Title_Bar_Height));
+            Gdouble (Get_Allocation_Height (Child.Title_Area)));
          Cairo.Fill (Cr);
 
          if Child.Icon /= null then
@@ -1705,7 +1706,8 @@ package body Gtkada.MDI is
             Save (Cr);
             Translate
               (Cr,
-               Gdouble (X), Gdouble ((Child.MDI.Title_Bar_Height - H) / 2));
+               Gdouble (X),
+               Gdouble ((Get_Allocation_Height (Child.Title_Area) - H) / 2));
             Paint (Cr);
             Restore (Cr);
 
@@ -2610,7 +2612,7 @@ package body Gtkada.MDI is
    begin
       Child.MDI := MDI_Window (MDI);
 
-      Set_USize (Child.Title_Box, -1, MDI.Title_Bar_Height);
+      Set_USize (Child.Title_Box, -1, -1);
 
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
@@ -2768,7 +2770,9 @@ package body Gtkada.MDI is
          --  Force a refresh of the title bar
          Draw
            (Child,
-            (0, 0, Get_Allocation_Width (Child), Child.MDI.Title_Bar_Height));
+            (0, 0,
+             Get_Allocation_Width (Child),
+             Get_Allocation_Height (Child.Title_Area)));
       end if;
 
       Update_Menu_Item (Child);
@@ -3249,16 +3253,16 @@ package body Gtkada.MDI is
         and then Realized_Is_Set (Old)
       then
          Queue_Draw_Area
-           (Old, Border_Thickness, Border_Thickness,
-            Gint (Get_Allocation_Width (Old)) - 2 * Border_Thickness,
-            Child.MDI.Title_Bar_Height);
+           (Old.Title_Area, 0, 0,
+            Gint (Get_Allocation_Width (Old.Title_Area)),
+            Gint (Get_Allocation_Width (Old.Title_Area)));
       end if;
 
       if Realized_Is_Set (C.Initial) then
          Queue_Draw_Area
-           (C, Border_Thickness, Border_Thickness,
-            Gint (Get_Allocation_Width (C)) - 2 * Border_Thickness,
-            Child.MDI.Title_Bar_Height);
+           (C.Title_Area, 0, 0,
+            Gint (Get_Allocation_Width (C.Title_Area)),
+            Gint (Get_Allocation_Height (C.Title_Area)));
 
          --  Give the focus to the window containing the child.
          --  Giving the focus to a window has the side effect of moving the
