@@ -130,9 +130,6 @@ package body Gtkada.MDI is
    Default_Title_Font : constant String := "Sans 8";
    --  Default title font for the children
 
-   Border_Thickness : constant Gint := 4;
-   --  Thickness of the separators in the MDI
-
    Max_Drag_Border_Width : constant Gint := 30;
    --  Width or height of the drag-and-drop borders for each notebook. On the
    --  sides of the MDI, half of it is dedicated to moving the window so that
