@@ -134,10 +134,10 @@ Its efficiency is about the same as the C library through the use of inline
 subprograms.
 
 GtkAda comes with a complete integration to the graphical interface
-builder @code{Glade}@footnote{Glade was written by Damon Chaplin}. This
-makes it even easier to develop interfaces, since you just have to click
-to create a window and all the dialogs. Ada code can then be generated
-with a single click.
+builder @code{Glad}. This makes it even easier to develop interfaces,
+since you just have to click to create a description of the window and all
+the dialogs. Ada code can simply import that description to bring the windows
+to life.
 
 Under some platforms, GtkAda also provides a bridge to use OpenGL, with
 which you can create graphical applications that display 3D graphics, and
@@ -179,9 +179,7 @@ and @b{2.18.x}.
 This release may or may not be compatible with older versions of gtk+.
 
 This version of GtkAda is compatible with @code{Glade} @b{version
-2.0.0}.  Due to some modification in the output format of Glade, this
-release will not work with older versions. It is also not guaranteed to
-work with more recent versions.
+3.7.3}.
 
 This document does not describe all the widgets available in GtkAda, nor
 does it try to explain all the subprograms. The GtkAda Reference Manual
@@ -252,8 +250,6 @@ Mesa, which is free implementation.
 
 Optionally, you can also install the @code{Glade} interface builder. Get
 the compatible package from the Glade web site, compile and install it.
-The official version already knows about Ada (at least enough to call
-GtkAda's own programs), so no patch is needed.
 
 You can finally download the latest version of GtkAda from the web site.
 Untar and uncompress the package, then simply do the following
@@ -1700,205 +1696,37 @@ don't need to redraw the whole widget, just this area).
 @chapter Support for Glade, the Gtk GUI builder
 
 @section Introduction
-GtkAda now comes with support for the GUI builder Glade (this is not
-the glade released with Gnat for distributed systems).
-Using Glade itself is straightforward: it is an intuitive point and click
-GUI builder. The main difference from other builders is that, since GtkAda
-builds a UI with blocks by default, you will not be asked to set the size and
-position of your windows by default. If you are looking for this kind of
-interaction you should consider using the Gtk_Fixed container. However, please
-read the GtkAda reference manual before considering using Gtk_Fixed.
+GtkAda now comes with support for the GUI builder Glade-3.
+Glade-3 provides a graphical interface for designing windows and dialogs.
+The interface description is saved in an XML file which can be loaded at
+run-time by your GtkAda application. With this approach, there is no need
+to write or generate Ada code to describe the interface, all is needed is
+to write the callbacks for various actions.
 
-@section Using Glade
-Note that we only recommend using version 2.0.0 of Glade, as previous
-versions are not compatible. Using this version you can directly create Ada
-files from Glade by selecting Ada95 as the language under project options.
-Glade saves your interface in a project file whose syntax is XML
-based. In the following sections, we will refer to this file as either
-@code{the XML file} or @code{the project file} interchangeably.
+@section Launching Glade
+Under UNIX and Linux, Glade is invoked by the command-line script 
+@code{glade-3} which is located in the @code{bin} directory of your GtkAda
+installation.
+Under Windows, Glade is invoked by clicking on the executable
+@code{glade-3.exe}, also located in the @code{bin} directory of your GtkAda
+installation.
 
-@subsection Taking advantage of Glade's options
-In this XML file, Glade will save various options that Gate can take
-advantage of. In particular, going to the project options window, some General
-Options in the @code{C Options} section will also be used by Gate: Gettext
-support, if enabled, will generate an additional package called <project>_intl
-that will use Gtkada.Intl;
-The @code{Set Widget Names} option is also recognized and will generate
-additional calls to Set_Name for each widget.
+@section Building your interface
+In Glade-3 the interface is done by point-and-clicking. The first step is
+to create one or more toplevel window and then placing widgets in these windows.
 
-@subsection Associating icons with buttons
-Up to now, the only way to specify an icon for a button was to associate a
-pixmap file to it. As an alternative, if the name specified in the @code{Icon}
-field does not contain any dots, Gate will consider the name as a variable
-rather than a file name. It is up to you to provide the necessary definitions
-in order to compile properly the generated code.
+Detailed tutorials can be found at: 
+  @uref{http://live.gnome.org/Glade/Tutorials}
 
-@subsection Note for GNU/Linux users
-Some GNU/Linux systems come with a precompiled version of Glade that will
-usually have support for Gnome. Gate currently does not provide support
-for Gnome, which means that you should not enable Gnome support in Glade.
+In the Preferences for your project (menu Edit->Preferences), make sure that
+the preference "Project file format" is set to "GtkBuilder".
 
-@section Gate
-@subsection Invoking Gate
-Gate is a program that is delivered with GtkAda. Gate
-takes the Glade XML file as an argument and generates a set of Ada files.
-When compiled, these files will recreate the interface you just designed with
-Glade.
-
-Gate is generally invoked through the @code{Write source code} button in
-Glade's menu bar.
-
-In addition, you can also invoke it from the command line by providing a
-Glade project file. This will generate Ada files in the directory set
-as the @code{Source Directory} project option, or otherwise in the
-current working directory. Note that under Windows, the @code{Source Directory}
-option is ignored, and the current directory is always used instead.
-
-@subsection Structure of the generated files
-@subsubsection The main file
-The main file is the name of the program name specified in the XML Glade file:
-@file{<program name>.adb}. It contains initialization and creation code for
-each top level widget contained in the XML file. This is intended as a
-convenient default to visualize your GUI, but you will usually want to modify
-this initialization.
-
-@subsubsection Top level widget files
-For each top level widget, Gate will generate a package
-@code{<widget>_Pkg} in the files @file{<widget>_pkg.ads} and
-@file{.adb}. These packages contain all the GtkAda calls needed to create the
-widgets you designed within Glade. You will usually not need to modify these
-files yourself.
-
-@subsubsection Main handler file
-This file, called @file{callbacks_<program name>.ads} contains all the Handler
-package instantiations needed by your application. You will usually not need
-to modify it.
-
-@subsubsection Top level widget signal files
-These are the most important files created by Gate. Each is called
-@file{<widget_name>_pkg-callbacks.adb}.
-They contain stubs for all the callbacks related to a top level widget
-you declared in Glade. With the main file, this the only files you should modify
-yourself. Note that it is recommended that you structure your application such that
-the real code is put in separate packages (i.e not generated files) as much
-as possible, to avoid potential merging problems when your interface is
-significantly changed within Glade. See next section for more details.
-
-Currently, Gate will generate callback stub procedures that can
-handle the expected number of arguments for each signal. This is done using
-a relatively low level mechanism explained in the reference manual
-(package @code{Gtk.Handlers}). Basically, callbacks expecting arguments
-will take
-a Gtk_Argument as their only parameter, and Gate will generate the appropriate
-variable declaration and conversion calls to provide the expected GtkAda
-arguments. You should not modify this code by hand unless you know what
-you are doing.
-
-For example, given a signal @code{delete_event}, Gate will generate the
-following procedure body, giving access to the arguments of this callback:
-a @code{Gtk_Window_Record} (Object) and a @code{Gdk_Event} (Arg1)
-
-@smallexample
-@b{function} On_Main_Window_Delete_Event
-  (Object : @b{access} Gtk_Window_Record'Class;
-   Params : Gtk.Arguments.Gtk_Args) return Boolean
-@b{is}
-   Arg1 : Gdk_Event := To_Event (Params, 1);
-@b{begin}
-   return False;
-@b{end} On_Main_Window_Delete_Event;
-@end smallexample
-
-@subsection Modifying generated files
-Note that you can easily go back to Glade any time, modify your interface,
-and have Gate re-generate a set of files. All your modifications will be
-kept in the new files. For that, Gate creates a directory @file{.gate} in the
-current directory. Please do not delete it if you want Gate to be able to
-keep your changes from one version to the next.
-
-Also note that to keep track of your modifications, gate relies on either
-@code{merge}, or @code{patch} and @code{diff} being available on your system.
-If you don't have a working set of @code{diff/patch}, @code{configure} will
-simply replace them by null operations, which means that regenerated
-files will override the previous ones.
-
-Under Windows, Gate will not attempt to merge changes. Instead,
-it will always regenerate and overwrite every file.
-
-In some cases, due to major changes in the project file, Gate may not be
-able to merge all the changes. In this case, it will notify you so, and
-will either keep the old and new sections in the files (if you are using
-@code{merge}), or files with a @file{.rej} extension will be generated to help
-you do the merge manually.
-
-@subsection Adding Gate support for new widgets
-
-This section is intended for developpers that wish to add support for new
-GtkAda widgets in Gate. Note that this section is not complete yet.
-
-@subsubsection Implementing the @code{Generate} procedure
-To provide support for a new widget, you first need to write a @code{Generate}
-procedure that will take care of generating the piece of code related to
-the widget's properties. Note that the parents properties do not
-have to be handled by this function.
-
-@itemize @bullet
-@item Glib.Glade API
-The Glib.Glade package contains a self documented API that will help you
-automate most of the work for common widgets.
-@item Most common mapping
-  @itemize @bullet
-  @item Gen_New
-  @item Gen_Set
-  @item Gen_Call_Child
-  @item example
-  @end itemize
-@item Registering @code{Generate} functions
-  Gtk.Glade.Register_Generate (Widget, Func)
-This procedure associates a given Generate procedure with a given widget C name.
-@end itemize
-
-@section Dynamic loading of XML files
-@subsection Introduction to Libglade
-Libglade is an external library provided by default on some systems (e.g
-GNU/Linux, Gnome) that supports dynamic loading of XML files and creation of
-widgets at run time. The advantage of using libglade is that you do not need
-to recompile your application to change your user interface. On the other
-hand, everything is done at run time, meaning less compile checks, and also the
-inability to take advantage of the object oriented features of GtkAda and Ada
-such as deriving from a widget creating using the GUI builder, to add fields
-and properties.
-See packages Glade and Glade.XML for more information.
-
-@section Limitations
-Gate currently support all Gtk+ widgets and properties available
-under Glade. But, to help you identify widgets that may not be supported (e.g
-Gnome widgets), Gate will generate a warning on the standard error:
-
-@smallexample
-$ gate warning.glade
-Generating Ada files...
-
-GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
-The following files have been created/updated in src:
-[...]
-@end smallexample
-
-and add a comment in the @file{<widget>_pkg.adb} file that looks like:
-
-@smallexample
---  WARNING: Unsupported widget GnomeCanvas (canvas1)
-@end smallexample
-
-This means that while generating the file Gate detected an unsupported
-widget (in this case GnomeCanvas) whose name is canvas1.
-If you get such a warning your file may or may not compile properly, but
-you won't get the complete widget hierarchy at run time.
-
-Feel free to send us (see @ref{How to report bugs}) the XML file that
-causes this problem. We don't guarantee a rapid fix for each particular
-problem but receiving real examples of missing functionnalities will
-certainly help implementing them faster.
+@section Using the interface in your application.
+Once the interface is built and saved in an XML file, you can use it in your
+GtkAda application. You will need to use objects defined in the package
+@code{Gtkada.Builder} to load the interface file and to connect subprograms
+defined in your application to signals emitted by the interface. See the
+detailed explanations and examples in @code{gtkada-builder.ads}
 
 @c -------------------------------------------------------------------
 @node Binding new widgets
