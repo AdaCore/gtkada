@@ -779,10 +779,11 @@ package body Gtkada.MDI is
 
    procedure Gtk_New
      (MDI   : out MDI_Window;
-      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class) is
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+      Independent_Perspectives  : Boolean := False) is
    begin
       MDI := new MDI_Window_Record;
-      Gtkada.MDI.Initialize (MDI, Group);
+      Gtkada.MDI.Initialize (MDI, Group, Independent_Perspectives);
    end Gtk_New;
 
    ----------------
@@ -791,7 +792,8 @@ package body Gtkada.MDI is
 
    procedure Initialize
      (MDI   : access MDI_Window_Record'Class;
-      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+      Independent_Perspectives  : Boolean := False)
    is
       Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
@@ -816,11 +818,9 @@ package body Gtkada.MDI is
       Set_Has_Window (MDI, True);
 
       MDI.Group := Gtk_Accel_Group (Group);
+      MDI.Independent_Perspectives := Independent_Perspectives;
 
-      MDI.Dnd_Message := new String'
-        ("<i>Will be <b>(#)</b> when changing perspective"
-         & ASCII.LF & "Use <b>control</b> to move the whole notebook"
-         & ASCII.LF & "Use <b>shift</b> to create a new view for editors</i>");
+      Set_Dnd_Message (MDI, "");
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
       MDI.Background_Color := Parse (Default_MDI_Background_Color);
@@ -851,6 +851,7 @@ package body Gtkada.MDI is
       --  user loads a perspective later on
 
       Gtk_New (MDI.Central);
+
       Add_Child (MDI, MDI.Central);
 
       --  Put an empty notebook in the MDI, which will act as a recipient for
@@ -1323,6 +1324,16 @@ package body Gtkada.MDI is
          Queue_Draw (MDI);
       end if;
    end Configure;
+
+   ------------------------------
+   -- Independent_Perspectives --
+   ------------------------------
+
+   function Independent_Perspectives
+     (MDI : access MDI_Window_Record) return Boolean is
+   begin
+      return MDI.Independent_Perspectives;
+   end Independent_Perspectives;
 
    ---------------------------------
    -- Reset_Title_Bars_And_Colors --
@@ -1822,7 +1833,21 @@ package body Gtkada.MDI is
       Message : String) is
    begin
       Free (MDI.Dnd_Message);
-      MDI.Dnd_Message := new String'(Message);
+
+      if Message /= "" then
+         MDI.Dnd_Message := new String'(Message);
+      elsif MDI.Independent_Perspectives then
+         MDI.Dnd_Message := new String'
+           ("<i>Use <b>control</b> to move the whole notebook"
+            & ASCII.LF
+            & "Use <b>shift</b> to create a new view for editors</i>");
+      else
+         MDI.Dnd_Message := new String'
+           ("<i>Will be <b>(#)</b> when changing perspective"
+            & ASCII.LF & "Use <b>control</b> to move the whole notebook"
+            & ASCII.LF
+            & "Use <b>shift</b> to create a new view for editors</i>");
+      end if;
    end Set_Dnd_Message;
 
    ------------------------
@@ -4657,7 +4682,8 @@ package body Gtkada.MDI is
          To_Hide          : in out Gtk.Widget.Widget_List.Glist;
          Width, Height    : Gint := 0;
          Do_Size_Allocate : Boolean);
-      --  Internal version of Load_Perspective
+      --  Internal version of Load_Perspective.
+      --  If Name is "", the first perspective is loaded.
 
       procedure Compute_Size_From_Attributes
         (Node                        : Node_Ptr;
@@ -5703,6 +5729,7 @@ package body Gtkada.MDI is
 
             Gtk_New (MDI.Central);
             Add_Child (MDI, MDI.Central);
+            Print_Debug ("No perspective to restore");
             return False;
          end if;
 
@@ -5875,7 +5902,8 @@ package body Gtkada.MDI is
            (MDI,
             Get_Attribute (From_Tree, "perspective", ""),
             User, Focus_Child => Focus_Child,
-            To_Raise          => To_Raise, To_Hide => To_Hide,
+            To_Raise          => To_Raise,
+            To_Hide           => To_Hide,
             Width             => MDI_Width,
             Height            => MDI_Height,
             Do_Size_Allocate  => Do_Size_Allocate);
@@ -6016,7 +6044,8 @@ package body Gtkada.MDI is
                --  is project specific and thus goes into the central area's
                --  XML
 
-               if not In_Central
+               if not MDI.Independent_Perspectives
+                 and then not In_Central
                  and then
                    (Widget_Node.Child /= null
                     or else Widget_Node.Attributes /= null)
@@ -6024,7 +6053,10 @@ package body Gtkada.MDI is
                   Tmp_Node := new Node;
                   Tmp_Node.Tag := new String'(Widget_Node.Tag.all);
                   Add_Child (Central, Widget_Node, Append => True);
+
                else
+                  --  For independent perspectives, always store the whole
+                  --  contents in the perspective
                   Tmp_Node := Widget_Node;
                end if;
 
@@ -6204,10 +6236,14 @@ package body Gtkada.MDI is
                Orientation := Get_Orientation (Iter);
 
                if Get_Widget (Iter) = Gtk_Widget (MDI.Central) then
-                  N := new Node;
-                  N.Tag := new String'("central");
-                  Save_Size (Iter, N);
-                  Add_Child (Current, N, Append => True);
+                  if MDI.Independent_Perspectives then
+                     Save_Paned (MDI.Central, Current, In_Central => True);
+                  else
+                     N := new Node;
+                     N.Tag := new String'("central");
+                     Save_Size (Iter, N);
+                     Add_Child (Current, N, Append => True);
+                  end if;
 
                elsif Get_Widget (Iter) /= null then
                   N := Save_Notebook
@@ -6298,8 +6334,10 @@ package body Gtkada.MDI is
          Print_Debug ("Save_Desktop: saving the perspective");
          Save_Paned (MDI, MDI.Current_Perspective, In_Central => False);
 
-         Print_Debug ("Save_Desktop: saving central area");
-         Save_Paned (MDI.Central, Central, In_Central => True);
+         if not MDI.Independent_Perspectives then
+            Print_Debug ("Save_Desktop: saving central area");
+            Save_Paned (MDI.Central, Central, In_Central => True);
+         end if;
 
          --  Save the floating widgets (these are part of the perspective)
 
@@ -6324,8 +6362,10 @@ package body Gtkada.MDI is
                          & Current_Perspective (MDI) & "), desktop is");
             Print (MDI.Perspectives);
 
-            Print_Debug ("And the central area is");
-            Print (Central);
+            if not MDI.Independent_Perspectives then
+               Print_Debug ("And the central area is");
+               Print (Central);
+            end if;
          end if;
       end Save_Desktop;
 
@@ -6389,9 +6429,10 @@ package body Gtkada.MDI is
                C := MDI_Child (Get_Data (L));
 
                if C.State = Normal
-                 and then not In_Central_Area (MDI, C)
+                 and then (MDI.Independent_Perspectives
+                           or else not In_Central_Area (MDI, C))
                then
-                  Print_Debug ("Remove_All_Items, markgin "
+                  Print_Debug ("Remove_All_Items, marking "
                                & Get_Title (C) & " as invisible");
                   Ref (C);   --  Unref called in Destroy_Child and Put
 

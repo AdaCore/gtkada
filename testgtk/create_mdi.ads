@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2010, AdaCore                   --
+--                     Copyright (C) 2010-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,8 @@ with Gtk.Frame;
 package Create_MDI is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   procedure Run_Independent
+      (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
    function Help return String;
 
 end Create_MDI;

@@ -23,6 +23,12 @@ JC10-012 MDI: short titles also applies to title bars
   be the base name rather than full path name). This preference now also
   applies to title bars for non-floating windows.
 
+JB29-030 MDI: support for independent perspectives
+
+  It is now possible to configure the MDI so that the perspectives do not
+  share the central area (as a result, no window is preserved when switching
+  among perspectives, unless they are explicitly part of the new perspective).
+
 JB09-025 High-level API for using Glade-3 and Gtk.Builder
 
   A new package Gtkada.Builder has been introduced. This provides a

@@ -95,17 +95,22 @@ package Gtkada.MDI is
 
    procedure Gtk_New
      (MDI   : out MDI_Window;
-      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+      Independent_Perspectives : Boolean := False);
    --  Create a new MDI window.
    --  Note that it is recommended that you modify the style (Set_Background
    --  in State_Normal) to have a different color.
    --  You should call Setup_Toplevel_Window once you have added the MDI to a
    --  toplevel widget, so that focus is correctly handled when the toplevel
    --  window gains the focus
+   --  When Independent_Perspectives is True, switching perspectives will not
+   --  preserve any window. Otherwise, the windows that are in the central
+   --  area will be preserved in the new perspective.
 
    procedure Initialize
      (MDI   : access MDI_Window_Record'Class;
-      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+      Independent_Perspectives : Boolean := False);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -143,6 +148,10 @@ package Gtkada.MDI is
    --  Title_Bar_Color in exchange.
    --  Tabs_Position indicates where the notebook tabs should be put.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
+
+   function Independent_Perspectives
+     (MDI : access MDI_Window_Record) return Boolean;
+   --  Whether the MDI is using independent perspectives
 
    -------------
    -- Windows --
@@ -339,8 +348,11 @@ package Gtkada.MDI is
    --  Through this function you can override the message. If you insert the
    --  special sequence "(#)" in the message, it will be replaced either with
    --  "preserved" or "hidden" depending on where the drop occurs (the central
-   --  area or the perspectives).
+   --  area or the perspectives). It could also be replaced by an empty string
+   --  if the MDI was configured with independent perspectives.
    --  You can use markup like "<b>...</b>" to put keywords in bold.
+   --
+   --  Passing an empty string for Message will restore the default message.
 
    procedure Child_Drag_Begin
      (Child  : access MDI_Child_Record'Class;
@@ -670,7 +682,7 @@ package Gtkada.MDI is
         (Save : Save_Desktop_Function;
          Load : Load_Desktop_Function);
       --  Register a set of functions to save and load desktops for some
-      --  specific widget types.
+      --  specific widget types. This can be called multiple times.
       --  Neither Save nor Load can be null.
 
       function Restore_Desktop
@@ -1087,6 +1099,9 @@ private
 
       All_Floating_Mode : Boolean := False;
       --  Set to true if all windows should be set to floating
+
+      Independent_Perspectives : Boolean := False;
+      --  See documentation for Configure.
 
       Use_Short_Titles_For_Floats : Boolean := False;
       --  Set to true if all floating children should use their short titles

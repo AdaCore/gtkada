@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2003                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-2010, AdaCore              --
+--                     Copyright (C) 2004-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,7 @@
 with Gdk.Bitmap;         use Gdk.Bitmap;
 with Gdk.Color;          use Gdk.Color;
 with Gdk.Pixmap;         use Gdk.Pixmap;
+with Glib.Xml_Int;       use Glib.Xml_Int;
 with Gtk;                use Gtk;
 with Gtk.Accel_Group;    use Gtk.Accel_Group;
 with Gtk.Box;            use Gtk.Box;
@@ -52,14 +53,46 @@ package body Create_MDI is
 
    package Desktops is new Gtkada.MDI.Desktop (Integer);
 
-   function Create_Child return MDI_Child;
+   function Create_Child (Index : Natural) return MDI_Child;
    procedure On_Opaque  (Button : access Gtk_Widget_Record'Class);
    procedure On_Snapshot  (Button : access Gtk_Widget_Record'Class);
    procedure Do_Configure (MDI : access MDI_Window_Record'Class);
 
+   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class);
+   procedure Load_Desktop;
+   --  Load the desktop (and all known perspectives) from an external
+   --  XML file. Or create that file from the current desktop.
+
+   function Load_From_Desktop
+      (MDI  : MDI_Window;
+       Node : Glib.Xml_Int.Node_Ptr;
+       User : Integer) return MDI_Child;
+   --  This function recreates a MDI_Child from its XML description as
+   --  given in a desktop.xml file (see the documentation for package
+   --  Desktop).
+
+   function Save_To_Desktop
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+       User   : Integer) return Glib.Xml_Int.Node_Ptr;
+   --  This is the opposite of Load_From_Desktop, and saves an existing
+   --  window into an XML node (with all information needed so that
+   --  Load_From_Desktop can recreate it later).
+
+   procedure Setup
+      (Frame : access Gtk_Frame_Record'Class; Independent : Boolean);
+   --  Create the demo, either in "Independent Perspectives" mode or not.
+
+   type My_Window_Record is new Gtk_Box_Record with record
+      Index : Natural;
+   end record;
+   type My_Window is access all My_Window_Record'Class;
+   --  The type of windows this example is using. In practive, you would
+   --  likely put trees, editors, and other kinds of complex windows.
+
    MDI    : MDI_Window;
-   Item   : Natural := 1;
    Opaque : Boolean := False;
+
+   My_Window_Name : constant String := "my_window_";
 
    ----------
    -- Help --
@@ -76,6 +109,15 @@ package body Create_MDI is
         & " select another perspective, some of the windows (the ones in the"
         & " central area) will be preserved. All other windows will only"
         & " remain visible if they also are in the other perspective."
+        & " This example loads the perspectives from an XML file, and you"
+        & " can then switch between perspectives by using the menu"
+        & " <b>Perspectives</b>. By default, the MDI includes a central area"
+        & " whose content is preserved when you switch perspectives. For"
+        & " instance, this could be used in an IDE so that the editors are"
+        & " the same in the development and debugging perspectives. However,"
+        & " it can sometimes be confusing to users, so you can force"
+        & " the perspectives to be <b>independent</b>. In such a case, no"
+        & " window is preserved when switching perspectives."
         & ASCII.LF
         & "The MDI also provides the notion of desktop (the current layout"
         & " of your windows in all the perspectives). Such a desktop can be"
@@ -164,41 +206,118 @@ package body Create_MDI is
       Show_All (Window);
    end On_Snapshot;
 
+   ---------------------
+   -- On_Save_Desktop --
+   ---------------------
+
+   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Button);
+
+      Perspectives, Central : Node_Ptr;
+   begin
+      Desktops.Save_Desktop (MDI, 0, Perspectives, Central);
+
+      --  These could also be saved in the same XML file. We keep this
+      --  example simpler by avoiding the extra XML manipulation this requires
+
+      if Independent_Perspectives (MDI) then
+         Print (Perspectives, "perspectives_indep.xml");
+      else
+         Print (Perspectives, "perspectives.xml");
+         Print (Central, "central.xml");
+      end if;
+   end On_Save_Desktop;
+
+   ------------------
+   -- Load_Desktop --
+   ------------------
+
+   procedure Load_Desktop is
+      Perspectives, Central : Node_Ptr;
+      Success : Boolean;
+      pragma Unreferenced (Success);
+   begin
+      if Independent_Perspectives (MDI) then
+         Perspectives := Parse ("perspectives_indep.xml");
+      else
+         Perspectives := Parse ("perspectives.xml");
+         Central      := Parse ("central.xml");
+      end if;
+
+      Success := Desktops.Restore_Desktop (MDI, Perspectives, Central, 0);
+   end Load_Desktop;
+
    ------------------
    -- Create_Child --
    ------------------
 
-   function Create_Child return MDI_Child is
+   function Create_Child (Index : Natural) return MDI_Child is
       Child : MDI_Child;
-      Box    : Gtk_Box;
-      Label  : Gtk_Label;
+      Box   : My_Window;
+      Label : Gtk_Label;
    begin
-      Gtk_New_Vbox (Box);
+      Box := new My_Window_Record;
+      Box.Index := Index;
+      Initialize_Vbox (Box);
+
       Gtk_New (Child, Box, Flags => All_Buttons, Group => Group_Default);
 
-      Gtk_New (Label, "This is the" & Integer'Image (Item) & " window");
+      Gtk_New (Label, "This is the" & Integer'Image (Index) & " window");
       Pack_Start (Box, Label);
 
-      Set_Title (Child, "Window" & Integer'Image (Item));
-
-      Item := Item + 1;
+      Set_Title (Child, "Window" & Integer'Image (Index));
 
       Show_All (Child);
       return Child;
    end Create_Child;
 
-   ---------
-   -- Run --
-   ---------
+   ---------------------
+   -- Save_To_Desktop --
+   ---------------------
 
-   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Child : array (1 .. 5) of MDI_Child;
-      Pos   : constant array (Child'Range) of Child_Position :=
-         (Position_Automatic,
-          Position_Automatic,
-          Position_Automatic,
-          Position_Automatic,
-          Position_Automatic);
+   function Save_To_Desktop
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+       User   : Integer) return Glib.Xml_Int.Node_Ptr
+   is
+      pragma Unreferenced (User);
+      Box : constant My_Window := My_Window (Widget);
+      Index : constant String := Box.Index'Img;
+      N   : Node_Ptr;
+   begin
+      --  We store the index directly in the XML tag, so that all windows
+      --  appear to be different.
+      N := new Node;
+      N.Tag := new String'
+         (My_Window_Name & Index (Index'First + 1 .. Index'Last));
+      return N;
+   end Save_To_Desktop;
+
+   -----------------------
+   -- Load_From_Desktop --
+   -----------------------
+
+   function Load_From_Desktop
+      (MDI  : MDI_Window;
+       Node : Glib.Xml_Int.Node_Ptr;
+       User : Integer) return MDI_Child
+   is
+      pragma Unreferenced (User);
+      Child : MDI_Child;
+      Index : constant Integer := Integer'Value
+        (Node.Tag (Node.Tag'First + My_Window_Name'Length .. Node.Tag'Last));
+   begin
+      Child := Create_Child (Index);
+      Put (MDI, Child, Position_Automatic);
+      return Child;
+   end Load_From_Desktop;
+
+   -----------
+   -- Setup --
+   -----------
+
+   procedure Setup
+      (Frame : access Gtk_Frame_Record'Class; Independent : Boolean)
+   is
       Bar    : Gtk_Toolbar;
       Box    : Gtk_Box;
       Toggle : Gtk_Toggle_Tool_Button;
@@ -218,7 +337,7 @@ package body Create_MDI is
       Pack_Start (Box, Bar, Expand => False);
 
       Gtk_New (Group);
-      Gtk_New (MDI, Group => Group);
+      Gtk_New (MDI, Group => Group, Independent_Perspectives => Independent);
       Do_Configure (MDI);
       Pack_End (Box, MDI, Expand => True);
 
@@ -228,6 +347,10 @@ package body Create_MDI is
       Set_Label (Toggle, "Opaque Resizing");
       Insert (Bar, Toggle);
       Widget_Callback.Connect (Toggle, "toggled", On_Opaque'Access);
+
+      Gtk_New (Button, Label => "Save Desktop");
+      Insert (Bar, Button);
+      Widget_Callback.Connect (Button, "clicked", On_Save_Desktop'Access);
 
       Gtk_New (Menu_Button, Label => "Menu");
       Set_Menu (Menu_Button, Menu);
@@ -239,16 +362,35 @@ package body Create_MDI is
       --  Pressing "snapshot will cycle through the MDI children and take
       --  a pixmap of the MDI children.
 
-      --  Setup a minimal desktop. This is a required call to finish the
-      --  setup of the MDI
-      --  Success := Desktops.Restore_Desktop (MDI, null, null, 1);
+      --  Load the desktop from external XML files
 
-      for N in Child'Range loop
-         Child (N) := Create_Child;
-         Put (MDI, Child (N), Pos (N));
-      end loop;
+      Desktops.Register_Desktop_Functions
+         (Save_To_Desktop'Access, Load_From_Desktop'Access);
+
+      Load_Desktop;
+      --  Put (MDI, Create_Child (1), Position_Automatic);
+      --  Put (MDI, Create_Child (2), Position_Automatic);
+      --  Put (MDI, Create_Child (3), Position_Automatic);
 
       Show_All (Frame);
+   end Setup;
+
+   ---------
+   -- Run --
+   ---------
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+   begin
+      Setup (Frame, Independent => False);
    end Run;
 
+   ---------------------
+   -- Run_Independent --
+   ---------------------
+
+   procedure Run_Independent
+      (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+   begin
+      Setup (Frame, Independent => True);
+   end Run_Independent;
 end Create_MDI;
