@@ -5879,7 +5879,7 @@ package body Gtkada.MDI is
          To_Raise := Widget_List.Null_List;
          To_Hide  := Widget_List.Null_List;
 
-         if From_Tree /= null then
+         if not MDI.Independent_Perspectives and then From_Tree /= null then
             Restore_Multi_Pane
               (Pane                  => MDI.Central,
                MDI                   => MDI,
