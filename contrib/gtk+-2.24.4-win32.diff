@@ -1,3 +1,9 @@
+2010-10-21      Nicolas Setton  <setton@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (generate_button_event): Remove wrong
+	call to _gdk_event_button_generate.
+	Fixes JA21-010.
+
 2010-02-01      Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkdrawable-win32.c	(draw_segments): Ignore LineTo
@@ -235,3 +241,16 @@
  	}
  
        GDK_NOTE (DRAW, g_print ("\n"));
+--- gdk/win32/gdkevents-win32.c.old	2011-04-05 09:23:55.913000000 +0200
++++ gdk/win32/gdkevents-win32.c	2011-04-05 17:07:19.272000000 +0200
+@@ -1727,8 +1734,10 @@ generate_button_event (GdkEventType type
+ 
+   append_event (event);
+ 
++#if 0
+   if (type == GDK_BUTTON_PRESS)
+     _gdk_event_button_generate (_gdk_display, event);
++#endif
+ }
+ 
+ static void
