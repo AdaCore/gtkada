@@ -10,9 +10,9 @@ improvements/fixes not incorporated yet.
 
 gtk+-2.24.4-win32.diff: ditto for Windows
 
-glib-2.28.3.diff: ditto for glib
+glib-2.28.5.diff: ditto for glib
 
-glib-2.28.3-win32.diff: ditto for Windows
+glib-2.28.5-win32.diff: ditto for Windows
 
 cairo-1.10.2-win32.diff: ditto for cairo under Windows
 
