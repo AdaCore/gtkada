@@ -1,3 +1,12 @@
+2011-04-06	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (doesnt_want_button_release,
+	doesnt_want_button_press): reintroduce subprograms.
+	(gdk_event_translate): Before generating GDK_BUTTON_PRESS and
+	GDK_BUTTON_RELEASE, call propagate to switch window to the
+	window, if any, which is currently grabbing the events.
+	Fixes K307-005.
+
 2010-10-21      Nicolas Setton  <setton@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c (generate_button_event): Remove wrong
@@ -254,3 +263,64 @@
  }
  
  static void
+--- gdk/win32/gdkevents-win32.c.original	2011-04-06 09:26:44.000000000 -0700
++++ gdk/win32/gdkevents-win32.c	2011-04-06 09:29:45.000000000 -0700
+@@ -1459,6 +1459,20 @@ doesnt_want_char (gint mask,
+   return !(mask & (GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK));
+ }
+ 
++static gboolean
++doesnt_want_button_release (gint mask,
++			    MSG *msg)
++{
++  return !(mask & GDK_BUTTON_RELEASE_MASK);
++}
++
++static gboolean
++doesnt_want_button_press (gint mask,
++			  MSG *msg)
++{
++  return !(mask & GDK_BUTTON_PRESS_MASK);
++}
++
+ static void
+ handle_configure_event (MSG       *msg,
+ 			GdkWindow *window)
+@@ -2284,8 +2298,17 @@ gdk_event_translate (MSG  *msg,
+ 	break;
+ 
+       /* TODO_CSW? Emulate X11's automatic active grab */
+-      generate_button_event (GDK_BUTTON_PRESS, button,
+-			     window, msg);
++      
++      grab = _gdk_display_get_last_pointer_grab (_gdk_display);
++
++      if (grab != NULL && 
++	  !propagate (&window, msg,
++		      grab->window, grab->owner_events, grab->event_mask,
++		      doesnt_want_button_press, TRUE))
++	;
++      else if (!GDK_WINDOW_DESTROYED (window))
++	  generate_button_event (GDK_BUTTON_PRESS, button,
++				 window, msg);
+ 
+       return_val = TRUE;
+       break;
+@@ -2323,8 +2346,15 @@ gdk_event_translate (MSG  *msg,
+ 	}
+ #endif
+ 
+-      generate_button_event (GDK_BUTTON_RELEASE, button,
+-			     window, msg);
++      grab = _gdk_display_get_last_pointer_grab (_gdk_display);
++
++      if (grab != NULL && 
++	  !propagate (&window, msg,
++		      grab->window, grab->owner_events, grab->event_mask,
++		      doesnt_want_button_release, TRUE))
++	;
++      else if (!GDK_WINDOW_DESTROYED (window))
++	generate_button_event (GDK_BUTTON_RELEASE, button, window, msg);
+ 
+       return_val = TRUE;
+       break;
