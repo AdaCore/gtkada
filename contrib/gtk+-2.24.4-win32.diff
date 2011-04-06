@@ -7,6 +7,8 @@
 	window, if any, which is currently grabbing the events.
 	Fixes K307-005.
 
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=646930
+
 2010-10-21      Nicolas Setton  <setton@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c (generate_button_event): Remove wrong
