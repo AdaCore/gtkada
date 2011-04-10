@@ -8,6 +8,12 @@
 
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
 
+2010-12-06  Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/x11/gdkdnd-x11.c (gdk_window_cache_new): Disable use of
+	XCompositeGetOverlayWindow/XCompositeReleaseOverlayWindow, apparently
+	not available on older linux distribs.
+
 2010-03-27  Arnaud Charlet  <charlet@adacore.com>
 
 	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
@@ -264,3 +270,21 @@
      }
  }
   
+--- gdk/x11/gdkdnd-x11.c.old	2011-04-10 22:36:59.140000000 +0200
++++ gdk/x11/gdkdnd-x11.c	2011-04-10 22:37:24.808000000 +0200
+@@ -578,6 +578,7 @@ gdk_window_cache_new (GdkScreen *screen)
+ 
+   g_free (children);
+ 
++#if 0
+ #ifdef HAVE_XCOMPOSITE
+   /*
+    * Add the composite overlay window to the cache, as this can be a reasonable
+@@ -593,6 +594,7 @@ gdk_window_cache_new (GdkScreen *screen)
+       XCompositeReleaseOverlayWindow (xdisplay, GDK_WINDOW_XWINDOW (root_window));
+     }
+ #endif
++#endif
+ 
+   return result;
+ }
