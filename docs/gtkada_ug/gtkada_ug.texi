@@ -9,7 +9,7 @@
 * GtkAda_Ug: (gtkada_ug).          Ada graphical tookit based on GTK+ (User's Guide)
 @end direntry
 
-@set GtkAdaVersion 2.22.0
+@set GtkAdaVersion 2.24.0
 
 @titlepage
 
