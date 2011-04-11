@@ -2,7 +2,10 @@
 
 	* modules/engines/ms-windows/msw_style.c (setup_system_styles): Fix
 	typo.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=647460
+
 	(draw_tab_button): Always use custom code to draw tab.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=647461
 
 2011-04-06	Nicolas Setton  <setton@adacore.com>
 
