@@ -82,10 +82,10 @@ with Gtk.Box;                 use Gtk.Box;
 with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Container;           use Gtk.Container;
-with Gtk.Drawing_Area;        use Gtk.Drawing_Area;
 with Gtk.Dialog;              use Gtk.Dialog;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
+with Gtk.Fixed;               use Gtk.Fixed;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
 with Gtk.Image;               use Gtk.Image;
@@ -98,6 +98,7 @@ with Gtk.Notebook;            use Gtk.Notebook;
 with Gtk.Object;              use Gtk.Object;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Rc;
+with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Widget;              use Gtk.Widget;
@@ -160,22 +161,6 @@ package body Gtkada.MDI is
       2 => New_String (String (Signal_Unfloat_Child)),
       3 => New_String (String (Signal_Selected)),
       4 => New_String (String (Signal_Child_State_Changed)));
-
-   Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
-     (New_String ("13 11 2 1"),
-      New_String (".     c None"),
-      New_String ("+     c #000000"),
-      New_String ("............."),
-      New_String ("............."),
-      New_String ("...++....++.."),
-      New_String ("....++..++..."),
-      New_String (".....++++...."),
-      New_String ("......++....."),
-      New_String (".....++++...."),
-      New_String ("....++..++..."),
-      New_String ("...++....++.."),
-      New_String ("............."),
-      New_String ("............."));
 
    use Widget_List;
 
@@ -242,10 +227,6 @@ package body Gtkada.MDI is
    --  If the child is currently invisible in the perspective, insert it back
    --  in the MDI. In both case, return the child itself
 
-   procedure Internal_Close_Child
-     (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Internal version of Close, for a MDI_Child
-
    function Create_Notebook
      (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
    --  Create a notebook, and set it up for drag-and-drop
@@ -285,10 +266,8 @@ package body Gtkada.MDI is
    procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
    --  Called when the Menu associated with a MDI is destroyed
 
-   procedure Draw_Child
-     (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle);
    function Draw_Child
-     (Child : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
       return Boolean;
    --  Draw the child (and the title bar)
 
@@ -340,13 +319,6 @@ package body Gtkada.MDI is
 
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
    --  Add an entry to the MDI menu that provides easy activation of Child
-
-   procedure Propagate_Expose_Event
-     (Container : access Gtk.Container.Gtk_Container_Record'Class;
-      Event     : Gdk.Event.Gdk_Event_Expose);
-   --  Propagate the expose event Event to all the NO_WINDOW children of
-   --  Container. You must call this when Container has a specific expose
-   --  callback.
 
    procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
    procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
@@ -495,6 +467,51 @@ package body Gtkada.MDI is
    --  Move to the next notebook for this iterator (does nothing if Iterator
    --  already points to a notebook).
 
+   package Close_Button is
+
+      --  We use an event box as a basis so that we have a gdk_window
+      --  available for handling mouse events. We'll set this event box as
+      --  transparent to be able to draw transparent buttons as we wish.
+      type Gtkada_MDI_Close_Button_Record is new Gtk_Event_Box_Record
+      with record
+         Child        : MDI_Child;
+         --  The child this button is attached to
+
+         Tab_Over     : Boolean;
+         --  Wether the mouse is over the button's container
+
+         Over         : Boolean;
+         --  Wether the mouse is over the button
+
+         Pressed      : Boolean;
+         --  Wether the button is pressed
+
+         In_Titlebar  : Boolean;
+         --  Wether the button is in the title bar or in the tab
+
+         Default_Size : Glib.Gint;
+         --  The button's default size. The actual drawing depends on the final
+         --  allocated space.
+      end record;
+      type Gtkada_MDI_Close_Button is
+        access all Gtkada_MDI_Close_Button_Record'Class;
+
+      procedure Gtk_New
+        (Button      : out Gtkada_MDI_Close_Button;
+         Tab         : access Gtk_Widget_Record'Class;
+         Child       : access MDI_Child_Record'Class;
+         In_Titlebar : Boolean);
+      --  Tab: the button's container. This container shall have a Gdk_Window
+      --   to allow mouse motion event retrieval.
+      --  Child: the MDI child that button is attached to. This child is closed
+      --   upon button click.
+      --  In_Titlebar: set to True if the button is in the title bar, to false
+      --   if it's in the notebook tab.
+
+   end Close_Button;
+
+   package body Close_Button is separate;
+
    ---------------------
    -- In_Central_Area --
    ---------------------
@@ -634,7 +651,9 @@ package body Gtkada.MDI is
       --  whether the notebook has the focus or not). Otherwise, clicking
       --  inside an open editor in GPS, for instance, will not properly give
       --  the focus to the MDI child
-      if Widget /= null then
+      if Widget /= null
+        and then Widget.all in MDI_Child_Record'Class
+      then
          Print_Debug ("Set_Focus_Child_Notebook "
                       & Get_Title (MDI_Child (Widget)));
          Set_Focus_Child (MDI_Child (Widget));
@@ -1459,16 +1478,6 @@ package body Gtkada.MDI is
       end if;
    end Close;
 
-   --------------------------
-   -- Internal_Close_Child --
-   --------------------------
-
-   procedure Internal_Close_Child (Child : access Gtk_Widget_Record'Class) is
-      C : constant MDI_Child := MDI_Child (Child);
-   begin
-      Close_Child (C);
-   end Internal_Close_Child;
-
    -----------------
    -- Close_Child --
    -----------------
@@ -1672,11 +1681,13 @@ package body Gtkada.MDI is
    -- Draw_Child --
    ----------------
 
-   procedure Draw_Child
-     (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle)
+   function Draw_Child
+     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+      return Boolean
    is
-      pragma Unreferenced (Area);
+      pragma Unreferenced (Event);
 
+      Child            : constant MDI_Child := MDI_Child (Widget);
       Border_Thickness : constant Gint :=
                            Gint (Get_Border_Width (Child.Main_Box));
       Color : Gdk_Color := Child.MDI.Title_Bar_Color;
@@ -1687,7 +1698,7 @@ package body Gtkada.MDI is
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
 
-      if Child.MDI.Focus_Child = MDI_Child (Child) then
+      if Child.MDI.Focus_Child = Child then
          Color := Child.MDI.Focus_Title_Color;
       end if;
 
@@ -1695,15 +1706,15 @@ package body Gtkada.MDI is
 
       Update_Tab_Color (Child);
 
-      if Realized_Is_Set (Child.Title_Area) then
-         Cr := Create (Get_Window (Child.Title_Area));
+      if Realized_Is_Set (Child.Title_Box) then
+         Cr := Create (Get_Window (Child.Title_Box));
 
          Set_Source_Color (Cr, Color);
          Cairo.Rectangle
            (Cr,
             0.0, 0.0,
-            Gdouble (Get_Allocation_Width (Child.Title_Area)),
-            Gdouble (Get_Allocation_Height (Child.Title_Area)));
+            Gdouble (Get_Allocation_Width (Child.Title_Box)),
+            Gdouble (Get_Allocation_Height (Child.Title_Box)));
          Cairo.Fill (Cr);
 
          if Child.Icon /= null then
@@ -1715,7 +1726,7 @@ package body Gtkada.MDI is
             Translate
               (Cr,
                Gdouble (X),
-               Gdouble ((Get_Allocation_Height (Child.Title_Area) - H) / 2));
+               Gdouble ((Get_Allocation_Height (Child.Title_Box) - H) / 2));
             Paint (Cr);
             Restore (Cr);
 
@@ -1748,19 +1759,7 @@ package body Gtkada.MDI is
 
          Destroy (Cr);
       end if;
-   end Draw_Child;
 
-   ----------------
-   -- Draw_Child --
-   ----------------
-
-   function Draw_Child
-     (Child : access Gtk_Widget_Record'Class; Event : Gdk_Event)
-      return Boolean is
-   begin
-      Draw_Child (MDI_Child (Child), Get_Area (Event));
-
-      Propagate_Expose_Event (MDI_Child (Child), Event);
       return False;
    end Draw_Child;
 
@@ -2450,10 +2449,8 @@ package body Gtkada.MDI is
                              2 => (1 => GType_None),
                              3 => (1 => GType_None),
                              4 => (1 => GType_None));
-      Button            : Gtk_Button;
-      Pix               : Gdk_Pixbuf;
-      Pixmap            : Gtk_Image;
       Event             : Gtk_Event_Box;
+      Button            : Close_Button.Gtkada_MDI_Close_Button;
 
    begin
       if Widget.all in Gtk_Window_Record'Class then
@@ -2505,34 +2502,16 @@ package body Gtkada.MDI is
       Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
-
-      Gtk_New (Child.Title_Area);
-      Pack_Start
-        (Child.Title_Box, Child.Title_Area, Expand => True, Fill => True);
-
       Return_Callback.Object_Connect
-        (Child.Title_Area, Signal_Expose_Event,
+        (Child.Title_Box, Signal_Expose_Event,
          Return_Callback.To_Marshaller (Draw_Child'Access),
-         Slot_Object => Child,
-         After => True);
-
-      Return_Callback.Object_Connect
-        (Child, Signal_Expose_Event,
-         Return_Callback.To_Marshaller (Draw_Child'Access),
-         Slot_Object => Child,
-         After => True);
+         Slot_Object => Child);
 
       if (Flags and Destroy_Button) /= 0 then
-         Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
-         Gtk_New (Pixmap, Pix);
-         Unref (Pix);
-         Gtk_New (Button);
-         Add (Button, Pixmap);
-         Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);
-         Widget_Callback.Object_Connect
-           (Button, Signal_Clicked,
-            Widget_Callback.To_Marshaller (Internal_Close_Child'Access),
-            Child);
+         Close_Button.Gtk_New (Button, Child, Child, True);
+         Pack_End
+           (Child.Title_Box,
+            Button, Expand => False, Fill => False, Padding => 2);
       end if;
 
       --  This internal Event box is needed when the child is floated
@@ -2633,8 +2612,6 @@ package body Gtkada.MDI is
       Initial_Position : Child_Position := Position_Automatic) is
    begin
       Child.MDI := MDI_Window (MDI);
-
-      Set_USize (Child.Title_Box, -1, -1);
 
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
@@ -2794,7 +2771,7 @@ package body Gtkada.MDI is
            (Child,
             (0, 0,
              Get_Allocation_Width (Child),
-             Get_Allocation_Height (Child.Title_Area)));
+             Get_Allocation_Height (Child.Title_Box)));
       end if;
 
       Update_Menu_Item (Child);
@@ -3275,16 +3252,16 @@ package body Gtkada.MDI is
         and then Realized_Is_Set (Old)
       then
          Queue_Draw_Area
-           (Old.Title_Area, 0, 0,
-            Gint (Get_Allocation_Width (Old.Title_Area)),
-            Gint (Get_Allocation_Width (Old.Title_Area)));
+           (Old.Title_Box, 0, 0,
+            Gint (Get_Allocation_Width (Old.Title_Box)),
+            Gint (Get_Allocation_Width (Old.Title_Box)));
       end if;
 
       if Realized_Is_Set (C.Initial) then
          Queue_Draw_Area
-           (C.Title_Area, 0, 0,
-            Gint (Get_Allocation_Width (C.Title_Area)),
-            Gint (Get_Allocation_Height (C.Title_Area)));
+           (C.Title_Box, 0, 0,
+            Gint (Get_Allocation_Width (C.Title_Box)),
+            Gint (Get_Allocation_Height (C.Title_Box)));
 
          --  Give the focus to the window containing the child.
          --  Giving the focus to a window has the side effect of moving the
@@ -3767,6 +3744,9 @@ package body Gtkada.MDI is
       Pix    : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Image;
+      Close  : Close_Button.Gtkada_MDI_Close_Button;
+      Fixed  : Gtk_Fixed;
+
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
@@ -3782,22 +3762,32 @@ package body Gtkada.MDI is
 
          Set_Visible_Window (Event, False);
 
-         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+         Gtk_New_Hbox (Box, Homogeneous => False);
 
          if Child.Icon /= null then
-            Gtk_New_Hbox (Box, Homogeneous => False);
-
             Render_Pixmap_And_Mask_For_Colormap
               (Child.Icon, Get_Default_Colormap, Pix, Mask, 128);
             Gtk_New (Pixmap, Pix, Mask);
             Gdk.Drawable.Unref (Pix);
             Gdk.Drawable.Unref (Mask);
             Pack_Start (Box, Pixmap, Expand => False);
-            Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
-            Add (Event, Box);
-         else
-            Add (Event, Child.Tab_Label);
+         elsif (Child.Flags and Destroy_Button) /= 0 then
+            --  No pixmap but we will display a close button, let's add an
+            --  empty space to center the label.
+            Gtk.Fixed.Gtk_New (Fixed);
+            Set_USize (Fixed, 12, 1);
+            Pack_Start (Box, Fixed, Expand => False, Padding => 2);
          end if;
+
+         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+         Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
+
+         if (Child.Flags and Destroy_Button) /= 0 then
+            Close_Button.Gtk_New (Close, Event, Child, False);
+            Pack_End (Box, Close, Expand => False, Padding => 2);
+         end if;
+
+         Add (Event, Box);
 
          Set_Tab_Label (Note, Child, Event);
          Show_All (Event);
@@ -4538,27 +4528,6 @@ package body Gtkada.MDI is
       end if;
    end Create_Menu_Entry;
 
-   ----------------------------
-   -- Propagate_Expose_Event --
-   ----------------------------
-
-   procedure Propagate_Expose_Event
-     (Container : access Gtk.Container.Gtk_Container_Record'Class;
-      Event     : Gdk.Event.Gdk_Event_Expose)
-   is
-      Children, Tmp : Widget_List.Glist;
-   begin
-      Children := Get_Children (Container);
-      Tmp := Children;
-
-      while Tmp /= Null_List loop
-         Propagate_Expose (Container, Get_Data (Tmp), Event);
-         Tmp := Next (Tmp);
-      end loop;
-
-      Free (Children);
-   end Propagate_Expose_Event;
-
    --------------------
    -- Menu_Destroyed --
    --------------------
@@ -4893,6 +4862,7 @@ package body Gtkada.MDI is
          Item  : Gtk_Menu_Item;
          Child : MDI_Child;
          Tmp   : Widget_List.Glist;
+         Sep   : Gtk_Separator_Menu_Item;
 
       begin
          if MDI.Menu = null then
@@ -4919,8 +4889,8 @@ package body Gtkada.MDI is
             Set_Accel_Path (Item, Accel_Path_Prefix
                             & "/window/split_vertical", MDI.Group);
 
-            Gtk_New (Item);
-            Append (MDI.Menu, Item);
+            Gtk_New (Sep);
+            Append (MDI.Menu, Sep);
 
             Gtk_New (MDI.Float_Menu_Item, "Floating");
             Append (MDI.Menu, MDI.Float_Menu_Item);
@@ -4934,8 +4904,8 @@ package body Gtkada.MDI is
               (MDI.Float_Menu_Item, Accel_Path_Prefix
                & "/window/floating", MDI.Group);
 
-            Gtk_New (Item);
-            Append (MDI.Menu, Item);
+            Gtk_New (Sep);
+            Append (MDI.Menu, Sep);
 
             Gtk_New (MDI.Close_Menu_Item, "Close");
             Append (MDI.Menu, MDI.Close_Menu_Item);
@@ -4945,8 +4915,8 @@ package body Gtkada.MDI is
             Set_Accel_Path (Item, Accel_Path_Prefix
                             & "/window/close", MDI.Group);
 
-            Gtk_New (Item);
-            Append (MDI.Menu, Item);
+            Gtk_New (Sep);
+            Append (MDI.Menu, Sep);
 
             Tmp := First (MDI.Items);
 

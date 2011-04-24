@@ -45,7 +45,6 @@ with Gdk.Pixbuf;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
-with Gtk.Drawing_Area;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
@@ -938,18 +937,18 @@ private
    type String_Access is access all UTF8_String;
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
-      Initial : Gtk.Widget.Gtk_Widget;
+      Initial       : Gtk.Widget.Gtk_Widget;
       --  The widget we use to build this child.
 
-      Main_Box : Gtk.Box.Gtk_Box;
+      Main_Box      : Gtk.Box.Gtk_Box;
       --  The main container.
 
-      State : State_Type := Normal;
+      State         : State_Type := Normal;
 
-      Group : Child_Group := Group_Default;
+      Group         : Child_Group := Group_Default;
 
-      Title       : String_Access;
-      Short_Title : String_Access;
+      Title         : String_Access;
+      Short_Title   : String_Access;
       --  Title of the item, as it appears in the title bar.
       --  These are UTF8-Encoded
 
@@ -958,29 +957,26 @@ private
       --  we know it). This is used to reuse a child when switching
       --  perspectives.
 
-      MDI : MDI_Window;
+      MDI           : MDI_Window;
       --  The MDI to which the child belongs. We cannot get this information
       --  directly from Get_Parent since some children are actually floating
       --  and do not belong to the MDI anymore.
 
-      Menu_Item : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
+      Menu_Item     : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
       --  The item in the dynamic menu that represents this child.
 
-      Flags : Child_Flags;
+      Flags         : Child_Flags;
 
-      Focus_Widget : Gtk.Widget.Gtk_Widget;
+      Focus_Widget  : Gtk.Widget.Gtk_Widget;
       --  The widget which should actually get the keyboard focus
 
-      Icon : Gdk.Pixbuf.Gdk_Pixbuf;
+      Icon          : Gdk.Pixbuf.Gdk_Pixbuf;
 
-      Title_Box : Gtk.Box.Gtk_Box;
+      Title_Box     : Gtk.Box.Gtk_Box;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
 
-      Title_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
-      --  Area used to draw the title and icon.
-
-      Tab_Label : Gtk.Label.Gtk_Label;
+      Tab_Label     : Gtk.Label.Gtk_Label;
       --  label used when child is in a notebook, null if not in a notebook
    end record;
 
