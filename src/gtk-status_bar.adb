@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -96,6 +96,20 @@ package body Gtk.Status_Bar is
    begin
       return Internal (Get_Object (Statusbar)) /= 0;
    end Get_Has_Resize_Grip;
+
+   ----------------------
+   -- Get_Message_Area --
+   ----------------------
+
+   function Get_Message_Area
+     (Statusbar : access Gtk_Status_Bar_Record) return Gtk_Widget
+   is
+      function Internal (Statusbar : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_statusbar_get_message_area");
+
+   begin
+      return Convert (Internal (Get_Object (Statusbar)));
+   end Get_Message_Area;
 
    ------------------
    -- Get_Messages --

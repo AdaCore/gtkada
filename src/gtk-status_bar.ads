@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,6 +60,7 @@ with Glib.GSlist;
 pragma Elaborate_All (Glib.GSlist);
 with System;
 with Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Status_Bar is
 
@@ -138,6 +139,10 @@ package Gtk.Status_Bar is
    --  Set or gets the value of the resize_grip attribute for a given status
    --  bar. This indicates whether the status bar has a handle that, when
    --  dragged, will resize the toplevel window that contains the status bar.
+
+   function Get_Message_Area
+     (Statusbar : access Gtk_Status_Bar_Record) return Gtk_Widget;
+   --  Retrieves the box containing the label widget.
 
    ----------------
    -- Properties --
