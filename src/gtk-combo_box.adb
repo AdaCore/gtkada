@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2010, AdaCore                  --
+--                 Copyright (C) 2006-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -127,10 +127,18 @@ package body Gtk.Combo_Box is
       function Internal (Combo_Box : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_combo_box_get_active_text");
       Result : chars_ptr := Internal (Get_Object (Combo_Box));
-      Output : constant String := Value (Result);
    begin
-      Free (Result);
-      return Output;
+      if Result /= Null_Ptr then
+         declare
+            Output : constant String := Value (Result);
+         begin
+            Free (Result);
+
+            return Output;
+         end;
+      else
+         return "";
+      end if;
    end Get_Active_Text;
 
    ---------------
