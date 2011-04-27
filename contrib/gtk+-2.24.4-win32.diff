@@ -1,3 +1,9 @@
+2011-04-27	Nicolas Setton  <setton@adacore.com>
+
+	* gtkselection.c: (_gtk_selection_request): Properly fill the
+	window information. Prevents a crash when copying selection to the
+	clipboard under Windows.
+
 2011-04-10      Arnaud Charlet  <charlet@adacore.com>
 
 	* modules/engines/ms-windows/msw_style.c (setup_system_styles): Fix
@@ -325,3 +331,15 @@
      {
        /* experimental tab-drawing code from mozilla */
        RECT rect;
+--- gtk/gtkselection.c.orig	2011-04-26 11:45:47.000000000 +0200
++++ gtk/gtkselection.c	2011-04-26 12:05:34.000000000 +0200
+@@ -2280,7 +2280,8 @@ _gtk_selection_request (GtkWidget *widge
+ #ifdef GDK_WINDOWING_X11
+   info->requestor = gdk_x11_window_foreign_new_for_display (display, event->requestor);
+ #else
+-  info->requestor = NULL;
++  info->requestor = gdk_window_lookup_for_display (display,
++						   event->requestor);
+ #endif
+ 
+   /* Determine conversions we need to perform */
