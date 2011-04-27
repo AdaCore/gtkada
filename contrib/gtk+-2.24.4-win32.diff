@@ -1,6 +1,17 @@
 2011-04-27	Nicolas Setton  <setton@adacore.com>
 
-	* gtkselection.c: (_gtk_selection_request): Properly fill the
+	* gdk/win32/gdkevents-win32.c (gdk_event_translate): Refine
+	previous patch (for K307-005), propagating button press/releases
+	to grabbed window only for events received outside of Gtk+
+	windows. This prevents an offset problem when dragging
+	scroll bar sliders.
+	For K422-021.
+	This chunk should be considered temporary and not to be submitted
+	for the time being.
+
+2011-04-27	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkselection.c: (_gtk_selection_request): Properly fill the
 	window information. Prevents a crash when copying selection to the
 	clipboard under Windows.
 
@@ -343,3 +354,25 @@
  #endif
  
    /* Determine conversions we need to perform */
+--- gdk/win32/gdkevents-win32.c.intermediate	2011-04-26 16:44:14.000000000 +0200
++++ gdk/win32/gdkevents-win32.c	2011-04-27 13:54:12.000000000 +0200
+@@ -2301,7 +2301,8 @@ gdk_event_translate (MSG  *msg,
+       
+       grab = _gdk_display_get_last_pointer_grab (_gdk_display);
+ 
+-      if (grab != NULL && 
++      if (window == _gdk_root && 
++          grab != NULL && 
+ 	  !propagate (&window, msg,
+ 		      grab->window, grab->owner_events, grab->event_mask,
+ 		      doesnt_want_button_press, TRUE))
+@@ -2348,7 +2349,8 @@ gdk_event_translate (MSG  *msg,
+ 
+       grab = _gdk_display_get_last_pointer_grab (_gdk_display);
+ 
+-      if (grab != NULL && 
++      if (window == _gdk_root && 
++          grab != NULL && 
+ 	  !propagate (&window, msg,
+ 		      grab->window, grab->owner_events, grab->event_mask,
+ 		      doesnt_want_button_release, TRUE))
