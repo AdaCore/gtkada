@@ -125,7 +125,7 @@ package body Close_Button is
          Button.Default_Size := 11;
       end if;
 
-      Set_Size_Request (Button, Button.Default_Size, -1);
+      Set_Size_Request (Button, Button.Default_Size, Button.Default_Size + 4);
       Set_Events
         (Button,
          Get_Events (Button) or Pointer_Motion_Mask or
@@ -183,8 +183,7 @@ package body Close_Button is
                  Gtk_Notebook (Get_Parent (Button.Child));
 
    begin
-      if not Button.In_Titlebar
-        and then not Button.Tab_Over
+      if not Button.Tab_Over
         and then not Button.Over
       then
          return True;
@@ -203,14 +202,15 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 3 : we want at least 1 px border (so *2) + 1px for the
-         --  thin hilight effect at the bottom of the button
+         --  Height - 4 : we want at least 1 px margin (so *2) + 1px for the
+         --  thin hilight effect at the bottom of the button. We add another px
+         --  to center the button (compensate the hilight size).
          if dW > Gdouble (Height - 4) then
             dW := Gdouble (Height - 4);
          end if;
 
          X := X + Width - Gint (dW);
-         Y := Y + (Height - 2 - Gint (dW)) / 2;
+         Y := Y + (Height - Gint (dW)) / 2;
 
          Cr := Create (Get_Window (Button));
 
