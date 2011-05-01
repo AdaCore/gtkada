@@ -125,7 +125,7 @@ package body Close_Button is
          Button.Default_Size := 11;
       end if;
 
-      Set_Size_Request (Button, Button.Default_Size, Button.Default_Size + 1);
+      Set_Size_Request (Button, Button.Default_Size, -1);
       Set_Events
         (Button,
          Get_Events (Button) or Pointer_Motion_Mask or
@@ -203,19 +203,14 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 1 because of the thin hilight effect at the bottom of the
-         --  button, that makes it 1 pixel higher that its size expressed in dW
-         if dW > Gdouble (Height - 1) then
-            dW := Gdouble (Height - 1);
+         --  Height - 3 : we want at least 1 px border (so *2) + 1px for the
+         --  thin hilight effect at the bottom of the button
+         if dW > Gdouble (Height - 4) then
+            dW := Gdouble (Height - 4);
          end if;
 
-         if Width > Gint (dW) then
-            X := X + (Width - Gint (dW)) / 2;
-         end if;
-
-         if (Height - 1) > Gint (dW) then
-            Y := Y + (Height - 1 - Gint (dW)) / 2;
-         end if;
+         X := X + Width - Gint (dW);
+         Y := Y + (Height - 2 - Gint (dW)) / 2;
 
          Cr := Create (Get_Window (Button));
 
@@ -400,14 +395,16 @@ package body Close_Button is
 
    procedure Invalidate (Widget : access Gtk_Widget_Record'Class) is
    begin
-      Invalidate_Rect
-        (Gtk.Widget.Get_Window (Widget),
-         (Get_Allocation_X (Widget),
-          Get_Allocation_Y (Widget),
-          Get_Allocation_Width (Widget),
-          Get_Allocation_Height (Widget)),
-         False);
-      Queue_Draw (Widget);
+      if Realized_Is_Set (Widget) then
+         Invalidate_Rect
+           (Gtk.Widget.Get_Window (Widget),
+            (Get_Allocation_X (Widget),
+             Get_Allocation_Y (Widget),
+             Get_Allocation_Width (Widget),
+             Get_Allocation_Height (Widget)),
+            False);
+         Queue_Draw (Widget);
+      end if;
    end Invalidate;
 
    ------------------
