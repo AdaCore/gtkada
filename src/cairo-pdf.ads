@@ -26,8 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Cairo.Png;
-
 package Cairo.PDF is
 
    function Create
@@ -53,15 +51,5 @@ package Cairo.PDF is
    --   cairo_surface_status() to check for this.
    --
    --  Since 1.2
-
-   function Create_For_Stream
-     (Write_Func       : Cairo.Png.Cairo_Write_Func;
-      Closure          : System.Address;
-      Width_In_Points  : Gdouble;
-      Height_In_Points : Gdouble) return Cairo_Surface;
-
-private
-
-   pragma Import (C, Create_For_Stream, "cairo_pdf_surface_create_for_stream");
 
 end Cairo.PDF;
