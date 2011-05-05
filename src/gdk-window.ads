@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,6 +57,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
+with Cairo;
 with Gdk;
 with Gdk.Color;
 with Gdk.Cursor;
@@ -345,6 +346,13 @@ package Gdk.Window is
       Width         : Gint;
       Height        : Gint);
    --  Obsolete. Use Gdk.Drawable.Draw_Drawable instead.
+
+   function Create_Similar_Surface
+     (Window  : Gdk_Window;
+      Content : Cairo.Cairo_Content;
+      Width   : Glib.Gint;
+      Height  : Glib.Gint) return Cairo.Cairo_Surface;
+   --  Same as Cairo.Surface.Create_Similar, using Windows as similar surface.
 
    procedure Gdk_Raise (Window : Gdk_Window);
 
@@ -705,6 +713,8 @@ private
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Get_Window_Id, "ada_gdk_get_window_id");
    pragma Import (C, Set_Opacity, "gdk_window_set_opacity");
+   pragma Import
+     (C, Create_Similar_Surface, "gdk_window_create_similar_surface");
 
    pragma Convention (C, Gdk_Window_Type);
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                 Copyright (C) 2010-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,7 +52,7 @@ package Gdk.Cairo is
 
    procedure Set_Source_Pixmap
      (Cr       : Cairo_Context;
-      Pixmap   : Gdk_Pixmap;
+      Pixmap   : Gdk_Drawable;
       Pixmap_X : Gdouble;
       Pixmap_Y : Gdouble);
    --  Cr: a Cairo_Context

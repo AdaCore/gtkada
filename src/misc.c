@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -4487,4 +4487,14 @@ ada_gtk_binding_entry_add_signal_bool
   gtk_binding_entry_add_signal
     (set, keyval, modifier, signal_name, 1,
      G_TYPE_BOOLEAN, arg1);
+}
+
+GdkModifierType
+ada_gdk_get_default_modifier ()
+{
+#ifdef GDK_QUARTZ_BACKEND
+  return GDK_MOD1_MASK;
+#else
+  return GDK_CONTROL_MASK;
+#endif
 }
