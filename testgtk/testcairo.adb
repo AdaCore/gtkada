@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                 Copyright (C) 2010-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -105,6 +105,7 @@ procedure Testcairo is
    Docs : constant Doc_Array :=
      (Rectangles      => -"Simple rectangles",
       Transparency    => -"Transparency",
+      Operators       => -"Compositing operators",
       Testcairo_Drawing.Matrix   =>
       -"Translating, rotating and scaling using matrix transformations",
       Transformations => -"Direct transformations",

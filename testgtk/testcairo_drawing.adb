@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                 Copyright (C) 2010-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,7 +70,9 @@ package body Testcairo_Drawing is
       Opt : Cairo_Font_Options;
 
       Image_Surface : Cairo_Surface;
-      Status : Cairo_Status;
+      Status        : Cairo_Status;
+
+      Idx           : Natural;
 
    begin
       case Test is
@@ -101,6 +103,49 @@ package body Testcairo_Drawing is
                     Angle2 => Two_Pi);
                Fill (Cr);
             end loop;
+
+         when Operators =>
+            declare
+               Layout : Pango_Layout;
+               Desc   : Pango_Font_Description;
+            begin
+               Layout := Create_Pango_Layout (Win);
+               Desc := Pango.Font.From_String ("Verdana 9");
+               Set_Font_Description (Layout, Desc);
+
+               for Op in Cairo_Operator'Range loop
+                  Idx := Cairo_Operator'Pos (Op);
+                  Cairo.Save (Cr);
+                  Cairo.Translate
+                    (Cr,
+                     170.0 * Gdouble (Idx mod 5),
+                     120.0 * Gdouble (Idx / 5));
+                  Cairo.Push_Group (Cr);
+                  Cairo.Rectangle (Cr, 0.0, 0.0, 120.0, 80.0);
+                  Cairo.Set_Source_Rgba (Cr, 0.7, 0.0, 0.0, 0.8);
+                  Cairo.Fill (Cr);
+
+                  Cairo.Set_Operator (Cr, Op);
+
+                  Cairo.Rectangle (Cr, 20.0, 10.0, 120.0, 80.0);
+                  Cairo.Set_Source_Rgba (Cr, 0.0, 0.0, 0.9, 0.4);
+                  Cairo.Fill (Cr);
+                  P := Cairo.Pop_Group (Cr);
+                  Cairo.Set_Source (Cr, P);
+                  Cairo.Paint (Cr);
+                  Destroy (P);
+
+                  Set_Text (Layout, Cairo_Operator'Image (Op));
+                  Cairo.Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
+                  Cairo.Move_To (Cr, 0.0, 95.0);
+                  Pango.Cairo.Show_Layout  (Cr, Layout);
+
+                  Cairo.Restore (Cr);
+               end loop;
+
+               Unref (Layout);
+               Free (Desc);
+            end;
 
          when Matrix =>
             M := new Cairo_Matrix;

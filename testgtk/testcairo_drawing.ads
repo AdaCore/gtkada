@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                 Copyright (C) 2010-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,8 +32,8 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Testcairo_Drawing is
 
-   type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
-                      Paths, Patterns, Clip_And_Paint,
+   type Test_Type is (Rectangles, Transparency, Operators, Matrix,
+                      Transformations, Paths, Patterns, Clip_And_Paint,
                       Surface_And_Png, Toy_Text, Pango_Text);
    --  The supported drawing types
 
