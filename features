@@ -12,6 +12,21 @@ of the feature.
 New features in GtkAda 2.22.0
 -----------------------------
 
+K422-015 Design changes and preparation for Gtk-3
+
+  Gtkada.MDI has been slightly changed so that MDI children now have nicer
+  looking menubars. MDI notebooks now contain a close button that allows
+  the user to close tabs that are not in front.
+
+  The Gtkada.Canvas widget has been completely redesigned to make use of
+  Cairo instead of Gdk. Its API should now be Gtk-3 ready.
+
+  Added new Cairo bindings: Cairo.PDF, Cairo.Region, Cairo.SVG. Gdk.Window has
+  also been completed with Cairo bindings.
+
+  New package Gtkada.Style to provide Gtk.Style-like drawing primitives that
+  use Cairo instead of Gdk.
+
 K125-039 Glade-3 GUI builder
 
   The GUI builder shiped with GtkAda has been upgraded to Glade-3.
