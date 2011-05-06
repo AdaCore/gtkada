@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -98,12 +98,13 @@
 --  <testgtk>create_canvas.adb</testgtk>
 --  <screenshot>gtkada-canvas</screenshot>
 
+with Ada.Calendar;
+
+with Cairo;
+with Cairo.Region;
+
+with Gdk.Color;
 with Gdk.Event;
-with Gdk.GC;
-with Gdk.Pixbuf;
-with Gdk.Pixmap;
-with Gdk.Rectangle;
-with Gdk.Window;
 
 with Glib;
 with Glib.Graphs;
@@ -166,7 +167,7 @@ package Gtkada.Canvas is
    Default_Arrow_Length     : constant := 6;
    --  Length of the arrows in pixels.
 
-   Default_Motion_Threshold : constant := 4;
+   Default_Motion_Threshold : constant := 4.0;
    --  Mimimum motion the mouse must have before we start moving the selected
    --  item. If the mouse has moved less than that amount of pixels in any
    --  direction, then the mouse click is considered as being a selection
@@ -215,7 +216,7 @@ package Gtkada.Canvas is
       Arc_Link_Offset  : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle      : Glib.Gint := Default_Arrow_Angle;
       Arrow_Length     : Glib.Gint := Default_Arrow_Length;
-      Motion_Threshold : Glib.Gint := Default_Motion_Threshold);
+      Motion_Threshold : Glib.Gdouble := Default_Motion_Threshold);
    --  Change the parameters for the canvas.
    --  A Grid_Size of 0 means than no grid should be drawn in the background of
    --  canvas. Note that in that case you can never activate Align_On_Grid.
@@ -230,23 +231,31 @@ package Gtkada.Canvas is
    function Get_Hadj
      (Canvas : access Interactive_Canvas_Record'Class)
       return Gtk.Adjustment.Gtk_Adjustment;
-   --  Return the horizontal adjustment associated with Canvas
+   --  Return the horizontal adjustment associated with Canva
+
+   procedure Get_Bounding_Box
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Width  : out Glib.Gdouble;
+      Height : out Glib.Gdouble);
+   --  Return the size occupied by the items drawn on the canvas.
 
    procedure Draw_Area
      (Canvas : access Interactive_Canvas_Record'Class;
-      Rect   : Gdk.Rectangle.Gdk_Rectangle);
+      Rect   : Cairo.Region.Cairo_Rectangle_Int);
    --  Draw in Canvas the specified area.
 
+   procedure Draw_All
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Cr     : Cairo.Cairo_Context);
+   --  Draws the whole canvas in Cr. Useful to print the canvas on an SVG or
+   --  PNG surface.
+
    procedure Draw_Background
-     (Canvas      : access Interactive_Canvas_Record;
-      Screen_Rect : Gdk.Rectangle.Gdk_Rectangle);
+     (Canvas : access Interactive_Canvas_Record;
+      Cr     : Cairo.Cairo_Context);
    --  Draw the background of the canvas. This procedure should be overriden if
    --  you want to draw something else on the background. It must first clear
    --  the area on the screen.
-   --
-   --  Screen_Rect is the rectangle on the screen that needs to be
-   --  refreshed. These are canvas coordinates, therefore you must take into
-   --  account the current zoom level while drawing.
    --
    --  The default implementation draws a grid.
    --
@@ -254,9 +263,8 @@ package Gtkada.Canvas is
    --  end of this file.
 
    procedure Draw_Grid
-     (Canvas      : access Interactive_Canvas_Record;
-      GC          : Gdk.GC.Gdk_GC;
-      Screen_Rect : Gdk.Rectangle.Gdk_Rectangle);
+     (Canvas : access Interactive_Canvas_Record;
+      Cr     : Cairo.Cairo_Context);
    --  Helper function that can be called from Draw_Background. It cannot be
    --  used directly as Draw_Background, since it doesn't clear the area first.
 
@@ -392,7 +400,7 @@ package Gtkada.Canvas is
    --  is centered horizontally. If 1.0, it is aligned on the right.
 
    function Get_Arrow_Angle
-     (Canvas : access Interactive_Canvas_Record'Class) return Float;
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gdouble;
    --  Return the angle of arrows in the canvas.
 
    function Get_Arrow_Length
@@ -451,50 +459,25 @@ package Gtkada.Canvas is
 
    procedure Zoom
      (Canvas  : access Interactive_Canvas_Record;
-      Percent : Glib.Guint := 100;
-      Steps   : Glib.Guint := 1);
+      Percent : Glib.Gdouble := 1.0;
+      Length  : Duration := 0.0);
    --  Zoom in or out in the canvas.
    --
-   --  Steps is the number of successive zooms that will be done to provide
-   --  smooth scrolling.
+   --  Length is the length of the zooming animation.
    --
    --  Note that one possible use for this function is to refresh the canvas
    --  and emit the "zoomed" signal, which might redraw all the items. This can
-   --  be accomplished by keeping the default 100 value for Percent.
+   --  be accomplished by keeping the default 1.0 value for Percent.
 
    function Get_Zoom
-     (Canvas : access Interactive_Canvas_Record) return Glib.Guint;
+     (Canvas : access Interactive_Canvas_Record) return Glib.Gdouble;
    --  Return the current zoom level
-
-   function To_Canvas_Coordinates
-     (Canvas : access Interactive_Canvas_Record'Class;
-      X      : Glib.Gint) return Glib.Gint;
-   --  Scale the scalar X depending on the zoom level (map from world
-   --  lengths to canvas lengths).
-   --  Substract the coordinates of the top-left corner if you are converting
-   --  coordinates instead of lengths.
-
-   function Top_World_Coordinates
-     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
-   --  Return the world coordinates for the y=0 canvas coordinates (ie for the
-   --  upper-left corner of the screen).
-
-   function Left_World_Coordinates
-     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
-   --  Return the world coordinates for the x=0 canvas coordinates (ie for the
-   --  upper-left corner of the screen).
-
-   function To_World_Coordinates
-     (Canvas : access Interactive_Canvas_Record'Class;
-      X      : Glib.Gint) return Glib.Gint;
-   --  Scale the scalar X depending by the zoom level (map from canvas
-   --  coordinates to world coordinates)
 
    procedure Get_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
-      X, Y   : out Glib.Gint;
-      Width  : out Glib.Gint;
-      Height : out Glib.Gint);
+      X, Y   : out Glib.Gdouble;
+      Width  : out Glib.Gdouble;
+      Height : out Glib.Gdouble);
    --  Return the world coordinates of Canvas.
 
    ---------------------
@@ -676,21 +659,18 @@ package Gtkada.Canvas is
 
    procedure Update_Links
      (Canvas         : access Interactive_Canvas_Record;
-      GC             : Gdk.GC.Gdk_GC;
+      Cr             : Cairo.Cairo_Context;
       Invert_Mode    : Boolean;
       From_Selection : Boolean);
    --  Redraw all the links in the canvas, after the items have been laid out.
-   --  GC is a default graphic context that can be used for drawing. However,
-   --  any other graphic context will do. If Invert_Mode is true, this graphic
-   --  context must draw in xor mode.
+   --
    --  If From_Selection is true, then only the links to or from one of the
    --  selected items need to be drawn.
 
    procedure Draw_Link
      (Canvas      : access Interactive_Canvas_Record'Class;
       Link        : access Canvas_Link_Record;
-      Invert_Mode : Boolean;
-      GC          : Gdk.GC.Gdk_GC;
+      Cr          : Cairo.Cairo_Context;
       Edge_Number : Glib.Gint;
       Show_Annotation : Boolean := True);
    --  Redraw the link on the canvas.
@@ -701,18 +681,10 @@ package Gtkada.Canvas is
    --  This function shouldn't be called if one of the two ends of the link is
    --  invisible.
    --
-   --  The link should be drawn directly in Get_Window (Canvas).
-   --
-   --  GC is a possible graphic context that could be used to draw the
-   --  link. You shouldn't destroy it or modify its attributes. However, you
-   --  can use any other graphic context specific to your application, for
-   --  instance if you want to draw the link in various colors or shapes. The
-   --  graphic context you use must be in Invert mode (see Gdk.GC.Set_Function)
-   --  if and only if Invert_Mode is true, so that when items are moved on the
-   --  canvas, the links properly follow the items they are attached to.
-   --  This graphic context is only used to draw links, so you don't need to
-   --  restore it on exit if your Draw_Link function always sets it at the
-   --  beginning.
+   --  Cr is the Cairo_Context that is used to draw the link.
+   --  The link is drawn using the current cairo brush, so if you need to
+   --  specify some particular color, you can do it directly in the
+   --  Cairo_Context
    --
    --  Edge_Number indicates the index of link in the list of links that join
    --  the same source to the same destination. It should be used so that two
@@ -745,12 +717,11 @@ package Gtkada.Canvas is
 
    procedure Draw_Straight_Line
      (Link      : access Canvas_Link_Record;
-      Window    : Gdk.Window.Gdk_Window;
-      GC        : Gdk.GC.Gdk_GC;
+      Cr        : Cairo.Cairo_Context;
       Src_Side  : Item_Side;
-      X1, Y1    : Glib.Gint;
+      X1, Y1    : Glib.Gdouble;
       Dest_Side : Item_Side;
-      X2, Y2    : Glib.Gint);
+      X2, Y2    : Glib.Gdouble);
    --  Draw a straight link between two points. This could be overriden if you
    --  need to draw an something along the link.
    --  The links goes from (Src, X1, Y1) to (Dest, X2, Y2), in canvas
@@ -794,6 +765,11 @@ package Gtkada.Canvas is
    -- Items manipulation --
    ------------------------
 
+   function Canvas
+     (Item : access Canvas_Item_Record) return Interactive_Canvas;
+   --  Retrieve the canvas this item is attached to, or null if it does not
+   --  belong to a canvas.
+
    procedure Selected
      (Item        : access Canvas_Item_Record;
       Canvas      : access Interactive_Canvas_Record'Class;
@@ -820,15 +796,18 @@ package Gtkada.Canvas is
    --  You need to redraw the item, and call Item_Updated to force the canvas
    --  to refresh the screen.
 
+   procedure Draw_Selected
+     (Item : access Canvas_Item_Record;
+      Cr   : Cairo.Cairo_Context);
+   --  Draws a selected item. By default, this adds a semi-transparent overlay
+   --  above the item, drawn using the below call to Draw
+
    procedure Draw
-     (Item         : access Canvas_Item_Record;
-      Canvas       : access Interactive_Canvas_Record'Class;
-      GC           : Gdk.GC.Gdk_GC;
-      Xdest, Ydest : Glib.Gint) is abstract;
+     (Item : access Canvas_Item_Record;
+      Cr   : Cairo.Cairo_Context) is abstract;
    --  This subprogram, that must be overridden, should draw the item on
-   --  Get_Pixmap (Canvas), at the specific location (Xdest, Ydest). The item
-   --  must also be drawn at the appropriate zoom level. To do so, all lengths
-   --  must be multiplied by the current zoom level.
+   --  Cr. The Item is drawn from coordinates (0,0), and does not need to take
+   --  care of the zoom level.
    --  If you need to change the contents of the item, you should call
    --  Item_Updated after having done the drawing.
 
@@ -837,17 +816,24 @@ package Gtkada.Canvas is
    --  override this function if you define your own widget type, but always
    --  call the parent's Destroy subprogram.
 
-   procedure On_Button_Click
+   function On_Button_Click
      (Item  : access Canvas_Item_Record;
-      Event : Gdk.Event.Gdk_Event_Button);
-   --  Function called whenever the item was clicked on.
-   --  Note that this function is not called when the item is moved, and thus
-   --  is only called when the click was short.
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+   --  Function called whenever mouse events occured.
+   --  The following mouse events may be received:
+   --    Mouse_Press,
+   --    Motion_Notify
+   --      (only once the mouse is pressed, and On_Button_Click returned True),
+   --    Mouse_Release
+   --      (only once the mouse is pressed, and On_Button_Click returned True),
+   --  Returns whether the event was handled or not.
+   --
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Item.
 
    function Get_Coord
-     (Item : access Canvas_Item_Record) return Gdk.Rectangle.Gdk_Rectangle;
+     (Item : access Canvas_Item_Record)
+      return Cairo.Region.Cairo_Rectangle_Int;
    --  Return the coordinates and size of the bounding box for item, in world
    --  coordinates.
    --  If the item has never been resized, it initially has a width and height
@@ -890,10 +876,9 @@ package Gtkada.Canvas is
    --  finally reset the clip mask. The clip mask must take into account the
    --  current zoom level.
 
-   function Pixmap (Item : access Buffered_Item_Record)
-      return Gdk.Pixmap.Gdk_Pixmap;
+   function Surface (Item : access Buffered_Item_Record)
+      return Cairo.Cairo_Surface;
    --  Return the double-buffer.
-   --  All the drawing on this pixmap must be done at zoom level 100%.
 
    -------------
    -- Signals --
@@ -968,13 +953,8 @@ private
    type String_Access is access Glib.UTF8_String;
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
-      Descr  : String_Access;
-      Arrow  : Arrow_Type := End_Arrow;
-
-      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Null_Pixbuf;
-      --  The pixmap in which the text is displayed. This is required to
-      --  properly implement zooming through pixmaps. The text is drawn at zoom
-      --  level 100%.
+      Descr      : String_Access;
+      Arrow      : Arrow_Type := End_Arrow;
 
       Src_X_Pos  : Glib.Gfloat := 0.5;
       Src_Y_Pos  : Glib.Gfloat := 0.5;
@@ -987,23 +967,25 @@ private
      Gtk.Drawing_Area.Gtk_Drawing_Area_Record
    with record
       Children          : Glib.Graphs.Graph;
+      World_X, World_Y  : Glib.Gdouble;
+      --  The World coordinates at canvas (0,0)
 
       Layout            : Layout_Algorithm := Default_Layout_Algorithm'Access;
       Auto_Layout       : Boolean := True;
       Vertical_Layout   : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
-      World_X_At_Click  : Glib.Gint;
-      World_Y_At_Click  : Glib.Gint;
+      World_X_At_Click  : Glib.Gdouble;
+      World_Y_At_Click  : Glib.Gdouble;
       --  Coordinates of the last button_press event in the canvas.
       --  These are world-coordinates, so that even if the canvas is scrolled
       --  they remain valid
 
-      Selected_Count : Natural := 0;
+      Selected_Count    : Natural := 0;
       --  Number of selected items
 
-      Offset_X_World : Glib.Gint;
-      Offset_Y_World : Glib.Gint;
+      Offset_X_World    : Glib.Gint;
+      Offset_Y_World    : Glib.Gint;
       --  How much world-coordinates have we moved the mouse since the last
       --  button press event ?
 
@@ -1011,9 +993,11 @@ private
       --  True if mouse has moved while the button was clicked. This is used
       --  to distinguish between item motion and item selection.
 
-      Event_Press       : Gdk.Event.Gdk_Event;
-      --  Save the event that was sent when the item was clicked on. This
-      --  event will be sent to the application if the item was not moved.
+      Background_Press  : Boolean;
+      --  True if the mouse press event occured in the background
+
+      Item_Press        : Canvas_Item;
+      --  Points to the canvas item that received the press event
 
       Show_Item                    : Canvas_Item;
       Show_Canvas_X, Show_Canvas_Y : Glib.Gdouble;
@@ -1026,44 +1010,44 @@ private
       --  is strictly below 2, the grid is not drawn.
 
       Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
-      Arrow_Angle       : Float;
+      Arrow_Angle       : Glib.Gdouble;
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;
-      Motion_Threshold  : Glib.Gint := Default_Motion_Threshold;
+      Motion_Threshold  : Glib.Gdouble := Default_Motion_Threshold;
       Align_On_Grid     : Boolean := False;
 
-      --  The following variables are initialized as soon as a Gdk_Window
-      --  has been created for the canvas, in the Realized subprograms.
-
-      Clear_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Black_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Link_GC         : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Anim_GC         : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Black_Color     : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Sel_Color       : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
 
       Annotation_Layout : Pango.Layout.Pango_Layout;
       --  Layout used to draw the annotations
 
-      Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
+      Hadj, Vadj        : Gtk.Adjustment.Gtk_Adjustment;
       Scrolling_Timeout_Id : Glib.Main.G_Source_Id := 0;
-      Dashed_Line_Visible : Boolean := False;
 
       Orthogonal_Links : Boolean := False;
       --  True if the links should be orthogonal
 
-      Surround_Box_Scroll : Glib.Gfloat;
+      Surround_Box_Scroll : Glib.Gdouble;
       --  Amount of scrolling for each step while the cursor is left in the
       --  surrounding box.
 
-      Zoom : Glib.Guint := 100;
+      Zoom                : Glib.Gdouble := 1.0;
       --  Zoom level in percent (100% is normal size)
 
-      Target_Zoom : Glib.Guint := 100;
-      Zoom_Step : Glib.Gint;
+      Initial_Zoom        : Glib.Gdouble := 1.0;
+      Target_Zoom         : Glib.Gdouble := 1.0;
+      Zoom_Duration       : Duration := 0.0;
+      Zoom_Start          : Ada.Calendar.Time;
+      Zoom_X              : Glib.Gdouble := 0.0;
+      Zoom_Y              : Glib.Gdouble := 0.0;
       --  Variables used while smooth-scrolling the canvas
+
+      Freeze           : Boolean := False;
    end record;
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
-      Coord            : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 1, 1);
-      --  Change doc for Get_Coord if you ever change default values.
+      Canvas           : Interactive_Canvas := null;
+      Coord            : aliased Cairo.Region.Cairo_Rectangle_Int;
       --  This is the bounding box of the item
 
       Visible          : Boolean := True;
@@ -1074,24 +1058,22 @@ private
       --  layout algorithm.
    end record;
 
+   type Buffered_Item_Record is new Canvas_Item_Record with record
+      Pixmap : Cairo.Cairo_Surface := Cairo.Null_Surface;
+   end record;
+
    procedure Set_Screen_Size
      (Item   : access Buffered_Item_Record;
       Width, Height  : Glib.Gint);
    --  See documentation from inherited subprogram
 
    procedure Draw
-     (Item         : access Buffered_Item_Record;
-      Canvas       : access Interactive_Canvas_Record'Class;
-      GC           : Gdk.GC.Gdk_GC;
-      Xdest, Ydest : Glib.Gint);
+     (Item : access Buffered_Item_Record;
+      Cr   : Cairo.Cairo_Context);
    --  Draw the item's double-buffer onto Dest.
 
    procedure Destroy (Item : in out Buffered_Item_Record);
    --  Free the double-buffer allocated for the item
-
-   type Buffered_Item_Record is new Canvas_Item_Record with record
-      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-   end record;
 
    type Item_Iterator is record
       Vertex            : Glib.Graphs.Vertex_Iterator;
@@ -1100,10 +1082,7 @@ private
       Selected_Only     : Boolean;
    end record;
 
-   pragma Inline (To_Canvas_Coordinates);
-   pragma Inline (To_World_Coordinates);
    pragma Inline (Get_Arrow_Type);
-   pragma Inline (Pixmap);
 
 end Gtkada.Canvas;
 
@@ -1113,52 +1092,23 @@ end Gtkada.Canvas;
 --  --  handles zooming and tiling of the image. Note that drawing a large
 --  --  image will dramatically slow down the performances.
 --
---  Background : Gdk.Pixbuf.Gdk_Pixbuf := ...;
+--  Bg_Image : constant String := "my_background.png";
 --
 --  procedure Draw_Background
---    (Canvas        : access Image_Canvas_Record;
---     Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle)
+--    (Canvas : access Image_Canvas_Record;
+--     Cr     : Cairo.Cairo_Context)
 --  is
---     X_Left : constant Glib.Gint := Left_World_Coordinates (Canvas);
---     Y_Top  : constant Glib.Gint := Top_World_Coordinates (Canvas);
---     X, Y, W, H, Ys : Gint;
---     Xs : Gint := Screen_Rect.X;
---     Bw : constant Gint := Get_Width (Background)
---       * Gint (Get_Zoom (Canvas)) / 100;
---     Bh : constant Gint := Get_Height (Background)
---       * Gint (Get_Zoom (Canvas)) / 100;
---     Scaled : Gdk_Pixbuf := Background;
+--     Surface    : Cairo.Cairo_Surface;
+--     Background : Cairo.Cairo_Pattern;
 --  begin
---     if Get_Zoom (Canvas) /= 100 then
---        Scaled := Scale_Simple (Background, Bw, Bh);
---     end if;
---
---     while Xs < Screen_Rect.X + Screen_Rect.Width loop
---        Ys := Screen_Rect.Y;
---        X := (X_Left + Xs) mod Bw;
---        W := Gint'Min (Screen_Rect.Width + Screen_Rect.X- Xs, Bw - X);
+--     Surface := Cairo.Png.Create_From_Png (Bg_Image);
+--     Background := Cairo.Pattern.Create_For_Surface (Surface);
+--     Cairo.Pattern.Set_Extend (Canvas.Background, Cairo_Extend_Repeat);
+--     Destroy (Surface);
 
---        while Ys < Screen_Rect.Y + Screen_Rect.Height loop
---           Y := (Y_Top  + Ys) mod Bh;
---           H := Gint'Min
---             (Screen_Rect.Height + Screen_Rect.Y - Ys, Bh - Y);
---           Render_To_Drawable
---             (Pixbuf       => Scaled,
---              Drawable     => Get_Window (Canvas),
---              Gc           => Get_Black_GC (Get_Style (Canvas)),
---              Src_X        => X,
---              Src_Y        => Y,
---              Dest_X       => Xs,
---              Dest_Y       => Ys,
---              Width        => W,
---              Height       => H);
---           Ys := Ys + H;
---        end loop;
---        Xs := Xs + W;
---     end loop;
---
---     if Get_Zoom (Canvas) /= 100 then
---        Unref (Scaled);
---     end if;
+--     Cairo.Save (Cr);
+--     Cairo.Set_Source (Cr, Canvas.Background);
+--     Cairo.Paint (Cr);
+--     Cairo.Restore (Cr);
 --  end Draw_Background;
 --  </example>
