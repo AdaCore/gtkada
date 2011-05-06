@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,19 +29,11 @@
 
 --  <group>Gdk, the low-level API</group>
 with Glib; use Glib;
+with Cairo.Region; use Cairo.Region;
 
 package Gdk.Rectangle is
 
-   subtype GRectangle_Coord is Gint;
-   subtype GRectangle_Length is Gint;
-
-   type Gdk_Rectangle is record
-      X      : GRectangle_Coord;
-      Y      : GRectangle_Coord;
-      Width  : GRectangle_Length;
-      Height : GRectangle_Length;
-   end record;
-   pragma Convention (C, Gdk_Rectangle);
+   subtype Gdk_Rectangle is Cairo_Rectangle_Int;
 
    type Gdk_Rectangle_Access is access all Gdk_Rectangle;
    pragma Convention (C, Gdk_Rectangle_Access);

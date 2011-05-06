@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2001-2009, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -220,7 +220,8 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "gtk_plot_refresh");
 
       Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
-      R : System.Address := Rec'Address;
+      R   : System.Address := Rec'Address;
+      use type Gdk_Rectangle;
    begin
       if Rec = Full_Area then
          R := System.Null_Address;

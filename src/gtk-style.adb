@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2010, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -841,6 +841,7 @@ package body Gtk.Style is
          X, Y, Width, Height : Gint;
          Orientation         : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_paint_handle");
+      use type Gdk_Rectangle;
    begin
       if Area = Full_Area then
          Internal
