@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2010 AdaCore                    --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -77,6 +77,18 @@ package Gtk.Combo_Box is
       Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
    --  Creates or initializes a new combo initializes to Model.
 
+   procedure Gtk_New_With_Entry (Combo : out Gtk_Combo_Box);
+   procedure Initialize_With_Entry (Combo : access Gtk_Combo_Box_Record'Class);
+   --  Creates or initializes a new combo with entry
+
+   procedure Gtk_New_With_Model_And_Entry
+     (Combo : out Gtk_Combo_Box;
+      Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+   procedure Initialize_With_Model_And_Entry
+     (Combo : access Gtk_Combo_Box_Record'Class;
+      Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+   --  Creates or initializes a new combo with entry, initialized with Model
+
    function Get_Type return Glib.GType;
    --  Returns the internal value used for Gtk_Combo_Box widgets
 
@@ -138,6 +150,22 @@ package Gtk.Combo_Box is
    --  Sets whether the dropdown button of the combo box should be always
    --  sensitive (Gtk_Sensitivity_On), never sensitive (Gtk_Sensitivity_Off)
    --  or only if there is at least one item to display (Gtk_Sensitivity_Auto).
+
+   function Get_Has_Entry
+     (Combo_Box : access Gtk_Combo_Box_Record) return Boolean;
+   --  Returns whether the combo box has an entry
+
+   procedure Set_Entry_Text_Column
+     (Combo_Box   : access Gtk_Combo_Box_Record;
+      Text_Column : Gint);
+   --  Sets the model column which combo_box should use to get strings from to
+   --  be Text_Column. The column Text_Column in the model of Combo_Box must be
+   --  of type G_TYPE_STRING.
+
+   function Get_Entry_Text_Column
+     (Combo_Box : access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the column which combo_box is using to get the strings from to
+   --  display in the internal entry.
 
    procedure Set_Column_Span_Column
      (Combo_Box : access Gtk_Combo_Box_Record; Column_Span : Gint);

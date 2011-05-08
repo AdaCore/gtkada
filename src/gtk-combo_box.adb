@@ -226,6 +226,54 @@ package body Gtk.Combo_Box is
       Set_Object (Combo,  Internal (Get_Object (Model)));
    end Initialize_With_Model;
 
+   ------------------------
+   -- Gtk_New_With_Entry --
+   ------------------------
+
+   procedure Gtk_New_With_Entry (Combo : out Gtk_Combo_Box) is
+   begin
+      Combo := new Gtk_Combo_Box_Record;
+      Initialize_With_Entry (Combo);
+   end Gtk_New_With_Entry;
+
+   ---------------------------
+   -- Initialize_With_Entry --
+   ---------------------------
+
+   procedure Initialize_With_Entry (Combo : access Gtk_Combo_Box_Record'Class)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_combo_box_new_with_entry");
+   begin
+      Set_Object (Combo, Internal);
+   end Initialize_With_Entry;
+
+   ----------------------------------
+   -- Gtk_New_With_Model_And_Entry --
+   ----------------------------------
+
+   procedure Gtk_New_With_Model_And_Entry
+     (Combo : out Gtk_Combo_Box;
+      Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class) is
+   begin
+      Combo := new Gtk_Combo_Box_Record;
+      Initialize_With_Model_And_Entry (Combo, Model);
+   end Gtk_New_With_Model_And_Entry;
+
+   -------------------------------------
+   -- Initialize_With_Model_And_Entry --
+   -------------------------------------
+
+   procedure Initialize_With_Model_And_Entry
+     (Combo : access Gtk_Combo_Box_Record'Class;
+      Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
+   is
+      function Internal (Model : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_combo_box_new_with_model_and_entry");
+   begin
+      Set_Object (Combo,  Internal (Get_Object (Model)));
+   end Initialize_With_Model_And_Entry;
+
    ----------------
    -- Get_Active --
    ----------------
@@ -358,6 +406,46 @@ package body Gtk.Combo_Box is
    begin
       return Value (Internal (Get_Object (Combo_Box)));
    end Get_Title;
+
+   -------------------
+   -- Get_Has_Entry --
+   -------------------
+
+   function Get_Has_Entry
+     (Combo_Box : access Gtk_Combo_Box_Record) return Boolean
+   is
+      function Internal (C : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_combo_box_get_has_entry");
+   begin
+      return Internal (Get_Object (Combo_Box)) /= 0;
+   end Get_Has_Entry;
+
+   ---------------------------
+   -- Set_Entry_Text_Column --
+   ---------------------------
+
+   procedure Set_Entry_Text_Column
+     (Combo_Box   : access Gtk_Combo_Box_Record;
+      Text_Column : Gint)
+   is
+      procedure Internal (C : System.Address; Col : Gint);
+      pragma Import (C, Internal, "gtk_combo_box_set_entry_text_column");
+   begin
+      Internal (Get_Object (Combo_Box), Text_Column);
+   end Set_Entry_Text_Column;
+
+   ---------------------------
+   -- Get_Entry_Text_Column --
+   ---------------------------
+
+   function Get_Entry_Text_Column
+     (Combo_Box : access Gtk_Combo_Box_Record) return Gint
+   is
+      function Internal (C : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_combo_box_get_entry_text_column");
+   begin
+      return Internal (Get_Object (Combo_Box));
+   end Get_Entry_Text_Column;
 
    ----------------
    -- Set_Active --
