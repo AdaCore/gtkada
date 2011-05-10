@@ -183,7 +183,8 @@ package body Close_Button is
                  Gtk_Notebook (Get_Parent (Button.Child));
 
    begin
-      if not Button.Tab_Over
+      if not Button.In_Titlebar
+        and then not Button.Tab_Over
         and then not Button.Over
       then
          return True;
@@ -236,9 +237,6 @@ package body Close_Button is
             Alpha := 1.0;
          elsif Button.Over then
             Base := Shade (Bg, 0.65);
-            Alpha := 1.0;
-         elsif Button.In_Titlebar then
-            Base := Shade (Bg, 0.7);
             Alpha := 1.0;
          else
             Base := Shade (Bg, 0.8);
