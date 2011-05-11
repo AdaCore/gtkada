@@ -22,7 +22,7 @@ AC_PROG_RANLIB
 CHECK_BUILD_TYPE
 
 # checking for gtk
-AM_PATH_GTK(2.22.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+AM_PATH_GTK(2.24.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # checking for PANGO_UNDERLINE_ERROR
 AM_PANGO_UNDERLINE_ERROR
