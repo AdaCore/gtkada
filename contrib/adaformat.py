@@ -547,6 +547,9 @@ class Section(object):
 
 
 class Package(object):
+    copyright_header = ""
+    # Can be overridden by applications to change the copyright header
+
     def __init__(self, name):
         self.name = name
 
@@ -595,14 +598,17 @@ class Package(object):
                 else:
                     result.append(
                         "with %-*s;" % (m + 1, w + ";"))
-            return "\n".join(result)
+
+            return "\n".join(result) + "\n\n"
         return ""
 
     def spec(self, out):
         """Returns the spec of the package, in the file `out`"""
 
+        if Package.copyright_header:
+            out.write(Package.copyright_header + "\n")
+
         out.write(self._output_withs(self.spec_withs))
-        out.write("\n\n")
         out.write("package %s is" % self.name)
 
         for s in self.sections:
@@ -618,9 +624,11 @@ class Package(object):
     def body(self, out):
         """Returns the body of the package"""
 
+        if Package.copyright_header:
+            out.write(Package.copyright_header + "\n")
+
         out.write(self._output_withs(self.body_withs))
-        out.write("\n\n")
-        out.write("package body %s is" % self.name)
+        out.write("package body %s is\n" % self.name)
 
         for s in self.sections:
             b = s.body()
