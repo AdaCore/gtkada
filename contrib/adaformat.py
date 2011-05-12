@@ -5,7 +5,7 @@ Various formatting classes for Ada code
 """
 
 import sys
-from collections import namedtuple
+import re
 
 
 def max_length(iter):
@@ -66,6 +66,7 @@ class CType(object):
             self.param = None
         else:
             # A type of the form "Gdk.Window" needs to be converted
+            # ??? Should in fact look in the .gir file for the name
             s = name.split(".")
             if len(s) == 1:
                 if self.is_ptr \
@@ -81,6 +82,7 @@ class CType(object):
                     self.param = "Gtk_Position_Type"
 
                 elif self.name == "ReliefStyle":
+                    # ??? There is an <enumeration name="ReliefStyle"/>
                     self.pkg = "Gtk.Enums"
                     self.param = "Gtk_Relief_Style"
 
@@ -108,47 +110,91 @@ class CType(object):
             pkg.add_with(self.pkg)
         return self.param
 
-class Parameter(object):
-    __slots__ = ["name", "type", "doc", "mode"]
 
-    def __init__(self, name, type, doc="", mode="in"):
+class Local_Var(object):
+    __slots__ = ["name", "type", "default"]
+
+    def __init__(self, name, type, default=""):
         assert(isinstance(type, str))
 
         self.name = name
         self.type = type
-        self.doc  = doc
-        self.mode = mode
+        self.default = default
 
     def spec(self, length=0):
-        if self.mode == "in":
-            m = ""
+        """Format the declaration for the variable or parameter.
+           'length' is the minimum length that the name should occupy (for
+           proper alignment when there are several variables.
+        """
+        if self.default:
+            return "%-*s : %s := %s" % (
+                length, self.name, self.type, self.default)
         else:
-            m = self.mode + " "
+            return "%-*s : %s" % (length, self.name, self.type)
 
-        return "%-*s : %s%s" % (length, self.name, m, self.type)
+
+class Parameter(Local_Var):
+    __slots__ = ["name", "type", "default", "doc"]
+
+    def __init__(self, name, type, default="", doc="", mode="in"):
+        if mode != "in":
+            type = "%s %s" % (mode, type)
+        super(Parameter, self).__init__(name, type, default)
+        self.doc  = doc
 
 
 class Subprogram(object):
     """An Ada subprogram that we are generating"""
 
-    def __init__(self, name, plist=[], returns=None, doc=""):
+    max_profile_length = 79 - len(" is")
+
+    def __init__(self, name, code="", plist=[], local=[],
+                 returns=None, doc=""):
+        """Create a new subprogram.
+           'plist' is a list of Parameter
+           'local' is a list of Local_Var
+           'code' can be the empty string, in which case no body is output.
+           The code will be automatically pretty-printed, and the appropriate
+           pragma Unreferenced are also added automatically.
+        """
         assert(returns is None or isinstance(returns, str))
         self.name = name
-        self.plist = plist # List of parameters Parameter
+        self.plist = plist
         self.returns = returns
+        self.local = local
+        self._import = None
+        self._nested = []  # nested subprograms
+
+        if code and code[-1] != ";":
+            self.code = code + ";"
+        else:
+            self.code = code
+
         self.doc = doc
 
-    def spec(self):
-        """Return the spec of the subprogram"""
+    def import_c(self, cname):
+        """Declares that 'self' is implemented as a pragma Import.
+           This returns 'self' so that it can be chained:
+              s = Subprogram(...).import_c('...')
+        """
+        self._import = 'pragma Import (C, %s, "%s");' % (self.name, cname)
+        return self
+
+    def add_nested(self, *args):
+        """Add some nested subprograms"""
+        for subp in args:
+            self._nested.append(subp)
+        return self
+
+    def _profile(self, indent="   "):
+        """Compute the profile for the subprogram"""
 
         if self.returns:
-            prefix = "   function %s" % self.name
+            prefix = indent + "function %s" % self.name
             suffix = " return %s" % self.returns
         else:
-            prefix = "   procedure %s" % self.name
+            prefix = indent + "procedure %s" % self.name
             suffix = ""
-
-        doc = [self.doc] + [p.doc for p in self.plist]
 
         if self.plist:
             # First test: all parameters on same line
@@ -156,31 +202,144 @@ class Subprogram(object):
             p = " (" + "; ".join(plist) + ")"
 
             # If too long, split on several lines
-            if len(p) + len(prefix) + len(suffix)> 78:
+            if len(p) + len(prefix) + len(suffix) > \
+               Subprogram.max_profile_length:
+
                 max = max_length([p.name for p in self.plist])
                 plist = [p.spec(max) for p in self.plist]
-                p = "\n      (" + ";\n       ".join(plist) + ")"
+                p = "\n   " + indent + "(" \
+                    + (";\n    " + indent).join(plist) + ")"
 
         else:
             p = ""
 
-        prefix += p
-        prefix += suffix
-        prefix += ";"
+        return prefix + p + suffix
+
+    def spec(self, indent="   "):
+        """Return the spec of the subprogram"""
+
+        result = self._profile(indent) + ";"
+
+        if self._import:
+            result += "\n" + indent + self._import
+
+        doc = [self.doc] + [p.doc for p in self.plist]
 
         for d in doc:
             if d:
-                prefix += "\n   -- " + fill_text(d, "   --  ", 79)
+                result += "\n" + indent + "-- " \
+                    + fill_text(d, indent + "--  ", 79)
 
-        return prefix + "\n"
+        return result + "\n"
 
+    def _indent(self, code, indent=3):
+        """Return code properly indented and split on several lines.
+           These are heuristics only, not perfect.
+        """
+        body = code.strip()
+        if not body:
+            return ""
 
-class Type(object):
-    def __init__(self, decl):
-        self.decl = decl
+        # Add newlines where needed, but preserve existing blank lines
+        body = re.sub(";(?!\s*\n)", ";\n", body)
+        body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
+        body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
+        body = re.sub("declare", "\ndeclare", body)
+        body = re.sub("\n\s*\n+", "\n\n", body)
 
-    def spec(self):
-        return self.decl
+        parent_count = 0
+        result = ""
+
+        for l in body.splitlines():
+            l = l.strip()
+            if l.startswith("end") \
+               or l.startswith("elsif")  \
+               or l.startswith("else")  \
+               or l.startswith("begin"):
+                indent -= 3
+
+            old_parent = parent_count
+            parent_count = parent_count + l.count("(") - l.count(")")
+
+            if not l:
+                pass
+            elif l[0] == '(':
+                result += " " * (indent + 2)
+                if parent_count > old_parent:
+                    indent += (parent_count - old_parent) * 3
+            elif not old_parent:
+                result += " " * indent
+                if parent_count > old_parent:
+                    indent += (parent_count - old_parent) * 3
+            else:
+                if parent_count > old_parent:
+                    indent += (parent_count - old_parent) * 3
+                result += " " * indent
+
+            if old_parent > parent_count:
+                indent -= (old_parent - parent_count) * 3
+
+            result += l + "\n"
+
+            if(l.endswith("then") and not l.endswith("and then")) \
+               or l.endswith("loop") \
+               or(l.endswith("else") and not l.endswith("or else"))\
+               or l.endswith("begin") \
+               or l.endswith("declare"):
+                indent += 3
+
+        return result
+
+    def _find_unreferenced(self, local_vars="", indent="   "):
+        """List the pragma Unreferenced statements that are needed for this
+           subprogram.
+        """
+        unreferenced = []
+        for p in self.plist:
+            if not re.search(
+               r'\b%s\b' % p.name, self.code + local_vars, re.IGNORECASE):
+                unreferenced.append(p.name)
+
+        if unreferenced:
+            return indent + "   pragma Unreferenced (%s);\n" % (
+                ", ".join(unreferenced))
+        else:
+            return ""
+
+    def _format_local_vars(self, indent="   "):
+        """The list of local variable declarations"""
+        if self.local:
+            max = max_length([p.name for p in self.local])
+            result = [v.spec(max) for v in self.local]
+            return indent + "   " + (";\n   " + indent).join(result) + ";\n"
+        else:
+            return ""
+
+    def body(self, indent="   "):
+        if not self.code:
+            return ""
+
+        result = box(self.name) + "\n\n"
+
+        profile = self._profile()
+        result += profile
+
+        if profile.find("\n") != -1:
+            result += "\n   is\n"
+        else:
+            result += " is\n"
+
+        local = self._format_local_vars(indent=indent)
+        result += self._find_unreferenced(local_vars=local, indent=indent)
+        result += local
+
+        for s in self._nested:
+            result += s.spec(indent=indent + "   ")
+            result += s.body(indent=indent + "   ")
+
+        result += indent + "begin\n"
+        result += self._indent(self.code, indent=6)
+        return result + indent + "end %s;\n" % self.name
 
 
 class Section(object):
@@ -192,7 +351,6 @@ class Section(object):
         self.name = name
         self.comment = ""
         self.subprograms = []  # All subprograms
-        self.types = [] # All types
         self.code = ""  # hard-coded code
 
     def add_comment(self, comment):
@@ -203,8 +361,6 @@ class Section(object):
         for a in args:
             if isinstance(a, Subprogram):
                 self.subprograms.append(a)
-            elif isinstance(a, Type):
-                self.types.append(a)
             elif isinstance(a, str):
                 self.code += a + "\n"
 
@@ -219,16 +375,22 @@ class Section(object):
             result.append(self.comment)
         else:
             result.append("")
+
         if self.code:
             result.append(self.code)
 
-        if self.types:
-            for t in self.types:
-                result.append(t.spec())
-            result.append("")
-
         for s in self.subprograms:
             result.append(s.spec())
+
+        return "\n".join(result)
+
+    def body(self):
+        result = []
+
+        for s in self.subprograms:
+            b = s.body()
+            if b:
+                result.append(b)
 
         return "\n".join(result)
 
@@ -283,12 +445,10 @@ class Package(object):
                     result.append(
                         "with %-*s;" % (m + 1, w + ";"))
             return "\n".join(result)
+        return ""
 
-    def spec(self):
-        """Return the spec of the package"""
-
-        result = []
-        out = sys.stdout
+    def spec(self, out):
+        """Returns the spec of the package, in the file `out`"""
 
         out.write(self._output_withs(self.spec_withs))
         out.write("\n\n")
@@ -301,5 +461,20 @@ class Package(object):
         if self.private:
             out.write("\nprivate\n")
             out.write("\n".join(self.private))
+
+        out.write("\nend %s;" % self.name)
+
+    def body(self, out):
+        """Returns the body of the package"""
+
+        out.write(self._output_withs(self.body_withs))
+        out.write("\n\n")
+        out.write("package body %s is" % self.name)
+
+        for s in self.sections:
+            b = s.body()
+            if b:
+                out.write("\n")
+                out.write(b)
 
         out.write("\nend %s;" % self.name)

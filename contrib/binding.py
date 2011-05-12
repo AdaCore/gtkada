@@ -32,8 +32,12 @@ c_uri = "http://www.gtk.org/introspection/c/1.0"
 namespace = QName(uri, "namespace").text
 ntype = QName(uri, "type").text
 ctype = QName(c_uri, "type").text
+cidentifier = QName(c_uri, "identifier").text
+ggettype = QName(glib_uri, "get-type").text
+gsignal = QName(glib_uri, "signal").text
 narray = QName(uri, "array").text
 ndoc = QName(uri, "doc").text
+nmethod = QName(uri, "method").text
 nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
 nreturn = QName(uri, "return-value").text
@@ -74,12 +78,15 @@ class GIRClass(object):
 
         self._private = ""
 
-    def _parameters(self, c, isfunc):
+    def _parameters(self, c):
         """Format the parameters for the node C by looking at the <parameters>
            child.
         """
+        if c is None:
+            return []
+
         params = c.find(nparams)
-        if not params:
+        if params is None:
             return []
         result = []
 
@@ -91,11 +98,9 @@ class GIRClass(object):
             else:
                 mode = "in"
 
-            doc = p.find(ndoc)
-            if doc is not None:
-                doc = '"%s": %s' % (p.get("name"), doc.text)
-            else:
-                doc = ""
+            doc = p.findtext(ndoc, "")
+            if doc:
+                doc = '"%s": %s' % (p.get("name"), doc)
 
             result.append(
                 Parameter(name=to_ada_name(p.get("name")),
@@ -105,52 +110,97 @@ class GIRClass(object):
 
         return result
 
-    def _format_subprogram(
-        self, node, name, plist=[], returns=None, doc=""):
-        """print a subprogram declaration"""
-
-        if isinstance(returns, CType):
-            returns = returns.as_return(self.pkg)
-
-        sub = Subprogram(name=name,
-                         plist=plist + self._parameters(
-                             node, isfunc=returns is not None),
-                         returns=returns,
-                         doc=doc)
-        self.section.add (sub)
-
     def _constructors(self):
         n = QName(uri, "constructor").text
         for c in self.node.findall(n):
             name = c.get("name").title()
-            self._format_subprogram(
-                c, "Gtk_%s" % name,
-                plist=[Parameter(
-                    name="Self",
-                    type="%(ns)s_%(name)s" % self._subst,
-                    mode="out",
-                    doc="")],
-                doc=c.findtext(ndoc, ""))
-            self._format_subprogram(
-                c, ("Initialize_%s" % name).replace("_New", ""),
-                plist=[Parameter(
-                    name="Self",
-                    type="%(ns)s_%(name)s_Record'Class" % self._subst,
-                    mode="access",
-                    doc="")])
+            params = self._parameters(c)
+
+            format_params = ", ".join(p.name for p in params)
+            if format_params:
+                self._subst["internal_params"] = " (%s)" % format_params
+                format_params = ", " + format_params
+                self._subst["params"] = format_params
+            else:
+                self._subst["params"] = ""
+                self._subst["internal_params"] = ""
+
+            initialize = name.replace("_New", "").replace("New_", "")
+            self._subst["initialize"] = initialize
+
+            self.section.add(
+                Subprogram(
+                    name="Gtk_%s" % name,
+                    plist=[Parameter(
+                        name="Self",
+                        type="%(ns)s_%(name)s" % self._subst,
+                        mode="out")] + params,
+                    code="""Self := new %(ns)s_%(name)s_Record;
+    Initialize_%(initialize)s (Self%(params)s);""" % self._subst,
+                    doc=c.findtext(ndoc, "")),
+
+                Subprogram(
+                    name="Initialize_%(initialize)s" % self._subst,
+                    plist=[Parameter(
+                        name="Self",
+                        type="%(ns)s_%(name)s_Record'Class" % self._subst,
+                        mode="access")] + params,
+                    code="Set_Object (Self, Internal%(internal_params)s);"
+                        % self._subst)
+                .add_nested(
+                    Subprogram(
+                        name="Internal",
+                        plist=params,  # ??? Should convert types+remove doc
+                        returns="System.Address")
+                    .import_c(c.get(cidentifier)))
+            )
 
     def _methods(self):
-        n = self.node.findall(QName(uri, "method").text)
+        n = self.node.findall(nmethod)
         for c in n:
-            self._format_subprogram(
-              c, c.get("name").title(),
-              plist=[Parameter(
-                  name="Self",
-                  type="%(ns)s_%(name)s_Record" % self._subst,
-                  mode="access",
-                  doc="")],
-              returns=self._get_type(c.find(nreturn)),
-              doc=c.findtext(ndoc, ""))
+            returns = self._get_type(c.find(nreturn)).as_return(self.pkg)
+            params = self._parameters(c)
+            internal_params = ", ".join(p.name for p in params)
+            if internal_params:
+                internal_params = ", " + internal_params
+
+            code = "Internal (Get_Object (Self)%s)" % internal_params
+            if returns is not None:
+                code = "return %s" % code
+
+            self.section.add(
+                Subprogram(
+                    name=c.get("name").title(),
+                    plist=[Parameter(
+                        name="Self",
+                        type="%(ns)s_%(name)s_Record" % self._subst,
+                        mode="access",
+                        doc="")] + params,
+                    returns=returns,
+                    doc=c.findtext(ndoc, ""),
+                    code=code)
+                .add_nested(
+                    Subprogram(
+                        name="Internal",
+                        returns=returns,
+                        plist=[
+                            Parameter(
+                                name="Self",
+                                type="System.Address")
+                        ] + params)
+                    .import_c(c.get(cidentifier))
+                )
+           )
+
+    def _method_get_type(self):
+        n = self.node.get(ggettype)
+        if n is not None:
+            self.pkg.add_with("Glib")
+            self.section.add(
+                Subprogram(
+                    name="Get_Type",
+                    returns="Glib.GType")
+                .import_c(n))
 
     def _get_type(self, node):
         """Return the type of the node"""
@@ -224,9 +274,7 @@ See Glib.Properties for more information on properties)""")
                     d + ':=\n     %(pkg)s.Build ("%(name)s");' % p)
 
     def _signals(self):
-        n = QName(glib_uri, "signal").text
-
-        signals = list(self.node.findall(n))
+        signals = list(self.node.findall(gsignal))
         if signals:
             adasignals = []
             section = self.pkg.section("Signals")
@@ -242,6 +290,7 @@ See Glib.Properties for more information on properties)""")
                           type="%(ns)s_%(name)s_Record'Class" % self._subst,
                           mode="access",
                           doc="")],
+                    code="null",
                     returns=s.find(nreturn).find(ntype).get("name"))
                 adasignals.append({
                     "name": s.get("name"),
@@ -269,18 +318,20 @@ See Glib.Properties for more information on properties)""")
         self.section = self.pkg.section("")
 
         self.section.add(
-            Type("""   type %(ns)s_%(name)s_Record is
-      new %(parent)s.%(ns)s_%(parent)s_Record with null record;"""
-                 % self._subst),
-            Type("""   type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;""" % self._subst))
+            """   type %(ns)s_%(name)s_Record is
+      new %(parent)s.%(ns)s_%(parent)s_Record with null record;
+   type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
+            % self._subst)
 
         self._constructors()
+        self._method_get_type()
         self._methods()
         self._properties()
         self._signals()
 
-        self.pkg.spec()
+        self.pkg.spec(sys.stdout)
+        self.pkg.body(sys.stdout)
 
-p = GIR("/usr/share/gir-1.0/Gtk-2.0.gir")
+p = GIR(sys.argv[1])
 cl = p.getClass("Button")
 cl.generate()
