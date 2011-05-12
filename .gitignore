@@ -2,6 +2,7 @@
 *.exe
 *.o
 *.orig
+*.pyc
 Makefile
 b~*.ad*
 config.log

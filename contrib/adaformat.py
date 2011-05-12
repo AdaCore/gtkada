@@ -585,8 +585,10 @@ class Package(object):
     copyright_header = ""
     # Can be overridden by applications to change the copyright header
 
-    def __init__(self, name):
+    def __init__(self, name, doc=[]):
+        """'doc' is a list of strings, where each string is a paragraph"""
         self.name = name
+        self.doc  = doc
 
         self.sections = []       # [Section]
         self.spec_withs = dict() #  "pkg" -> use:Boolean
@@ -642,6 +644,12 @@ class Package(object):
 
         if Package.copyright_header:
             out.write(Package.copyright_header + "\n")
+
+        if self.doc:
+            for d in self.doc:
+                out.write("-- " + fill_text(d, "--  ", 79))
+                out.write("\n")
+            out.write("\n")
 
         out.write(self._output_withs(self.spec_withs))
         out.write("package %s is" % self.name)

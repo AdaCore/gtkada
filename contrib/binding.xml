@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!--  This file overrides parts of the .gir files. -->
+
+<GIR>
+   <package id="Gtk.Button">
+      <doc screenshot="gtk-button"
+           group="Buttons and Toggles"
+           testgtk="create_buttons.adb">
+This package implements a general button widget. This button can
+be clicked on by the user to start any action.
+This button does not have multiple states, it can just be temporarily
+pressed while the mouse is on it, but does not keep its pressed state.
+
+The gtk+ sources provide the following drawing that explains the role of
+the various spacings that can be set for a button:
+      </doc>
+   </package>
+
+</GIR>

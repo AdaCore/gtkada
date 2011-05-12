@@ -59,6 +59,51 @@ class GIR(object):
         return self._classes[className]
 
 
+class GtkAda(object):
+    """The overrides hard-coded for GtkAda"""
+
+    def __init__(self, filename):
+        self._tree = parse(filename)
+        self.root = self._tree.getroot()
+        self.packages = dict()
+
+        for node in self.root:
+            self.packages[node.get("id")] = node
+
+    def get_doc(self, pkg):
+        """Return the overridden doc for for the package, as a list of
+           string. Each string is a paragraph
+        """
+        if pkg not in self.packages:
+            return ""
+
+        node = self.packages[pkg]
+        docnode = node.find("doc")
+
+        text = docnode.text
+        doc = ["<description>\n"]
+
+        for paragraph in docnode.text.split("\n\n"):
+            doc.append(paragraph)
+            doc.append("")
+
+        doc.append("</description>")
+
+        n = docnode.get("screenshot")
+        if n is not None:
+            doc.append("<screenshot>%s</screenshot>" % n)
+
+        n = docnode.get("group")
+        if n is not None:
+            doc.append("<group>%s</group>" % n)
+
+        n = docnode.get("testgtk")
+        if n is not None:
+            doc.append("<testgtk>%s</testgtk>" % n)
+
+        return doc
+
+
 def to_ada_name(cname):
     c = cname.replace("-", "_")
     return c.title()
@@ -322,7 +367,8 @@ See Glib.Properties for more information on properties)""")
                     to_ada_name(s["name"]), s["name"]))
 
     def generate(self):
-        self.pkg = Package(name="%(ns)s.%(name)s" % self._subst)
+        name = "%(ns)s.%(name)s" % self._subst
+        self.pkg = Package(name=name, doc=gtkada.get_doc(name))
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
 
         self.section = self.pkg.section("")
@@ -373,5 +419,7 @@ Package.copyright_header="""----------------------------------------------------
 """
 
 p = GIR(sys.argv[1])
+gtkada = GtkAda(sys.argv[2])
+
 cl = p.getClass("Button")
 cl.generate()
