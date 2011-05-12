@@ -6,7 +6,7 @@ Various formatting classes for Ada code
 
 import sys
 import re
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 
 def max_length(iter):
@@ -327,7 +327,7 @@ class Subprogram(object):
                 result += "\n" + indent + "-- " \
                     + fill_text(d, indent + "--  ", 79)
 
-        return result + "\n"
+        return result
 
     def _indent(self, code, indent=3):
         """Return code properly indented and split on several lines.
@@ -498,6 +498,11 @@ class Section(object):
        There is a single section with a given name in the package
     """
 
+    group_getters_and_setters = True
+    # If true, a getter will be displayed with its corresponding setter.
+    # Only one doc will be displayed for the two, and no separation line
+    # will be output.
+
     def __init__(self, name):
         self.name = name
         self.comment = ""
@@ -515,6 +520,31 @@ class Section(object):
             elif isinstance(a, str):
                 self.code += a + "\n"
 
+    def _group_subprograms(self):
+        """Returns a list of list of subprograms. In each nested list, the
+           subprograms are grouped and a single documentation is output for
+           the whole group. At the same time, this preserves the order of
+           groups, so they appear in the order in which the first subprogram
+           in the group appeared.
+        """
+
+        if Section.group_getters_and_setters:
+            result = []
+            tmp = dict()  # group_name => [subprograms]
+
+            for s in self.subprograms:
+                name = s.name.replace("Get_", "").replace("Set_", "")
+                if name in tmp:
+                    tmp[name].append(s)  # Also modified in result
+                else:
+                    tmp[name] = [s]
+                    result.append(tmp[name])
+
+            return result
+
+        else:
+            return [[s] for s in self.subprograms]
+
     def spec(self):
         """Return the spec of the section"""
 
@@ -530,8 +560,13 @@ class Section(object):
         if self.code:
             result.append(self.code)
 
-        for s in self.subprograms:
-            result.append(s.spec())
+        for group in self._group_subprograms():
+            for s in group:
+                if s != group[-1]:
+                    s.doc = None
+                result.append(s.spec())
+                if s == group[-1]:
+                    result.append("")
 
         return "\n".join(result)
 
