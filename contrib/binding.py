@@ -22,7 +22,7 @@
 #     Users must now use Gtk_New_With_Label.
 #     SOLVE: we could have special cases
 
-from xml.etree.cElementTree import parse, QName
+from xml.etree.cElementTree import parse, QName, tostring
 from adaformat import *
 
 uri = "http://www.gtk.org/introspection/core/1.0"
@@ -30,6 +30,7 @@ glib_uri = "http://www.gtk.org/introspection/glib/1.0"
 c_uri = "http://www.gtk.org/introspection/c/1.0"
 
 namespace = QName(uri, "namespace").text
+nvarargs = QName(uri, "varargs").text
 ntype = QName(uri, "type").text
 ctype = QName(c_uri, "type").text
 cidentifier = QName(c_uri, "identifier").text
@@ -57,6 +58,14 @@ class GIR(object):
     def getClass(self, className):
         """Return the Element corresponding to the given class"""
         return self._classes[className]
+
+    def all_classes(self):
+        """Iter over all classes"""
+        return self._classes.iteritems()
+
+    def debug(self, element):
+        """A debug form of element"""
+        return tostring(element)
 
 
 class GtkAda(object):
@@ -104,11 +113,6 @@ class GtkAda(object):
         return doc
 
 
-def to_ada_name(cname):
-    c = cname.replace("-", "_")
-    return c.title()
-
-
 class GIRClass(object):
     """Represents a gtk class"""
 
@@ -118,14 +122,15 @@ class GIRClass(object):
 
         self._subst = {
             "ns": self.gir.namespace,
-            "parent": self.node.get("parent"),
-            "name": self.node.get("name")}
+            "parent": AdaNaming.case(self.node.get("parent")),
+            "name": AdaNaming.case(self.node.get("name"))}
 
         self._private = ""
 
     def _parameters(self, c):
         """Format the parameters for the node C by looking at the <parameters>
            child.
+           Returns None if the parameter list could not be parsed
         """
         if c is None:
             return []
@@ -138,6 +143,9 @@ class GIRClass(object):
         for p in params.findall(nparam):
             type = self._get_type(p)
 
+            if type is None:
+                return None
+
             if type.is_ptr:
                 mode = "out"
             else:
@@ -148,7 +156,7 @@ class GIRClass(object):
                 doc = '"%s": %s' % (p.get("name"), doc)
 
             result.append(
-                Parameter(name=to_ada_name(p.get("name")),
+                Parameter(name=AdaNaming.case(p.get("name")),
                           type=type,
                           mode=mode,
                           doc=doc))
@@ -173,7 +181,12 @@ class GIRClass(object):
         n = QName(uri, "constructor").text
         for c in self.node.findall(n):
             name = c.get("name").title()
+            cname = c.get(cidentifier)
+
             params = self._parameters(c)
+            if params is None:
+                print "No binding for %s: varargs" % cname
+                continue
 
             format_params = ", ".join(p.name for p in params)
             if format_params:
@@ -187,7 +200,7 @@ class GIRClass(object):
             internal = Subprogram(
                 name="Internal",
                 plist=self._c_plist(params),
-                returns="System.Address").import_c(c.get(cidentifier))
+                returns="System.Address").import_c(cname)
             call = internal.call(add_return=False)  # A VariableCall
 
             initialize_params = [Parameter(
@@ -220,6 +233,13 @@ class GIRClass(object):
         n = self.node.findall(nmethod)
         for c in n:
             returns = self._get_type(c.find(nreturn)).as_return()
+            cname = c.get(cidentifier)
+
+            params = self._parameters(c)
+            if params is None:
+                print "No binding for %s: varargs" % cname
+                continue
+
             params = [
                 Parameter(
                     name="Self",
@@ -227,12 +247,12 @@ class GIRClass(object):
                         adatype="access %(ns)s_%(name)s_Record" % self._subst,
                         ctype="System.Address",
                         convert="Get_Object (%s)"))
-                ] + self._parameters(c)
+                ] + params
 
             internal=Subprogram(
                 name="Internal",
                 returns=returns,
-                plist=self._c_plist(params)).import_c(c.get(cidentifier))
+                plist=self._c_plist(params)).import_c(cname)
 
             code = internal.call()  # A VariableCall
 
@@ -260,18 +280,25 @@ class GIRClass(object):
         """Return the type of the node"""
         t = node.find(ntype)
         if t is not None:
-            return self._to_ada_type(t)
+            return CType(name=t.get("name"), cname=t.get(ctype), pkg=self.pkg)
+
         a = node.find(narray)
         if a is not None:
             t = a.find(ntype)
             if a:
-                return "array of " + self._to_ada_type(t)
-        return "void"
+                type = t.get(ctype)
+                name = t.get("name") or type  # Sometimes name is not set
+                return CType(name=name, cname=type, pkg=self.pkg, isArray=True)
 
-    def _to_ada_type(self, node):
-        """Converts a type described in a node into an Ada type"""
-        return CType(name=node.get("name"), cname=node.get(ctype),
-                     pkg=self.pkg)
+        a = node.find(nvarargs)
+        if a is not None:
+            # A function with multiple arguments cannot be bound
+            # No need for an error message, we will already let the user know
+            # that the function is not bound.
+            return None
+
+        print "Error: XML Node has unknown type\n", self.gir.debug(node)
+        return None
 
     def _properties(self):
         n = QName(uri, "property")
@@ -304,7 +331,7 @@ See Glib.Properties for more information on properties)""")
 
                 adaprops.append({
                     "cname": p.get("name"),
-                    "name": to_ada_name(p.get("name")) + "_Property",
+                    "name": AdaNaming.case(p.get("name")) + "_Property",
                     "flags": "-".join(flags),
                     "doc": p.findtext(ndoc, ""),
                     "pkg": pkg,
@@ -364,9 +391,9 @@ See Glib.Properties for more information on properties)""")
             for s in adasignals:
                 section.add(
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                    to_ada_name(s["name"]), s["name"]))
+                    AdaNaming.case(s["name"]), s["name"]))
 
-    def generate(self):
+    def generate(self, out):
         name = "%(ns)s.%(name)s" % self._subst
         self.pkg = Package(name=name, doc=gtkada.get_doc(name))
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
@@ -385,9 +412,9 @@ type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
         self._properties()
         self._signals()
 
-        self.pkg.spec(sys.stdout)
-        sys.stdout.write("\n")
-        self.pkg.body(sys.stdout)
+        self.pkg.spec(out)
+        out.write("\n")
+        self.pkg.body(out)
 
 Package.copyright_header="""-----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
@@ -419,8 +446,16 @@ Package.copyright_header="""----------------------------------------------------
 -----------------------------------------------------------------------
 """
 
+AdaNaming.exceptions.update({
+    "Treeselection": "Tree_Selection",
+    "Selectionmode": "Selection_Mode"
+})
+
+
 p = GIR(sys.argv[1])
 gtkada = GtkAda(sys.argv[2])
 
-cl = p.getClass("Button")
-cl.generate()
+out = file("generated/tmp.ada", "w")
+for name, klass in p.all_classes():
+    print "Generating code for %s" % name
+    klass.generate(out)

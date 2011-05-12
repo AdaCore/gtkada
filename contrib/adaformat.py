@@ -44,6 +44,33 @@ def box(name, indent="   "):
             + indent + "-" * (len(name) + 6)
 
 
+class AdaNaming(object):
+    exceptions = {
+        "Entry": "GEntry",
+        "Type":  "Typ",
+        "Range": "GRange",
+        "Delay": "The_Delay",
+        "Select": "Gtk_Select",
+        "End":   "The_End",
+        "Return": "Do_Return",
+        "Function": "Func",
+        "Digits": "Number_Of_Digits",
+        "Reverse": "Gtk_Reverse",
+    }
+
+    @staticmethod
+    def case(name):
+        """Return the proper casing to use for 'name', taking keywords
+           into account
+        """
+        name = name.replace("-", "_").title()
+
+        if name.endswith("_"):
+            name = name[:-1]
+
+        return AdaNaming.exceptions.get(name, name)
+
+
 def indent_code(code, indent=3):
     """Return code properly indented and split on several lines.
        These are heuristics only, not perfect.
@@ -120,10 +147,11 @@ VariableCall = namedtuple('VariableCall',
 
 
 class CType(object):
-    def __init__(self, name, cname, pkg):
+    def __init__(self, name, cname, pkg, isArray=False):
         """A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
            with clauses will be added if needed.
+           'isArray' should be true for an array of the simple type 'name'.
         """
         self.is_ptr = cname \
             and cname[-1] == '*' \
@@ -137,6 +165,7 @@ class CType(object):
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
                              # name of the variable.
+        self.isArray = isArray
 
         if name == "gboolean":
             self.param = "Boolean"
@@ -144,7 +173,7 @@ class CType(object):
             self.param = "UTF8_String"
             self.cparam = "Interfaces.C.Strings.chars_ptr"
             self.convert = "New_String (%s)"
-            self.cleanup = "Free (%s)"
+            self.cleanup = "Free (%s);"
             pkg.add_with("Interfaces.C.Strings", specs=False)
         elif name == "gfloat":
             self.param = "Float"
@@ -156,9 +185,20 @@ class CType(object):
             s = name.split(".")
             if len(s) == 1:
                 if self.is_ptr \
+                   and cname.endswith("**") \
                    and cname.startswith("Gtk"):
 
-                    pkg.add_with("Gtk.%s" % cname[3:-1])
+                    pkg.add_with("Gtk.%s" % AdaNaming.case(cname[3:-2]))
+                    self.param = "Gtk_%s" % cname[3:-2]
+                    self.returns = "Gtk_%s" % cname[3:-2]
+                    self.cparam = "System.Address"
+                    self.convert = "Get_Object (%s)"  # ??? Incorrect
+                    self.is_ptr = True  # Will be a "out" parameter
+
+                elif self.is_ptr \
+                   and cname.startswith("Gtk"):
+
+                    pkg.add_with("Gtk.%s" % AdaNaming.case(cname[3:-1]))
                     self.param = "access Gtk_%s_Record'Class" % cname[3:-1]
                     self.returns = "Gtk_%s" % cname[3:-1]
                     self.cparam = "System.Address"
@@ -181,8 +221,9 @@ class CType(object):
                 else:
                     self.param = name
             else:
-                pkg.add_with("%s.%s" % (s[0], s[1]))
-                self.param = "%s.%s.%s_%s" % (s[0], s[1], s[0], s[1])
+                pkg.add_with("%s.%s" % (s[0], AdaNaming.case(s[1])))
+                self.param = "%s.%s.%s_%s" % (
+                    s[0], AdaNaming.case(s[1]), s[0], s[1])
 
         if self.returns is None:
             self.returns = self.param
@@ -313,7 +354,7 @@ class Subprogram(object):
            pragma Unreferenced are also added automatically.
         """
         assert(returns is None or isinstance(returns, str))
-        self.name = name
+        self.name = AdaNaming.case(name)
         self.plist = plist
         self.returns = returns
         self.local = local_vars
@@ -373,13 +414,13 @@ class Subprogram(object):
     def spec(self, indent="   "):
         """Return the spec of the subprogram"""
 
+        doc = [self.doc] + [p.doc for p in self.plist]
+
         if self._import:
             result = self._profile(indent, lang="c") + ";"
             result += "\n" + indent + self._import
         else:
             result = self._profile(indent, lang="ada") + ";"
-
-        doc = [self.doc] + [p.doc for p in self.plist]
 
         for d in doc:
             if d:
@@ -431,7 +472,7 @@ class Subprogram(object):
         result += self._find_unreferenced(local_vars=local, indent=indent)
 
         for s in self._nested:
-            result += s.spec(indent=indent + "   ")
+            result += s.spec(indent=indent + "   ") + "\n"
             result += s.body(indent=indent + "   ")
 
         result += local
