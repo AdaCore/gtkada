@@ -44,6 +44,65 @@ def box(name, indent="   "):
             + indent + "-" * (len(name) + 6)
 
 
+def indent_code(code, indent=3):
+    """Return code properly indented and split on several lines.
+       These are heuristics only, not perfect.
+    """
+    body = code.strip()
+    if not body:
+        return ""
+
+    # Add newlines where needed, but preserve existing blank lines
+    body = re.sub(";(?!\s*\n)", ";\n", body)
+    body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
+    body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
+    body = re.sub("declare", "\ndeclare", body)
+    body = re.sub("\n\s*\n+", "\n\n", body)
+
+    parent_count = 0
+    result = ""
+
+    for l in body.splitlines():
+        l = l.strip()
+        if l.startswith("end") \
+           or l.startswith("elsif")  \
+           or l.startswith("else")  \
+           or l.startswith("begin"):
+            indent -= 3
+
+        old_parent = parent_count
+        parent_count = parent_count + l.count("(") - l.count(")")
+
+        if not l:
+            pass
+        elif l[0] == '(':
+            result += " " * (indent + 2)
+            if parent_count > old_parent:
+                indent += (parent_count - old_parent) * 3
+        elif not old_parent:
+            result += " " * indent
+            if parent_count > old_parent:
+                indent += (parent_count - old_parent) * 3
+        else:
+            if parent_count > old_parent:
+                indent += (parent_count - old_parent) * 3
+            result += " " * indent
+
+        if old_parent > parent_count:
+            indent -= (old_parent - parent_count) * 3
+
+        result += l + "\n"
+
+        if(l.endswith("then") and not l.endswith("and then")) \
+           or l.endswith("loop") \
+           or(l.endswith("else") and not l.endswith("or else"))\
+           or l.endswith("begin") \
+           or l.endswith("declare"):
+            indent += 3
+
+    return result
+
+
 # The necessary setup to use a variable in a subprogram call. The returned
 # values map to the following Ada code:
 #   declare
@@ -86,7 +145,7 @@ class CType(object):
             self.cparam = "Interfaces.C.Strings.chars_ptr"
             self.convert = "New_String (%s)"
             self.cleanup = "Free (%s)"
-            pkg.add_with("Interfaces.C.Strings")
+            pkg.add_with("Interfaces.C.Strings", specs=False)
         elif name == "gfloat":
             self.param = "Float"
         elif name == "none":
@@ -329,64 +388,6 @@ class Subprogram(object):
 
         return result
 
-    def _indent(self, code, indent=3):
-        """Return code properly indented and split on several lines.
-           These are heuristics only, not perfect.
-        """
-        body = code.strip()
-        if not body:
-            return ""
-
-        # Add newlines where needed, but preserve existing blank lines
-        body = re.sub(";(?!\s*\n)", ";\n", body)
-        body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
-        body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
-        body = re.sub("declare", "\ndeclare", body)
-        body = re.sub("\n\s*\n+", "\n\n", body)
-
-        parent_count = 0
-        result = ""
-
-        for l in body.splitlines():
-            l = l.strip()
-            if l.startswith("end") \
-               or l.startswith("elsif")  \
-               or l.startswith("else")  \
-               or l.startswith("begin"):
-                indent -= 3
-
-            old_parent = parent_count
-            parent_count = parent_count + l.count("(") - l.count(")")
-
-            if not l:
-                pass
-            elif l[0] == '(':
-                result += " " * (indent + 2)
-                if parent_count > old_parent:
-                    indent += (parent_count - old_parent) * 3
-            elif not old_parent:
-                result += " " * indent
-                if parent_count > old_parent:
-                    indent += (parent_count - old_parent) * 3
-            else:
-                if parent_count > old_parent:
-                    indent += (parent_count - old_parent) * 3
-                result += " " * indent
-
-            if old_parent > parent_count:
-                indent -= (old_parent - parent_count) * 3
-
-            result += l + "\n"
-
-            if(l.endswith("then") and not l.endswith("and then")) \
-               or l.endswith("loop") \
-               or(l.endswith("else") and not l.endswith("or else"))\
-               or l.endswith("begin") \
-               or l.endswith("declare"):
-                indent += 3
-
-        return result
-
     def _find_unreferenced(self, local_vars="", indent="   "):
         """List the pragma Unreferenced statements that are needed for this
            subprogram.
@@ -435,7 +436,7 @@ class Subprogram(object):
 
         result += local
         result += indent + "begin\n"
-        result += self._indent(self.code, indent=6)
+        result += indent_code(self.code, indent=6)
         return result + indent + "end %s;\n" % self.name
 
     def call(self, in_pkg="", add_return=True):
@@ -558,7 +559,7 @@ class Section(object):
             result.append("")
 
         if self.code:
-            result.append(self.code)
+            result.append(indent_code(self.code))
 
         for group in self._group_subprograms():
             for s in group:

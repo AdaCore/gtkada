@@ -374,9 +374,9 @@ See Glib.Properties for more information on properties)""")
         self.section = self.pkg.section("")
 
         self.section.add(
-            """   type %(ns)s_%(name)s_Record is
-      new %(parent)s.%(ns)s_%(parent)s_Record with null record;
-   type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
+            """
+type %(ns)s_%(name)s_Record is new %(ns)s_%(parent)s_Record with null record;
+type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
             % self._subst)
 
         self._constructors()
@@ -386,6 +386,7 @@ See Glib.Properties for more information on properties)""")
         self._signals()
 
         self.pkg.spec(sys.stdout)
+        sys.stdout.write("\n")
         self.pkg.body(sys.stdout)
 
 Package.copyright_header="""-----------------------------------------------------------------------
