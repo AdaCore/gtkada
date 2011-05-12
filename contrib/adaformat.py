@@ -6,6 +6,7 @@ Various formatting classes for Ada code
 
 import sys
 import re
+from collections import namedtuple
 
 
 def max_length(iter):
@@ -43,23 +44,49 @@ def box(name, indent="   "):
             + indent + "-" * (len(name) + 6)
 
 
+# The necessary setup to use a variable in a subprogram call. The returned
+# values map to the following Ada code:
+#   declare
+#      $(tmpvars)    # A list of LocalVar
+#   begin
+#      $(precall)
+#      Call ($(call), ...)
+#      #(postcall)
+#   end;
+# and are used in case temporary variables are needed. If not, only 'call'
+# will have a non-null value
+
+VariableCall = namedtuple('VariableCall',
+                          ['call', 'precall', 'postcall', 'tmpvars'])
+
+
 class CType(object):
-    def __init__(self, name, cname):
-        """A type a described in a .gir file"""
-        self.name = name
-        self.cname = cname
+    def __init__(self, name, cname, pkg):
+        """A type a described in a .gir file
+           'pkg' is an instance of Package, to which extra
+           with clauses will be added if needed.
+        """
         self.is_ptr = cname \
             and cname[-1] == '*' \
-            and self.name != "utf8"   # not a "char*"
+            and name != "utf8"   # not a "char*"
 
         self.param = None    # type as parameter
-        self.pkg = None      # Needed package
         self.returns = None  # type as return type
+        self.cparam = None   # type for Ada subprograms binding to C
+        self.convert = "%s"  # Convert from Ada parameter to C parameter
+        self.cleanup = None  # If set, a tmp variable is created to hold the
+                             # result of convert during the call, and is then
+                             # free by calling this cleanup. Use "%s" as the
+                             # name of the variable.
 
         if name == "gboolean":
             self.param = "Boolean"
         elif name == "utf8":
             self.param = "UTF8_String"
+            self.cparam = "Interfaces.C.Strings.chars_ptr"
+            self.convert = "New_String (%s)"
+            self.cleanup = "Free (%s)"
+            pkg.add_with("Interfaces.C.Strings")
         elif name == "gfloat":
             self.param = "Float"
         elif name == "none":
@@ -72,75 +99,144 @@ class CType(object):
                 if self.is_ptr \
                    and cname.startswith("Gtk"):
 
-                    self.pkg = "Gtk.%s" % cname[3:-1]
+                    pkg.add_with("Gtk.%s" % cname[3:-1])
                     self.param = "access Gtk_%s_Record'Class" % cname[3:-1]
                     self.returns = "Gtk_%s" % cname[3:-1]
+                    self.cparam = "System.Address"
+                    self.convert = "Get_Object (%s)"
                     self.is_ptr = False
 
-                elif self.name == "PositionType":
-                    self.pkg = "Gtk.Enums"
+                elif name == "PositionType":
+                    pkg.add_with("Gtk.Enums")
                     self.param = "Gtk_Position_Type"
+                    self.cparam = "Integer"
+                    self.convert = "%s'Pos (%%s)" % self.param
 
-                elif self.name == "ReliefStyle":
+                elif name == "ReliefStyle":
                     # ??? There is an <enumeration name="ReliefStyle"/>
-                    self.pkg = "Gtk.Enums"
+                    pkg.add_with("Gtk.Enums")
                     self.param = "Gtk_Relief_Style"
+                    self.cparam = "Integer"
+                    self.convert = "%s'Pos (%%s)" % self.param
 
                 else:
-                    self.param = self.name
+                    self.param = name
             else:
-                self.pkg = "%s.%s" % (s[0], s[1])
+                pkg.add_with("%s.%s" % (s[0], s[1]))
                 self.param = "%s.%s.%s_%s" % (s[0], s[1], s[0], s[1])
 
         if self.returns is None:
             self.returns = self.param
 
+        if self.cparam is None:
+            self.cparam = self.param
 
-    def as_return(self, pkg):
-        if self.pkg:
-            pkg.add_with(self.pkg)
+    def as_return(self):
         return self.returns
 
-    def as_param(self, pkg):
+    def as_ada_param(self):
         """Converts self to a description for an Ada parameter to a
-           subprogram. 'pkg' is an instance of Package, to which extra
-           with clauses will be added if needed.
+           subprogram.
         """
-        if self.pkg:
-            pkg.add_with(self.pkg)
         return self.param
+
+    def as_c_param(self):
+        """Returns the C type (as a parameter to a subprogram that imports
+           a C function)
+        """
+        return self.cparam
+
+    def as_call(self, name, lang="ada"):
+        """'name' represents a parameter of type 'self'.
+           Returns an instance of VariableCall.
+        """
+        if lang == "ada":
+            return VariableCall(call=name, precall='', postcall='', tmpvars=[])
+        elif self.cleanup:
+            tmp = "Tmp_%s" % name
+            return VariableCall(
+                call=tmp,
+                precall='%s := %s;' % (tmp, self.convert % name),
+                postcall=self.cleanup % tmp,
+                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+
+        else:
+            return VariableCall(
+                call=self.convert % name, precall='', postcall='', tmpvars=[])
+
+
+class AdaType(CType):
+    """Similar to a CType, but created directly from Ada types"""
+
+    def __init__(self, adatype, ctype, convert="%s"):
+        """The 'adatype' type is represented as 'ctype' for subprograms
+           that import C functions. The parameters of that type are converted
+           from Ada to C by using 'convert'. 'convert' must use '%s' once
+           to indicate where the name of the parameter should go
+        """
+        self.param   = adatype
+        self.returns = adatype
+        self.cparam  = ctype
+        self.convert = convert
+        self.cleanup = None
+        self.is_ptr  = adatype.startswith("access ")
 
 
 class Local_Var(object):
     __slots__ = ["name", "type", "default"]
 
     def __init__(self, name, type, default=""):
-        assert(isinstance(type, str))
+        assert(isinstance(type, str)
+               or isinstance(type, CType))
 
         self.name = name
         self.type = type
         self.default = default
 
-    def spec(self, length=0):
+    def _type(self, lang):
+        if isinstance(self.type, CType):
+            if lang == "ada":
+                return self.type.as_ada_param()
+            elif lang == "c":
+                return self.type.as_c_param()
+        return self.type
+
+    def spec(self, length=0, lang="ada"):
         """Format the declaration for the variable or parameter.
            'length' is the minimum length that the name should occupy (for
            proper alignment when there are several variables.
         """
+        t = self._type(lang)
         if self.default:
-            return "%-*s : %s := %s" % (
-                length, self.name, self.type, self.default)
+            return "%-*s : %s := %s" % (length, self.name, t, self.default)
         else:
-            return "%-*s : %s" % (length, self.name, self.type)
+            return "%-*s : %s" % (length, self.name, t)
+
+    def as_call(self, lang="ada"):
+        """Pass 'self' as a parameter to an Ada subprogram call, implemented
+           in the given language.
+           Returns an instance of VariableCall
+        """
+        if isinstance(self.type, CType):
+            return self.type.as_call(self.name, lang=lang)
+        else:
+            return VariableCall(
+                call=self.name, precall='', postcall='', tmpvars=[])
 
 
 class Parameter(Local_Var):
-    __slots__ = ["name", "type", "default", "doc"]
+    __slots__ = ["name", "type", "default", "doc", "mode"]
 
     def __init__(self, name, type, default="", doc="", mode="in"):
-        if mode != "in":
-            type = "%s %s" % (mode, type)
         super(Parameter, self).__init__(name, type, default)
+        self.mode = mode
         self.doc  = doc
+
+    def _type(self, lang):
+        t = super(Parameter, self)._type(lang)
+        if self.mode != "in":
+            return "%s %s" % (self.mode, t)
+        return t
 
 
 class Subprogram(object):
@@ -148,11 +244,11 @@ class Subprogram(object):
 
     max_profile_length = 79 - len(" is")
 
-    def __init__(self, name, code="", plist=[], local=[],
+    def __init__(self, name, code="", plist=[], local_vars=[],
                  returns=None, doc=""):
         """Create a new subprogram.
            'plist' is a list of Parameter
-           'local' is a list of Local_Var
+           'local_vars' is a list of Local_Var
            'code' can be the empty string, in which case no body is output.
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
@@ -161,7 +257,7 @@ class Subprogram(object):
         self.name = name
         self.plist = plist
         self.returns = returns
-        self.local = local
+        self.local = local_vars
         self._import = None
         self._nested = []  # nested subprograms
 
@@ -186,7 +282,7 @@ class Subprogram(object):
             self._nested.append(subp)
         return self
 
-    def _profile(self, indent="   "):
+    def _profile(self, indent="   ", lang="ada"):
         """Compute the profile for the subprogram"""
 
         if self.returns:
@@ -198,7 +294,7 @@ class Subprogram(object):
 
         if self.plist:
             # First test: all parameters on same line
-            plist = [p.spec() for p in self.plist]
+            plist = [p.spec(lang=lang) for p in self.plist]
             p = " (" + "; ".join(plist) + ")"
 
             # If too long, split on several lines
@@ -206,7 +302,7 @@ class Subprogram(object):
                Subprogram.max_profile_length:
 
                 max = max_length([p.name for p in self.plist])
-                plist = [p.spec(max) for p in self.plist]
+                plist = [p.spec(max, lang=lang) for p in self.plist]
                 p = "\n   " + indent + "(" \
                     + (";\n    " + indent).join(plist) + ")"
 
@@ -218,10 +314,11 @@ class Subprogram(object):
     def spec(self, indent="   "):
         """Return the spec of the subprogram"""
 
-        result = self._profile(indent) + ";"
-
         if self._import:
+            result = self._profile(indent, lang="c") + ";"
             result += "\n" + indent + self._import
+        else:
+            result = self._profile(indent, lang="ada") + ";"
 
         doc = [self.doc] + [p.doc for p in self.plist]
 
@@ -331,15 +428,69 @@ class Subprogram(object):
 
         local = self._format_local_vars(indent=indent)
         result += self._find_unreferenced(local_vars=local, indent=indent)
-        result += local
 
         for s in self._nested:
             result += s.spec(indent=indent + "   ")
             result += s.body(indent=indent + "   ")
 
+        result += local
         result += indent + "begin\n"
         result += self._indent(self.code, indent=6)
         return result + indent + "end %s;\n" % self.name
+
+    def call(self, in_pkg="", add_return=True):
+        """A call to 'self'.
+           The parameters that are passed to self are assumed to have the
+           same name as in self's declaration. When 'self' is implemented
+           as a pragma Import, proper conversions are done.
+           'in_pkg' is used to fully qualify the name of the subprogram, to
+           avoid ambiguities. This is optional. This can be either a string
+           or an instance of Package.
+           'add_returns' is whether we should prefix the call with "return"
+           when appropriate.
+           Returns value is an instance of VariableCall.
+
+        """
+
+        if self._import:
+            lang = "c"
+        else:
+            lang = "ada"
+
+        tmpvars  = []
+        precall  = ""
+        params   = []
+        postcall = ""
+
+        for arg in self.plist:
+            c = arg.as_call(lang)   # An instance of VariableCall
+            params.append(c.call)
+            tmpvars.extend(c.tmpvars)
+            precall += c.precall
+            postcall += c.postcall
+
+        if params:
+            call = "%s (%s)" % (self.name, ", ".join(params))
+        else:
+            call = self.name
+
+        if in_pkg:
+            if isinstance(in_pkg, Package):
+                call = "%s.%s" % (in_pkg.name, call)
+            else:
+                call = "%s.%s" % (in_pkg, call)
+
+        if add_return:
+            if self.returns is not None:
+                call = "return %s;" % call
+            else:
+                call = "%s;" % call
+
+        return VariableCall(
+            call=call,
+            precall=precall,
+            postcall=postcall,
+            tmpvars=tmpvars)
 
 
 class Section(object):

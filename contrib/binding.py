@@ -104,11 +104,25 @@ class GIRClass(object):
 
             result.append(
                 Parameter(name=to_ada_name(p.get("name")),
-                          type=type.as_param(self.pkg),
+                          type=type,
                           mode=mode,
                           doc=doc))
 
         return result
+
+    def _c_plist(self, plist):
+        """Converts a list of parameters from Ada to C types.
+           This also removes the documentation for the parameters
+        """
+        result = []
+        for p in plist:
+            result.append(
+                Parameter(
+                    name=p.name,
+                    mode=p.mode,
+                    type=p.type))
+
+        return result;
 
     def _constructors(self):
         n = QName(uri, "constructor").text
@@ -125,72 +139,67 @@ class GIRClass(object):
                 self._subst["params"] = ""
                 self._subst["internal_params"] = ""
 
-            initialize = name.replace("_New", "").replace("New_", "")
-            self._subst["initialize"] = initialize
+            internal = Subprogram(
+                name="Internal",
+                plist=self._c_plist(params),
+                returns="System.Address").import_c(c.get(cidentifier))
+            call = internal.call(add_return=False)  # A VariableCall
 
-            self.section.add(
-                Subprogram(
-                    name="Gtk_%s" % name,
-                    plist=[Parameter(
-                        name="Self",
-                        type="%(ns)s_%(name)s" % self._subst,
-                        mode="out")] + params,
-                    code="""Self := new %(ns)s_%(name)s_Record;
-    Initialize_%(initialize)s (Self%(params)s);""" % self._subst,
-                    doc=c.findtext(ndoc, "")),
+            initialize_params = [Parameter(
+                name="Self",
+                type="%(ns)s_%(name)s_Record'Class" % self._subst,
+                mode="access")] + params
+            initialize = Subprogram(
+                name=("Initialize_" + name).replace("_New", ""),
+                plist=initialize_params,
+                local_vars=call.tmpvars,
+                code="%sSet_Object (Self, %s);%s" %
+                    (call.precall, call.call, call.postcall)
+                ).add_nested(internal)
+            call = initialize.call(in_pkg=self.pkg)
 
-                Subprogram(
-                    name="Initialize_%(initialize)s" % self._subst,
-                    plist=[Parameter(
-                        name="Self",
-                        type="%(ns)s_%(name)s_Record'Class" % self._subst,
-                        mode="access")] + params,
-                    code="Set_Object (Self, Internal%(internal_params)s);"
-                        % self._subst)
-                .add_nested(
-                    Subprogram(
-                        name="Internal",
-                        plist=params,  # ??? Should convert types+remove doc
-                        returns="System.Address")
-                    .import_c(c.get(cidentifier)))
-            )
+            gtk_new = Subprogram(
+                name="Gtk_%s" % name,
+                plist=[Parameter(
+                    name="Self",
+                    type="%(ns)s_%(name)s" % self._subst,
+                    mode="out")] + params,
+                local_vars=call.tmpvars,
+                code="Self := new %(ns)s_%(name)s_Record;" % self._subst
+                   + call.precall + call.call + call.postcall,
+                doc=c.findtext(ndoc, ""))
+
+            self.section.add(gtk_new, initialize)
 
     def _methods(self):
         n = self.node.findall(nmethod)
         for c in n:
-            returns = self._get_type(c.find(nreturn)).as_return(self.pkg)
-            params = self._parameters(c)
-            internal_params = ", ".join(p.name for p in params)
-            if internal_params:
-                internal_params = ", " + internal_params
+            returns = self._get_type(c.find(nreturn)).as_return()
+            params = [
+                Parameter(
+                    name="Self",
+                    type=AdaType(
+                        adatype="access %(ns)s_%(name)s_Record" % self._subst,
+                        ctype="System.Address",
+                        convert="Get_Object (%s)"))
+                ] + self._parameters(c)
 
-            code = "Internal (Get_Object (Self)%s)" % internal_params
-            if returns is not None:
-                code = "return %s" % code
+            internal=Subprogram(
+                name="Internal",
+                returns=returns,
+                plist=self._c_plist(params)).import_c(c.get(cidentifier))
+
+            code = internal.call()  # A VariableCall
 
             self.section.add(
                 Subprogram(
                     name=c.get("name").title(),
-                    plist=[Parameter(
-                        name="Self",
-                        type="%(ns)s_%(name)s_Record" % self._subst,
-                        mode="access",
-                        doc="")] + params,
+                    plist=params,
                     returns=returns,
                     doc=c.findtext(ndoc, ""),
-                    code=code)
-                .add_nested(
-                    Subprogram(
-                        name="Internal",
-                        returns=returns,
-                        plist=[
-                            Parameter(
-                                name="Self",
-                                type="System.Address")
-                        ] + params)
-                    .import_c(c.get(cidentifier))
-                )
-           )
+                    local_vars=code.tmpvars,
+                    code="%s%s%s" % (code.precall, code.call, code.postcall)
+                ).add_nested(internal))
 
     def _method_get_type(self):
         n = self.node.get(ggettype)
@@ -216,7 +225,8 @@ class GIRClass(object):
 
     def _to_ada_type(self, node):
         """Converts a type described in a node into an Ada type"""
-        return CType(name=node.get("name"), cname=node.get(ctype))
+        return CType(name=node.get("name"), cname=node.get(ctype),
+                     pkg=self.pkg)
 
     def _properties(self):
         n = QName(uri, "property")
@@ -236,7 +246,7 @@ See Glib.Properties for more information on properties)""")
                 if p.get("writable", "1") != "0":
                     flags.append("write")
 
-                type = self._get_type(p).as_param(self.pkg)
+                type = self._get_type(p).as_ada_param()
                 pkg  = "Glib.Properties"
 
                 if type == "UTF8_String":
