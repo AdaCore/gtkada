@@ -176,6 +176,7 @@ class CType(object):
         self.returns = None  # type as return type
         self.cparam = None   # type for Ada subprograms binding to C
         self.convert = "%s"  # Convert from Ada parameter to C parameter
+        self.postconvert = "%s" # Convert from C to Ada value
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
@@ -207,6 +208,7 @@ class CType(object):
                     self.param = "Gtk_%s" % n
                     self.cparam = "Integer"
                     self.convert = "%s'Pos (%%s)" % self.param
+                    self.postconvert = "%s'Val (%%s)" % self.param
 
                 elif self.is_ptr \
                    and cname.endswith("**") \
@@ -257,18 +259,29 @@ class CType(object):
         """
         return self.cparam
 
-    def as_call(self, name, lang="ada"):
+    def as_call(self, name, lang="ada", mode="in"):
         """'name' represents a parameter of type 'self'.
            Returns an instance of VariableCall.
         """
         if lang == "ada":
             return VariableCall(call=name, precall='', postcall='', tmpvars=[])
+
         elif self.cleanup:
             tmp = "Tmp_%s" % name
             return VariableCall(
                 call=tmp,
                 precall='%s := %s;' % (tmp, self.convert % name),
                 postcall=self.cleanup % tmp,
+                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+
+        elif self.postconvert != "%s" and mode != "in":
+            # An "out" parameter for an enumeration requires a temporary
+            # variable: Internal(Enum'Pos (Param)) is invalid
+            tmp = "Tmp_%s" % name
+            return VariableCall(
+                call=tmp,
+                precall="",
+                postcall='%s := %s;' % (name, self.postconvert % tmp),
                 tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
         else:
@@ -289,6 +302,7 @@ class AdaType(CType):
         self.returns = adatype
         self.cparam  = ctype
         self.convert = convert
+        self.postconvert = "%s"
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
 
@@ -323,13 +337,13 @@ class Local_Var(object):
         else:
             return "%-*s : %s" % (length, self.name, t)
 
-    def as_call(self, lang="ada"):
+    def as_call(self, lang="ada", mode="in"):
         """Pass 'self' as a parameter to an Ada subprogram call, implemented
            in the given language.
            Returns an instance of VariableCall
         """
         if isinstance(self.type, CType):
-            return self.type.as_call(self.name, lang=lang)
+            return self.type.as_call(self.name, lang=lang, mode=mode)
         else:
             return VariableCall(
                 call=self.name, precall='', postcall='', tmpvars=[])
@@ -348,6 +362,9 @@ class Parameter(Local_Var):
         if self.mode != "in":
             return "%s %s" % (self.mode, t)
         return t
+
+    def as_call(self, lang="ada"):
+        return super(Parameter, self).as_call(lang, mode=self.mode)
 
 
 class Subprogram(object):
