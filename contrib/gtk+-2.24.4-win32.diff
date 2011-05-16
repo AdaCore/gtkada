@@ -68,12 +68,6 @@
 
 	* configure: Work around ^M handling on cygwin with igncr
 
-2007-10-10	Arnaud Charlet	<charlet@adacore.com>
-
-	* modules/engines/ms-windows/msw_style.c (draw_themed_tab_button):
-	Avoid SEGV in case pixbuf is null or clip_rect is empty.
-	Fixes G928-005
-
 2006-06-05	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
@@ -128,34 +122,6 @@
  
    g_free (rgndata);
  
---- modules/engines/ms-windows/msw_style.c.orig	2008-03-12 05:17:03.000000000 +0100
-+++ modules/engines/ms-windows/msw_style.c	2008-04-17 18:35:13.515625000 +0200
-@@ -2649,6 +2649,9 @@ draw_themed_tab_button (GtkStyle *style,
-       GdkPixbuf *pixbuf;
-       GdkPixbuf *rotated;
- 
-+      if (clip_rect.width <= 0 || clip_rect.height <= 0)
-+        return TRUE;
-+      
-       if (gap_side == GTK_POS_LEFT || gap_side == GTK_POS_RIGHT)
- 	{
- 	  pixmap = gdk_pixmap_new (window, clip_rect.height, clip_rect.width, -1);
-@@ -2682,6 +2685,7 @@ draw_themed_tab_button (GtkStyle *style,
- 	  g_object_unref (pixmap);
- 	}
- 
-+      if (pixbuf != NULL) {
-       rotated = gdk_pixbuf_rotate_simple (pixbuf, rotation);
-       g_object_unref (pixbuf);
-       pixbuf = rotated;
-@@ -2710,6 +2714,7 @@ draw_themed_tab_button (GtkStyle *style,
- 		       clip_rect.width, clip_rect.height, GDK_RGB_DITHER_NONE,
- 		       0, 0);
-       g_object_unref (pixbuf);
-+      }
-     }
- 
-   return TRUE;
 --- configure.old	2009-02-23 15:54:03.650263500 +0100
 +++ configure	2009-02-23 15:54:54.711263500 +0100
 @@ -36969,6 +36971,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b"; 
@@ -337,16 +303,6 @@
    sys_color_to_gtk_color (XP_THEME_CLASS_WINDOW, COLOR_WINDOWTEXT,
  			  &style->fg[GTK_STATE_PRELIGHT]);
  
-@@ -2590,7 +2590,9 @@ draw_tab_button (GtkStyle *style,
- 		 const gchar *detail,
- 		 gint x, gint y, gint width, gint height, gint gap_side)
- {
-+#if 0
-   if (gap_side == GTK_POS_TOP || gap_side == GTK_POS_BOTTOM)
-+#endif
-     {
-       /* experimental tab-drawing code from mozilla */
-       RECT rect;
 --- gtk/gtkselection.c.orig	2011-04-26 11:45:47.000000000 +0200
 +++ gtk/gtkselection.c	2011-04-26 12:05:34.000000000 +0200
 @@ -2280,7 +2280,8 @@ _gtk_selection_request (GtkWidget *widge
@@ -384,18 +340,8 @@
 *** modules/engines/ms-windows/msw_style.c.old	2011-02-19 15:31:37.000000000 +0100
 --- modules/engines/ms-windows/msw_style.c	2011-05-16 08:15:33.897461000 +0200
 ***************
-*** 2118,2123 ****
---- 2118,2124 ----
-      }
-    else if (detail && !strcmp (detail, "notebook") && GTK_IS_NOTEBOOK (widget))
-      {
-+       return;
-        if (xp_theme_draw (window, XP_THEME_ELEMENT_TAB_PANE, style,
-  			 x, y, width, height, state_type, area))
-  	{
-***************
 *** 2347,2352 ****
---- 2348,2415 ----
+--- 2347,2414 ----
       DrawEdge (hdc, &shadeRect, EDGE_RAISED, BF_SOFT | shadeFlag);
   }
   
@@ -687,7 +633,7 @@
   
     return TRUE;
   }
---- 2419,2533 ----
+--- 2418,2532 ----
   			gint width, gint height, gint gap_side)
   {
     GdkPixmap *pixmap = NULL;
@@ -803,7 +749,6 @@
   
     return TRUE;
   }
---- 2601,2606 ----
 ***************
 *** 2670,2709 ****
   	      gint y, gint width, gint height, GtkPositionType gap_side,
@@ -846,7 +791,7 @@
   
         if (xp_theme_draw (window, XP_THEME_ELEMENT_TAB_PANE, style,
   			 x2, y2, w2, h2, state_type, area))
---- 2628,2657 ----
+--- 2627,2656 ----
   	      gint y, gint width, gint height, GtkPositionType gap_side,
   	      gint gap_x, gint gap_width)
   {
@@ -935,43 +880,6 @@
       case XP_THEME_ELEMENT_TAB_ITEM:
         switch (state)
   	{
-***************
-*** 844,864 ****
-        break;
-  
-      case XP_THEME_ELEMENT_LINE_H:
-!       switch (state)
-! 	{
-! 	  /* LHS_FLAT, LHS_RAISED, LHS_SUNKEN */
-! 	  ret = LHS_RAISED;
-! 	  break;
-! 	}
-        break;
-  
-      case XP_THEME_ELEMENT_LINE_V:
-!       switch (state)
-! 	{
-! 	  /* LVS_FLAT, LVS_RAISED, LVS_SUNKEN */
-! 	  ret = LVS_RAISED;
-! 	  break;
-! 	}
-        break;
-  
-      case XP_THEME_ELEMENT_SCALE_TROUGH_H:
---- 847,859 ----
-        break;
-  
-      case XP_THEME_ELEMENT_LINE_H:
-!       /* LHS_FLAT, LHS_RAISED, LHS_SUNKEN */
-!       ret = LHS_RAISED;
-        break;
-  
-      case XP_THEME_ELEMENT_LINE_V:
-!       /* LVS_FLAT, LVS_RAISED, LVS_SUNKEN */
-!       ret = LVS_RAISED;
-        break;
-  
-      case XP_THEME_ELEMENT_SCALE_TROUGH_H:
 *** modules/engines/ms-windows/xp_theme.h.old	2011-02-19 15:31:37.000000000 +0100
 --- modules/engines/ms-windows/xp_theme.h	2011-05-16 00:11:54.692382800 +0200
 ***************
