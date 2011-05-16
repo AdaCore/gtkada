@@ -5,13 +5,10 @@
 """
 
 # Issues:
-#   - Missing withs, and access to gtk+ enum types
+#   - Missing access to gtk+ enum types
 #   - Missing handling of interfaces
-#   - No full view of the *_Record types in the private section
-#   - Missing body
 #   - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
-#   - Property types not handled correctly.
 #
 # Backward incompatibility:
 #   - Missing documentation for some properties.
@@ -24,6 +21,7 @@
 
 from xml.etree.cElementTree import parse, QName, tostring
 from adaformat import *
+from binding_gtkada import GtkAda
 
 uri = "http://www.gtk.org/introspection/core/1.0"
 glib_uri = "http://www.gtk.org/introspection/glib/1.0"
@@ -50,6 +48,8 @@ class GIR(object):
         self.root = self._tree.getroot()
         self.namespace = self.root.find(namespace).get("name")
 
+        self.packages = dict()
+
         self._classes = dict()
         k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
         for cl in self.root.findall(k):
@@ -67,50 +67,22 @@ class GIR(object):
         """A debug form of element"""
         return tostring(element)
 
+    def get_package(self, name):
+        """Return a handle to an Ada package"""
+        if not name.lower() in self.packages:
+            self.packages[name.lower()] = Package(
+                name=name,
+                doc=gtkada.get_pkg(name).get_doc())
+        return self.packages[name.lower()]
 
-class GtkAda(object):
-    """The overrides hard-coded for GtkAda"""
-
-    def __init__(self, filename):
-        self._tree = parse(filename)
-        self.root = self._tree.getroot()
-        self.packages = dict()
-
-        for node in self.root:
-            self.packages[node.get("id")] = node
-
-    def get_doc(self, pkg):
-        """Return the overridden doc for for the package, as a list of
-           string. Each string is a paragraph
-        """
-        if pkg not in self.packages:
-            return ""
-
-        node = self.packages[pkg]
-        docnode = node.find("doc")
-
-        text = docnode.text
-        doc = ["<description>\n"]
-
-        for paragraph in docnode.text.split("\n\n"):
-            doc.append(paragraph)
-            doc.append("")
-
-        doc.append("</description>")
-
-        n = docnode.get("screenshot")
-        if n is not None:
-            doc.append("<screenshot>%s</screenshot>" % n)
-
-        n = docnode.get("group")
-        if n is not None:
-            doc.append("<group>%s</group>" % n)
-
-        n = docnode.get("testgtk")
-        if n is not None:
-            doc.append("<testgtk>%s</testgtk>" % n)
-
-        return doc
+    def generate(self, out):
+        """Generate Ada code for all packages"""
+        for k in sorted(self.packages.keys()):
+            pkg = self.packages[k]
+            pkg.spec(out)
+            out.write("\n")
+            pkg.body(out)
+            out.write("\n")
 
 
 class GIRClass(object):
@@ -127,10 +99,12 @@ class GIRClass(object):
 
         self._private = ""
 
-    def _parameters(self, c):
+    def _parameters(self, c, gtkmethod):
         """Format the parameters for the node C by looking at the <parameters>
            child.
-           Returns None if the parameter list could not be parsed
+           Returns None if the parameter list could not be parsed.
+           gtkmethod is the GtkAdaMethod that contains the overriding for the
+           various method attributes.
         """
         if c is None:
             return []
@@ -141,6 +115,9 @@ class GIRClass(object):
         result = []
 
         for p in params.findall(nparam):
+            name = p.get("name")
+            gtkparam = gtkmethod.get_param(name=name)
+
             type = self._get_type(p)
 
             if type is None:
@@ -153,12 +130,13 @@ class GIRClass(object):
 
             doc = p.findtext(ndoc, "")
             if doc:
-                doc = '"%s": %s' % (p.get("name"), doc)
+                doc = '"%s": %s' % (name, doc)
 
             result.append(
-                Parameter(name=AdaNaming.case(p.get("name")),
+                Parameter(name=AdaNaming.case(name),
                           type=type,
                           mode=mode,
+                          default=gtkparam.get_default(),
                           doc=doc))
 
         return result
@@ -178,12 +156,18 @@ class GIRClass(object):
         return result;
 
     def _constructors(self):
+        section = self.pkg.section("Constructors")
+
         n = QName(uri, "constructor").text
         for c in self.node.findall(n):
             name = c.get("name").title()
             cname = c.get(cidentifier)
 
-            params = self._parameters(c)
+            gtkmethod = self.gtkpkg.get_method(cname=cname)
+            if not gtkmethod.bind():
+                continue
+
+            params = self._parameters(c, gtkmethod)
             if params is None:
                 print "No binding for %s: varargs" % cname
                 continue
@@ -203,12 +187,14 @@ class GIRClass(object):
                 returns="System.Address").import_c(cname)
             call = internal.call(add_return=False)  # A VariableCall
 
+            adaname = gtkmethod.ada_name() or "Gtk_%s" % name
+
             initialize_params = [Parameter(
                 name="Self",
                 type="%(ns)s_%(name)s_Record'Class" % self._subst,
                 mode="access")] + params
             initialize = Subprogram(
-                name=("Initialize_" + name).replace("_New", ""),
+                name=adaname.replace("Gtk_New", "Initialize"),
                 plist=initialize_params,
                 local_vars=call.tmpvars,
                 code="%sSet_Object (Self, %s);%s" %
@@ -217,7 +203,7 @@ class GIRClass(object):
             call = initialize.call(in_pkg=self.pkg)
 
             gtk_new = Subprogram(
-                name="Gtk_%s" % name,
+                name=adaname,
                 plist=[Parameter(
                     name="Self",
                     type="%(ns)s_%(name)s" % self._subst,
@@ -227,15 +213,21 @@ class GIRClass(object):
                    + call.precall + call.call + call.postcall,
                 doc=c.findtext(ndoc, ""))
 
-            self.section.add(gtk_new, initialize)
+            section.add(gtk_new, initialize)
 
     def _methods(self):
+        section = self.pkg.section("Methods")
+
         n = self.node.findall(nmethod)
         for c in n:
             returns = self._get_type(c.find(nreturn)).as_return()
             cname = c.get(cidentifier)
 
-            params = self._parameters(c)
+            gtkmethod = self.gtkpkg.get_method(cname=cname)
+            if not gtkmethod.bind():
+                continue
+
+            params = self._parameters(c, gtkmethod)
             if params is None:
                 print "No binding for %s: varargs" % cname
                 continue
@@ -256,9 +248,9 @@ class GIRClass(object):
 
             code = internal.call()  # A VariableCall
 
-            self.section.add(
+            section.add(
                 Subprogram(
-                    name=c.get("name").title(),
+                    name=gtkmethod.ada_name() or c.get("name").title(),
                     plist=params,
                     returns=returns,
                     doc=c.findtext(ndoc, ""),
@@ -269,10 +261,16 @@ class GIRClass(object):
     def _method_get_type(self):
         n = self.node.get(ggettype)
         if n is not None:
+            section = self.pkg.section("Constructors")
+
+            gtkmethod = self.gtkpkg.get_method(cname=n)
+            if not gtkmethod.bind():
+                return
+
             self.pkg.add_with("Glib")
-            self.section.add(
+            section.add(
                 Subprogram(
-                    name="Get_Type",
+                    name=gtkmethod.ada_name() or "Get_Type",
                     returns="Glib.GType")
                 .import_c(n))
 
@@ -325,6 +323,10 @@ See Glib.Properties for more information on properties)""")
                     type = "String"
                 elif type == "Widget":
                     type = "Object"
+                elif type == "gdouble":
+                    type = "Double"
+                elif type == "gint":
+                    type = "Int"
                 elif type.startswith("Gtk_"):
                     self.pkg.add_with("Gtk.Enums")
                     pkg = "Gtk.Enums"
@@ -393,17 +395,31 @@ See Glib.Properties for more information on properties)""")
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
                     AdaNaming.case(s["name"]), s["name"]))
 
-    def generate(self, out):
+    def generate(self, gir):
         name = "%(ns)s.%(name)s" % self._subst
-        self.pkg = Package(name=name, doc=gtkada.get_doc(name))
+
+        self.gtkpkg = gtkada.get_pkg(name)
+
+        self.pkg = gir.get_package(self.gtkpkg.into() or name)
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
 
-        self.section = self.pkg.section("")
+        type_name = "%(ns)s_%(name)s" % self._subst
+        self._subst["typename"] = type_name
+        gtktype = self.gtkpkg.get_type(type_name)
 
-        self.section.add(
+        section = self.pkg.section("")
+
+        if gtktype.is_subtype():
+            section.add(
             """
-type %(ns)s_%(name)s_Record is new %(ns)s_%(parent)s_Record with null record;
-type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
+subtype %(typename)s_Record is %(ns)s_%(parent)s_Record;
+subtype %(typename)s is %(ns)s_%(parent)s;""" % self._subst);
+
+        else:
+            section.add(
+            """
+type %(typename)s_Record is new %(ns)s_%(parent)s_Record with null record;
+type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
         self._constructors()
@@ -411,10 +427,6 @@ type %(ns)s_%(name)s is access all %(ns)s_%(name)s_Record'Class;"""
         self._methods()
         self._properties()
         self._signals()
-
-        self.pkg.spec(out)
-        out.write("\n")
-        self.pkg.body(out)
 
 Package.copyright_header="""-----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
@@ -452,10 +464,17 @@ AdaNaming.exceptions.update({
 })
 
 
-p = GIR(sys.argv[1])
+gir = GIR(sys.argv[1])
 gtkada = GtkAda(sys.argv[2])
-
 out = file("generated/tmp.ada", "w")
-for name, klass in p.all_classes():
-    print "Generating code for %s" % name
-    klass.generate(out)
+
+if False:
+    klass = gir.getClass("Frame")
+    klass.generate(gir)
+else:
+    for name, klass in gir.all_classes():
+        if name not in ("Widget", "Object", "Container", "Style"):
+            print "Generating code for %s" % name
+            klass.generate(gir)
+
+gir.generate(out)

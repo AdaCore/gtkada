@@ -44,6 +44,21 @@ def box(name, indent="   "):
             + indent + "-" * (len(name) + 6)
 
 
+def space_out_camel_case(stringAsCamelCase):
+    """Adds spaces to a camel case string.  Failure to space out string
+       returns the original string.
+         >>> space_out_camel_case('DMLSServicesOtherBSTextLLC')
+       'DMLS Services Other BS Text LLC'
+    """
+
+    if stringAsCamelCase is None:
+        return None
+
+    pattern = re.compile('([A-Z][A-Z][a-z])|([a-z][A-Z])')
+    return pattern.sub(
+        lambda m: m.group()[:1] + "_" + m.group()[1:], stringAsCamelCase)
+
+
 class AdaNaming(object):
     exceptions = {
         "Entry": "GEntry",
@@ -184,7 +199,16 @@ class CType(object):
             # ??? Should in fact look in the .gir file for the name
             s = name.split(".")
             if len(s) == 1:
-                if self.is_ptr \
+                if name in ("PositionType", "ReliefStyle", "ShadowType",
+                             "PackType"):
+                    # ??? There is an <enumeration name="ReliefStyle"/>
+                    n = space_out_camel_case(name)
+                    pkg.add_with("Gtk.Enums")
+                    self.param = "Gtk_%s" % n
+                    self.cparam = "Integer"
+                    self.convert = "%s'Pos (%%s)" % self.param
+
+                elif self.is_ptr \
                    and cname.endswith("**") \
                    and cname.startswith("Gtk"):
 
@@ -204,19 +228,6 @@ class CType(object):
                     self.cparam = "System.Address"
                     self.convert = "Get_Object (%s)"
                     self.is_ptr = False
-
-                elif name == "PositionType":
-                    pkg.add_with("Gtk.Enums")
-                    self.param = "Gtk_Position_Type"
-                    self.cparam = "Integer"
-                    self.convert = "%s'Pos (%%s)" % self.param
-
-                elif name == "ReliefStyle":
-                    # ??? There is an <enumeration name="ReliefStyle"/>
-                    pkg.add_with("Gtk.Enums")
-                    self.param = "Gtk_Relief_Style"
-                    self.cparam = "Integer"
-                    self.convert = "%s'Pos (%%s)" % self.param
 
                 else:
                     self.param = name
@@ -657,6 +668,8 @@ class Package(object):
         if type(pkg) == str:
             pkg = [pkg]
         for p in pkg:
+            if p.lower() == self.name.lower():
+                continue   # No dependence on self
             t = p.title()
             if specs:
                 self.spec_withs[t] = do_use or self.spec_withs.get(t, False)

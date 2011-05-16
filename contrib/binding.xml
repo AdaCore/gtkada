@@ -3,6 +3,9 @@
 <!--  This file overrides parts of the .gir files. -->
 
 <GIR>
+   <!-- ###################################################
+        Gtk.Button
+        ###################################################-->
    <package id="Gtk.Button">
       <doc screenshot="gtk-button"
            group="Buttons and Toggles"
@@ -15,6 +18,71 @@ pressed while the mouse is on it, but does not keep its pressed state.
 The gtk+ sources provide the following drawing that explains the role of
 the various spacings that can be set for a button:
       </doc>
+
+      <method id="gtk_button_new" binding="false"/>
+
+      <method id="gtk_button_new_with_label" ada="Gtk_New">
+         <parameter name="label" default='""'/>
+      </method>
+
+   </package>
+
+   <!-- ###################################################
+        Gtk.Frame
+        ###################################################-->
+   <package id="Gtk.Frame">
+      <doc screenshot="gtk-frame" testgtk="create_frame.adb"
+           group="Ornaments">
+A Gtk_Frame is a simple border than can be added to any widget or
+group of widget to enhance its visual aspect.
+Optionally, a frame can have a title.
+
+This is a very convenient widget to visually group related widgets (like
+groups of buttons for instance), possibly with a title to explain the
+purpose of this group.
+
+A Gtk_Frame has only one child, so you have to put a container like for
+instance a Gtk_Box inside if you want the frame to surround multiple
+widgets.
+      </doc>
+
+      <method id="gtk_frame_new">
+         <parameter name="label" default='""'/>
+      </method>
+   </package>
+
+   <!-- ################################################
+        Gtk.Box, Gtk.Vbox, Gtk.Hbox
+        ################################################-->
+   <package id="Gtk.Box">
+      <method id="gtk_box_pack_start">
+         <parameter name="expand" default="True"/>
+         <parameter name="fill" default="True"/>
+         <parameter name="padding" default="0"/>
+      </method>
+      <method id="gtk_box_pack_end">
+         <parameter name="expand" default="True"/>
+         <parameter name="fill" default="True"/>
+         <parameter name="padding" default="0"/>
+      </method>
+   </package>
+
+   <package id="Gtk.Vbox" into="Gtk.Box">
+      <type name="Gtk_Vbox" subtype="true"/>
+      <method id="gtk_vbox_new" ada="Gtk_New_Vbox">
+         <parameter name="homogeneous" default="False"/>
+         <parameter name="spacing" default="0"/>
+      </method>
+      <method id="gtk_vbox_get_type" ada="Get_Vbox_Type" />
+   </package>
+
+   <package id="Gtk.Hbox" into="Gtk.Box">
+      <type name="Gtk_Hbox" subtype="true"/>
+      <method id="gtk_hbox_new" ada="Gtk_New_Hbox" >
+         <parameter name="homogeneous" default="False"/>
+         <parameter name="spacing" default="0"/>
+      </method>
+      <method id="gtk_hbox_get_type" ada="Get_Hbox_Type" />
    </package>
 
 </GIR>
