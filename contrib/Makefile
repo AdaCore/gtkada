@@ -1,5 +1,6 @@
 
-GIR_FILES=/usr/share/gir-1.0/Gtk-2.0.gir
+#GIR_FILES=/usr/share/gir-1.0/Gtk-2.0.gir
+GIR_FILES=Gtk-2.0.gir
 all:${GIR_FILES}
 
 ${GIR_FILES}: force
