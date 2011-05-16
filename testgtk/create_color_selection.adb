@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,7 @@ with Gdk;                         use Gdk;
 with Gdk.Color;                   use Gdk.Color;
 with Gtk;                         use Gtk;
 with Glib;                        use Glib;
+with Glib.Properties;
 with Gtk.Color_Selection;         use Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;  use Gtk.Color_Selection_Dialog;
 with Gtk.Enums;
@@ -79,7 +80,7 @@ package body Create_Color_Selection is
 
    procedure Destroy_Dialog
      (Win : access Gtk_Color_Selection_Dialog_Record'Class;
-      Ptr : in Gtk_Color_Dialog_Access)
+      Ptr : Gtk_Color_Dialog_Access)
    is
       pragma Warnings (Off, Win);
    begin
@@ -108,11 +109,9 @@ package body Create_Color_Selection is
       Put_Line ("Palette has changed: ");
       Put_Line ("Palette=" & Str);
 
-      Set_String_Property
-        (Get_Default,
-         Gtk_Color_Palette,
-         Palette_To_String (Colors),
-         "On_Palette_Changed");
+      Glib.Properties.Set_Property
+        (Get_Default, Gtk_Color_Palette,
+         Palette_To_String (Colors));
    end On_Palette_Changed;
 
    --------------
@@ -174,4 +173,3 @@ package body Create_Color_Selection is
    end Run;
 
 end Create_Color_Selection;
-
