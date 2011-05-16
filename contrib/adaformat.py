@@ -388,6 +388,7 @@ class Subprogram(object):
         self.local = local_vars
         self._import = None
         self._nested = []  # nested subprograms
+        self._deprecated = (False, "") # True if deprecated
 
         if code and code[-1] != ";":
             self.code = code + ";"
@@ -403,6 +404,11 @@ class Subprogram(object):
         """
         self._import = 'pragma Import (C, %s, "%s");' % (self.name, cname)
         return self
+
+    def mark_deprecated(self, msg):
+        """Mark the subprogram as deprecated"""
+
+        self._deprecated = (True, msg)
 
     def add_nested(self, *args):
         """Add some nested subprograms"""
@@ -439,16 +445,24 @@ class Subprogram(object):
 
         return prefix + p + suffix
 
-    def spec(self, indent="   "):
+    def spec(self, indent="   ", show_doc=True):
         """Return the spec of the subprogram"""
 
-        doc = [self.doc] + [p.doc for p in self.plist]
+        if show_doc:
+            doc = [self.doc]
+            if self._deprecated[0]:
+                doc += [self._deprecated[1]]
+            doc += [p.doc for p in self.plist]
+        else:
+            doc = []
 
         if self._import:
             result = self._profile(indent, lang="c") + ";"
             result += "\n" + indent + self._import
         else:
             result = self._profile(indent, lang="ada") + ";"
+            if self._deprecated[0]:
+                result += "\n" + indent + "pragma Obsolescent;"
 
         for d in doc:
             if d:
@@ -603,7 +617,9 @@ class Section(object):
             tmp = dict()  # group_name => [subprograms]
 
             for s in self.subprograms:
-                name = s.name.replace("Get_", "").replace("Set_", "")
+                name = s.name.replace("Get_", "") \
+                        .replace("Query_", "") \
+                        .replace("Set_", "")
                 if name in tmp:
                     tmp[name].append(s)  # Also modified in result
                 else:
@@ -632,9 +648,7 @@ class Section(object):
 
         for group in self._group_subprograms():
             for s in group:
-                if s != group[-1]:
-                    s.doc = None
-                result.append(s.spec())
+                result.append(s.spec(show_doc=s == group[-1]))
                 if s == group[-1]:
                     result.append("")
 

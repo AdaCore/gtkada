@@ -232,6 +232,8 @@ class GIRClass(object):
                 print "No binding for %s: varargs" % cname
                 continue
 
+            doc = c.findtext(ndoc, "")
+
             params = [
                 Parameter(
                     name="Self",
@@ -248,15 +250,22 @@ class GIRClass(object):
 
             code = internal.call()  # A VariableCall
 
-            section.add(
-                Subprogram(
+            subp = Subprogram(
                     name=gtkmethod.ada_name() or c.get("name").title(),
                     plist=params,
                     returns=returns,
-                    doc=c.findtext(ndoc, ""),
+                    doc=doc,
                     local_vars=code.tmpvars,
                     code="%s%s%s" % (code.precall, code.call, code.postcall)
-                ).add_nested(internal))
+                ).add_nested(internal)
+
+            depr = c.get("deprecated")
+            if depr is not None:
+                subp.mark_deprecated(
+                    "\nDeprecated since %s, use %s"
+                    % (c.get("deprecated-version"), depr))
+
+            section.add(subp)
 
     def _method_get_type(self):
         n = self.node.get(ggettype)
