@@ -3850,7 +3850,10 @@ package body Gtkada.MDI is
       if Notebook /= null then
          Note   := Notebook;
 
-      elsif Child.Group = Group_Default and then MDI.Central /= null then
+      elsif Child.Group = Group_Default
+        and then not MDI.Independent_Perspectives
+        and then MDI.Central /= null
+      then
          Note := Find_Current_In_Central
            (MDI.Central, MDI, Child.Group, Initial_Position);
 
@@ -3962,17 +3965,19 @@ package body Gtkada.MDI is
          --  In the central area, look for the last child used, and put the new
          --  window on top of it
 
-         while List /= Widget_List.Null_List loop
-            C := MDI_Child (Get_Data (List));
+         if not MDI.Independent_Perspectives then
+            while List /= Widget_List.Null_List loop
+               C := MDI_Child (Get_Data (List));
 
-            if In_Central_Area (MDI, C) then
-               Note := Get_Notebook (C);
-               Current := Note;
-               exit;
-            end if;
+               if In_Central_Area (MDI, C) then
+                  Note := Get_Notebook (C);
+                  Current := Note;
+                  exit;
+               end if;
 
-            List := Next (List);
-         end loop;
+               List := Next (List);
+            end loop;
+         end if;
 
          --  No last child ? It means the central area is empty (or contains
          --  an empty notebook, in case we could not reload the desktop, for
@@ -3985,21 +3990,24 @@ package body Gtkada.MDI is
                   & " checking whether we have an empty notebook");
             end if;
 
-            declare
-               Iter : Gtkada.Multi_Paned.Child_Iterator := Start (MDI.Central);
-            begin
-               while not At_End (Iter)
-                 and then Get_Widget (Iter) = null
-               loop
-                  Next (Iter);
-               end loop;
+            if not MDI.Independent_Perspectives then
+               declare
+                  Iter : Gtkada.Multi_Paned.Child_Iterator :=
+                    Start (MDI.Central);
+               begin
+                  while not At_End (Iter)
+                    and then Get_Widget (Iter) = null
+                  loop
+                     Next (Iter);
+                  end loop;
 
-               if not At_End (Iter) then
-                  Print_Debug ("Found empty notebook, using it");
-                  Note := Gtk_Notebook (Get_Widget (Iter));
-                  Current := Note;
-               end if;
-            end;
+                  if not At_End (Iter) then
+                     Print_Debug ("Found empty notebook, using it");
+                     Note := Gtk_Notebook (Get_Widget (Iter));
+                     Current := Note;
+                  end if;
+               end;
+            end if;
 
             --  Current might still be null if the central area really is empty
          end if;
@@ -5878,8 +5886,6 @@ package body Gtkada.MDI is
             Height            => MDI_Height,
             Do_Size_Allocate  => Do_Size_Allocate);
 
-         --  And do the actual resizing on the screen
-
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
 
          if Focus_Child /= null then
@@ -6527,7 +6533,9 @@ package body Gtkada.MDI is
          --  the application will not be usable anyway, so better break the
          --  desktop but show the central area
 
-         if Get_Parent (MDI.Central) = null then
+         if not MDI.Independent_Perspectives
+           and then Get_Parent (MDI.Central) = null
+         then
             Add_Child (MDI, MDI.Central);
          end if;
 
@@ -6579,9 +6587,11 @@ package body Gtkada.MDI is
          --  gtk+ display an error message. We cannot simply Add_Child the
          --  central area to the MDI, since that doesn't seem to work correctly
 
-         Realize (MDI.Central);
-         Show_All (MDI.Central);
-         Unref (MDI.Central);
+         if not MDI.Independent_Perspectives then
+            Realize (MDI.Central);
+            Show_All (MDI.Central);
+            Unref (MDI.Central);
+         end if;
 
          MDI.Loading_Desktop := False;
          Thaw (MDI);
@@ -6599,7 +6609,6 @@ package body Gtkada.MDI is
 
          if Do_Size_Allocate then
             Print_Debug ("Internal_Load_Perspective, forcing a Size_Allocate");
-            Realize (MDI.Central);
             Realize (MDI);
             Size_Allocate
               (MDI,
