@@ -2,6 +2,7 @@
 
         * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
         the display of notebook tabs in the wimp engine.
+        Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=650300
 
 2011-04-27	Nicolas Setton  <setton@adacore.com>
 
