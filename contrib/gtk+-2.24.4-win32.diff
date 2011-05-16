@@ -384,23 +384,6 @@
 *** modules/engines/ms-windows/msw_style.c.old	2011-02-19 15:31:37.000000000 +0100
 --- modules/engines/ms-windows/msw_style.c	2011-05-16 08:15:33.897461000 +0200
 ***************
-*** 849,855 ****
-    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_GRAYTEXT,
-  			  &style->fg[GTK_STATE_INSENSITIVE]);
-    sys_color_to_gtk_color (XP_THEME_CLASS_BUTTON, COLOR_BTNTEXT,
-!         		  &style->bg[GTK_STATE_ACTIVE]);
-    sys_color_to_gtk_color (XP_THEME_CLASS_WINDOW, COLOR_WINDOWTEXT,
-  			  &style->fg[GTK_STATE_PRELIGHT]);
-  
---- 849,855 ----
-    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_GRAYTEXT,
-  			  &style->fg[GTK_STATE_INSENSITIVE]);
-    sys_color_to_gtk_color (XP_THEME_CLASS_BUTTON, COLOR_BTNTEXT,
-!         		  &style->fg[GTK_STATE_ACTIVE]);
-    sys_color_to_gtk_color (XP_THEME_CLASS_WINDOW, COLOR_WINDOWTEXT,
-  			  &style->fg[GTK_STATE_PRELIGHT]);
-  
-***************
 *** 2118,2123 ****
 --- 2118,2124 ----
       }
@@ -820,27 +803,6 @@
   
     return TRUE;
   }
-***************
-*** 2585,2591 ****
---- 2542,2550 ----
-  		 const gchar *detail,
-  		 gint x, gint y, gint width, gint height, gint gap_side)
-  {
-+ #if 0
-    if (gap_side == GTK_POS_TOP || gap_side == GTK_POS_BOTTOM)
-+ #endif
-      {
-        /* experimental tab-drawing code from mozilla */
-        RECT rect;
-***************
-*** 2642,2648 ****
-    if (widget && GTK_IS_NOTEBOOK (widget) && detail && !strcmp (detail, "tab"))
-      {
-        GtkNotebook *notebook = GTK_NOTEBOOK (widget);
-- 
-        /* Why this differs from gap_side, I have no idea.. */
-        int real_gap_side = gtk_notebook_get_tab_pos (notebook);
-  
 --- 2601,2606 ----
 ***************
 *** 2670,2709 ****
