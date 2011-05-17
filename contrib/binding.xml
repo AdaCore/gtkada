@@ -117,12 +117,27 @@ should be made selectable.
       <method id="gtk_label_new">
          <parameter name="str" default='""'/>
       </method>
+      <method id="gtk_label_get" binding="false"/>
       <method id="gtk_label_select_region">
          <parameter name="start_offset" default="-1"/>
          <parameter name="end_offset" default="-1"/>
       </method>
       <method id="gtk_label_get_selection_bounds"
          return_as_param="Has_Selection"/>
+      <method id="gtk_label_set_pattern">
+         <doc>
+Change the underlines pattern.
+
+Pattern is a simple string made of underscore and space characters,
+matching the ones in the string. GtkAda will underline every letter
+that matches an underscore.
+
+An empty string disables the underlines.
+
+example: If the text is FooBarBaz and the Pattern is "___   ___"
+then both "Foo" and "Baz" will be underlined, but not "Bar".
+         </doc>
+      </method>
    </package>
 
    <!-- ################################################

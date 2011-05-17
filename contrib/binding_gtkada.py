@@ -144,6 +144,17 @@ class GtkAdaMethod(object):
             return self.node.get("return_as_param", None)
         return None
 
+    def get_doc(self):
+        if self.node is not None:
+            txt = self.node.findtext("doc")
+            if txt:
+                doc = []
+                for paragraph in txt.split("\n\n"):
+                    doc.append(paragraph)
+                    doc.append("")
+                return doc
+        return None
+
 
 class GtkAdaParameter(object):
     def __init__(self, node):

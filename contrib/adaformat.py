@@ -60,28 +60,41 @@ def space_out_camel_case(stringAsCamelCase):
 
 
 class AdaNaming(object):
-    exceptions = {
-        "Entry": "GEntry",
-        "Type":  "Typ",
-        "Range": "GRange",
-        "Delay": "The_Delay",
-        "Select": "Gtk_Select",
-        "End":   "The_End",
-        "Return": "Do_Return",
-        "Function": "Func",
-        "Digits": "Number_Of_Digits",
-        "Reverse": "Gtk_Reverse",
-    }
+    def __init__(self):
+        self.cname_to_adaname = dict() # Maps c methods to Ada subprograms
+        self.exceptions = {
+            "Entry": "GEntry",
+            "Type":  "Typ",
+            "Range": "GRange",
+            "Delay": "The_Delay",
+            "Select": "Gtk_Select",
+            "End":   "The_End",
+            "Return": "Do_Return",
+            "Function": "Func",
+            "Digits": "Number_Of_Digits",
+            "Reverse": "Gtk_Reverse",
+        }
+        self.type_exceptions = {
+            "Pango.AttrList":      "Pango.Attributes.Pango_Attr_List",
+            "Pango.EllipsizeMode": "Pango.Layout.Pango_Ellipsize_Mode",
+            "Pango.WrapMode":      "Pango.Layout.Pango_Wrap_Mode",
+        }
 
-    type_exceptions = {
-        "Pango.AttrList":      "Pango.Attributes.Pango_Attr_List",
-        "Pango.EllipsizeMode": "Pango.Layout.Pango_Ellipsize_Mode",
-        "Pango.WrapMode":      "Pango.Layout.Pango_Wrap_Mode",
-    }
+    def map_cname(self, cname, adaname):
+        """Register the mapping from c method's name to Ada subprogram"""
+        self.cname_to_adaname[cname] = adaname
 
+    def ada_name(self, cname):
+        """Return the ada name corresponding to the C method's name"""
+        try:
+            return self.cname_to_adaname[cname]
+        except KeyError:
+            if cname.startswith("gtk_"):
+                print "Function quoted in doc has no Ada binding: %s" % cname
+            self.cname_to_adaname[cname] = cname  # Display warning once only
+            return cname
 
-    @staticmethod
-    def case(name):
+    def case(self, name):
         """Return the proper casing to use for 'name', taking keywords
            into account. This is for packages.
         """
@@ -90,30 +103,34 @@ class AdaNaming(object):
         if name.endswith("_"):
             name = name[:-1]
 
-        return AdaNaming.exceptions.get(name, name)
+        return self.exceptions.get(name, name)
 
-    @staticmethod
-    def case_type(name):
-        """Return the Ada name for a type"""
+    def case_type(self, name):
+        """Return the default Ada name for a type"""
 
         name = name.replace("-", "_").title()
 
         if name.endswith("_"):
             name = name[:-1]
 
-        return AdaNaming.type_exceptions.get(
-            name, AdaNaming.exceptions.get(name, name))
+        return self.type_exceptions.get(
+            name, self.exceptions.get(name, name))
 
-    @staticmethod
-    def full_type(cname):
-        """Return the full type name, including package"""
-        name = AdaNaming.type_exceptions.get(cname, None)
+    def full_type(self, cname):
+        """Return the default full type name, including package"""
+        name = self.type_exceptions.get(cname, None)
         if name is None:
             s = cname.split(".")
-            name = "%s.%s.%s_%s" % (
-                s[0], AdaNaming.case(s[1]), s[0],
-                AdaNaming.case_type(s[1]))
+            if len(s) == 2:
+                name = "%s.%s.%s_%s" % (
+                    s[0], self.case(s[1]), s[0], self.case_type(s[1]))
+            elif cname.startswith("Gtk"):
+                name = "Gtk.%s" % self.case(cname[3:])
+            else:
+                name = cname
         return name
+
+naming = AdaNaming()
 
 
 def indent_code(code, indent=3):
@@ -246,7 +263,7 @@ class CType(object):
                    and cname.endswith("**") \
                    and cname.startswith("Gtk"):
 
-                    pkg.add_with("Gtk.%s" % AdaNaming.case(cname[3:-2]))
+                    pkg.add_with("Gtk.%s" % naming.case(cname[3:-2]))
                     self.param = "Gtk_%s" % cname[3:-2]
                     self.returns = "Gtk_%s" % cname[3:-2]
                     self.cparam = "System.Address"
@@ -256,7 +273,7 @@ class CType(object):
                 elif self.is_ptr \
                    and cname.startswith("Gtk"):
 
-                    pkg.add_with("Gtk.%s" % AdaNaming.case(cname[3:-1]))
+                    pkg.add_with("Gtk.%s" % naming.case(cname[3:-1]))
                     self.param = "access Gtk_%s_Record'Class" % cname[3:-1]
                     self.returns = "Gtk_%s" % cname[3:-1]
                     self.cparam = "System.Address"
@@ -266,7 +283,7 @@ class CType(object):
                 else:
                     self.param = name
             else:
-                n = AdaNaming.full_type(cname=name)
+                n = naming.full_type(cname=name)
                 pkg.add_with(n[0:n.rfind(".")])
                 self.param = n
 
@@ -422,16 +439,17 @@ class Subprogram(object):
     max_profile_length = 79 - len(" is")
 
     def __init__(self, name, code="", plist=[], local_vars=[],
-                 returns=None, doc=""):
+                 returns=None, doc=[]):
         """Create a new subprogram.
-           'plist' is a list of Parameter
-           'local_vars' is a list of Local_Var
+           'plist' is a list of Parameter.
+           'local_vars' is a list of Local_Var.
+           'doc' is a string or a list of paragraphs.
            'code' can be the empty string, in which case no body is output.
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
         """
         assert(returns is None or isinstance(returns, str))
-        self.name = AdaNaming.case(name)
+        self.name = naming.case(name)
         self.plist = plist
         self.returns = returns
         self.local = local_vars
@@ -444,7 +462,10 @@ class Subprogram(object):
         else:
             self.code = code
 
-        self.doc = doc
+        if isinstance(doc, list):
+            self.doc = doc
+        else:
+            self.doc = [doc]
 
     def import_c(self, cname):
         """Declares that 'self' is implemented as a pragma Import.
@@ -494,14 +515,29 @@ class Subprogram(object):
 
         return prefix + p + suffix
 
+    def _cleanup_doc(self, doc):
+        """Replaces C features in the doc with appropriate Ada equivalents"""
+
+        doc = doc.replace("%NULL", "null")
+        doc = doc.replace("%TRUE", "True")
+        doc = doc.replace("%False", "True")
+
+        subp = re.compile("([\S_]+)\(\)")
+        doc = subp.sub(lambda x: naming.ada_name(x.group(1)), doc)
+
+        types = re.compile("#([\S_]+)")
+        doc = types.sub(lambda x: naming.full_type(x.group(1)), doc)
+
+        return doc
+
     def spec(self, indent="   ", show_doc=True):
         """Return the spec of the subprogram"""
 
         if show_doc:
-            doc = [self.doc]
+            doc = [self._cleanup_doc(d) for d in self.doc]
             if self._deprecated[0]:
                 doc += [self._deprecated[1]]
-            doc += [p.doc for p in self.plist]
+            doc += [self._cleanup_doc(p.doc) for p in self.plist]
         else:
             doc = []
 
