@@ -1,8 +1,10 @@
 project Default extends all "../../src/gtkada_src" is
    for Source_Files use (
-      "gtk-button.ads", "gtk-button.adb",
-      "gtk-frame.ads",  "gtk-frame.adb",
-      "gtk-box.ads",    "gtk-box.adb"   --  Includes vbox and hbox
+      "gtk-button.ads",   "gtk-button.adb",
+      "gtk-frame.ads",    "gtk-frame.adb",
+      "gtk-box.ads",      "gtk-box.adb",  --  Includes vbox and hbox
+      --  "gtk-notebook.ads", "gtk-notebook.adb"   --  Missing GtkNotebookPage
+      "gtk-label.ads",    "gtk-label.adb"
    );
    for Object_Dir use "obj";
 end Default;

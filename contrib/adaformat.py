@@ -73,10 +73,17 @@ class AdaNaming(object):
         "Reverse": "Gtk_Reverse",
     }
 
+    type_exceptions = {
+        "Pango.AttrList":      "Pango.Attributes.Pango_Attr_List",
+        "Pango.EllipsizeMode": "Pango.Layout.Pango_Ellipsize_Mode",
+        "Pango.WrapMode":      "Pango.Layout.Pango_Wrap_Mode",
+    }
+
+
     @staticmethod
     def case(name):
         """Return the proper casing to use for 'name', taking keywords
-           into account
+           into account. This is for packages.
         """
         name = name.replace("-", "_").title()
 
@@ -84,6 +91,29 @@ class AdaNaming(object):
             name = name[:-1]
 
         return AdaNaming.exceptions.get(name, name)
+
+    @staticmethod
+    def case_type(name):
+        """Return the Ada name for a type"""
+
+        name = name.replace("-", "_").title()
+
+        if name.endswith("_"):
+            name = name[:-1]
+
+        return AdaNaming.type_exceptions.get(
+            name, AdaNaming.exceptions.get(name, name))
+
+    @staticmethod
+    def full_type(cname):
+        """Return the full type name, including package"""
+        name = AdaNaming.type_exceptions.get(cname, None)
+        if name is None:
+            s = cname.split(".")
+            name = "%s.%s.%s_%s" % (
+                s[0], AdaNaming.case(s[1]), s[0],
+                AdaNaming.case_type(s[1]))
+        return name
 
 
 def indent_code(code, indent=3):
@@ -193,6 +223,8 @@ class CType(object):
             pkg.add_with("Interfaces.C.Strings", specs=False)
         elif name == "gfloat":
             self.param = "Float"
+        elif name in ("gdouble", "gint", "guint"):
+            self.param = name.title()
         elif name == "none":
             self.param = None
         else:
@@ -201,7 +233,7 @@ class CType(object):
             s = name.split(".")
             if len(s) == 1:
                 if name in ("PositionType", "ReliefStyle", "ShadowType",
-                             "PackType"):
+                             "PackType", "Justification"):
                     # ??? There is an <enumeration name="ReliefStyle"/>
                     n = space_out_camel_case(name)
                     pkg.add_with("Gtk.Enums")
@@ -234,9 +266,9 @@ class CType(object):
                 else:
                     self.param = name
             else:
-                pkg.add_with("%s.%s" % (s[0], AdaNaming.case(s[1])))
-                self.param = "%s.%s.%s_%s" % (
-                    s[0], AdaNaming.case(s[1]), s[0], s[1])
+                n = AdaNaming.full_type(cname=name)
+                pkg.add_with(n[0:n.rfind(".")])
+                self.param = n
 
         if self.returns is None:
             self.returns = self.param
@@ -308,15 +340,16 @@ class AdaType(CType):
 
 
 class Local_Var(object):
-    __slots__ = ["name", "type", "default"]
+    __slots__ = ["name", "type", "default", "aliased"]
 
-    def __init__(self, name, type, default=""):
+    def __init__(self, name, type, default="", aliased=False):
         assert(isinstance(type, str)
                or isinstance(type, CType))
 
         self.name = name
         self.type = type
         self.default = default
+        self.aliased = aliased
 
     def _type(self, lang):
         if isinstance(self.type, CType):
@@ -332,35 +365,51 @@ class Local_Var(object):
            proper alignment when there are several variables.
         """
         t = self._type(lang)
+        aliased = ""
+        if self.aliased:
+            aliased = "aliased "
+
         if self.default:
-            return "%-*s : %s := %s" % (length, self.name, t, self.default)
+            return "%-*s : %s%s := %s" % (
+                length, self.name, aliased, t, self.default)
         else:
-            return "%-*s : %s" % (length, self.name, t)
+            return "%-*s : %s%s" % (length, self.name, aliased, t)
 
     def as_call(self, lang="ada", mode="in"):
         """Pass 'self' as a parameter to an Ada subprogram call, implemented
            in the given language.
            Returns an instance of VariableCall
         """
+        n = self.name
+        if mode == "access_c":
+            mode = "access"
+            n = "%s'Access" % n
+
         if isinstance(self.type, CType):
-            return self.type.as_call(self.name, lang=lang, mode=mode)
+            return self.type.as_call(n, lang=lang, mode=mode)
         else:
-            return VariableCall(
-                call=self.name, precall='', postcall='', tmpvars=[])
+            return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
 
 class Parameter(Local_Var):
-    __slots__ = ["name", "type", "default", "doc", "mode"]
+    __slots__ = ["name", "type", "default", "aliased", "mode", "doc"]
 
     def __init__(self, name, type, default="", doc="", mode="in"):
+        """A mode "access_c" indicates an "access" parameter for which
+           calls will use a 'Access.
+        """
         super(Parameter, self).__init__(name, type, default)
         self.mode = mode
         self.doc  = doc
 
     def _type(self, lang):
         t = super(Parameter, self)._type(lang)
-        if self.mode != "in":
-            return "%s %s" % (self.mode, t)
+        mode = self.mode
+        if self.mode == "access_c":
+            mode = "access"
+
+        if mode != "in":
+            return "%s %s" % (mode, t)
         return t
 
     def as_call(self, lang="ada"):
@@ -619,6 +668,8 @@ class Section(object):
             for s in self.subprograms:
                 name = s.name.replace("Get_", "") \
                         .replace("Query_", "") \
+                        .replace("Gtk_New", "") \
+                        .replace("Initialize", "") \
                         .replace("Set_", "")
                 if name in tmp:
                     tmp[name].append(s)  # Also modified in result

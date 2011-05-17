@@ -27,6 +27,8 @@ Where the package node is defined as follows:
            binding="false" <!-- optional, if false no binding generated -->
            into="..."      <!-- optional, name of Ada package in which to
                                 add the bindings -->
+           return_as_param="..." <!-- optional, relace return parameter with
+                                an out parameter with this name -->
        >
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
@@ -135,6 +137,11 @@ class GtkAdaMethod(object):
     def ada_name(self):
         if self.node is not None:
             return self.node.get("ada", None)
+        return None
+
+    def return_as_param(self):
+        if self.node is not None:
+            return self.node.get("return_as_param", None)
         return None
 
 

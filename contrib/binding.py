@@ -141,17 +141,26 @@ class GIRClass(object):
 
         return result
 
-    def _c_plist(self, plist):
+    def _c_plist(self, plist, returns, localvars, code):
         """Converts a list of parameters from Ada to C types.
            This also removes the documentation for the parameters
         """
         result = []
         for p in plist:
-            result.append(
-                Parameter(
-                    name=p.name,
-                    mode=p.mode,
-                    type=p.type))
+            n = p.name
+            m = p.mode
+            t = p.type
+
+            if returns is not None and m != "in":
+                m = "access_c"
+                n = "Acc_%s" % p.name
+                localvars.append(Local_Var(
+                    name="Acc_%s" % p.name,
+                    aliased=True,
+                    type=t))
+                code.append("%s := Acc_%s;" % (p.name, p.name))
+
+            result.append(Parameter(name=n, mode=m, type=t))
 
         return result;
 
@@ -181,13 +190,18 @@ class GIRClass(object):
                 self._subst["params"] = ""
                 self._subst["internal_params"] = ""
 
+            returns = "System.Address"
+            local_vars = []
+            code = []
+            plist = self._c_plist(params, returns, local_vars, code)
             internal = Subprogram(
                 name="Internal",
-                plist=self._c_plist(params),
-                returns="System.Address").import_c(cname)
+                plist=plist,
+                returns=returns).import_c(cname)
             call = internal.call(add_return=False)  # A VariableCall
 
             adaname = gtkmethod.ada_name() or "Gtk_%s" % name
+            doc = c.findtext(ndoc, "")
 
             initialize_params = [Parameter(
                 name="Self",
@@ -196,7 +210,8 @@ class GIRClass(object):
             initialize = Subprogram(
                 name=adaname.replace("Gtk_New", "Initialize"),
                 plist=initialize_params,
-                local_vars=call.tmpvars,
+                local_vars=local_vars + call.tmpvars,
+                doc=doc,
                 code="%sSet_Object (Self, %s);%s" %
                     (call.precall, call.call, call.postcall)
                 ).add_nested(internal)
@@ -211,7 +226,7 @@ class GIRClass(object):
                 local_vars=call.tmpvars,
                 code="Self := new %(ns)s_%(name)s_Record;" % self._subst
                    + call.precall + call.call + call.postcall,
-                doc=c.findtext(ndoc, ""))
+                doc=doc)
 
             section.add(gtk_new, initialize)
 
@@ -220,7 +235,6 @@ class GIRClass(object):
 
         n = self.node.findall(nmethod)
         for c in n:
-            returns = self._get_type(c.find(nreturn)).as_return()
             cname = c.get(cidentifier)
 
             gtkmethod = self.gtkpkg.get_method(cname=cname)
@@ -232,7 +246,7 @@ class GIRClass(object):
                 print "No binding for %s: varargs" % cname
                 continue
 
-            doc = c.findtext(ndoc, "")
+            returns = self._get_type(c.find(nreturn)).as_return()
 
             params = [
                 Parameter(
@@ -243,21 +257,35 @@ class GIRClass(object):
                         convert="Get_Object (%s)"))
                 ] + params
 
+            local_vars = []
+            call = []
+            plist = self._c_plist(params, returns, local_vars, call)
             internal=Subprogram(
                 name="Internal",
                 returns=returns,
-                plist=self._c_plist(params)).import_c(cname)
+                plist=plist).import_c(cname)
 
-            code = internal.call()  # A VariableCall
+            ret = gtkmethod.return_as_param()
 
+            if ret is not None:
+                params += [Parameter(name=ret, type=returns, mode="out")]
+                returns = None
+                code = internal.call(add_return=False)  # A VariableCall
+                call = ["%s%s := %s;%s" % (
+                    code.precall, ret, code.call, code.postcall)] + call
+            else:
+                code = internal.call()  # A VariableCall
+                call = ["%s%s%s" % (code.precall, code.call, code.postcall)] \
+                    + call
+
+            doc = c.findtext(ndoc, "")
             subp = Subprogram(
                     name=gtkmethod.ada_name() or c.get("name").title(),
                     plist=params,
                     returns=returns,
                     doc=doc,
-                    local_vars=code.tmpvars,
-                    code="%s%s%s" % (code.precall, code.call, code.postcall)
-                ).add_nested(internal)
+                    local_vars=local_vars + code.tmpvars,
+                    code="".join(call)).add_nested(internal)
 
             depr = c.get("deprecated")
             if depr is not None:
@@ -332,13 +360,19 @@ See Glib.Properties for more information on properties)""")
                     type = "String"
                 elif type == "Widget":
                     type = "Object"
-                elif type == "gdouble":
+                elif type == "Gdouble":
                     type = "Double"
-                elif type == "gint":
+                elif type == "Gint":
+                    type = "Int"
+                elif type == "Guint":
                     type = "Int"
                 elif type.startswith("Gtk_"):
                     self.pkg.add_with("Gtk.Enums")
                     pkg = "Gtk.Enums"
+                elif type.startswith("Pango"):
+                    print "Unsupported property type for %s: %s" % (
+                        p.get("name"), type)
+                    continue
 
                 adaprops.append({
                     "cname": p.get("name"),
@@ -478,7 +512,7 @@ gtkada = GtkAda(sys.argv[2])
 out = file("generated/tmp.ada", "w")
 
 if False:
-    klass = gir.getClass("Frame")
+    klass = gir.getClass("Label")
     klass.generate(gir)
 else:
     for name, klass in gir.all_classes():

@@ -6,7 +6,7 @@ all:${GIR_FILES}
 ${GIR_FILES}: force
 	rm -f generated/*.ad?
 	python ./binding.py $@ ./binding.xml
-	cd generated; gnatchop -w tmp.ada
+	cd generated; gnatchop -q -w tmp.ada
 	cd generated; gnatmake -p -Pdefault -U -c
 
 force:
