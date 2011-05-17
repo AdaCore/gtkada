@@ -1,3 +1,9 @@
+2011-05-17  Jerome Lambourg <lambourg@adacore.com>
+
+       * gtk/gtkrc.c (gtk_rc_style_finalize): Fix a potential issue when
+       freeing a rc style and the corresponding style is NULL, as found
+       sometimes with the win32 backend.
+
 2010-09-28  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktextview.c (extend_selection): Fix typo in documentation.
@@ -288,3 +294,23 @@
  
    return result;
  }
+*** gtk/gtkrc.c.old	Tue May 17 17:48:57 2011
+--- gtk/gtkrc.c	Tue May 17 17:49:39 2011
+***************
+*** 1189,1195 ****
+      {
+        GSList *rc_styles = tmp_list1->data;
+        GtkStyle *style = g_hash_table_lookup (realized_style_ht, rc_styles);
+!       g_object_unref (style);
+  
+        /* Remove the list of styles from the other rc_styles
+         * in the list
+--- 1189,1196 ----
+      {
+        GSList *rc_styles = tmp_list1->data;
+        GtkStyle *style = g_hash_table_lookup (realized_style_ht, rc_styles);
+!       if (style != NULL)
+!         g_object_unref (style);
+  
+        /* Remove the list of styles from the other rc_styles
+         * in the list
