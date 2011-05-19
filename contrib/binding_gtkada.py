@@ -78,10 +78,10 @@ class GtkAdaPackage(object):
         if docnode is None:
             return ""
 
-        text = docnode.text
+        text = docnode.text or ""
         doc = ["<description>\n"]
 
-        for paragraph in docnode.text.split("\n\n"):
+        for paragraph in text.split("\n\n"):
             doc.append(paragraph)
             doc.append("")
 

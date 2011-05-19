@@ -514,6 +514,16 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._constructors()
         self._method_get_type()
         self._methods()
+
+        if extra:
+            s = None
+            for p in extra:
+                if p.tag == "method":
+                    if not s:
+                        s = self.pkg.section("GtkAda additions")
+                    s.add_code(p.findtext("spec"))
+                    s.add_code(p.findtext("body"), specs=False)
+
         self._functions()
         self._properties()
         self._signals()

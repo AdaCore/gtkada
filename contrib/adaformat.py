@@ -59,6 +59,16 @@ def space_out_camel_case(stringAsCamelCase):
         lambda m: m.group()[:1] + "_" + m.group()[1:], stringAsCamelCase)
 
 
+TD = namedtuple('TD', ['ada', 'is_enum', 'is_gobject'])
+
+def Enum(ada):
+    return TD(ada, True, False)
+def GObject(ada):
+    return TD(ada, False, True)
+def Proxy(ada):
+    return TD(ada, False, False)
+
+
 class AdaNaming(object):
     def __init__(self):
         self.cname_to_adaname = dict() # Maps c methods to Ada subprograms
@@ -74,20 +84,23 @@ class AdaNaming(object):
             "Digits": "Number_Of_Digits",
             "Reverse": "Gtk_Reverse",
         }
-        self.type_exceptions = { # tuple: (name, isenum)
-            "PangoAttrList":      ("Pango.Attributes.Pango_Attr_List", False),
-            "PangoEllipsizeMode": ("Pango.Layout.Pango_Ellipsize_Mode", True),
-            "PangoWrapMode":      ("Pango.Layout.Pango_Wrap_Mode", True),
-            "PangoLayout":        ("Pango.Layout.Pango_Layout", False),
+        self.type_exceptions = {
+            "gboolean":           Enum("Boolean"),
+            "PangoAttrList":      Proxy("Pango.Attributes.Pango_Attr_List"),
+            "PangoEllipsizeMode": Enum("Pango.Layout.Pango_Ellipsize_Mode"),
+            "PangoWrapMode":      Enum("Pango.Layout.Pango_Wrap_Mode"),
+            "PangoLayout":        GObject("Pango.Layout.Pango_Layout"),
 
-            "GtkPositionType":    ("Gtk.Enums.Gtk_Position_Type", True),
-            "GtkReliefStyle":     ("Gtk.Enums.Gtk_Relief_Style", True),
-            "GtkShadowType":      ("Gtk.Enums.Gtk_Shadow_Type", True),
-            "GtkArrowType":       ("Gtk.Enums.Gtk_Arrow_Type", True),
-            "GtkPackType":        ("Gtk.Enums.Gtk_Pack_Type", True),
-            "GtkJustification":   ("Gtk.Enums.Gtk_Justification", True),
+            "GtkPositionType":    Enum("Gtk.Enums.Gtk_Position_Type"),
+            "GtkReliefStyle":     Enum("Gtk.Enums.Gtk_Relief_Style"),
+            "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
+            "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
+            "GtkPackType":        Enum("Gtk.Enums.Gtk_Pack_Type"),
+            "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
 
-            "GdkWindow":          ("Gdk.Window.Gdk_Window", False),
+            "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
+            "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
+            "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
         }
 
     def map_cname(self, cname, adaname):
@@ -126,20 +139,29 @@ class AdaNaming(object):
         return self.type_exceptions.get(
             name, self.exceptions.get(name, name))
 
+    def explicit_full_type(self, cname):
+        """Return the full type as read from the list of exceptions.
+           If the type is not found in the exceptions, no second guess is
+           made and None is returned.
+        """
+        return self.type_exceptions.get(cname, None)
+
+
     def full_type(self, cname):
         """Return the default full type name, including package"""
-        name = self.type_exceptions.get(cname, None)
+        name = self.explicit_full_type(cname)
         if name is None:
             s = cname.split(".")
             if len(s) == 2:
                 name = "%s.%s.%s_%s" % (
                     s[0], self.case(s[1]), s[0], self.case_type(s[1]))
+                return GObject(cname)
             elif cname.startswith("Gtk"):
                 name = "Gtk.%s.Gtk_%s" % (
                     self.case(cname[3:]), self.case(cname[3:]))
+                return GObject(name)
             else:
-                name = cname
-            return (name, False)  # Not an enumeration
+                return Proxy(cname)
         else:
             return name
 
@@ -199,6 +221,7 @@ def indent_code(code, indent=3):
            or l.endswith("loop") \
            or(l.endswith("else") and not l.endswith("or else"))\
            or l.endswith("begin") \
+           or l.endswith("is") \
            or l.endswith("declare"):
             indent += 3
 
@@ -297,25 +320,7 @@ class CType(object):
                              # name of the variable.
         self.isArray = isArray
 
-        if self.is_ptr:
-            basename = cname[0:-1]
-            if basename[-1] == "*":
-                basename = basename[0:-1]
-        elif not cname:
-            if name.startswith("Pango"):
-                basename = name.replace(".", "") # for consistency: the GIR
-                                                 # files are not...
-            else:
-                basename = "Gtk%s" % name   # Workaround GIR bug: they
-                                            # use a "name" and not a C
-                                            # type for <properties>
-        else:
-            basename = cname
-
-        if name == "gboolean":
-            as_enumeration("Boolean", "Gboolean")
-
-        elif name == "utf8":
+        if name == "utf8":
             self.param = "UTF8_String"
             self.cparam = "Interfaces.C.Strings.chars_ptr"
             self.convert = "New_String (%s)"
@@ -328,28 +333,58 @@ class CType(object):
         elif name in ("gdouble", "gint", "guint", "gfloat"):
             self.param = name.title()
 
-        elif name == "none":
-            self.param = None
-
         else:
-            full = naming.full_type(basename)
-            #print "MANU name=", name, " cname=", cname, " base=", basename, " full=", full, " is_ptr", self.is_ptr
+            basename = None
+
+            if cname:
+                # Check whether the C type, including trailing "*", maps
+                # directly to an Ada type.
+                full = naming.full_type(cname)
+                self.is_ptr = False
+
+                if full.ada[-1] == "*":
+                    # No, try without the trailing "*"
+                    full = naming.full_type(cname[0:-1])
+
+                    if full.ada[-1] != "*":
+                        self.is_ptr = True    # Yes, so we had a pointer
+                    else:
+                        basename = cname[0:-1] # Remove all "*"
+                        if basename[-1] == "*":
+                            basename = basename[0:-1]
+                        full = naming.full_type(basename)
+            else:
+                if name.startswith("Pango"):
+                    # for consistency: the GIR files are not...
+                    basename = name.replace(".", "")
+                    full = naming.full_type(basename)
+                else:
+                    full = naming.explicit_full_type(name)
+                    if full is None:
+                        # Workaround GIR bug: they use a "name" and not a C
+                        # type for <properties>
+                        basename = "Gtk%s" % name
+                        full = naming.full_type(basename)
 
             if basename == "PangoLayout":
                 as_gobject(full[0])
 
-            elif full[1]:   # An enumeration ?
-                as_enumeration(full[0], "Integer")
+            elif full.is_enum:
+                as_enumeration(full.ada, "Integer")
+
+            elif full.is_gobject:
+                as_gobject(
+                    full.ada, userecord=cname and not cname.endswith("**"))
 
             elif self.is_ptr \
                and cname.startswith("Gtk"):
-                 as_gobject(full[0], userecord=not cname.endswith("**"))
+                 as_gobject(full.ada, userecord=not cname.endswith("**"))
 
                  if cname.endswith("**"):
                      self.is_ptr = True # An out parameter
 
             else:
-                full = full[0]
+                full = full.ada
                 if "." in full:
                     pkg.add_with(full[0:full.rfind(".")])
                 self.param = full
