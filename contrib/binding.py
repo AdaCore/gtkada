@@ -6,6 +6,7 @@
 
 # Issues:
 #   - Missing access to gtk+ enum types
+#   - Missing handling of <field> nodes (see GtkArrow for instance)
 #   - Missing handling of interfaces
 #   - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
@@ -371,7 +372,7 @@ class GIRClass(object):
         n = QName(uri, "property")
 
         props = list(self.node.findall(n.text))
-        if props:
+        if props is not None:
             adaprops = []
             section = self.pkg.section("Properties")
             section.add_comment(
@@ -386,11 +387,14 @@ See Glib.Properties for more information on properties)""")
                     flags.append("write")
 
                 type = self._get_type(p).as_ada_param()
+                if "." in type:
+                    type = type[type.rfind(".") + 1:]  # basename only
+
                 pkg  = "Glib.Properties"
 
                 if type == "UTF8_String":
                     type = "String"
-                elif type == "Widget":
+                elif type == "Gtk_Widget":
                     type = "Object"
                 elif type == "Gdouble":
                     type = "Double"
@@ -398,6 +402,8 @@ See Glib.Properties for more information on properties)""")
                     type = "Int"
                 elif type == "Guint":
                     type = "Int"
+                elif type == "Gfloat":
+                    type = "Float"
                 elif type.startswith("Gtk_"):
                     self.pkg.add_with("Gtk.Enums")
                     pkg = "Gtk.Enums"
@@ -406,6 +412,7 @@ See Glib.Properties for more information on properties)""")
                         self.pkg.name, p.get("name"), type)
                     continue
 
+                self.pkg.add_with(pkg)
                 adaprops.append({
                     "cname": p.get("name"),
                     "name": naming.case(p.get("name")) + "_Property",
@@ -423,8 +430,6 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment("Flags: %(flags)s" % p)
                 if p["doc"]:
                     section.add_comment("%s\n" % p["doc"])
-
-            self.pkg.add_with("Glib.Properties")
 
             for p in adaprops:
                 d = '   %(name)s : constant %(pkg)s.Property_%(type)s' % p
@@ -477,8 +482,6 @@ See Glib.Properties for more information on properties)""")
         extra = self.gtkpkg.extra()
         if extra:
             self.node.extend(extra)
-            for n in self.node:
-                print n
 
         self.pkg = gir.get_package(self.gtkpkg.into() or name)
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
@@ -549,7 +552,7 @@ gtkada = GtkAda(sys.argv[2])
 out = file("generated/tmp.ada", "w")
 
 if False:
-    klass = gir.getClass("Label")
+    klass = gir.getClass("Button")
     klass.generate(gir)
 else:
     for name, klass in gir.all_classes():

@@ -37,9 +37,10 @@ install:
 
 GIR_FILES=Gtk-2.0.gir
 GENERATED= \
+	gtk-arrow.ads  gtk-arrow.adb  \
+	gtk-box.ads    gtk-box.adb    \
 	gtk-button.ads gtk-button.adb \
 	gtk-frame.ads  gtk-frame.adb  \
-	gtk-box.ads    gtk-box.adb    \
 	gtk-label.ads  gtk-label.adb
 
 # Generate the binding automatically, through a python script

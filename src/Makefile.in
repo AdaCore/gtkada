@@ -94,6 +94,7 @@ install: force
 	   $(CP) gtk*.ads gtk*.adb "${DESTDIR}$(incdir)"; \
 	   $(CP) pango*.ads pango*.adb "${DESTDIR}$(incdir)"; \
 	   $(CP) cairo*.ads cairo*.adb "${DESTDIR}$(incdir)"; \
+		$(CP) generated/*.ad? "${DESTDIR}${incdir}"; \
 	   if [ ${BUILD_STATIC} = yes ]; then \
 	      $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali "${DESTDIR}$(alidir)/static"; \
 	      $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali "${DESTDIR}$(alidir)/static"; \

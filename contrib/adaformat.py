@@ -74,10 +74,20 @@ class AdaNaming(object):
             "Digits": "Number_Of_Digits",
             "Reverse": "Gtk_Reverse",
         }
-        self.type_exceptions = {
-            "Pango.AttrList":      "Pango.Attributes.Pango_Attr_List",
-            "Pango.EllipsizeMode": "Pango.Layout.Pango_Ellipsize_Mode",
-            "Pango.WrapMode":      "Pango.Layout.Pango_Wrap_Mode",
+        self.type_exceptions = { # tuple: (name, isenum)
+            "PangoAttrList":      ("Pango.Attributes.Pango_Attr_List", False),
+            "PangoEllipsizeMode": ("Pango.Layout.Pango_Ellipsize_Mode", True),
+            "PangoWrapMode":      ("Pango.Layout.Pango_Wrap_Mode", True),
+            "PangoLayout":        ("Pango.Layout.Pango_Layout", False),
+
+            "GtkPositionType":    ("Gtk.Enums.Gtk_Position_Type", True),
+            "GtkReliefStyle":     ("Gtk.Enums.Gtk_Relief_Style", True),
+            "GtkShadowType":      ("Gtk.Enums.Gtk_Shadow_Type", True),
+            "GtkArrowType":       ("Gtk.Enums.Gtk_Arrow_Type", True),
+            "GtkPackType":        ("Gtk.Enums.Gtk_Pack_Type", True),
+            "GtkJustification":   ("Gtk.Enums.Gtk_Justification", True),
+
+            "GdkWindow":          ("Gdk.Window.Gdk_Window", False),
         }
 
     def map_cname(self, cname, adaname):
@@ -125,10 +135,13 @@ class AdaNaming(object):
                 name = "%s.%s.%s_%s" % (
                     s[0], self.case(s[1]), s[0], self.case_type(s[1]))
             elif cname.startswith("Gtk"):
-                name = "Gtk.%s" % self.case(cname[3:])
+                name = "Gtk.%s.Gtk_%s" % (
+                    self.case(cname[3:]), self.case(cname[3:]))
             else:
                 name = cname
-        return name
+            return (name, False)  # Not an enumeration
+        else:
+            return name
 
 naming = AdaNaming()
 
@@ -239,6 +252,36 @@ class CType(object):
            with clauses will be added if needed.
            'isArray' should be true for an array of the simple type 'name'.
         """
+
+        def as_enumeration(name, cname):
+            """Self is an enumeration, setup the conversion hooks"""
+            if "." in name:
+                pkg.add_with(name[0:name.rfind(".")])
+            self.param = name
+            self.cparam = cname
+            self.convert = "%s'Pos (%%s)" % name
+            self.postconvert = "%s'Val (%%s)" % name
+            self.returns = (self.param, self.cparam, self.postconvert, [])
+
+        def as_gobject(full, userecord=True):
+            """Self is a descendant of GObject, setup the conversion hooks"""
+            if "." in full:
+                pkg.add_with(full[0:full.rfind(".")])
+                full = full[full.rfind(".") + 1:]
+
+            if userecord:
+                self.param = "access %s_Record'Class" % full
+            else:
+                self.param = full
+
+            self.cparam = "System.Address"
+            self.convert = "Get_Object (%s)"
+            self.is_ptr = False
+            self.returns = (
+                full, self.cparam,
+                "%s (Get_User_Data (%%s, Stub))" % full,
+                [Local_Var("Stub", AdaType("%s_Record" % full))])
+
         self.is_ptr = cname \
             and cname[-1] == '*' \
             and name != "utf8"   # not a "char*"
@@ -254,12 +297,23 @@ class CType(object):
                              # name of the variable.
         self.isArray = isArray
 
+        if self.is_ptr:
+            basename = cname[0:-1]
+            if basename[-1] == "*":
+                basename = basename[0:-1]
+        elif not cname:
+            if name.startswith("Pango"):
+                basename = name.replace(".", "") # for consistency: the GIR
+                                                 # files are not...
+            else:
+                basename = "Gtk%s" % name   # Workaround GIR bug: they
+                                            # use a "name" and not a C
+                                            # type for <properties>
+        else:
+            basename = cname
+
         if name == "gboolean":
-            self.param = "Boolean"
-            self.cparam = "Gboolean"
-            self.convert = "Boolean'Pos (%s)"
-            self.returns = ("Boolean", "Gboolean", "Boolean'Val (%s)", [])
-            self.postconvert = "Boolean'Val (%s)"
+            as_enumeration("Boolean", "Gboolean")
 
         elif name == "utf8":
             self.param = "UTF8_String"
@@ -271,80 +325,34 @@ class CType(object):
                 "UTF8_String", "Interfaces.C.Strings.chars_ptr",
                 "Value (%s)", [])
 
-        elif name == "gfloat":
-            self.param = "Float"
-
-        elif name in ("gdouble", "gint", "guint"):
+        elif name in ("gdouble", "gint", "guint", "gfloat"):
             self.param = name.title()
 
         elif name == "none":
             self.param = None
 
         else:
-            # A type of the form "Gdk.Window" needs to be converted
-            # ??? Should in fact look in the .gir file for the name
-            s = name.split(".")
-            if len(s) == 1:
-                if name in ("PositionType", "ReliefStyle", "ShadowType",
-                             "PackType", "Justification"):
-                    # ??? There is an <enumeration name="ReliefStyle"/>
-                    n = space_out_camel_case(name)
-                    pkg.add_with("Gtk.Enums")
-                    self.param = "Gtk_%s" % n
-                    self.cparam = "Integer"
-                    self.convert = "%s'Pos (%%s)" % self.param
-                    self.postconvert = "%s'Val (%%s)" % self.param
-                    self.returns = (
-                        self.param, self.cparam, self.postconvert, [])
+            full = naming.full_type(basename)
+            #print "MANU name=", name, " cname=", cname, " base=", basename, " full=", full, " is_ptr", self.is_ptr
 
-                elif self.is_ptr \
-                   and cname.endswith("**") \
-                   and cname.startswith("Gtk"):
+            if basename == "PangoLayout":
+                as_gobject(full[0])
 
-                    pkg.add_with("Gtk.%s" % naming.case(cname[3:-2]))
-                    self.param = "Gtk_%s" % cname[3:-2]
-                    self.cparam = "System.Address"
-                    self.convert = "Get_Object (%s)"  # ??? Incorrect
-                    self.is_ptr = True  # Will be a "out" parameter
+            elif full[1]:   # An enumeration ?
+                as_enumeration(full[0], "Integer")
 
-                    self.returns = (
-                        self.param, self.cparam,
-                        "%s (Get_User_Data (%%s, Stub))" % self.param,
-                        [Local_Var("Stub", AdaType("%s_Record" % self.param))])
+            elif self.is_ptr \
+               and cname.startswith("Gtk"):
+                 as_gobject(full[0], userecord=not cname.endswith("**"))
 
-                elif self.is_ptr \
-                   and cname.startswith("Gtk"):
-
-                    record = "Gtk_%s" % cname[3:-1]
-
-                    pkg.add_with("Gtk.%s" % naming.case(cname[3:-1]))
-                    self.param = "access %s_Record'Class" % record
-                    self.cparam = "System.Address"
-                    self.convert = "Get_Object (%s)"
-                    self.is_ptr = False
-
-                    self.returns = (
-                        record, self.cparam,
-                        "%s (Get_User_Data (%%s, Stub))" % record,
-                        [Local_Var("Stub", AdaType("%s_Record" % record))])
-
-                else:
-                    self.param = name
-
-            elif name == "Pango.Layout":
-                n = naming.full_type(cname=name)
-                pkg.add_with(n[0:n.rfind(".")])
-                self.param = n
-
-                self.returns = (
-                    n, "System.Address",
-                    "%s (Get_User_Data (%%s, Stub))" % n,
-                    [Local_Var("Stub", AdaType("%s_Record" % n))])
+                 if cname.endswith("**"):
+                     self.is_ptr = True # An out parameter
 
             else:
-                n = naming.full_type(cname=name)
-                pkg.add_with(n[0:n.rfind(".")])
-                self.param = n
+                full = full[0]
+                if "." in full:
+                    pkg.add_with(full[0:full.rfind(".")])
+                self.param = full
 
         if self.cparam is None:
             self.cparam = self.param
@@ -599,8 +607,8 @@ class Subprogram(object):
         subp = re.compile("([\S_]+)\(\)")
         doc = subp.sub(lambda x: naming.ada_name(x.group(1)), doc)
 
-        types = re.compile("#([\S_]+)")
-        doc = types.sub(lambda x: naming.full_type(x.group(1)), doc)
+        types = re.compile("#([\w_]+)")
+        doc = types.sub(lambda x: naming.full_type(x.group(1))[0], doc)
 
         return doc
 
@@ -825,21 +833,24 @@ class Section(object):
 
         result = []
 
-        if self.name:
-            result.append(box(self.name))
-        if self.comment:
-            result.append(self.comment)
-        else:
-            result.append("")
+        if self.subprograms or self.code:
+            result.append("") # A separator with previous section
 
-        if self.code:
-            result.append(indent_code(self.code))
+            if self.name:
+                result.append(box(self.name))
+            if self.comment:
+                result.append(self.comment)
+            else:
+                result.append("")
 
-        for group in self._group_subprograms():
-            for s in group:
-                result.append(s.spec(show_doc=s == group[-1]))
-                if s == group[-1]:
-                    result.append("")
+            if self.code:
+                result.append(indent_code(self.code))
+
+            for group in self._group_subprograms():
+                for s in group:
+                    result.append(s.spec(show_doc=s == group[-1]))
+                    if s == group[-1]:
+                        result.append("")
 
         return "\n".join(result)
 
@@ -933,7 +944,6 @@ class Package(object):
         out.write("package %s is" % self.name)
 
         for s in self.sections:
-            out.write("\n")
             out.write(s.spec())
 
         if self.private:
