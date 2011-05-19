@@ -143,6 +143,95 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
    </package>
 
    <!-- ################################################
+        Gtk.Paned
+        ################################################-->
+
+   <package id="Gtk.Paned">
+      <doc screenshot="gtk-paned" testgtk="create_paned.adb"
+           group="Layout container">
+A Gtk_Paned is a container that organizes its two children either
+horizontally or vertically.
+The initial size allocated to the children depends on the size
+they request. However, the user has the possibility to interactively
+move a separation bar between the two to enlarge one of the children,
+while at the same time shrinking the second one.
+The bar can be moved by clicking with the mouse on a small cursor
+displayed in the bar, and then dragging the mouse.
+
+No additional decoration is provided around the children.
+
+Each child has two parameters, Resize and Shrink.
+
+If Shrink is True, then the widget can be made smaller than its
+requisition size by the user. Set this to False if you want to
+set a minimum size.
+
+if Resize is True, this means that the child accepts to be resized, and
+will not require any size. Thus, the size allocated to it will be
+the total size allocated to the container minus the size requested by
+the other child.
+If Resize is False, the child should ask for a specific size, which it
+will get. The other child will be resized accordingly.
+If both Child have the same value for Resize (either True or False), then
+the size allocated to each is a ratio between the size requested by both.
+
+When you use Set_Position with a parameter other than -1, or the user
+moves the handle to resize the widgets, the behavior of Resize is
+canceled.
+      </doc>
+      <method id="gtk_paned_pack1">
+         <parameter name="resize" default="False" />
+         <parameter name="shrink" default="True" />
+         <doc>
+Add a child to the top or left pane.
+You can not change dynamically the attributes Resize and Shrink.
+Instead, you have to remove the child from the container, and put it
+back with the new value of the attributes. You should also first
+call Gtk.Object.Ref on the child so as to be sure it is not destroyed
+when you remove it, and Gtk.Object.Unref it at the end. See the
+example in testgtk/ in the GtkAda distribution.
+         </doc>
+      </method>
+      <method id="gtk_paned_pack2">
+         <parameter name="resize" default="False" />
+         <parameter name="shrink" default="False" />
+      </method>
+      <method id="gtk_paned_add1">
+         <doc>
+Add the first child of the container.
+The child will be displayed either in the top or in the left pane,
+depending on the orientation of the container.
+This is equivalent to using the Pack1 procedure with its default parameters.
+         </doc>
+      </method>
+      <method id="gtk_paned_add2">
+         <doc>
+Add the second child of the container.
+It will be displayed in the bottom or right pane, depending on the
+container's orientation.
+This is equivalent to using Pack2 with its default parameters.
+         </doc>
+      </method>
+   </package>
+
+   <package id="Gtk.Vpaned" into="Paned">
+      <type name="Gtk_Vpaned" subtype="true"/>
+      <method id="gtk_vpaned_new" ada="Gtk_New_Vpaned">
+         <doc>The children will be displayed one on top of the other</doc>
+      </method>
+      <method id="gtk_vpaned_get_type" ada="Get_Type_Vpaned" />
+   </package>
+
+   <package id="Gtk.Hpaned" into="Paned">
+      <type name="Gtk_Hpaned" subtype="true"/>
+      <method id="gtk_hpaned_new" ada="Gtk_New_Hpaned">
+         <doc>The children will be displayed next to each other</doc>
+      </method>
+      <method id="gtk_hpaned_get_type" ada="Get_Type_Hpaned" />
+   </package>
+
+
+   <!-- ################################################
         Gtk.Box, Gtk.Vbox, Gtk.Hbox
         ################################################-->
    <package id="Gtk.Box">
@@ -200,7 +289,7 @@ on how all the parameters for the boxes work.
       </extra>
    </package>
 
-   <package id="Gtk.Vbox" into="Gtk.Box">
+   <package id="Gtk.Vbox" into="Box">
       <type name="Gtk_Vbox" subtype="true"/>
       <method id="gtk_vbox_new" ada="Gtk_New_Vbox">
          <parameter name="homogeneous" default="False"/>
@@ -209,7 +298,7 @@ on how all the parameters for the boxes work.
       <method id="gtk_vbox_get_type" ada="Get_Vbox_Type" />
    </package>
 
-   <package id="Gtk.Hbox" into="Gtk.Box">
+   <package id="Gtk.Hbox" into="Box">
       <type name="Gtk_Hbox" subtype="true"/>
       <method id="gtk_hbox_new" ada="Gtk_New_Hbox" >
          <parameter name="homogeneous" default="False"/>

@@ -992,34 +992,6 @@ ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
 }
 
 /********************
- * Paned
- ********************/
-
-gboolean
-ada_paned_get_child1_resize (GtkPaned* widget)
-{
-  return widget->child1_resize;
-}
-
-gboolean
-ada_paned_get_child2_resize (GtkPaned* widget)
-{
-  return widget->child2_resize;
-}
-
-gboolean
-ada_paned_get_child1_shrink (GtkPaned* widget)
-{
-  return widget->child1_shrink;
-}
-
-gboolean
-ada_paned_get_child2_shrink (GtkPaned* widget)
-{
-  return widget->child2_shrink;
-}
-
-/********************
  * Progress_Bar
  ********************/
 

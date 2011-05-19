@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2000-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,15 +30,11 @@
 
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Frame;        use Gtk.Frame;
-with Gtk.Label;        use Gtk.Label;
 with Gtk.Paned;        use Gtk.Paned;
-with Gtk.Table;        use Gtk.Table;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
-with Common;           use Common;
 
 package body Create_Paned is
 
@@ -58,9 +55,9 @@ package body Create_Paned is
         & ASCII.LF
         & "If @bResize@B is set to True for one of the children only, then"
         & " that child gets the exact size it requested, the other gets the"
-        & " remaining space. In the example, the two buttons have required"
-        & " the same size, and you can see the effect of the resize buttons"
-        & " by clicking on them."
+        & " remaining space. In the example, the two buttons have requested"
+        & " the same size, but since the second sets Resize to True, it gets"
+        & " more space."
         & ASCII.LF
         & "If both children have the same value for resize, their allocated"
         & " size is a ratio between their respective sizes."
@@ -69,129 +66,6 @@ package body Create_Paned is
         & " cancels the effect of the resize buttons, so you should click on"
         & " them before playing with the handles...";
    end Help;
-
-   -------------------
-   -- Toggle_Resize --
-   -------------------
-
-   procedure Toggle_Resize (Child : access Gtk_Widget_Record'Class) is
-      Paned : constant Gtk_Paned := Gtk_Paned (Get_Parent (Child));
-      Is_Child1 : constant Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
-      Resize : Boolean;
-      Shrink : Boolean;
-   begin
-      if Is_Child1 then
-         Resize := Get_Child1_Resize (Paned);
-         Shrink := Get_Child1_Shrink (Paned);
-      else
-         Resize := Get_Child2_Resize (Paned);
-         Shrink := Get_Child2_Shrink (Paned);
-      end if;
-
-      Ref (Child);
-      --  Since we are going to remove it, we do not want
-      --  to delete it.
-      Remove (Paned, Child);
-      if Is_Child1 then
-         Pack1 (Paned, Child, not Resize, Shrink);
-      else
-         Pack2 (Paned, Child, not Resize, Shrink);
-      end if;
-      Unref (Child);
-   end Toggle_Resize;
-
-   -------------------
-   -- Toggle_Shrink --
-   -------------------
-
-   procedure Toggle_Shrink (Child : access Gtk_Widget_Record'Class) is
-      Paned : constant Gtk_Paned := Gtk_Paned (Get_Parent (Child));
-      Is_Child1 : constant Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
-      Resize : Boolean;
-      Shrink : Boolean;
-   begin
-      if Is_Child1 then
-         Resize := Get_Child1_Resize (Paned);
-         Shrink := Get_Child1_Shrink (Paned);
-      else
-         Resize := Get_Child2_Resize (Paned);
-         Shrink := Get_Child2_Shrink (Paned);
-      end if;
-
-      Ref (Child);
-      --  Since we are going to remove it, we do not want
-      --  to delete it.
-      Remove (Paned, Child);
-      if Is_Child1 then
-         Pack1 (Paned, Child, Resize, not Shrink);
-      else
-         Pack2 (Paned, Child, Resize, not Shrink);
-      end if;
-      Unref (Child);
-   end Toggle_Shrink;
-
-   -------------------------
-   -- Create_Pane_Options --
-   -------------------------
-
-   function Create_Pane_Options (Paned : access Gtk_Paned_Record'Class;
-                                 Frame_Label : String;
-                                 Label1 : String;
-                                 Label2 : String)
-                                 return Gtk_Frame
-   is
-      Frame : Gtk_Frame;
-      Table : Gtk_Table;
-      Label : Gtk_Label;
-      Check : Gtk_Check_Button;
-
-   begin
-      Gtk_New (Frame, Frame_Label);
-      Set_Border_Width (Frame, 4);
-
-      Gtk_New (Table, 3, 2, False);
-      Add (Frame, Table);
-
-      Gtk_New (Label, Label1);
-      Attach_Defaults (Table, Label, 0, 1, 0, 1);
-
-      Gtk_New (Check, "Resize");
-      Attach_Defaults (Table, Check, 0, 1, 1, 2);
-      Set_Active (Check, Get_Child1_Resize (Paned));
-      Widget_Handler.Object_Connect
-        (Check, "toggled",
-         Widget_Handler.To_Marshaller (Toggle_Resize'Access),
-         Slot_Object => Get_Child1 (Paned));
-
-      Gtk_New (Check, "Shrink");
-      Attach_Defaults (Table, Check, 0, 1, 2, 3);
-      Set_Active (Check, Get_Child1_Shrink (Paned));
-      Widget_Handler.Object_Connect
-        (Check, "toggled",
-         Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
-         Slot_Object => Get_Child1 (Paned));
-
-      Gtk_New (Label, Label2);
-      Attach_Defaults (Table, Label, 1, 2, 0, 1);
-
-      Gtk_New (Check, "Resize");
-      Attach_Defaults (Table, Check, 1, 2, 1, 2);
-      Set_Active (Check, Get_Child2_Resize (Paned));
-      Widget_Handler.Object_Connect
-        (Check, "toggled",
-         Widget_Handler.To_Marshaller (Toggle_Resize'Access),
-         Slot_Object => Get_Child2 (Paned));
-
-      Gtk_New (Check, "Shrink");
-      Attach_Defaults (Table, Check, 1, 2, 2, 3);
-      Set_Active (Check, Get_Child2_Shrink (Paned));
-      Widget_Handler.Object_Connect
-        (Check, "toggled",
-         Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
-         Slot_Object => Get_Child2 (Paned));
-
-      return Frame;
-   end Create_Pane_Options;
 
    ---------
    -- Run --
@@ -205,7 +79,6 @@ package body Create_Paned is
       Vbox   : Gtk_Box;
 
    begin
-
       Set_Label (Frame, "Panes");
 
       Gtk_New_Vbox (Vbox, False, 0);
@@ -216,41 +89,28 @@ package body Create_Paned is
       Set_Border_Width (VPaned, 5);
 
       Gtk_New_Hpaned (HPaned);
-      Add1 (VPaned, HPaned);
+      Pack1 (VPaned, HPaned, Resize => False, Shrink => True);
 
       Gtk_New (Frame2);
-
-      Gtk_New (Button, "Hi There");
+      Gtk_New (Button, "not Resize, not Shrink, minWidth=60");
       Add (Frame2, Button);
-
       Set_Shadow_Type (Frame2, Shadow_In);
       Set_USize (Frame2, 60, 60);
       Pack1 (HPaned, Frame2, False, False);
 
-
       Gtk_New (Frame2);
-
-      Gtk_New (Button, "erehT iH");
+      Gtk_New (Button, "Resize, Shrink");
       Add (Frame2, Button);
-
       Set_Shadow_Type (Frame2, Shadow_In);
       Set_USize (Frame2, 80, 60);
-      Add2 (HPaned, Frame2);
-
+      Pack2 (HPaned, Frame2, Resize => True, Shrink => True);
 
       Gtk_New (Frame2);
+      Gtk_New (Button, "not Resize, not Shrink, minHeight=280");
+      Add (Frame2, Button);
       Set_Shadow_Type (Frame2, Shadow_In);
       Set_USize (Frame2, 60, 280);
-      Add2 (VPaned, Frame2);
-
-      Pack_Start (Vbox,
-                  Create_Pane_Options (HPaned, "Horizontal",
-                                       "Left", "Right"),
-                  False, False, 0);
-      Pack_Start (Vbox,
-                  Create_Pane_Options (VPaned, "Vertical",
-                                       "Top", "Bottom"),
-                  False, False, 0);
+      Pack2 (VPaned, Frame2, Resize => False, Shrink => False);
 
       Show_All (Frame);
 

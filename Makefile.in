@@ -42,6 +42,7 @@ GENERATED= \
 	gtk-button.ads   gtk-button.adb \
 	gtk-frame.ads    gtk-frame.adb  \
 	gtk-label.ads    gtk-label.adb  \
+	gtk-paned.ads    gtk-paned.adb  \
 	gtk-pixmap.ads   gtk-pixmap.adb \
 	gtk-viewport.ads gtk-viewport.adb
 

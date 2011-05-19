@@ -99,7 +99,9 @@ class GIRClass(object):
             "parent": naming.case(self.node.get("parent")),
             "name": naming.case(self.node.get("name"))}
 
+        self.name = "%(ns)s.%(name)s" % self._subst
         self._private = ""
+        self._generated = False
 
     def _parameters(self, c, gtkmethod):
         """Format the parameters for the node C by looking at the <parameters>
@@ -209,7 +211,8 @@ class GIRClass(object):
             assert(call[1] is not None)   # A function
 
             adaname = gtkmethod.ada_name() or "Gtk_%s" % name
-            doc = c.findtext(ndoc, "")
+
+            doc = self._getdoc(gtkmethod, c)
 
             initialize_params = [Parameter(
                 name="Self",
@@ -253,6 +256,12 @@ class GIRClass(object):
             section = self.pkg.section("Methods")
             for c in all:
                 self._handle_function(section, c, ismethod=True)
+
+    def _getdoc(self, gtkmethod, node):
+        doc = gtkmethod.get_doc() or node.findtext(ndoc, "")
+        if node.get("version"):
+            doc = [doc, "Since: gtk+ %s" % node.get("version")]
+        return doc
 
     def _handle_function(self, section, c, ismethod=False):
         cname = c.get(cidentifier)
@@ -302,9 +311,7 @@ class GIRClass(object):
             else:
                 call = execute[0]
 
-        doc = gtkmethod.get_doc() or c.findtext(ndoc, "")
-        if c.get("version"):
-            doc = [doc, "Since: gtk+ %s" % c.get("version")]
+        doc = self._getdoc(gtkmethod, c)
 
         adaname = gtkmethod.ada_name() or c.get("name").title()
         naming.map_cname(cname, "%s.%s" % (self.pkg.name, adaname))
@@ -490,14 +497,28 @@ See Glib.Properties for more information on properties)""")
                     naming.case(s["name"]), s["name"]))
 
     def generate(self, gir):
-        name = "%(ns)s.%(name)s" % self._subst
+        if self._generated:
+            return
 
-        self.gtkpkg = gtkada.get_pkg(name)
+        self._generated = True
+
+        self.gtkpkg = gtkada.get_pkg(self.name)
         extra = self.gtkpkg.extra()
         if extra:
             self.node.extend(extra)
 
-        self.pkg = gir.get_package(self.gtkpkg.into() or name)
+        into = self.gtkpkg.into()
+        if into:
+            # Make sure we have already generated the other package, so that
+            # its types go first. We need to guess the C class name from the
+            # Ada name "into".
+            # ??? "into" could be the name of a C class instead of Ada class
+            klass = gir.getClass(into.replace(".", "").replace("Gtk", ""))
+            klass.generate(gir)
+
+            into = klass.name  # from now on, we want the Ada name
+
+        self.pkg = gir.get_package(into or self.name)
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
 
         type_name = "%(ns)s_%(name)s" % self._subst

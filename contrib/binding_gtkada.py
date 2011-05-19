@@ -25,7 +25,7 @@ Where the package node is defined as follows:
            id="..."        <!-- mandatory, name of the C method -->
            ada="..."       <!-- optional, name of the Ada subprogram -->
            binding="false" <!-- optional, if false no binding generated -->
-           into="..."      <!-- optional, name of Ada package in which to
+           into="..."      <!-- optional, name of C class in which to
                                 add the bindings -->
            return_as_param="..." <!-- optional, relace return parameter with
                                 an out parameter with this name -->
@@ -38,7 +38,13 @@ Where the package node is defined as follows:
        />
 
        <extra>
-          ...              <!-- optional, same nodes as in the .gir file -->
+          <gir:method>...  <!-- optional, same nodes as in the .gir file -->
+          <with_spec pkg="..."/>  <!-- extra with clauses for spec -->
+          <with_body pkg="..."/>  <!-- extra with clauses for body -->
+          <method>         <!-- optional, pure Ada methods
+             <spec>...     <!-- optional, code to insert in spec -->
+             <body>...     <!-- optional, code to insert in body -->
+          </method>
        </extra>
     </package>
 """
