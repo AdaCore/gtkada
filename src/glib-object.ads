@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001-2008, AdaCore                --
+--                   Copyright (C) 2001-2011, AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -137,6 +137,9 @@ package Glib.Object is
    function Get_Object
      (Object : access GObject_Record'Class) return System.Address;
    --  Access the underlying C pointer.
+
+   function Get_Object_Or_Null (Object : GObject) return System.Address;
+   --  Same as above, but passing "null" is valid.
 
    procedure Set_Object
      (Object : access GObject_Record'Class;

@@ -240,6 +240,22 @@ arrow can be changed after creation by using Set.
    </package>
 
    <!-- #######################################################
+        ## Gtk.Viewport
+        #######################################################-->
+
+   <package id="Gtk.Viewport">
+      <doc group="Scrolling">
+This widget is an adapter: it can contain any child, and will make it
+scrollable. Its use is not necessary inside a Gtk_Scrolled_Window, which
+automatically uses a Gtk_Viewport when necessary.
+      </doc>
+      <method id="gtk_viewport_new">
+         <parameter name="hadjustment" default="null"/>
+         <parameter name="vadjustment" default="null"/>
+      </method>
+   </package>
+
+   <!-- #######################################################
         ## Gtk.Pixmap
         #######################################################-->
 
@@ -250,6 +266,11 @@ arrow can be changed after creation by using Set.
       </method>
 
       <extra>
+         <with_spec pkg="Gtk.Widget" />
+         <with_spec pkg="Gtk.Window" />
+         <with_spec pkg="Gtkada.Types" />
+         <with_body pkg="Interfaces.C.Strings" />
+         <with_body pkg="Gdk.Color" />
          <method>
             <spec>
 function Create_Pixmap
@@ -258,7 +279,7 @@ function Create_Pixmap
    --  Create a pixmap given a window and a filename   
             </spec>
             <body>
-   Dummy_Pixmap : constant chars_ptr_array :=
+   Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
      (New_String ("1 1 1 1"),
       New_String ("c None"),
       New_String (" "));

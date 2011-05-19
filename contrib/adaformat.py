@@ -269,11 +269,14 @@ class CType(object):
        to the function.
     """
 
-    def __init__(self, name, cname, pkg, isArray=False):
+    def __init__(self, name, cname, pkg, isArray=False, allow_access=True):
         """A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
            with clauses will be added if needed.
            'isArray' should be true for an array of the simple type 'name'.
+           'allow_access' should be True if the parameter can be represented
+           as 'access Type', rather than an explicit type, in the case of
+           GObject descendants.
         """
 
         def as_enumeration(name, cname):
@@ -292,13 +295,13 @@ class CType(object):
                 pkg.add_with(full[0:full.rfind(".")])
                 full = full[full.rfind(".") + 1:]
 
-            if userecord:
+            if userecord and allow_access:
                 self.param = "access %s_Record'Class" % full
             else:
                 self.param = full
 
             self.cparam = "System.Address"
-            self.convert = "Get_Object (%s)"
+            self.convert = "Get_Object_Or_Null (GObject (%s))"
             self.is_ptr = False
             self.returns = (
                 full, self.cparam,

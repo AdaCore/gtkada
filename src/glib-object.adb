@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2010, AdaCore                   --
+--                Copyright (C) 2001-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -111,6 +111,19 @@ package body Glib.Object is
    begin
       return Object.Ptr;
    end Get_Object;
+
+   ------------------------
+   -- Get_Object_Or_Null --
+   ------------------------
+
+   function Get_Object_Or_Null (Object : GObject) return System.Address is
+   begin
+      if Object = null then
+         return System.Null_Address;
+      else
+         return Object.Ptr;
+      end if;
+   end Get_Object_Or_Null;
 
    --------------
    -- Get_Type --

@@ -121,8 +121,9 @@ class GIRClass(object):
             name = gtkmethod.get_param(name).ada_name() or name  # override
 
             gtkparam = gtkmethod.get_param(name=name)
+            default = gtkparam.get_default()
 
-            type = self._get_type(p)
+            type = self._get_type(p, allow_access=not default)
 
             if type is None:
                 return None
@@ -140,7 +141,7 @@ class GIRClass(object):
                 Parameter(name=naming.case(name),
                           type=type,
                           mode=mode,
-                          default=gtkparam.get_default(),
+                          default=default,
                           doc=doc))
 
         return result
@@ -349,13 +350,18 @@ package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
    (Get_Type'Access, %(typename)s_Record);
 pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
 
-    def _get_type(self, node):
-        """Return the type of the node"""
+    def _get_type(self, node, allow_access=True):
+        """Return the type of the node
+           'allow_access' should be False if "access Type" parameters should
+           not be allowed, and an explicit type is needed instead.
+        """
         t = node.find(ntype)
         if t is not None:
             if t.get("name") == "none":
                 return None
-            return CType(name=t.get("name"), cname=t.get(ctype), pkg=self.pkg)
+            return CType(name=t.get("name"),
+                         cname=t.get(ctype), allow_access=allow_access,
+                         pkg=self.pkg)
 
         a = node.find(narray)
         if a is not None:
@@ -363,7 +369,8 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
             if a:
                 type = t.get(ctype)
                 name = t.get("name") or type  # Sometimes name is not set
-                return CType(name=name, cname=type, pkg=self.pkg, isArray=True)
+                return CType(name=name, cname=type, pkg=self.pkg, isArray=True,
+                             allow_access=allow_access)
 
         a = node.find(nvarargs)
         if a is not None:
@@ -401,7 +408,7 @@ See Glib.Properties for more information on properties)""")
 
                 if type == "UTF8_String":
                     type = "String"
-                elif type == "Gtk_Widget":
+                elif type in ("Gtk_Widget", "Gtk_Adjustment"):
                     type = "Object"
                 elif type == "Gdouble":
                     type = "Double"
@@ -518,7 +525,11 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         if extra:
             s = None
             for p in extra:
-                if p.tag == "method":
+                if p.tag == "with_spec":
+                    self.pkg.add_with(p.get("pkg"))
+                elif p.tag == "with_body":
+                    self.pkg.add_with(p.get("pkg"), specs=False)
+                elif p.tag == "method":
                     if not s:
                         s = self.pkg.section("GtkAda additions")
                     s.add_code(p.findtext("spec"))
