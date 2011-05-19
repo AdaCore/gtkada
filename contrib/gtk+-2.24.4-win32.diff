@@ -304,16 +304,16 @@
    sys_color_to_gtk_color (XP_THEME_CLASS_WINDOW, COLOR_WINDOWTEXT,
  			  &style->fg[GTK_STATE_PRELIGHT]);
  
--@@ -2590,7 +2590,9 @@ draw_tab_button (GtkStyle *style,
-- 		 const gchar *detail,
-- 		 gint x, gint y, gint width, gint height, gint gap_side)
-- {
--+#if 0
--   if (gap_side == GTK_POS_TOP || gap_side == GTK_POS_BOTTOM)
--+#endif
--     {
--       /* experimental tab-drawing code from mozilla */
--       RECT rect;
+@@ -2590,7 +2590,9 @@ draw_tab_button (GtkStyle *style,
+ 		 const gchar *detail,
+ 		 gint x, gint y, gint width, gint height, gint gap_side)
+ {
++#if 0
+   if (gap_side == GTK_POS_TOP || gap_side == GTK_POS_BOTTOM)
++#endif
+     {
+       /* experimental tab-drawing code from mozilla */
+       RECT rect;
 --- gtk/gtkselection.c.orig	2011-04-26 11:45:47.000000000 +0200
 +++ gtk/gtkselection.c	2011-04-26 12:05:34.000000000 +0200
 @@ -2280,7 +2280,8 @@ _gtk_selection_request (GtkWidget *widge
