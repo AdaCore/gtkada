@@ -342,6 +342,13 @@ class GIRClass(object):
                     returns=AdaType("Glib.GType"))
                 .import_c(n))
 
+            if not self.gtktype.is_subtype():
+                self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False);
+                section.add_code("""
+package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   (Get_Type'Access, %(typename)s_Record);
+pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
+
     def _get_type(self, node):
         """Return the type of the node"""
         t = node.find(ntype)
@@ -471,7 +478,7 @@ See Glib.Properties for more information on properties)""")
                     section.add_comment("  %s""" % s["doc"])
 
             for s in adasignals:
-                section.add(
+                section.add_code(
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
                     naming.case(s["name"]), s["name"]))
 
@@ -488,19 +495,18 @@ See Glib.Properties for more information on properties)""")
 
         type_name = "%(ns)s_%(name)s" % self._subst
         self._subst["typename"] = type_name
-        gtktype = self.gtkpkg.get_type(type_name)
+        self.gtktype = self.gtkpkg.get_type(type_name)
 
         section = self.pkg.section("")
 
-        if gtktype.is_subtype():
-            section.add(
+        if self.gtktype.is_subtype():
+            section.add_code(
             """
 subtype %(typename)s_Record is %(ns)s_%(parent)s_Record;
 subtype %(typename)s is %(ns)s_%(parent)s;""" % self._subst);
 
         else:
-            section.add(
-            """
+            section.add_code("""
 type %(typename)s_Record is new %(ns)s_%(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)

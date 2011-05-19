@@ -786,18 +786,25 @@ class Section(object):
         self.name = name
         self.comment = ""
         self.subprograms = []  # All subprograms
-        self.code = ""  # hard-coded code
+        self.spec_code = ""  # hard-coded code
+        self.body_code = ""  # hard-coded code
 
     def add_comment(self, comment):
         self.comment += "   -- " + fill_text(comment, "   --  ", 79) + "\n"
 
     def add(self, *args):
-        """Add one or more objects to the section (subprogram, types,...)"""
+        """Add one or more objects to the section (subprogram, code,...)"""
         for a in args:
             if isinstance(a, Subprogram):
                 self.subprograms.append(a)
             elif isinstance(a, str):
-                self.code += a + "\n"
+                self.spec_code += a + "\n"
+
+    def add_code(self, code, specs=True):
+        if specs:
+            self.spec_code += code + "\n"
+        else:
+            self.body_code += code + "\n"
 
     def _group_subprograms(self):
         """Returns a list of list of subprograms. In each nested list, the
@@ -833,7 +840,7 @@ class Section(object):
 
         result = []
 
-        if self.subprograms or self.code:
+        if self.subprograms or self.spec_code:
             result.append("") # A separator with previous section
 
             if self.name:
@@ -843,8 +850,8 @@ class Section(object):
             else:
                 result.append("")
 
-            if self.code:
-                result.append(indent_code(self.code))
+            if self.spec_code:
+                result.append(indent_code(self.spec_code))
 
             for group in self._group_subprograms():
                 for s in group:
@@ -857,6 +864,10 @@ class Section(object):
     def body(self):
         result = []
 
+        if self.body_code:
+            result.append(indent_code(self.body_code))
+
+        self.subprograms.sort(lambda x, y: cmp(x.name, y.name))
         for s in self.subprograms:
             b = s.body()
             if b:
