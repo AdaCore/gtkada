@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2000-2006 AdaCore               --
+--                     Copyright (C) 2000-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -166,7 +166,7 @@ package body Create_Scroll_Test is
    function Configure
      (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record'Class;
       Event   : Gdk.Event.Gdk_Event;
-      Adj     : in Adjustment.Gtk_Adjustment) return Gint
+      Adj     : Adjustment.Gtk_Adjustment) return Gint
    is
       pragma Warnings (Off, Event);
    begin
@@ -182,8 +182,8 @@ package body Create_Scroll_Test is
 
    function Expose
      (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record'Class;
-      Event   : in Gdk.Event.Gdk_Event;
-      Adj     : in Adjustment.Gtk_Adjustment)
+      Event   : Gdk.Event.Gdk_Event;
+      Adj     : Adjustment.Gtk_Adjustment)
      return Gint
    is
       Expose_Event : constant Gdk.Event.Gdk_Event_Expose :=
@@ -195,20 +195,20 @@ package body Create_Scroll_Test is
       Area := Gdk.Event.Get_Area (Expose_Event);
 
       Imin := Area.X / 10;
-      Imax := (Area.X + Gint (Area.Width) + 9) / 10;
+      Imax := (Area.X + Area.Width + 9) / 10;
 
       Jmin := (Gint (Adjustment.Get_Value (Adj)) + Area.Y) / 10;
       Jmax := (Gint (Adjustment.Get_Value (Adj)) + Area.Y
-               + Gint (Area.Height) + 9) / 10;
+               + Area.Height + 9) / 10;
 
       Gdk.Window.Clear_Area (Window => Get_Window (Widget),
                              X => Area.X, Y => Area.Y,
-                             Width => Gint (Area.Width),
-                             Height => Gint (Area.Height));
+                             Width => Area.Width,
+                             Height => Area.Height);
 
       for I in Imin .. Imax loop
          for J in Jmin .. Jmax loop
-            if ((I + J) mod 2 /= 0) then
+            if (I + J) mod 2 /= 0 then
                Gdk.Drawable.Draw_Rectangle
                  (Drawable => Get_Window (Widget),
                   GC => Gtk.Style.Get_Black_GC (Sty),
@@ -280,9 +280,3 @@ package body Create_Scroll_Test is
    end Run;
 
 end Create_Scroll_Test;
-
-
-
-
-
-

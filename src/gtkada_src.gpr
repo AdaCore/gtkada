@@ -3,7 +3,11 @@ with "gtkextra/gtkextra";
 
 project GtkAda_Src is
    for Languages use ("C", "Ada");
-   for Source_Dirs use (".");
+
+   --  Put "generated" first, so that files are preferably taken from there
+   --  even if they still exist in "."
+   for Source_Dirs use ("generated", ".");
+
    for Object_Dir use "lib-obj";
 
    package Builder  renames Shared.Builder;

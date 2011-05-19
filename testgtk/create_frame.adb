@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2001-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -100,14 +101,14 @@ package body Create_Frame is
 
       --  Fifth Frame
       Gtk_New (Frame2, "Title");
-      Set_Label_Align (Frame2, Xalign => 0.2);
+      Set_Label_Align (Frame2, Xalign => 0.2, Yalign => 0.0);
       Attach_Defaults (Table, Frame2, 0, 1, 2, 3);
       Gtk_New (Label, "Label_Align: Xalign = 0.2");
       Add (Frame2, Label);
 
       --  Sixth Frame
       Gtk_New (Frame2, "Title");
-      Set_Label_Align (Frame2, Xalign => 0.8);
+      Set_Label_Align (Frame2, Xalign => 0.8, Yalign => 0.0);
       Attach_Defaults (Table, Frame2, 1, 2, 2, 3);
       Gtk_New (Label, "Label_Align: Xalign = 0.8");
       Add (Frame2, Label);
@@ -116,4 +117,3 @@ package body Create_Frame is
    end Run;
 
 end Create_Frame;
-

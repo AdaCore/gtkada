@@ -32,9 +32,14 @@ Where the package node is defined as follows:
        >
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
+            ada="..."      <!-- optional, name to use in Ada -->
             default="..."  <!-- optional, the default value for the param-->
          />
        />
+
+       <extra>
+          ...              <!-- optional, same nodes as in the .gir file -->
+       </extra>
     </package>
 """
 
@@ -116,6 +121,13 @@ class GtkAdaPackage(object):
             return self.node.get("into", None)
         return None
 
+    def extra(self):
+        if self.node is not None:
+            extra = self.node.find("extra", None)
+            if extra:
+                return extra.getchildren()
+        return None
+
 
 class GtkAdaMethod(object):
     def __init__(self, node):
@@ -163,6 +175,11 @@ class GtkAdaParameter(object):
     def get_default(self):
         if self.node is not None:
             return self.node.get("default", None)
+        return None
+
+    def ada_name(self):
+        if self.node is not None:
+            return self.node.get("ada", None)
         return None
 
 class GtkAdaType(object):

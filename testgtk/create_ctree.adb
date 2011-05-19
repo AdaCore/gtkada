@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                Copyright (C) 2003-2009, AdaCore                   --
+--                Copyright (C) 2003-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -157,8 +157,8 @@ package body Create_Ctree is
 
    procedure Count_Items
      (Ctree      : access Gtk.Ctree.Gtk_Ctree_Record'Class;
-      Node       : in     Gtk.Ctree.Gtk_Ctree_Node;
-      Dummy_Data : in     Ctree_Style_Row_Data.Data_Type_Access)
+      Node       :        Gtk.Ctree.Gtk_Ctree_Node;
+      Dummy_Data :        Ctree_Style_Row_Data.Data_Type_Access)
    is
       pragma Warnings (Off, Ctree);
       pragma Warnings (Off, Dummy_Data);
@@ -176,7 +176,7 @@ package body Create_Ctree is
 
    procedure Change_Indent
      (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Ctree : in     Gtk.Ctree.Gtk_Ctree)
+      Ctree :        Gtk.Ctree.Gtk_Ctree)
    is
    begin
       Gtk.Ctree.Set_Indent
@@ -189,7 +189,7 @@ package body Create_Ctree is
 
    procedure Change_Spacing
      (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Ctree : in     Gtk.Ctree.Gtk_Ctree)
+      Ctree :        Gtk.Ctree.Gtk_Ctree)
    is
    begin
       Gtk.Ctree.Set_Spacing
@@ -202,7 +202,7 @@ package body Create_Ctree is
 
    procedure Change_Row_Height
      (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Ctree : in     Gtk.Ctree.Gtk_Ctree)
+      Ctree :        Gtk.Ctree.Gtk_Ctree)
    is
    begin
       Gtk.Ctree.Set_Row_Height
@@ -379,8 +379,8 @@ package body Create_Ctree is
 
    procedure Set_Background
      (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class;
-      Node  : in     Gtk.Ctree.Gtk_Ctree_Node;
-      Dummy : in     Ctree_Style_Row_Data.Data_Type_Access)
+      Node  :        Gtk.Ctree.Gtk_Ctree_Node;
+      Dummy :        Ctree_Style_Row_Data.Data_Type_Access)
    is
       pragma Warnings (Off, Dummy);
       Style : Gtk.Style.Gtk_Style;
@@ -502,12 +502,12 @@ package body Create_Ctree is
    -- Build_Recursive --
    ---------------------
 
-   procedure Build_Recursive (Ctree     : in Gtk.Ctree.Gtk_Ctree;
-                              Cur_Depth : in     Gint;
-                              Depth     : in     Gint;
-                              Num_Books : in     Gint;
-                              Num_Pages : in     Gint;
-                              Parent    : in     Gtk.Ctree.Gtk_Ctree_Node) is
+   procedure Build_Recursive (Ctree     : Gtk.Ctree.Gtk_Ctree;
+                              Cur_Depth :     Gint;
+                              Depth     :     Gint;
+                              Num_Books :     Gint;
+                              Num_Pages :     Gint;
+                              Parent    :     Gtk.Ctree.Gtk_Ctree_Node) is
 
       Text : Chars_Ptr_Array (Title'Range);
       Gen : Gint_Random.Generator;
@@ -619,7 +619,7 @@ package body Create_Ctree is
    -- Rebuild_Tree --
    ------------------
 
-   procedure Rebuild_Tree (Ctree : in Gtk.Ctree.Gtk_Ctree) is
+   procedure Rebuild_Tree (Ctree : Gtk.Ctree.Gtk_Ctree) is
       B, D, P, N : Gint;
       Text : Chars_Ptr_Array (Title'Range);
       Parent : Gtk.Ctree.Gtk_Ctree_Node;
@@ -687,7 +687,7 @@ package body Create_Ctree is
    ------------------
 
    procedure Rebuild_Tree (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                           Ctree  : in     Gtk.Ctree.Gtk_Ctree)
+                           Ctree  :        Gtk.Ctree.Gtk_Ctree)
    is
       pragma Warnings (Off, Widget);
    begin

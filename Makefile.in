@@ -34,6 +34,23 @@ install:
 	@echo '--  update your PATH to include gtkada-config in it.            --'
 	@echo '------------------------------------------------------------------'
 
+
+GIR_FILES=Gtk-2.0.gir
+GENERATED= \
+	gtk-button.ads gtk-button.adb \
+	gtk-frame.ads  gtk-frame.adb  \
+	gtk-box.ads    gtk-box.adb    \
+	gtk-label.ads  gtk-label.adb
+
+# Generate the binding automatically, through a python script
+generate: ${GIR_FILES}
+	${RM} src/generated/*.ad?
+	cd contrib/generated; mv $(foreach f,${GENERATED},${f}) ../../src/generated/
+
+${GIR_FILES}: force
+	cd contrib; python binding.py $@ binding.xml
+	cd contrib/generated; gnatchop -q -w tmp.ada
+
 clean-generic:
 	-${RM} core
 	-${RM} .\#*
@@ -60,3 +77,5 @@ maintainer-clean: mostlyclean-generic
 	-${RM} configure
 	-$(MAKE) -C $(src_dir) maintainer-clean
 	-$(MAKE) -C $(testgtk_dir) maintainer-clean
+
+force:

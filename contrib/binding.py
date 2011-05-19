@@ -117,6 +117,8 @@ class GIRClass(object):
 
         for p in params.findall(nparam):
             name = p.get("name")
+            name = gtkmethod.get_param(name).ada_name() or name  # override
+
             gtkparam = gtkmethod.get_param(name=name)
 
             type = self._get_type(p)
@@ -192,7 +194,7 @@ class GIRClass(object):
                 self._subst["params"] = ""
                 self._subst["internal_params"] = ""
 
-            returns = "System.Address"
+            returns = AdaType("System.Address")
             local_vars = []
             code = []
             plist = self._c_plist(params, returns, local_vars, code)
@@ -200,7 +202,9 @@ class GIRClass(object):
                 name="Internal",
                 plist=plist,
                 returns=returns).import_c(cname)
-            call = internal.call(add_return=False)  # A VariableCall
+
+            call = internal.call()
+            assert(call[1] is not None)   # A function
 
             adaname = gtkmethod.ada_name() or "Gtk_%s" % name
             doc = c.findtext(ndoc, "")
@@ -212,12 +216,13 @@ class GIRClass(object):
             initialize = Subprogram(
                 name=adaname.replace("Gtk_New", "Initialize"),
                 plist=initialize_params,
-                local_vars=local_vars + call.tmpvars,
+                local_vars=local_vars + call[2],
                 doc=doc,
-                code="%sSet_Object (Self, %s);%s" %
-                    (call.precall, call.call, call.postcall)
+                code="%sSet_Object (Self, %s)" % (call[0], call[1]),
                 ).add_nested(internal)
+
             call = initialize.call(in_pkg=self.pkg)
+            assert(call[1] is None)  # This is a procedure
 
             naming.map_cname(cname, "%s.%s" % (self.pkg.name, adaname))
             gtk_new = Subprogram(
@@ -226,31 +231,28 @@ class GIRClass(object):
                     name="Self",
                     type="%(ns)s_%(name)s" % self._subst,
                     mode="out")] + params,
-                local_vars=call.tmpvars,
+                local_vars=call[2],
                 code="Self := new %(ns)s_%(name)s_Record;" % self._subst
-                   + call.precall + call.call + call.postcall,
+                   + call[0],
                 doc=doc)
 
             section.add(gtk_new, initialize)
 
     def _functions(self):
-        section = self.pkg.section("Functions")
-        for c in self.node.findall(nfunction):
-            self._handle_function(section, c)
+        all = self.node.findall(nfunction)
+        if all is not None:
+            section = self.pkg.section("Functions")
+            for c in all:
+                self._handle_function(section, c)
 
     def _methods(self):
-        extra_params = [Parameter(
-            name="Self",
-            type=AdaType(
-                adatype="access %(ns)s_%(name)s_Record" % self._subst,
-                ctype="System.Address",
-                convert="Get_Object (%s)"))]
+        all = self.node.findall(nmethod)
+        if all is not None:
+            section = self.pkg.section("Methods")
+            for c in all:
+                self._handle_function(section, c, ismethod=True)
 
-        section = self.pkg.section("Methods")
-        for c in self.node.findall(nmethod):
-            self._handle_function(section, c, extra_params)
-
-    def _handle_function(self, section, c, extra_params=[]):
+    def _handle_function(self, section, c, ismethod=False):
         cname = c.get(cidentifier)
 
         gtkmethod = self.gtkpkg.get_method(cname=cname)
@@ -263,8 +265,15 @@ class GIRClass(object):
             print "No binding for %s: varargs" % cname
             return
 
-        returns = self._get_type(c.find(nreturn)).as_return()
-        params = extra_params + params
+        if ismethod:
+            params.insert(0 , Parameter(
+                name=gtkmethod.get_param("self").ada_name() or "Self",
+                type=AdaType(
+                    adatype="access %(ns)s_%(name)s_Record" % self._subst,
+                    ctype="System.Address",
+                    convert="Get_Object (%s)")))
+
+        returns = self._get_type(c.find(nreturn))
 
         local_vars = []
         call = []
@@ -275,17 +284,21 @@ class GIRClass(object):
             plist=plist).import_c(cname)
 
         ret = gtkmethod.return_as_param()
+        execute = internal.call(extra_postcall="".join(call))
 
         if ret is not None:
+            # Ada return value goes into an "out" parameter
             params += [Parameter(name=ret, type=returns, mode="out")]
             returns = None
-            code = internal.call(add_return=False)  # A VariableCall
-            call = ["%s%s := %s;%s" % (
-                code.precall, ret, code.call, code.postcall)] + call
+
+            assert(execute[1] is not None)  # We must have a C function
+            call = "%s%s := %s;" % (execute[0], ret, execute[1])
+
         else:
-            code = internal.call()  # A VariableCall
-            call = ["%s%s%s" % (code.precall, code.call, code.postcall)] \
-                + call
+            if execute[1]: # A function, with a standard "return"
+                call = "%sreturn %s;" % (execute[0], execute[1])
+            else:
+                call = execute[0]
 
         doc = gtkmethod.get_doc() or c.findtext(ndoc, "")
         if c.get("version"):
@@ -299,18 +312,20 @@ class GIRClass(object):
                 plist=params,
                 returns=returns,
                 doc=doc,
-                local_vars=local_vars + code.tmpvars,
-                code="".join(call)).add_nested(internal)
+                local_vars=local_vars + execute[2],
+                code=call).add_nested(internal)
 
         depr = c.get("deprecated")
         if depr is not None:
             subp.mark_deprecated(
-                "\nDeprecated since %s, use %s"
+                "\nDeprecated since %s, %s"
                 % (c.get("deprecated-version"), depr))
 
         section.add(subp)
 
     def _method_get_type(self):
+        """Generate the Get_Type subprogram"""
+
         n = self.node.get(ggettype)
         if n is not None:
             section = self.pkg.section("Constructors")
@@ -323,13 +338,15 @@ class GIRClass(object):
             section.add(
                 Subprogram(
                     name=gtkmethod.ada_name() or "Get_Type",
-                    returns="Glib.GType")
+                    returns=AdaType("Glib.GType"))
                 .import_c(n))
 
     def _get_type(self, node):
         """Return the type of the node"""
         t = node.find(ntype)
         if t is not None:
+            if t.get("name") == "none":
+                return None
             return CType(name=t.get("name"), cname=t.get(ctype), pkg=self.pkg)
 
         a = node.find(narray)
@@ -385,8 +402,8 @@ See Glib.Properties for more information on properties)""")
                     self.pkg.add_with("Gtk.Enums")
                     pkg = "Gtk.Enums"
                 elif type.startswith("Pango"):
-                    print "Unsupported property type for %s: %s" % (
-                        p.get("name"), type)
+                    print "Unsupported property type for %s.%s: %s" % (
+                        self.pkg.name, p.get("name"), type)
                     continue
 
                 adaprops.append({
@@ -433,7 +450,7 @@ See Glib.Properties for more information on properties)""")
                           mode="access",
                           doc="")],
                     code="null",
-                    returns=s.find(nreturn).find(ntype).get("name"))
+                    returns=AdaType(s.find(nreturn).find(ntype).get("name")))
                 adasignals.append({
                     "name": s.get("name"),
                     "profile": fill_text(sub.spec(), "   --      ", 79, 69),
@@ -457,6 +474,11 @@ See Glib.Properties for more information on properties)""")
         name = "%(ns)s.%(name)s" % self._subst
 
         self.gtkpkg = gtkada.get_pkg(name)
+        extra = self.gtkpkg.extra()
+        if extra:
+            self.node.extend(extra)
+            for n in self.node:
+                print n
 
         self.pkg = gir.get_package(self.gtkpkg.into() or name)
         self.pkg.add_with("%(ns)s.%(parent)s" % self._subst)
@@ -531,7 +553,7 @@ if False:
     klass.generate(gir)
 else:
     for name, klass in gir.all_classes():
-        print "Generating code for %s" % name
+        # print "Generating code for %s" % name
         klass.generate(gir)
 
 gir.generate(out)

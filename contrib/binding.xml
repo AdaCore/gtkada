@@ -2,7 +2,9 @@
 
 <!--  This file overrides parts of the .gir files. -->
 
-<GIR>
+<GIR xmlns:gir="http://www.gtk.org/introspection/core/1.0"
+     xmlns:c="http://www.gtk.org/introspection/c/1.0">
+
    <!-- ###################################################
         Gtk.Button
         ###################################################-->
@@ -170,15 +172,32 @@ See the testgtk example in the GtkAda distribution to see concrete examples
 on how all the parameters for the boxes work.
       </doc>
       <method id="gtk_box_pack_start">
+         <parameter name="self" ada="In_Box"/>
          <parameter name="expand" default="True"/>
          <parameter name="fill" default="True"/>
          <parameter name="padding" default="0"/>
       </method>
       <method id="gtk_box_pack_end">
+         <parameter name="self" ada="In_Box"/>
          <parameter name="expand" default="True"/>
          <parameter name="fill" default="True"/>
          <parameter name="padding" default="0"/>
       </method>
+
+      <extra>
+         <gir:method c:identifier="ada_box_get_child" name="Get_Child"
+                     version="GtkAda 1.0">
+            <gir:doc>Return the Num-th child of the box, or null if there is no such child</gir:doc>
+            <gir:return-value>
+               <gir:type name="GtkWidget" c:type="GtkWidget*"/>
+            </gir:return-value>
+            <gir:parameters>
+               <gir:parameter name="num">
+                  <gir:type name="Gint" c:type="gint"/>
+               </gir:parameter>
+            </gir:parameters>
+         </gir:method>
+      </extra>
    </package>
 
    <package id="Gtk.Vbox" into="Gtk.Box">

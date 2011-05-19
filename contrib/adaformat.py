@@ -64,7 +64,7 @@ class AdaNaming(object):
         self.cname_to_adaname = dict() # Maps c methods to Ada subprograms
         self.exceptions = {
             "Entry": "GEntry",
-            "Type":  "Typ",
+            "Type":  "The_Type",
             "Range": "GRange",
             "Delay": "The_Delay",
             "Select": "Gtk_Select",
@@ -207,8 +207,32 @@ def indent_code(code, indent=3):
 VariableCall = namedtuple('VariableCall',
                           ['call', 'precall', 'postcall', 'tmpvars'])
 
-
 class CType(object):
+    """Describes the types in the various cases where they can be used.
+
+       A type applies either to an Ada subprogram written in Ada, or to an
+       Ada subprogram implemented via a pragma Import. The latter case is
+       abbreviated to a "c" subprogram below.
+
+       For returned values, various pieces of information are needed:
+              (adatype, ctype, converter, tmpvars=[])
+       They are used as:
+              function ... (...) return adatype is
+                  function ... (...) return ctype;
+                  pragma Import (C, ..., "...");
+                  Tmp : ctype;
+                  tmpvars;
+              begin
+                  ...;
+                  Tmp := ... (...);
+                  ...;
+                  return <converter % Tmp>
+              end;
+       Converter will contain a single %s which will be replaced by the
+       name of the temporary variable that holds the result of the call
+       to the function.
+    """
+
     def __init__(self, name, cname, pkg, isArray=False):
         """A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
@@ -232,18 +256,30 @@ class CType(object):
 
         if name == "gboolean":
             self.param = "Boolean"
+            self.cparam = "Gboolean"
+            self.convert = "Boolean'Pos (%s)"
+            self.returns = ("Boolean", "Gboolean", "Boolean'Val (%s)", [])
+            self.postconvert = "Boolean'Val (%s)"
+
         elif name == "utf8":
             self.param = "UTF8_String"
             self.cparam = "Interfaces.C.Strings.chars_ptr"
             self.convert = "New_String (%s)"
             self.cleanup = "Free (%s);"
             pkg.add_with("Interfaces.C.Strings", specs=False)
+            self.returns = (
+                "UTF8_String", "Interfaces.C.Strings.chars_ptr",
+                "Value (%s)", [])
+
         elif name == "gfloat":
             self.param = "Float"
+
         elif name in ("gdouble", "gint", "guint"):
             self.param = name.title()
+
         elif name == "none":
             self.param = None
+
         else:
             # A type of the form "Gdk.Window" needs to be converted
             # ??? Should in fact look in the .gir file for the name
@@ -258,6 +294,8 @@ class CType(object):
                     self.cparam = "Integer"
                     self.convert = "%s'Pos (%%s)" % self.param
                     self.postconvert = "%s'Val (%%s)" % self.param
+                    self.returns = (
+                        self.param, self.cparam, self.postconvert, [])
 
                 elif self.is_ptr \
                    and cname.endswith("**") \
@@ -265,35 +303,57 @@ class CType(object):
 
                     pkg.add_with("Gtk.%s" % naming.case(cname[3:-2]))
                     self.param = "Gtk_%s" % cname[3:-2]
-                    self.returns = "Gtk_%s" % cname[3:-2]
                     self.cparam = "System.Address"
                     self.convert = "Get_Object (%s)"  # ??? Incorrect
                     self.is_ptr = True  # Will be a "out" parameter
 
+                    self.returns = (
+                        self.param, self.cparam,
+                        "%s (Get_User_Data (%%s, Stub))" % self.param,
+                        [Local_Var("Stub", AdaType("%s_Record" % self.param))])
+
                 elif self.is_ptr \
                    and cname.startswith("Gtk"):
 
+                    record = "Gtk_%s" % cname[3:-1]
+
                     pkg.add_with("Gtk.%s" % naming.case(cname[3:-1]))
-                    self.param = "access Gtk_%s_Record'Class" % cname[3:-1]
-                    self.returns = "Gtk_%s" % cname[3:-1]
+                    self.param = "access %s_Record'Class" % record
                     self.cparam = "System.Address"
                     self.convert = "Get_Object (%s)"
                     self.is_ptr = False
 
+                    self.returns = (
+                        record, self.cparam,
+                        "%s (Get_User_Data (%%s, Stub))" % record,
+                        [Local_Var("Stub", AdaType("%s_Record" % record))])
+
                 else:
                     self.param = name
+
+            elif name == "Pango.Layout":
+                n = naming.full_type(cname=name)
+                pkg.add_with(n[0:n.rfind(".")])
+                self.param = n
+
+                self.returns = (
+                    n, "System.Address",
+                    "%s (Get_User_Data (%%s, Stub))" % n,
+                    [Local_Var("Stub", AdaType("%s_Record" % n))])
+
             else:
                 n = naming.full_type(cname=name)
                 pkg.add_with(n[0:n.rfind(".")])
                 self.param = n
 
-        if self.returns is None:
-            self.returns = self.param
-
         if self.cparam is None:
             self.cparam = self.param
 
-    def as_return(self):
+        if self.returns is None:
+            self.returns = (self.param, self.cparam, "%s", [])
+
+    def as_return(self, lang="ada"):
+        """See CType documentation for a description of the returned tuple"""
         return self.returns
 
     def as_ada_param(self):
@@ -308,17 +368,20 @@ class CType(object):
         """
         return self.cparam
 
-    def as_call(self, name, lang="ada", mode="in"):
+    def as_call(self, name, wrapper="%s", lang="ada", mode="in"):
         """'name' represents a parameter of type 'self'.
+           'wrapper' is used in the call itself, and %s is replaced by the
+              name of the variable (or the temporary variable).
            Returns an instance of VariableCall.
         """
         if lang == "ada":
-            return VariableCall(call=name, precall='', postcall='', tmpvars=[])
+            return VariableCall(
+                call=wrapper % name, precall='', postcall='', tmpvars=[])
 
         elif self.cleanup:
             tmp = "Tmp_%s" % name
             return VariableCall(
-                call=tmp,
+                call=wrapper % tmp,
                 precall='%s := %s;' % (tmp, self.convert % name),
                 postcall=self.cleanup % tmp,
                 tmpvars=[Local_Var(name=tmp, type=self.cparam)])
@@ -328,28 +391,29 @@ class CType(object):
             # variable: Internal(Enum'Pos (Param)) is invalid
             tmp = "Tmp_%s" % name
             return VariableCall(
-                call=tmp,
+                call=wrapper % tmp,
                 precall="",
                 postcall='%s := %s;' % (name, self.postconvert % tmp),
                 tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
         else:
             return VariableCall(
-                call=self.convert % name, precall='', postcall='', tmpvars=[])
+                call=wrapper % (self.convert % name),
+                precall='', postcall='', tmpvars=[])
 
 
 class AdaType(CType):
     """Similar to a CType, but created directly from Ada types"""
 
-    def __init__(self, adatype, ctype, convert="%s"):
+    def __init__(self, adatype, ctype="", convert="%s"):
         """The 'adatype' type is represented as 'ctype' for subprograms
            that import C functions. The parameters of that type are converted
            from Ada to C by using 'convert'. 'convert' must use '%s' once
            to indicate where the name of the parameter should go
         """
         self.param   = adatype
-        self.returns = adatype
-        self.cparam  = ctype
+        self.cparam  = ctype or adatype
+        self.returns = (self.param, self.cparam, "%s", [])
         self.convert = convert
         self.postconvert = "%s"
         self.cleanup = None
@@ -360,11 +424,14 @@ class Local_Var(object):
     __slots__ = ["name", "type", "default", "aliased"]
 
     def __init__(self, name, type, default="", aliased=False):
-        assert(isinstance(type, str)
-               or isinstance(type, CType))
-
         self.name = name
-        self.type = type
+
+        if isinstance(type, str):
+            self.type = AdaType(type)
+        else:
+            assert(isinstance(type, CType))
+            self.type = type
+
         self.default = default
         self.aliased = aliased
 
@@ -397,13 +464,14 @@ class Local_Var(object):
            in the given language.
            Returns an instance of VariableCall
         """
+        wrapper = "%s"
         n = self.name
         if mode == "access_c":
             mode = "access"
-            n = "%s'Access" % n
+            wrapper="%s'Access"
 
         if isinstance(self.type, CType):
-            return self.type.as_call(n, lang=lang, mode=mode)
+            return self.type.as_call(n, lang=lang, mode=mode, wrapper=wrapper)
         else:
             return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
@@ -448,7 +516,7 @@ class Subprogram(object):
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
         """
-        assert(returns is None or isinstance(returns, str))
+        assert(returns is None or isinstance(returns, CType))
         self.name = naming.case(name)
         self.plist = plist
         self.returns = returns
@@ -489,9 +557,15 @@ class Subprogram(object):
     def _profile(self, indent="   ", lang="ada"):
         """Compute the profile for the subprogram"""
 
-        if self.returns:
+        returns = self.returns and self.returns.as_return(lang)
+
+        if returns:
             prefix = indent + "function %s" % self.name
-            suffix = " return %s" % self.returns
+
+            if self._import:
+                suffix = " return %s" % returns[1]
+            else:
+                suffix = " return %s" % returns[0]
         else:
             prefix = indent + "procedure %s" % self.name
             suffix = ""
@@ -607,7 +681,7 @@ class Subprogram(object):
         result += indent_code(self.code, indent=6)
         return result + indent + "end %s;\n" % self.name
 
-    def call(self, in_pkg="", add_return=True):
+    def call(self, in_pkg="", extra_postcall=""):
         """A call to 'self'.
            The parameters that are passed to self are assumed to have the
            same name as in self's declaration. When 'self' is implemented
@@ -615,10 +689,20 @@ class Subprogram(object):
            'in_pkg' is used to fully qualify the name of the subprogram, to
            avoid ambiguities. This is optional. This can be either a string
            or an instance of Package.
-           'add_returns' is whether we should prefix the call with "return"
-           when appropriate.
-           Returns value is an instance of VariableCall.
 
+           Returned value is a tuple:
+               ("code", "variable_for_return", tmpvars=[])
+           where "code" is the code to execute for the call, including
+           creation of temporary variables, and "variable_for_return" is
+           either None, or the code to get the result of the subprogram.
+           So a call is:
+               declare
+                  tmp_vars;
+               begin
+                  code;
+                  extra_postcall;
+                  return variable_for_return;  --  Omitted for procedures
+               end;
         """
 
         if self._import:
@@ -629,7 +713,7 @@ class Subprogram(object):
         tmpvars  = []
         precall  = ""
         params   = []
-        postcall = ""
+        postcall = extra_postcall
 
         for arg in self.plist:
             c = arg.as_call(lang)   # An instance of VariableCall
@@ -649,17 +733,35 @@ class Subprogram(object):
             else:
                 call = "%s.%s" % (in_pkg, call)
 
-        if add_return:
-            if self.returns is not None:
-                call = "return %s;" % call
+        returns = self.returns and self.returns.as_return(lang)
+        if returns is not None:
+            if lang == "c":
+                tmpvars.extend(returns[3])
+                if postcall:
+                    tmpvars.append(Local_Var("Tmp_Return", returns[1]))
+                    call = "Tmp_Return := %s" % call
+                    return ("%s%s;%s" % (precall, call, postcall),
+                            returns[2] % "Tmp_Return",
+                            tmpvars)
+                else:
+                    # No need for a temporary variable
+                    return (precall, returns[2] % call, tmpvars)
             else:
-                call = "%s;" % call
-
-        return VariableCall(
-            call=call,
-            precall=precall,
-            postcall=postcall,
-            tmpvars=tmpvars)
+                if postcall:
+                    # We need to use a temporary variable, since there are
+                    # cleanups to perform. This will not work if the function
+                    # returns an unconstrained array though.
+                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
+                    call = "Tmp_Return := %s" % call
+                    return ("%s%s;%s" % (precall, call, postcall),
+                            "Tmp_Return",
+                            tmpvars)
+                else:
+                    # No need for a temporary variable
+                    return ("%s" % precall, call, tmpvars)
+        else:
+            # A procedure
+            return ("%s%s;%s" % (precall, call, postcall), None, tmpvars)
 
 
 class Section(object):
@@ -824,6 +926,9 @@ class Package(object):
                 out.write("\n")
             out.write("\n")
 
+        out.write("pragma Style_Checks (Off);\n")
+        out.write('pragma Warnings (Off, "*is already use-visible*");\n')
+
         out.write(self._output_withs(self.spec_withs))
         out.write("package %s is" % self.name)
 
@@ -842,6 +947,9 @@ class Package(object):
 
         if Package.copyright_header:
             out.write(Package.copyright_header + "\n")
+
+        out.write("pragma Style_Checks (Off);\n")
+        out.write('pragma Warnings (Off, "*is already use-visible*");\n')
 
         out.write(self._output_withs(self.body_withs))
         out.write("package body %s is\n" % self.name)
