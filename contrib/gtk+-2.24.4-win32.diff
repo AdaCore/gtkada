@@ -1,3 +1,9 @@
+2011-05-19  Jerome Lambourg <lambourg@adacore.com>
+
+        * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
+        the display of the GtkComboBox and improve the display of menus.
+        For K510-021
+
 2011-05-16  Jerome Lambourg <lambourg@adacore.com>
 
         * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
@@ -903,3 +909,683 @@
     XP_THEME_ELEMENT_TAB_PANE,
     XP_THEME_ELEMENT_SCROLLBAR_H,
     XP_THEME_ELEMENT_SCROLLBAR_V,
+*** modules/engines/ms-windows/msw_style.c.old	2011-05-19 14:47:59.078125000 +0200
+--- modules/engines/ms-windows/msw_style.c	2011-05-19 15:12:10.828125000 +0200
+***************
+*** 41,47 ****
+  #include <string.h>
+  #include <stdio.h>
+  
+! #include "gtk/gtk.h"
+  #include "gtk/gtk.h"
+  
+  #ifdef BUILDING_STANDALONE
+--- 41,47 ----
+  #include <string.h>
+  #include <stdio.h>
+  
+! #include "gdk/gdk.h"
+  #include "gtk/gtk.h"
+  
+  #ifdef BUILDING_STANDALONE
+***************
+*** 542,548 ****
+    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_HIGHLIGHT, &bg_prelight);
+    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_HIGHLIGHT,
+  			  &base_prelight);
+!   sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_HIGHLIGHTTEXT,
+  			  &text_prelight);
+  
+    sys_color_to_gtk_color (XP_THEME_CLASS_MENU, COLOR_MENUTEXT,
+--- 542,551 ----
+    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_HIGHLIGHT, &bg_prelight);
+    sys_color_to_gtk_color (XP_THEME_CLASS_TEXT, COLOR_HIGHLIGHT,
+  			  &base_prelight);
+!   /* When the xp theme is active, we want black menu text, as the highlighttext
+!      is white, and the background is light gray */
+!   sys_color_to_gtk_color (XP_THEME_CLASS_TEXT,
+!                           xp_theme_is_active () ? COLOR_MENUTEXT : COLOR_HIGHLIGHTTEXT,
+  			  &text_prelight);
+  
+    sys_color_to_gtk_color (XP_THEME_CLASS_MENU, COLOR_MENUTEXT,
+***************
+*** 752,757 ****
+--- 755,772 ----
+    gtk_rc_parse_string (buf);
+  
+    g_snprintf (buf, sizeof (buf),
++ 	      "style \"msw-combobox-entry\" = \"msw-default\"\n"
++ 	      "{\n"
++ 	      "xthickness = 0\n"
++ 	      "ythickness = 0\n"
++ 	      "GtkWidget::focus-padding = 0\n"
++ 	      "GtkWidget::focus-line-width = 0\n"
++               "GtkEntry::inner-border = { 4, 0, 0, 0 }\n"
++ 	      "}\n"
++ 	      "widget_class \"*ComboBox*GtkEntry*\" style \"msw-combobox-entry\"\n");
++   gtk_rc_parse_string (buf);
++ 
++   g_snprintf (buf, sizeof (buf),
+  	      "style \"msw-combobox\" = \"msw-default\"\n"
+  	      "{\n"
+  	      "GtkComboBox::shadow-type = in\n"
+***************
+*** 919,973 ****
+    return ret;
+  }
+  
+! static gboolean
+! is_combo_box_child (GtkWidget *w)
+  {
+    GtkWidget *tmp;
+  
+    if (w == NULL)
+!     return FALSE;
+  
+    for (tmp = w->parent; tmp; tmp = tmp->parent)
+      {
+        if (GTK_IS_COMBO_BOX (tmp))
+! 	return TRUE;
+      }
+  
+!   return FALSE;
+  }
+  
+! /* This function is not needed anymore */
+! /* static gboolean
+! combo_box_draw_arrow (GtkStyle *style,
+! 		      GdkWindow *window,
+! 		      GtkStateType state,
+! 		      GdkRectangle *area, GtkWidget *widget)
+  {
+!   if (xp_theme_is_active ())
+!     return TRUE;
+! 
+!   if (widget && GTK_IS_TOGGLE_BUTTON (widget->parent))
+!     {
+!       DWORD border;
+!       RECT rect;
+!       HDC dc;
+!       XpDCInfo dc_info;
+! 
+!       dc = get_window_dc (style, window, state, &dc_info, area->x, area->y, area->width,
+! 			  area->height, &rect);
+!       border = (GTK_TOGGLE_BUTTON (widget->parent)->
+! 		active ? DFCS_PUSHED | DFCS_FLAT : 0);
+! 
+!       InflateRect (&rect, 1, 1);
+!       DrawFrameControl (dc, &rect, DFC_SCROLL, DFCS_SCROLLDOWN | border);
+! 
+!       release_window_dc (&dc_info);
+! 
+!       return TRUE;
+!     }
+! 
+!   return FALSE;
+! }*/
+  
+  static void
+  draw_part (GdkDrawable *drawable,
+--- 934,961 ----
+    return ret;
+  }
+  
+! static GtkComboBox*
+! get_parent_combo_box (GtkWidget *w)
+  {
+    GtkWidget *tmp;
+  
+    if (w == NULL)
+!     return NULL;
+  
+    for (tmp = w->parent; tmp; tmp = tmp->parent)
+      {
+        if (GTK_IS_COMBO_BOX (tmp))
+! 	return GTK_COMBO_BOX (tmp);
+      }
+  
+!   return NULL;
+  }
+  
+! static gboolean
+! is_combo_box_child (GtkWidget *w)
+  {
+!   return get_parent_combo_box (w) != NULL;
+! }
+  
+  static void
+  draw_part (GdkDrawable *drawable,
+***************
+*** 1634,1644 ****
+    HDC dc;
+    RECT rect;
+    XpDCInfo dc_info;
+  
+    if (xp_theme_is_active ())
+      {
+!       return (xp_theme_draw (window, XP_THEME_ELEMENT_MENU_ITEM, style,
+!                              x, y, width, height, state_type, area));
+      }
+  
+    if ((parent = gtk_widget_get_parent (widget))
+--- 1622,1638 ----
+    HDC dc;
+    RECT rect;
+    XpDCInfo dc_info;
++   XpThemeElement element;
+  
+    if (xp_theme_is_active ())
+      {
+!       if (GTK_IS_MENU_BAR (gtk_widget_get_parent (widget)))
+!         element = XP_THEME_ELEMENT_MENUBAR_ITEM;
+!       else
+!         element = XP_THEME_ELEMENT_MENU_ITEM;
+! 
+!       return xp_theme_draw (window, element, style,
+!                             x, y, width, height, state_type, area);
+      }
+  
+    if ((parent = gtk_widget_get_parent (widget))
+***************
+*** 1807,1836 ****
+  {
+    if (is_combo_box_child (widget) && detail && !strcmp (detail, "button"))
+      {
+!       RECT rect;
+!       XpDCInfo dc_info;
+!       DWORD border;
+!       HDC dc;
+!       int cx;
+! 
+!       border = (GTK_TOGGLE_BUTTON (widget)->active ? DFCS_PUSHED | DFCS_FLAT : 0);
+! 
+!       dc = get_window_dc (style, window, state_type, &dc_info, x, y, width, height, &rect);
+!       DrawFrameControl (dc, &rect, DFC_SCROLL, DFCS_SCROLLDOWN | border);
+!       release_window_dc (&dc_info);
+  
+!       if (xp_theme_is_active ()
+! 	  && xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style, x, y,
+! 			    width, height, state_type, area))
+  	{
+!       cx = GetSystemMetrics(SM_CXVSCROLL);
+        x += width - cx;
+        width = cx;
+! 
+! 
+!       dc = get_window_dc (style, window, state_type, &dc_info, x, y, width - cx, height, &rect);
+!       FillRect (dc, &rect, GetSysColorBrush (COLOR_WINDOW));
+!       release_window_dc (&dc_info);
+        return;
+  	}
+      }
+--- 1801,1829 ----
+  {
+    if (is_combo_box_child (widget) && detail && !strcmp (detail, "button"))
+      {
+!       GtkComboBox *combo = get_parent_combo_box (widget);
+!       XpThemeElement element;
+  
+!       if (!gtk_combo_box_get_has_entry (combo)) {
+!         /* This covers the full combobox area: let's use the COMBOBOX bg
+!            element */
+! 	if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBOX, style,
+!                            x, y, width, height, state_type, area))
+            {
+!             /* print the right arrow above the COMBOBOX background */
+!             int cx = GetSystemMetrics(SM_CXVSCROLL);
+              x += width - cx;
+              width = cx;
+!             xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style, x, y,
+!                            width, height, GTK_STATE_NORMAL, area);
+!             return;
+!           }
+!       } else {
+!         /* The right button next to the entry */
+!         /* We need to expand the button, so that it covers entirely the
+!            background's borders on the right */
+! 	if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style,
+!                            x, y - 1, width + 1, height + 2, state_type, area))
+            return;
+        }
+      }
+***************
+*** 2083,2088 ****
+--- 2076,2089 ----
+  	  return;
+  	}
+      }
++   else if (detail && strcmp (detail, "menu") == 0)
++     {
++       if (xp_theme_draw (window, XP_THEME_ELEMENT_MENU_BACKGROUND,
++ 			 style, x, y, width, height, state_type, area))
++ 	{
++ 	  return;
++ 	}
++     }
+    else if (detail && strcmp (detail, "optionmenu") == 0)
+      {
+        if (xp_theme_draw (window, XP_THEME_ELEMENT_EDIT_TEXT,
+***************
+*** 2099,2106 ****
+      }
+    else if (detail
+  	   && (strcmp (detail, "handlebox_bin") == 0
+! 	       || strcmp (detail, "toolbar") == 0
+! 	       || strcmp (detail, "menubar") == 0))
+      {
+        sanitize_size (window, &width, &height);
+        if (xp_theme_draw (window, XP_THEME_ELEMENT_REBAR,
+--- 2100,2106 ----
+      }
+    else if (detail
+  	   && (strcmp (detail, "handlebox_bin") == 0
+! 	       || strcmp (detail, "toolbar") == 0))
+      {
+        sanitize_size (window, &width, &height);
+        if (xp_theme_draw (window, XP_THEME_ELEMENT_REBAR,
+***************
+*** 2109,2114 ****
+--- 2109,2123 ----
+  	  return;
+  	}
+      }
++   else if (detail && strcmp (detail, "menubar") == 0)
++     {
++       sanitize_size (window, &width, &height);
++       if (xp_theme_draw (window, XP_THEME_ELEMENT_MENUBAR,
++ 			 style, x, y, width, height, state_type, area))
++ 	{
++ 	  return;
++ 	}
++     }
+    else if (detail && (!strcmp (detail, "handlebox")))	/* grip */
+      {
+        if (!xp_theme_is_active ())
+***************
+*** 2727,2732 ****
+--- 2736,2747 ----
+    XpDCInfo dc_info;
+    HDC dc;
+  
++   if (xp_theme_draw (win, XP_THEME_ELEMENT_MENU_BORDERS, style,
++                      x, y, width, height, GTK_STATE_NORMAL, NULL))
++     {
++       return TRUE;
++     }
++ 
+    dc = get_window_dc (style, win, GTK_STATE_NORMAL, &dc_info, x, y, width, height, &rect);
+  
+    if (!dc)
+***************
+*** 2765,2773 ****
+        RECT rect;
+        XpDCInfo dc_info;
+  
+- 
+- 
+        dc = get_window_dc (style, window, state_type, &dc_info, x, y, width, height, &rect);
+        if (is_combo_box_child (widget))
+          {
+            FillRect (dc, &rect, GetSysColorBrush (COLOR_WINDOW));
+--- 2780,2786 ----
+        RECT rect;
+        XpDCInfo dc_info;
+  
+        dc = get_window_dc (style, window, state_type, &dc_info, x, y, width, height, &rect);
+        if (is_combo_box_child (widget))
+          {
+            FillRect (dc, &rect, GetSysColorBrush (COLOR_WINDOW));
+***************
+*** 2809,2814 ****
+--- 2823,2843 ----
+  
+        return;
+      }
++ 
++   if (detail && !strcmp (detail, "combobox"))
++     {
++       GtkComboBox *combo = GTK_COMBO_BOX (widget);
++       /* combo box without entries do not need frames, as the combo button
++          covers the complete area */
++       if (!gtk_combo_box_get_has_entry (combo)) return;
++ 
++       if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBOX, style,
++   		  x, y, width, height, state_type, area))
++       {
++           return;
++       }
++     }
++ 
+    if (detail && (!strcmp (detail, "entry") || !strcmp (detail, "combobox")))
+      {
+        if (shadow_type != GTK_SHADOW_IN)
+*** modules/engines/ms-windows/xp_theme.c.old	2011-05-19 13:14:11.484375000 +0200
+--- modules/engines/ms-windows/xp_theme.c	2011-05-19 13:20:00.796875000 +0200
+***************
+*** 79,95 ****
+  
+  #define TRS_NORMAL        1
+  
+- #define MBI_NORMAL         1
+- #define MBI_HOT            2
+- #define MBI_PUSHED         3
+- #define MBI_DISABLED       4
+- #define MBI_DISABLEDHOT    5
+- #define MBI_DISABLEDPUSHED 6
+- 
+- #define MENU_POPUPGUTTER    13
+- #define MENU_POPUPITEM      14
+- #define MENU_POPUPSEPARATOR 15
+- 
+  static const LPCWSTR class_descriptors[] = {
+    L"Scrollbar",			/* XP_THEME_CLASS_SCROLLBAR */
+    L"Button",			/* XP_THEME_CLASS_BUTTON */
+--- 79,84 ----
+***************
+*** 116,128 ****
+    BP_CHECKBOX, // INCONSISTENT_CHECKBOX
+    BP_PUSHBUTTON, // BUTTON
+    HP_HEADERITEM, // LIST_HEADER
+!   CP_DROPDOWNBUTTON,
+!   TABP_BODY,
+    TABP_TABITEM,             // TAB_ITEM
+    TABP_TABITEMLEFTEDGE,     // TAB_ITEM_LEFT_EDGE
+    TABP_TABITEMRIGHTEDGE,    // TAB_ITEM_RIGHT_EDGE
+    TABP_TABITEMBOTHEDGE,     // TAB_ITEM_BOTH_EDGES
+!   TABP_PANE,
+    SBP_THUMBBTNHORZ,
+    SBP_THUMBBTNVERT,
+    SBP_ARROWBTN,
+--- 105,118 ----
+    BP_CHECKBOX,              // INCONSISTENT_CHECKBOX
+    BP_PUSHBUTTON,            // BUTTON
+    HP_HEADERITEM,            // LIST_HEADER
+!   CP_DROPDOWNBUTTONRIGHT,   // COMBOBUTTON
+!   CP_READONLY,              // COMBOBOX
+!   TABP_BODY,                // BODY
+    TABP_TABITEM,             // TAB_ITEM
+    TABP_TABITEMLEFTEDGE,     // TAB_ITEM_LEFT_EDGE
+    TABP_TABITEMRIGHTEDGE,    // TAB_ITEM_RIGHT_EDGE
+    TABP_TABITEMBOTHEDGE,     // TAB_ITEM_BOTH_EDGES
+!   TABP_PANE,                // TAB_PANE
+    SBP_THUMBBTNHORZ,
+    SBP_THUMBBTNVERT,
+    SBP_ARROWBTN,
+***************
+*** 150,158 ****
+    RP_GRIPPER,
+    RP_GRIPPERVERT,
+    RP_CHEVRON,
+!   TP_BUTTON,
+!   MENU_POPUPITEM, /*MP_MENUITEM,*/
+!   MENU_POPUPSEPARATOR,  /*MP_SEPARATOR,*/
+    SP_GRIPPER,
+    SP_PANE,
+    GP_LINEHORZ,
+--- 140,152 ----
+    RP_GRIPPER,
+    RP_GRIPPERVERT,
+    RP_CHEVRON,
+!   TP_BUTTON,              /* TOOLBAR_BUTTON  */
+!   MENU_BARBACKGROUND,     /* MENUBAR         */
+!   MENU_BARITEM,           /* MENUBAR_ITEM    */
+!   MENU_POPUPBACKGROUND,   /* MENU_BACKGROUND */
+!   MENU_POPUPBORDERS,      /* MENU_BORDERS    */
+!   MENU_POPUPITEM,         /* MENU_ITEM       */
+!   MENU_POPUPSEPARATOR,    /* MENU_SEPARATOR  */
+    SP_GRIPPER,
+    SP_PANE,
+    GP_LINEHORZ,
+***************
+*** 382,387 ****
+--- 376,385 ----
+        klazz = XP_THEME_CLASS_TOOLBAR;
+        break;
+  
++     case XP_THEME_ELEMENT_MENUBAR:
++     case XP_THEME_ELEMENT_MENUBAR_ITEM:
++     case XP_THEME_ELEMENT_MENU_BACKGROUND:
++     case XP_THEME_ELEMENT_MENU_BORDERS:
+      case XP_THEME_ELEMENT_MENU_ITEM:
+      case XP_THEME_ELEMENT_MENU_SEPARATOR:
+        klazz = XP_THEME_CLASS_MENU;
+***************
+*** 402,407 ****
+--- 400,406 ----
+        break;
+  
+      case XP_THEME_ELEMENT_COMBOBUTTON:
++     case XP_THEME_ELEMENT_COMBOBOX:
+        klazz = XP_THEME_CLASS_COMBOBOX;
+        break;
+  
+***************
+*** 477,483 ****
+        break;
+  
+      case XP_THEME_ELEMENT_REBAR:
+!       ret = 0;
+        break;
+  
+      case XP_THEME_ELEMENT_REBAR_GRIPPER_H:
+--- 476,482 ----
+        break;
+  
+      case XP_THEME_ELEMENT_REBAR:
+!       ret = 1;
+        break;
+  
+      case XP_THEME_ELEMENT_REBAR_GRIPPER_H:
+***************
+*** 822,840 ****
+        ret = 1;
+        break;
+  
+      case XP_THEME_ELEMENT_MENU_SEPARATOR:
+        ret = TS_NORMAL;
+        break;
+  
+!     case XP_THEME_ELEMENT_MENU_ITEM:
+        switch (state)
+  	{
+  	case GTK_STATE_SELECTED:
+! 	  ret = MS_SELECTED;
+  	  break;
+  
+  	case GTK_STATE_PRELIGHT:
+! 	  ret = MBI_HOT;
+  	  break;
+  
+  	case GTK_STATE_INSENSITIVE:
+--- 821,844 ----
+        ret = 1;
+        break;
+  
++     case XP_THEME_ELEMENT_MENUBAR:
++     case XP_THEME_ELEMENT_MENU_BACKGROUND:
++     case XP_THEME_ELEMENT_MENU_BORDERS:
+      case XP_THEME_ELEMENT_MENU_SEPARATOR:
+        ret = TS_NORMAL;
+        break;
+  
+!     case XP_THEME_ELEMENT_MENUBAR_ITEM:
+        switch (state)
+  	{
+  	case GTK_STATE_SELECTED:
+!           ret = MBI_PUSHED;
+            break;
+  
+  	case GTK_STATE_PRELIGHT:
+!           /* There is no real prelight with menubar items, the prelight
+!              state being set when the item is pushed */
+! 	  ret = MBI_PUSHED;
+  	  break;
+  
+  	case GTK_STATE_INSENSITIVE:
+***************
+*** 846,868 ****
+  	}
+        break;
+  
+!     case XP_THEME_ELEMENT_LINE_H:
+        switch (state)
+  	{
+! 	  /* LHS_FLAT, LHS_RAISED, LHS_SUNKEN */
+! 	  ret = LHS_RAISED;
+  	  break;
+  	}
+        break;
+  
+      case XP_THEME_ELEMENT_LINE_V:
+-       switch (state)
+- 	{
+  	  /* LVS_FLAT, LVS_RAISED, LVS_SUNKEN */
+  	  ret = LVS_RAISED;
+  	  break;
+- 	}
+-       break;
+  
+      case XP_THEME_ELEMENT_SCALE_TROUGH_H:
+      case XP_THEME_ELEMENT_SCALE_TROUGH_V:
+--- 850,881 ----
+  	}
+        break;
+  
+!     case XP_THEME_ELEMENT_MENU_ITEM:
+        switch (state)
+  	{
+! 	case GTK_STATE_SELECTED:
+! 	case GTK_STATE_PRELIGHT:
+! 	  ret = MPI_HOT;
+! 	  break;
+! 
+! 	case GTK_STATE_INSENSITIVE:
+! 	  ret = MPI_DISABLED;
+  	  break;
++ 
++ 	default:
++ 	  ret = MPI_NORMAL;
+  	}
+        break;
+  
++     case XP_THEME_ELEMENT_LINE_H:
++       /* LHS_FLAT, LHS_RAISED, LHS_SUNKEN */
++       ret = LHS_RAISED;
++       break;
++ 
+      case XP_THEME_ELEMENT_LINE_V:
+        /* LVS_FLAT, LVS_RAISED, LVS_SUNKEN */
+        ret = LVS_RAISED;
+        break;
+  
+      case XP_THEME_ELEMENT_SCALE_TROUGH_H:
+      case XP_THEME_ELEMENT_SCALE_TROUGH_V:
+*** modules/engines/ms-windows/xp_theme.h.old	2011-05-19 13:14:11.593750000 +0200
+--- modules/engines/ms-windows/xp_theme.h	2011-05-19 13:20:00.812500000 +0200
+***************
+*** 55,60 ****
+--- 55,61 ----
+    XP_THEME_ELEMENT_BUTTON,
+    XP_THEME_ELEMENT_LIST_HEADER,
+    XP_THEME_ELEMENT_COMBOBUTTON,
++   XP_THEME_ELEMENT_COMBOBOX,
+    XP_THEME_ELEMENT_BODY,
+    XP_THEME_ELEMENT_TAB_ITEM,
+    XP_THEME_ELEMENT_TAB_ITEM_LEFT_EDGE,
+***************
+*** 89,94 ****
+--- 90,99 ----
+    XP_THEME_ELEMENT_REBAR_GRIPPER_V,
+    XP_THEME_ELEMENT_REBAR_CHEVRON,
+    XP_THEME_ELEMENT_TOOLBAR_BUTTON,
++   XP_THEME_ELEMENT_MENUBAR,
++   XP_THEME_ELEMENT_MENUBAR_ITEM,
++   XP_THEME_ELEMENT_MENU_BACKGROUND,
++   XP_THEME_ELEMENT_MENU_BORDERS,
+    XP_THEME_ELEMENT_MENU_ITEM,
+    XP_THEME_ELEMENT_MENU_SEPARATOR,
+    XP_THEME_ELEMENT_STATUS_GRIPPER,
+*** modules/engines/ms-windows/xp_theme_defs.h.old	2011-05-19 13:14:11.703125000 +0200
+--- modules/engines/ms-windows/xp_theme_defs.h	2011-05-19 13:20:00.812500000 +0200
+***************
+*** 89,95 ****
+  };
+  
+  enum {
+!   CP_DROPDOWNBUTTON = 1
+  };
+  
+  enum {
+--- 89,102 ----
+  };
+  
+  enum {
+!   CP_DROPDOWNBUTTON = 1,
+!   CP_BACKGROUND = 2,
+!   CP_TRANSPARENTBACKGROUND = 3,
+!   CP_BORDER = 4,
+!   CP_READONLY = 5,
+!   CP_DROPDOWNBUTTONRIGHT = 6,
+!   CP_DROPDOWNBUTTONLEFT = 7,
+!   CP_CUEBANNER = 8
+  };
+  
+  enum {
+***************
+*** 762,765 ****
+--- 769,811 ----
+    TS_DRAW
+  };
+  
++ enum {
++   MENU_MENUITEM_TMSCHEMA = 1,
++   MENU_MENUDROPDOWN_TMSCHEMA = 2,
++   MENU_MENUBARITEM_TMSCHEMA = 3,
++   MENU_MENUBARDROPDOWN_TMSCHEMA = 4,
++   MENU_CHEVRON_TMSCHEMA = 5,
++   MENU_SEPARATOR_TMSCHEMA = 6,
++   MENU_BARBACKGROUND = 7,
++   MENU_BARITEM = 8,
++   MENU_POPUPBACKGROUND = 9,
++   MENU_POPUPBORDERS = 10,
++   MENU_POPUPCHECK = 11,
++   MENU_POPUPCHECKBACKGROUND = 12,
++   MENU_POPUPGUTTER = 13,
++   MENU_POPUPITEM = 14,
++   MENU_POPUPSEPARATOR = 15,
++   MENU_POPUPSUBMENU = 16,
++   MENU_SYSTEMCLOSE = 17,
++   MENU_SYSTEMMAXIMIZE = 18,
++   MENU_SYSTEMMINIMIZE = 19,
++   MENU_SYSTEMRESTORE = 20
++ };
++ 
++ enum {
++   MBI_NORMAL = 1,
++   MBI_HOT = 2,
++   MBI_PUSHED = 3,
++   MBI_DISABLED = 4,
++   MBI_DISABLEDHOT = 5,
++   MBI_DISABLEDPUSHED = 6
++ };
++ 
++ enum {
++   MPI_NORMAL = 1,
++   MPI_HOT = 2,
++   MPI_DISABLED = 3,
++   MPI_DISABLEDHOT = 4
++ };
++ 
+  #endif /* XP_THEME_DFNS_H */
+*** modules/engines/ms-windows/Theme/gtk-2.0/gtkrc.old	2011-05-19 15:14:54.359375000 +0200
+--- modules/engines/ms-windows/Theme/gtk-2.0/gtkrc	2011-05-19 15:15:01.406250000 +0200
+***************
+*** 28,34 ****
+    #GtkUIManager::add-tearoffs = 0
+    #GtkComboBox::add-tearoffs = 0
+    
+-   GtkComboBox::appears-as-list = 1
+    GtkComboBox::focus-on-click = 0
+    
+    GOComboBox::add_tearoffs = 0
+--- 28,33 ----
