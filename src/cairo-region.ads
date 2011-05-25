@@ -32,6 +32,7 @@
 --  Regions are a simple graphical data type representing an area of integer-
 --  aligned rectangles. Thay are often used on raster surfaces to track areas
 --  of interest, such as change or clip areas.
+--  </description>
 --
 --  <c_version>1.10</c_version>
 --  <group>Cairo</group>
