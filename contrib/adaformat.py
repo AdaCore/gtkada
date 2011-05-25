@@ -650,6 +650,9 @@ class Subprogram(object):
         types = re.compile("#([\w_]+)")
         doc = types.sub(lambda x: naming.full_type(x.group(1))[0], doc)
 
+        params = re.compile("@([\w_]+)")
+        doc = params.sub(lambda x: x.group(1).title(), doc)
+
         return doc
 
     def spec(self, indent="   ", show_doc=True):

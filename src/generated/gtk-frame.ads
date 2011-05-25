@@ -65,7 +65,7 @@ package Gtk.Frame is
    procedure Initialize
       (Self  : access Gtk_Frame_Record'Class;
        Label : UTF8_String := "");
-   --  Creates a new Gtk.Frame.Gtk_Frame, with optional label @label. If @label
+   --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
    --  is null, the label is omitted.
    --  "label": the text to use as the label of the frame
 
@@ -78,7 +78,7 @@ package Gtk.Frame is
 
    function Get_Label (Self : access Gtk_Frame_Record) return UTF8_String;
    procedure Set_Label (Self : access Gtk_Frame_Record; Label : UTF8_String);
-   --  Sets the text of the label. If @label is null, the current label is
+   --  Sets the text of the label. If Label is null, the current label is
    --  removed.
    --  "label": the text to use as the label of the frame
 
@@ -113,7 +113,7 @@ package Gtk.Frame is
    procedure Set_Shadow_Type
       (Self     : access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Sets the shadow type for @frame.
+   --  Sets the shadow type for Frame.
    --  "type": the new Gtk.Enums.Gtk_Shadow_Type
 
    ----------------

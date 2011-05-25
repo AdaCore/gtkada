@@ -531,4 +531,38 @@ end Get_Selection;
       <method id="gtkada_Progress_get_activity_mode" bind="true"/>
    </package>
 
+   <package id="Gtk.Layout">
+      <doc group="Layout containers" testgtk="create_layout.adb"
+           screenshot="gtk-layout">
+A Gtk_Layout is a widget that can have an almost infinite size, without
+occupying a lot of memory. Its children can be located anywhere within
+it, but will only appear on the screen if the visible area of the layout
+contains them.
+Just like a Gtk_Viewport, its visible area is indicated by two
+Gtk_Adjustment widgets, and thus a Gtk_Layout can be put as is in a
+Gtk_Scrolled_Window.
+As for Gtk_Fixed containers, the children can be located anywhere in the
+layout (no automatic organization is done). But, as opposed to Gtk_Fixed
+widgets, a Gtk_Layout does not try to resize itself to show all its
+children.
+
+Starting from GtkAda 2.0, you have to call Set_Size and specify the maximum
+size of the layout, otherwise children added with Put outside the size
+defined for the layout will never be visible.
+One way to do this is to systematically call Set_Size before calling Put,
+and make sure you specify a size big enough for the layout.
+      </doc>
+      <parameter name="self" ada="Layout"/> <!-- for all methods -->
+      <method id="gtk_layout_new">
+         <parameter name="hadjustment" default="null"/>
+         <parameter name="vadjustment" default="null"/>
+      </method>
+      <method id="gtk_layout_put">
+         <doc>The child will be displayed on the screen only if at least part of it intersects the visible area of the layout. The layout does not resize itself to automatically show the widget. You also need to call Set_Size, if the size you initially defined is smaller than (X, Y), or the child will never be visible even if the layout is scrolled.</doc>
+      </method>
+      <method id="gtk_layout_set_hadjustment">
+         <doc>Return the adjustment that indicate the horizontal visual area of the layout. You generally do not have to modify the value of this adjustment yourself, since this is done automatically when the layout has been put in a Gtk_Scrolled_Window.</doc>
+      </method>
+   </package>
+
 </GIR>

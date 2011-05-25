@@ -110,8 +110,8 @@ package Gtk.Label is
    procedure Initialize_With_Mnemonic
       (Self : access Gtk_Label_Record'Class;
        Str  : UTF8_String);
-   --  Creates a new Gtk.Label.Gtk_Label, containing the text in @str. If
-   --  characters in @str are preceded by an underscore, they are underlined. If
+   --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str. If
+   --  characters in Str are preceded by an underscore, they are underlined. If
    --  you need a literal underscore character in a label, use '__' (two
    --  underscores). The first underlined character represents a keyboard
    --  accelerator called a mnemonic. The mnemonic key can be used to activate
@@ -244,7 +244,7 @@ package Gtk.Label is
    procedure Set_Max_Width_Chars
       (Self    : access Gtk_Label_Record;
        N_Chars : Gint);
-   --  Sets the desired maximum width in characters of @label to @n_chars.
+   --  Sets the desired maximum width in characters of Label to N_Chars.
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired maximum width, in characters.
 
@@ -339,7 +339,7 @@ package Gtk.Label is
    procedure Set_Width_Chars
       (Self    : access Gtk_Label_Record;
        N_Chars : Gint);
-   --  Sets the desired width in characters of @label to @n_chars.
+   --  Sets the desired width in characters of Label to N_Chars.
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired width, in characters.
 
@@ -353,17 +353,17 @@ package Gtk.Label is
        End_Offset   : Gint := -1);
    --  Selects a range of characters in the label, if the label is selectable.
    --  See Gtk.Label.Set_Selectable. If the label is not selectable, this
-   --  function has no effect. If @start_offset or
+   --  function has no effect. If Start_Offset or
    --  "start_offset": start offset (in characters not bytes)
    --  "end_offset": end offset (in characters not bytes)
 
    procedure Set_Markup (Self : access Gtk_Label_Record; Str : UTF8_String);
-   --  Parses @str which is marked up with the <link
+   --  Parses Str which is marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>, setting
    --  the label's text and attribute list based on the parse results. If the
-   --  @str is external data, you may need to escape it with
-   --  g_markup_escape_text or g_markup_printf_escaped<!-- -->: |[ char *markup;
-   --  markup = g_markup_printf_escaped ("&lt;span
+   --  Str is external data, you may need to escape it with g_markup_escape_text
+   --  or g_markup_printf_escaped<!-- -->: |[ char *markup; markup =
+   --  g_markup_printf_escaped ("&lt;span
    --  style=\"italic\"&gt;&percnt;s&lt;/span&gt;", str); gtk_label_set_markup
    --  (GTK_LABEL (label), markup); g_free (markup); ]|
    --  "str": a markup string (see <link linkend="PangoMarkupFormat">Pango
@@ -372,10 +372,10 @@ package Gtk.Label is
    procedure Set_Markup_With_Mnemonic
       (Self : access Gtk_Label_Record;
        Str  : UTF8_String);
-   --  Parses @str which is marked up with the <link
+   --  Parses Str which is marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>, setting
    --  the label's text and attribute list based on the parse results. If
-   --  characters in @str are preceded by an underscore, they are underlined
+   --  characters in Str are preceded by an underscore, they are underlined
    --  indicating that they represent a keyboard accelerator called a mnemonic.
    --  The mnemonic key can be used to activate another widget, chosen
    --  automatically, or explicitly using Gtk.Label.Set_Mnemonic_Widget.
@@ -396,7 +396,7 @@ package Gtk.Label is
    procedure Set_Text_With_Mnemonic
       (Self : access Gtk_Label_Record;
        Str  : UTF8_String);
-   --  Sets the label's text from the string @str. If characters in @str are
+   --  Sets the label's text from the string Str. If characters in Str are
    --  preceded by an underscore, they are underlined indicating that they
    --  represent a keyboard accelerator called a mnemonic. The mnemonic key can
    --  be used to activate another widget, chosen automatically, or explicitly

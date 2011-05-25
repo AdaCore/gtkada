@@ -83,7 +83,7 @@ package Gtk.Arrow is
       (Self        : access Gtk_Arrow_Record;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, @arrow.
+   --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, Arrow.
    --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
    --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 

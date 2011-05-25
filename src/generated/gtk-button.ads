@@ -67,7 +67,7 @@ package Gtk.Button is
        Stock_Id : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing the image and text from a
    --  stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK and
-   --  GTK_STOCK_APPLY. If @stock_id is unknown, then it will be treated as a
+   --  GTK_STOCK_APPLY. If Stock_Id is unknown, then it will be treated as a
    --  mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
    --  "stock_id": the name of the stock item
 
@@ -83,7 +83,7 @@ package Gtk.Button is
       (Self  : access Gtk_Button_Record'Class;
        Label : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters in
-   --  @label are preceded by an underscore, they are underlined. If you need a
+   --  Label are preceded by an underscore, they are underlined. If you need a
    --  literal underscore character in a label, use '__' (two underscores). The
    --  first underlined character represents a keyboard accelerator called a
    --  mnemonic. Pressing Alt and that key activates the button.
@@ -140,10 +140,10 @@ package Gtk.Button is
    procedure Set_Image
       (Self  : access Gtk_Button_Record;
        Image : access Gtk_Widget_Record'Class);
-   --  Set the image of @button to the given widget. Note that it depends on
-   --  the Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the image
-   --  will be displayed or not, you don't have to call Gtk.Widget.Show on
-   --  @image yourself.
+   --  Set the image of Button to the given widget. Note that it depends on the
+   --  Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the image
+   --  will be displayed or not, you don't have to call Gtk.Widget.Show on Image
+   --  yourself.
    --  Since: gtk+ 2.6
    --  "image": a widget to set as the image for the button
 
@@ -160,7 +160,7 @@ package Gtk.Button is
    procedure Set_Label
       (Self  : access Gtk_Button_Record;
        Label : UTF8_String);
-   --  Sets the text of the label of the button to @str. This text is also used
+   --  Sets the text of the label of the button to Str. This text is also used
    --  to select the stock item if Gtk.Button.Set_Use_Stock is used. This will
    --  also clear any previously set labels.
    --  "label": a string
