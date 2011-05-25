@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,49 +27,30 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Color;
-with Gtk.Widget;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with System;
-
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Color;                  use Gdk.Color;
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Pixmap is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Pixmap_Record);
-   pragma Warnings (Off, Type_Conversion);
-
-   ---------
-   -- Get --
-   ---------
-
-   procedure Get
-      (Pixmap : access Gtk_Pixmap_Record;
-       Val    : out Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : out Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-         (Pixmap : in System.Address;
-          Val    : out Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : out Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_pixmap_get");
-
-   begin
-      Internal (Get_Object (Pixmap), Val, Mask);
-   end Get;
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
    -------------
 
    procedure Gtk_New
-     (Widget : out Gtk_Pixmap;
-      Pixmap : Gdk.Pixmap.Gdk_Pixmap := null;
-      Mask   : Gdk.Bitmap.Gdk_Bitmap := null) is
+      (Self   : out Gtk_Pixmap;
+       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : Gdk.Bitmap.Gdk_Bitmap)
+   is
    begin
-      Widget := new Gtk_Pixmap_Record;
-      Initialize (Widget, Pixmap, Mask);
+      Self := new Gtk_Pixmap_Record;
+      Gtk.Pixmap.Initialize (Self, Pixmap, Mask);
    end Gtk_New;
 
    ----------------
@@ -77,43 +58,69 @@ package body Gtk.Pixmap is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Pixmap_Record'Class;
-      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : Gdk.Bitmap.Gdk_Bitmap)
+      (Self   : access Gtk_Pixmap_Record'Class;
+       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
       function Internal
-        (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-         Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
+         (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
    begin
-      --  This call will work when Pixmap and/or Mask is null
-      Set_Object (Widget, Internal (Pixmap, Mask));
+      Set_Object (Self, Internal (Pixmap, Mask));
    end Initialize;
+
+   ---------
+   -- Get --
+   ---------
+
+   procedure Get
+      (Self : access Gtk_Pixmap_Record;
+       Val  : out Gdk.Pixmap.Gdk_Pixmap;
+       Mask : out Gdk.Bitmap.Gdk_Bitmap)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Val  : out Gdk.Pixmap.Gdk_Pixmap;
+          Mask : out Gdk.Bitmap.Gdk_Bitmap);
+      pragma Import (C, Internal, "gtk_pixmap_get");
+   begin
+      Internal (Get_Object (Self), Val, Mask);
+   end Get;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-     (Pixmap : access Gtk_Pixmap_Record;
-      Val    : Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : Gdk.Bitmap.Gdk_Bitmap)
+      (Self : access Gtk_Pixmap_Record;
+       Val  : Gdk.Pixmap.Gdk_Pixmap;
+       Mask : Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
-        (Pixmap : System.Address;
-         Val    : Gdk.Pixmap.Gdk_Pixmap;
-         Mask   : Gdk.Bitmap.Gdk_Bitmap);
+         (Self : System.Address;
+          Val  : Gdk.Pixmap.Gdk_Pixmap;
+          Mask : Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_set");
-
    begin
-      Internal (Get_Object (Pixmap), Val, Mask);
+      Internal (Get_Object (Self), Val, Mask);
    end Set;
 
-   -------------------
-   -- Create_Pixmap --
-   -------------------
+   ---------------------------
+   -- Set_Build_Insensitive --
+   ---------------------------
 
-   Dummy_Pixmap : constant chars_ptr_array :=
+   procedure Set_Build_Insensitive
+      (Self  : access Gtk_Pixmap_Record;
+       Build : Boolean)
+   is
+      procedure Internal (Self : System.Address; Build : Integer);
+      pragma Import (C, Internal, "gtk_pixmap_set_build_insensitive");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Build));
+   end Set_Build_Insensitive;
+
+   Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
      (New_String ("1 1 1 1"),
       New_String ("c None"),
       New_String (" "));
@@ -171,18 +178,5 @@ package body Gtk.Pixmap is
 
       return Pixmap;
    end Create_Pixmap;
-
-      ---------------------------
-   -- Set_Build_Insensitive --
-   ---------------------------
-
-   procedure Set_Build_Insensitive
-     (Pixmap : access Gtk_Pixmap_Record; Build  : Boolean)
-   is
-      procedure Internal (Pixmap : System.Address; Build  : Gboolean);
-      pragma Import (C, Internal, "gtk_pixmap_set_build_insensitive");
-   begin
-      Internal (Get_Object (Pixmap), Boolean'Pos (Build));
-   end Set_Build_Insensitive;
 
 end Gtk.Pixmap;

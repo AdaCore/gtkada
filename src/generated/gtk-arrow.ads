@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,101 +28,85 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  Gtk_Arrow should be used to draw simple arrows that need to point in one
---  of the four cardinal directions (up, down, left, or right). The style of
---  the arrow can be one of shadow in, shadow out, etched in, or etched out.
---  Note that these directions and style types may be ammended in versions of
---  Gtk to come.
---
+--  Gtk_Arrow should be used to draw simple arrows that need to point in one of
+--  the four cardinal directions (up, down, left, or right). The style of the
+--  arrow can be one of shadow in, shadow out, etched in, or etched out. Note
+--  that these directions and style types may be ammended in versions of Gtk to
+--  come.
+-- 
 --  Gtk_Arrow will fill any space alloted to it, but since it is inherited from
 --  Gtk_Misc, it can be padded and/or aligned, to fill exactly the space you
 --  desire.
---
+-- 
 --  Arrows are created with a call to Gtk_New. The direction or style of an
 --  arrow can be changed after creation by using Set.
+-- 
 --  </description>
---  <c_version>2.14</c_version>
---  <testgtk>create_arrow.adb</testgtk>
 --  <screenshot>gtk-arrow</screenshot>
+--  <testgtk>create_arrow.adb</testgtk>
 
-with Glib.Properties;
-with Gtk.Enums;
-with Gtk.Misc;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;      use Glib;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Misc;  use Gtk.Misc;
 
 package Gtk.Arrow is
 
-   type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with private;
+   type Gtk_Arrow_Record is new Gtk_Misc_Record with null record;
    type Gtk_Arrow is access all Gtk_Arrow_Record'Class;
 
+   ------------------
+   -- Constructors --
+   ------------------
+
    procedure Gtk_New
-     (Arrow       : out Gtk_Arrow;
-      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
-      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Create a new arrow widget.
-
+      (Self        : out Gtk_Arrow;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    procedure Initialize
-     (Arrow       : access Gtk_Arrow_Record'Class;
-      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
-      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+      (Self        : access Gtk_Arrow_Record'Class;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
+   --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
+   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Arrow.
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_arrow_get_type");
+
+   -------------
+   -- Methods --
+   -------------
 
    procedure Set
-     (Arrow       : access Gtk_Arrow_Record;
-      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
-      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Set the direction and style of the Arrow.
+      (Self        : access Gtk_Arrow_Record;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
+   --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, @arrow.
+   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  Name:  Arrow_Type_Property
-   --  Type:  Gtk_Arrow_Type
+   --  Glib.Properties for more information on properties)
+   -- 
+   --  Name: Arrow_Type_Property
+   --  Type: Gtk_Arrow_Type
    --  Flags: read-write
-   --  Descr: The direction the arrow should point
-   --  See also: Set
-   --
-   --  Name:  Shadow_Type_Property
-   --  Type:  Gtk_Shadow_Type
+   -- 
+   --  Name: Shadow_Type_Property
+   --  Type: Gtk_Shadow_Type
    --  Flags: read-write
-   --  Descr: Appearance of the shadow surrounding the arrow
-   --  See also: Set
-   --
-   --  Name:  Arrow_Scaling_Property
-   --  Type:  Float
-   --  Descr: Amount of space used up by arrow
-   --
-   --  </properties>
 
-   Arrow_Scaling_Property : constant Glib.Properties.Property_Float;
    Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --  </signals>
-
 private
-   type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
-
-   Arrow_Scaling_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("arrow-scaling");
-   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
-     Gtk.Enums.Build ("arrow_type");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
-     Gtk.Enums.Build ("shadow_type");
-
-   pragma Import (C, Get_Type, "gtk_arrow_get_type");
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type:=
+     Gtk.Enums.Build ("Arrow_Type_Property");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+     Gtk.Enums.Build ("Shadow_Type_Property");
 end Gtk.Arrow;

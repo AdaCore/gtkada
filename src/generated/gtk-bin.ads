@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,65 +27,38 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-with Gtk.Enums; use Gtk.Enums;
+--  <description>
+--  Base class for containers that have only one child. This widget can not be
+--  instantiated directly.
+-- 
+--  </description>
+--  <group>Abstract base classes</group>
 
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;          use Glib;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Widget;    use Gtk.Widget;
 
-package body Gtk.Arrow is
+package Gtk.Bin is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Arrow_Record);
-   pragma Warnings (Off, Type_Conversion);
+   type Gtk_Bin_Record is new Gtk_Container_Record with null record;
+   type Gtk_Bin is access all Gtk_Bin_Record'Class;
+
+   ------------------
+   -- Constructors --
+   ------------------
+
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_bin_get_type");
 
    -------------
-   -- Gtk_New --
+   -- Methods --
    -------------
 
-   procedure Gtk_New
-      (Arrow       : out Gtk_Arrow;
-       Arrow_Type  : Gtk_Arrow_Type;
-       Shadow_Type : Gtk_Shadow_Type) is
-   begin
-      Arrow := new Gtk_Arrow_Record;
-      Initialize (Arrow, Arrow_Type, Shadow_Type);
-   end Gtk_New;
+   function Get_Child (Self : access Gtk_Bin_Record) return Gtk_Widget;
+   --  Gets the child of the Gtk.Bin.Gtk_Bin, or null if the bin contains no
+   --  child widget. The returned widget does not have a reference added, so you
+   --  do not need to unref it.
 
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-     (Arrow       : access Gtk_Arrow_Record'Class;
-      Arrow_Type  : Gtk_Arrow_Type;
-      Shadow_Type : Gtk_Shadow_Type)
-   is
-      function Internal
-        (Arrow_Type  : Gtk_Arrow_Type;
-         Shadow_Type : Gtk_Shadow_Type) return System.Address;
-      pragma Import (C, Internal, "gtk_arrow_new");
-
-   begin
-      Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
-   end Initialize;
-
-   ---------
-   -- Set --
-   ---------
-
-   procedure Set
-      (Arrow       : access Gtk_Arrow_Record;
-       Arrow_Type  : Gtk_Arrow_Type;
-       Shadow_Type : Gtk_Shadow_Type)
-   is
-      procedure Internal
-         (Arrow       : System.Address;
-          Arrow_Type  : Gtk_Arrow_Type;
-          Shadow_Type : Gtk_Shadow_Type);
-      pragma Import (C, Internal, "gtk_arrow_set");
-
-   begin
-      Internal (Get_Object (Arrow), Arrow_Type, Shadow_Type);
-   end Set;
-
-end Gtk.Arrow;
+end Gtk.Bin;

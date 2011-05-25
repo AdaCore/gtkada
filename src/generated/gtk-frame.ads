@@ -1,0 +1,169 @@
+-----------------------------------------------------------------------
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
+--                                                                   --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
+--  <description>
+--  A Gtk_Frame is a simple border than can be added to any widget or group of
+--  widget to enhance its visual aspect. Optionally, a frame can have a title.
+-- 
+--  This is a very convenient widget to visually group related widgets (like
+--  groups of buttons for instance), possibly with a title to explain the
+--  purpose of this group.
+-- 
+--  A Gtk_Frame has only one child, so you have to put a container like for
+--  instance a Gtk_Box inside if you want the frame to surround multiple
+--  widgets.
+-- 
+--  </description>
+--  <screenshot>gtk-frame</screenshot>
+--  <group>Ornaments</group>
+--  <testgtk>create_frame.adb</testgtk>
+
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;            use Glib;
+with Glib.Properties; use Glib.Properties;
+with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Widget;      use Gtk.Widget;
+
+package Gtk.Frame is
+
+   type Gtk_Frame_Record is new Gtk_Bin_Record with null record;
+   type Gtk_Frame is access all Gtk_Frame_Record'Class;
+
+   ------------------
+   -- Constructors --
+   ------------------
+
+   procedure Gtk_New (Self : out Gtk_Frame; Label : UTF8_String := "");
+   procedure Initialize
+      (Self  : access Gtk_Frame_Record'Class;
+       Label : UTF8_String := "");
+   --  Creates a new Gtk.Frame.Gtk_Frame, with optional label @label. If @label
+   --  is null, the label is omitted.
+   --  "label": the text to use as the label of the frame
+
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_frame_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
+   function Get_Label (Self : access Gtk_Frame_Record) return UTF8_String;
+   procedure Set_Label (Self : access Gtk_Frame_Record; Label : UTF8_String);
+   --  Sets the text of the label. If @label is null, the current label is
+   --  removed.
+   --  "label": the text to use as the label of the frame
+
+   procedure Get_Label_Align
+      (Self   : access Gtk_Frame_Record;
+       Xalign : out Gfloat;
+       Yalign : out Gfloat);
+   procedure Set_Label_Align
+      (Self   : access Gtk_Frame_Record;
+       Xalign : Gfloat;
+       Yalign : Gfloat);
+   --  Sets the alignment of the frame widget's label. The default values for a
+   --  newly created frame are 0.0 and 0.5.
+   --  "xalign": The position of the label along the top edge of the widget. A
+   --  value of 0.0 represents left alignment; 1.0 represents right alignment.
+   --  "yalign": The y alignment of the label. A value of 0.0 aligns under the
+   --  frame; 1.0 aligns above the frame. If the values are exactly 0.0 or 1.0
+   --  the gap in the frame won't be painted because the label will be
+   --  completely above or below the frame.
+
+   function Get_Label_Widget
+      (Self : access Gtk_Frame_Record) return Gtk_Widget;
+   procedure Set_Label_Widget
+      (Self         : access Gtk_Frame_Record;
+       Label_Widget : access Gtk_Widget_Record'Class);
+   --  Sets the label widget for the frame. This is the widget that will appear
+   --  embedded in the top edge of the frame as a title.
+   --  "label_widget": the new label widget
+
+   function Get_Shadow_Type
+      (Self : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type;
+   procedure Set_Shadow_Type
+      (Self     : access Gtk_Frame_Record;
+       The_Type : Gtk.Enums.Gtk_Shadow_Type);
+   --  Sets the shadow type for @frame.
+   --  "type": the new Gtk.Enums.Gtk_Shadow_Type
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+   -- 
+   --  Name: Label_Property
+   --  Type: String
+   --  Flags: read-write
+   -- 
+   --  Name: Label_Widget_Property
+   --  Type: Object
+   --  Flags: read-write
+   -- 
+   --  Name: Label_Xalign_Property
+   --  Type: Float
+   --  Flags: read-write
+   -- 
+   --  Name: Label_Yalign_Property
+   --  Type: Float
+   --  Flags: read-write
+   -- 
+   --  Name: Shadow_Property
+   --  Type: Gtk_Shadow_Type
+   --  Flags: read-write
+   -- 
+   --  Name: Shadow_Type_Property
+   --  Type: Gtk_Shadow_Type
+   --  Flags: read-write
+
+   Label_Property : constant Glib.Properties.Property_String;
+   Label_Widget_Property : constant Glib.Properties.Property_Object;
+   Label_Xalign_Property : constant Glib.Properties.Property_Float;
+   Label_Yalign_Property : constant Glib.Properties.Property_Float;
+   Shadow_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
+private
+   Label_Property : constant Glib.Properties.Property_String:=
+     Glib.Properties.Build ("Label_Property");
+   Label_Widget_Property : constant Glib.Properties.Property_Object:=
+     Glib.Properties.Build ("Label_Widget_Property");
+   Label_Xalign_Property : constant Glib.Properties.Property_Float:=
+     Glib.Properties.Build ("Label_Xalign_Property");
+   Label_Yalign_Property : constant Glib.Properties.Property_Float:=
+     Glib.Properties.Build ("Label_Yalign_Property");
+   Shadow_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+     Gtk.Enums.Build ("Shadow_Property");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+     Gtk.Enums.Build ("Shadow_Type_Property");
+end Gtk.Frame;

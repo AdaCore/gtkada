@@ -180,6 +180,7 @@ moves the handle to resize the widgets, the behavior of Resize is
 canceled.
       </doc>
       <method id="gtk_paned_pack1">
+         <parameter name="self" ada="Paned"/>
          <parameter name="resize" default="False" />
          <parameter name="shrink" default="True" />
          <doc>
@@ -193,10 +194,12 @@ example in testgtk/ in the GtkAda distribution.
          </doc>
       </method>
       <method id="gtk_paned_pack2">
+         <parameter name="self" ada="Paned"/>
          <parameter name="resize" default="False" />
          <parameter name="shrink" default="False" />
       </method>
       <method id="gtk_paned_add1">
+         <parameter name="self" ada="Paned"/>
          <doc>
 Add the first child of the container.
 The child will be displayed either in the top or in the left pane,
@@ -205,6 +208,7 @@ This is equivalent to using the Pack1 procedure with its default parameters.
          </doc>
       </method>
       <method id="gtk_paned_add2">
+         <parameter name="self" ada="Paned"/>
          <doc>
 Add the second child of the container.
 It will be displayed in the bottom or right pane, depending on the
@@ -471,6 +475,10 @@ If Xpad or Ypad is negative, they will be changed to 0.
 Base class for containers that have only one child.
 This widget can not be instantiated directly.
       </doc>
+   </package>
+
+   <package id="Gtk.List">
+      <doc group="Obsolescent widgets" testgtk="create_list.adb"/>
    </package>
 
 </GIR>

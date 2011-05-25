@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,24 +27,63 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-package body Gtk.Bin is
+package body Gtk.Arrow is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Bin_Record);
-   pragma Warnings (Off, Type_Conversion);
+     (Get_Type'Access, Gtk_Arrow_Record);
+   pragma Unreferenced (Type_Conversion);
 
-   ---------------
-   -- Get_Child --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
-   function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget is
-      function Internal (W : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_bin_get_child");
-
+   procedure Gtk_New
+      (Self        : out Gtk_Arrow;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
+   is
    begin
-      return Convert (Internal (Get_Object (Bin)));
-   end Get_Child;
+      Self := new Gtk_Arrow_Record;
+      Gtk.Arrow.Initialize (Self, Arrow_Type, Shadow_Type);
+   end Gtk_New;
 
-end Gtk.Bin;
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self        : access Gtk_Arrow_Record'Class;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
+   is
+      function Internal
+         (Arrow_Type  : Integer;
+          Shadow_Type : Integer) return System.Address;
+      pragma Import (C, Internal, "gtk_arrow_new");
+   begin
+      Set_Object (Self, Internal (Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type)));
+   end Initialize;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+      (Self        : access Gtk_Arrow_Record;
+       Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Arrow_Type  : Integer;
+          Shadow_Type : Integer);
+      pragma Import (C, Internal, "gtk_arrow_set");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type));
+   end Set;
+
+end Gtk.Arrow;

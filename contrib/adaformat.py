@@ -97,6 +97,8 @@ class AdaNaming(object):
             "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
             "GtkPackType":        Enum("Gtk.Enums.Gtk_Pack_Type"),
             "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
+            "GtkScrollType":      Enum("Gtk.Enums.Gtk_Scroll_Type"),
+            "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
 
             "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
             "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),

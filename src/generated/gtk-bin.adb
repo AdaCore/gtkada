@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,73 +27,26 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-with Glib.Type_Conversion_Hooks;
-
-package body Gtk.Misc is
+package body Gtk.Bin is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Misc_Record);
-   pragma Warnings (Off, Type_Conversion);
+     (Get_Type'Access, Gtk_Bin_Record);
+   pragma Unreferenced (Type_Conversion);
 
-   -------------------
-   -- Get_Alignment --
-   -------------------
+   ---------------
+   -- Get_Child --
+   ---------------
 
-   procedure Get_Alignment
-     (Misc : access Gtk_Misc_Record; Xalign : out Gfloat; Yalign : out Gfloat)
-   is
-      procedure Internal (Misc : System.Address; Xalign, Yalign : out Gfloat);
-      pragma Import (C, Internal, "gtk_misc_get_alignment");
-
+   function Get_Child (Self : access Gtk_Bin_Record) return Gtk_Widget is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_bin_get_child");
+      Stub : Gtk_Widget_Record;
    begin
-      Internal (Get_Object (Misc), Xalign, Yalign);
-   end Get_Alignment;
+      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+   end Get_Child;
 
-   -----------------
-   -- Get_Padding --
-   -----------------
-
-   procedure Get_Padding
-     (Misc : access Gtk_Misc_Record; Xpad : out Gint; Ypad : out Gint)
-   is
-      procedure Internal (Misc : System.Address; Xpad, Ypad : out Gint);
-      pragma Import (C, Internal, "gtk_misc_get_padding");
-
-   begin
-      Internal (Get_Object (Misc), Xpad, Ypad);
-   end Get_Padding;
-
-   -------------------
-   -- Set_Alignment --
-   -------------------
-
-   procedure Set_Alignment
-     (Misc : access Gtk_Misc_Record; Xalign : Gfloat; Yalign : Gfloat)
-   is
-      procedure Internal (Misc : System.Address; Xalign, Yalign : Gfloat);
-      pragma Import (C, Internal, "gtk_misc_set_alignment");
-
-   begin
-      Internal (Get_Object (Misc), Xalign, Yalign);
-   end Set_Alignment;
-
-   -----------------
-   -- Set_Padding --
-   -----------------
-
-   procedure Set_Padding
-     (Misc : access Gtk_Misc_Record;
-      Xpad : Gint;
-      Ypad : Gint)
-   is
-      procedure Internal
-        (Misc : System.Address; Xpad, Ypad : Gint);
-      pragma Import (C, Internal, "gtk_misc_set_padding");
-
-   begin
-      Internal (Get_Object (Misc), Xpad, Ypad);
-   end Set_Padding;
-
-end Gtk.Misc;
+end Gtk.Bin;
