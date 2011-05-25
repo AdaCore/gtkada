@@ -1,4 +1,5 @@
 2011-05-25  Jerome Lambourg <lambourg@adacore.com>
+
        * pango/pangowin32-fontmap.c (get_family_nameW): Make sure that the
        handler to the device context is properly initialized before using it to
        find font names.
@@ -77,7 +78,7 @@
     gint i, l;
     gsize nbytes;
   
-+   /*  make sure _pango_win32_hdc is initialized */
++   /* make sure _pango_win32_hdc is initialized */
 +   pango_win32_get_dc ();
 + 
     /* If lfFaceName is ASCII, assume it is the common (English) name
