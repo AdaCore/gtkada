@@ -992,22 +992,6 @@ ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
 }
 
 /********************
- * Progress_Bar
- ********************/
-
-GtkAdjustment*
-ada_progress_get_adjustment (GtkProgress* widget)
-{
-  return widget->adjustment;
-}
-
-guint
-ada_progress_get_activity_mode (GtkProgress* widget)
-{
-  return widget->activity_mode;
-}
-
-/********************
  * GdkPoint
  ********************/
 

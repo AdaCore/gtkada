@@ -21,10 +21,19 @@ Where the package node is defined as follows:
            subtype="True"  <!-- optional, if True generate a subtype -->
        />
 
+       <parameter
+           name="..."
+           ada="..."/>     <!-- Override default naming for all methods.
+                                In particular used for "Self" -->
+
        <method             <!-- repeated as needed -->
            id="..."        <!-- mandatory, name of the C method -->
+                           <!-- fields are not bound by default, but are
+                                associated with
+                                    "gtkada_%s_get_%s" % (adapkg, field_name)
+                                methods -->
            ada="..."       <!-- optional, name of the Ada subprogram -->
-           binding="false" <!-- optional, if false no binding generated -->
+           bind="true"     <!-- optional, if false no binding generated -->
            into="..."      <!-- optional, name of C class in which to
                                 add the bindings -->
            return_as_param="..." <!-- optional, relace return parameter with
@@ -113,8 +122,8 @@ class GtkAdaPackage(object):
         if self.node is not None:
             for f in self.node.findall("method"):
                 if f.get("id") == cname:
-                    return GtkAdaMethod(f)
-        return GtkAdaMethod(None)
+                    return GtkAdaMethod(f, self)
+        return GtkAdaMethod(None, self)
 
     def get_type(self, name):
         if self.node is not None:
@@ -129,6 +138,11 @@ class GtkAdaPackage(object):
             return self.node.get("into", None)
         return None
 
+    def is_obsolete(self):
+        if self.node is not None:
+            return self.node.get("obsolescent", "False").lower() == "true"
+        return False
+
     def extra(self):
         if self.node is not None:
             extra = self.node.find("extra", None)
@@ -136,23 +150,34 @@ class GtkAdaPackage(object):
                 return extra.getchildren()
         return None
 
-
-class GtkAdaMethod(object):
-    def __init__(self, node):
-        self.node = node
-
-    def get_param(self, name):
+    def get_default_param_node(self, name):
         if self.node is not None:
             name = name.lower()
             for p in self.node.findall("parameter"):
                 if p.get("name") == name:
-                    return GtkAdaParameter(p)
-        return GtkAdaParameter(None)
+                    return p
+        return None
 
-    def bind(self):
+
+class GtkAdaMethod(object):
+    def __init__(self, node, pkg):
+        self.node = node
+        self.pkg  = pkg
+
+    def get_param(self, name):
+        default = self.pkg.get_default_param_node(name)
+        if self.node is not None:
+            name = name.lower()
+            for p in self.node.findall("parameter"):
+                if p.get("name") == name:
+                    return GtkAdaParameter(p, default=default)
+        return GtkAdaParameter(None, default=default)
+
+    def bind(self, default="true"):
         """Whether to bind"""
-        return self.node is None \
-            or self.node.get("binding", "true").lower() != "false"
+        if self.node is not None:
+            return self.node.get("bind", default).lower() != "false"
+        return default != "false"
 
     def ada_name(self):
         if self.node is not None:
@@ -177,8 +202,9 @@ class GtkAdaMethod(object):
 
 
 class GtkAdaParameter(object):
-    def __init__(self, node):
+    def __init__(self, node, default):
         self.node = node
+        self.default = default
 
     def get_default(self):
         if self.node is not None:
@@ -186,9 +212,12 @@ class GtkAdaParameter(object):
         return None
 
     def ada_name(self):
+        name = None
         if self.node is not None:
-            return self.node.get("ada", None)
-        return None
+            name = self.node.get("ada", None)
+        if name is None and self.default is not None:
+            name = self.default.get("ada", None)
+        return name
 
     def get_type(self):
         if self.node is not None:

@@ -333,7 +333,7 @@ class CType(object):
             pkg.add_with("Interfaces.C.Strings", specs=False)
             self.returns = (
                 "UTF8_String", "Interfaces.C.Strings.chars_ptr",
-                "Value (%s)", [])
+                "Interfaces.C.Strings.Value (%s)", [])
 
         elif name in ("gdouble", "gint", "guint", "gfloat"):
             self.param = name.title()

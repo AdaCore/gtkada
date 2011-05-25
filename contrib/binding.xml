@@ -21,7 +21,7 @@ The gtk+ sources provide the following drawing that explains the role of
 the various spacings that can be set for a button:
       </doc>
 
-      <method id="gtk_button_new" binding="false"/>
+      <method id="gtk_button_new" bind="false"/>
 
       <method id="gtk_button_new_with_label" ada="Gtk_New">
          <parameter name="label" default='""'/>
@@ -119,7 +119,7 @@ should be made selectable.
       <method id="gtk_label_new">
          <parameter name="str" default='""'/>
       </method>
-      <method id="gtk_label_get" binding="false"/>
+      <method id="gtk_label_get" bind="false"/>
       <method id="gtk_label_select_region">
          <parameter name="start_offset" default="-1"/>
          <parameter name="end_offset" default="-1"/>
@@ -477,7 +477,7 @@ This widget can not be instantiated directly.
       </doc>
    </package>
 
-   <package id="Gtk.List">
+   <package id="Gtk.List" obsolescent="True">
       <doc group="Obsolescent widgets" testgtk="create_list.adb"/>
       <method id="gtk_list_append_items">
          <parameter name="items" type="Widget_List.Glist"/>
@@ -519,6 +519,16 @@ end Get_Selection;
             </body>
          </method>
       </extra>
+   </package>
+
+   <package id="Gtk.Progress" obsolescent="True">
+      <doc group="Obsolescent widgets">This package is deprecated. It now only acts as an abstract base class for other widgets.</doc>
+      <parameter name="self" ada="Progress"/> <!-- for all methods -->
+      <method id="gtk_progress_get_adjustment">
+         <parameter name="self" ada="widget"/>
+      </method>
+      <method id="gtkada_Progress_get_adjustment" bind="true"/>
+      <method id="gtkada_Progress_get_activity_mode" bind="true"/>
    </package>
 
 </GIR>

@@ -134,7 +134,7 @@ package body Gtk.Label is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_current_uri");
    begin
-      return Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
    end Get_Current_Uri;
 
    -------------------
@@ -172,7 +172,7 @@ package body Gtk.Label is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_label");
    begin
-      return Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
    end Get_Label;
 
    ----------------
@@ -322,7 +322,7 @@ package body Gtk.Label is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
    begin
-      return Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
    end Get_Text;
 
    -----------------------------

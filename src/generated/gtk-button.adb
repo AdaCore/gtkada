@@ -234,7 +234,7 @@ package body Gtk.Button is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_button_get_label");
    begin
-      return Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
    end Get_Label;
 
    ----------------

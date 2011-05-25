@@ -47,12 +47,14 @@ GENERATED= \
 	gtk-misc.ads     gtk-misc.adb   \
 	gtk-paned.ads    gtk-paned.adb  \
 	gtk-pixmap.ads   gtk-pixmap.adb \
+	gtk-progress.ads gtk-progress.adb \
 	gtk-viewport.ads gtk-viewport.adb
 
 # Generate the binding automatically, through a python script
 generate: ${GIR_FILES}
 	${RM} src/generated/*.ad?
 	cd contrib/generated; mv $(foreach f,${GENERATED},${f}) ../../src/generated/
+	mv contrib/generated/genmisc.c src/
 
 ${GIR_FILES}: force
 	cd contrib; python binding.py $@ binding.xml

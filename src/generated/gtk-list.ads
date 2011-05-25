@@ -43,6 +43,8 @@ with Gtk.Widget;    use Gtk.Widget;
 
 package Gtk.List is
 
+   pragma Obsolescent;
+
    type Gtk_List_Record is new Gtk_Container_Record with null record;
    type Gtk_List is access all Gtk_List_Record'Class;
 
