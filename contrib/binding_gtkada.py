@@ -33,6 +33,7 @@ Where the package node is defined as follows:
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
             ada="..."      <!-- optional, name to use in Ada -->
+            type="..."     <!-- optional, override Ada type -->
             default="..."  <!-- optional, the default value for the param-->
          />
        />
@@ -50,6 +51,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
+from adaformat import AdaType
 
 
 class GtkAda(object):
@@ -186,6 +188,13 @@ class GtkAdaParameter(object):
     def ada_name(self):
         if self.node is not None:
             return self.node.get("ada", None)
+        return None
+
+    def get_type(self):
+        if self.node is not None:
+            t = self.node.get("type", None)
+            if t:
+                return AdaType(t)
         return None
 
 class GtkAdaType(object):

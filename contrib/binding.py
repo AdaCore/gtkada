@@ -125,7 +125,8 @@ class GIRClass(object):
             gtkparam = gtkmethod.get_param(name=name)
             default = gtkparam.get_default()
 
-            type = self._get_type(p, allow_access=not default)
+            type = gtkparam.get_type() \
+                or self._get_type(p, allow_access=not default)
 
             if type is None:
                 return None

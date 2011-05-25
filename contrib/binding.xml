@@ -479,6 +479,46 @@ This widget can not be instantiated directly.
 
    <package id="Gtk.List">
       <doc group="Obsolescent widgets" testgtk="create_list.adb"/>
+      <method id="gtk_list_append_items">
+         <parameter name="items" type="Widget_List.Glist"/>
+      </method>
+      <method id="gtk_list_prepend_items">
+         <parameter name="items" type="Widget_List.Glist"/>
+      </method>
+      <method id="gtk_list_insert_items">
+         <parameter name="items" type="Widget_List.Glist"/>
+      </method>
+      <method id="gtk_list_remove_items">
+         <parameter name="items" type="Widget_List.Glist"/>
+      </method>
+      <method id="gtk_list_remove_items_no_unref">
+         <parameter name="items" type="Widget_List.Glist"/>
+      </method>
+      <method id="gtk_list_clear_items">
+         <doc>Remove some items from the list. If The_End is negative, it means the end of the list. The first item in the list has an index of 0</doc>
+      </method>
+      <extra>
+         <method>
+            <spec>
+function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
+   return Widget_List.Glist;
+            </spec>
+            <body>
+function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
+   return Widget_List.Glist
+is
+   use Widget_List;
+   function Internal (Widget : in System.Address)
+                      return      System.Address;
+   pragma Import (C, Internal, "ada_list_get_selection");
+   List : Gtk.Widget.Widget_List.Glist;
+begin
+   Set_Object (List, Internal (Get_Object (Widget)));
+   return List;
+end Get_Selection;
+            </body>
+         </method>
+      </extra>
    </package>
 
 </GIR>
