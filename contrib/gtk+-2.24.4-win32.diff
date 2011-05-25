@@ -1,10 +1,19 @@
-2011-05-19  Jerome Lambourg <lambourg@adacore.com>
+2011-05-25	Nicolas Setton  <setton@adacore.com>
+
+	* gtkimcontextsimple.c(gtk_im_context_simple_filter_keypress): Do not
+	discard key events with state CTRL + ALT, as some keyboards do use this
+	key combination for legitimate character input.
+	* gdkevents-win32.c(build_key_event_state): Detect CTRL + ALT as an
+	equivalent group to ALT_GR.
+	For K517-001.
+
+2011-05-19	Jerome Lambourg  <lambourg@adacore.com>
 
         * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
         the display of the GtkComboBox and improve the display of menus.
         For K510-021
 
-2011-05-16  Jerome Lambourg <lambourg@adacore.com>
+2011-05-16	Jerome Lambourg  <lambourg@adacore.com>
 
         * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
         the display of notebook tabs in the wimp engine.
@@ -1589,3 +1598,26 @@
     
     GOComboBox::add_tearoffs = 0
 --- 28,33 ----
+--- gtk/gtkimcontextsimple.c.orig	2011-05-24 16:55:44.000000000 +0200
++++ gtk/gtkimcontextsimple.c	2011-05-24 16:56:16.000000000 +0200
+@@ -877,7 +877,7 @@ gtk_im_context_simple_filter_keypress (G
+ 	    event->keyval == GDK_ISO_Enter ||
+ 	    event->keyval == GDK_KP_Enter)))
+ 	{
+-	  return FALSE;
++	  return no_sequence_matches (context_simple, n_compose, event);
+ 	}
+     }
+   
+--- gdk/win32/gdkevents-win32.c.orig	2011-05-25 12:25:29.000000000 +0200
++++ gdk/win32/gdkevents-win32.c	2011-05-25 12:26:52.000000000 +0200
+@@ -679,6 +679,9 @@ build_key_event_state (GdkEvent *event,
+ 	event->key.state |= GDK_CONTROL_MASK;
+       if (key_state[VK_MENU] & 0x80)
+ 	event->key.state |= GDK_MOD1_MASK;
++
++      if ((key_state[VK_CONTROL] & 0x80) && (key_state[VK_MENU] & 0x80))
++        event->key.group = 1;
+     }
+ }
+ 
