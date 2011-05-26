@@ -4,7 +4,7 @@
        handler to the device context is properly initialized before using it to
        find font names.
        Fix K519-012
-       Filed as https://bugzilla.gnome.org/show_bug.cgi?id=651124
+       Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=651124
 
 2010-10-10  Arnaud Charlet  <charlet@adacore.com>
 
