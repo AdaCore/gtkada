@@ -20,7 +20,10 @@ pressed while the mouse is on it, but does not keep its pressed state.
 The gtk+ sources provide the following drawing that explains the role of
 the various spacings that can be set for a button:
       </doc>
-      <method id="gtk_button_new_with_label" ada="Gtk_New" />
+      <method id="gtk_button_new" bind="False"/>
+      <method id="gtk_button_new_with_label" ada="Gtk_New" >
+         <parameter name="label" default='""' empty_maps_to_null="True"/>
+      </method>
    </package>
 
    <!-- ###################################################

@@ -42,17 +42,7 @@ package body Gtk.Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Button) is
-   begin
-      Self := new Gtk_Button_Record;
-      Gtk.Button.Initialize (Self);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String) is
+   procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String := "") is
    begin
       Self := new Gtk_Button_Record;
       Gtk.Button.Initialize (Self, Label);
@@ -88,27 +78,21 @@ package body Gtk.Button is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Button_Record'Class) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_button_new");
-   begin
-      Set_Object (Self, Internal);
-   end Initialize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
    procedure Initialize
       (Self  : access Gtk_Button_Record'Class;
-       Label : UTF8_String)
+       Label : UTF8_String := "")
    is
       function Internal
          (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Self, Tmp_Return);
