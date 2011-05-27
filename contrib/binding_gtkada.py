@@ -160,8 +160,8 @@ class GtkAdaPackage(object):
 
     def extra(self):
         if self.node is not None:
-            extra = self.node.find("extra", None)
-            if extra:
+            extra = self.node.find("extra")
+            if extra is not None:
                 return extra.getchildren()
         return None
 
