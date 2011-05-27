@@ -268,7 +268,7 @@ package Gtk.Label is
    --  When the label is inside a widget (like a Gtk.Button.Gtk_Button or a
    --  Gtk.Notebook.Gtk_Notebook tab) it is automatically associated with the
    --  correct widget, but sometimes (i.e. when the target is a
-   --  Gtk.GEntry.Gtk_GEntry next to the label) you need to set it explicitly
+   --  Gtk.GEntry.Gtk_Entry next to the label) you need to set it explicitly
    --  using this function. The target widget will be accelerated by emitting
    --  the GtkWidget::mnemonic-activate signal on it. The default handler for
    --  this signal will activate the widget if there are no mnemonic collisions
@@ -412,7 +412,7 @@ package Gtk.Label is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Angle_Property
-   --  Type: Double
+   --  Type: Gdouble
    --  Flags: read-write
    --  The angle that the baseline of the label makes with the horizontal, in
    --  degrees, measured counterclockwise. An angle of 90 reads from from bottom
@@ -420,19 +420,19 @@ package Gtk.Label is
    --  selectable, wrapped, or ellipsized.
    -- 
    --  Name: Cursor_Position_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    -- 
    --  Name: Justify_Property
-   --  Type: Gtk_Justification
+   --  Type: Gtk.Enums.Gtk_Justification
    --  Flags: read-write
    -- 
    --  Name: Label_Property
-   --  Type: String
+   --  Type: UTF8_String
    --  Flags: read-write
    -- 
    --  Name: Max_Width_Chars_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    --  The desired maximum width of the label, in characters. If this property
    --  is set to -1, the width will be calculated automatically, otherwise the
@@ -441,15 +441,15 @@ package Gtk.Label is
    --  value, then the "max-width-chars" property is ignored.
    -- 
    --  Name: Mnemonic_Keyval_Property
-   --  Type: Int
+   --  Type: Guint
    --  Flags: read-write
    -- 
    --  Name: Mnemonic_Widget_Property
-   --  Type: Object
+   --  Type: Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Pattern_Property
-   --  Type: String
+   --  Type: UTF8_String
    --  Flags: write
    -- 
    --  Name: Selectable_Property
@@ -457,7 +457,7 @@ package Gtk.Label is
    --  Flags: read-write
    -- 
    --  Name: Selection_Bound_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    -- 
    --  Name: Single_Line_Mode_Property
@@ -485,7 +485,7 @@ package Gtk.Label is
    --  Flags: read-write
    -- 
    --  Name: Width_Chars_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    --  The desired width of the label, in characters. If this property is set
    --  to -1, the width will be calculated automatically, otherwise the label

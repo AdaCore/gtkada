@@ -253,11 +253,11 @@ package Gtk.GRange is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Adjustment_Property
-   --  Type: Object
+   --  Type: Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Fill_Level_Property
-   --  Type: Double
+   --  Type: Gdouble
    --  Flags: read-write
    --  The fill level (e.g. prebuffering of a network stream). See
    --  gtk_range_set_fill_level().
@@ -267,7 +267,7 @@ package Gtk.GRange is
    --  Flags: read-write
    -- 
    --  Name: Lower_Stepper_Sensitivity_Property
-   --  Type: Gtk_Sensitivity_Type
+   --  Type: Gtk.Enums.Gtk_Sensitivity_Type
    --  Flags: read-write
    -- 
    --  Name: Restrict_To_Fill_Level_Property
@@ -285,11 +285,11 @@ package Gtk.GRange is
    --  gtk_range_set_show_fill_level().
    -- 
    --  Name: Update_Policy_Property
-   --  Type: Gtk_Update_Type
+   --  Type: Gtk.Enums.Gtk_Update_Type
    --  Flags: read-write
    -- 
    --  Name: Upper_Stepper_Sensitivity_Property
-   --  Type: Gtk_Sensitivity_Type
+   --  Type: Gtk.Enums.Gtk_Sensitivity_Type
    --  Flags: read-write
 
    Adjustment_Property : constant Glib.Properties.Property_Object;

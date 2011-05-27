@@ -123,27 +123,27 @@ package Gtk.Frame is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Label_Property
-   --  Type: String
+   --  Type: UTF8_String
    --  Flags: read-write
    -- 
    --  Name: Label_Widget_Property
-   --  Type: Object
+   --  Type: Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Label_Xalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    -- 
    --  Name: Label_Yalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    -- 
    --  Name: Shadow_Property
-   --  Type: Gtk_Shadow_Type
+   --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
    -- 
    --  Name: Shadow_Type_Property
-   --  Type: Gtk_Shadow_Type
+   --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
 
    Label_Property : constant Glib.Properties.Property_String;

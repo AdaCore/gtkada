@@ -72,11 +72,11 @@ package Gtk.Paned is
    type Gtk_Paned_Record is new Gtk_Container_Record with null record;
    type Gtk_Paned is access all Gtk_Paned_Record'Class;
 
-   subtype Gtk_Vpaned_Record is Gtk_Paned_Record;
-   subtype Gtk_Vpaned is Gtk_Paned;
-
    subtype Gtk_Hpaned_Record is Gtk_Paned_Record;
    subtype Gtk_Hpaned is Gtk_Paned;
+
+   subtype Gtk_Vpaned_Record is Gtk_Paned_Record;
+   subtype Gtk_Vpaned is Gtk_Paned;
 
    ------------------
    -- Constructors --
@@ -85,19 +85,19 @@ package Gtk.Paned is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
-   procedure Gtk_New_Vpaned (Self : out Gtk_Vpaned);
-   procedure Initialize_Vpaned (Self : access Gtk_Vpaned_Record'Class);
-   --  The children will be displayed one on top of the other
-
-   function Get_Type_Vpaned return Glib.GType;
-   pragma Import (C, Get_Type_Vpaned, "gtk_vpaned_get_type");
-
    procedure Gtk_New_Hpaned (Self : out Gtk_Hpaned);
    procedure Initialize_Hpaned (Self : access Gtk_Hpaned_Record'Class);
    --  The children will be displayed next to each other
 
    function Get_Type_Hpaned return Glib.GType;
    pragma Import (C, Get_Type_Hpaned, "gtk_hpaned_get_type");
+
+   procedure Gtk_New_Vpaned (Self : out Gtk_Vpaned);
+   procedure Initialize_Vpaned (Self : access Gtk_Vpaned_Record'Class);
+   --  The children will be displayed one on top of the other
+
+   function Get_Type_Vpaned return Glib.GType;
+   pragma Import (C, Get_Type_Vpaned, "gtk_vpaned_get_type");
 
    -------------
    -- Methods --
@@ -170,19 +170,19 @@ package Gtk.Paned is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Max_Position_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    --  The largest possible value for the position property. This property is
    --  derived from the size and shrinkability of the widget's children.
    -- 
    --  Name: Min_Position_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    --  The smallest possible value for the position property. This property is
    --  derived from the size and shrinkability of the widget's children.
    -- 
    --  Name: Position_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    -- 
    --  Name: Position_Set_Property

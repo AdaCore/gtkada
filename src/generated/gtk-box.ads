@@ -241,7 +241,7 @@ package Gtk.Box is
 
    function Get_Child
       (Self : access Gtk_Box_Record;
-       Num  : gint) return Gtk_Widget;
+       Num  : Gint) return Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
 
@@ -256,7 +256,7 @@ package Gtk.Box is
    --  Flags: read-write
    -- 
    --  Name: Spacing_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)

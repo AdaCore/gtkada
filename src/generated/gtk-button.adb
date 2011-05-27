@@ -106,10 +106,9 @@ package body Gtk.Button is
       function Internal
          (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Label := New_String (Label);
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Self, Tmp_Return);
@@ -126,10 +125,9 @@ package body Gtk.Button is
       function Internal
          (Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Stock_Id := New_String (Stock_Id);
       Tmp_Return := Internal (Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
       Set_Object (Self, Tmp_Return);
@@ -146,10 +144,9 @@ package body Gtk.Button is
       function Internal
          (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_mnemonic");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Label := New_String (Label);
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Self, Tmp_Return);
@@ -400,9 +397,8 @@ package body Gtk.Button is
          (Self  : System.Address;
           Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_button_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
    begin
-      Tmp_Label := New_String (Label);
       Internal (Get_Object (Self), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;

@@ -105,11 +105,11 @@ package body Gtk.Box is
 
    function Get_Child
       (Self : access Gtk_Box_Record;
-       Num  : gint) return Gtk_Widget
+       Num  : Gint) return Gtk_Widget
    is
       function Internal
          (Self : System.Address;
-          Num  : gint) return System.Address;
+          Num  : Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
       Stub : Gtk_Widget_Record;
    begin

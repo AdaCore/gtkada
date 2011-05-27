@@ -134,11 +134,11 @@ package Gtk.Progress is
    --  Flags: read-write
    -- 
    --  Name: Text_Xalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    -- 
    --  Name: Text_Yalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
 
    Activity_Mode_Property : constant Glib.Properties.Property_Boolean;

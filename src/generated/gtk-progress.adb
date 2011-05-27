@@ -172,9 +172,8 @@ package body Gtk.Progress is
          (Progress : System.Address;
           Format   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_progress_set_format_string");
-      Tmp_Format : Interfaces.C.Strings.chars_ptr;
+      Tmp_Format : Interfaces.C.Strings.chars_ptr := New_String (Format);
    begin
-      Tmp_Format := New_String (Format);
       Internal (Get_Object (Progress), Tmp_Format);
       Free (Tmp_Format);
    end Set_Format_String;
@@ -247,7 +246,7 @@ package body Gtk.Progress is
       (Progress : access Gtk_Progress_Record) return Guint
    is
       function Internal (Progress : System.Address) return Guint;
-      pragma Import (C, Internal, "gtkada_Progress_get_activity_mode");
+      pragma Import (C, Internal, "gtkada_GtkProgress_get_activity_mode");
    begin
       return Internal (Get_Object (Progress));
    end Get_Activity_Mode;
@@ -260,7 +259,7 @@ package body Gtk.Progress is
       (Progress : access Gtk_Progress_Record) return Gtk_Adjustment
    is
       function Internal (Progress : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtkada_Progress_get_adjustment");
+      pragma Import (C, Internal, "gtkada_GtkProgress_get_adjustment");
       Stub : Gtk_Adjustment_Record;
    begin
       return Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Progress)), Stub));

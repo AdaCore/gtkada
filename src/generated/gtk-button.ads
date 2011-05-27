@@ -112,7 +112,7 @@ package Gtk.Button is
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Sets the alignment of the child. This property has no effect unless the
-   --  child is a Gtk.Misc.Gtk_Misc or a Gtk.Aligment.Gtk_Aligment.
+   --  child is a Gtk.Misc.Gtk_Misc or a GtkAligment.
    --  Since: gtk+ 2.4
    --  "xalign": the horizontal position of the child, 0.0 is left aligned, 1.0
    --  is right aligned
@@ -207,20 +207,20 @@ package Gtk.Button is
    --  Flags: read-write
    -- 
    --  Name: Image_Property
-   --  Type: Object
+   --  Type: Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Image_Position_Property
-   --  Type: Gtk_Position_Type
+   --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
    --  The position of the image relative to the text inside the button.
    -- 
    --  Name: Label_Property
-   --  Type: String
+   --  Type: UTF8_String
    --  Flags: read-write
    -- 
    --  Name: Relief_Property
-   --  Type: Gtk_Relief_Style
+   --  Type: Gtk.Enums.Gtk_Relief_Style
    --  Flags: read-write
    -- 
    --  Name: Use_Stock_Property
@@ -232,14 +232,14 @@ package Gtk.Button is
    --  Flags: read-write
    -- 
    --  Name: Xalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    --  If the child of the button is a #GtkMisc or #GtkAlignment, this property
    --  can be used to control it's horizontal alignment. 0.0 is left aligned,
    --  1.0 is right aligned.
    -- 
    --  Name: Yalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    --  If the child of the button is a #GtkMisc or #GtkAlignment, this property
    --  can be used to control it's vertical alignment. 0.0 is top aligned, 1.0

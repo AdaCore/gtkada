@@ -160,7 +160,7 @@ package Gtk.List is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Selection_Mode_Property
-   --  Type: Gtk_Selection_Mode
+   --  Type: Gtk.Enums.Gtk_Selection_Mode
    --  Flags: read-write
 
    Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode;

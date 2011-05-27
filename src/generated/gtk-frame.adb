@@ -138,9 +138,8 @@ package body Gtk.Frame is
          (Self  : System.Address;
           Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_frame_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
    begin
-      Tmp_Label := New_String (Label);
       Internal (Get_Object (Self), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;

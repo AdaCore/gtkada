@@ -59,9 +59,17 @@ Where the package node is defined as follows:
           <with_spec pkg="..."/>  <!-- extra with clauses for spec -->
           <with_body pkg="..."/>  <!-- extra with clauses for body -->
           <method>         <!-- optional, pure Ada methods
+                           <!-- Code will be put after generated subprograms-->
              <spec>...     <!-- optional, code to insert in spec -->
              <body>...     <!-- optional, code to insert in body -->
           </method>
+          <type            <!-- Maps a C type to an Ada type -->
+             ctype="..."   <!-- Mandatory: c type name -->
+             ada="..."     <!-- Mandatory: ada type name -->
+          >
+             code          <!-- Optional, the type declaration, will be put
+                                after generated types but before subprograms-->
+          </type>
        </extra>
     </package>
 """

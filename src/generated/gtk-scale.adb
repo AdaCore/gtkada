@@ -176,9 +176,8 @@ package body Gtk.Scale is
           Position : Integer;
           Markup   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_scale_add_mark");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
+      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
    begin
-      Tmp_Markup := New_String (Markup);
       Internal (Get_Object (Scale), Value, Gtk.Enums.Gtk_Position_Type'Pos (Position), Tmp_Markup);
       Free (Tmp_Markup);
    end Add_Mark;

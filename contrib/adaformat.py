@@ -9,6 +9,169 @@ import re
 from collections import namedtuple, defaultdict
 
 
+TD = namedtuple('TD', ['ada', 'is_enum', 'is_gobject', 'property'])
+
+def Enum(ada, property=None):
+    base = ada[ada.rfind(".") + 1:] or ada
+    if property is None:
+        return TD(ada, True, False, "Gtk.Enums.Property_%s" % base)
+    else:
+        return TD(ada, True, False, property)
+def GObject(ada):
+    return TD(ada, False, True, "Glib.Properties.Property_Object")
+def Proxy(ada, property=None):
+    if property is None:
+        # ??? incorrect
+        return TD(ada, False, False, "Gtk.Enums.Property_%s" % ada)
+    else:
+        return TD(ada, False, False, property)
+
+
+class AdaNaming(object):
+    def __init__(self):
+        self.cname_to_adaname = {
+            # Maps c methods to Ada subprograms.
+            # All methods that are generated automatically will be added
+            # as they are processed.
+            "gtk_widget_get_direction":    "Gtk.Widget.Get_Direction",
+            "gtk_widget_set_size_request": "Gtk.Widget.Set_Size_Request",
+            "gtk_window_set_default_icon": "Gtk.Window.Set_Default_Icon",
+            "gtk_show_uri":                "gtk_show_uri()",
+            "gtk_widget_show":             "Gtk.Widget.Show",
+        }
+        self.girname_to_ctype = {
+            # Maps GIR's "name" to a "c:type". This isn't needed for the
+            # classes themselves, since this is automatically read from the
+            # GIR file.
+            "GdkPixbuf.Pixbuf":    "GdkPixbuf",
+            "Pango.EllipsizeMode": "PangoEllipsizeMode",
+            "Pango.WrapMode":      "PangoWrapMode",
+            "Pango.AttrList":      "PangoAttrList",
+        }
+        self.exceptions = {
+            # Naming exceptions. In particular maps Ada keywords.
+            "Entry": "GEntry",
+            "Type":  "The_Type",
+            "Range": "GRange",
+            "Delay": "The_Delay",
+            "Select": "Gtk_Select",
+            "End":   "The_End",
+            "Return": "Do_Return",
+            "Function": "Func",
+            "Digits": "Number_Of_Digits",
+            "Reverse": "Gtk_Reverse",
+        }
+        self.type_exceptions = {
+            # Maps C types to type descriptions.
+            # All standard widgets will be added automatically. Only special
+            # namings are needed here
+            "gboolean":          Enum("Boolean",
+                                      "Glib.Properties.Property_Boolean"),
+            "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
+            "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
+            "guint":    Proxy("Guint",   "Glib.Properties.Property_Int"),
+            "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
+
+            "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
+            "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
+            "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
+            "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
+
+            "GObject.Object":     GObject("Glib.Object.GObject"),
+
+            "gpointer":       Proxy("System.Address", ""),
+            "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
+
+            "GtkPositionType":    Enum("Gtk.Enums.Gtk_Position_Type"),
+            "GtkReliefStyle":     Enum("Gtk.Enums.Gtk_Relief_Style"),
+            "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
+            "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
+            "GtkPackType":        Enum("Gtk.Enums.Gtk_Pack_Type"),
+            "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
+            "GtkScrollType":      Enum("Gtk.Enums.Gtk_Scroll_Type"),
+            "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
+            "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
+            "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
+            "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
+            "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
+            "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
+            "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
+            "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
+            "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
+            "GtkRange":        GObject("Gtk.GRange.Gtk_Range"), # in docs
+            "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
+            "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
+            "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
+            "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
+
+            "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
+            "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
+            "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
+            "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
+            "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+        }
+
+    def add_type_exception(self, cname, type):
+        """Declares a new type exception, unless there already existed
+           one for that cname.
+        """
+        assert(isinstance(type, TD))
+        if cname not in self.type_exceptions:
+            self.type_exceptions[cname] = type
+
+    def add_cmethod(self, cname, adaname):
+        """Register the mapping from c method's name to Ada subprogram.
+           This is used to replace C function names in the documentation
+           with their Ada equivalent"""
+        self.cname_to_adaname[cname] = adaname
+
+    def add_girname(self, girname, ctype):
+        """Maps a GIR's "name" attribute to its matching C type.
+           This is used to resolve such names in the documentation and in
+           properties types.
+        """
+        self.girname_to_ctype[girname] = ctype
+
+    def ctype_from_girname(self, girname):
+        """Return the C type corresponding to a GIR name"""
+        return self.girname_to_ctype.get(girname, "Gtk%s" % girname)
+
+    def adamethod_name(self, cname):
+        """Return the ada name corresponding to the C method's name"""
+        try:
+            return self.cname_to_adaname[cname]
+        except KeyError:
+            if cname.startswith("gtk_"):
+                print "Function quoted in doc has no Ada binding: %s" % cname
+            self.cname_to_adaname[cname] = cname  # Display warning once only
+            return cname
+
+    def case(self, name):
+        """Return the proper casing to use for 'name', taking keywords
+           into account. This is for packages.
+        """
+        name = name.replace("-", "_").title()
+        if name.endswith("_"):
+            name = name[:-1]
+
+        return self.exceptions.get(name, name)
+
+    def full_type_from_girname(self, girname):
+        """Return the type description from a GIR name"""
+        return self.type_exceptions.get(
+            girname,  # First try GIR name as is in the table (gint, ...)
+            self.type_exceptions.get(
+                self.ctype_from_girname(girname), # Else the C type
+                Proxy(girname)))  # Else return the GIR name itself
+
+    def full_type(self, cname):
+        """Return the type description from a C type name"""
+        return self.type_exceptions.get(cname, Proxy(cname))
+
+
+naming = AdaNaming()
+
+
 def max_length(iter):
     """Return the length of the longuest element in iter"""
     longuest = 0
@@ -42,155 +205,6 @@ def box(name, indent="   "):
     return indent + "-" * (len(name) + 6) + "\n" \
             + indent + "-- " + name + " --\n" \
             + indent + "-" * (len(name) + 6)
-
-
-def space_out_camel_case(stringAsCamelCase):
-    """Adds spaces to a camel case string.  Failure to space out string
-       returns the original string.
-         >>> space_out_camel_case('DMLSServicesOtherBSTextLLC')
-       'DMLS Services Other BS Text LLC'
-    """
-
-    if stringAsCamelCase is None:
-        return None
-
-    pattern = re.compile('([A-Z][A-Z][a-z])|([a-z][A-Z])')
-    return pattern.sub(
-        lambda m: m.group()[:1] + "_" + m.group()[1:], stringAsCamelCase)
-
-
-TD = namedtuple('TD', ['ada', 'is_enum', 'is_gobject'])
-
-def Enum(ada):
-    return TD(ada, True, False)
-def GObject(ada):
-    return TD(ada, False, True)
-def Proxy(ada):
-    return TD(ada, False, False)
-
-
-class AdaNaming(object):
-    def __init__(self):
-        self.cname_to_adaname = dict() # Maps c methods to Ada subprograms
-        self.exceptions = {
-            "Entry": "GEntry",
-            "Type":  "The_Type",
-            "Range": "GRange",
-            "Delay": "The_Delay",
-            "Select": "Gtk_Select",
-            "End":   "The_End",
-            "Return": "Do_Return",
-            "Function": "Func",
-            "Digits": "Number_Of_Digits",
-            "Reverse": "Gtk_Reverse",
-        }
-        self.type_exceptions = {
-            # All standard widgets will be added automatically. Only special
-            # namings are needed here
-            "gboolean":           Enum("Boolean"),
-            "PangoAttrList":      Proxy("Pango.Attributes.Pango_Attr_List"),
-            "PangoEllipsizeMode": Enum("Pango.Layout.Pango_Ellipsize_Mode"),
-            "PangoWrapMode":      Enum("Pango.Layout.Pango_Wrap_Mode"),
-            "PangoLayout":        GObject("Pango.Layout.Pango_Layout"),
-
-            "GtkPositionType":    Enum("Gtk.Enums.Gtk_Position_Type"),
-            "GtkReliefStyle":     Enum("Gtk.Enums.Gtk_Relief_Style"),
-            "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
-            "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
-            "GtkPackType":        Enum("Gtk.Enums.Gtk_Pack_Type"),
-            "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
-            "GtkScrollType":      Enum("Gtk.Enums.Gtk_Scroll_Type"),
-            "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
-            "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
-            "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
-            "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
-            "ButtonBox":          GObject("Gtk.Button_Box.Gtk_Button_Box"),
-            "HButtonBox":         GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
-            "VButtonBox":         GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
-            "Range":              GObject("Gtk.GRange.Gtk_Range"),
-            "GtkRange":           GObject("Gtk.GRange.Gtk_Range"), # in docs
-            "Entry":              GObject("Gtk.GEntry.Gtk_Entry"),
-            "VolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
-            "ScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
-            "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
-
-            "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
-            "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
-            "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
-            "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
-        }
-
-    def add_gobject(self, cname):
-        """Maps cname to a GObject type, unless it already existed in the
-           list of exceptions.
-        """
-        if cname not in self.type_exceptions:
-            self.type_exceptions[cname] = GObject(
-                "Gtk.%s.Gtk_%s" % (self.case(cname), self.case(cname)))
-
-    def map_cname(self, cname, adaname):
-        """Register the mapping from c method's name to Ada subprogram"""
-        self.cname_to_adaname[cname] = adaname
-
-    def ada_name(self, cname):
-        """Return the ada name corresponding to the C method's name"""
-        try:
-            return self.cname_to_adaname[cname]
-        except KeyError:
-            if cname.startswith("gtk_"):
-                print "Function quoted in doc has no Ada binding: %s" % cname
-            self.cname_to_adaname[cname] = cname  # Display warning once only
-            return cname
-
-    def case(self, name):
-        """Return the proper casing to use for 'name', taking keywords
-           into account. This is for packages.
-        """
-        name = name.replace("-", "_").title()
-
-        if name.endswith("_"):
-            name = name[:-1]
-
-        return self.exceptions.get(name, name)
-
-    def case_type(self, name):
-        """Return the default Ada name for a type"""
-
-        name = name.replace("-", "_").title()
-
-        if name.endswith("_"):
-            name = name[:-1]
-
-        return self.type_exceptions.get(
-            name, self.exceptions.get(name, name))
-
-    def explicit_full_type(self, cname):
-        """Return the full type as read from the list of exceptions.
-           If the type is not found in the exceptions, no second guess is
-           made and None is returned.
-        """
-        return self.type_exceptions.get(cname, None)
-
-
-    def full_type(self, cname):
-        """Return the default full type name, including package"""
-        name = self.explicit_full_type(cname)
-        if name is None:
-            s = cname.split(".")
-            if len(s) == 2:
-                name = "%s.%s.%s_%s" % (
-                    s[0], self.case(s[1]), s[0], self.case_type(s[1]))
-                return GObject(cname)
-            elif cname.startswith("Gtk"):
-                name = "Gtk.%s.Gtk_%s" % (
-                    self.case(cname[3:]), self.case(cname[3:]))
-                return GObject(name)
-            else:
-                return Proxy(cname)
-        else:
-            return name
-
-naming = AdaNaming()
 
 
 def indent_code(code, indent=3):
@@ -307,8 +321,10 @@ class CType(object):
            NULL pointer in C, rather than an empty C string.
         """
 
-        def as_enumeration(name, cname):
-            """Self is an enumeration, setup the conversion hooks"""
+        def as_enumeration(td, cname):
+            """Self is an enumeration, setup the conversion hooks
+               `td' is an instance of TD"""
+            name = td.ada
             if "." in name:
                 pkg.add_with(name[0:name.rfind(".")])
             self.param = name
@@ -316,9 +332,12 @@ class CType(object):
             self.convert = "%s'Pos (%%(var)s)" % name
             self.postconvert = "%s'Val (%%s)" % name
             self.returns = (self.param, self.cparam, self.postconvert, [])
+            self.property = td.property
 
-        def as_gobject(full, userecord=True):
-            """Self is a descendant of GObject, setup the conversion hooks"""
+        def as_gobject(td, userecord=True):
+            """Self is a descendant of GObject, setup the conversion hooks
+               `td' is an instance of TD"""
+            full = td.ada
             if "." in full:
                 pkg.add_with(full[0:full.rfind(".")])
                 full = full[full.rfind(".") + 1:]
@@ -331,6 +350,7 @@ class CType(object):
             self.cparam = "System.Address"
             self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
             self.is_ptr = False
+            self.property = td.property
             self.returns = (
                 full, self.cparam,
                 "%s (Get_User_Data (%%s, Stub))" % full,
@@ -354,7 +374,21 @@ class CType(object):
                              # name of the variable.
         self.isArray = isArray
 
-        if name == "utf8":
+        if cname == "gchar**" or name == "array_of_utf8":
+            self.param = "GNAT.Strings.String_List"
+            self.cparam = "Interfaces.C.Strings.chars_ptr_array"
+            self.convert = "From_String_List (%(var)s)"
+            self.cleanup = "GtkAda.Types.Free (%s)"
+            self.returns = (
+                "GNAT.Strings.String_List", "chars_ptr_array_access",
+                "To_String_List (%s.all)", [])
+            self.property = ""   # Can't map those
+            pkg.add_with("GNAT.Strings")
+            pkg.add_with("Gtkada.Types", specs=False)
+            pkg.add_with("Interfaces.C.Strings", specs=False)
+            pkg.add_with("Gtkada.Bindings", specs=False)
+
+        elif name == "utf8":
             self.param = "UTF8_String"
             self.cparam = "Interfaces.C.Strings.chars_ptr"
 
@@ -368,9 +402,7 @@ class CType(object):
             self.returns = (
                 "UTF8_String", "Interfaces.C.Strings.chars_ptr",
                 "Interfaces.C.Strings.Value (%s)", [])
-
-        elif name in ("gdouble", "gint", "guint", "gfloat"):
-            self.param = name.title()
+            self.property = "Glib.Properties.Property_String"
 
         else:
             basename = None
@@ -393,46 +425,35 @@ class CType(object):
                             basename = basename[0:-1]
                         full = naming.full_type(basename)
             else:
-                if name.startswith("Pango"):
-                    # for consistency: the GIR files are not...
-                    basename = name.replace(".", "")
-                    full = naming.full_type(basename)
-                else:
-                    full = naming.explicit_full_type(name)
-                    if full is None:
-                        # Workaround GIR bug: they use a "name" and not a C
-                        # type for <properties>
-                        basename = "Gtk%s" % name
-                        full = naming.full_type(basename)
+                full = naming.full_type_from_girname(name)
 
-            if basename == "PangoLayout":
-                as_gobject(full[0])
-
-            elif full.is_enum:
-                as_enumeration(full.ada, "Integer")
+            if full.is_enum:
+                as_enumeration(full, "Integer")
 
             elif full.is_gobject:
-                as_gobject(
-                    full.ada, userecord=cname and not cname.endswith("**"))
+                as_gobject(full, userecord=cname and not cname.endswith("**"))
 
-            elif self.is_ptr \
-               and cname.startswith("Gtk"):
-                 as_gobject(full.ada, userecord=not cname.endswith("**"))
-
+            elif self.is_ptr and cname.startswith("Gtk"):
+                 as_gobject(full, userecord=not cname.endswith("**"))
                  if cname.endswith("**"):
                      self.is_ptr = True # An out parameter
 
             else:
-                full = full.ada
-                if "." in full:
-                    pkg.add_with(full[0:full.rfind(".")])
-                self.param = full
+                ada = full.ada
+                if "." in ada:
+                    pkg.add_with(ada[0:ada.rfind(".")])
+                self.param = ada
+                self.property = full.property
 
         if self.cparam is None:
             self.cparam = self.param
 
         if self.returns is None:
             self.returns = (self.param, self.cparam, "%s", [])
+
+    def as_property(self):
+        """The type to use for the property"""
+        return self.property
 
     def as_return(self, lang="ada"):
         """See CType documentation for a description of the returned tuple"""
@@ -482,11 +503,14 @@ class CType(object):
         elif self.cleanup:
             tmp = "Tmp_%s" % name
             conv = self.convert % {"var":name}
+
+            # Initialize the temporary variable with a default value, in case
+            # it is an unconstrained type (a chars_ptr_array for instance)
             return VariableCall(
                 call=wrapper % tmp,
-                precall='%s := %s;' % (tmp, conv),
+                precall='',
                 postcall=self.cleanup % tmp,
-                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+                tmpvars=[Local_Var(name=tmp, type=self.cparam, default=conv)])
 
         else:
             conv = self.convert % {"var":name}
@@ -695,7 +719,7 @@ class Subprogram(object):
         doc = doc.replace("%False", "True")
 
         subp = re.compile("([\S_]+)\(\)")
-        doc = subp.sub(lambda x: naming.ada_name(x.group(1)), doc)
+        doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
         types = re.compile("#([\w_]+)")
         doc = types.sub(lambda x: naming.full_type(x.group(1))[0], doc)
@@ -1007,7 +1031,8 @@ class Package(object):
                 continue   # No dependence on self
             if specs:
                 self.spec_withs[p] = do_use or self.spec_withs.get(p, False)
-            else:
+                self.body_withs.pop(p, None) # Remove same with in body
+            elif p not in self.spec_withs:
                 self.body_withs[p] = do_use or self.body_withs.get(p, False)
 
     def add_private(self, code):

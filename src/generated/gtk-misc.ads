@@ -90,19 +90,19 @@ package Gtk.Misc is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Xalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    -- 
    --  Name: Xpad_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    -- 
    --  Name: Yalign_Property
-   --  Type: Float
+   --  Type: Gfloat
    --  Flags: read-write
    -- 
    --  Name: Ypad_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
 
    Xalign_Property : constant Glib.Properties.Property_Float;

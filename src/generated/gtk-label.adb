@@ -69,10 +69,9 @@ package body Gtk.Label is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Str := New_String (Str);
       Tmp_Return := Internal (Tmp_Str);
       Free (Tmp_Str);
       Set_Object (Self, Tmp_Return);
@@ -89,10 +88,9 @@ package body Gtk.Label is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new_with_mnemonic");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Str := New_String (Str);
       Tmp_Return := Internal (Tmp_Str);
       Free (Tmp_Str);
       Set_Object (Self, Tmp_Return);
@@ -387,10 +385,9 @@ package body Gtk.Label is
          (Self   : System.Address;
           String : Interfaces.C.Strings.chars_ptr) return Guint;
       pragma Import (C, Internal, "gtk_label_parse_uline");
-      Tmp_String : Interfaces.C.Strings.chars_ptr;
+      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
       Tmp_Return : Guint;
    begin
-      Tmp_String := New_String (String);
       Tmp_Return := Internal (Get_Object (Self), Tmp_String);
       Free (Tmp_String);
       return Tmp_Return;
@@ -478,9 +475,8 @@ package body Gtk.Label is
          (Self : System.Address;
           Str  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_label");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Tmp_Str := New_String (Str);
       Internal (Get_Object (Self), Tmp_Str);
       Free (Tmp_Str);
    end Set_Label;
@@ -519,9 +515,8 @@ package body Gtk.Label is
          (Self : System.Address;
           Str  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_markup");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Tmp_Str := New_String (Str);
       Internal (Get_Object (Self), Tmp_Str);
       Free (Tmp_Str);
    end Set_Markup;
@@ -538,9 +533,8 @@ package body Gtk.Label is
          (Self : System.Address;
           Str  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_markup_with_mnemonic");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Tmp_Str := New_String (Str);
       Internal (Get_Object (Self), Tmp_Str);
       Free (Tmp_Str);
    end Set_Markup_With_Mnemonic;
@@ -585,9 +579,8 @@ package body Gtk.Label is
          (Self    : System.Address;
           Pattern : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_pattern");
-      Tmp_Pattern : Interfaces.C.Strings.chars_ptr;
+      Tmp_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Pattern);
    begin
-      Tmp_Pattern := New_String (Pattern);
       Internal (Get_Object (Self), Tmp_Pattern);
       Free (Tmp_Pattern);
    end Set_Pattern;
@@ -629,9 +622,8 @@ package body Gtk.Label is
          (Self : System.Address;
           Str  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_text");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Tmp_Str := New_String (Str);
       Internal (Get_Object (Self), Tmp_Str);
       Free (Tmp_Str);
    end Set_Text;
@@ -648,9 +640,8 @@ package body Gtk.Label is
          (Self : System.Address;
           Str  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_text_with_mnemonic");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Tmp_Str := New_String (Str);
       Internal (Get_Object (Self), Tmp_Str);
       Free (Tmp_Str);
    end Set_Text_With_Mnemonic;

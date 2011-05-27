@@ -204,7 +204,7 @@ package Gtk.Scale is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Number_Of_Digits_Property
-   --  Type: Int
+   --  Type: Gint
    --  Flags: read-write
    -- 
    --  Name: Draw_Value_Property
@@ -212,7 +212,7 @@ package Gtk.Scale is
    --  Flags: read-write
    -- 
    --  Name: Value_Pos_Property
-   --  Type: Gtk_Position_Type
+   --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)

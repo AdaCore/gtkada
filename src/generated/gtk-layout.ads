@@ -162,19 +162,19 @@ package Gtk.Layout is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Hadjustment_Property
-   --  Type: Object
+   --  Type: Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Height_Property
-   --  Type: Int
+   --  Type: Guint
    --  Flags: read-write
    -- 
    --  Name: Vadjustment_Property
-   --  Type: Object
+   --  Type: Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Width_Property
-   --  Type: Int
+   --  Type: Guint
    --  Flags: read-write
 
    Hadjustment_Property : constant Glib.Properties.Property_Object;

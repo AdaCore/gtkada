@@ -20,11 +20,7 @@ pressed while the mouse is on it, but does not keep its pressed state.
 The gtk+ sources provide the following drawing that explains the role of
 the various spacings that can be set for a button:
       </doc>
-
-      <method id="gtk_button_new_with_label" ada="Gtk_New">
-         <parameter name="label"/>
-      </method>
-
+      <method id="gtk_button_new_with_label" ada="Gtk_New" />
    </package>
 
    <!-- ###################################################
@@ -552,8 +548,8 @@ end Get_Selection;
       <method id="gtk_progress_get_adjustment">
          <parameter name="self" ada="widget"/>
       </method>
-      <method id="gtkada_Progress_get_adjustment" bind="true"/>
-      <method id="gtkada_Progress_get_activity_mode" bind="true"/>
+      <method id="gtkada_GtkProgress_get_adjustment" bind="true"/>
+      <method id="gtkada_GtkProgress_get_activity_mode" bind="true"/>
    </package>
 
    <package id="Gtk.Layout">
@@ -678,5 +674,47 @@ for use as a volume control widget with suitable icons, tooltips and
 accessible labels.
       </doc>
    </package>
+
+   <package id="Gtk.About_Dialog">
+      <doc group="Windows" testgtk="create_about.adb">
+The Gtk_About_Dialog offers a simple way to display information about a
+program like its logo, name, copyright, website and license. It is also
+possible to give credits to the authors, documenters, translators and
+artists who have worked on the program. An about dialog is typically opened
+when the user selects the About option from the Help menu. All parts of the
+dialog are optional.
+
+About dialog often contain links and email addresses. Gtk_About_Dialog
+supports this by offering global hooks, which are called when the user
+clicks on a link or email address, see Set_Email_Hook and Set_Url_Hook.
+Email addresses in the authors, documenters and artists properties are
+recognized by looking for &lt;user@host&gt;, URLs are recognized by looking for
+http://url, with url extending to the next space, tab or line break.
+
+To make constructing a Gtk_About_Dialog as convenient as possible, you can
+use the function gtk_show_about_dialog which constructs and shows a dialog
+and keeps it around so that it can be shown again.
+     </doc>
+     <extra>
+        <with_spec pkg="Interfaces.C.Strings"/>
+        <!-- This is defined in a <callback> node in GIR, but not processed
+             automatically yet -->
+        <type ctype="GtkAboutDialogActivateLinkFunc"
+           ada="Activate_Link_Func">
+type Activate_Link_Func is access procedure
+  (About : System.Address;
+   Link  : Interfaces.C.Strings.chars_ptr;
+   Data  : System.Address);
+pragma Convention (C, Activate_Link_Func);
+--  A callback called when the user presses an hyper link in the about
+--  dialog. This is a low-level function, and you'll need to convert the
+--  parameters to more useful types with:
+--     Stub : Gtk_About_Dialog_Record;
+--     A    : constant Gtk_About_Dialog :=
+--       Gtk_About_Dialog (Get_User_Data (About, Stub));
+--     L    : constant String := Interfaces.C.Strings.Value (Link);
+        </type>
+     </extra>
+  </package>
 
 </GIR>
