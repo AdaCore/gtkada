@@ -90,7 +90,7 @@ package Gtk.Box is
       (Self        : access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Hbox.Gtk_Hbox.
+   --  Creates a new Gtk.Box.Gtk_Hbox.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -106,7 +106,7 @@ package Gtk.Box is
       (Self        : access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Vbox.Gtk_Vbox.
+   --  Creates a new Gtk.Box.Gtk_Vbox.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -135,7 +135,7 @@ package Gtk.Box is
 
    procedure Pack_End
       (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk_Widget_Record'Class;
+       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0);
@@ -149,7 +149,7 @@ package Gtk.Box is
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
    --  effect if Expand is set to %FALSE. A child is always allocated the full
-   --  height of a Gtk.Hbox.Gtk_Hbox and the full width of a Gtk.Vbox.Gtk_Vbox.
+   --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
    --  This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
@@ -158,7 +158,7 @@ package Gtk.Box is
 
    procedure Pack_End_Defaults
       (Self   : access Gtk_Box_Record;
-       Widget : access Gtk_Widget_Record'Class);
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    pragma Obsolescent;
    --  Adds Widget to Box, packed with reference to the end of Box. The child
    --  is packed after any other child packed with reference to the start of
@@ -170,7 +170,7 @@ package Gtk.Box is
 
    procedure Pack_Start
       (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk_Widget_Record'Class;
+       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0);
@@ -182,7 +182,7 @@ package Gtk.Box is
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
    --  effect if Expand is set to %FALSE. A child is always allocated the full
-   --  height of a Gtk.Hbox.Gtk_Hbox and the full width of a Gtk.Vbox.Gtk_Vbox.
+   --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
    --  This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
@@ -191,7 +191,7 @@ package Gtk.Box is
 
    procedure Pack_Start_Defaults
       (Self   : access Gtk_Box_Record;
-       Widget : access Gtk_Widget_Record'Class);
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    pragma Obsolescent;
    --  Adds Widget to Box, packed with reference to the start of Box. The child
    --  is packed after any other child packed with reference to the start of
@@ -203,14 +203,14 @@ package Gtk.Box is
 
    procedure Query_Child_Packing
       (Self      : access Gtk_Box_Record;
-       Child     : access Gtk_Widget_Record'Class;
+       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
        Padding   : out Guint;
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
    procedure Set_Child_Packing
       (Self      : access Gtk_Box_Record;
-       Child     : access Gtk_Widget_Record'Class;
+       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
        Padding   : Guint;
@@ -225,7 +225,7 @@ package Gtk.Box is
 
    procedure Reorder_Child
       (Self     : access Gtk_Box_Record;
-       Child    : access Gtk_Widget_Record'Class;
+       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint);
    --  Moves Child to a new Position in the list of Box children. The list is
    --  the <structfield>children</structfield> field of Gtk.Box.Gtk_Box-struct,
@@ -241,7 +241,7 @@ package Gtk.Box is
 
    function Get_Child
       (Self : access Gtk_Box_Record;
-       Num  : Gint) return Gtk_Widget;
+       Num  : Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
 

@@ -66,10 +66,10 @@ package body Gtk.List is
       (Self  : access Gtk_List_Record;
        Items : Widget_List.Glist)
    is
-      procedure Internal (Self : System.Address; Items : Widget_List.Glist);
+      procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_append_items");
    begin
-      Internal (Get_Object (Self), Items);
+      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
    end Append_Items;
 
    --------------------
@@ -78,7 +78,7 @@ package body Gtk.List is
 
    function Child_Position
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class) return Gint
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
    is
       function Internal
          (Self  : System.Address;
@@ -159,11 +159,11 @@ package body Gtk.List is
    is
       procedure Internal
          (Self     : System.Address;
-          Items    : Widget_List.Glist;
+          Items    : System.Address;
           Position : Gint);
       pragma Import (C, Internal, "gtk_list_insert_items");
    begin
-      Internal (Get_Object (Self), Items, Position);
+      Internal (Get_Object (Self), Widget_List.Get_Object (Items), Position);
    end Insert_Items;
 
    -------------------
@@ -174,10 +174,10 @@ package body Gtk.List is
       (Self  : access Gtk_List_Record;
        Items : Widget_List.Glist)
    is
-      procedure Internal (Self : System.Address; Items : Widget_List.Glist);
+      procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_prepend_items");
    begin
-      Internal (Get_Object (Self), Items);
+      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
    end Prepend_Items;
 
    ------------------
@@ -188,10 +188,10 @@ package body Gtk.List is
       (Self  : access Gtk_List_Record;
        Items : Widget_List.Glist)
    is
-      procedure Internal (Self : System.Address; Items : Widget_List.Glist);
+      procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_remove_items");
    begin
-      Internal (Get_Object (Self), Items);
+      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
    end Remove_Items;
 
    ---------------------------
@@ -202,10 +202,10 @@ package body Gtk.List is
       (Self  : access Gtk_List_Record;
        Items : Widget_List.Glist)
    is
-      procedure Internal (Self : System.Address; Items : Widget_List.Glist);
+      procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_remove_items_no_unref");
    begin
-      Internal (Get_Object (Self), Items);
+      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
    end Remove_Items_No_Unref;
 
    -----------------------
@@ -261,7 +261,7 @@ package body Gtk.List is
 
    procedure Select_Child
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_list_select_child");
@@ -333,7 +333,7 @@ package body Gtk.List is
 
    procedure Toggle_Row
       (Self : access Gtk_List_Record;
-       Item : access Gtk_Widget_Record'Class)
+       Item : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Item : System.Address);
       pragma Import (C, Internal, "gtk_list_toggle_row");
@@ -369,7 +369,7 @@ package body Gtk.List is
 
    procedure Unselect_Child
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_list_unselect_child");

@@ -136,10 +136,11 @@ package Gtk.Button is
    --  "focus_on_click": whether the button grabs focus when clicked with the
    --  mouse
 
-   function Get_Image (Self : access Gtk_Button_Record) return Gtk_Widget;
+   function Get_Image
+      (Self : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Image
       (Self  : access Gtk_Button_Record;
-       Image : access Gtk_Widget_Record'Class);
+       Image : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set the image of Button to the given widget. Note that it depends on the
    --  Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the image
    --  will be displayed or not, you don't have to call Gtk.Widget.Show on Image
@@ -205,7 +206,7 @@ package Gtk.Button is
    --  Flags: read-write
    -- 
    --  Name: Image_Property
-   --  Type: Gtk_Widget
+   --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Image_Position_Property

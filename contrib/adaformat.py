@@ -95,6 +95,10 @@ class AdaNaming(object):
             "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
+
+            #"GtkHBox":         GObject("Gtk.Box.Gtk_HBox"),
+            #"GtkVBox":         GObject("Gtk.Box.Gtk_VBox"),
+
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
             "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
@@ -111,12 +115,12 @@ class AdaNaming(object):
             "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
         }
 
-    def add_type_exception(self, cname, type):
+    def add_type_exception(self, cname, type, override=False):
         """Declares a new type exception, unless there already existed
            one for that cname.
         """
         assert(isinstance(type, TD))
-        if cname not in self.type_exceptions:
+        if override or cname not in self.type_exceptions:
             self.type_exceptions[cname] = type
 
     def add_cmethod(self, cname, adaname):
@@ -308,6 +312,44 @@ class CType(object):
        to the function.
     """
 
+    def _as_enumeration(self, td, cname, pkg):
+        """Self is an enumeration, setup the conversion hooks
+           `td' is an instance of TD"""
+        name = td.ada
+        if "." in name:
+            pkg.add_with(name[0:name.rfind(".")])
+        self.param = name
+        self.cparam = cname
+        self.convert = "%s'Pos (%%(var)s)" % name
+        self.postconvert = "%s'Val (%%s)" % name
+        self.returns = (self.param, self.cparam, self.postconvert, [])
+        self.property = td.property
+
+    def _as_gobject(self, td, pkg=None, userecord=True):
+        """Self is a descendant of GObject, setup the conversion hooks
+           `td' is an instance of TD.
+           If `userecord' is True, the type is represented as an access to
+           the record type, rather than use the access type itself.
+        """
+        full = td.ada
+        if "." in full:
+            if pkg:
+                pkg.add_with(full[0:full.rfind(".")])
+
+        if userecord:
+            self.param = "access %s_Record'Class" % full
+        else:
+            self.param = full
+
+        self.cparam = "System.Address"
+        self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
+        self.is_ptr = False
+        self.property = td.property
+        self.returns = (
+            full, self.cparam,
+            "%s (Get_User_Data (%%s, Stub))" % full,
+            [Local_Var("Stub", AdaType("%s_Record" % full, pkg=pkg))])
+
     def __init__(self, name, cname, pkg, isArray=False, allow_access=True,
                  empty_maps_to_null=False):
         """A type a described in a .gir file
@@ -320,41 +362,6 @@ class CType(object):
            If `empty_maps_to_null' is True, then an empty string maps to a
            NULL pointer in C, rather than an empty C string.
         """
-
-        def as_enumeration(td, cname):
-            """Self is an enumeration, setup the conversion hooks
-               `td' is an instance of TD"""
-            name = td.ada
-            if "." in name:
-                pkg.add_with(name[0:name.rfind(".")])
-            self.param = name
-            self.cparam = cname
-            self.convert = "%s'Pos (%%(var)s)" % name
-            self.postconvert = "%s'Val (%%s)" % name
-            self.returns = (self.param, self.cparam, self.postconvert, [])
-            self.property = td.property
-
-        def as_gobject(td, userecord=True):
-            """Self is a descendant of GObject, setup the conversion hooks
-               `td' is an instance of TD"""
-            full = td.ada
-            if "." in full:
-                pkg.add_with(full[0:full.rfind(".")])
-                full = full[full.rfind(".") + 1:]
-
-            if userecord and allow_access:
-                self.param = "access %s_Record'Class" % full
-            else:
-                self.param = full
-
-            self.cparam = "System.Address"
-            self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
-            self.is_ptr = False
-            self.property = td.property
-            self.returns = (
-                full, self.cparam,
-                "%s (Get_User_Data (%%s, Stub))" % full,
-                [Local_Var("Stub", AdaType("%s_Record" % full))])
 
         self.is_ptr = cname \
             and cname[-1] == '*' \
@@ -428,13 +435,18 @@ class CType(object):
                 full = naming.full_type_from_girname(name)
 
             if full.is_enum:
-                as_enumeration(full, "Integer")
+                self._as_enumeration(full, "Integer", pkg)
 
             elif full.is_gobject:
-                as_gobject(full, userecord=cname and not cname.endswith("**"))
+                self._as_gobject(
+                    full, pkg,
+                    userecord=cname
+                       and not cname.endswith("**") and allow_access)
 
             elif self.is_ptr and cname.startswith("Gtk"):
-                 as_gobject(full, userecord=not cname.endswith("**"))
+                 self._as_gobject(
+                     full, pkg,
+                     userecord=not cname.endswith("**") and allow_access)
                  if cname.endswith("**"):
                      self.is_ptr = True # An out parameter
 
@@ -510,7 +522,8 @@ class CType(object):
                 call=wrapper % tmp,
                 precall='',
                 postcall=self.cleanup % tmp,
-                tmpvars=[Local_Var(name=tmp, type=self.cparam, default=conv)])
+                tmpvars=[Local_Var(
+                    name=tmp, type=AdaType(self.cparam), default=conv)])
 
         else:
             conv = self.convert % {"var":name}
@@ -522,7 +535,7 @@ class CType(object):
 class AdaType(CType):
     """Similar to a CType, but created directly from Ada types"""
 
-    def __init__(self, adatype, ctype="", convert="%(var)s"):
+    def __init__(self, adatype, pkg=None, ctype="", convert="%(var)s"):
         """The 'adatype' type is represented as 'ctype' for subprograms
            that import C functions. The parameters of that type are converted
            from Ada to C by using 'convert'. 'convert' must use '%s' once
@@ -536,19 +549,24 @@ class AdaType(CType):
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
 
+        if adatype.lower().endswith(".glist"):
+            adapkg = adatype[:adatype.rfind(".")]
+            self._as_gobject(
+                td=GObject(adatype),
+                pkg=pkg,
+                userecord=False)
+            self.convert = "%s.Get_Object (%%(var)s)" % adapkg
+
 
 class Local_Var(object):
     __slots__ = ["name", "type", "default", "aliased"]
 
     def __init__(self, name, type, default="", aliased=False):
-        self.name = name
-
-        if isinstance(type, str):
-            self.type = AdaType(type)
-        else:
-            assert(isinstance(type, CType))
+        if isinstance(type, CType):
             self.type = type
-
+        else:
+            self.type = AdaType(type)
+        self.name = name
         self.default = default
         self.aliased = aliased
 

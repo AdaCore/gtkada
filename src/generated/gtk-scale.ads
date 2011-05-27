@@ -65,10 +65,10 @@ package Gtk.Scale is
 
    procedure Gtk_New_Hscale
       (Scale      : out Gtk_Hscale;
-       Adjustment : Gtk_Adjustment := null);
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize_Hscale
       (Scale      : access Gtk_Hscale_Record'Class;
-       Adjustment : Gtk_Adjustment := null);
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Gtk_New_Hscale
       (Scale : out Gtk_Hscale;
        Min   : Gdouble;
@@ -95,10 +95,10 @@ package Gtk.Scale is
 
    procedure Gtk_New_Vscale
       (Scale      : out Gtk_Vscale;
-       Adjustment : Gtk_Adjustment := null);
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize_Vscale
       (Scale      : access Gtk_Vscale_Record'Class;
-       Adjustment : Gtk_Adjustment := null);
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Gtk_New_Vscale
       (Scale : out Gtk_Vscale;
        Min   : Gdouble;
@@ -169,7 +169,8 @@ package Gtk.Scale is
    --  slider.
    --  "draw_value": True to draw the value
 
-   function Get_Layout (Scale : access Gtk_Scale_Record) return Pango_Layout;
+   function Get_Layout
+      (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by the
    --  caller. if the Gtk.Scale.Gtk_Scale:draw-value property is %FALSE.

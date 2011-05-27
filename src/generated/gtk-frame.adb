@@ -107,13 +107,13 @@ package body Gtk.Frame is
    ----------------------
 
    function Get_Label_Widget
-      (Self : access Gtk_Frame_Record) return Gtk_Widget
+      (Self : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_get_label_widget");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Label_Widget;
 
    ---------------------
@@ -168,7 +168,7 @@ package body Gtk.Frame is
 
    procedure Set_Label_Widget
       (Self         : access Gtk_Frame_Record;
-       Label_Widget : access Gtk_Widget_Record'Class)
+       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Self         : System.Address;

@@ -199,7 +199,7 @@ class GIRClass(object):
                 self._subst["params"] = ""
                 self._subst["internal_params"] = ""
 
-            returns = AdaType("System.Address")
+            returns = AdaType("System.Address", pkg=self.pkg)
             local_vars = []
             code = []
             plist = self._c_plist(params, returns, local_vars, code)
@@ -219,7 +219,8 @@ class GIRClass(object):
 
             initialize_params = [Parameter(
                 name=selfname,
-                type="%(typename)s_Record'Class" % self._subst,
+                type=AdaType("%(typename)s_Record'Class" % self._subst,
+                             pkg=self.pkg),
                 mode="access")] + params
             initialize = Subprogram(
                 name=adaname.replace("Gtk_New", "Initialize"),
@@ -237,7 +238,8 @@ class GIRClass(object):
                 name=adaname,
                 plist=[Parameter(
                     name=selfname,
-                    type="%(typename)s" % self._subst,
+                    type=AdaType("%(typename)s" % self._subst,
+                                 pkg=self.pkg),
                     mode="out")] + params,
                 local_vars=call[2],
                 code=selfname + " := new %(typename)s_Record;" % self._subst
@@ -267,19 +269,21 @@ class GIRClass(object):
         return doc
 
     def _handle_function(self, section, c, ismethod=False):
-        self._handle_function_internal(
-            section, node=c, cname=c.get(cidentifier),
-            get_return=lambda: self._get_type(c.find(nreturn)),
-            ismethod=ismethod)
+        cname = c.get(cidentifier)
+        gtkmethod = self.gtkpkg.get_method(cname=cname)
+        if gtkmethod.bind("true"):
+            self._handle_function_internal(
+                section, node=c, cname=cname,
+                gtkmethod=gtkmethod,
+                returns=self._get_type(c.find(nreturn)),
+                ismethod=ismethod)
 
-    def _handle_function_internal(self, section, node, cname, get_return,
-                                  bind_default="true",
+    def _handle_function_internal(self, section, node, cname,
+                                  gtkmethod,
+                                  returns=None,
                                   adaname=None,
                                   ismethod=False, params=None):
         """Generate a binding for a function.
-           `get_return' is a function that returns the Return type. The type
-           itself is not passed as a parameter so that no extra "with" are
-           generated if we decide not to bind the function.
            This returns None if no binding was made, an instance of Subprogram
            otherwise.
            `adaname' is the name of the generated Ada subprograms. By default,
@@ -290,8 +294,6 @@ class GIRClass(object):
         """
 
         gtkmethod = self.gtkpkg.get_method(cname=cname)
-        if not gtkmethod.bind(bind_default):
-            return None
 
         if params is None:
             params = self._parameters(node, gtkmethod)
@@ -305,10 +307,9 @@ class GIRClass(object):
                 name=gtkmethod.get_param("self").ada_name() or "Self",
                 type=AdaType(
                     adatype="access %(typename)s_Record" % self._subst,
+                    pkg=self.pkg,
                     ctype="System.Address",
                     convert="Get_Object (%(var)s)")))
-
-        returns = get_return()
 
         local_vars = []
         call = []
@@ -374,7 +375,7 @@ class GIRClass(object):
             section.add(
                 Subprogram(
                     name=gtkmethod.ada_name() or "Get_Type",
-                    returns=AdaType("Glib.GType"))
+                    returns=AdaType("Glib.GType", pkg=self.pkg))
                 .import_c(n))
 
             if not self.gtktype.is_subtype():
@@ -439,28 +440,62 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                     continue
 
                 name = f.get("name")
-                cname = "gtkada_%(cname)s_get_%(name)s" % {
-                    "cname":self._subst["cname"], "name":name}
-                func = self._handle_function_internal(
-                    section,
-                    node=f,
-                    cname=cname,
-                    adaname="Get_%s" % name,
-                    bind_default="false",
-                    ismethod=True,
-                    params=[],
-                    get_return=lambda: self._get_type(f, allow_access=False))
 
-                if func is not None:
-                    ctype = self._get_c_type(f)
-                    if ctype is None:
-                        continue
+                # Getter
 
-                    self.gir.ccode += """
+                if f.get("readable", "1") != "0":
+                    cname = "gtkada_%(cname)s_get_%(name)s" % {
+                        "cname":self._subst["cname"], "name":name}
+                    gtkmethod = self.gtkpkg.get_method(cname=cname)
+                    if gtkmethod.bind("false"):
+                        func = self._handle_function_internal(
+                            section,
+                            node=f,
+                            cname=cname,
+                            adaname="Get_%s" % name,
+                            ismethod=True,
+                            params=[],
+                            gtkmethod=gtkmethod,
+                            returns=self._get_type(f, allow_access=False))
+
+                        if func is not None:
+                            ctype = self._get_c_type(f)
+                            if ctype is None:
+                                continue
+
+                            self.gir.ccode += """
 %(ctype)s %(cname)s (%(self)s* self) {
     return self->%(name)s;
 }
 """ % {"ctype":ctype, "cname":cname, "self":self.ctype, "name":name}
+
+                # Setter
+
+                if f.get("writable", "1") != "0":
+                    cname = "gtkada_%(cname)s_set_%(name)s" % {
+                        "cname":self._subst["cname"], "name":name}
+                    gtkmethod = self.gtkpkg.get_method(cname=cname)
+                    if gtkmethod.bind("false"):
+                        func = self._handle_function_internal(
+                            section,
+                            node=f,
+                            cname=cname,
+                            adaname="Set_%s" % name,
+                            ismethod=True,
+                            gtkmethod=gtkmethod,
+                            params=[Parameter("Value", self._get_type(f))])
+
+                        if func is not None:
+                            ctype = self._get_c_type(f)
+                            if ctype is None:
+                                continue
+
+                            self.gir.ccode += """
+void %(cname)s (%(self)s* self, %(ctype)s val) {
+    self->%(name)s = val;
+}
+""" % {"ctype":ctype, "cname":cname, "self":self.ctype, "name":name}
+
 
     def _properties(self):
         n = QName(uri, "property")
@@ -532,7 +567,8 @@ See Glib.Properties for more information on properties)""")
                           mode="access",
                           doc="")],
                     code="null",
-                    returns=AdaType(s.find(nreturn).find(ntype).get("name")))
+                    returns=AdaType(s.find(nreturn).find(ntype).get("name"),
+                                    pkg=self.pkg))
                 adasignals.append({
                     "name": s.get("name"),
                     "profile": fill_text(sub.spec(), "   --      ", 79, 69),
@@ -585,6 +621,15 @@ See Glib.Properties for more information on properties)""")
             klass = gir.classes[into]
             klass.generate(gir)
             into = klass.name  # from now on, we want the Ada name
+
+            # Override the type exception. For instance, from now on we
+            # want to use "Gtk.Box.Gtk_HBox" rather than "Gtk.HBox.Gtk_HBox"
+            # which doesn't exist
+            typename = "%s.%s" % (into, self._subst["typename"])
+            naming.add_type_exception(
+                override=True,
+                cname=self.ctype,
+                type=GObject(typename))
 
         self.pkg = gir.get_package(into or self.name)
 
@@ -714,7 +759,10 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "Label", "Layout", "List",
            "Misc", "Paned", "Pixmap", "Progress", "Scale",
            "VBox", "VButtonBox", "Viewport", "VPaned",
-           "VScale", "VolumeButton")
+           "VScale", "VolumeButton",
+           # "Entry",
+           "Combo",  # Needs HBox
+          )
 
 for name in binding:
     gir.classes[name].generate(gir)

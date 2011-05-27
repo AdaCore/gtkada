@@ -61,7 +61,7 @@ package body Gtk.Button_Box is
 
    function Get_Child_Secondary
       (Self  : access Gtk_Button_Box_Record;
-       Child : access Gtk_Widget_Record'Class) return Boolean
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
    is
       function Internal
          (Self  : System.Address;
@@ -127,7 +127,7 @@ package body Gtk.Button_Box is
 
    procedure Set_Child_Secondary
       (Self         : access Gtk_Button_Box_Record;
-       Child        : access Gtk_Widget_Record'Class;
+       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean)
    is
       procedure Internal

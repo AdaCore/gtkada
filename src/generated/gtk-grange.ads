@@ -61,10 +61,11 @@ package Gtk.GRange is
    -------------
 
    function Get_Adjustment
-      (The_Range : access Gtk_Range_Record) return Gtk_Adjustment;
+      (The_Range : access Gtk_Range_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Adjustment
       (The_Range  : access Gtk_Range_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the adjustment to be used as the "model" object for this range
    --  widget. The adjustment indicates the current range value, the minimum and
    --  maximum range values, the step/page increments used for keybindings and
@@ -253,7 +254,7 @@ package Gtk.GRange is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Adjustment_Property
-   --  Type: Gtk_Adjustment
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Fill_Level_Property

@@ -77,10 +77,10 @@ package Gtk.Button_Box is
 
    function Get_Child_Secondary
       (Self  : access Gtk_Button_Box_Record;
-       Child : access Gtk_Widget_Record'Class) return Boolean;
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
    procedure Set_Child_Secondary
       (Self         : access Gtk_Button_Box_Record;
-       Child        : access Gtk_Widget_Record'Class;
+       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean);
    --  Set whether Child should appear in a secondary group of children. A
    --  typical use of a secondary child is the help button in a dialog.

@@ -3004,34 +3004,6 @@ ada_dialog_get_vbox (GtkDialog* widget)
    return widget->vbox;
 }
 
-/******************************************
- ** Functions for Combo
- ******************************************/
-
-GtkWidget*
-ada_combo_get_entry (GtkCombo* widget)
-{
-  return widget->entry;
-}
-
-GtkWidget*
-ada_combo_get_popup_window (GtkCombo* widget)
-{
-  return widget->popwin;
-}
-
-void
-ada_combo_set_entry (GtkCombo* widget, GtkWidget* entry)
-{
-  widget->entry = entry;
-}
-
-GtkWidget*
-ada_combo_get_list (GtkCombo* widget)
-{
-  return widget->list;
-}
-
 /********************************************
  ** Functions for Widget
  ********************************************/

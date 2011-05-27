@@ -197,7 +197,8 @@ package Gtk.Label is
    --  properties.
    --  "str": the new text to set for the label
 
-   function Get_Layout (Self : access Gtk_Label_Record) return Pango_Layout;
+   function Get_Layout
+      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the label. The layout
    --  is useful to e.g. convert text positions to pixel positions, in
    --  combination with Gtk.Label.Get_Layout_Offsets. The returned layout is
@@ -257,10 +258,10 @@ package Gtk.Label is
    --  mnemonic set up it returns GDK_VoidSymbol.
 
    function Get_Mnemonic_Widget
-      (Self : access Gtk_Label_Record) return Gtk_Widget;
+      (Self : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Mnemonic_Widget
       (Self   : access Gtk_Label_Record;
-       Widget : access Gtk_Widget_Record'Class);
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  If the label has been set so that it has an mnemonic key (using i.e.
    --  Gtk.Label.Set_Markup_With_Mnemonic, Gtk.Label.Set_Text_With_Mnemonic,
    --  Gtk.Label.Gtk_New_With_Mnemonic or the "use_underline" property) the
@@ -445,7 +446,7 @@ package Gtk.Label is
    --  Flags: read-write
    -- 
    --  Name: Mnemonic_Widget_Property
-   --  Type: Gtk_Widget
+   --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Pattern_Property

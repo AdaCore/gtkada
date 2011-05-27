@@ -68,7 +68,7 @@ package Gtk.List is
 
    function Child_Position
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class) return Gint;
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
 
    procedure Clear_Items
       (Self    : access Gtk_List_Record;
@@ -118,7 +118,7 @@ package Gtk.List is
 
    procedure Select_Child
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class);
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Select_Item (Self : access Gtk_List_Record; Item : Gint);
 
@@ -134,7 +134,7 @@ package Gtk.List is
 
    procedure Toggle_Row
       (Self : access Gtk_List_Record;
-       Item : access Gtk_Widget_Record'Class);
+       Item : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Undo_Selection (Self : access Gtk_List_Record);
 
@@ -142,7 +142,7 @@ package Gtk.List is
 
    procedure Unselect_Child
       (Self  : access Gtk_List_Record;
-       Child : access Gtk_Widget_Record'Class);
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Unselect_Item (Self : access Gtk_List_Record; Item : Gint);
 

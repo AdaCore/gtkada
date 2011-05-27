@@ -69,12 +69,12 @@ package Gtk.Layout is
 
    procedure Gtk_New
       (Layout      : out Gtk_Layout;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null);
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize
       (Layout      : access Gtk_Layout_Record'Class;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null);
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
    --  adjustment you'd like the layout to use for scrolling, pass null for
    --  "hadjustment": horizontal scroll adjustment, or null
@@ -96,10 +96,11 @@ package Gtk.Layout is
    --  Since: gtk+ 2.14
 
    function Get_Hadjustment
-      (Layout : access Gtk_Layout_Record) return Gtk_Adjustment;
+      (Layout : access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Hadjustment
       (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Return the adjustment that indicate the horizontal visual area of the
    --  layout. You generally do not have to modify the value of this adjustment
    --  yourself, since this is done automatically when the layout has been put
@@ -119,10 +120,11 @@ package Gtk.Layout is
    --  "height": height of entire scrollable area
 
    function Get_Vadjustment
-      (Layout : access Gtk_Layout_Record) return Gtk_Adjustment;
+      (Layout : access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Vadjustment
       (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the vertical scroll adjustment for the layout. See
    --  Gtk.Scrolledwindow.Gtk_Scrolledwindow, Gtk.Scrollbar.Gtk_Scrollbar,
    --  Gtk.Adjustment.Gtk_Adjustment for details.
@@ -130,7 +132,7 @@ package Gtk.Layout is
 
    procedure Move
       (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk_Widget_Record'Class;
+       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint);
    --  Moves a current child of Layout to a new position.
@@ -140,7 +142,7 @@ package Gtk.Layout is
 
    procedure Put
       (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk_Widget_Record'Class;
+       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint);
    --  The child will be displayed on the screen only if at least part of it
@@ -162,7 +164,7 @@ package Gtk.Layout is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Hadjustment_Property
-   --  Type: Gtk_Adjustment
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Height_Property
@@ -170,7 +172,7 @@ package Gtk.Layout is
    --  Flags: read-write
    -- 
    --  Name: Vadjustment_Property
-   --  Type: Gtk_Adjustment
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Width_Property

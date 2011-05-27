@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                    Copyright (C) 2010, AdaCore                    --
+--                    Copyright (C) 2010-2011, AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -247,7 +247,7 @@ package body Create_Entry is
 
       Gtk_New (Combo);
       Set_Popdown_Strings (Combo, List);
-      Set_Text (Get_Entry (Combo), "hello world");
+      Set_Text (Gtk_Entry (Get_Entry (Combo)), "hello world");
       Pack_Start (Box2, Combo, True, True, 0);
 
       Show_All (Frame);

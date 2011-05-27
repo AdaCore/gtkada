@@ -55,12 +55,12 @@ package Gtk.Viewport is
 
    procedure Gtk_New
       (Self        : out Gtk_Viewport;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null);
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize
       (Self        : access Gtk_Viewport_Record'Class;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null);
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.
    --  "hadjustment": horizontal adjustment.
    --  "vadjustment": vertical adjustment.
@@ -78,10 +78,11 @@ package Gtk.Viewport is
    --  Since: gtk+ 2.20
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record) return Gtk_Adjustment;
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Hadjustment
       (Self       : access Gtk_Viewport_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the horizontal adjustment of the viewport.
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
@@ -94,10 +95,11 @@ package Gtk.Viewport is
    --  "type": the new shadow type.
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record) return Gtk_Adjustment;
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Vadjustment
       (Self       : access Gtk_Viewport_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the vertical adjustment of the viewport.
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
@@ -113,7 +115,7 @@ package Gtk.Viewport is
    --  Glib.Properties for more information on properties)
    -- 
    --  Name: Hadjustment_Property
-   --  Type: Gtk_Adjustment
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
    -- 
    --  Name: Shadow_Type_Property
@@ -121,7 +123,7 @@ package Gtk.Viewport is
    --  Flags: read-write
    -- 
    --  Name: Vadjustment_Property
-   --  Type: Gtk_Adjustment
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
 
    Hadjustment_Property : constant Glib.Properties.Property_Object;

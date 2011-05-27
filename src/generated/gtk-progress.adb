@@ -150,7 +150,7 @@ package body Gtk.Progress is
 
    procedure Set_Adjustment
       (Progress   : access Gtk_Progress_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
          (Progress   : System.Address;
@@ -256,13 +256,14 @@ package body Gtk.Progress is
    --------------------
 
    function Get_Adjustment
-      (Progress : access Gtk_Progress_Record) return Gtk_Adjustment
+      (Progress : access Gtk_Progress_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Progress : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkProgress_get_adjustment");
-      Stub : Gtk_Adjustment_Record;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Progress)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Progress)), Stub));
    end Get_Adjustment;
 
 end Gtk.Progress;

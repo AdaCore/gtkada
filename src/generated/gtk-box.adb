@@ -105,15 +105,15 @@ package body Gtk.Box is
 
    function Get_Child
       (Self : access Gtk_Box_Record;
-       Num  : Gint) return Gtk_Widget
+       Num  : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Self : System.Address;
           Num  : Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self), Num), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self), Num), Stub));
    end Get_Child;
 
    ---------------------
@@ -144,7 +144,7 @@ package body Gtk.Box is
 
    procedure Pack_End
       (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk_Widget_Record'Class;
+       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0)
@@ -166,7 +166,7 @@ package body Gtk.Box is
 
    procedure Pack_End_Defaults
       (Self   : access Gtk_Box_Record;
-       Widget : access Gtk_Widget_Record'Class)
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_end_defaults");
@@ -180,7 +180,7 @@ package body Gtk.Box is
 
    procedure Pack_Start
       (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk_Widget_Record'Class;
+       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0)
@@ -202,7 +202,7 @@ package body Gtk.Box is
 
    procedure Pack_Start_Defaults
       (Self   : access Gtk_Box_Record;
-       Widget : access Gtk_Widget_Record'Class)
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_start_defaults");
@@ -216,7 +216,7 @@ package body Gtk.Box is
 
    procedure Query_Child_Packing
       (Self      : access Gtk_Box_Record;
-       Child     : access Gtk_Widget_Record'Class;
+       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
        Padding   : out Guint;
@@ -246,7 +246,7 @@ package body Gtk.Box is
 
    procedure Reorder_Child
       (Self     : access Gtk_Box_Record;
-       Child    : access Gtk_Widget_Record'Class;
+       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint)
    is
       procedure Internal
@@ -264,7 +264,7 @@ package body Gtk.Box is
 
    procedure Set_Child_Packing
       (Self      : access Gtk_Box_Record;
-       Child     : access Gtk_Widget_Record'Class;
+       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
        Padding   : Guint;

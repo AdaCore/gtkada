@@ -43,8 +43,8 @@ package body Gtk.Viewport is
 
    procedure Gtk_New
       (Self        : out Gtk_Viewport;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null)
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
    begin
       Self := new Gtk_Viewport_Record;
@@ -57,8 +57,8 @@ package body Gtk.Viewport is
 
    procedure Initialize
       (Self        : access Gtk_Viewport_Record'Class;
-       Hadjustment : Gtk_Adjustment := null;
-       Vadjustment : Gtk_Adjustment := null)
+       Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
       function Internal
          (Hadjustment : System.Address;
@@ -86,13 +86,14 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record) return Gtk_Adjustment
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
-      Stub : Gtk_Adjustment_Record;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Hadjustment;
 
    ---------------------
@@ -113,13 +114,14 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record) return Gtk_Adjustment
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
-      Stub : Gtk_Adjustment_Record;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Vadjustment;
 
    ---------------------
@@ -141,7 +143,7 @@ package body Gtk.Viewport is
 
    procedure Set_Hadjustment
       (Self       : access Gtk_Viewport_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
          (Self       : System.Address;
@@ -171,7 +173,7 @@ package body Gtk.Viewport is
 
    procedure Set_Vadjustment
       (Self       : access Gtk_Viewport_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
          (Self       : System.Address;

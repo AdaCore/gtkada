@@ -44,7 +44,7 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Hscale
       (Scale      : out Gtk_Hscale;
-       Adjustment : Gtk_Adjustment := null)
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
    begin
       Scale := new Gtk_Hscale_Record;
@@ -72,7 +72,7 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Vscale
       (Scale      : out Gtk_Vscale;
-       Adjustment : Gtk_Adjustment := null)
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
    begin
       Scale := new Gtk_Vscale_Record;
@@ -100,7 +100,7 @@ package body Gtk.Scale is
 
    procedure Initialize_Hscale
       (Scale      : access Gtk_Hscale_Record'Class;
-       Adjustment : Gtk_Adjustment := null)
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new");
@@ -133,7 +133,7 @@ package body Gtk.Scale is
 
    procedure Initialize_Vscale
       (Scale      : access Gtk_Vscale_Record'Class;
-       Adjustment : Gtk_Adjustment := null)
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
@@ -219,12 +219,14 @@ package body Gtk.Scale is
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Scale : access Gtk_Scale_Record) return Pango_Layout is
+   function Get_Layout
+      (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout
+   is
       function Internal (Scale : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_get_layout");
-      Stub : Pango_Layout_Record;
+      Stub : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub));
    end Get_Layout;
 
    ------------------------

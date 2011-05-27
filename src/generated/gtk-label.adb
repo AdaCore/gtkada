@@ -179,12 +179,14 @@ package body Gtk.Label is
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Self : access Gtk_Label_Record) return Pango_Layout is
+   function Get_Layout
+      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Layout
+   is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_layout");
-      Stub : Pango_Layout_Record;
+      Stub : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango_Layout (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Layout;
 
    ------------------------
@@ -255,13 +257,13 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Mnemonic_Widget
-      (Self : access Gtk_Label_Record) return Gtk_Widget
+      (Self : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_widget");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Mnemonic_Widget;
 
    --------------------
@@ -559,7 +561,7 @@ package body Gtk.Label is
 
    procedure Set_Mnemonic_Widget
       (Self   : access Gtk_Label_Record;
-       Widget : access Gtk_Widget_Record'Class)
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_label_set_mnemonic_widget");

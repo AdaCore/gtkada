@@ -158,10 +158,10 @@ package Gtk.About_Dialog is
    --  "license": the license information or null
 
    function Get_Logo
-      (Self : access Gtk_About_Dialog_Record) return Gdk_Pixbuf;
+      (Self : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    procedure Set_Logo
       (Self : access Gtk_About_Dialog_Record;
-       Logo : access Gdk_Pixbuf_Record'Class);
+       Logo : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
    --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
    --  be used.
@@ -314,7 +314,7 @@ package Gtk.About_Dialog is
    --  contain the intended linebreaks.
    -- 
    --  Name: Logo_Property
-   --  Type: Gdk_Pixbuf
+   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
    --  gtk_window_get_default_icon_list().

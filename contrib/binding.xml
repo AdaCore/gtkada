@@ -594,18 +594,6 @@ and make sure you specify a size big enough for the layout.
       <parameter name="self" ada="The_Range"/>
    </package>
 
-   <package id="Gtk.GEntry">
-      <doc testgtk="create_entry.adb" screenshot="gtk-gentry"
-           group="Numeric/Text Data Entry">
-A Gtk_Entry is a single line text editing widget.
-The text is automatically scrolled if it is longer than can be displayed
-on the screen, so that the cursor position is visible at all times.
-
-See Gtk_Text_View for a multiple-line text editing widget.
-      </doc>
-      <parameter name="self" ada="The_Entry"/>
-   </package>
-
    <package id="Gtk.Button_Box">
       <doc testgtk="create_button_box.adb" screenshot="gtk-button_box"
            group="Layout containers">
@@ -717,6 +705,79 @@ pragma Convention (C, Activate_Link_Func);
 --       Gtk_About_Dialog (Get_User_Data (About, Stub));
 --     L    : constant String := Interfaces.C.Strings.Value (Link);
         </type>
+     </extra>
+  </package>
+
+  <package id="Gtk.GEntry">
+     <doc testgtk="create_entry.adb" group="Numeric/Text Data Entry"
+          screenshot="gtk-gentry">
+A Gtk_Entry is a single line text editing widget.
+The text is automatically scrolled if it is longer than can be displayed
+on the screen, so that the cursor position is visible at all times.
+
+See Gtk_Text_View for a multiple-line text editing widget.
+     </doc>
+     <parameter name="self" ada="The_Entry"/>
+  </package>
+
+  <package id="Gtk.Combo" obsolescent="True">
+     <doc group="Obsolescent widgets" screenshot="gtk-combo"
+          see="Gtk.Combo_Box">
+The Gtk_Combo widget consists of a single-line text entry field and a
+drop-down list. The drop-down list is displayed when the user clicks on a
+small arrow button to the right of the entry field.
+
+The drop-down list is a Gtk_List widget and can be accessed using the list
+member of the Gtk_Combo. List elements can contain arbitrary widgets, but
+if an element is not a plain label, then you must use the
+Gtk_List.Set_Item_String function. This sets the string which will be
+placed in the text entry field when the item is selected.
+
+By default, the user can step through the items in the list using the arrow
+(cursor) keys, though this behaviour can be turned off with Set_Use_Arrows.
+
+Normally the arrow keys are only active when the contents of the text entry
+field matches one of the items in the list. If the contents of the entry
+field do not match any of the list items, then pressing the arrow keys does
+nothing. However, by calling Set_Use_Arrows_Always you can specify that the
+arrow keys are always active. If the contents of the entry field does not
+match any of the items in the list, then pressing the up or down arrow key
+will set the entry field to the last or first item in the list,
+respectively.
+     </doc>
+     <method id="gtk_combo_set_value_in_list">
+        <parameter name="val" default="True"/>
+        <parameter name="ok_if_empty" default="False"/>
+        <doc>Specify whether the value entered in the text entry field must match one of the values in the list. If this is set then the user will not be able to perform any other action until a valid value has been entered. If an empty field is acceptable, the Ok_If_Empty parameter should be True. If the value entered must match one of the values in the list, val should be True.</doc>
+     </method>
+     <method id="gtk_combo_set_use_arrows">
+        <parameter name="val" default="True"/>
+        <doc>Specify if the arrow (cursor) keys can be used to step through the items in the list. This is on by default.</doc>
+     </method>
+     <method id="gtk_combo_set_use_arrows_always">
+        <parameter name="val" default="True"/>
+        <doc>Specify if the arrow keys will still work even if the current contents of the Gtk_Entry field do not match any of the list items.</doc>
+     </method>
+     <method id="gtk_combo_set_case_sensitive">
+        <parameter name="val" default="True"/>
+        <doc>Specify whether the text entered into the Gtk_Entry field and the text in the list items are case sensitive. This may be useful, for example, when you have called Set_Value_In_List to limit the values entered, but you are not worried about differences in case.</doc>
+     </method>
+     <method id="gtk_combo_set_popdown_strings">
+        <parameter name="strings" type="String_List.Glist"/>
+        <doc>Set all the items in the popup list.</doc>
+     </method>
+     <method id="gtk_combo_disable_activate">
+        <doc>Disable the standard handler for the return key in the entry field. The default behavior is to popdown the combo box list, so that the user can choose from it. However, if you want to add your own callback for the return key, you need to call this subprogram, and connect a handler to the "activate" signal for the entry.</doc>
+     </method>
+     <method id="gtk_combo_set_item_string">
+        <doc>Set the string to place in the Gtk_Entry field when a particular list item is selected. This is needed if the list item is not a simple label.</doc>
+     </method>
+     <method id="gtkada_GtkCombo_get_entry"  bind="True"/>
+     <method id="gtkada_GtkCombo_set_entry"  bind="True"/>
+     <method id="gtkada_GtkCombo_get_list"   bind="True"/>
+     <method id="gtkada_GtkCombo_get_popwin" bind="True"/>
+     <extra>
+        <with_spec pkg="Gtk.Enums" />  <!--  for String_List -->
      </extra>
   </package>
 

@@ -90,7 +90,7 @@ package Gtk.Progress is
 
    procedure Set_Adjustment
       (Progress   : access Gtk_Progress_Record;
-       Adjustment : access Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Set_Format_String
       (Progress : access Gtk_Progress_Record;
@@ -114,7 +114,8 @@ package Gtk.Progress is
    ------------
 
    function Get_Adjustment
-      (Progress : access Gtk_Progress_Record) return Gtk_Adjustment;
+      (Progress : access Gtk_Progress_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
 
    function Get_Activity_Mode
       (Progress : access Gtk_Progress_Record) return Guint;

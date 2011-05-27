@@ -100,10 +100,10 @@ package Gtk.Frame is
    --  completely above or below the frame.
 
    function Get_Label_Widget
-      (Self : access Gtk_Frame_Record) return Gtk_Widget;
+      (Self : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Label_Widget
       (Self         : access Gtk_Frame_Record;
-       Label_Widget : access Gtk_Widget_Record'Class);
+       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the label widget for the frame. This is the widget that will appear
    --  embedded in the top edge of the frame as a title.
    --  "label_widget": the new label widget
@@ -127,7 +127,7 @@ package Gtk.Frame is
    --  Flags: read-write
    -- 
    --  Name: Label_Widget_Property
-   --  Type: Gtk_Widget
+   --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
    -- 
    --  Name: Label_Xalign_Property

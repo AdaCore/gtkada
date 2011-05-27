@@ -152,13 +152,13 @@ package body Gtk.About_Dialog is
    --------------
 
    function Get_Logo
-      (Self : access Gtk_About_Dialog_Record) return Gdk_Pixbuf
+      (Self : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
-      Stub : Gdk_Pixbuf_Record;
+      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Logo;
 
    ------------------------
@@ -386,7 +386,7 @@ package body Gtk.About_Dialog is
 
    procedure Set_Logo
       (Self : access Gtk_About_Dialog_Record;
-       Logo : access Gdk_Pixbuf_Record'Class)
+       Logo : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal (Self : System.Address; Logo : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");

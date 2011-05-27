@@ -105,7 +105,7 @@ package Gtk.Paned is
 
    procedure Add1
       (Paned : access Gtk_Paned_Record;
-       Child : access Gtk_Widget_Record'Class);
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the first child of the container. The child will be displayed either
    --  in the top or in the left pane, depending on the orientation of the
    --  container. This is equivalent to using the Pack1 procedure with its
@@ -113,7 +113,7 @@ package Gtk.Paned is
 
    procedure Add2
       (Paned : access Gtk_Paned_Record;
-       Child : access Gtk_Widget_Record'Class);
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the second child of the container. It will be displayed in the
    --  bottom or right pane, depending on the container's orientation. This is
    --  equivalent to using Pack2 with its default parameters.
@@ -124,11 +124,13 @@ package Gtk.Paned is
        Child1_Req : Gint;
        Child2_Req : Gint);
 
-   function Get_Child1 (Self : access Gtk_Paned_Record) return Gtk_Widget;
+   function Get_Child1
+      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
 
-   function Get_Child2 (Self : access Gtk_Paned_Record) return Gtk_Widget;
+   function Get_Child2
+      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
 
@@ -147,7 +149,7 @@ package Gtk.Paned is
 
    procedure Pack1
       (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk_Widget_Record'Class;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True);
    --  Add a child to the top or left pane. You can not change dynamically the
@@ -159,7 +161,7 @@ package Gtk.Paned is
 
    procedure Pack2
       (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk_Widget_Record'Class;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False);
 

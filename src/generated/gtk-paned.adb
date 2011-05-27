@@ -85,7 +85,7 @@ package body Gtk.Paned is
 
    procedure Add1
       (Paned : access Gtk_Paned_Record;
-       Child : access Gtk_Widget_Record'Class)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add1");
@@ -99,7 +99,7 @@ package body Gtk.Paned is
 
    procedure Add2
       (Paned : access Gtk_Paned_Record;
-       Child : access Gtk_Widget_Record'Class)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add2");
@@ -131,24 +131,28 @@ package body Gtk.Paned is
    -- Get_Child1 --
    ----------------
 
-   function Get_Child1 (Self : access Gtk_Paned_Record) return Gtk_Widget is
+   function Get_Child1
+      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+   is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Child1;
 
    ----------------
    -- Get_Child2 --
    ----------------
 
-   function Get_Child2 (Self : access Gtk_Paned_Record) return Gtk_Widget is
+   function Get_Child2
+      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+   is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Child2;
 
    -----------------------
@@ -181,7 +185,7 @@ package body Gtk.Paned is
 
    procedure Pack1
       (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk_Widget_Record'Class;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True)
    is
@@ -201,7 +205,7 @@ package body Gtk.Paned is
 
    procedure Pack2
       (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk_Widget_Record'Class;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False)
    is

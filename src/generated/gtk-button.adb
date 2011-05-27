@@ -206,12 +206,14 @@ package body Gtk.Button is
    -- Get_Image --
    ---------------
 
-   function Get_Image (Self : access Gtk_Button_Record) return Gtk_Widget is
+   function Get_Image
+      (Self : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget
+   is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_button_get_image");
-      Stub : Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
    end Get_Image;
 
    ------------------------
@@ -347,7 +349,7 @@ package body Gtk.Button is
 
    procedure Set_Image
       (Self  : access Gtk_Button_Record;
-       Image : access Gtk_Widget_Record'Class)
+       Image : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Self : System.Address; Image : System.Address);
       pragma Import (C, Internal, "gtk_button_set_image");

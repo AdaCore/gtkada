@@ -38,3 +38,15 @@ GtkAdjustment* gtkada_GtkProgress_get_adjustment (GtkProgress* self) {
 guint gtkada_GtkProgress_get_activity_mode (GtkProgress* self) {
     return self->activity_mode;
 }
+
+GtkWidget* gtkada_GtkCombo_get_entry (GtkCombo* self) {
+    return self->entry;
+}
+
+void gtkada_GtkCombo_set_entry (GtkCombo* self, GtkWidget* val) {
+    self->entry = val;
+}
+
+GtkWidget* gtkada_GtkCombo_get_list (GtkCombo* self) {
+    return self->list;
+}
