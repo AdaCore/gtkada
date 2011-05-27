@@ -11,6 +11,7 @@ src/gnome/Makefile
 src/gtkextra/Makefile
 src/opengl/Makefile
 src/tools/Makefile
+src/generated/tmp.ada
 testgtk/Makefile
 po/Makefile
 b~*.ad*
