@@ -180,7 +180,10 @@ class GIRClass(object):
             default = gtkparam.get_default()
 
             type = gtkparam.get_type() \
-                or self._get_type(p, allow_access=not default)
+                or self._get_type(
+                    p,
+                    empty_maps_to_null=gtkparam.empty_maps_to_null(),
+                    allow_access=not default)
 
             if type is None:
                 return None
@@ -360,7 +363,7 @@ class GIRClass(object):
                 type=AdaType(
                     adatype="access %(typename)s_Record" % self._subst,
                     ctype="System.Address",
-                    convert="Get_Object (%s)")))
+                    convert="Get_Object (%(var)s)")))
 
         returns = get_return()
 
@@ -444,10 +447,11 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
             return t.get(ctype)
         return None
 
-    def _get_type(self, node, allow_access=True):
+    def _get_type(self, node, allow_access=True, empty_maps_to_null=False):
         """Return the type of the node
-           'allow_access' should be False if "access Type" parameters should
+           `allow_access' should be False if "access Type" parameters should
            not be allowed, and an explicit type is needed instead.
+           `empty_maps_to_null': see doc for CType
         """
         t = node.find(ntype)
         if t is not None:
@@ -455,6 +459,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                 return None
             return CType(name=t.get("name"),
                          cname=t.get(ctype), allow_access=allow_access,
+                         empty_maps_to_null=empty_maps_to_null,
                          pkg=self.pkg)
 
         a = node.find(narray)
@@ -464,6 +469,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                 type = t.get(ctype)
                 name = t.get("name") or type  # Sometimes name is not set
                 return CType(name=name, cname=type, pkg=self.pkg, isArray=True,
+                             empty_maps_to_null=empty_maps_to_null,
                              allow_access=allow_access)
 
         a = node.find(nvarargs)

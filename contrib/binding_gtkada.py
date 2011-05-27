@@ -48,6 +48,9 @@ Where the package node is defined as follows:
             ada="..."      <!-- optional, name to use in Ada -->
             type="..."     <!-- optional, override Ada type -->
             default="..."  <!-- optional, the default value for the param-->
+            empty_maps_to_null="False"  <!--  If true, an empty string is
+                           mapped to a null pointer in C, rather than an empty
+                           C string -->
          />
        />
 
@@ -234,6 +237,11 @@ class GtkAdaParameter(object):
             if t:
                 return AdaType(t)
         return None
+
+    def empty_maps_to_null(self):
+        if self.node is not None:
+            return self.node.get("empty_maps_to_null", "F").lower() == "true"
+        return False
 
 class GtkAdaType(object):
     def __init__(self, node):

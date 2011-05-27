@@ -22,7 +22,6 @@ the various spacings that can be set for a button:
       </doc>
 
       <method id="gtk_button_new" bind="false"/>
-
       <method id="gtk_button_new_with_label" ada="Gtk_New">
          <parameter name="label" default='""'/>
       </method>
@@ -49,7 +48,7 @@ widgets.
       </doc>
 
       <method id="gtk_frame_new">
-         <parameter name="label" default='""'/>
+         <parameter name="label" default='""' empty_maps_to_null="True" />
       </method>
    </package>
 
@@ -680,6 +679,5 @@ for use as a volume control widget with suitable icons, tooltips and
 accessible labels.
       </doc>
    </package>
-
 
 </GIR>

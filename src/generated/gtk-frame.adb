@@ -62,7 +62,11 @@ package body Gtk.Frame is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      Tmp_Label := New_String (Label);
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Self, Tmp_Return);

@@ -294,7 +294,8 @@ class CType(object):
        to the function.
     """
 
-    def __init__(self, name, cname, pkg, isArray=False, allow_access=True):
+    def __init__(self, name, cname, pkg, isArray=False, allow_access=True,
+                 empty_maps_to_null=False):
         """A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
            with clauses will be added if needed.
@@ -302,6 +303,8 @@ class CType(object):
            'allow_access' should be True if the parameter can be represented
            as 'access Type', rather than an explicit type, in the case of
            GObject descendants.
+           If `empty_maps_to_null' is True, then an empty string maps to a
+           NULL pointer in C, rather than an empty C string.
         """
 
         def as_enumeration(name, cname):
@@ -310,7 +313,7 @@ class CType(object):
                 pkg.add_with(name[0:name.rfind(".")])
             self.param = name
             self.cparam = cname
-            self.convert = "%s'Pos (%%s)" % name
+            self.convert = "%s'Pos (%%(var)s)" % name
             self.postconvert = "%s'Val (%%s)" % name
             self.returns = (self.param, self.cparam, self.postconvert, [])
 
@@ -326,7 +329,7 @@ class CType(object):
                 self.param = full
 
             self.cparam = "System.Address"
-            self.convert = "Get_Object_Or_Null (GObject (%s))"
+            self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
             self.is_ptr = False
             self.returns = (
                 full, self.cparam,
@@ -340,7 +343,10 @@ class CType(object):
         self.param = None    # type as parameter
         self.returns = None  # type as return type
         self.cparam = None   # type for Ada subprograms binding to C
-        self.convert = "%s"  # Convert from Ada parameter to C parameter
+        self.convert = "%(var)s"  # Convert from Ada parameter to C parameter
+                             # If it used %(tmp)s, we assume the converter sets
+                             # the value of the temporary variable itself.
+                             # Otherwise, it is used as " Tmp := <convert>"
         self.postconvert = "%s" # Convert from C to Ada value
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
@@ -351,7 +357,12 @@ class CType(object):
         if name == "utf8":
             self.param = "UTF8_String"
             self.cparam = "Interfaces.C.Strings.chars_ptr"
-            self.convert = "New_String (%s)"
+
+            if empty_maps_to_null:
+                self.convert = 'if %(var)s = "" then %(tmp)s := Interfaces.C.Strings.Null_Ptr; else %(tmp)s := New_String (%(var)s); end if;'
+            else:
+                self.convert = "New_String (%(var)s)"
+
             self.cleanup = "Free (%s);"
             pkg.add_with("Interfaces.C.Strings", specs=False)
             self.returns = (
@@ -449,14 +460,6 @@ class CType(object):
             return VariableCall(
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
-        elif self.cleanup:
-            tmp = "Tmp_%s" % name
-            return VariableCall(
-                call=wrapper % tmp,
-                precall='%s := %s;' % (tmp, self.convert % name),
-                postcall=self.cleanup % tmp,
-                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
-
         elif self.postconvert != "%s" and mode != "in":
             # An "out" parameter for an enumeration requires a temporary
             # variable: Internal(Enum'Pos (Param)) is invalid
@@ -467,16 +470,35 @@ class CType(object):
                 postcall='%s := %s;' % (name, self.postconvert % tmp),
                 tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
-        else:
+        elif "%(tmp)" in self.convert:
+            # The conversion sets the temporary variable itself
+            tmp = "Tmp_%s" % name
             return VariableCall(
-                call=wrapper % (self.convert % name),
+                call=wrapper % tmp,
+                precall=self.convert % {"var":name, "tmp":tmp},
+                postcall=self.cleanup % tmp,
+                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+
+        elif self.cleanup:
+            tmp = "Tmp_%s" % name
+            conv = self.convert % {"var":name}
+            return VariableCall(
+                call=wrapper % tmp,
+                precall='%s := %s;' % (tmp, conv),
+                postcall=self.cleanup % tmp,
+                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+
+        else:
+            conv = self.convert % {"var":name}
+            return VariableCall(
+                call=wrapper % conv,
                 precall='', postcall='', tmpvars=[])
 
 
 class AdaType(CType):
     """Similar to a CType, but created directly from Ada types"""
 
-    def __init__(self, adatype, ctype="", convert="%s"):
+    def __init__(self, adatype, ctype="", convert="%(var)s"):
         """The 'adatype' type is represented as 'ctype' for subprograms
            that import C functions. The parameters of that type are converted
            from Ada to C by using 'convert'. 'convert' must use '%s' once
