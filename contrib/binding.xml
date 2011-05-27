@@ -21,9 +21,8 @@ The gtk+ sources provide the following drawing that explains the role of
 the various spacings that can be set for a button:
       </doc>
 
-      <method id="gtk_button_new" bind="false"/>
       <method id="gtk_button_new_with_label" ada="Gtk_New">
-         <parameter name="label" default='""'/>
+         <parameter name="label"/>
       </method>
 
    </package>

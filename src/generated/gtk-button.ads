@@ -59,6 +59,13 @@ package Gtk.Button is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New (Self : out Gtk_Button);
+   procedure Initialize (Self : access Gtk_Button_Record'Class);
+   procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String);
+   procedure Initialize
+      (Self  : access Gtk_Button_Record'Class;
+       Label : UTF8_String);
+
    procedure Gtk_New_From_Stock
       (Self     : out Gtk_Button;
        Stock_Id : UTF8_String);
@@ -70,11 +77,6 @@ package Gtk.Button is
    --  GTK_STOCK_APPLY. If Stock_Id is unknown, then it will be treated as a
    --  mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
    --  "stock_id": the name of the stock item
-
-   procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String := "");
-   procedure Initialize
-      (Self  : access Gtk_Button_Record'Class;
-       Label : UTF8_String := "");
 
    procedure Gtk_New_With_Mnemonic
       (Self  : out Gtk_Button;
