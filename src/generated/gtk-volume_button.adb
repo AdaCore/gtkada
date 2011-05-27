@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,27 +27,35 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
 package body Gtk.Volume_Button is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Volume_Button_Record);
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Volume_Button) is
+   procedure Gtk_New (Self : out Gtk_Volume_Button) is
    begin
-      Widget := new Gtk_Volume_Button_Record;
-      Gtk.Volume_Button.Initialize (Widget);
+      Self := new Gtk_Volume_Button_Record;
+      Gtk.Volume_Button.Initialize (Self);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Volume_Button_Record'Class) is
+   procedure Initialize (Self : access Gtk_Volume_Button_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_volume_button_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
 end Gtk.Volume_Button;

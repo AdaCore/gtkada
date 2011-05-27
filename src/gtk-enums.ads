@@ -97,7 +97,14 @@ package Gtk.Enums is
       Buttonbox_Edge,
       Buttonbox_Start,
       Buttonbox_End);
-   --  The style for button boxes (see gtk-button_box.ads)
+   --  The style for button boxes
+   --  - Buttonbox_Spread: The children are spread regularly across the box
+   --  - Buttonbox_Edge  : Same as Spread, except that the first and last
+   --                      children are aligned on the border of the box.
+   --  - Buttonbox_Start : The children are put as much to the left (resp. top)
+   --                      as possible in the box.
+   --  - Buttonbox_End   : The children are put as much to the right
+   --                      (resp. bottom) as possible in the box.
 
    type Gtk_Curve_Type is
      (Curve_Type_Linear,       --  Linear interpolation
@@ -527,8 +534,6 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Position_Type);
    package Toolbar_Style_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Toolbar_Style);
-   package Button_Box_Style_Properties is new
-     Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
    package Justification_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Justification);
    package Orientation_Properties is new
@@ -555,6 +560,10 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Icon_Size);
    package Selection_Mode_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Selection_Mode);
+   package Sensitivity_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Sensitivity_Type);
+   package BBox_Style_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -563,8 +572,7 @@ package Gtk.Enums is
    type Property_Gtk_Update_Type   is new Update_Type_Properties.Property;
    type Property_Gtk_Position_Type is new Position_Type_Properties.Property;
    type Property_Gtk_Toolbar_Style is new Toolbar_Style_Properties.Property;
-   type Property_Gtk_Button_Box_Style is new
-     Button_Box_Style_Properties.Property;
+   type Property_Gtk_Button_Box_Style is new BBox_Style_Properties.Property;
    type Property_Gtk_Justification is new Justification_Properties.Property;
    type Property_Gtk_Orientation   is new Orientation_Properties.Property;
    type Property_Gtk_Window_Type   is new Window_Type_Properties.Property;
@@ -579,6 +587,7 @@ package Gtk.Enums is
    type Property_Pack_Type         is new Pack_Type_Properties.Property;
    type Property_Gtk_Icon_Size     is new Icon_Size_Properties.Property;
    type Property_Gtk_Selection_Mode is new Selection_Mode_Properties.Property;
+   type Property_Gtk_Sensitivity_Type is new Sensitivity_Properties.Property;
 
    -----------------
    -- Obsolescent --

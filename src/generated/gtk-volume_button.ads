@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,28 +31,27 @@
 --  Gtk_Volume_Button is a subclass of Gtk_Scale_Button that has been tailored
 --  for use as a volume control widget with suitable icons, tooltips and
 --  accessible labels.
+-- 
 --  </description>
---  <c_version>2.16.6</c_version>
 
-with Gtk.Scale_Button;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;             use Glib;
+with Gtk.Scale_Button; use Gtk.Scale_Button;
 
 package Gtk.Volume_Button is
 
-   type Gtk_Volume_Button_Record is
-     new Gtk.Scale_Button.Gtk_Scale_Button_Record with private;
+   type Gtk_Volume_Button_Record is new Gtk_Scale_Button_Record with null record;
    type Gtk_Volume_Button is access all Gtk_Volume_Button_Record'Class;
 
-   function Get_Type return GType;
+   ------------------
+   -- Constructors --
+   ------------------
 
-   procedure Gtk_New (Widget : out Gtk_Volume_Button);
-   procedure Initialize (Widget : access Gtk_Volume_Button_Record'Class);
-   --  Create a new Gtk_Volume_Button widget.
+   procedure Gtk_New (Self : out Gtk_Volume_Button);
+   procedure Initialize (Self : access Gtk_Volume_Button_Record'Class);
 
-private
-
-   type Gtk_Volume_Button_Record is
-     new Gtk.Scale_Button.Gtk_Scale_Button_Record with null record;
-
+   function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_volume_button_get_type");
 
 end Gtk.Volume_Button;

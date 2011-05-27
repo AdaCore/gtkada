@@ -85,6 +85,8 @@ class AdaNaming(object):
             "Reverse": "Gtk_Reverse",
         }
         self.type_exceptions = {
+            # All standard widgets will be added automatically. Only special
+            # namings are needed here
             "gboolean":           Enum("Boolean"),
             "PangoAttrList":      Proxy("Pango.Attributes.Pango_Attr_List"),
             "PangoEllipsizeMode": Enum("Pango.Layout.Pango_Ellipsize_Mode"),
@@ -99,11 +101,32 @@ class AdaNaming(object):
             "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
             "GtkScrollType":      Enum("Gtk.Enums.Gtk_Scroll_Type"),
             "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
+            "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
+            "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
+            "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
+            "ButtonBox":          GObject("Gtk.Button_Box.Gtk_Button_Box"),
+            "HButtonBox":         GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
+            "VButtonBox":         GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
+            "Range":              GObject("Gtk.GRange.Gtk_Range"),
+            "GtkRange":           GObject("Gtk.GRange.Gtk_Range"), # in docs
+            "Entry":              GObject("Gtk.GEntry.Gtk_Entry"),
+            "VolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
+            "ScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
+            "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
 
             "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
             "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
             "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
+            "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
         }
+
+    def add_gobject(self, cname):
+        """Maps cname to a GObject type, unless it already existed in the
+           list of exceptions.
+        """
+        if cname not in self.type_exceptions:
+            self.type_exceptions[cname] = GObject(
+                "Gtk.%s.Gtk_%s" % (self.case(cname), self.case(cname)))
 
     def map_cname(self, cname, adaname):
         """Register the mapping from c method's name to Ada subprogram"""
@@ -635,7 +658,12 @@ class Subprogram(object):
         else:
             p = ""
 
-        return prefix + p + suffix
+        # Should the "return" go on a separate line ?
+        if p and len(p.splitlines()[-1]) + len(suffix) > \
+           Subprogram.max_profile_length:
+            return prefix + p + "\n   " + indent + suffix
+        else:
+            return prefix + p + suffix
 
     def _cleanup_doc(self, doc):
         """Replaces C features in the doc with appropriate Ada equivalents"""
@@ -955,11 +983,10 @@ class Package(object):
         for p in pkg:
             if p.lower() == self.name.lower():
                 continue   # No dependence on self
-            t = p.title()
             if specs:
-                self.spec_withs[t] = do_use or self.spec_withs.get(t, False)
+                self.spec_withs[p] = do_use or self.spec_withs.get(p, False)
             else:
-                self.body_withs[t] = do_use or self.body_withs.get(t, False)
+                self.body_withs[p] = do_use or self.body_withs.get(p, False)
 
     def add_private(self, code):
         self.private.append(code)

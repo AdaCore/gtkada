@@ -114,7 +114,8 @@ package body Gtk.Label is
    --------------------
 
    function Get_Attributes
-      (Self : access Gtk_Label_Record) return Pango.Attributes.Pango_Attr_List
+      (Self : access Gtk_Label_Record)
+       return Pango.Attributes.Pango_Attr_List
    is
       function Internal
          (Self : System.Address) return Pango.Attributes.Pango_Attr_List;
@@ -142,7 +143,8 @@ package body Gtk.Label is
    -------------------
 
    function Get_Ellipsize
-      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Ellipsize_Mode
+      (Self : access Gtk_Label_Record)
+       return Pango.Layout.Pango_Ellipsize_Mode
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_ellipsize");

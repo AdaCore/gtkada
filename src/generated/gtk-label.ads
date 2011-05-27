@@ -141,7 +141,8 @@ package Gtk.Label is
    --  horizontal, in degrees, measured counterclockwise
 
    function Get_Attributes
-      (Self : access Gtk_Label_Record) return Pango.Attributes.Pango_Attr_List;
+      (Self : access Gtk_Label_Record)
+       return Pango.Attributes.Pango_Attr_List;
    procedure Set_Attributes
       (Self  : access Gtk_Label_Record;
        Attrs : out Pango.Attributes.Pango_Attr_List);
@@ -166,7 +167,8 @@ package Gtk.Label is
    --  Since: gtk+ 2.18
 
    function Get_Ellipsize
-      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Ellipsize_Mode;
+      (Self : access Gtk_Label_Record)
+       return Pango.Layout.Pango_Ellipsize_Mode;
    procedure Set_Ellipsize
       (Self : access Gtk_Label_Record;
        Mode : Pango.Layout.Pango_Ellipsize_Mode);

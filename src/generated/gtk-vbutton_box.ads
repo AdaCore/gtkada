@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,60 +28,55 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its
---  children vertically.
---  The beginning of the box (when you add children with Gtk.Box.Pack_Start)
---  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
+--  A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its children
+--  vertically. The beginning of the box (when you add children with
+--  Gtk.Box.Pack_Start) is on the top of the box. Its end (for Gtk.Box.Pack_End)
+--  is on the bottom.
+-- 
 --  </description>
---  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
 
-with Glib;
-with Gtk.Button_Box;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;           use Glib;
+with Gtk.Button_Box; use Gtk.Button_Box;
+with Gtk.Enums;      use Gtk.Enums;
 
 package Gtk.Vbutton_Box is
 
-   type Gtk_Vbutton_Box_Record is
-     new Gtk.Button_Box.Gtk_Button_Box_Record with private;
+   type Gtk_Vbutton_Box_Record is new Gtk_Button_Box_Record with null record;
    type Gtk_Vbutton_Box is access all Gtk_Vbutton_Box_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
-   --  Create a new vertical button box.
+   ------------------
+   -- Constructors --
+   ------------------
 
-   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   procedure Gtk_New (Self : out Gtk_Vbutton_Box);
+   procedure Initialize (Self : access Gtk_Vbutton_Box_Record'Class);
+   --  Creates a new vertical button box.
 
    function Get_Type return Glib.GType;
-   --  Return the internal value associated with a Gtk_Vbutton_Box.
-
-   ----------------
-   -- Properties --
-   ----------------
-
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  </properties>
-
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --  </signals>
-
-private
-   type Gtk_Vbutton_Box_Record is
-     new Gtk.Button_Box.Gtk_Button_Box_Record with null record;
-
    pragma Import (C, Get_Type, "gtk_vbutton_box_get_type");
-end Gtk.Vbutton_Box;
 
---  These subprograms never had a binding, are now obsolescent
---  No binding: gtk_vbutton_box_get_layout_default
---  No binding: gtk_vbutton_box_get_spacing_default
---  No binding: gtk_vbutton_box_set_layout_default
---  No binding: gtk_vbutton_box_set_spacing_default
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
+   pragma Obsolescent;
+   procedure Set_Layout_Default (Layout : Gtk.Enums.Gtk_Button_Box_Style);
+   pragma Obsolescent;
+   --  Sets a new layout mode that will be used by all button boxes.
+   --  Deprecated since 2.0, Use gtk_button_box_set_layout() instead.
+   --  "layout": a new Gtk.Enums.Gtk_Button_Box_Style.
+
+   function Get_Spacing_Default return Gint;
+   pragma Obsolescent;
+   procedure Set_Spacing_Default (Spacing : Gint);
+   pragma Obsolescent;
+   --  Changes the default spacing that is placed between widgets in an
+   --  vertical button box.
+   --  Deprecated since 2.0, Use gtk_box_set_spacing() instead.
+   --  "spacing": an integer value.
+
+end Gtk.Vbutton_Box;

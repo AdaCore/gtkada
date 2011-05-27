@@ -8,7 +8,10 @@ The syntax of that file is as follows:
     </GIR>
 
 Where the package node is defined as follows:
-    <package id="...">       <!-- mandatory -->
+    <package id="..."       <!-- mandatory -->
+             obsolescent="..." <!--  Whether this package is obsolete -->
+
+    >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
             testgtk="..."    <!-- optional -->
@@ -34,6 +37,7 @@ Where the package node is defined as follows:
                                 methods -->
            ada="..."       <!-- optional, name of the Ada subprogram -->
            bind="true"     <!-- optional, if false no binding generated -->
+           obsolescent=".." <!--  Whether this method is obsolete" -->
            into="..."      <!-- optional, name of C class in which to
                                 add the bindings -->
            return_as_param="..." <!-- optional, relace return parameter with
@@ -183,6 +187,11 @@ class GtkAdaMethod(object):
         if self.node is not None:
             return self.node.get("ada", None)
         return None
+
+    def is_obsolete(self):
+        if self.node is not None:
+            return self.node.get("obsolescent", "False").lower() == "true"
+        return False
 
     def return_as_param(self):
         if self.node is not None:
