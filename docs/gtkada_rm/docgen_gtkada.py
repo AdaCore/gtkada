@@ -106,18 +106,19 @@ def on_gps_start (hook):
    GPS.Docgen.register_tag_handler (ExampleTagHandler ())
    GPS.Docgen.register_css (GPS.File ("gtkada.css"))
    GPS.Docgen.register_main_index (GPS.File ("gtkada_rm/groups.html"))
+
    GPS.Project.root().generate_doc (True)
    GPS.Timeout (500, wait_doc)
 
 def wait_doc(timeout):
-   if len (GPS.Task.list()) > 0:
-      return True
- 
-   # Log the output in log.txt
-   f=open("log.txt", "w")
-   f.write(GPS.Console ("Messages").get_text())
-   f.close()
-
-   GPS.exit()
+   txt = GPS.Console("Messages").get_text()
+   if txt.find("Documentation generated") == -1:
+       return True
+   else:
+       # Log the output in log.txt
+       f=open("log.txt", "w")
+       f.write(GPS.Console ("Messages").get_text())
+       f.close()
+       GPS.exit()
 
 GPS.Hook ("gps_started").add (on_gps_start)
