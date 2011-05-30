@@ -39,4 +39,10 @@ testgtk/opengl/view_gl.adb
 testgtk/testgtk
 testgtk/testcairo
 testgtk/try.png
+docs/gtkada_rm/gtkada_rm/
+docs/gtkada_ug/gtkada_ug.html
+docs/gtkada_ug/gtkada_ug.info
+docs/gtkada_ug/gtkada_ug.ps
+docs/gtkada_ug/gtkada_ug.txt
+
 
