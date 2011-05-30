@@ -1,5 +1,5 @@
 prefix = @prefix@
-docdir = $(prefix)/share/doc/gtkada/gtkada_rm
+docdir_base = $(prefix)/share/doc/gtkada
 
 MKDIR = mkdir -p
 CP=cp -p
@@ -8,6 +8,7 @@ INSTALL_DATA = @INSTALL_DATA@
 DESTDIR =
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
+SUBDIRS=gtkada_rm gtkada_rm/screenshots gtkada_rm/support gtkada_rm/support/images
 
 gtkada_rm: docgen docgen_clean
 
@@ -21,10 +22,14 @@ docgen_clean:
 	$(RM) -rf log.txt doc_obj/*
 
 install:
-	-$(MKDIR) "${DESTDIR}$(docdir)"
-	-for i in gtkada_rm/*; \
+	-$(MKDIR) "${DESTDIR}$(docdir_base)"
+	-for dir in $(SUBDIRS); \
 	do \
-	  $(INSTALL_DATA) $$i "${DESTDIR}$(docdir)"; \
+	   $(MKDIR) "${DESTDIR}$(docdir_base)/$$dir"; \
+	   for i in $$dir/*; \
+	   do \
+	     $(INSTALL_DATA) $$i "${DESTDIR}$(docdir_base)/$$dir"; \
+	   done \
 	done
 
 clean: docgen_clean
