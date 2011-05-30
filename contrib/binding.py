@@ -268,6 +268,15 @@ class GIRClass(object):
             doc = [doc, "Since: gtk+ %s" % node.get("version")]
         return doc
 
+    def _get_method_returns(self, gtkmethod, node):
+        """The method's return type. `node' is the XML node that describes the
+           return type in the GIR file"""
+        returns = gtkmethod.returned_c_type()
+        if returns is None:
+            return self._get_type(node, allow_access=False)
+        else:
+            return CType(name=None, cname=returns, pkg=self.pkg)
+
     def _handle_function(self, section, c, ismethod=False):
         cname = c.get(cidentifier)
         gtkmethod = self.gtkpkg.get_method(cname=cname)
@@ -275,7 +284,7 @@ class GIRClass(object):
             self._handle_function_internal(
                 section, node=c, cname=cname,
                 gtkmethod=gtkmethod,
-                returns=self._get_type(c.find(nreturn)),
+                returns=self._get_method_returns(gtkmethod, c.find(nreturn)),
                 ismethod=ismethod)
 
     def _handle_function_internal(self, section, node, cname,
@@ -447,7 +456,9 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                     cname = "gtkada_%(cname)s_get_%(name)s" % {
                         "cname":self._subst["cname"], "name":name}
                     gtkmethod = self.gtkpkg.get_method(cname=cname)
-                    if gtkmethod.bind("false"):
+                    if gtkmethod.bind(default="false"):
+                        returns = self._get_method_returns(gtkmethod, f)
+
                         func = self._handle_function_internal(
                             section,
                             node=f,
@@ -456,7 +467,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                             ismethod=True,
                             params=[],
                             gtkmethod=gtkmethod,
-                            returns=self._get_type(f, allow_access=False))
+                            returns=returns)
 
                         if func is not None:
                             ctype = self._get_c_type(f)
@@ -673,10 +684,12 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         if extra:
             s = None
             for p in extra:
-                if p.tag == "method":
+                if p.tag == "spec":
                     s = s or self.pkg.section("GtkAda additions")
-                    s.add_code(p.findtext("spec"))
-                    s.add_code(p.findtext("body"), specs=False)
+                    s.add_code(p.text)
+                elif p.tag == "body":
+                    s = s or self.pkg.section("GtkAda additions")
+                    s.add_code(p.text, specs=False)
 
         self._functions()
         self._fields()
@@ -761,6 +774,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "VBox", "VButtonBox", "Viewport", "VPaned",
            "VScale", "VolumeButton",
            # "Entry",
+           "Dialog",
            "Combo",  # Needs HBox
           )
 

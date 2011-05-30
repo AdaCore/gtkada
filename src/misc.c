@@ -2986,24 +2986,6 @@ ada_file_selection_get_selection_text (GtkFileSelection* widget)
    return widget->selection_text;
 }
 
-/******************************************
- ** Functions for Dialog
- ******************************************/
-
-GtkWidget*
-ada_dialog_get_action_area (GtkDialog* widget)
-{
-  /** ??? Obsolete with Gtk.Dialog.Add_* **/
-   return widget->action_area;
-}
-
-GtkWidget*
-ada_dialog_get_vbox (GtkDialog* widget)
-{
-  /** ??? Obsolete with Gtk.Dialog.Add_* **/
-   return widget->vbox;
-}
-
 /********************************************
  ** Functions for Widget
  ********************************************/

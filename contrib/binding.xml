@@ -388,12 +388,16 @@ automatically uses a Gtk_Viewport when necessary.
          <with_spec pkg="Gtkada.Types" />
          <with_body pkg="Interfaces.C.Strings" />
          <with_body pkg="Gdk.Color" />
-         <method>
-            <spec>
-function Create_Pixmap
-  (Filename : String;
-   Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
-   --  Create a pixmap given a window and a filename   
+         <spec>
+   function Create_Pixmap
+     (Filename : String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
+      --  Create a pixmap given a window and a filename   
+
+   function Create_Pixmap
+     (Data     : Gtkada.Types.Chars_Ptr_Array;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
+   --  Create a pixmap given a window and a buffer.
             </spec>
             <body>
    Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
@@ -431,16 +435,7 @@ function Create_Pixmap
       Gtk_New (Pixmap, Gdkpixmap, Mask);
       return Pixmap;
    end Create_Pixmap;
-            </body>
-         </method>
-         <method>
-            <spec>
-function Create_Pixmap
-  (Data     : Gtkada.Types.Chars_Ptr_Array;
-   Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
---  Create a pixmap given a window and a buffer.
-            </spec>
-            <body>
+
    function Create_Pixmap
      (Data   : Gtkada.Types.Chars_Ptr_Array;
       Window : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
@@ -463,8 +458,7 @@ function Create_Pixmap
 
       return Pixmap;
    end Create_Pixmap;
-            </body>
-         </method>
+         </body>
       </extra>
    </package>
 
@@ -522,26 +516,24 @@ This widget can not be instantiated directly.
          <doc>Remove some items from the list. If The_End is negative, it means the end of the list. The first item in the list has an index of 0</doc>
       </method>
       <extra>
-         <method>
-            <spec>
-function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
-   return Widget_List.Glist;
-            </spec>
-            <body>
-function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
-   return Widget_List.Glist
-is
-   use Widget_List;
-   function Internal (Widget : in System.Address)
-                      return      System.Address;
-   pragma Import (C, Internal, "ada_list_get_selection");
-   List : Gtk.Widget.Widget_List.Glist;
-begin
-   Set_Object (List, Internal (Get_Object (Widget)));
-   return List;
-end Get_Selection;
-            </body>
-         </method>
+         <spec>
+   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
+      return Widget_List.Glist;
+         </spec>
+         <body>
+   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
+      return Widget_List.Glist
+   is
+      use Widget_List;
+      function Internal (Widget : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "ada_list_get_selection");
+      List : Gtk.Widget.Widget_List.Glist;
+   begin
+      Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end Get_Selection;
+         </body>
       </extra>
    </package>
 
@@ -692,18 +684,18 @@ and keeps it around so that it can be shown again.
              automatically yet -->
         <type ctype="GtkAboutDialogActivateLinkFunc"
            ada="Activate_Link_Func">
-type Activate_Link_Func is access procedure
-  (About : System.Address;
-   Link  : Interfaces.C.Strings.chars_ptr;
-   Data  : System.Address);
-pragma Convention (C, Activate_Link_Func);
---  A callback called when the user presses an hyper link in the about
---  dialog. This is a low-level function, and you'll need to convert the
---  parameters to more useful types with:
---     Stub : Gtk_About_Dialog_Record;
---     A    : constant Gtk_About_Dialog :=
---       Gtk_About_Dialog (Get_User_Data (About, Stub));
---     L    : constant String := Interfaces.C.Strings.Value (Link);
+   type Activate_Link_Func is access procedure
+     (About : System.Address;
+      Link  : Interfaces.C.Strings.chars_ptr;
+      Data  : System.Address);
+   pragma Convention (C, Activate_Link_Func);
+   --  A callback called when the user presses an hyper link in the about
+   --  dialog. This is a low-level function, and you'll need to convert the
+   --  parameters to more useful types with:
+   --     Stub : Gtk_About_Dialog_Record;
+   --     A    : constant Gtk_About_Dialog :=
+   --       Gtk_About_Dialog (Get_User_Data (About, Stub));
+   --     L    : constant String := Interfaces.C.Strings.Value (Link);
         </type>
      </extra>
   </package>
@@ -778,6 +770,170 @@ respectively.
      <method id="gtkada_GtkCombo_get_popwin" bind="True"/>
      <extra>
         <with_spec pkg="Gtk.Enums" />  <!--  for String_List -->
+     </extra>
+  </package>
+
+  <package id="Gtk.Dialog">
+     <doc group="Windows" testgtk="create_dialog.adb"
+          screenshot="gtk-dialog">Dialog boxes are a convenient way to prompt the user for a small amount of input, eg. to display a message, ask a question, or anything else that does not require extensive effort on the user's part.
+
+Gtkada treats a dialog as a window split horizontally. The top section is a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should be packed. The second area is known as the action_area. This is generally used for packing buttons into the dialog which may perform functions such as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
+
+If 'dialog' is a newly created dialog, the two primary areas of the window can be accessed using Get_Vbox and Get_Action_Area as can be seen from the example, below.
+
+A 'modal' dialog (that is, one which freezes the rest of the application from user input), can be created by calling Set_Modal on the dialog.
+
+See Gtkada.Dialogs for a higher level dialog interface.
+     </doc>
+     <parameter name="self" ada="Dialog" />
+     <parameter name="response_id" type="Gtk_Response_Type"/>
+     <method id="gtk_dialog_get_action_area" return="GtkBox*"/>
+     <method id="gtk_dialog_get_content_area" return="GtkBox*"/>
+     <method id="gtk_dialog_get_response_for_widget" return="GtkResponseType"/>
+     <method id="gtk_dialog_run" return="GtkResponseType"/>
+     <method id="gtkada_GtkDialog_get_vbox" bind="true" return="GtkBox*"/>
+     <method id="gtk_dialog_add_button">
+        <parameter name="button_text" ada="text"/>
+     </method>
+
+     <!-- Bound manually below -->
+     <method id="gtk_dialog_set_alternative_button_order_from_array" bind="False"/>
+
+     <!-- Following methods have varargs -->
+     <method id="gtk_dialog_new_with_buttons" bind="False"/>
+     <method id="gtk_dialog_add_buttons" bind="False"/>
+     <method id="gtk_dialog_set_alternative_button_order" bind="False"/>
+
+     <extra>
+        <gir:constructor c:identifier="ada_gtk_dialog_new_with_buttons"
+             name="new" version="GtkAda 1.0">
+             <gir:doc>Create a new dialog with a specific title, and specific attributes. Parent is the transient parent for the dialog (ie the one that is used for reference for the flag Destroy_With_Parent, or to compute the initial position of the dialog).</gir:doc>
+           <gir:return-value>
+              <gir:type name="GtkDialog" c:type="GtkDialog*"/>
+           </gir:return-value>
+           <gir:parameters>
+              <gir:parameter name="title">
+                 <gir:type name="utf8" c:type="gchar*"/>
+              </gir:parameter>
+              <gir:parameter name="parent">
+                 <gir:type name="Window" c:type="GtkWindow*"/>
+              </gir:parameter>
+              <gir:parameter name="flags">
+                 <gir:type name="DialogFlags" c:type="GtkDialogFlags"/>
+              </gir:parameter>
+           </gir:parameters>
+        </gir:constructor>
+
+        <spec>
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array);
+   --  Sets an alternative button order. If the gtk-alternative-button-order
+   --  setting is set to %TRUE, the dialog buttons are reordered according to
+   --  the order of the response ids passed to this function.
+   --
+   --  By default, GTK+ dialogs use the button order advocated by the Gnome
+   --  Human Interface Guidelines with the affirmative button at the far right,
+   --  and the cancel button left of it. But the builtin GTK+ dialogs and
+   --  message dialogs' do provide an alternative button order, which is more
+   --  suitable on some platforms, e.g. Windows.
+   --
+   --  Use this function after adding all the buttons to your dialog.
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Gdk_Screen := null)  return Boolean;
+   --  Returns True if dialogs are expected to use an alternative button order
+   --  on the given screen (or current screen if null) . See
+   --  Set_Alternative_Button_Order_From_Array for more details about
+   --  alternative button order.
+   --
+   --  If you need to use this function, you should probably connect to the
+   --  ::notify:gtk-alternative-button-order signal on the Gtk_Settings object
+   --  associated to Screen, in order to be notified if the button order
+   --  setting changes.
+   --
+   --  Returns: Whether the alternative button order should be used
+        </spec>
+        <body>
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array)
+   is
+      procedure Internal
+        (Dialog    : System.Address;
+         N_Params  : Gint;
+         New_Order : System.Address);
+      pragma Import
+        (C, Internal, "gtk_dialog_set_alternative_button_order_from_array");
+   begin
+      Internal (Get_Object (Dialog), New_Order'Length,
+                New_Order (New_Order'First)'Address);
+   end Set_Alternative_Button_Order_From_Array;
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Gdk_Screen := null) return Boolean
+   is
+      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
+   begin
+      return Boolean'Val (Internal (Screen));
+   end Gtk_Alternative_Dialog_Button_Order;
+        </body>
+
+        <type ctype="GtkDialogFlags" ada="Gtk_Dialog_Flags">
+   type Gtk_Dialog_Flags is mod 8;
+   for Gtk_Dialog_Flags'Size use Gint'Size;
+   pragma Convention (C, Gtk_Dialog_Flags);
+   Modal               : constant Gtk_Dialog_Flags := 2 ** 0;
+   Destroy_With_Parent : constant Gtk_Dialog_Flags := 2 ** 1;
+   No_Separator        : constant Gtk_Dialog_Flags := 2 ** 2;
+   --  Various flags that can be set for the dialog, with the following
+   --  implications:
+   --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
+   --     - Destroy_With_Parent: The dialog is destroyed if its parent is
+   --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
+   --     - No_Separator: No separator bar above the buttons.
+        </type>
+
+        <type ctype="GtkResponseType" ada="Gtk_Response_Type">
+   type Gtk_Response_Type is new Gint;
+   --  Type used for Response_Id's.
+   --  Positive values are totally user-interpreted.
+   --  GtkAda will sometimes return Gtk_Response_None if no Response_Id is
+   --  available.
+   --
+   --  Typical usage is:
+   --    if Gtk.Dialog.Run (Dialog) = Gtk_Response_Accept then
+   --       blah;
+   --    end if;
+   
+   Gtk_Response_None : constant Gtk_Response_Type := -1;
+   --  GtkAda returns this if a response widget has no Response_Id,
+   --  or if the dialog gets programmatically hidden or destroyed.
+   
+   Gtk_Response_Reject : constant Gtk_Response_Type := -2;
+   Gtk_Response_Accept : constant Gtk_Response_Type := -3;
+   --  GtkAda won't return these unless you pass them in
+   --  as the response for an action widget. They are
+   --  for your convenience.
+   
+   Gtk_Response_Delete_Event : constant Gtk_Response_Type := -4;
+   --  If the dialog is deleted through the button in the titlebar
+   
+   Gtk_Response_OK     : constant Gtk_Response_Type := -5;
+   Gtk_Response_Cancel : constant Gtk_Response_Type := -6;
+   Gtk_Response_Close  : constant Gtk_Response_Type := -7;
+   Gtk_Response_Yes    : constant Gtk_Response_Type := -8;
+   Gtk_Response_No     : constant Gtk_Response_Type := -9;
+   Gtk_Response_Apply  : constant Gtk_Response_Type := -10;
+   Gtk_Response_Help   : constant Gtk_Response_Type := -11;
+   --  These are returned from dialogs, and you can also use them
+   --  yourself if you like.
+        </type>
+
+        <type ctype="GtkResponseType*" ada="Response_Type_Array">
+   type Response_Type_Array is array (Natural range &lt;&gt;) of Gtk_Response_Type;
+        </type>
      </extra>
   </package>
 

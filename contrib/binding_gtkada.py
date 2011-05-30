@@ -26,8 +26,10 @@ Where the package node is defined as follows:
 
        <parameter
            name="..."
-           ada="..."/>     <!-- Override default naming for all methods.
+           ada="..."       <!-- Override default naming for all methods.
                                 In particular used for "Self" -->
+           type="..."      <!-- Override Ada types for all methods -->
+       />
 
        <method             <!-- repeated as needed -->
            id="..."        <!-- mandatory, name of the C method -->
@@ -40,8 +42,9 @@ Where the package node is defined as follows:
            obsolescent=".." <!--  Whether this method is obsolete" -->
            into="..."      <!-- optional, name of C class in which to
                                 add the bindings -->
-           return_as_param="..." <!-- optional, relace return parameter with
+           return_as_param="..." <!-- optional, replace return parameter with
                                 an out parameter with this name -->
+           return="..."    <!-- Override C type for the returned value -->
        >
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
@@ -58,11 +61,11 @@ Where the package node is defined as follows:
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
           <with_spec pkg="..."/>  <!-- extra with clauses for spec -->
           <with_body pkg="..."/>  <!-- extra with clauses for body -->
-          <method>         <!-- optional, pure Ada methods
-                           <!-- Code will be put after generated subprograms-->
-             <spec>...     <!-- optional, code to insert in spec -->
-             <body>...     <!-- optional, code to insert in body -->
-          </method>
+
+          <!-- Code will be put after generated subprograms-->
+          <spec>...     <!-- optional, code to insert in spec -->
+          <body>...     <!-- optional, code to insert in body -->
+
           <type            <!-- Maps a C type to an Ada type -->
              ctype="..."   <!-- Mandatory: c type name -->
              ada="..."     <!-- Mandatory: ada type name -->
@@ -166,7 +169,7 @@ class GtkAdaPackage(object):
         return None
 
     def get_default_param_node(self, name):
-        if self.node is not None:
+        if name and self.node is not None:
             name = name.lower()
             for p in self.node.findall("parameter"):
                 if p.get("name") == name:
@@ -197,6 +200,11 @@ class GtkAdaMethod(object):
     def ada_name(self):
         if self.node is not None:
             return self.node.get("ada", None)
+        return None
+
+    def returned_c_type(self):
+        if self.node is not None:
+            return self.node.get("return", None)
         return None
 
     def is_obsolete(self):
@@ -240,11 +248,16 @@ class GtkAdaParameter(object):
         return name
 
     def get_type(self):
-        if self.node is not None:
+        type = None
+        if self.default is not None:
+            t = self.default.get("type", None)
+            if t:
+                type = AdaType(t)
+        if type is None and self.node is not None:
             t = self.node.get("type", None)
             if t:
-                return AdaType(t)
-        return None
+                type = AdaType(t)
+        return type
 
     def empty_maps_to_null(self):
         if self.node is not None:

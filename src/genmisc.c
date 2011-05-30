@@ -39,6 +39,10 @@ guint gtkada_GtkProgress_get_activity_mode (GtkProgress* self) {
     return self->activity_mode;
 }
 
+GtkWidget* gtkada_GtkDialog_get_vbox (GtkDialog* self) {
+    return self->vbox;
+}
+
 GtkWidget* gtkada_GtkCombo_get_entry (GtkCombo* self) {
     return self->entry;
 }

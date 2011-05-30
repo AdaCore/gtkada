@@ -230,7 +230,14 @@ def indent_code(code, indent=3):
     result = ""
 
     for l in body.splitlines():
+        if l.find("--") != -1:
+            eol_comment = l[l.find("--"):].strip()
+            l = l[:l.find("--")]
+        else:
+            eol_comment = ""
+
         l = l.strip()
+
         if l.startswith("end") \
            or l.startswith("elsif")  \
            or l.startswith("else")  \
@@ -241,7 +248,9 @@ def indent_code(code, indent=3):
         parent_count = parent_count + l.count("(") - l.count(")")
 
         if not l:
-            pass
+            if eol_comment:
+                result += " " * indent
+
         elif l[0] == '(':
             result += " " * (indent + 2)
             if parent_count > old_parent:
@@ -258,7 +267,7 @@ def indent_code(code, indent=3):
         if old_parent > parent_count:
             indent -= (old_parent - parent_count) * 3
 
-        result += l + "\n"
+        result += l + eol_comment + "\n"
 
         if(l.endswith("then") and not l.endswith("and then")) \
            or l.endswith("loop") \

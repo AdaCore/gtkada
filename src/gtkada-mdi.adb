@@ -3450,7 +3450,6 @@ package body Gtkada.MDI is
                         Flags  => No_Separator or Destroy_With_Parent);
             end;
 
-            Set_Has_Separator (Diag, False);
             Win  := Gtk_Window (Diag);
             Cont := Gtk_Container (Get_Vbox (Diag));
          else
