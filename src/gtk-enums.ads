@@ -564,6 +564,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Sensitivity_Type);
    package BBox_Style_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
+   package Curve_Type_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Curve_Type);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -588,6 +590,7 @@ package Gtk.Enums is
    type Property_Gtk_Icon_Size     is new Icon_Size_Properties.Property;
    type Property_Gtk_Selection_Mode is new Selection_Mode_Properties.Property;
    type Property_Gtk_Sensitivity_Type is new Sensitivity_Properties.Property;
+   type Property_Gtk_Curve_Type    is new Curve_Type_Properties.Property;
 
    -----------------
    -- Obsolescent --
