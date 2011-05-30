@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,37 +27,35 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Drawing_Area is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Drawing_Area_Record);
-   pragma Warnings (Off, Type_Conversion);
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area) is
+   procedure Gtk_New (Self : out Gtk_Drawing_Area) is
    begin
-      Drawing_Area := new Gtk_Drawing_Area_Record;
-      Gtk.Drawing_Area.Initialize (Drawing_Area);
+      Self := new Gtk_Drawing_Area_Record;
+      Gtk.Drawing_Area.Initialize (Self);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize
-     (Drawing_Area : access Gtk_Drawing_Area_Record'Class)
-   is
+   procedure Initialize (Self : access Gtk_Drawing_Area_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
-      Set_Object (Drawing_Area, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
    ----------
@@ -65,18 +63,17 @@ package body Gtk.Drawing_Area is
    ----------
 
    procedure Size
-     (Darea  : access Gtk_Drawing_Area_Record;
-      Width  : Gint;
-      Height : Gint)
+      (Self   : access Gtk_Drawing_Area_Record;
+       Width  : Gint;
+       Height : Gint)
    is
       procedure Internal
-        (Darea  : System.Address;
-         Width  : Gint;
-         Height : Gint);
+         (Self   : System.Address;
+          Width  : Gint;
+          Height : Gint);
       pragma Import (C, Internal, "gtk_drawing_area_size");
-
    begin
-      Internal (Get_Object (Darea), Width, Height);
+      Internal (Get_Object (Self), Width, Height);
    end Size;
 
 end Gtk.Drawing_Area;

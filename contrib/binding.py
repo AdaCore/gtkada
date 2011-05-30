@@ -774,7 +774,10 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "VBox", "VButtonBox", "Viewport", "VPaned",
            "VScale", "VolumeButton",
            # "Entry",
+           "Curve",
            "Dialog",
+           "DrawingArea",
+           "Expander",
            "Combo",  # Needs HBox
           )
 

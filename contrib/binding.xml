@@ -937,4 +937,88 @@ See Gtkada.Dialogs for a higher level dialog interface.
      </extra>
   </package>
 
+  <package id="Gtk.Curve">
+     <doc group="Drawing">
+The Gtk_Curve widget allows the user to edit a curve covering a range of values. It is typically used to fine-tune color balances in graphics applications like the Gimp.
+
+The Gtk_Curve widget has 3 modes of operation: spline, linear and free.  In spline mode the user places points on the curve which are automatically connected together into a smooth curve. In linear mode the user places points on the curve which are connected by straight lines. In free mode the user can draw the points of the curve freely, and they are not connected at all.
+     </doc>
+     <method id="gtk_curve_set_vector" bind="False"/>
+     <method id="gtk_curve_get_vector" bind="False"/>
+     <method id="gtk_curve_set_gamma">
+        <doc>Recompute the entire curve using the given gamma value. A gamma value of 1.0 results in a straight line. Values greater than 1.0 result in a curve above the straight line. Values less than 1.0 result in a curve below the straight line. The curve type is changed to Curve_Type_Free.</doc>
+     </method>
+     <method id="gtk_curve_set_range">
+        <doc>Set the minimum and maximum x &amp; y values of the curve. The curve is also reset with a call to Reset.</doc>
+     </method>
+     <method id="gtk_curve_set_curve_type">
+        <doc>Set the type of the curve. The curve will remain unchanged except when changing from a free curve to a linear or spline curve, in which case the curve will be changed as little as possible.</doc>
+     </method>
+     <method id="gtk_curve_reset">
+        <doc>Reset the curve. Reset to a straight line from the minimum x &amp; y values to the maximum x &amp; y values (i.e. from the bottom-left to the top-right corners). The curve type is not changed.</doc>
+     </method>
+
+     <extra>
+        <spec>
+   procedure Set_Vector
+     (Curve  : access Gtk_Curve_Record; Vector : Gfloat_Array);
+   procedure Get_Vector
+     (Curve  : access Gtk_Curve_Record; Vector : out Gfloat_Array);
+   --  Set the vector of points on the curve.
+   --  The curve type is set to Curve_Type_Free.
+       </spec>
+       <body>
+   procedure Get_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : out Gfloat_Array)
+   is
+      procedure Internal
+        (Curve  : System.Address;
+         Veclen : Integer;
+         Vector : System.Address);
+      pragma Import (C, Internal, "gtk_curve_get_vector");
+
+   begin
+      Internal (Get_Object (Curve), Vector'Length, Vector'Address);
+   end Get_Vector;
+
+   procedure Set_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : Gfloat_Array)
+   is
+      procedure Internal
+        (Curve  : System.Address;
+         Veclen : Integer;
+         Vector : System.Address);
+      pragma Import (C, Internal, "gtk_curve_set_vector");
+
+   begin
+      Internal (Get_Object (Curve), Vector'Length,
+                Vector (Vector'First)'Address);
+   end Set_Vector;
+       </body>
+    </extra>
+  </package>
+
+  <package id="Gtk.Expander">
+     <doc group="Layout containers" screenshot="gtk-expanded">A container that can hide its child.</doc>
+  </package>
+
+  <package id="Gtk.Drawing_Area">
+     <doc group="Drawing" testgtk="libart_demo.adb">
+This widget provides an empty canvas on which the application can draw anything.
+
+Note that this widget is simply an empty space, and that you need to connect it to events to make it useful. For instance, you might want to do one of the following :
+
+* Connect it to "expose_event": The handlers are called every time the widget needs to be redrawn. You can then draw anything you want on the canvas, after getting its associated window with a call to Gtk.Widget.Get_Window. Note that the event mask is automatically set up to accept expose_events.
+
+* Connect it to "button_press_event" and "button_release_event" events, when you want it to react to user input. Note that you need to set up the event mask with a call to Gtk.Widget.Set_Events.
+
+See also the Double_Buffer widget provided in the GtkAda examples for an advanced example that demonstrates how to use double buffering, to avoid flickering in your drawings.</doc>
+     <method id="gtk_drawing_area_size" obsolescent="True">
+        <doc>Request a new size for the area. This queues a resize request for the area.</doc>
+     </method>
+
+  </package>
+
 </GIR>

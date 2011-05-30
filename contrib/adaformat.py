@@ -93,12 +93,10 @@ class AdaNaming(object):
             "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
             "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
             "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
+            "GtkCurveType":       Enum("Gtk.Enums.Gtk_Curve_Type"),
+
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
-
-            #"GtkHBox":         GObject("Gtk.Box.Gtk_HBox"),
-            #"GtkVBox":         GObject("Gtk.Box.Gtk_VBox"),
-
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
             "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
@@ -106,6 +104,8 @@ class AdaNaming(object):
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
+            "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
+
             "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
 
             "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),

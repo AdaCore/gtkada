@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,91 +28,62 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This widget provides an empty canvas on which the application can draw
 --  anything.
+-- 
 --  Note that this widget is simply an empty space, and that you need to
 --  connect it to events to make it useful. For instance, you might want to do
 --  one of the following :
---
+-- 
 --  * Connect it to "expose_event": The handlers are called every time the
---    widget needs to be redrawn. You can then draw anything you want on the
---    canvas, after getting its associated window with a call to
---    Gtk.Widget.Get_Window. Note that the event mask is automatically set up
---    to accept expose_events.
---
+--  widget needs to be redrawn. You can then draw anything you want on the
+--  canvas, after getting its associated window with a call to
+--  Gtk.Widget.Get_Window. Note that the event mask is automatically set up to
+--  accept expose_events.
+-- 
 --  * Connect it to "button_press_event" and "button_release_event" events,
---    when you want it to react to user input. Note that you need to set up the
---    event mask with a call to Gtk.Widget.Set_Events.
---
+--  when you want it to react to user input. Note that you need to set up the
+--  event mask with a call to Gtk.Widget.Set_Events.
+-- 
 --  See also the Double_Buffer widget provided in the GtkAda examples for an
 --  advanced example that demonstrates how to use double buffering, to avoid
 --  flickering in your drawings.
---
+-- 
 --  </description>
---  <c_version>2.8.17</c_version>
 --  <group>Drawing</group>
 --  <testgtk>libart_demo.adb</testgtk>
 
-with Gtk.Widget;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;       use Glib;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Drawing_Area is
 
-   type Gtk_Drawing_Area_Record is new
-     Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Drawing_Area_Record is new Gtk_Widget_Record with null record;
    type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
 
-   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
-   --  Create a new blank Drawing_Area.
-   --  Note that the background of the widget is uninitialized, and that you
-   --  have to draw on it yourself.
+   ------------------
+   -- Constructors --
+   ------------------
 
-   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   procedure Gtk_New (Self : out Gtk_Drawing_Area);
+   procedure Initialize (Self : access Gtk_Drawing_Area_Record'Class);
 
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Drawing_Area.
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
 
-   -----------------
-   -- Obsolescent --
-   -----------------
-   --  All subprograms below are now obsolescent in gtk+. They might be removed
-   --  from future versions of gtk+ (and therefore GtkAda).
-   --  To find out whether your code uses any of these, we recommend compiling
-   --  with the -gnatwj switch
-   --  <doc_ignore>
+   -------------
+   -- Methods --
+   -------------
 
    procedure Size
-     (Darea  : access Gtk_Drawing_Area_Record;
-      Width  : Gint;
-      Height : Gint);
-   pragma Obsolescent;  --  Size
-   --  Request a new size for the area.
-   --  This queues a resize request for the area.
+      (Self   : access Gtk_Drawing_Area_Record;
+       Width  : Gint;
+       Height : Gint);
+   pragma Obsolescent;
+   --  Request a new size for the area. This queues a resize request for the
+   --  area.
+   --  Deprecated
 
-   --  </doc_ignore>
-
-   ----------------
-   -- Properties --
-   ----------------
-
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  </properties>
-
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --  </signals>
-
-private
-   type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
-     with null record;
-   pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
 end Gtk.Drawing_Area;
