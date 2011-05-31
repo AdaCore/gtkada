@@ -1018,6 +1018,27 @@ See also the Double_Buffer widget provided in the GtkAda examples for an advance
      <method id="gtk_drawing_area_size" obsolescent="True">
         <doc>Request a new size for the area. This queues a resize request for the area.</doc>
      </method>
+  </package>
+
+  <package id="Gtk.Adjustment">
+     <doc group="Scrolling">This object represents an adjustable bounded value. It is used in many other widgets that have such internal values, like Gtk_Scrollbar, Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is done through their associated adjustments.
+
+The modification of the value is left to the user, who should call Value_Changed or Changed to emit the relevant signals.
+
+The meaning of the most important fields can be explained on the following figure (imagine this is a scrollbar):
+
+[-------|=================|-------------------]
+
+lower    value        value + page_size       upper
+     </doc>
+     <parameter name="self" ada="Adjustment"/>
+     <method id="gtk_adjustment_new">
+        <parameter name="page_size" default="0.0"/>
+        <doc>Create a new adjustment. Value is the initial value of the adjustment. It must be in the range (Lower .. Upper) and the adjustment's value will never be outside this range. Step_Increment is the value used to make minor adjustments, such as when the user clicks on the arrows of a scrollbar. Page_Increment is used to make major adjustments, such as when the user clicks in the through on a scrollbar. Page_Size is deprecated, use the default value.</doc>
+     </method>
+     <method id="gtk_adjustment_clamp_page">
+        <doc>Update the Adjustment value to ensure that the range between Lower and Upper is in the current page (i.e. between value and value + page_size). If the range is larger than the page size, then only the start of it will be in the current page. A "value_changed" signal will be emitted if the value is changed.</doc>
+     </method>
 
   </package>
 
