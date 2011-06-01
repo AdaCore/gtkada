@@ -1,4 +1,5 @@
 AC_REVISION($Revision$)
+AC_PREREQ(2.50)
 AC_INIT(src/glib.ads)
 
 # Current release settings
