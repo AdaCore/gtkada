@@ -247,16 +247,16 @@ class GtkAdaParameter(object):
             name = self.default.get("ada", None)
         return name
 
-    def get_type(self):
+    def get_type(self, pkg):
         type = None
         if self.default is not None:
             t = self.default.get("type", None)
             if t:
-                type = AdaType(t)
+                type = AdaType(t, pkg=pkg)
         if type is None and self.node is not None:
             t = self.node.get("type", None)
             if t:
-                type = AdaType(t)
+                type = AdaType(t, pkg=pkg)
         return type
 
     def empty_maps_to_null(self):

@@ -21,8 +21,7 @@ def GObject(ada):
     return TD(ada, False, True, "Glib.Properties.Property_Object")
 def Proxy(ada, property=None):
     if property is None:
-        # ??? incorrect
-        return TD(ada, False, False, "Gtk.Enums.Property_%s" % ada)
+        return TD(ada, False, False, "Glib.Properties.Property_Boxed")
     else:
         return TD(ada, False, False, property)
 
@@ -38,15 +37,25 @@ class AdaNaming(object):
             "gtk_window_set_default_icon": "Gtk.Window.Set_Default_Icon",
             "gtk_show_uri":                "gtk_show_uri()",
             "gtk_widget_show":             "Gtk.Widget.Show",
+            "gtk_icon_factory_add_default": "Gtk.Icon_Factory.Add_Default",
+            "gtk_icon_factory_add":        "Gtk.Icon_Factory.Add",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
             # classes themselves, since this is automatically read from the
             # GIR file.
+            # Mostly used for properties. The values must correspond to
+            # entries in self.type_exceptions.
             "GdkPixbuf.Pixbuf":    "GdkPixbuf",
             "Pango.EllipsizeMode": "PangoEllipsizeMode",
             "Pango.WrapMode":      "PangoWrapMode",
             "Pango.AttrList":      "PangoAttrList",
+            "Gio.Icon":            "GIcon*",
+            "IconSet":             "GtkIconSet*",
+            "Gdk.Pixmap":          "GdkPixmap*",
+            "Gdk.Image":           "GdkImage*",
+            "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
+            "Gdk.Bitmap":          "GdkBitmap*",
         }
         self.exceptions = {
             # Naming exceptions. In particular maps Ada keywords.
@@ -81,6 +90,7 @@ class AdaNaming(object):
 
             "gpointer":       Proxy("System.Address", ""),
             "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
+            "GIcon*":        Proxy("Glib.G_Icon.G_Icon"),
 
             "GtkPositionType":    Enum("Gtk.Enums.Gtk_Position_Type"),
             "GtkReliefStyle":     Enum("Gtk.Enums.Gtk_Relief_Style"),
@@ -100,18 +110,20 @@ class AdaNaming(object):
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
             "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
-            "GtkRange":        GObject("Gtk.GRange.Gtk_Range"), # in docs
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
 
             "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
+            "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
             "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
             "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
             "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
+            "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
             "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
+            "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
             "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
         }
 
@@ -357,7 +369,8 @@ class CType(object):
         self.returns = (
             full, self.cparam,
             "%s (Get_User_Data (%%s, Stub))" % full,
-            [Local_Var("Stub", AdaType("%s_Record" % full, pkg=pkg))])
+            [Local_Var(
+                "Stub", AdaType("%s_Record" % full, pkg=pkg, in_spec=False))])
 
     def __init__(self, name, cname, pkg, isArray=False, allow_access=True,
                  empty_maps_to_null=False):
@@ -452,13 +465,6 @@ class CType(object):
                     userecord=cname
                        and not cname.endswith("**") and allow_access)
 
-            elif self.is_ptr and cname.startswith("Gtk"):
-                 self._as_gobject(
-                     full, pkg,
-                     userecord=not cname.endswith("**") and allow_access)
-                 if cname.endswith("**"):
-                     self.is_ptr = True # An out parameter
-
             else:
                 ada = full.ada
                 if "." in ada:
@@ -544,7 +550,8 @@ class CType(object):
 class AdaType(CType):
     """Similar to a CType, but created directly from Ada types"""
 
-    def __init__(self, adatype, pkg=None, ctype="", convert="%(var)s"):
+    def __init__(self, adatype, pkg=None, in_spec=True, ctype="",
+                 convert="%(var)s"):
         """The 'adatype' type is represented as 'ctype' for subprograms
            that import C functions. The parameters of that type are converted
            from Ada to C by using 'convert'. 'convert' must use '%s' once
@@ -562,9 +569,12 @@ class AdaType(CType):
             adapkg = adatype[:adatype.rfind(".")]
             self._as_gobject(
                 td=GObject(adatype),
-                pkg=pkg,
+                pkg=None,  # Do not add a "with"
                 userecord=False)
             self.convert = "%s.Get_Object (%%(var)s)" % adapkg
+
+        elif pkg and "." in adatype:
+            pkg.add_with(adatype[0:adatype.rfind(".")], specs=in_spec)
 
 
 class Local_Var(object):
@@ -962,13 +972,25 @@ class Section(object):
             result = []
             tmp = dict()  # group_name => [subprograms]
 
+            gtk_new_index = 0;
+
             for s in self.subprograms:
                 name = s.name.replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
                         .replace("Initialize", "") \
+                        .replace("Set_From_", "") \
                         .replace("Set_", "")
-                if name in tmp:
+                if s.name == "Gtk_New":
+                    # Always create a new group for Gtk_New, since they all
+                    # have different parameters. But we still want to group
+                    # Gtk_New and Initialize.
+                    t = tmp["Gtk_New%d" % gtk_new_index] = [s]
+                    result.append(t)
+                elif s.name == "Initialize":
+                    tmp["Gtk_New%d" % gtk_new_index].append(s)
+                    gtk_new_index += 1
+                elif name in tmp:
                     tmp[name].append(s)  # Also modified in result
                 else:
                     tmp[name] = [s]
@@ -1051,6 +1073,9 @@ class Package(object):
            Automatic casing is performed. If specs is True, the withs are
            added to the specs of the package, otherwise to the body
         """
+        if pkg == "System":
+            return   # Not needed, already done in gtk.ads
+
         if type(pkg) == str:
             pkg = [pkg]
         for p in pkg:

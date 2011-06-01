@@ -120,6 +120,7 @@ package Gtk.Dialog is
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
        Title  : UTF8_String;

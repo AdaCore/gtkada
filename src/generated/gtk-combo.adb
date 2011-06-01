@@ -110,12 +110,12 @@ package body Gtk.Combo is
 
    procedure Set_Popdown_Strings
       (Self    : access Gtk_Combo_Record;
-       Strings : String_List.Glist)
+       Strings : Gtk.Enums.String_List.Glist)
    is
       procedure Internal (Self : System.Address; Strings : System.Address);
       pragma Import (C, Internal, "gtk_combo_set_popdown_strings");
    begin
-      Internal (Get_Object (Self), String_List.Get_Object (Strings));
+      Internal (Get_Object (Self), Gtk.Enums.String_List.Get_Object (Strings));
    end Set_Popdown_Strings;
 
    --------------------

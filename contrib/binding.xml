@@ -755,7 +755,7 @@ respectively.
         <doc>Specify whether the text entered into the Gtk_Entry field and the text in the list items are case sensitive. This may be useful, for example, when you have called Set_Value_In_List to limit the values entered, but you are not worried about differences in case.</doc>
      </method>
      <method id="gtk_combo_set_popdown_strings">
-        <parameter name="strings" type="String_List.Glist"/>
+        <parameter name="strings" type="Gtk.Enums.String_List.Glist"/>
         <doc>Set all the items in the popup list.</doc>
      </method>
      <method id="gtk_combo_disable_activate">
@@ -1039,7 +1039,102 @@ lower    value        value + page_size       upper
      <method id="gtk_adjustment_clamp_page">
         <doc>Update the Adjustment value to ensure that the range between Lower and Upper is in the current page (i.e. between value and value + page_size). If the range is larger than the page size, then only the start of it will be in the current page. A "value_changed" signal will be emitted if the value is changed.</doc>
      </method>
+  </package>
 
+  <package id="Gtk.Image">
+     <doc group="Display widgets" screenshot="gtk-image">The Gtk_Image widget displays a graphical image. The image is typically created using Gdk.Image.Gdk_New.
+
+The pixels in a Gtk_Image may be manipulated by the application after creation, as Gtk_Image store the pixel data on the client side. If you wish to store the pixel data on the server side (thus not allowing manipulation of the data after creation) you should use Gtk_Pixmap.</doc>
+     <parameter name="size" type="Gtk.Enums.Gtk_Icon_Size"/>
+     <method id="gtk_image_new_from_animation" ada="Gtk_New"/>
+     <method id="gtk_image_new_from_file"      ada="Gtk_New"/>
+     <method id="gtk_image_new_from_image"     ada="Gtk_New"/>
+     <method id="gtk_image_new_from_pixbuf"    ada="Gtk_New"/>
+     <method id="gtk_image_new_from_icon_set"  ada="Gtk_New"/>
+     <method id="gtk_image_new_from_pixmap"    ada="Gtk_New"/>
+     <method id="gtk_image_new_from_stock"     ada="Gtk_New"/>
+     <method id="gtk_image_get_animation"      ada="Get"/>
+     <method id="gtk_image_set_from_animation" ada="Set"/>
+     <method id="gtk_image_get_image"          ada="Get"/>
+     <method id="gtk_image_get" bind="False"/> <!-- same as get_image -->
+     <method id="gtk_image_set_from_image"     ada="Set"/>
+     <method id="gtk_image_set" bind="False"/> <!-- same as set_from_image -->
+     <method id="gtk_image_get_pixbuf"         ada="Get"/>
+     <method id="gtk_image_set_from_pixbuf"    ada="Set"/>
+     <method id="gtk_image_get_icon_set"       ada="Get"/>
+     <method id="gtk_image_set_from_icon_set"  ada="Set"/>
+     <method id="gtk_image_get_pixmap"         ada="Get"/>
+     <method id="gtk_image_set_from_pixmap"    ada="Set"/>
+     <method id="gtk_image_get_stock"          ada="Get" bind="False"/>
+     <method id="gtk_image_set_from_stock"     ada="Set"/>
+     <method id="gtk_image_get_gicon"          ada="Get"/>
+     <method id="gtk_image_set_from_gicon"     ada="Set"/>
+     <method id="gtk_image_set_from_file"      ada="Set"/>
+     <method id="gtk_image_get_icon_name"      ada="Get" bind="False"/>
+     <extra>
+        <type ctype="GtkImageType" ada="Gtk_Image_Type">
+   type Gtk_Image_Type is
+     (Image_Empty,
+      Image_Pixmap,
+      Image_Image,
+      Image_Pixbuf,
+      Image_Stock,
+      Image_Icon_Set,
+      Image_Animation,
+      Image_Icon_Name,
+      Image_Gicon);
+   pragma Convention (C, Gtk_Image_Type);
+        </type>
+        <with_spec pkg="GNAT.Strings"/>
+        <spec>
+   function Get
+     (Image : access Gtk_Image_Record;
+      Size  : access Gtk.Enums.Gtk_Icon_Size) return String;
+   --  Get the stock_id for the image displayed
+
+   procedure Get_Icon_Name
+     (Image : access Gtk_Image_Record;
+      Name  : out GNAT.Strings.String_Access;
+      Size  : out Gtk.Enums.Gtk_Icon_Size);
+        </spec>
+        <body>
+   procedure Get_Icon_Name
+     (Image : access Gtk_Image_Record;
+      Name  : out GNAT.Strings.String_Access;
+      Size  : out Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Image : System.Address;
+         Name  : out Interfaces.C.Strings.chars_ptr;
+         Size  : out Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_image_get_icon_name");
+      Str : chars_ptr;
+   begin
+      Internal (Get_Object (Image), Str, Size);
+      Name := new String'(Value (Str));
+   end Get_Icon_Name;
+
+   function Get
+     (Image : access Gtk_Image_Record;
+      Size  : access Gtk.Enums.Gtk_Icon_Size) return String
+   is
+      procedure Internal
+        (Image    : System.Address;
+         Stock_Id : out Interfaces.C.Strings.chars_ptr;
+         Size     : out Gint);
+      pragma Import (C, Internal, "gtk_image_get_stock");
+
+      Stock : Interfaces.C.Strings.chars_ptr;
+      Sze   : Gint;
+
+   begin
+      Internal (Get_Object (Image), Stock, Sze);
+      Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
+      return Interfaces.C.Strings.Value (Stock);
+   end Get;
+
+        </body>
+     </extra>
   </package>
 
 </GIR>

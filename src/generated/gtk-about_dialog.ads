@@ -58,7 +58,6 @@ with Glib;                 use Glib;
 with Glib.Properties;      use Glib.Properties;
 with Gtk.Dialog;           use Gtk.Dialog;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
-with System;               use System;
 
 package Gtk.About_Dialog is
 

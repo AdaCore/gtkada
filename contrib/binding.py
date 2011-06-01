@@ -122,7 +122,7 @@ class GIRClass(object):
             gtkparam = gtkmethod.get_param(name=name)
             default = gtkparam.get_default()
 
-            type = gtkparam.get_type() \
+            type = gtkparam.get_type(pkg=self.pkg) \
                 or self._get_type(
                     p,
                     empty_maps_to_null=gtkparam.empty_maps_to_null(),
@@ -131,7 +131,9 @@ class GIRClass(object):
             if type is None:
                 return None
 
-            if type.is_ptr:
+            if p.get("direction", "in") == "out":
+                mode = "out"
+            elif type.is_ptr:
                 mode = "out"
             else:
                 mode = "in"
@@ -199,7 +201,7 @@ class GIRClass(object):
                 self._subst["params"] = ""
                 self._subst["internal_params"] = ""
 
-            returns = AdaType("System.Address", pkg=self.pkg)
+            returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
             local_vars = []
             code = []
             plist = self._c_plist(params, returns, local_vars, code)
@@ -220,7 +222,7 @@ class GIRClass(object):
             initialize_params = [Parameter(
                 name=selfname,
                 type=AdaType("%(typename)s_Record'Class" % self._subst,
-                             pkg=self.pkg),
+                             pkg=self.pkg, in_spec=True),
                 mode="access")] + params
             initialize = Subprogram(
                 name=adaname.replace("Gtk_New", "Initialize"),
@@ -239,7 +241,7 @@ class GIRClass(object):
                 plist=[Parameter(
                     name=selfname,
                     type=AdaType("%(typename)s" % self._subst,
-                                 pkg=self.pkg),
+                                 pkg=self.pkg, in_spec=True),
                     mode="out")] + params,
                 local_vars=call[2],
                 code=selfname + " := new %(typename)s_Record;" % self._subst
@@ -317,6 +319,7 @@ class GIRClass(object):
                 type=AdaType(
                     adatype="access %(typename)s_Record" % self._subst,
                     pkg=self.pkg,
+                    in_spec=True,
                     ctype="System.Address",
                     convert="Get_Object (%(var)s)")))
 
@@ -384,7 +387,7 @@ class GIRClass(object):
             section.add(
                 Subprogram(
                     name=gtkmethod.ada_name() or "Get_Type",
-                    returns=AdaType("Glib.GType", pkg=self.pkg))
+                    returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
                 .import_c(n))
 
             if not self.gtktype.is_subtype():
@@ -779,6 +782,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "Dialog",
            "DrawingArea",
            "Expander",
+           "Image",
            "Combo",  # Needs HBox
           )
 

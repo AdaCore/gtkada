@@ -108,7 +108,7 @@ package Gtk.Combo is
 
    procedure Set_Popdown_Strings
       (Self    : access Gtk_Combo_Record;
-       Strings : String_List.Glist);
+       Strings : Gtk.Enums.String_List.Glist);
    --  Set all the items in the popup list.
 
    procedure Set_Use_Arrows
