@@ -83,7 +83,7 @@ class AdaNaming(object):
                                       "Glib.Properties.Property_Boolean"),
             "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
             "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
-            "guint":    Proxy("Guint",   "Glib.Properties.Property_Int"),
+            "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
             "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
 
             "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
@@ -115,6 +115,7 @@ class AdaNaming(object):
             "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
             "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
             "GtkCurveType":       Enum("Gtk.Enums.Gtk_Curve_Type"),
+            "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
 
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
@@ -127,6 +128,11 @@ class AdaNaming(object):
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
             "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
+            "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
+            "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
+            "GtkTreeIter*":     Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
+            "GtkTreeViewRowSeparatorFunc":
+                Proxy("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
 
             "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
             "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),

@@ -180,9 +180,9 @@ package Gtk.Layout is
    --  Flags: read-write
 
    Hadjustment_Property : constant Glib.Properties.Property_Object;
-   Height_Property : constant Glib.Properties.Property_Int;
+   Height_Property : constant Glib.Properties.Property_Uint;
    Vadjustment_Property : constant Glib.Properties.Property_Object;
-   Width_Property : constant Glib.Properties.Property_Int;
+   Width_Property : constant Glib.Properties.Property_Uint;
 
    -------------
    -- Signals --
@@ -197,10 +197,10 @@ package Gtk.Layout is
 private
    Hadjustment_Property : constant Glib.Properties.Property_Object:=
      Glib.Properties.Build ("hadjustment");
-   Height_Property : constant Glib.Properties.Property_Int:=
+   Height_Property : constant Glib.Properties.Property_Uint:=
      Glib.Properties.Build ("height");
    Vadjustment_Property : constant Glib.Properties.Property_Object:=
      Glib.Properties.Build ("vadjustment");
-   Width_Property : constant Glib.Properties.Property_Int:=
+   Width_Property : constant Glib.Properties.Property_Uint:=
      Glib.Properties.Build ("width");
 end Gtk.Layout;

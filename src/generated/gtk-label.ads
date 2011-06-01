@@ -503,7 +503,7 @@ package Gtk.Label is
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
    Label_Property : constant Glib.Properties.Property_String;
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Int;
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint;
    Mnemonic_Widget_Property : constant Glib.Properties.Property_Object;
    Pattern_Property : constant Glib.Properties.Property_String;
    Selectable_Property : constant Glib.Properties.Property_Boolean;
@@ -582,7 +582,7 @@ private
      Glib.Properties.Build ("label");
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int:=
      Glib.Properties.Build ("max-width-chars");
-   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Int:=
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint:=
      Glib.Properties.Build ("mnemonic-keyval");
    Mnemonic_Widget_Property : constant Glib.Properties.Property_Object:=
      Glib.Properties.Build ("mnemonic-widget");

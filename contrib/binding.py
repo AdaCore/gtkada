@@ -792,10 +792,12 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "Misc", "Paned", "Pixmap", "Progress", "Scale",
            "VBox", "VButtonBox", "Viewport", "VPaned",
            "VScale", "VolumeButton",
-           # "Entry",
+           # "Entry",   # partially done only
            "Adjustment",
            "Alignment",
            "Calendar",
+           # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
+                          # Also needs support for interfaces
            "Curve",
            "Dialog",
            "DrawingArea",
@@ -803,6 +805,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "Image",
            "SizeGroup",
            "Statusbar",
+           "Table",
            "Combo",  # Needs HBox
           )
 

@@ -15,6 +15,7 @@ Where the package node is defined as follows:
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
             testgtk="..."    <!-- optional -->
+            see="..."        <!-- optional -->
        >
        package-level documentation
        </doc>
@@ -136,6 +137,10 @@ class GtkAdaPackage(object):
         n = docnode.get("testgtk")
         if n is not None:
             doc.append("<testgtk>%s</testgtk>" % n)
+
+        n = docnode.get("see")
+        if n is not None:
+            doc.append("<see>%s</see>" % n)
 
         return doc
 

@@ -53,6 +53,7 @@
 --  </description>
 --  <screenshot>gtk-combo</screenshot>
 --  <group>Obsolescent widgets</group>
+--  <see>Gtk.Combo_Box</see>
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");

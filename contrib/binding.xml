@@ -1372,4 +1372,72 @@ Each message is associated with a specific Context_Id. Each of this context can 
      </extra>
   </package>
 
+  <package id="Gtk.Table">
+     <doc group="Layout containers">
+A Gtk_Table is a container that can contain any number of children.  Each of them is attached to a specific row and a specific column in widget.
+
+Every row in the table must have the same height, and every column must have the same width if the table was said as Homogeneous. But you can also decide to have an heterogeneous table, where the width and height are set by the children contained in the table.  Check out the Gtk_Sheet widget for a different kind of table that can also contain text and images in a more efficient way.
+     </doc>
+     <parameter name="self" ada="Table"/>
+     <method id="gtk_table_new">
+        <doc>Create a new table. The width allocated to the table is divided into Columns columns, which all have the same width if Homogeneous is True. If Homogeneous is False, the width will be calculated with the children contained in the table. Same behavior for the rows.</doc>
+     </method>
+     <method id="gtk_table_attach">
+        <doc>Insert a new widget in the table. All the attachments are relative to the separations between columns and rows (for instance, to insert a widget spanning the first two columns in the table, you should put Left_Attach=0 and Right_Attach=2). Same behavior for the rows. Xoptions and Yoptions indicate the behavior of the child when the table is resized (whether the child can shrink or expand). See the description in Gtk.Box for more information on the possible values. Xpadding and Ypadding are the amount of space left around the child.</doc>
+        <parameter name="xoptions" default="Expand or Fill"/>
+        <parameter name="yoptions" default="Expand or Fill"/>
+        <parameter name="xpadding" default="0"/>
+        <parameter name="ypadding" default="0"/>
+     </method>
+     <method id="gtk_table_attach_defaults">
+        <doc>Insert a new widget in the table, with default values. No padding is put around the child, and the options are set to Expand and Fill. This call is similar to Attach with default values and is only provided for compatibility.</doc>
+     </method>
+     <method id="gtk_table_set_col_spacing">
+        <doc>Set the spacing in pixels between Column and the next one.</doc>
+     </method>
+     <method id="gtk_table_set_homogeneous">
+        <doc>Indicate the homogeneous status of the table. If Homogeneous is True, the rows and columns of the table will all be allocated the same width or height.</doc>
+     </method>
+  </package>
+
+  <package id="Gtk.Combo_Box">
+     <doc group="Trees and Lists" screenshot="gtk-combo_box"
+          see="Gtk.Combo_Box_Entry">
+A Gtk_Combo_Box is a widget that allows the user to choose from a list of valid choices. The Gtk_Combo_Box displays the selected choice. When activated, the Gtk_Combo_Box displays a popup which allows the user to make new choice. The style in which the selected value is displayed, and the style of the popup is determined by the current theme. It may be similar to a Gtk_Option_Menu, or similar to a Windows-style combo box.
+
+Unlike its predecessors Gtk.Combo.Gtk_Combo and Gtk.Option_Menu.Gtk_Option_Menu, the Gtk_Combo_Box uses the model-view pattern; the list of valid choices is specified in the form of a tree model, and the display of the choices can be adapted to the data in the model by using cell renderers, as you would in a tree view. This is possible since Gtk_Combo_Box implements the Gtk_Cell_Layout interface. The tree model holding the valid choices is not restricted to a flat list, it can be a real tree, and the popup will reflect the tree structure.
+
+In addition to the model-view API, Gtk_Combo_Box offers a simple API which is suitable for text-only combo boxes, and hides the complexity of managing the data in a model.
+     </doc>
+     <method id="gtk_combo_box_get_popup_accessible" bind="False"/>
+     <method id="gtk_combo_box_get_active_iter" bind="False"/> <!-- below-->
+     <extra>
+        <spec>
+   function Get_Active_Iter
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Iter;
+        </spec>
+        <body>
+   function Get_Active_Iter
+     (Combo_Box : access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
+   is
+      function Internal
+        (Combo_Box : System.Address;
+         Iter      : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_combo_box_get_active_iter");
+      Iter : aliased Gtk_Tree_Iter;
+      Tmp  : constant Gboolean := Internal
+        (Get_Object (Combo_Box), Iter'Address);
+   begin
+      if Tmp /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Get_Active_Iter;
+        </body>
+     </extra>
+  </package>
+
 </GIR>
