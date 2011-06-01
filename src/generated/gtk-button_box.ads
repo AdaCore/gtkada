@@ -128,5 +128,5 @@ package Gtk.Button_Box is
 
 private
    Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style:=
-     Gtk.Enums.Build ("Layout_Style_Property");
+     Gtk.Enums.Build ("layout-style");
 end Gtk.Button_Box;

@@ -374,25 +374,25 @@ package Gtk.About_Dialog is
 
 private
    Comments_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Comments_Property");
+     Glib.Properties.Build ("comments");
    Copyright_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Copyright_Property");
+     Glib.Properties.Build ("copyright");
    License_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("License_Property");
+     Glib.Properties.Build ("license");
    Logo_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Logo_Property");
+     Glib.Properties.Build ("logo");
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Logo_Icon_Name_Property");
+     Glib.Properties.Build ("logo-icon-name");
    Program_Name_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Program_Name_Property");
+     Glib.Properties.Build ("program-name");
    Translator_Credits_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Translator_Credits_Property");
+     Glib.Properties.Build ("translator-credits");
    Version_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Version_Property");
+     Glib.Properties.Build ("version");
    Website_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Website_Property");
+     Glib.Properties.Build ("website");
    Website_Label_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Website_Label_Property");
+     Glib.Properties.Build ("website-label");
    Wrap_License_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Wrap_License_Property");
+     Glib.Properties.Build ("wrap-license");
 end Gtk.About_Dialog;

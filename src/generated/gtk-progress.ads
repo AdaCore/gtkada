@@ -149,11 +149,11 @@ package Gtk.Progress is
 
 private
    Activity_Mode_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Activity_Mode_Property");
+     Glib.Properties.Build ("activity-mode");
    Show_Text_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Show_Text_Property");
+     Glib.Properties.Build ("show-text");
    Text_Xalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Text_Xalign_Property");
+     Glib.Properties.Build ("text-xalign");
    Text_Yalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Text_Yalign_Property");
+     Glib.Properties.Build ("text-yalign");
 end Gtk.Progress;

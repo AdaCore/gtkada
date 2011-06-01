@@ -498,19 +498,19 @@ This widget can not be instantiated directly.
    <package id="Gtk.List" obsolescent="True">
       <doc group="Obsolescent widgets" testgtk="create_list.adb"/>
       <method id="gtk_list_append_items">
-         <parameter name="items" type="Widget_List.Glist"/>
+         <parameter name="items" ctype="WidgetList"/>
       </method>
       <method id="gtk_list_prepend_items">
-         <parameter name="items" type="Widget_List.Glist"/>
+         <parameter name="items" ctype="WidgetList"/>
       </method>
       <method id="gtk_list_insert_items">
-         <parameter name="items" type="Widget_List.Glist"/>
+         <parameter name="items" ctype="WidgetList"/>
       </method>
       <method id="gtk_list_remove_items">
-         <parameter name="items" type="Widget_List.Glist"/>
+         <parameter name="items" ctype="WidgetList"/>
       </method>
       <method id="gtk_list_remove_items_no_unref">
-         <parameter name="items" type="Widget_List.Glist"/>
+         <parameter name="items" ctype="WidgetList"/>
       </method>
       <method id="gtk_list_clear_items">
          <doc>Remove some items from the list. If The_End is negative, it means the end of the list. The first item in the list has an index of 0</doc>
@@ -755,7 +755,7 @@ respectively.
         <doc>Specify whether the text entered into the Gtk_Entry field and the text in the list items are case sensitive. This may be useful, for example, when you have called Set_Value_In_List to limit the values entered, but you are not worried about differences in case.</doc>
      </method>
      <method id="gtk_combo_set_popdown_strings">
-        <parameter name="strings" type="Gtk.Enums.String_List.Glist"/>
+        <parameter name="strings" ctype="StringList"/>
         <doc>Set all the items in the popup list.</doc>
      </method>
      <method id="gtk_combo_disable_activate">
@@ -1264,6 +1264,38 @@ If performing many 'mark' operations, the calendar can be frozen to prevent flic
       Unchecked_Free (D);
    end Free_Detail_Func_Data;
         </body>
+     </extra>
+  </package>
+
+  <package id="Gtk.Size_Group">
+     <doc testgtk="create_size_groups.adb">
+Gtk_Size_Group provides a mechanism for grouping a number of widgets together so they all request the same amount of space. This is typically useful when you want a column of widgets to have the same size, but you can't use a Gtk_Table widget.
+
+Note that size groups only affect the amount of space requested, not the size that the widgets finally receive. If you want the widgets in a Gtk_Size_Group to actually be the same size, you need to pack them in such a way that they get the size they request and not more. For example, if you are packing your widgets into a table, you would not include the Fill flag.
+     </doc>
+     <parameter name="self" ada="Size_Group" />
+     <method id="gtk_size_group_new">
+        <parameter name="mode" default="Both"/>
+     </method>
+     <method id="gtk_size_group_get_widgets" return="WidgetSList"/>
+     <extra>
+        <with_spec pkg="Glib.Generic_Properties"/>
+        <type ctype="GtkSizeGroupMode" ada="Size_Group_Mode"
+              properties="Gtk.Size_Group.Property_Size_Group_Mode">
+   type Size_Group_Mode is (None, Horizontal, Vertical, Both);
+   pragma Convention (C, Size_Group_Mode);
+   --  This type indicates how the size of all widgets in the group match:
+   --  - None: The behavior is the same as if there was no size. Each widget
+   --          requests its most appropriate size.
+   --  - Horizontal: All the widgets in the group will have the same width.
+   --  - Vertical: All the widgets in the group will have the same height
+   --  - Both: All the widgets in the group will have exactly the same size.
+
+   package Size_Group_Mode_Properties is new
+      Glib.Generic_Properties.Generic_Internal_Discrete_Property
+         (Size_Group_Mode);
+   type Property_Size_Group_Mode is new Size_Group_Mode_Properties.Property;
+        </type>
      </extra>
   </package>
 

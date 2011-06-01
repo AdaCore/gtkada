@@ -77,12 +77,12 @@ package body Gtk.List is
 
    procedure Append_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist)
+       Items : Gtk.Widget.Widget_List.GList)
    is
       procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_append_items");
    begin
-      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
+      Internal (Get_Object (Self), Gtk.Widget.Widget_List.Get_Object (Items));
    end Append_Items;
 
    --------------------
@@ -167,7 +167,7 @@ package body Gtk.List is
 
    procedure Insert_Items
       (Self     : access Gtk_List_Record;
-       Items    : Widget_List.Glist;
+       Items    : Gtk.Widget.Widget_List.GList;
        Position : Gint)
    is
       procedure Internal
@@ -176,7 +176,7 @@ package body Gtk.List is
           Position : Gint);
       pragma Import (C, Internal, "gtk_list_insert_items");
    begin
-      Internal (Get_Object (Self), Widget_List.Get_Object (Items), Position);
+      Internal (Get_Object (Self), Gtk.Widget.Widget_List.Get_Object (Items), Position);
    end Insert_Items;
 
    -------------------
@@ -185,12 +185,12 @@ package body Gtk.List is
 
    procedure Prepend_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist)
+       Items : Gtk.Widget.Widget_List.GList)
    is
       procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_prepend_items");
    begin
-      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
+      Internal (Get_Object (Self), Gtk.Widget.Widget_List.Get_Object (Items));
    end Prepend_Items;
 
    ------------------
@@ -199,12 +199,12 @@ package body Gtk.List is
 
    procedure Remove_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist)
+       Items : Gtk.Widget.Widget_List.GList)
    is
       procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_remove_items");
    begin
-      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
+      Internal (Get_Object (Self), Gtk.Widget.Widget_List.Get_Object (Items));
    end Remove_Items;
 
    ---------------------------
@@ -213,12 +213,12 @@ package body Gtk.List is
 
    procedure Remove_Items_No_Unref
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist)
+       Items : Gtk.Widget.Widget_List.GList)
    is
       procedure Internal (Self : System.Address; Items : System.Address);
       pragma Import (C, Internal, "gtk_list_remove_items_no_unref");
    begin
-      Internal (Get_Object (Self), Widget_List.Get_Object (Items));
+      Internal (Get_Object (Self), Gtk.Widget.Widget_List.Get_Object (Items));
    end Remove_Items_No_Unref;
 
    -----------------------

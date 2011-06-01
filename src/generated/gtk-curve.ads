@@ -152,13 +152,13 @@ package Gtk.Curve is
 
 private
    Curve_Type_Property : constant Gtk.Enums.Property_Gtk_Curve_Type:=
-     Gtk.Enums.Build ("Curve_Type_Property");
+     Gtk.Enums.Build ("curve-type");
    Max_X_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Max_X_Property");
+     Glib.Properties.Build ("max-x");
    Max_Y_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Max_Y_Property");
+     Glib.Properties.Build ("max-y");
    Min_X_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Min_X_Property");
+     Glib.Properties.Build ("min-x");
    Min_Y_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Min_Y_Property");
+     Glib.Properties.Build ("min-y");
 end Gtk.Curve;

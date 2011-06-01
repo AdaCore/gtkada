@@ -340,19 +340,19 @@ package Gtk.GRange is
 
 private
    Adjustment_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Adjustment_Property");
+     Glib.Properties.Build ("adjustment");
    Fill_Level_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Fill_Level_Property");
+     Glib.Properties.Build ("fill-level");
    Inverted_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Inverted_Property");
+     Glib.Properties.Build ("inverted");
    Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type:=
-     Gtk.Enums.Build ("Lower_Stepper_Sensitivity_Property");
+     Gtk.Enums.Build ("lower-stepper-sensitivity");
    Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Restrict_To_Fill_Level_Property");
+     Glib.Properties.Build ("restrict-to-fill-level");
    Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Show_Fill_Level_Property");
+     Glib.Properties.Build ("show-fill-level");
    Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type:=
-     Gtk.Enums.Build ("Update_Policy_Property");
+     Gtk.Enums.Build ("update-policy");
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type:=
-     Gtk.Enums.Build ("Upper_Stepper_Sensitivity_Property");
+     Gtk.Enums.Build ("upper-stepper-sensitivity");
 end Gtk.GRange;

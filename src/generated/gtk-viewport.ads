@@ -143,9 +143,9 @@ package Gtk.Viewport is
 
 private
    Hadjustment_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Hadjustment_Property");
+     Glib.Properties.Build ("hadjustment");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
-     Gtk.Enums.Build ("Shadow_Type_Property");
+     Gtk.Enums.Build ("shadow-type");
    Vadjustment_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Vadjustment_Property");
+     Glib.Properties.Build ("vadjustment");
 end Gtk.Viewport;

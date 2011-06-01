@@ -204,17 +204,17 @@ package Gtk.Expander is
 
 private
    Expanded_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Expanded_Property");
+     Glib.Properties.Build ("expanded");
    Label_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Label_Property");
+     Glib.Properties.Build ("label");
    Label_Fill_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Label_Fill_Property");
+     Glib.Properties.Build ("label-fill");
    Label_Widget_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Label_Widget_Property");
+     Glib.Properties.Build ("label-widget");
    Spacing_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Spacing_Property");
+     Glib.Properties.Build ("spacing");
    Use_Markup_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Markup_Property");
+     Glib.Properties.Build ("use-markup");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Underline_Property");
+     Glib.Properties.Build ("use-underline");
 end Gtk.Expander;

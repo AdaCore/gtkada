@@ -242,9 +242,9 @@ package Gtk.Scale is
 
 private
    Number_Of_Digits_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Number_Of_Digits_Property");
+     Glib.Properties.Build ("digits");
    Draw_Value_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Draw_Value_Property");
+     Glib.Properties.Build ("draw-value");
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type:=
-     Gtk.Enums.Build ("Value_Pos_Property");
+     Gtk.Enums.Build ("value-pos");
 end Gtk.Scale;

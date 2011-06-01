@@ -550,7 +550,7 @@ See Glib.Properties for more information on properties)""")
 
                 adaprops.append({
                     "cname": p.get("name"),
-                    "name": naming.case(p.get("name")) + "_Property",
+                    "name": naming.case(p.get("name")),
                     "flags": "-".join(flags),
                     "doc": p.findtext(ndoc, ""),
                     "pkg": pkg,
@@ -561,17 +561,17 @@ See Glib.Properties for more information on properties)""")
 
             for p in adaprops:
                 section.add_comment("")
-                section.add_comment("Name:  %(name)s" % p)
+                section.add_comment("Name:  %(name)s_Property" % p)
                 section.add_comment("Type:  %(type)s" % p)
                 section.add_comment("Flags: %(flags)s" % p)
                 if p["doc"]:
                     section.add_comment("%s\n" % p["doc"])
 
             for p in adaprops:
-                d = '   %(name)s : constant %(ptype)s' % p
+                d = '   %(name)s_Property : constant %(ptype)s' % p
                 section.add (d + ";")
                 self.pkg.add_private(
-                    d + ':=\n     %(pkg)s.Build ("%(name)s");' % p)
+                    d + ':=\n     %(pkg)s.Build ("%(cname)s");' % p)
 
     def _signals(self):
         signals = list(self.node.findall(gsignal))
@@ -691,7 +691,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                         do_use=p.get("use", "true").lower() == "true")
                 elif p.tag == "type":
                     naming.add_type_exception(
-                        cname=p.get("ctype"), type=Proxy(p.get("ada")))
+                        cname=p.get("ctype"),
+                        type=Proxy(p.get("ada"), p.get("properties", None)))
                     section.add_code(p.text)
                 elif p.tag == "body":
                     # Go before the body of generated subprograms, so that
@@ -799,6 +800,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "DrawingArea",
            "Expander",
            "Image",
+           "SizeGroup",
            "Combo",  # Needs HBox
           )
 

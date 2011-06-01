@@ -338,5 +338,5 @@ package Gtk.Dialog is
 
 private
    Has_Separator_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Has_Separator_Property");
+     Glib.Properties.Build ("has-separator");
 end Gtk.Dialog;

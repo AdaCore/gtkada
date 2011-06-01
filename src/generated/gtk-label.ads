@@ -573,35 +573,35 @@ package Gtk.Label is
 
 private
    Angle_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Angle_Property");
+     Glib.Properties.Build ("angle");
    Cursor_Position_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Cursor_Position_Property");
+     Glib.Properties.Build ("cursor-position");
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification:=
-     Gtk.Enums.Build ("Justify_Property");
+     Gtk.Enums.Build ("justify");
    Label_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Label_Property");
+     Glib.Properties.Build ("label");
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Max_Width_Chars_Property");
+     Glib.Properties.Build ("max-width-chars");
    Mnemonic_Keyval_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Mnemonic_Keyval_Property");
+     Glib.Properties.Build ("mnemonic-keyval");
    Mnemonic_Widget_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Mnemonic_Widget_Property");
+     Glib.Properties.Build ("mnemonic-widget");
    Pattern_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Pattern_Property");
+     Glib.Properties.Build ("pattern");
    Selectable_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Selectable_Property");
+     Glib.Properties.Build ("selectable");
    Selection_Bound_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Selection_Bound_Property");
+     Glib.Properties.Build ("selection-bound");
    Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Single_Line_Mode_Property");
+     Glib.Properties.Build ("single-line-mode");
    Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Track_Visited_Links_Property");
+     Glib.Properties.Build ("track-visited-links");
    Use_Markup_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Markup_Property");
+     Glib.Properties.Build ("use-markup");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Underline_Property");
+     Glib.Properties.Build ("use-underline");
    Width_Chars_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Width_Chars_Property");
+     Glib.Properties.Build ("width-chars");
    Wrap_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Wrap_Property");
+     Glib.Properties.Build ("wrap");
 end Gtk.Label;

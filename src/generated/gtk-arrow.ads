@@ -106,7 +106,7 @@ package Gtk.Arrow is
 
 private
    Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type:=
-     Gtk.Enums.Build ("Arrow_Type_Property");
+     Gtk.Enums.Build ("arrow-type");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
-     Gtk.Enums.Build ("Shadow_Type_Property");
+     Gtk.Enums.Build ("shadow-type");
 end Gtk.Arrow;

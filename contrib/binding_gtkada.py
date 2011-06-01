@@ -29,6 +29,7 @@ Where the package node is defined as follows:
            ada="..."       <!-- Override default naming for all methods.
                                 In particular used for "Self" -->
            type="..."      <!-- Override Ada types for all methods -->
+           ctype="..."     <!-- Override C type (to better qualify it) -->
        />
 
        <method             <!-- repeated as needed -->
@@ -80,7 +81,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType
+from adaformat import AdaType, CType
 
 
 class GtkAda(object):
@@ -264,6 +265,12 @@ class GtkAdaParameter(object):
             t = self.node.get("type", None)
             if t:
                 type = AdaType(t, pkg=pkg)
+
+            if type is None:
+                t = self.node.get("ctype", None)
+                if t:
+                    type = CType(name=t, cname=t, pkg=pkg)
+
         return type
 
     def empty_maps_to_null(self):

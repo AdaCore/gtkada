@@ -112,11 +112,11 @@ package Gtk.Misc is
 
 private
    Xalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Xalign_Property");
+     Glib.Properties.Build ("xalign");
    Xpad_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Xpad_Property");
+     Glib.Properties.Build ("xpad");
    Yalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Yalign_Property");
+     Glib.Properties.Build ("yalign");
    Ypad_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Ypad_Property");
+     Glib.Properties.Build ("ypad");
 end Gtk.Misc;

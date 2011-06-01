@@ -261,15 +261,15 @@ package Gtk.Adjustment is
 
 private
    Lower_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Lower_Property");
+     Glib.Properties.Build ("lower");
    Page_Increment_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Page_Increment_Property");
+     Glib.Properties.Build ("page-increment");
    Page_Size_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Page_Size_Property");
+     Glib.Properties.Build ("page-size");
    Step_Increment_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Step_Increment_Property");
+     Glib.Properties.Build ("step-increment");
    Upper_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Upper_Property");
+     Glib.Properties.Build ("upper");
    Value_Property : constant Glib.Properties.Property_Double:=
-     Glib.Properties.Build ("Value_Property");
+     Glib.Properties.Build ("value");
 end Gtk.Adjustment;

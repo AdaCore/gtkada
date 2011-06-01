@@ -294,21 +294,21 @@ package Gtk.Button is
 
 private
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Focus_On_Click_Property");
+     Glib.Properties.Build ("focus-on-click");
    Image_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Image_Property");
+     Glib.Properties.Build ("image");
    Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type:=
-     Gtk.Enums.Build ("Image_Position_Property");
+     Gtk.Enums.Build ("image-position");
    Label_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Label_Property");
+     Glib.Properties.Build ("label");
    Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style:=
-     Gtk.Enums.Build ("Relief_Property");
+     Gtk.Enums.Build ("relief");
    Use_Stock_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Stock_Property");
+     Glib.Properties.Build ("use-stock");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Use_Underline_Property");
+     Glib.Properties.Build ("use-underline");
    Xalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Xalign_Property");
+     Glib.Properties.Build ("xalign");
    Yalign_Property : constant Glib.Properties.Property_Float:=
-     Glib.Properties.Build ("Yalign_Property");
+     Glib.Properties.Build ("yalign");
 end Gtk.Button;

@@ -418,29 +418,29 @@ package Gtk.Image is
 
 private
    File_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("File_Property");
+     Glib.Properties.Build ("file");
    Gicon_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Gicon_Property");
+     Glib.Properties.Build ("gicon");
    Icon_Name_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Icon_Name_Property");
+     Glib.Properties.Build ("icon-name");
    Icon_Set_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Icon_Set_Property");
+     Glib.Properties.Build ("icon-set");
    Icon_Size_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Icon_Size_Property");
+     Glib.Properties.Build ("icon-size");
    Image_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Image_Property");
+     Glib.Properties.Build ("image");
    Mask_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Mask_Property");
+     Glib.Properties.Build ("mask");
    Pixbuf_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Pixbuf_Property");
+     Glib.Properties.Build ("pixbuf");
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Pixbuf_Animation_Property");
+     Glib.Properties.Build ("pixbuf-animation");
    Pixel_Size_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Pixel_Size_Property");
+     Glib.Properties.Build ("pixel-size");
    Pixmap_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Pixmap_Property");
+     Glib.Properties.Build ("pixmap");
    Stock_Property : constant Glib.Properties.Property_String:=
-     Glib.Properties.Build ("Stock_Property");
+     Glib.Properties.Build ("stock");
    Storage_Type_Property : constant Glib.Properties.Property_Boxed:=
-     Glib.Properties.Build ("Storage_Type_Property");
+     Glib.Properties.Build ("storage-type");
 end Gtk.Image;

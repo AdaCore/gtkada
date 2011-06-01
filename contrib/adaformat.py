@@ -9,22 +9,26 @@ import re
 from collections import namedtuple, defaultdict
 
 
-TD = namedtuple('TD', ['ada', 'is_enum', 'is_gobject', 'property'])
+TD = namedtuple('TD', ['ada', 'is_enum', 'is_gobject', 'is_list', 'property'])
 
 def Enum(ada, property=None):
     base = ada[ada.rfind(".") + 1:] or ada
     if property is None:
-        return TD(ada, True, False, "Gtk.Enums.Property_%s" % base)
+        return TD(ada, True, False, False, "Gtk.Enums.Property_%s" % base)
     else:
-        return TD(ada, True, False, property)
+        return TD(ada, True, False, False, property)
+
 def GObject(ada):
-    return TD(ada, False, True, "Glib.Properties.Property_Object")
+    return TD(ada, False, True, False, "Glib.Properties.Property_Object")
+
 def Proxy(ada, property=None):
     if property is None:
-        return TD(ada, False, False, "Glib.Properties.Property_Boxed")
+        return TD(ada, False, False, False, "Glib.Properties.Property_Boxed")
     else:
-        return TD(ada, False, False, property)
+        return TD(ada, False, False, False, property)
 
+def List(ada):
+    return TD(ada, False, False, True, "Glib.Properties.Property_Object")
 
 class AdaNaming(object):
     def __init__(self):
@@ -56,6 +60,7 @@ class AdaNaming(object):
             "Gdk.Image":           "GdkImage*",
             "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
             "Gdk.Bitmap":          "GdkBitmap*",
+            "GObject.Object":      "GObject",
         }
         self.exceptions = {
             # Naming exceptions. In particular maps Ada keywords.
@@ -86,7 +91,12 @@ class AdaNaming(object):
             "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
             "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
 
-            "GObject.Object":     GObject("Glib.Object.GObject"),
+            "Object":     GObject("Glib.Object.GObject"),
+
+            # Specific to this binding generator (referenced from binding.xml)
+            "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
+            "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
+            "StringList":  List("Gtk.Enums.String_List.Glist"),
 
             "gpointer":       Proxy("System.Address", ""),
             "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
@@ -113,6 +123,7 @@ class AdaNaming(object):
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
+            "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
 
             "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
@@ -324,11 +335,34 @@ class CType(object):
                   Tmp : ctype;
                   tmpvars;
               begin
-                  ...;
+                  ...;   --  pre-call code
                   Tmp := ... (...);
-                  ...;
+                  ...;   --  post-call code
                   return <converter % Tmp>
               end;
+       In the example above, "Tmp" is only created if there is some post-call
+       code, otherwise we avoid the temporary variable.
+       The variable "Tmp" is automatically added, and does not need to
+       be specified manually in tmpvars.
+
+       if converted contains the string "%(tmp)s", then we always use a
+       temporary variable of type adatype. This is used for instance when the
+       variable is initialized through a procedure call rather than a function
+       call.
+              function ... (...) return adatype is
+                  function ... (...) return ctype;
+                  pragma Import (C, ..., "...")
+                  Tmp_Result : adatype;
+                  tmpvars;
+              begin
+                  ...   --  pre-call code
+                  convert % {"var":..., "tmp":"Tmp_Result"};  -- proc call
+                  ...   --  post-call code
+                  return Tmp_Result;
+              end;
+       The variable "Tmp_Result" is automatically added, and does not need to
+       be specified manually in tmpvars.
+
        Converter will contain a single %s which will be replaced by the
        name of the temporary variable that holds the result of the call
        to the function.
@@ -343,7 +377,7 @@ class CType(object):
         self.param = name
         self.cparam = cname
         self.convert = "%s'Pos (%%(var)s)" % name
-        self.postconvert = "%s'Val (%%s)" % name
+        self.postconvert = "%s'Val (%%(var)s)" % name
         self.returns = (self.param, self.cparam, self.postconvert, [])
         self.property = td.property
 
@@ -369,9 +403,22 @@ class CType(object):
         self.property = td.property
         self.returns = (
             full, self.cparam,
-            "%s (Get_User_Data (%%s, Stub))" % full,
+            "%s (Get_User_Data (%%(var)s, Stub))" % full,
             [Local_Var(
                 "Stub", AdaType("%s_Record" % full, pkg=pkg, in_spec=False))])
+
+    def _as_list(self, td):
+        adatype = td.ada
+        adapkg = adatype[:adatype.rfind(".")]
+
+        self.param = adatype
+        self.cparam = "System.Address"
+        self.convert = "%s.Get_Object (%%(var)s)" % adapkg
+        self.is_ptr = False
+        self.property = td.property
+        self.returns = (   # Use %(tmp)s so forces the use of temporary var.
+           adatype, self.cparam,
+            "%s.Set_Object (%%(tmp)s, %%(var)s)" % adapkg, [])
 
     def __init__(self, name, cname, pkg, isArray=False, allow_access=True,
                  empty_maps_to_null=False):
@@ -397,7 +444,8 @@ class CType(object):
                              # If it used %(tmp)s, we assume the converter sets
                              # the value of the temporary variable itself.
                              # Otherwise, it is used as " Tmp := <convert>"
-        self.postconvert = "%s" # Convert from C to Ada value
+        self.postconvert = "%(var)s" # Convert from C to Ada value
+                             # %(var)s is the value to convert
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
@@ -411,7 +459,7 @@ class CType(object):
             self.cleanup = "GtkAda.Types.Free (%s)"
             self.returns = (
                 "GNAT.Strings.String_List", "chars_ptr_array_access",
-                "To_String_List (%s.all)", [])
+                "To_String_List (%(var)s.all)", [])
             self.property = ""   # Can't map those
             pkg.add_with("GNAT.Strings")
             pkg.add_with("Gtkada.Types", specs=False)
@@ -431,7 +479,7 @@ class CType(object):
             pkg.add_with("Interfaces.C.Strings", specs=False)
             self.returns = (
                 "UTF8_String", "Interfaces.C.Strings.chars_ptr",
-                "Interfaces.C.Strings.Value (%s)", [])
+                "Interfaces.C.Strings.Value (%(var)s)", [])
             self.property = "Glib.Properties.Property_String"
 
         else:
@@ -466,6 +514,9 @@ class CType(object):
                     userecord=cname
                        and not cname.endswith("**") and allow_access)
 
+            elif full.is_list:
+                self._as_list(full)
+
             else:
                 ada = full.ada
                 if "." in ada:
@@ -477,7 +528,7 @@ class CType(object):
             self.cparam = self.param
 
         if self.returns is None:
-            self.returns = (self.param, self.cparam, "%s", [])
+            self.returns = (self.param, self.cparam, "%(var)s", [])
 
     def as_property(self):
         """The type to use for the property"""
@@ -509,14 +560,14 @@ class CType(object):
             return VariableCall(
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
-        elif self.postconvert != "%s" and mode != "in":
+        elif self.postconvert != "%(var)s" and mode != "in":
             # An "out" parameter for an enumeration requires a temporary
             # variable: Internal(Enum'Pos (Param)) is invalid
             tmp = "Tmp_%s" % name
             return VariableCall(
                 call=wrapper % tmp,
                 precall="",
-                postcall='%s := %s;' % (name, self.postconvert % tmp),
+                postcall='%s := %s;' % (name, self.postconvert % {"var":tmp}),
                 tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
         elif "%(tmp)" in self.convert:
@@ -560,19 +611,16 @@ class AdaType(CType):
         """
         self.param   = adatype
         self.cparam  = ctype or adatype
-        self.returns = (self.param, self.cparam, "%s", [])
+        self.returns = (self.param, self.cparam, "%(var)s", [])
         self.convert = convert
-        self.postconvert = "%s"
+        self.postconvert = "%(var)s"
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
 
-        if adatype.lower().endswith(".glist"):
-            adapkg = adatype[:adatype.rfind(".")]
-            self._as_gobject(
-                td=GObject(adatype),
-                pkg=None,  # Do not add a "with"
-                userecord=False)
-            self.convert = "%s.Get_Object (%%(var)s)" % adapkg
+        if False and (adatype.lower().endswith(".glist") \
+           or adatype.lower().endswith(".gslist")):
+
+            self._as_list(GObject(adatype))
 
         elif pkg and "." in adatype:
             pkg.add_with(adatype[0:adatype.rfind(".")], specs=in_spec)
@@ -907,15 +955,25 @@ class Subprogram(object):
         if returns is not None:
             if lang == "c":
                 tmpvars.extend(returns[3])
-                if postcall:
+                if "%(tmp)s" in returns[2]:
+                    # Result of Internal is used to create a temp. variable,
+                    # which is then returned. This variable has the same type
+                    # as the Ada type (not necessarily same as Internal)
+                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
+                    call = returns[2] % {"var":call, "tmp":"Tmp_Return"}
+                    return ("%s%s;%s" % (precall, call, postcall),
+                            "Tmp_Return",
+                            tmpvars)
+
+                elif postcall:
                     tmpvars.append(Local_Var("Tmp_Return", returns[1]))
                     call = "Tmp_Return := %s" % call
                     return ("%s%s;%s" % (precall, call, postcall),
-                            returns[2] % "Tmp_Return",
+                            returns[2] % {"var":"Tmp_Return"},
                             tmpvars)
                 else:
                     # No need for a temporary variable
-                    return (precall, returns[2] % call, tmpvars)
+                    return (precall, returns[2] % {"var":call}, tmpvars)
             else:
                 if postcall:
                     # We need to use a temporary variable, since there are

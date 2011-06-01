@@ -263,11 +263,11 @@ package Gtk.Paned is
 
 private
    Max_Position_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Max_Position_Property");
+     Glib.Properties.Build ("max-position");
    Min_Position_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Min_Position_Property");
+     Glib.Properties.Build ("min-position");
    Position_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Position_Property");
+     Glib.Properties.Build ("position");
    Position_Set_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Position_Set_Property");
+     Glib.Properties.Build ("position-set");
 end Gtk.Paned;

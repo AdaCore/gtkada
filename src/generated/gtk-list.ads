@@ -64,7 +64,7 @@ package Gtk.List is
 
    procedure Append_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist);
+       Items : Gtk.Widget.Widget_List.GList);
 
    function Child_Position
       (Self  : access Gtk_List_Record;
@@ -89,20 +89,20 @@ package Gtk.List is
 
    procedure Insert_Items
       (Self     : access Gtk_List_Record;
-       Items    : Widget_List.Glist;
+       Items    : Gtk.Widget.Widget_List.GList;
        Position : Gint);
 
    procedure Prepend_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist);
+       Items : Gtk.Widget.Widget_List.GList);
 
    procedure Remove_Items
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist);
+       Items : Gtk.Widget.Widget_List.GList);
 
    procedure Remove_Items_No_Unref
       (Self  : access Gtk_List_Record;
-       Items : Widget_List.Glist);
+       Items : Gtk.Widget.Widget_List.GList);
 
    procedure Scroll_Horizontal
       (Self        : access Gtk_List_Record;
@@ -185,5 +185,5 @@ package Gtk.List is
 
 private
    Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode:=
-     Gtk.Enums.Build ("Selection_Mode_Property");
+     Gtk.Enums.Build ("selection-mode");
 end Gtk.List;

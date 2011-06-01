@@ -181,13 +181,13 @@ package Gtk.Combo is
 
 private
    Allow_Empty_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Allow_Empty_Property");
+     Glib.Properties.Build ("allow-empty");
    Case_Sensitive_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Case_Sensitive_Property");
+     Glib.Properties.Build ("case-sensitive");
    Enable_Arrow_Keys_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Enable_Arrow_Keys_Property");
+     Glib.Properties.Build ("enable-arrow-keys");
    Enable_Arrows_Always_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Enable_Arrows_Always_Property");
+     Glib.Properties.Build ("enable-arrows-always");
    Value_In_List_Property : constant Glib.Properties.Property_Boolean:=
-     Glib.Properties.Build ("Value_In_List_Property");
+     Glib.Properties.Build ("value-in-list");
 end Gtk.Combo;

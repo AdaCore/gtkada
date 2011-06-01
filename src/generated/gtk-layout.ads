@@ -196,11 +196,11 @@ package Gtk.Layout is
 
 private
    Hadjustment_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Hadjustment_Property");
+     Glib.Properties.Build ("hadjustment");
    Height_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Height_Property");
+     Glib.Properties.Build ("height");
    Vadjustment_Property : constant Glib.Properties.Property_Object:=
-     Glib.Properties.Build ("Vadjustment_Property");
+     Glib.Properties.Build ("vadjustment");
    Width_Property : constant Glib.Properties.Property_Int:=
-     Glib.Properties.Build ("Width_Property");
+     Glib.Properties.Build ("width");
 end Gtk.Layout;
