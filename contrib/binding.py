@@ -322,35 +322,40 @@ class GIRClass(object):
                     in_spec=True,
                     ctype="System.Address",
                     convert="Get_Object (%(var)s)")))
-
         local_vars = []
         call = []
-        plist = self._c_plist(params, returns, local_vars, call)
-        internal=Subprogram(
-            name="Internal",
-            returns=returns,
-            plist=plist).import_c(cname)
 
-        ret = gtkmethod.return_as_param()
-        execute = internal.call(extra_postcall="".join(call))
+        body = gtkmethod.get_body()
+        if not body:
+            plist = self._c_plist(params, returns, local_vars, call)
+            internal=Subprogram(
+                name="Internal",
+                returns=returns,
+                plist=plist).import_c(cname)
 
-        if ret is not None:
-            # Ada return value goes into an "out" parameter
-            params += [Parameter(name=ret, type=returns, mode="out")]
-            returns = None
+            ret = gtkmethod.return_as_param()
+            execute = internal.call(extra_postcall="".join(call))
 
-            assert(execute[1] is not None)  # We must have a C function
-            call = "%s%s := %s;" % (execute[0], ret, execute[1])
+            if ret is not None:
+                # Ada return value goes into an "out" parameter
+                params += [Parameter(name=ret, type=returns, mode="out")]
+                returns = None
 
-        else:
-            if execute[1]: # A function, with a standard "return"
-                call = "%sreturn %s;" % (execute[0], execute[1])
+                assert(execute[1] is not None)  # We must have a C function
+                call = "%s%s := %s;" % (execute[0], ret, execute[1])
+
             else:
-                call = execute[0]
+                if execute[1]: # A function, with a standard "return"
+                    call = "%sreturn %s;" % (execute[0], execute[1])
+                else:
+                    call = execute[0]
+
+            local_vars += execute[2]
 
         doc = self._getdoc(gtkmethod, node)
 
-        adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
+        adaname = adaname or gtkmethod.ada_name() \
+                or node.get("name").title()
         naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
         subp = Subprogram(
@@ -358,8 +363,13 @@ class GIRClass(object):
                 plist=params,
                 returns=returns,
                 doc=doc,
-                local_vars=local_vars + execute[2],
-                code=call).add_nested(internal)
+                local_vars=local_vars,
+                code=call)
+
+        if not body:
+            subp.add_nested(internal)
+        else:
+            subp.set_body(body)
 
         depr = node.get("deprecated")
         if depr is not None:
@@ -672,13 +682,21 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         if extra:
             for p in extra:
                 if p.tag == "with_spec":
-                    self.pkg.add_with(p.get("pkg"))
+                    self.pkg.add_with(
+                        p.get("pkg"),
+                        do_use=p.get("use", "true").lower() == "true")
                 elif p.tag == "with_body":
-                    self.pkg.add_with(p.get("pkg"), specs=False)
+                    self.pkg.add_with(
+                        p.get("pkg"), specs=False,
+                        do_use=p.get("use", "true").lower() == "true")
                 elif p.tag == "type":
                     naming.add_type_exception(
                         cname=p.get("ctype"), type=Proxy(p.get("ada")))
                     section.add_code(p.text)
+                elif p.tag == "body":
+                    # Go before the body of generated subprograms, so that
+                    # we can add type definition
+                    section.add_code(p.text, specs=False)
 
         self._constructors()
         self._method_get_type()
@@ -690,9 +708,6 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                 if p.tag == "spec":
                     s = s or self.pkg.section("GtkAda additions")
                     s.add_code(p.text)
-                elif p.tag == "body":
-                    s = s or self.pkg.section("GtkAda additions")
-                    s.add_code(p.text, specs=False)
 
         self._functions()
         self._fields()
@@ -778,6 +793,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "VScale", "VolumeButton",
            # "Entry",
            "Adjustment",
+           "Calendar",
            "Curve",
            "Dialog",
            "DrawingArea",

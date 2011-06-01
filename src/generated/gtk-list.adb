@@ -33,6 +33,19 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.List is
 
+   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
+   return Widget_List.Glist
+   is
+      use Widget_List;
+      function Internal (Widget : in System.Address)
+      return      System.Address;
+      pragma Import (C, Internal, "ada_list_get_selection");
+      List : Gtk.Widget.Widget_List.Glist;
+   begin
+      Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end Get_Selection;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_List_Record);
    pragma Unreferenced (Type_Conversion);
@@ -387,18 +400,5 @@ package body Gtk.List is
    begin
       Internal (Get_Object (Self), Item);
    end Unselect_Item;
-
-   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
-   return Widget_List.Glist
-   is
-      use Widget_List;
-      function Internal (Widget : in System.Address)
-      return      System.Address;
-      pragma Import (C, Internal, "ada_list_get_selection");
-      List : Gtk.Widget.Widget_List.Glist;
-   begin
-      Set_Object (List, Internal (Get_Object (Widget)));
-      return List;
-   end Get_Selection;
 
 end Gtk.List;

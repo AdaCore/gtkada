@@ -35,6 +35,65 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Pixmap is
 
+   Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
+     (New_String ("1 1 1 1"),
+      New_String ("c None"),
+      New_String (" "));
+   --  This is a dummy pixmap we use when a pixmap can't be found.
+
+   function Create_Pixmap
+     (Filename : String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
+   is
+      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask      : Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap    : Gtk_Pixmap;
+
+      use Gtk.Widget;
+      use Gtk.Window;
+
+   begin
+      if not Realized_Is_Set (Window) then
+         Gtk.Window.Realize (Window);
+      end if;
+
+      if Filename = "" then
+         Gdk.Pixmap.Create_From_Xpm_D
+           (Gdkpixmap, Get_Window (Window), Mask,
+            Gdk.Color.Null_Color, Dummy_Pixmap);
+      else
+         Gdk.Pixmap.Create_From_Xpm
+           (Gdkpixmap, Get_Window (Window), Mask,
+            Gdk.Color.Null_Color, Filename);
+      end if;
+
+      Gtk_New (Pixmap, Gdkpixmap, Mask);
+      return Pixmap;
+   end Create_Pixmap;
+
+   function Create_Pixmap
+     (Data   : Gtkada.Types.Chars_Ptr_Array;
+      Window : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
+   is
+      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask      : Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap    : Gtk_Pixmap;
+
+      use Gtk.Widget;
+      use Gtk.Window;
+
+   begin
+      if not Realized_Is_Set (Window) then
+         Gtk.Window.Realize (Window);
+      end if;
+
+      Gdk.Pixmap.Create_From_Xpm_D
+        (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Data);
+      Gtk_New (Pixmap, Gdkpixmap, Mask);
+
+      return Pixmap;
+   end Create_Pixmap;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Pixmap_Record);
    pragma Unreferenced (Type_Conversion);
@@ -119,64 +178,5 @@ package body Gtk.Pixmap is
    begin
       Internal (Get_Object (Self), Boolean'Pos (Build));
    end Set_Build_Insensitive;
-
-   Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
-     (New_String ("1 1 1 1"),
-      New_String ("c None"),
-      New_String (" "));
-   --  This is a dummy pixmap we use when a pixmap can't be found.
-
-   function Create_Pixmap
-     (Filename : String;
-      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
-   is
-      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Mask      : Gdk.Bitmap.Gdk_Bitmap;
-      Pixmap    : Gtk_Pixmap;
-
-      use Gtk.Widget;
-      use Gtk.Window;
-
-   begin
-      if not Realized_Is_Set (Window) then
-         Gtk.Window.Realize (Window);
-      end if;
-
-      if Filename = "" then
-         Gdk.Pixmap.Create_From_Xpm_D
-           (Gdkpixmap, Get_Window (Window), Mask,
-            Gdk.Color.Null_Color, Dummy_Pixmap);
-      else
-         Gdk.Pixmap.Create_From_Xpm
-           (Gdkpixmap, Get_Window (Window), Mask,
-            Gdk.Color.Null_Color, Filename);
-      end if;
-
-      Gtk_New (Pixmap, Gdkpixmap, Mask);
-      return Pixmap;
-   end Create_Pixmap;
-
-   function Create_Pixmap
-     (Data   : Gtkada.Types.Chars_Ptr_Array;
-      Window : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
-   is
-      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Mask      : Gdk.Bitmap.Gdk_Bitmap;
-      Pixmap    : Gtk_Pixmap;
-
-      use Gtk.Widget;
-      use Gtk.Window;
-
-   begin
-      if not Realized_Is_Set (Window) then
-         Gtk.Window.Realize (Window);
-      end if;
-
-      Gdk.Pixmap.Create_From_Xpm_D
-        (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Data);
-      Gtk_New (Pixmap, Gdkpixmap, Mask);
-
-      return Pixmap;
-   end Create_Pixmap;
 
 end Gtk.Pixmap;

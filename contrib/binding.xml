@@ -1141,4 +1141,130 @@ The pixels in a Gtk_Image may be manipulated by the application after creation, 
      </extra>
   </package>
 
+  <package id="Gtk.Calendar">
+     <doc group="Selectors" testgtk="create_calendar.adb"
+          screenshot="gtk-calendar">
+Gtk_Calendar is a widget that displays a calendar, one month at a time. It can be created with Gtk_New.
+
+The month and year currently displayed can be altered with Select_Month. The exact day can be selected from the displayed month using Select_Day.
+
+The way in which the calendar itself is displayed can be altered using Display_Options.
+
+The selected date can be retrieved from a Gtk_Calendar using Get_Date.
+
+If performing many 'mark' operations, the calendar can be frozen to prevent flicker, using Freeze, and 'thawed' again using Thaw.
+     </doc>
+     <parameter name="self" ada="Calendar"/>
+     <method id="gtk_calendar_freeze" obsolescent="True"/>
+     <method id="gtk_calendar_thaw" obsolescent="True"/>
+     <method id="gtk_calendar_set_detail_func">
+        <body>
+   procedure Set_Detail_Func
+     (Calendar : access Gtk_Calendar_Record;
+      Func     : Gtk_Calendar_Detail_Func;
+      Data     : System.Address;
+      Destroy  : G_Destroy_Notify_Address)
+   is
+      procedure Internal
+        (Calendar : System.Address;
+         Func     : System.Address;
+         Data     : System.Address;
+         Destroy  : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_calendar_set_detail_func");
+      D : constant Detail_Func_Data_Access :=
+         new Detail_Func_Data'(Func, Data, Destroy);
+   begin
+      Internal (Get_Object (Calendar),
+                Detail_Callback'Address, D.all'Address,
+                Free_Detail_Func_Data'Access);
+   end Set_Detail_Func;
+        </body>
+     </method>
+     <extra>
+        <type ctype="GtkCalendarDisplayOptions"
+              ada="Gtk_Calendar_Display_Options">
+   type Gtk_Calendar_Display_Options is mod 2 ** 8;
+
+   Show_Heading : constant Gtk_Calendar_Display_Options := 2 ** 0;
+   --  Specify that the month and year should be displayed.
+
+   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2 ** 1;
+   --  Specify that three letter day descriptions should be present.
+
+   No_Month_Change : constant Gtk_Calendar_Display_Options := 2 ** 2;
+   --  Prevent the user from switching months with the calendar.
+
+   Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 2 ** 3;
+   --  Display each week numbers of the current year, down the left side of
+   --  the calendar.
+
+   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
+   --  Start the calendar week on Monday, instead of the default Sunday.
+        </type>
+        <type ctype="GtkCalendarDetailFunc"
+              ada="Gtk_Calendar_Detail_Func">
+   type Gtk_Calendar_Detail_Func is access function
+      (Calendar  : access Gtk_Calendar_Record'Class;
+       Year      : Guint;
+       Month     : Guint;
+       Day       : Guint;
+       User_Data : System.Address) return String;
+   --  Return the details for the given day, or the empty string when there
+   --  are no details.
+        </type>
+        <with_body pkg="Interfaces.C.Strings"/>
+        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
+        <with_body pkg="Ada.Unchecked_Deallocation" use="False"/>
+        <body>
+   type Detail_Func_Data is record
+      Callback   : Gtk_Calendar_Detail_Func;
+      User_Data  : System.Address;
+      On_Destroy : G_Destroy_Notify_Address;
+   end record;
+   type Detail_Func_Data_Access is access Detail_Func_Data;
+   function Convert is new Ada.Unchecked_Conversion
+      (System.Address, Detail_Func_Data_Access);
+   procedure Free_Detail_Func_Data (Data : System.Address);
+   pragma Convention (C, Free_Detail_Func_Data);
+   function Detail_Callback
+      (Calendar : System.Address;
+       Year, Month, Day : Guint;
+       User_Data : System.Address) return chars_ptr;
+   pragma Convention (C, Detail_Callback);
+   --  Support for GtkCalendarDetailFunc
+
+   function Detail_Callback
+      (Calendar : System.Address;
+       Year, Month, Day : Guint;
+       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+   is
+      Stub : Gtk_Calendar_Record;
+      Cal  : constant Gtk_Calendar :=
+         Gtk_Calendar (Get_User_Data (Calendar, Stub));
+      Data : constant Detail_Func_Data_Access := Convert (User_Data);
+      Details : constant String :=
+         Data.Callback (Cal, Year, Month, Day, Data.User_Data);
+   begin
+      if Details = "" then
+         return Interfaces.C.Strings.Null_Ptr;
+      else
+         return New_String (Details);
+      end if;
+   end Detail_Callback;
+
+   procedure Free_Detail_Func_Data (Data : System.Address) is
+      use System;
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (Detail_Func_Data, Detail_Func_Data_Access);
+      D : Detail_Func_Data_Access := Convert (Data);
+   begin
+      if D.On_Destroy /= null and then D.User_Data /= Null_Address then
+         D.On_Destroy (D.User_Data);
+      end if;
+      Unchecked_Free (D);
+   end Free_Detail_Func_Data;
+        </body>
+     </extra>
+  </package>
+
 </GIR>

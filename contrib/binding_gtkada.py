@@ -55,6 +55,8 @@ Where the package node is defined as follows:
                            mapped to a null pointer in C, rather than an empty
                            C string -->
          />
+         <body>...</body>  <!-- optional, body of subprogram including
+                                profile -->
        />
 
        <extra>
@@ -215,6 +217,11 @@ class GtkAdaMethod(object):
     def return_as_param(self):
         if self.node is not None:
             return self.node.get("return_as_param", None)
+        return None
+
+    def get_body(self):
+        if self.node is not None:
+            return self.node.findtext("body")
         return None
 
     def get_doc(self):

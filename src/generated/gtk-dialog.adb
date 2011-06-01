@@ -34,6 +34,30 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Dialog is
 
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array)
+   is
+      procedure Internal
+        (Dialog    : System.Address;
+         N_Params  : Gint;
+         New_Order : System.Address);
+      pragma Import
+        (C, Internal, "gtk_dialog_set_alternative_button_order_from_array");
+   begin
+      Internal (Get_Object (Dialog), New_Order'Length,
+         New_Order (New_Order'First)'Address);
+   end Set_Alternative_Button_Order_From_Array;
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Gdk_Screen := null) return Boolean
+   is
+      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
+   begin
+      return Boolean'Val (Internal (Screen));
+   end Gtk_Alternative_Dialog_Button_Order;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Dialog_Record);
    pragma Unreferenced (Type_Conversion);
@@ -287,30 +311,6 @@ package body Gtk.Dialog is
    begin
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
-
-   procedure Set_Alternative_Button_Order_From_Array
-     (Dialog    : access Gtk_Dialog_Record;
-      New_Order : Response_Type_Array)
-   is
-      procedure Internal
-        (Dialog    : System.Address;
-         N_Params  : Gint;
-         New_Order : System.Address);
-      pragma Import
-        (C, Internal, "gtk_dialog_set_alternative_button_order_from_array");
-   begin
-      Internal (Get_Object (Dialog), New_Order'Length,
-         New_Order (New_Order'First)'Address);
-   end Set_Alternative_Button_Order_From_Array;
-
-   function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null) return Boolean
-   is
-      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
-      pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
-   begin
-      return Boolean'Val (Internal (Screen));
-   end Gtk_Alternative_Dialog_Button_Order;
 
    --------------
    -- Get_Vbox --

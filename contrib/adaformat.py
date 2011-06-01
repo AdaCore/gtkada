@@ -285,6 +285,7 @@ def indent_code(code, indent=3):
            or l.endswith("loop") \
            or(l.endswith("else") and not l.endswith("or else"))\
            or l.endswith("begin") \
+           or l.endswith("record") \
            or l.endswith("is") \
            or l.endswith("declare"):
             indent += 3
@@ -678,6 +679,7 @@ class Subprogram(object):
         self._import = None
         self._nested = []  # nested subprograms
         self._deprecated = (False, "") # True if deprecated
+        self._manual_body = None  # Written by user explicitly
 
         if code and code[-1] != ";":
             self.code = code + ";"
@@ -707,6 +709,9 @@ class Subprogram(object):
         for subp in args:
             self._nested.append(subp)
         return self
+
+    def set_body(self, body):
+        self._manual_body = body
 
     def _profile(self, indent="   ", lang="ada"):
         """Compute the profile for the subprogram"""
@@ -818,6 +823,9 @@ class Subprogram(object):
             return ""
 
     def body(self, indent="   "):
+        if self._manual_body:
+            return self._manual_body
+
         if not self.code:
             return ""
 
@@ -1100,7 +1108,7 @@ class Package(object):
                         "with %-*s use %s;" % (m + 1, w + ";", w))
                 else:
                     result.append(
-                        "with %-*s;" % (m + 1, w + ";"))
+                        "with %-*s" % (m + 1, w + ";"))
 
             return "\n".join(result) + "\n\n"
         return ""

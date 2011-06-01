@@ -34,6 +34,41 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Image is
 
+   procedure Get_Icon_Name
+     (Image : access Gtk_Image_Record;
+      Name  : out GNAT.Strings.String_Access;
+      Size  : out Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Image : System.Address;
+         Name  : out Interfaces.C.Strings.chars_ptr;
+         Size  : out Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_image_get_icon_name");
+      Str : chars_ptr;
+   begin
+      Internal (Get_Object (Image), Str, Size);
+      Name := new String'(Value (Str));
+   end Get_Icon_Name;
+
+   function Get
+     (Image : access Gtk_Image_Record;
+      Size  : access Gtk.Enums.Gtk_Icon_Size) return String
+   is
+      procedure Internal
+        (Image    : System.Address;
+         Stock_Id : out Interfaces.C.Strings.chars_ptr;
+         Size     : out Gint);
+      pragma Import (C, Internal, "gtk_image_get_stock");
+
+      Stock : Interfaces.C.Strings.chars_ptr;
+      Sze   : Gint;
+
+   begin
+      Internal (Get_Object (Image), Stock, Sze);
+      Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
+      return Interfaces.C.Strings.Value (Stock);
+   end Get;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Image_Record);
    pragma Unreferenced (Type_Conversion);
@@ -643,40 +678,5 @@ package body Gtk.Image is
    begin
       Internal (Get_Object (Self), Pixel_Size);
    end Set_Pixel_Size;
-
-   procedure Get_Icon_Name
-     (Image : access Gtk_Image_Record;
-      Name  : out GNAT.Strings.String_Access;
-      Size  : out Gtk_Icon_Size)
-   is
-      procedure Internal
-        (Image : System.Address;
-         Name  : out Interfaces.C.Strings.chars_ptr;
-         Size  : out Gtk_Icon_Size);
-      pragma Import (C, Internal, "gtk_image_get_icon_name");
-      Str : chars_ptr;
-   begin
-      Internal (Get_Object (Image), Str, Size);
-      Name := new String'(Value (Str));
-   end Get_Icon_Name;
-
-   function Get
-     (Image : access Gtk_Image_Record;
-      Size  : access Gtk.Enums.Gtk_Icon_Size) return String
-   is
-      procedure Internal
-        (Image    : System.Address;
-         Stock_Id : out Interfaces.C.Strings.chars_ptr;
-         Size     : out Gint);
-      pragma Import (C, Internal, "gtk_image_get_stock");
-
-      Stock : Interfaces.C.Strings.chars_ptr;
-      Sze   : Gint;
-
-   begin
-      Internal (Get_Object (Image), Stock, Sze);
-      Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
-      return Interfaces.C.Strings.Value (Stock);
-   end Get;
 
 end Gtk.Image;

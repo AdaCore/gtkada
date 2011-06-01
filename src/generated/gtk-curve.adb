@@ -33,6 +33,35 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Curve is
 
+   procedure Get_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : out Gfloat_Array)
+   is
+      procedure Internal
+        (Curve  : System.Address;
+         Veclen : Integer;
+         Vector : System.Address);
+      pragma Import (C, Internal, "gtk_curve_get_vector");
+
+   begin
+      Internal (Get_Object (Curve), Vector'Length, Vector'Address);
+   end Get_Vector;
+
+   procedure Set_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : Gfloat_Array)
+   is
+      procedure Internal
+        (Curve  : System.Address;
+         Veclen : Integer;
+         Vector : System.Address);
+      pragma Import (C, Internal, "gtk_curve_set_vector");
+
+   begin
+      Internal (Get_Object (Curve), Vector'Length,
+         Vector (Vector'First)'Address);
+   end Set_Vector;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Curve_Record);
    pragma Unreferenced (Type_Conversion);
@@ -115,34 +144,5 @@ package body Gtk.Curve is
    begin
       Internal (Get_Object (Self), Min_X, Max_X, Min_Y, Max_Y);
    end Set_Range;
-
-   procedure Get_Vector
-     (Curve  : access Gtk_Curve_Record;
-      Vector : out Gfloat_Array)
-   is
-      procedure Internal
-        (Curve  : System.Address;
-         Veclen : Integer;
-         Vector : System.Address);
-      pragma Import (C, Internal, "gtk_curve_get_vector");
-
-   begin
-      Internal (Get_Object (Curve), Vector'Length, Vector'Address);
-   end Get_Vector;
-
-   procedure Set_Vector
-     (Curve  : access Gtk_Curve_Record;
-      Vector : Gfloat_Array)
-   is
-      procedure Internal
-        (Curve  : System.Address;
-         Veclen : Integer;
-         Vector : System.Address);
-      pragma Import (C, Internal, "gtk_curve_set_vector");
-
-   begin
-      Internal (Get_Object (Curve), Vector'Length,
-         Vector (Vector'First)'Address);
-   end Set_Vector;
 
 end Gtk.Curve;
