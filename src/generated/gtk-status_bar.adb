@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2011, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,19 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Unchecked_Conversion;
-
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;  
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Status_Bar is
-
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Status_Bar_Record);
-   pragma Warnings (Off, Type_Conversion);
-
-   -------------
-   -- Convert --
-   -------------
 
    function Convert (Msg : Status_Bar_Msg) return System.Address is
    begin
@@ -50,10 +43,14 @@ package body Gtk.Status_Bar is
    function Convert (Msg : System.Address) return Status_Bar_Msg is
       type Status_Bar_Msg_Access is access all Status_Bar_Msg;
       function Internal is new
-        Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
+      Ada.Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
    begin
       return Internal (Msg).all;
    end Convert;
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Status_Bar_Record);
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
@@ -65,69 +62,6 @@ package body Gtk.Status_Bar is
       Gtk.Status_Bar.Initialize (Statusbar);
    end Gtk_New;
 
-   --------------------
-   -- Get_Context_Id --
-   --------------------
-
-   function Get_Context_Id
-     (Statusbar           : access Gtk_Status_Bar_Record;
-      Context_Description : String) return Context_Id
-   is
-      function Internal
-        (Statusbar           : System.Address;
-         Context_Description : String) return Context_Id;
-      pragma Import (C, Internal, "gtk_statusbar_get_context_id");
-
-   begin
-      return Internal
-        (Get_Object (Statusbar), Context_Description & ASCII.NUL);
-   end Get_Context_Id;
-
-   -------------------------
-   -- Get_Has_Resize_Grip --
-   -------------------------
-
-   function Get_Has_Resize_Grip
-     (Statusbar : access Gtk_Status_Bar_Record) return Boolean
-   is
-      function Internal (Statusbar : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_statusbar_get_has_resize_grip");
-
-   begin
-      return Internal (Get_Object (Statusbar)) /= 0;
-   end Get_Has_Resize_Grip;
-
-   ----------------------
-   -- Get_Message_Area --
-   ----------------------
-
-   function Get_Message_Area
-     (Statusbar : access Gtk_Status_Bar_Record) return Gtk_Widget
-   is
-      function Internal (Statusbar : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_statusbar_get_message_area");
-
-   begin
-      return Convert (Internal (Get_Object (Statusbar)));
-   end Get_Message_Area;
-
-   ------------------
-   -- Get_Messages --
-   ------------------
-
-   function Get_Messages
-     (Statusbar : access Gtk_Status_Bar_Record) return Messages_List.GSlist
-   is
-      function Internal (Statusbar : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_status_get_messages");
-
-      List : Messages_List.GSlist;
-
-   begin
-      Messages_List.Set_Object (List, Internal (Get_Object (Statusbar)));
-      return List;
-   end Get_Messages;
-
    ----------------
    -- Initialize --
    ----------------
@@ -135,79 +69,155 @@ package body Gtk.Status_Bar is
    procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_new");
-
    begin
       Set_Object (Statusbar, Internal);
    end Initialize;
 
-   ----------
-   -- Push --
-   ----------
+   --------------------
+   -- Get_Context_Id --
+   --------------------
 
-   function Push
-     (Statusbar : access Gtk_Status_Bar_Record;
-      Context   : Context_Id;
-      Text      : UTF8_String) return Message_Id
+   function Get_Context_Id
+      (Statusbar           : access Gtk_Status_Bar_Record;
+       Context_Description : UTF8_String) return Context_Id
    is
       function Internal
-        (Statusbar : System.Address;
-         Context   : Context_Id;
-         Text      : UTF8_String) return Message_Id;
-      pragma Import (C, Internal, "gtk_statusbar_push");
-
+         (Statusbar           : System.Address;
+          Context_Description : Interfaces.C.Strings.chars_ptr)
+          return Context_Id;
+      pragma Import (C, Internal, "gtk_statusbar_get_context_id");
+      Tmp_Context_Description : Interfaces.C.Strings.chars_ptr := New_String (Context_Description);
+      Tmp_Return              : Context_Id;
    begin
-      return Internal (Get_Object (Statusbar), Context, Text & ASCII.NUL);
-   end Push;
+      Tmp_Return := Internal (Get_Object (Statusbar), Tmp_Context_Description);
+      Free (Tmp_Context_Description);
+      return Tmp_Return;
+   end Get_Context_Id;
+
+   -------------------------
+   -- Get_Has_Resize_Grip --
+   -------------------------
+
+   function Get_Has_Resize_Grip
+      (Statusbar : access Gtk_Status_Bar_Record) return Boolean
+   is
+      function Internal (Statusbar : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_statusbar_get_has_resize_grip");
+   begin
+      return Boolean'Val (Internal (Get_Object (Statusbar)));
+   end Get_Has_Resize_Grip;
+
+   ----------------------
+   -- Get_Message_Area --
+   ----------------------
+
+   function Get_Message_Area
+      (Statusbar : access Gtk_Status_Bar_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Statusbar : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_statusbar_get_message_area");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub));
+   end Get_Message_Area;
 
    ---------
    -- Pop --
    ---------
 
    procedure Pop
-     (Statusbar : access Gtk_Status_Bar_Record;
-      Context   : Context_Id)
+      (Statusbar : access Gtk_Status_Bar_Record;
+       Context   : Context_Id)
    is
       procedure Internal (Statusbar : System.Address; Context : Context_Id);
       pragma Import (C, Internal, "gtk_statusbar_pop");
-
    begin
       Internal (Get_Object (Statusbar), Context);
    end Pop;
+
+   ----------
+   -- Push --
+   ----------
+
+   function Push
+      (Statusbar : access Gtk_Status_Bar_Record;
+       Context   : Context_Id;
+       Text      : UTF8_String) return Message_Id
+   is
+      function Internal
+         (Statusbar : System.Address;
+          Context   : Context_Id;
+          Text      : Interfaces.C.Strings.chars_ptr) return Message_Id;
+      pragma Import (C, Internal, "gtk_statusbar_push");
+      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Return : Message_Id;
+   begin
+      Tmp_Return := Internal (Get_Object (Statusbar), Context, Tmp_Text);
+      Free (Tmp_Text);
+      return Tmp_Return;
+   end Push;
 
    ------------
    -- Remove --
    ------------
 
    procedure Remove
-     (Statusbar : access Gtk_Status_Bar_Record;
-      Context   : Context_Id;
-      Message   : Message_Id)
+      (Statusbar : access Gtk_Status_Bar_Record;
+       Context   : Context_Id;
+       Message   : Message_Id)
    is
       procedure Internal
-        (Statusbar : System.Address;
-         Context   : Context_Id;
-         Message   : Message_Id);
+         (Statusbar : System.Address;
+          Context   : Context_Id;
+          Message   : Message_Id);
       pragma Import (C, Internal, "gtk_statusbar_remove");
-
    begin
       Internal (Get_Object (Statusbar), Context, Message);
    end Remove;
+
+   ----------------
+   -- Remove_All --
+   ----------------
+
+   procedure Remove_All
+      (Statusbar : access Gtk_Status_Bar_Record;
+       Context   : Context_Id)
+   is
+      procedure Internal (Statusbar : System.Address; Context : Context_Id);
+      pragma Import (C, Internal, "gtk_statusbar_remove_all");
+   begin
+      Internal (Get_Object (Statusbar), Context);
+   end Remove_All;
 
    -------------------------
    -- Set_Has_Resize_Grip --
    -------------------------
 
    procedure Set_Has_Resize_Grip
-     (Statusbar  : access Gtk_Status_Bar_Record;
-      Setting    : Boolean)
+      (Statusbar : access Gtk_Status_Bar_Record;
+       Setting   : Boolean)
    is
-      procedure Internal
-        (Statusbar : System.Address;
-         Setting   : Gboolean);
+      procedure Internal (Statusbar : System.Address; Setting : Integer);
       pragma Import (C, Internal, "gtk_statusbar_set_has_resize_grip");
-
    begin
       Internal (Get_Object (Statusbar), Boolean'Pos (Setting));
    end Set_Has_Resize_Grip;
+
+   ------------------
+   -- Get_Messages --
+   ------------------
+
+   function Get_Messages
+      (Statusbar : access Gtk_Status_Bar_Record)
+       return Gtk.Status_Bar.Messages_List.GSlist
+   is
+      function Internal (Statusbar : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtkada_GtkStatusbar_get_messages");
+      Tmp_Return : Gtk.Status_Bar.Messages_List.GSlist;
+   begin
+      Gtk.Status_Bar.Messages_List.Set_Object (Tmp_Return, Internal (Get_Object (Statusbar)));
+      return Tmp_Return;
+   end Get_Messages;
 
 end Gtk.Status_Bar;

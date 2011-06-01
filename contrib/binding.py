@@ -117,9 +117,9 @@ class GIRClass(object):
 
         for p in params.findall(nparam):
             name = p.get("name")
-            name = gtkmethod.get_param(name).ada_name() or name  # override
-
             gtkparam = gtkmethod.get_param(name=name)
+            name = gtkparam.ada_name() or name  # override
+
             default = gtkparam.get_default()
 
             type = gtkparam.get_type(pkg=self.pkg) \
@@ -683,7 +683,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             for p in extra:
                 if p.tag == "with_spec":
                     self.pkg.add_with(
-                        p.get("pkg"),
+                        p.get("pkg", "Missing package name in <extra>"),
                         do_use=p.get("use", "true").lower() == "true")
                 elif p.tag == "with_body":
                     self.pkg.add_with(
@@ -794,6 +794,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "VScale", "VolumeButton",
            # "Entry",
            "Adjustment",
+           "Alignment",
            "Calendar",
            "Curve",
            "Dialog",
@@ -801,6 +802,7 @@ binding = ("AboutDialog", "Arrow", "Bin", "Box", "Button", "ButtonBox",
            "Expander",
            "Image",
            "SizeGroup",
+           "Statusbar",
            "Combo",  # Needs HBox
           )
 

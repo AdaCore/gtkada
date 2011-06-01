@@ -39,8 +39,28 @@ guint gtkada_GtkProgress_get_activity_mode (GtkProgress* self) {
     return self->activity_mode;
 }
 
+gfloat gtkada_GtkAlignment_get_xalign (GtkAlignment* self) {
+    return self->xalign;
+}
+
+gfloat gtkada_GtkAlignment_get_yalign (GtkAlignment* self) {
+    return self->yalign;
+}
+
+gfloat gtkada_GtkAlignment_get_xscale (GtkAlignment* self) {
+    return self->xscale;
+}
+
+gfloat gtkada_GtkAlignment_get_yscale (GtkAlignment* self) {
+    return self->yscale;
+}
+
 GtkWidget* gtkada_GtkDialog_get_vbox (GtkDialog* self) {
     return self->vbox;
+}
+
+GSList* gtkada_GtkStatusbar_get_messages (GtkStatusbar* self) {
+    return self->messages;
 }
 
 GtkWidget* gtkada_GtkCombo_get_entry (GtkCombo* self) {

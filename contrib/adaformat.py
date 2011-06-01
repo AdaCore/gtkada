@@ -97,6 +97,7 @@ class AdaNaming(object):
             "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
             "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
             "StringList":  List("Gtk.Enums.String_List.Glist"),
+            "MessagesList": List("Gtk.Status_Bar.Messages_List.GSlist"),
 
             "gpointer":       Proxy("System.Address", ""),
             "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
@@ -124,6 +125,7 @@ class AdaNaming(object):
             "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
+            "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
 
             "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),

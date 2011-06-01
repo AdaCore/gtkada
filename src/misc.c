@@ -2573,34 +2573,6 @@ ada_gamma_curve_get_gamma (GtkGammaCurve* widget)
 }
 
 /******************************************
- ** Functions for Alignment
- ******************************************/
-
-gfloat
-ada_alignment_get_xalign (GtkAlignment* widget)
-{
-   return widget->xalign;
-}
-
-gfloat
-ada_alignment_get_xscale (GtkAlignment* widget)
-{
-   return widget->xscale;
-}
-
-gfloat
-ada_alignment_get_yalign (GtkAlignment* widget)
-{
-   return widget->yalign;
-}
-
-gfloat
-ada_alignment_get_yscale (GtkAlignment* widget)
-{
-   return widget->yscale;
-}
-
-/******************************************
  ** Functions for Aspect_Frame
  ******************************************/
 

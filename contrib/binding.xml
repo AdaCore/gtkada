@@ -1299,4 +1299,77 @@ Note that size groups only affect the amount of space requested, not the size th
      </extra>
   </package>
 
+  <package id="Gtk.Alignment">
+     <doc testgtk="create_alignment.adb" screenshot="gtk-alignment">
+A Gtk_Alignment controls the size and alignment of its single child inside the area allocated to the alignment widget.
+
+The scale/size settings indicate how much the child will expand to fill the container. The values should be in the range 0.0 (no expansion) to 1.0 (full expansion). Note that the scale only indicates the minimal size for the child, it does not force an absolute size.
+
+The alignment settings indicate where in the alignment widget the child should be located. The values are in the range 0.0 (top or left) to 1.0 (bottom or right). These settings are irrelevant if the child is fully expanded.
+     </doc>
+     <parameter name="self" ada="Alignment"/>
+     <method id="gtkada_GtkAlignment_get_xalign" bind="True"/>
+     <method id="gtkada_GtkAlignment_get_xscale" bind="True"/>
+     <method id="gtkada_GtkAlignment_get_yalign" bind="True"/>
+     <method id="gtkada_GtkAlignment_get_yscale" bind="True"/>
+  </package>
+
+  <package id="Gtk.Status_Bar">
+     <doc group="Display widgets" testgtk="create_status.adb"
+          screenshot="gtk-status_bar">
+A status bar is a special widget in which you can display messages. This type of widget is generally found at the bottom of application windows, and is used to display help or error messages.
+
+This widget works as a stack of messages, ie all older messages are kept when a new one is inserted. It is of course possible to remove the most recent message from the stack. This stack behavior is especially useful when messages can be displayed from several places in your application. Thus, each one subprogram that needs to print a message can simply push it on the stack, and does not need to make sure that the user has had enough time to read the previous message (a timeout can be set to automatically remove the message after a specific delay)
+
+Each message is associated with a specific Context_Id. Each of this context can have a special name, and these context can be used to organize the messages into categories (for instance one for help messages and one for error messages). You can then selectively remove the most recent message of each category.
+     </doc>
+     <parameter name="self" ada="Statusbar"/>
+     <parameter name="context" type="Context_Id"/>
+     <parameter name="context_id" ada="context" type="Context_Id"/>
+     <parameter name="message_id" ada="Message" type="Message_Id"/>
+     <method id="gtk_statusbar_get_context_id" return="Context_Id"/>
+     <method id="gtkada_GtkStatusbar_get_messages" return="MessagesList"
+             bind="True"/>
+     <method id="gtk_statusbar_push" return="Message_Id"/>
+     <extra>
+        <with_spec pkg="Interfaces.C.Strings"/>
+        <with_spec pkg="Glib.GSlist"/>
+        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
+        <type ctype="StatusBarMsg" ada="Status_Bar_Msg">
+   type Context_Id is new Guint;
+   type Message_Id is new Guint;
+
+   type Status_Bar_Msg is record
+      Text    : Interfaces.C.Strings.chars_ptr;
+      Context : Context_Id;
+      Message : Message_Id;
+   end record;
+   --  A message from the queue. Each of this message is associated with a
+   --  specific context, and has a specific number.
+
+   --  &lt;no_doc&gt;
+   function Convert (Msg : Status_Bar_Msg) return System.Address;
+   function Convert (Msg : System.Address) return Status_Bar_Msg;
+   package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
+   --  &lt;/no_doc&gt;
+        </type>
+        <body>
+   function Convert (Msg : Status_Bar_Msg) return System.Address is
+   begin
+      return Msg'Address;
+      --  This function is anyway not supposed to be used
+   end Convert;
+
+   function Convert (Msg : System.Address) return Status_Bar_Msg is
+      type Status_Bar_Msg_Access is access all Status_Bar_Msg;
+      function Internal is new
+        Ada.Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
+   begin
+      return Internal (Msg).all;
+   end Convert;
+
+        </body>
+     </extra>
+  </package>
+
 </GIR>

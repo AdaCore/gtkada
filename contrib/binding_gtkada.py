@@ -190,8 +190,9 @@ class GtkAdaMethod(object):
         if self.node is not None:
             name = name.lower()
             for p in self.node.findall("parameter"):
-                if p.get("name") == name:
+                if p.get("name").lower() == name:
                     return GtkAdaParameter(p, default=default)
+
         return GtkAdaParameter(None, default=default)
 
     def bind(self, default="true"):
