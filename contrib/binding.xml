@@ -804,6 +804,10 @@ See Gtkada.Dialogs for a higher level dialog interface.
      <method id="gtk_dialog_add_buttons" bind="False"/>
      <method id="gtk_dialog_set_alternative_button_order" bind="False"/>
 
+     <method id="ada_gtk_dialog_new_with_buttons">
+        <parameter name="parent" default="null"/>
+     </method>
+
      <extra>
         <gir:constructor c:identifier="ada_gtk_dialog_new_with_buttons"
              name="new" version="GtkAda 1.0">

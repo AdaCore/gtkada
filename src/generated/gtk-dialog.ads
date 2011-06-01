@@ -124,12 +124,12 @@ package Gtk.Dialog is
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
        Title  : UTF8_String;
-       Parent : access Gtk.Window.Gtk_Window_Record'Class;
+       Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);
    procedure Initialize
       (Dialog : access Gtk_Dialog_Record'Class;
        Title  : UTF8_String;
-       Parent : access Gtk.Window.Gtk_Window_Record'Class;
+       Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);
    --  Create a new dialog with a specific title, and specific attributes.
    --  Parent is the transient parent for the dialog (ie the one that is used
