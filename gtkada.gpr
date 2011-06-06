@@ -4,6 +4,7 @@ with "src/gnome/gnome";
 with "src/opengl/opengl";
 with "src/tools/tools";
 with "shared";
+with "contrib/contrib";
 
 project GtkAda is
    for Source_Files use ();
