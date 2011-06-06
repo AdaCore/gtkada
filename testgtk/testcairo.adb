@@ -227,7 +227,6 @@ procedure Testcairo is
    end S_Changed;
 
 begin
-   Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk_New (Win);
    Set_Default_Size (Win, 960, 400);
