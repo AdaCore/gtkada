@@ -125,6 +125,7 @@ class AdaNaming(object):
             "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
 
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
+            "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
             "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
