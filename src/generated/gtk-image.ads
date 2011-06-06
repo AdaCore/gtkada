@@ -104,9 +104,9 @@ package Gtk.Image is
    --  will display a "broken image" icon. This function never returns null, it
    --  always returns a valid Gtk.Image.Gtk_Image widget. If the file contains
    --  an animation, the image will contain an animation. If you need to detect
-   --  failures to load the file, use gdk_pixbuf_new_from_file to load the file
-   --  yourself, then create the Gtk.Image.Gtk_Image from the pixbuf. (Or for
-   --  animations, use gdk_pixbuf_animation_new_from_file). The storage type
+   --  failures to load the file, use Gdk.Pixbuf.Gdk_New_From_File to load the
+   --  file yourself, then create the Gtk.Image.Gtk_Image from the pixbuf. (Or
+   --  for animations, use Gdk.Pixbuf.Gdk_New_From_File). The storage type
    --  (gtk_image_get_storage_type) of the returned image is not defined, it
    --  will be whatever is appropriate for displaying the file.
    --  "filename": a filename
