@@ -40,7 +40,7 @@ SHELL=sh
 
 all: ${DIRECTORIES}
 	@for file in ${DIRECTORIES}; do \
-	  make -C $${file} all; \
+	  make -C $${file} all || exit 1; \
 	done
 
 install:
