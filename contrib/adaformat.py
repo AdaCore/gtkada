@@ -36,13 +36,20 @@ class AdaNaming(object):
             # Maps c methods to Ada subprograms.
             # All methods that are generated automatically will be added
             # as they are processed.
-            "gtk_widget_get_direction":    "Gtk.Widget.Get_Direction",
-            "gtk_widget_set_size_request": "Gtk.Widget.Set_Size_Request",
-            "gtk_window_set_default_icon": "Gtk.Window.Set_Default_Icon",
-            "gtk_show_uri":                "gtk_show_uri()",
-            "gtk_widget_show":             "Gtk.Widget.Show",
+            "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
+            "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
+            "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
+            "gtk_show_uri":                 "gtk_show_uri()",
+            "gtk_widget_show":              "Gtk.Widget.Show",
             "gtk_icon_factory_add_default": "Gtk.Icon_Factory.Add_Default",
-            "gtk_icon_factory_add":        "Gtk.Icon_Factory.Add",
+            "gtk_icon_factory_add":         "Gtk.Icon_Factory.Add",
+            "gdk_pixbuf_new_from_data":     "Gdk.Pixbuf.Gdk_New_From_Data",
+            "gdk_pixbuf_new_from_file":     "Gdk.Pixbuf.Gdk_New_From_File",
+            "gdk_pixbuf_new_from_xpm_data": "Gdk.Pixbuf.Gdk_New_From_Xpm_Data",
+            "gdk_pixbuf_animation_new_from_file":
+                                            "Gdk.Pixbuf.Gdk_New_From_File",
+            "gdk_pixbuf_new":               "Gdk.Pixbuf.Gdk_New",
+            "gdk_pixbuf_new_subpixbuf":     "Gdk.Pixbuf.Gdk_New_Subpixbuf",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
