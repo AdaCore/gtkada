@@ -1212,7 +1212,6 @@ class Package(object):
                 out.write("\n")
             out.write("\n")
 
-        out.write("pragma Style_Checks (Off);\n")
         out.write('pragma Warnings (Off, "*is already use-visible*");\n')
 
         out.write(self._output_withs(self.spec_withs))
