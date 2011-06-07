@@ -232,9 +232,15 @@ def fill_text(text, prefix, length, firstLineLength=0):
     line = ""
     result = []
     maxLen = firstLineLength or length - len(prefix)
+    text=text.replace("\n\n", "\n<br>")
 
     for w in text.split():
-        if len(line) + len(w) + 1 > maxLen:
+        if w.startswith("<br>"):
+            result.append(line)
+            maxLen = length - len(prefix)
+            line = w[4:]
+
+        elif len(line) + len(w) + 1 > maxLen:
             result.append(line)
             maxLen = length - len(prefix)
             line = w
@@ -825,6 +831,11 @@ class Subprogram(object):
         doc = doc.replace("%NULL", "null")
         doc = doc.replace("%TRUE", "True")
         doc = doc.replace("%False", "True")
+
+        doc = doc.replace("<para>", "")
+        doc = doc.replace("</para>", "")
+        doc = doc.replace("<note>", "\nNote: ")
+        doc = doc.replace("</note>", "")
 
         subp = re.compile("([\S_]+)\(\)")
         doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
