@@ -37,6 +37,7 @@ class AdaNaming(object):
             # All methods that are generated automatically will be added
             # as they are processed.
             "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
+            "gtk_widget_add_events":        "Gtk.Widget.Add_Event",
             "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
             "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
             "gtk_show_uri":                 "gtk_show_uri()",
@@ -131,6 +132,7 @@ class AdaNaming(object):
             "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
+            "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
             "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
@@ -232,7 +234,7 @@ def fill_text(text, prefix, length, firstLineLength=0):
     maxLen = firstLineLength or length - len(prefix)
 
     for w in text.split():
-        if len(line) + len(w) > maxLen:
+        if len(line) + len(w) + 1 > maxLen:
             result.append(line)
             maxLen = length - len(prefix)
             line = w
