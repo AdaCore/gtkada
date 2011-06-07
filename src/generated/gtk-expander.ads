@@ -105,8 +105,8 @@ package Gtk.Expander is
    procedure Set_Label_Fill
       (Self       : access Gtk_Expander_Record;
        Label_Fill : Boolean);
-   --  Sets whether the label widget should fill all available horizontal space
-   --  allocated to Expander.
+   --  Sets whether the label widget should fill all available horizontal
+   --  space allocated to Expander.
    --  Since: gtk+ 2.22
    --  "label_fill": True if the label should should fill all available
    --  horizontal space

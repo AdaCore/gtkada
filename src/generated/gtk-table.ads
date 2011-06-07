@@ -28,14 +28,14 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Table is a container that can contain any number of children. Each of
---  them is attached to a specific row and a specific column in widget.
+--  A Gtk_Table is a container that can contain any number of children. Each
+--  of them is attached to a specific row and a specific column in widget.
 -- 
 --  Every row in the table must have the same height, and every column must
 --  have the same width if the table was said as Homogeneous. But you can also
---  decide to have an heterogeneous table, where the width and height are set by
---  the children contained in the table. Check out the Gtk_Sheet widget for a
---  different kind of table that can also contain text and images in a more
+--  decide to have an heterogeneous table, where the width and height are set
+--  by the children contained in the table. Check out the Gtk_Sheet widget for
+--  a different kind of table that can also contain text and images in a more
 --  efficient way.
 -- 
 --  </description>
@@ -69,8 +69,8 @@ package Gtk.Table is
        Columns     : Guint;
        Homogeneous : Boolean);
    --  Create a new table. The width allocated to the table is divided into
-   --  Columns columns, which all have the same width if Homogeneous is True. If
-   --  Homogeneous is False, the width will be calculated with the children
+   --  Columns columns, which all have the same width if Homogeneous is True.
+   --  If Homogeneous is False, the width will be calculated with the children
    --  contained in the table. Same behavior for the rows.
 
    function Get_Type return Glib.GType;
@@ -95,10 +95,10 @@ package Gtk.Table is
    --  the separations between columns and rows (for instance, to insert a
    --  widget spanning the first two columns in the table, you should put
    --  Left_Attach=0 and Right_Attach=2). Same behavior for the rows. Xoptions
-   --  and Yoptions indicate the behavior of the child when the table is resized
-   --  (whether the child can shrink or expand). See the description in Gtk.Box
-   --  for more information on the possible values. Xpadding and Ypadding are
-   --  the amount of space left around the child.
+   --  and Yoptions indicate the behavior of the child when the table is
+   --  resized (whether the child can shrink or expand). See the description in
+   --  Gtk.Box for more information on the possible values. Xpadding and
+   --  Ypadding are the amount of space left around the child.
 
    procedure Attach_Defaults
       (Table         : access Gtk_Table_Record;
@@ -107,9 +107,9 @@ package Gtk.Table is
        Right_Attach  : Guint;
        Top_Attach    : Guint;
        Bottom_Attach : Guint);
-   --  Insert a new widget in the table, with default values. No padding is put
-   --  around the child, and the options are set to Expand and Fill. This call
-   --  is similar to Attach with default values and is only provided for
+   --  Insert a new widget in the table, with default values. No padding is
+   --  put around the child, and the options are set to Expand and Fill. This
+   --  call is similar to Attach with default values and is only provided for
    --  compatibility.
 
    function Get_Col_Spacing
@@ -136,8 +136,8 @@ package Gtk.Table is
       (Table       : access Gtk_Table_Record;
        Homogeneous : Boolean);
    --  Indicate the homogeneous status of the table. If Homogeneous is True,
-   --  the rows and columns of the table will all be allocated the same width or
-   --  height.
+   --  the rows and columns of the table will all be allocated the same width
+   --  or height.
 
    function Get_Row_Spacing
       (Table : access Gtk_Table_Record;

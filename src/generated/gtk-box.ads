@@ -36,20 +36,20 @@
 --  horizontal box, or a vertical box.
 -- 
 --  Children can be added to one of two positions in the box, either at the
---  beginning (ie left or top) or at the end (ie right or bottom). Each of these
---  positions can contain multiple widgets.
+--  beginning (ie left or top) or at the end (ie right or bottom). Each of
+--  these positions can contain multiple widgets.
 -- 
 --  Every time a child is added to the start, it is placed to the right (resp.
 --  the bottom) of the previous widget added to the start.
 -- 
---  Every time a child is added to the end, it is placed to the left (resp. the
---  top) of the previous widget added to the end.
+--  Every time a child is added to the end, it is placed to the left (resp.
+--  the top) of the previous widget added to the end.
 -- 
---  There are a number of parameters to specify the behavior of the box when it
---  is resized, and how the children should be reorganized and/or resized.
+--  There are a number of parameters to specify the behavior of the box when
+--  it is resized, and how the children should be reorganized and/or resized.
 -- 
---  See the testgtk example in the GtkAda distribution to see concrete examples
---  on how all the parameters for the boxes work.
+--  See the testgtk example in the GtkAda distribution to see concrete
+--  examples on how all the parameters for the boxes work.
 -- 
 --  </description>
 --  <screenshot>gtk-box</screenshot>
@@ -129,8 +129,8 @@ package Gtk.Box is
 
    function Get_Spacing (Self : access Gtk_Box_Record) return Gint;
    procedure Set_Spacing (Self : access Gtk_Box_Record; Spacing : Gint);
-   --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number of
-   --  pixels to place between children of Box.
+   --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number
+   --  of pixels to place between children of Box.
    --  "spacing": the number of pixels to put between children
 
    procedure Pack_End
@@ -139,9 +139,9 @@ package Gtk.Box is
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0);
-   --  Adds Child to Box, packed with reference to the end of Box. The Child is
-   --  packed after (away from end of) any other child packed with reference to
-   --  the end of Box.
+   --  Adds Child to Box, packed with reference to the end of Box. The Child
+   --  is packed after (away from end of) any other child packed with reference
+   --  to the end of Box.
    --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
    --  "expand": True if the new child is to be given extra space allocated to
    --  Box. The extra space will be divided evenly between all children of Box
@@ -162,9 +162,10 @@ package Gtk.Box is
    pragma Obsolescent;
    --  Adds Widget to Box, packed with reference to the end of Box. The child
    --  is packed after any other child packed with reference to the start of
-   --  Box. Parameters for how to pack the child Widget, Gtk.Box.Gtk_Box:expand,
-   --  Gtk.Box.Gtk_Box:fill and Gtk.Box.Gtk_Box:padding, are given their default
-   --  values, True, True, and 0, respectively.
+   --  Box. Parameters for how to pack the child Widget,
+   --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
+   --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
+   --  0, respectively.
    --  Deprecated since 2.14, Use gtk_box_pack_end()
    --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
@@ -193,11 +194,12 @@ package Gtk.Box is
       (Self   : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    pragma Obsolescent;
-   --  Adds Widget to Box, packed with reference to the start of Box. The child
-   --  is packed after any other child packed with reference to the start of
-   --  Box. Parameters for how to pack the child Widget, Gtk.Box.Gtk_Box:expand,
-   --  Gtk.Box.Gtk_Box:fill and Gtk.Box.Gtk_Box:padding, are given their default
-   --  values, True, True, and 0, respectively.
+   --  Adds Widget to Box, packed with reference to the start of Box. The
+   --  child is packed after any other child packed with reference to the start
+   --  of Box. Parameters for how to pack the child Widget,
+   --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
+   --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
+   --  0, respectively.
    --  Deprecated since 2.14, Use gtk_box_pack_start()
    --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
@@ -229,10 +231,10 @@ package Gtk.Box is
        Position : Gint);
    --  Moves Child to a new Position in the list of Box children. The list is
    --  the <structfield>children</structfield> field of Gtk.Box.Gtk_Box-struct,
-   --  and contains both widgets packed GTK_PACK_START as well as widgets packed
-   --  GTK_PACK_END, in the order that these widgets were added to Box. A
-   --  widget's position in the Box children list determines where the widget is
-   --  packed into Box. A child widget at some position in the list will be
+   --  and contains both widgets packed GTK_PACK_START as well as widgets
+   --  packed GTK_PACK_END, in the order that these widgets were added to Box.
+   --  A widget's position in the Box children list determines where the widget
+   --  is packed into Box. A child widget at some position in the list will be
    --  packed just after all other widgets of the same packing type that appear
    --  earlier in the list.
    --  "child": the Gtk.Widget.Gtk_Widget to move

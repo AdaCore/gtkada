@@ -30,8 +30,8 @@
 --  <description>
 --  This object represents an adjustable bounded value. It is used in many
 --  other widgets that have such internal values, like Gtk_Scrollbar,
---  Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is done
---  through their associated adjustments.
+--  Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is
+--  done through their associated adjustments.
 -- 
 --  The modification of the value is left to the user, who should call
 --  Value_Changed or Changed to emit the relevant signals.
@@ -81,9 +81,9 @@ package Gtk.Adjustment is
    --  It must be in the range (Lower .. Upper) and the adjustment's value will
    --  never be outside this range. Step_Increment is the value used to make
    --  minor adjustments, such as when the user clicks on the arrows of a
-   --  scrollbar. Page_Increment is used to make major adjustments, such as when
-   --  the user clicks in the through on a scrollbar. Page_Size is deprecated,
-   --  use the default value.
+   --  scrollbar. Page_Increment is used to make major adjustments, such as
+   --  when the user clicks in the through on a scrollbar. Page_Size is
+   --  deprecated, use the default value.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
@@ -100,9 +100,9 @@ package Gtk.Adjustment is
        Upper      : Gdouble);
    --  Update the Adjustment value to ensure that the range between Lower and
    --  Upper is in the current page (i.e. between value and value + page_size).
-   --  If the range is larger than the page size, then only the start of it will
-   --  be in the current page. A "value_changed" signal will be emitted if the
-   --  value is changed.
+   --  If the range is larger than the page size, then only the start of it
+   --  will be in the current page. A "value_changed" signal will be emitted if
+   --  the value is changed.
 
    procedure Configure
       (Adjustment     : access Gtk_Adjustment_Record;
@@ -134,8 +134,8 @@ package Gtk.Adjustment is
    --  signals will be emitted. However, since the emission of the "changed"
    --  signal is tied to the emission of the "GObject::notify" signals of the
    --  changed properties, it's possible to compress the "changed" signals into
-   --  one by calling g_object_freeze_notify and g_object_thaw_notify around the
-   --  calls to the individual setters. Alternatively, using a single
+   --  one by calling g_object_freeze_notify and g_object_thaw_notify around
+   --  the calls to the individual setters. Alternatively, using a single
    --  g_object_set for all the properties to change, or using
    --  Gtk.Adjustment.Configure has the same effect of compressing "changed"
    --  emissions.
@@ -158,9 +158,9 @@ package Gtk.Adjustment is
    procedure Set_Page_Size
       (Adjustment : access Gtk_Adjustment_Record;
        Page_Size  : Gdouble);
-   --  Sets the page size of the adjustment. See Gtk.Adjustment.Set_Lower about
-   --  how to compress multiple emissions of the "changed" signal when setting
-   --  multiple adjustment properties.
+   --  Sets the page size of the adjustment. See Gtk.Adjustment.Set_Lower
+   --  about how to compress multiple emissions of the "changed" signal when
+   --  setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_size": the new page size
 
@@ -227,9 +227,9 @@ package Gtk.Adjustment is
    --  Name: Upper_Property
    --  Type: Gdouble
    --  Flags: read-write
-   --  The maximum value of the adjustment. Note that values will be restricted
-   --  by <literal>upper - page-size</literal> if the page-size property is
-   --  nonzero.
+   --  The maximum value of the adjustment. Note that values will be
+   --  restricted by <literal>upper - page-size</literal> if the page-size
+   --  property is nonzero.
    -- 
    --  Name: Value_Property
    --  Type: Gdouble

@@ -77,14 +77,14 @@ package Gtk.Curve is
       (Self     : access Gtk_Curve_Record;
        The_Type : Gtk.Enums.Gtk_Curve_Type);
    --  Set the type of the curve. The curve will remain unchanged except when
-   --  changing from a free curve to a linear or spline curve, in which case the
-   --  curve will be changed as little as possible.
+   --  changing from a free curve to a linear or spline curve, in which case
+   --  the curve will be changed as little as possible.
 
    procedure Set_Gamma (Self : access Gtk_Curve_Record; Gamma : Gfloat);
-   --  Recompute the entire curve using the given gamma value. A gamma value of
-   --  1.0 results in a straight line. Values greater than 1.0 result in a curve
-   --  above the straight line. Values less than 1.0 result in a curve below the
-   --  straight line. The curve type is changed to Curve_Type_Free.
+   --  Recompute the entire curve using the given gamma value. A gamma value
+   --  of 1.0 results in a straight line. Values greater than 1.0 result in a
+   --  curve above the straight line. Values less than 1.0 result in a curve
+   --  below the straight line. The curve type is changed to Curve_Type_Free.
 
    procedure Set_Range
       (Self  : access Gtk_Curve_Record;
@@ -92,8 +92,8 @@ package Gtk.Curve is
        Max_X : Gfloat;
        Min_Y : Gfloat;
        Max_Y : Gfloat);
-   --  Set the minimum and maximum x & y values of the curve. The curve is also
-   --  reset with a call to Reset.
+   --  Set the minimum and maximum x & y values of the curve. The curve is
+   --  also reset with a call to Reset.
 
    ----------------------
    -- GtkAda additions --

@@ -28,8 +28,9 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Aspect_Frame is the same type of widget as a frame, but it constrains
---  its child to a specific aspect ratio between its width and its height.
+--  A Gtk_Aspect_Frame is the same type of widget as a frame, but it
+--  constrains its child to a specific aspect ratio between its width and its
+--  height.
 -- 
 --  This ratio can either be given explicitly by the user, or chosen from the
 --  widget's initial size request (might be different from the one if was
@@ -70,12 +71,12 @@ package Gtk.Aspect_Frame is
        Obey_Child   : Boolean);
    --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
    --  "label": Label text.
-   --  "xalign": Horizontal alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned) to
-   --  1.0 (right aligned)
+   --  "xalign": Horizontal alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  aligned) to 1.0 (right aligned)
    --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned) to
-   --  1.0 (right aligned)
+   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
+   --  to 1.0 (right aligned)
    --  "ratio": The desired aspect ratio.
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
@@ -94,12 +95,12 @@ package Gtk.Aspect_Frame is
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
    --  Set parameters for an existing Gtk.Aspect_Frame.Gtk_Aspect_Frame.
-   --  "xalign": Horizontal alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned) to
-   --  1.0 (right aligned)
+   --  "xalign": Horizontal alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  aligned) to 1.0 (right aligned)
    --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned) to
-   --  1.0 (right aligned)
+   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
+   --  to 1.0 (right aligned)
    --  "ratio": The desired aspect ratio.
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.

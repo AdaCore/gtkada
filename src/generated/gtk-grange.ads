@@ -67,9 +67,9 @@ package Gtk.GRange is
       (The_Range  : access Gtk_Range_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the adjustment to be used as the "model" object for this range
-   --  widget. The adjustment indicates the current range value, the minimum and
-   --  maximum range values, the step/page increments used for keybindings and
-   --  scrolling, and the page size. The page size is normally 0 for
+   --  widget. The adjustment indicates the current range value, the minimum
+   --  and maximum range values, the step/page increments used for keybindings
+   --  and scrolling, and the page size. The page size is normally 0 for
    --  Gtk.Scale.Gtk_Scale and nonzero for Gtk.Scrollbar.Gtk_Scrollbar, and
    --  indicates the size of the visible area of the widget being scrolled. The
    --  page size affects the size of the scrollbar slider.
@@ -82,16 +82,17 @@ package Gtk.GRange is
        Fill_Level : Gdouble);
    --  Set the new position of the fill level indicator. The "fill level" is
    --  probably best described by its most prominent use case, which is an
-   --  indicator for the amount of pre-buffering in a streaming media player. In
-   --  that use case, the value of the range would indicate the current play
+   --  indicator for the amount of pre-buffering in a streaming media player.
+   --  In that use case, the value of the range would indicate the current play
    --  position, and the fill level would be the position up to which the
    --  file/stream has been downloaded. This amount of prebuffering can be
    --  displayed on the range's trough and is themeable separately from the
-   --  trough. To enable fill level display, use Gtk.GRange.Set_Show_Fill_Level.
-   --  The range defaults to not showing the fill level. Additionally, it's
-   --  possible to restrict the range's slider position to values which are
-   --  smaller than the fill level. This is controller by
-   --  Gtk.GRange.Set_Restrict_To_Fill_Level and is by default enabled.
+   --  trough. To enable fill level display, use
+   --  Gtk.GRange.Set_Show_Fill_Level. The range defaults to not showing the
+   --  fill level. Additionally, it's possible to restrict the range's slider
+   --  position to values which are smaller than the fill level. This is
+   --  controller by Gtk.GRange.Set_Restrict_To_Fill_Level and is by default
+   --  enabled.
    --  Since: gtk+ 2.12
    --  "fill_level": the new position of the fill level indicator
 
@@ -185,9 +186,9 @@ package Gtk.GRange is
    procedure Set_Slider_Size_Fixed
       (The_Range  : access Gtk_Range_Record;
        Size_Fixed : Boolean);
-   --  Sets whether the range's slider has a fixed size, or a size that depends
-   --  on it's adjustment's page size. This function is useful mainly for
-   --  Gtk.GRange.Gtk_Range subclasses.
+   --  Sets whether the range's slider has a fixed size, or a size that
+   --  depends on it's adjustment's page size. This function is useful mainly
+   --  for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "size_fixed": True to make the slider size constant
 
@@ -220,10 +221,10 @@ package Gtk.GRange is
    procedure Set_Value
       (The_Range : access Gtk_Range_Record;
        Value     : Gdouble);
-   --  Sets the current value of the range; if the value is outside the minimum
-   --  or maximum range values, it will be clamped to fit inside them. The range
-   --  emits the Gtk.GRange.Gtk_Range::value-changed signal if the value
-   --  changes.
+   --  Sets the current value of the range; if the value is outside the
+   --  minimum or maximum range values, it will be clamped to fit inside them.
+   --  The range emits the Gtk.GRange.Gtk_Range::value-changed signal if the
+   --  value changes.
    --  "value": new value of the range
 
    procedure Set_Increments
@@ -318,12 +319,12 @@ package Gtk.GRange is
    --  event that occurred and the resultant new value. The application can
    --  handle the event itself and return %TRUE to prevent further processing.
    --  Or, by returning %FALSE, it can pass the event to other handlers until
-   --  the default GTK+ handler is reached. The value parameter is unrounded. An
-   --  application that overrides the ::change-value signal is responsible for
-   --  clamping the value to the desired number of decimal digits; the default
-   --  GTK+ handler clamps the value based on @range->round_digits. It is not
-   --  possible to use delayed update policies in an overridden ::change-value
-   --  handler.
+   --  the default GTK+ handler is reached. The value parameter is unrounded.
+   --  An application that overrides the ::change-value signal is responsible
+   --  for clamping the value to the desired number of decimal digits; the
+   --  default GTK+ handler clamps the value based on @range->round_digits. It
+   --  is not possible to use delayed update policies in an overridden
+   --  ::change-value handler.
    -- 
    --  "move-slider"
    --  function Handler (Self : access Gtk_Range_Record'Class) return none;

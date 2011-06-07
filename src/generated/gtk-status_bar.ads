@@ -34,18 +34,18 @@
 -- 
 --  This widget works as a stack of messages, ie all older messages are kept
 --  when a new one is inserted. It is of course possible to remove the most
---  recent message from the stack. This stack behavior is especially useful when
---  messages can be displayed from several places in your application. Thus,
---  each one subprogram that needs to print a message can simply push it on the
---  stack, and does not need to make sure that the user has had enough time to
---  read the previous message (a timeout can be set to automatically remove the
---  message after a specific delay)
+--  recent message from the stack. This stack behavior is especially useful
+--  when messages can be displayed from several places in your application.
+--  Thus, each one subprogram that needs to print a message can simply push it
+--  on the stack, and does not need to make sure that the user has had enough
+--  time to read the previous message (a timeout can be set to automatically
+--  remove the message after a specific delay)
 -- 
---  Each message is associated with a specific Context_Id. Each of this context
---  can have a special name, and these context can be used to organize the
---  messages into categories (for instance one for help messages and one for
---  error messages). You can then selectively remove the most recent message of
---  each category.
+--  Each message is associated with a specific Context_Id. Each of this
+--  context can have a special name, and these context can be used to organize
+--  the messages into categories (for instance one for help messages and one
+--  for error messages). You can then selectively remove the most recent
+--  message of each category.
 -- 
 --  </description>
 --  <screenshot>gtk-status_bar</screenshot>

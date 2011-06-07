@@ -90,8 +90,8 @@ package Gtk.Frame is
       (Self   : access Gtk_Frame_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
-   --  Sets the alignment of the frame widget's label. The default values for a
-   --  newly created frame are 0.0 and 0.5.
+   --  Sets the alignment of the frame widget's label. The default values for
+   --  a newly created frame are 0.0 and 0.5.
    --  "xalign": The position of the label along the top edge of the widget. A
    --  value of 0.0 represents left alignment; 1.0 represents right alignment.
    --  "yalign": The y alignment of the label. A value of 0.0 aligns under the
@@ -104,8 +104,8 @@ package Gtk.Frame is
    procedure Set_Label_Widget
       (Self         : access Gtk_Frame_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets the label widget for the frame. This is the widget that will appear
-   --  embedded in the top edge of the frame as a title.
+   --  Sets the label widget for the frame. This is the widget that will
+   --  appear embedded in the top edge of the frame as a title.
    --  "label_widget": the new label widget
 
    function Get_Shadow_Type

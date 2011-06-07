@@ -59,7 +59,7 @@ package Gtk.Bin is
    function Get_Child
       (Self : access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget;
    --  Gets the child of the Gtk.Bin.Gtk_Bin, or null if the bin contains no
-   --  child widget. The returned widget does not have a reference added, so you
-   --  do not need to unref it.
+   --  child widget. The returned widget does not have a reference added, so
+   --  you do not need to unref it.
 
 end Gtk.Bin;

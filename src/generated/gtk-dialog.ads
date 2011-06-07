@@ -32,11 +32,11 @@
 --  input, eg. to display a message, ask a question, or anything else that does
 --  not require extensive effort on the user's part.
 -- 
---  Gtkada treats a dialog as a window split horizontally. The top section is a
---  Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should be
---  packed. The second area is known as the action_area. This is generally used
---  for packing buttons into the dialog which may perform functions such as
---  cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
+--  Gtkada treats a dialog as a window split horizontally. The top section is
+--  a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should
+--  be packed. The second area is known as the action_area. This is generally
+--  used for packing buttons into the dialog which may perform functions such
+--  as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
 -- 
 --  If 'dialog' is a newly created dialog, the two primary areas of the window
 --  can be accessed using Get_Vbox and Get_Action_Area as can be seen from the
@@ -133,8 +133,8 @@ package Gtk.Dialog is
        Flags  : Gtk_Dialog_Flags);
    --  Create a new dialog with a specific title, and specific attributes.
    --  Parent is the transient parent for the dialog (ie the one that is used
-   --  for reference for the flag Destroy_With_Parent, or to compute the initial
-   --  position of the dialog).
+   --  for reference for the flag Destroy_With_Parent, or to compute the
+   --  initial position of the dialog).
    --  Since: gtk+ GtkAda 1.0
 
    function Get_Type return Glib.GType;
@@ -151,9 +151,9 @@ package Gtk.Dialog is
    --  Adds an activatable widget to the action area of a
    --  Gtk.Dialog.Gtk_Dialog, connecting a signal handler that will emit the
    --  Gtk.Dialog.Gtk_Dialog::response signal on the dialog when the widget is
-   --  activated. The widget is appended to the end of the dialog's action area.
-   --  If you want to add a non-activatable widget, simply pack it into the
-   --  Action_Area field of the Gtk.Dialog.Gtk_Dialog struct.
+   --  activated. The widget is appended to the end of the dialog's action
+   --  area. If you want to add a non-activatable widget, simply pack it into
+   --  the Action_Area field of the Gtk.Dialog.Gtk_Dialog struct.
    --  "child": an activatable widget
    --  "response_id": response ID for Child
 
@@ -210,20 +210,20 @@ package Gtk.Dialog is
    procedure Response
       (Dialog      : access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type);
-   --  Emits the Gtk.Dialog.Gtk_Dialog::response signal with the given response
-   --  ID. Used to indicate that the user has responded to the dialog in some
-   --  way; typically either you or Gtk.Dialog.Run will be monitoring the
-   --  ::response signal and take appropriate action.
+   --  Emits the Gtk.Dialog.Gtk_Dialog::response signal with the given
+   --  response ID. Used to indicate that the user has responded to the dialog
+   --  in some way; typically either you or Gtk.Dialog.Run will be monitoring
+   --  the ::response signal and take appropriate action.
    --  "response_id": response ID
 
    function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type;
    --  Blocks in a recursive main loop until the Dialog either emits the
-   --  Gtk.Dialog.Gtk_Dialog::response signal, or is destroyed. If the dialog is
-   --  destroyed during the call to Gtk.Dialog.Run, Gtk.Dialog.Run returns
+   --  Gtk.Dialog.Gtk_Dialog::response signal, or is destroyed. If the dialog
+   --  is destroyed during the call to Gtk.Dialog.Run, Gtk.Dialog.Run returns
    --  GTK_RESPONSE_NONE. Otherwise, it returns the response ID from the
    --  ::response signal emission. Before entering the recursive main loop,
-   --  Gtk.Dialog.Run calls Gtk.Widget.Show on the dialog for you. Note that you
-   --  still need to show any children of the dialog yourself. During
+   --  Gtk.Dialog.Run calls Gtk.Widget.Show on the dialog for you. Note that
+   --  you still need to show any children of the dialog yourself. During
    --  Gtk.Dialog.Run, the default behavior of
    --  Gtk.Widget.Gtk_Widget::delete-event is disabled; if the dialog receives
    --  ::delete_event, it will not be destroyed as windows usually are, and
@@ -231,11 +231,11 @@ package Gtk.Dialog is
    --  Gtk.Dialog.Run the dialog will be modal. You can force Gtk.Dialog.Run to
    --  return at any time by calling Gtk.Dialog.Response to emit the ::response
    --  signal. Destroying the dialog during Gtk.Dialog.Run is a very bad idea,
-   --  because your post-run code won't know whether the dialog was destroyed or
-   --  not. After Gtk.Dialog.Run returns, you are responsible for hiding or
+   --  because your post-run code won't know whether the dialog was destroyed
+   --  or not. After Gtk.Dialog.Run returns, you are responsible for hiding or
    --  destroying the dialog if you wish to do so. Typical usage of this
-   --  function might be: |[ gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-   --  switch (result) { case GTK_RESPONSE_ACCEPT:
+   --  function might be: |[ gint result = gtk_dialog_run (GTK_DIALOG
+   --  (dialog)); switch (result) { case GTK_RESPONSE_ACCEPT:
    --  do_application_specific_something (); break; default:
    --  do_nothing_since_dialog_was_cancelled (); break; } gtk_widget_destroy
    --  (dialog); ]| Note that even though the recursive main loop gives the
@@ -321,13 +321,15 @@ package Gtk.Dialog is
    --  The following new signals are defined for this widget:
    -- 
    --  "close"
-   --  function Handler (Self : access Gtk_Dialog_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Dialog_Record'Class) return --
+   --  none;
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to close
-   --  the dialog. The default binding for this signal is the Escape key.
+   --  signal</link> which gets emitted when the user uses a keybinding to
+   --  close the dialog. The default binding for this signal is the Escape key.
    -- 
    --  "response"
-   --  function Handler (Self : access Gtk_Dialog_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Dialog_Record'Class) return --
+   --  none;
    --  Emitted when an action widget is clicked, the dialog receives a delete
    --  event, or the application programmer calls gtk_dialog_response(). On a
    --  delete event, the response ID is #GTK_RESPONSE_DELETE_EVENT. Otherwise,

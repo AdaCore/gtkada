@@ -31,10 +31,10 @@
 --  A Gtk_Alignment controls the size and alignment of its single child inside
 --  the area allocated to the alignment widget.
 -- 
---  The scale/size settings indicate how much the child will expand to fill the
---  container. The values should be in the range 0.0 (no expansion) to 1.0 (full
---  expansion). Note that the scale only indicates the minimal size for the
---  child, it does not force an absolute size.
+--  The scale/size settings indicate how much the child will expand to fill
+--  the container. The values should be in the range 0.0 (no expansion) to 1.0
+--  (full expansion). Note that the scale only indicates the minimal size for
+--  the child, it does not force an absolute size.
 -- 
 --  The alignment settings indicate where in the alignment widget the child
 --  should be located. The values are in the range 0.0 (top or left) to 1.0
@@ -73,8 +73,8 @@ package Gtk.Alignment is
        Xscale    : Gfloat;
        Yscale    : Gfloat);
    --  Creates a new Gtk.Alignment.Gtk_Alignment.
-   --  "xalign": the horizontal alignment of the child widget, from 0 (left) to
-   --  1 (right).
+   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
+   --  to 1 (right).
    --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
    --  (bottom).
    --  "xscale": the amount that the child widget expands horizontally to fill
@@ -82,8 +82,8 @@ package Gtk.Alignment is
    --  widget should never expand. A value of 1 indicates that the child widget
    --  will expand to fill all of the space allocated for the
    --  Gtk.Alignment.Gtk_Alignment.
-   --  "yscale": the amount that the child widget expands vertically to fill up
-   --  unused space, from 0 to 1. The values are similar to Xscale.
+   --  "yscale": the amount that the child widget expands vertically to fill
+   --  up unused space, from 0 to 1. The values are similar to Xscale.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_alignment_get_type");
@@ -105,8 +105,9 @@ package Gtk.Alignment is
        Padding_Left   : Guint;
        Padding_Right  : Guint);
    --  Sets the padding on the different sides of the widget. The padding adds
-   --  blank space to the sides of the widget. For instance, this can be used to
-   --  indent the child widget towards the right by adding padding on the left.
+   --  blank space to the sides of the widget. For instance, this can be used
+   --  to indent the child widget towards the right by adding padding on the
+   --  left.
    --  Since: gtk+ 2.4
    --  "padding_top": the padding at the top of the widget
    --  "padding_bottom": the padding at the bottom of the widget
@@ -120,8 +121,8 @@ package Gtk.Alignment is
        Xscale    : Gfloat;
        Yscale    : Gfloat);
    --  Sets the Gtk.Alignment.Gtk_Alignment values.
-   --  "xalign": the horizontal alignment of the child widget, from 0 (left) to
-   --  1 (right).
+   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
+   --  to 1 (right).
    --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
    --  (bottom).
    --  "xscale": the amount that the child widget expands horizontally to fill
@@ -129,8 +130,8 @@ package Gtk.Alignment is
    --  widget should never expand. A value of 1 indicates that the child widget
    --  will expand to fill all of the space allocated for the
    --  Gtk.Alignment.Gtk_Alignment.
-   --  "yscale": the amount that the child widget expands vertically to fill up
-   --  unused space, from 0 to 1. The values are similar to Xscale.
+   --  "yscale": the amount that the child widget expands vertically to fill
+   --  up unused space, from 0 to 1. The values are similar to Xscale.
 
    ------------
    -- Fields --

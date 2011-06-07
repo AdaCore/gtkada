@@ -35,8 +35,8 @@
 -- 
 --  Note that size groups only affect the amount of space requested, not the
 --  size that the widgets finally receive. If you want the widgets in a
---  Gtk_Size_Group to actually be the same size, you need to pack them in such a
---  way that they get the size they request and not more. For example, if you
+--  Gtk_Size_Group to actually be the same size, you need to pack them in such
+--  a way that they get the size they request and not more. For example, if you
 --  are packing your widgets into a table, you would not include the Fill flag.
 -- 
 --  </description>
@@ -117,10 +117,11 @@ package Gtk.Size_Group is
       (Size_Group : access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode);
    --  Sets the Size_Group_Mode of the size group. The mode of the size group
-   --  determines whether the widgets in the size group should all have the same
-   --  horizontal requisition (%GTK_SIZE_GROUP_MODE_HORIZONTAL) all have the
-   --  same vertical requisition (%GTK_SIZE_GROUP_MODE_VERTICAL), or should all
-   --  have the same requisition in both directions (%GTK_SIZE_GROUP_MODE_BOTH).
+   --  determines whether the widgets in the size group should all have the
+   --  same horizontal requisition (%GTK_SIZE_GROUP_MODE_HORIZONTAL) all have
+   --  the same vertical requisition (%GTK_SIZE_GROUP_MODE_VERTICAL), or should
+   --  all have the same requisition in both directions
+   --  (%GTK_SIZE_GROUP_MODE_BOTH).
    --  "mode": the mode to set for the size group.
 
    function Get_Widgets

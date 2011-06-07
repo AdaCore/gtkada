@@ -33,26 +33,27 @@
 --  depends on the size they request. However, the user has the possibility to
 --  interactively move a separation bar between the two to enlarge one of the
 --  children, while at the same time shrinking the second one. The bar can be
---  moved by clicking with the mouse on a small cursor displayed in the bar, and
---  then dragging the mouse.
+--  moved by clicking with the mouse on a small cursor displayed in the bar,
+--  and then dragging the mouse.
 -- 
 --  No additional decoration is provided around the children.
 -- 
 --  Each child has two parameters, Resize and Shrink.
 -- 
---  If Shrink is True, then the widget can be made smaller than its requisition
---  size by the user. Set this to False if you want to set a minimum size.
+--  If Shrink is True, then the widget can be made smaller than its
+--  requisition size by the user. Set this to False if you want to set a
+--  minimum size.
 -- 
 --  if Resize is True, this means that the child accepts to be resized, and
 --  will not require any size. Thus, the size allocated to it will be the total
---  size allocated to the container minus the size requested by the other child.
---  If Resize is False, the child should ask for a specific size, which it will
---  get. The other child will be resized accordingly. If both Child have the
---  same value for Resize (either True or False), then the size allocated to
---  each is a ratio between the size requested by both.
+--  size allocated to the container minus the size requested by the other
+--  child. If Resize is False, the child should ask for a specific size, which
+--  it will get. The other child will be resized accordingly. If both Child
+--  have the same value for Resize (either True or False), then the size
+--  allocated to each is a ratio between the size requested by both.
 -- 
---  When you use Set_Position with a parameter other than -1, or the user moves
---  the handle to resize the widgets, the behavior of Resize is canceled.
+--  When you use Set_Position with a parameter other than -1, or the user
+--  moves the handle to resize the widgets, the behavior of Resize is canceled.
 -- 
 --  </description>
 --  <screenshot>gtk-paned</screenshot>
@@ -106,9 +107,9 @@ package Gtk.Paned is
    procedure Add1
       (Paned : access Gtk_Paned_Record;
        Child : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Add the first child of the container. The child will be displayed either
-   --  in the top or in the left pane, depending on the orientation of the
-   --  container. This is equivalent to using the Pack1 procedure with its
+   --  Add the first child of the container. The child will be displayed
+   --  either in the top or in the left pane, depending on the orientation of
+   --  the container. This is equivalent to using the Pack1 procedure with its
    --  default parameters.
 
    procedure Add2
@@ -136,9 +137,10 @@ package Gtk.Paned is
 
    function Get_Handle_Window
       (Self : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
-   --  Returns the Gdk.Window.Gdk_Window of the handle. This function is useful
-   --  when handling button or motion events because it enables the callback to
-   --  distinguish between the window of the paned, a child and the handle.
+   --  Returns the Gdk.Window.Gdk_Window of the handle. This function is
+   --  useful when handling button or motion events because it enables the
+   --  callback to distinguish between the window of the paned, a child and the
+   --  handle.
    --  Since: gtk+ 2.20
 
    function Get_Position (Self : access Gtk_Paned_Record) return Gint;
@@ -155,9 +157,9 @@ package Gtk.Paned is
    --  Add a child to the top or left pane. You can not change dynamically the
    --  attributes Resize and Shrink. Instead, you have to remove the child from
    --  the container, and put it back with the new value of the attributes. You
-   --  should also first call Gtk.Object.Ref on the child so as to be sure it is
-   --  not destroyed when you remove it, and Gtk.Object.Unref it at the end. See
-   --  the example in testgtk/ in the GtkAda distribution.
+   --  should also first call Gtk.Object.Ref on the child so as to be sure it
+   --  is not destroyed when you remove it, and Gtk.Object.Unref it at the end.
+   --  See the example in testgtk/ in the GtkAda distribution.
 
    procedure Pack2
       (Paned  : access Gtk_Paned_Record;
@@ -219,16 +221,16 @@ package Gtk.Paned is
    --  The ::cancel-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cancel moving the position of the handle using key bindings. The
-   --  position of the handle will be reset to the value prior to moving it. The
-   --  default binding for this signal is Escape.
+   --  position of the handle will be reset to the value prior to moving it.
+   --  The default binding for this signal is Escape.
    -- 
    --  "cycle-child-focus"
    --  function Handler (Self : access Gtk_Paned_Record'Class) return --
    --  gboolean;
    --  The ::cycle-child-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle the focus between the children of the paned. The default binding
-   --  is f6.
+   --  to cycle the focus between the children of the paned. The default
+   --  binding is f6.
    -- 
    --  "cycle-handle-focus"
    --  function Handler (Self : access Gtk_Paned_Record'Class) return --

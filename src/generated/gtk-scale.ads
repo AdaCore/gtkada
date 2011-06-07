@@ -80,12 +80,12 @@ package Gtk.Scale is
        Max   : Gdouble;
        Step  : Gdouble);
    --  Creates a new horizontal scale widget that lets the user input a number
-   --  between Min and Max (including Min and Max) with the increment Step. Step
-   --  must be nonzero; it's the distance the slider moves when using the arrow
-   --  keys to adjust the scale value. Note that the way in which the precision
-   --  is derived works best if Step is a power of ten. If the resulting
-   --  precision is not suitable for your needs, use Gtk.Scale.Set_Digits to
-   --  correct it.
+   --  between Min and Max (including Min and Max) with the increment Step.
+   --  Step must be nonzero; it's the distance the slider moves when using the
+   --  arrow keys to adjust the scale value. Note that the way in which the
+   --  precision is derived works best if Step is a power of ten. If the
+   --  resulting precision is not suitable for your needs, use
+   --  Gtk.Scale.Set_Digits to correct it.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts
@@ -110,12 +110,12 @@ package Gtk.Scale is
        Max   : Gdouble;
        Step  : Gdouble);
    --  Creates a new vertical scale widget that lets the user input a number
-   --  between Min and Max (including Min and Max) with the increment Step. Step
-   --  must be nonzero; it's the distance the slider moves when using the arrow
-   --  keys to adjust the scale value. Note that the way in which the precision
-   --  is derived works best if Step is a power of ten. If the resulting
-   --  precision is not suitable for your needs, use Gtk.Scale.Set_Digits to
-   --  correct it.
+   --  between Min and Max (including Min and Max) with the increment Step.
+   --  Step must be nonzero; it's the distance the slider moves when using the
+   --  arrow keys to adjust the scale value. Note that the way in which the
+   --  precision is derived works best if Step is a power of ten. If the
+   --  resulting precision is not suitable for your needs, use
+   --  Gtk.Scale.Set_Digits to correct it.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts
@@ -158,22 +158,22 @@ package Gtk.Scale is
    --  Sets the number of decimal places that are displayed in the value. Also
    --  causes the value of the adjustment to be rounded off to this number of
    --  digits, so the retrieved value matches the value the user saw.
-   --  "digits": the number of decimal places to display, e.g. use 1 to display
-   --  1.0, 2 to display 1.00, etc
+   --  "digits": the number of decimal places to display, e.g. use 1 to
+   --  display 1.0, 2 to display 1.00, etc
 
    function Get_Draw_Value (Scale : access Gtk_Scale_Record) return Boolean;
    procedure Set_Draw_Value
       (Scale      : access Gtk_Scale_Record;
        Draw_Value : Boolean);
-   --  Specifies whether the current value is displayed as a string next to the
-   --  slider.
+   --  Specifies whether the current value is displayed as a string next to
+   --  the slider.
    --  "draw_value": True to draw the value
 
    function Get_Layout
       (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
-   --  returned object is owned by the scale so does not need to be freed by the
-   --  caller. if the Gtk.Scale.Gtk_Scale:draw-value property is %FALSE.
+   --  returned object is owned by the scale so does not need to be freed by
+   --  the caller. if the Gtk.Scale.Gtk_Scale:draw-value property is %FALSE.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets

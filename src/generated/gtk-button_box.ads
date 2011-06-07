@@ -28,13 +28,13 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to contain
---  buttons.
+--  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
+--  contain buttons.
 -- 
 --  This is only a base class for Gtk_Hbutton_Box and Gtk_Vbutton_Box which
---  provide a way to arrange their children horizontally (resp. vertically). You
---  can not instantiate a Gtk_Button_Box directly, and have to use one the above
---  two instead.
+--  provide a way to arrange their children horizontally (resp. vertically).
+--  You can not instantiate a Gtk_Button_Box directly, and have to use one the
+--  above two instead.
 -- 
 --  </description>
 --  <screenshot>gtk-button_box</screenshot>
@@ -85,12 +85,12 @@ package Gtk.Button_Box is
    --  Set whether Child should appear in a secondary group of children. A
    --  typical use of a secondary child is the help button in a dialog.
    --  This group appears after the other children if the style is
-   --  Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the other
-   --  children if the style is Buttonbox_End. For horizontal button boxes, the
-   --  definition of before/after depends on direction of the widget. (See
-   --  Gtk.Widget.Set_Direction) If the style is Buttonbox_Start, or
-   --  Buttonbox_End, then the secondary children are aligned at the other end
-   --  of the button box from the main children. For the other styles, they
+   --  Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the
+   --  other children if the style is Buttonbox_End. For horizontal button
+   --  boxes, the definition of before/after depends on direction of the
+   --  widget. (See Gtk.Widget.Set_Direction) If the style is Buttonbox_Start,
+   --  or Buttonbox_End, then the secondary children are aligned at the other
+   --  end of the button box from the main children. For the other styles, they
    --  appear immediately next to the main children.
    --  Is_Secondary: if True, the Child appears in a secondary group of the
    --  button box.

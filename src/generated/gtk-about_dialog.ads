@@ -99,8 +99,8 @@ package Gtk.About_Dialog is
    procedure Set_Artists
       (Self    : access Gtk_About_Dialog_Record;
        Artists : GNAT.Strings.String_List);
-   --  Sets the strings which are displayed in the artists tab of the secondary
-   --  credits dialog.
+   --  Sets the strings which are displayed in the artists tab of the
+   --  secondary credits dialog.
    --  Since: gtk+ 2.6
    --  "artists": a null-terminated array of strings
 
@@ -110,8 +110,8 @@ package Gtk.About_Dialog is
    procedure Set_Authors
       (Self    : access Gtk_About_Dialog_Record;
        Authors : GNAT.Strings.String_List);
-   --  Sets the strings which are displayed in the authors tab of the secondary
-   --  credits dialog.
+   --  Sets the strings which are displayed in the authors tab of the
+   --  secondary credits dialog.
    --  Since: gtk+ 2.6
    --  "authors": a null-terminated array of strings
 
@@ -130,8 +130,8 @@ package Gtk.About_Dialog is
    procedure Set_Copyright
       (Self      : access Gtk_About_Dialog_Record;
        Copyright : UTF8_String);
-   --  Sets the copyright string to display in the about dialog. This should be
-   --  a short string of one or two lines.
+   --  Sets the copyright string to display in the about dialog. This should
+   --  be a short string of one or two lines.
    --  Since: gtk+ 2.6
    --  "copyright": (allow-none) the copyright string
 
@@ -206,14 +206,15 @@ package Gtk.About_Dialog is
    procedure Set_Translator_Credits
       (Self               : access Gtk_About_Dialog_Record;
        Translator_Credits : UTF8_String);
-   --  Sets the translator credits string which is displayed in the translators
-   --  tab of the secondary credits dialog. The intended use for this string is
-   --  to display the translator of the language which is currently used in the
-   --  user interface. Using gettext, a simple way to achieve that is to mark
-   --  the string for translation: |[ gtk_about_dialog_set_translator_credits
-   --  (about, _("translator-credits")); ]| It is a good idea to use the
-   --  customary msgid "translator-credits" for this purpose, since translators
-   --  will already know the purpose of that msgid, and since
+   --  Sets the translator credits string which is displayed in the
+   --  translators tab of the secondary credits dialog. The intended use for
+   --  this string is to display the translator of the language which is
+   --  currently used in the user interface. Using gettext, a simple way to
+   --  achieve that is to mark the string for translation: |[
+   --  gtk_about_dialog_set_translator_credits (about,
+   --  _("translator-credits")); ]| It is a good idea to use the customary
+   --  msgid "translator-credits" for this purpose, since translators will
+   --  already know the purpose of that msgid, and since
    --  Gtk.About_Dialog.Gtk_About_Dialog will detect if "translator-credits" is
    --  untranslated and hide the tab.
    --  Since: gtk+ 2.6
@@ -266,8 +267,9 @@ package Gtk.About_Dialog is
        Data    : System.Address;
        Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
    --  Installs a global function to be called whenever the user activates an
-   --  email link in an about dialog. Since 2.18 there exists a default function
-   --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
+   --  email link in an about dialog. Since 2.18 there exists a default
+   --  function which uses gtk_show_uri(). To deactivate it, you can pass null
+   --  for Func.
    --  Since: gtk+ 2.6
    --  "func": a function to call when an email link is activated.
    --  "data": data to pass to Func
@@ -295,8 +297,8 @@ package Gtk.About_Dialog is
    --  Type: UTF8_String
    --  Flags: read-write
    --  Comments about the program. This string is displayed in a label in the
-   --  main dialog, thus it should be a short explanation of the main purpose of
-   --  the program, not a detailed list of features.
+   --  main dialog, thus it should be a short explanation of the main purpose
+   --  of the program, not a detailed list of features.
    -- 
    --  Name: Copyright_Property
    --  Type: UTF8_String
@@ -306,8 +308,8 @@ package Gtk.About_Dialog is
    --  Name: License_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   --  The license of the program. This string is displayed in a text view in a
-   --  secondary dialog, therefore it is fine to use a long multi-paragraph
+   --  The license of the program. This string is displayed in a text view in
+   --  a secondary dialog, therefore it is fine to use a long multi-paragraph
    --  text. Note that the text is only wrapped in the text view if the
    --  "wrap-license" property is set to %TRUE; otherwise the text itself must
    --  contain the intended linebreaks.
@@ -334,8 +336,8 @@ package Gtk.About_Dialog is
    --  Type: UTF8_String
    --  Flags: read-write
    --  Credits to the translators. This string should be marked as
-   --  translatable. The string may contain email addresses and URLs, which will
-   --  be displayed as links, see the introduction for more details.
+   --  translatable. The string may contain email addresses and URLs, which
+   --  will be displayed as links, see the introduction for more details.
    -- 
    --  Name: Version_Property
    --  Type: UTF8_String

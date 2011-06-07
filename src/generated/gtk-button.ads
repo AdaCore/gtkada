@@ -28,10 +28,10 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  This package implements a general button widget. This button can be clicked
---  on by the user to start any action. This button does not have multiple
---  states, it can just be temporarily pressed while the mouse is on it, but
---  does not keep its pressed state.
+--  This package implements a general button widget. This button can be
+--  clicked on by the user to start any action. This button does not have
+--  multiple states, it can just be temporarily pressed while the mouse is on
+--  it, but does not keep its pressed state.
 -- 
 --  The gtk+ sources provide the following drawing that explains the role of
 --  the various spacings that can be set for a button:
@@ -65,10 +65,10 @@ package Gtk.Button is
    procedure Initialize_From_Stock
       (Self     : access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String);
-   --  Creates a new Gtk.Button.Gtk_Button containing the image and text from a
-   --  stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK and
-   --  GTK_STOCK_APPLY. If Stock_Id is unknown, then it will be treated as a
-   --  mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
+   --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
+   --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
+   --  and GTK_STOCK_APPLY. If Stock_Id is unknown, then it will be treated as
+   --  a mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
    --  "stock_id": the name of the stock item
 
    procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String := "");
@@ -82,11 +82,11 @@ package Gtk.Button is
    procedure Initialize_With_Mnemonic
       (Self  : access Gtk_Button_Record'Class;
        Label : UTF8_String);
-   --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters in
-   --  Label are preceded by an underscore, they are underlined. If you need a
-   --  literal underscore character in a label, use '__' (two underscores). The
-   --  first underlined character represents a keyboard accelerator called a
-   --  mnemonic. Pressing Alt and that key activates the button.
+   --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
+   --  in Label are preceded by an underscore, they are underlined. If you need
+   --  a literal underscore character in a label, use '__' (two underscores).
+   --  The first underlined character represents a keyboard accelerator called
+   --  a mnemonic. Pressing Alt and that key activates the button.
    --  "label": The text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -112,10 +112,10 @@ package Gtk.Button is
    --  Sets the alignment of the child. This property has no effect unless the
    --  child is a Gtk.Misc.Gtk_Misc or a GtkAligment.
    --  Since: gtk+ 2.4
-   --  "xalign": the horizontal position of the child, 0.0 is left aligned, 1.0
-   --  is right aligned
-   --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0 is
-   --  bottom aligned
+   --  "xalign": the horizontal position of the child, 0.0 is left aligned,
+   --  1.0 is right aligned
+   --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0
+   --  is bottom aligned
 
    function Get_Event_Window
       (Self : access Gtk_Button_Record) return Gdk.Window.Gdk_Window;
@@ -141,10 +141,10 @@ package Gtk.Button is
    procedure Set_Image
       (Self  : access Gtk_Button_Record;
        Image : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Set the image of Button to the given widget. Note that it depends on the
-   --  Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the image
-   --  will be displayed or not, you don't have to call Gtk.Widget.Show on Image
-   --  yourself.
+   --  Set the image of Button to the given widget. Note that it depends on
+   --  the Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the
+   --  image will be displayed or not, you don't have to call Gtk.Widget.Show
+   --  on Image yourself.
    --  Since: gtk+ 2.6
    --  "image": a widget to set as the image for the button
 
@@ -176,8 +176,8 @@ package Gtk.Button is
    procedure Set_Use_Stock
       (Self      : access Gtk_Button_Record;
        Use_Stock : Boolean);
-   --  If True, the label set on the button is used as a stock id to select the
-   --  stock item for the button.
+   --  If True, the label set on the button is used as a stock id to select
+   --  the stock item for the button.
    --  "use_stock": True if the button should use a stock item
 
    function Get_Use_Underline
@@ -185,8 +185,8 @@ package Gtk.Button is
    procedure Set_Use_Underline
       (Self          : access Gtk_Button_Record;
        Use_Underline : Boolean);
-   --  If true, an underline in the text of the button label indicates the next
-   --  character should be used for the mnemonic accelerator key.
+   --  If true, an underline in the text of the button label indicates the
+   --  next character should be used for the mnemonic accelerator key.
    --  "use_underline": True if underlines in the text indicate mnemonics
 
    procedure Leave (Self : access Gtk_Button_Record);
@@ -233,16 +233,16 @@ package Gtk.Button is
    --  Name: Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   --  If the child of the button is a #GtkMisc or #GtkAlignment, this property
-   --  can be used to control it's horizontal alignment. 0.0 is left aligned,
-   --  1.0 is right aligned.
+   --  If the child of the button is a #GtkMisc or #GtkAlignment, this
+   --  property can be used to control it's horizontal alignment. 0.0 is left
+   --  aligned, 1.0 is right aligned.
    -- 
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   --  If the child of the button is a #GtkMisc or #GtkAlignment, this property
-   --  can be used to control it's vertical alignment. 0.0 is top aligned, 1.0
-   --  is bottom aligned.
+   --  If the child of the button is a #GtkMisc or #GtkAlignment, this
+   --  property can be used to control it's vertical alignment. 0.0 is top
+   --  aligned, 1.0 is bottom aligned.
 
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
    Image_Property : constant Glib.Properties.Property_Object;
@@ -260,29 +260,35 @@ package Gtk.Button is
    --  The following new signals are defined for this widget:
    -- 
    --  "activate"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
    --  never connect to this signal, but use the #GtkButton::clicked signal.
    -- 
    --  "clicked"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  Emitted when the button has been activated (pressed and released).
    -- 
    --  "enter"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  Emitted when the pointer enters the button.
    -- 
    --  "leave"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  Emitted when the pointer leaves the button.
    -- 
    --  "pressed"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  Emitted when the button is pressed.
    -- 
    --  "released"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Button_Record'Class) return --
+   --  none;
    --  Emitted when the button is released.
 
    Signal_Activate : constant Glib.Signal_Name := "activate";

@@ -33,22 +33,23 @@
 --  small arrow button to the right of the entry field.
 -- 
 --  The drop-down list is a Gtk_List widget and can be accessed using the list
---  member of the Gtk_Combo. List elements can contain arbitrary widgets, but if
---  an element is not a plain label, then you must use the
---  Gtk_List.Set_Item_String function. This sets the string which will be placed
---  in the text entry field when the item is selected.
+--  member of the Gtk_Combo. List elements can contain arbitrary widgets, but
+--  if an element is not a plain label, then you must use the
+--  Gtk_List.Set_Item_String function. This sets the string which will be
+--  placed in the text entry field when the item is selected.
 -- 
---  By default, the user can step through the items in the list using the arrow
---  (cursor) keys, though this behaviour can be turned off with Set_Use_Arrows.
+--  By default, the user can step through the items in the list using the
+--  arrow (cursor) keys, though this behaviour can be turned off with
+--  Set_Use_Arrows.
 -- 
---  Normally the arrow keys are only active when the contents of the text entry
---  field matches one of the items in the list. If the contents of the entry
---  field do not match any of the list items, then pressing the arrow keys does
---  nothing. However, by calling Set_Use_Arrows_Always you can specify that the
---  arrow keys are always active. If the contents of the entry field does not
---  match any of the items in the list, then pressing the up or down arrow key
---  will set the entry field to the last or first item in the list,
---  respectively.
+--  Normally the arrow keys are only active when the contents of the text
+--  entry field matches one of the items in the list. If the contents of the
+--  entry field do not match any of the list items, then pressing the arrow
+--  keys does nothing. However, by calling Set_Use_Arrows_Always you can
+--  specify that the arrow keys are always active. If the contents of the entry
+--  field does not match any of the items in the list, then pressing the up or
+--  down arrow key will set the entry field to the last or first item in the
+--  list, respectively.
 -- 
 --  </description>
 --  <screenshot>gtk-combo</screenshot>
@@ -115,8 +116,8 @@ package Gtk.Combo is
    procedure Set_Use_Arrows
       (Self : access Gtk_Combo_Record;
        Val  : Boolean := True);
-   --  Specify if the arrow (cursor) keys can be used to step through the items
-   --  in the list. This is on by default.
+   --  Specify if the arrow (cursor) keys can be used to step through the
+   --  items in the list. This is on by default.
 
    procedure Set_Use_Arrows_Always
       (Self : access Gtk_Combo_Record;
@@ -128,12 +129,12 @@ package Gtk.Combo is
       (Self        : access Gtk_Combo_Record;
        Val         : Boolean := True;
        Ok_If_Empty : Boolean := False);
-   --  Specify whether the value entered in the text entry field must match one
-   --  of the values in the list. If this is set then the user will not be able
-   --  to perform any other action until a valid value has been entered. If an
-   --  empty field is acceptable, the Ok_If_Empty parameter should be True. If
-   --  the value entered must match one of the values in the list, val should be
-   --  True.
+   --  Specify whether the value entered in the text entry field must match
+   --  one of the values in the list. If this is set then the user will not be
+   --  able to perform any other action until a valid value has been entered.
+   --  If an empty field is acceptable, the Ok_If_Empty parameter should be
+   --  True. If the value entered must match one of the values in the list, val
+   --  should be True.
 
    ------------
    -- Fields --

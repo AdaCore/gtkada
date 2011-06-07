@@ -38,11 +38,11 @@
 --  opposed to Gtk_Fixed widgets, a Gtk_Layout does not try to resize itself to
 --  show all its children.
 -- 
---  Starting from GtkAda 2.0, you have to call Set_Size and specify the maximum
---  size of the layout, otherwise children added with Put outside the size
---  defined for the layout will never be visible. One way to do this is to
---  systematically call Set_Size before calling Put, and make sure you specify a
---  size big enough for the layout.
+--  Starting from GtkAda 2.0, you have to call Set_Size and specify the
+--  maximum size of the layout, otherwise children added with Put outside the
+--  size defined for the layout will never be visible. One way to do this is to
+--  systematically call Set_Size before calling Put, and make sure you specify
+--  a size big enough for the layout.
 -- 
 --  </description>
 --  <screenshot>gtk-layout</screenshot>
@@ -190,7 +190,8 @@ package Gtk.Layout is
    --  The following new signals are defined for this widget:
    -- 
    --  "set-scroll-adjustments"
-   --  function Handler (Self : access Gtk_Layout_Record'Class) return none;
+   --  function Handler (Self : access Gtk_Layout_Record'Class) return --
+   --  none;
 
    Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name := "set-scroll-adjustments";
 

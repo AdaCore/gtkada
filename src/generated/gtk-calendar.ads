@@ -39,8 +39,8 @@
 -- 
 --  The selected date can be retrieved from a Gtk_Calendar using Get_Date.
 -- 
---  If performing many 'mark' operations, the calendar can be frozen to prevent
---  flicker, using Freeze, and 'thawed' again using Thaw.
+--  If performing many 'mark' operations, the calendar can be frozen to
+--  prevent flicker, using Freeze, and 'thawed' again using Thaw.
 -- 
 --  </description>
 --  <screenshot>gtk-calendar</screenshot>
@@ -120,8 +120,8 @@ package Gtk.Calendar is
 
    procedure Freeze (Calendar : access Gtk_Calendar_Record);
    pragma Obsolescent;
-   --  Does nothing. Previously locked the display of the calendar until it was
-   --  thawed with Gtk.Calendar.Thaw.
+   --  Does nothing. Previously locked the display of the calendar until it
+   --  was thawed with Gtk.Calendar.Thaw.
    --  Deprecated
 
    procedure Get_Date
@@ -171,9 +171,9 @@ package Gtk.Calendar is
       (Calendar : access Gtk_Calendar_Record;
        Month    : Guint;
        Year     : Guint) return Boolean;
-   --  Shifts the calendar to a different month. Note that this function always
-   --  returns True, and you should ignore the return value. In GTK+ 3, this
-   --  function will not return a value.
+   --  Shifts the calendar to a different month. Note that this function
+   --  always returns True, and you should ignore the return value. In GTK+ 3,
+   --  this function will not return a value.
    --  "month": a month number between 0 and 11.
    --  "year": the year the month is in.
 
@@ -205,9 +205,9 @@ package Gtk.Calendar is
    function Unmark_Day
       (Calendar : access Gtk_Calendar_Record;
        Day      : Guint) return Boolean;
-   --  Removes the visual marker from a particular day. Note that this function
-   --  always returns True, and you should ignore the return value. In GTK+ 3,
-   --  this function will not return a value.
+   --  Removes the visual marker from a particular day. Note that this
+   --  function always returns True, and you should ignore the return value. In
+   --  GTK+ 3, this function will not return a value.
    --  "day": the day number to unmark between 1 and 31.
 
    ----------------
@@ -271,7 +271,8 @@ package Gtk.Calendar is
    --  Name: Year_Property
    --  Type: Gint
    --  Flags: read-write
-   --  The selected year. This property gets initially set to the current year.
+   --  The selected year. This property gets initially set to the current
+   --  year.
 
    Day_Property : constant Glib.Properties.Property_Int;
    Detail_Height_Rows_Property : constant Glib.Properties.Property_Int;
