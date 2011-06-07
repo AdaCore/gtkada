@@ -56,7 +56,6 @@
 --  <group>Obsolescent widgets</group>
 --  <see>Gtk.Combo_Box</see>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;

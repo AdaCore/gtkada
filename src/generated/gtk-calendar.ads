@@ -47,7 +47,6 @@
 --  <group>Selectors</group>
 --  <testgtk>create_calendar.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;

@@ -53,7 +53,6 @@
 --  <group>Drawing</group>
 --  <testgtk>libart_demo.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;       use Glib;
 with Gtk.Widget; use Gtk.Widget;

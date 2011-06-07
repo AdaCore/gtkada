@@ -34,7 +34,6 @@
 --  </description>
 --  <group>Obsolescent widgets</group>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;

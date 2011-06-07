@@ -44,7 +44,6 @@
 --  <group>Ornaments</group>
 --  <testgtk>create_frame.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;

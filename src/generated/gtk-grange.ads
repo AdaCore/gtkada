@@ -35,7 +35,6 @@
 --  <screenshot>gtk-range</screenshot>
 --  <testgtk>create_range.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Glib;            use Glib;

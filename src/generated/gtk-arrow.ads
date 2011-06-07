@@ -45,7 +45,6 @@
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;      use Glib;
 with Gtk.Enums; use Gtk.Enums;

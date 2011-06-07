@@ -33,7 +33,6 @@
 --  </description>
 --  <group>Obsolescent widgets</group>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Bitmap;   use Gdk.Bitmap;
 with Gdk.Pixmap;   use Gdk.Pixmap;

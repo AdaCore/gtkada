@@ -79,7 +79,6 @@
 --  <group>Display widgets</group>
 --  <testgtk>create_label.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;

@@ -40,7 +40,6 @@
 --  <screenshot>gtk-image</screenshot>
 --  <group>Display widgets</group>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;
 with Gdk.Bitmap;       use Gdk.Bitmap;

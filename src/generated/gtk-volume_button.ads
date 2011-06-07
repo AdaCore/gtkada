@@ -34,7 +34,6 @@
 -- 
 --  </description>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Gtk.Scale_Button; use Gtk.Scale_Button;

@@ -56,7 +56,6 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_box.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;

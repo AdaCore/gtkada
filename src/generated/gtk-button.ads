@@ -41,7 +41,6 @@
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_buttons.adb</testgtk>
 
-pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
