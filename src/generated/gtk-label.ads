@@ -148,13 +148,13 @@ package Gtk.Label is
       (Self  : access Gtk_Label_Record;
        Attrs : out Pango.Attributes.Pango_Attr_List);
    --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
-   --  applied to the label text. <note><para>The attributes set with this
-   --  function will be applied and merged with any other attributes previously
-   --  effected by way of the Gtk.Label.Gtk_Label:use-underline or
-   --  Gtk.Label.Gtk_Label:use-markup properties. While it is not recommended
-   --  to mix markup strings with manually set attributes, if you must; know
-   --  that the attributes will be applied to the label after the markup string
-   --  is parsed.</para></note>
+   --  applied to the label text.
+   --  Note: The attributes set with this function will be applied and merged
+   --  with any other attributes previously effected by way of the
+   --  Gtk.Label.Gtk_Label:use-underline or Gtk.Label.Gtk_Label:use-markup
+   --  properties. While it is not recommended to mix markup strings with
+   --  manually set attributes, if you must; know that the attributes will be
+   --  applied to the label after the markup string is parsed.
    --  "attrs": a Pango.Attributes.Pango_Attr_List
 
    function Get_Current_Uri
