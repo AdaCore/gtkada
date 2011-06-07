@@ -788,6 +788,7 @@ gtkada = GtkAda(sys.argv[2])
 # Contains "GIR names"
 binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Bin", "Box", "Button", "ButtonBox",
+           "EventBox",
            "Frame", "Range", "HBox", "HButtonBox", "HPaned", "HScale",
            "Label", "Layout", "List",
            "Misc", "Paned", "Pixmap", "Progress", "Scale",
