@@ -50,6 +50,34 @@ the various spacings that can be set for a button:
       </method>
    </package>
 
+   <!-- ################################################
+        Gtk.EventBox
+        ################################################-->
+
+   <package id="Gtk.Event_Box">
+      <doc group="Layout Containers">
+This widget is a container that catches events for its child when its
+child does not have its own window (like a Gtk_Scrolled_Window or a
+Gtk_Label for instance).
+Some widgets in GtkAda do not have their own window, and thus can not
+directly get events from the server. The Gtk_Event_Box widget can be
+used to force its child to receive events anyway.
+
+For instance, this widget is used internally in a Gtk_Combo_Box so that
+the application can change the cursor when the mouse is in the popup
+window. In that case, it contains a frame, that itself contains the
+scrolled window of the popup.
+      </doc>
+     <parameter name="self" ada="Event_Box"/>
+     <method id="gtk_event_box_new">
+         <doc>
+Create a new box.
+
+The box's child can then be set using the Gtk.Container.Add function.
+         </doc>
+     </method>
+   </package>
+
    <!-- ###################################################
         Gtk.Frame
         ###################################################-->
