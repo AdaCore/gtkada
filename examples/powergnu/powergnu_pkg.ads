@@ -21,7 +21,7 @@ package Powergnu_Pkg is
       Vbox1 : Gtk_Vbox;
       Main_Frame : Gtk_Frame;
       Drawing_Area : Image_Drawing;
-      Statusbar1 : Gtk_Statusbar;
+      Statusbar1 : Gtk_Status_Bar;
    end record;
    type Powergnu_Access is access all Powergnu_Record'Class;
 

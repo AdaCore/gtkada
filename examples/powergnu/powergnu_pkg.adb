@@ -1,5 +1,4 @@
 with Gtk; use Gtk;
-with Gdk.Types;       use Gdk.Types;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtkada.Handlers; use Gtkada.Handlers;
 with Powergnu_Pkg.Callbacks; use Powergnu_Pkg.Callbacks;
@@ -17,7 +16,7 @@ procedure Initialize (Powergnu : access Powergnu_Record'Class) is
    pragma Suppress (All_Checks);
 begin
    Gtk.Window.Initialize (Powergnu, Window_Toplevel);
-   Set_Events (Powergnu, 
+   Set_Events (Powergnu,
      Key_Press_Mask);
    Return_Callback.Connect
      (Powergnu, "delete_event", On_Powergnu_Delete_Event'Access);

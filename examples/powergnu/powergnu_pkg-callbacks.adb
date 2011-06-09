@@ -19,6 +19,7 @@ package body Powergnu_Pkg.Callbacks is
      (Object : access Gtk_Widget_Record'Class;
       Params : Gtk.Arguments.Gtk_Args) return Boolean
    is
+      pragma Unreferenced (Object, Params);
    begin
       Main_Quit;
       return False;

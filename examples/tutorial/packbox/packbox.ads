@@ -15,7 +15,7 @@ package Packbox is
       Spacing     : Gint;
       Expand      : Boolean;
       Fill        : Boolean;
-      Padding     : Gint) return Gtk.Box.Gtk_Hbox;
+      Padding     : Guint) return Gtk.Box.Gtk_Hbox;
    --  Make a new hbox filled with button-labels. Arguments for the
    --  variables we're interested are passed in to this function.
    --  We do not show the box, but do show everything inside.

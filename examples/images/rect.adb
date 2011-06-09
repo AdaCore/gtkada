@@ -43,6 +43,8 @@ with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
 with Gtkada.Handlers;  use Gtkada.Handlers;
 
+with Cairo.Region;
+
 procedure Rect is
    ----------------------
    -- Global variables --
@@ -94,6 +96,7 @@ procedure Rect is
        Area : Gdk_Rectangle := Full_Area)
    is
       A : Gdk_Rectangle := Area;
+      use type Cairo.Region.Cairo_Rectangle_Int;
    begin
       --  If the caller wants to redraw the full image...
 
@@ -299,5 +302,5 @@ begin
 
    --  Start the main loop
 
-   Main; 
+   Main;
 end Rect;

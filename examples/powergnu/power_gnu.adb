@@ -97,6 +97,7 @@ package body Power_GNU is
    function Expose
      (Draw  : access Image_Drawing_Record'Class;
       Event : Gdk_Event) return Boolean is
+      pragma Unreferenced (Event);
    begin
       if Draw.Pix = Null_Pixbuf then
          return False;
@@ -153,7 +154,7 @@ package body Power_GNU is
    ---------------
 
    procedure Set_Image
-     (Draw  : in out Image_Drawing;
+     (Draw  : Image_Drawing;
       Image : String)
    is
       Error : GError;

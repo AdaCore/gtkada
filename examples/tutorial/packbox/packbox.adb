@@ -18,7 +18,7 @@ package body Packbox is
       Spacing     : Gint;
       Expand      : Boolean;
       Fill        : Boolean;
-      Padding     : Gint) return Gtk.Box.Gtk_Hbox
+      Padding     : Guint) return Gtk.Box.Gtk_Hbox
    is
       Box    : Gtk_Box;
       Button : Gtk_Button;
@@ -59,7 +59,7 @@ package body Packbox is
       Pack_Start (Box, Button, Expand, Fill, Padding);
       Show (Button);
 
-      Gtk_New (Button, "Padding => " & Gint'Image (Padding) & ");");
+      Gtk_New (Button, "Padding => " & Guint'Image (Padding) & ");");
       Pack_Start (Box, Button, Expand, Fill, Padding);
       Show (Button);
 

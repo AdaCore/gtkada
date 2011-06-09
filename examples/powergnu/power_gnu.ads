@@ -52,7 +52,7 @@ package Power_GNU is
      (Draw : access Image_Drawing_Record'Class);
 
    procedure Set_Image
-     (Draw  : in out Image_Drawing;
+     (Draw  : Image_Drawing;
       Image : String);
    --  Set the current image to display in Draw
    --  Image is the file name of the image
