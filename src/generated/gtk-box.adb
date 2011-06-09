@@ -42,13 +42,13 @@ package body Gtk.Box is
    ------------------
 
    procedure Gtk_New_Hbox
-      (Self        : out Gtk_Hbox;
+      (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is
    begin
-      Self := new Gtk_Hbox_Record;
-      Gtk.Box.Initialize_Hbox (Self, Homogeneous, Spacing);
+      Box := new Gtk_Hbox_Record;
+      Gtk.Box.Initialize_Hbox (Box, Homogeneous, Spacing);
    end Gtk_New_Hbox;
 
    ------------------
@@ -56,13 +56,13 @@ package body Gtk.Box is
    ------------------
 
    procedure Gtk_New_Vbox
-      (Self        : out Gtk_Vbox;
+      (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is
    begin
-      Self := new Gtk_Vbox_Record;
-      Gtk.Box.Initialize_Vbox (Self, Homogeneous, Spacing);
+      Box := new Gtk_Vbox_Record;
+      Gtk.Box.Initialize_Vbox (Box, Homogeneous, Spacing);
    end Gtk_New_Vbox;
 
    ---------------------
@@ -70,7 +70,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Hbox
-      (Self        : access Gtk_Hbox_Record'Class;
+      (Box         : access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is
@@ -79,7 +79,7 @@ package body Gtk.Box is
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
-      Set_Object (Self, Internal (Boolean'Pos (Homogeneous), Spacing));
+      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
    end Initialize_Hbox;
 
    ---------------------
@@ -87,7 +87,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Vbox
-      (Self        : access Gtk_Vbox_Record'Class;
+      (Box         : access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is
@@ -96,7 +96,7 @@ package body Gtk.Box is
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");
    begin
-      Set_Object (Self, Internal (Boolean'Pos (Homogeneous), Spacing));
+      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
    end Initialize_Vbox;
 
    ---------------
@@ -104,38 +104,38 @@ package body Gtk.Box is
    ---------------
 
    function Get_Child
-      (Self : access Gtk_Box_Record;
-       Num  : Gint) return Gtk.Widget.Gtk_Widget
+      (Box : access Gtk_Box_Record;
+       Num : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-         (Self : System.Address;
-          Num  : Gint) return System.Address;
+         (Box : System.Address;
+          Num : Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self), Num), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box), Num), Stub));
    end Get_Child;
 
    ---------------------
    -- Get_Homogeneous --
    ---------------------
 
-   function Get_Homogeneous (Self : access Gtk_Box_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Homogeneous (Box : access Gtk_Box_Record) return Boolean is
+      function Internal (Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_box_get_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Box)));
    end Get_Homogeneous;
 
    -----------------
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Self : access Gtk_Box_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Spacing (Box : access Gtk_Box_Record) return Gint is
+      function Internal (Box : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_box_get_spacing");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Box));
    end Get_Spacing;
 
    --------------
@@ -165,13 +165,13 @@ package body Gtk.Box is
    -----------------------
 
    procedure Pack_End_Defaults
-      (Self   : access Gtk_Box_Record;
+      (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Self : System.Address; Widget : System.Address);
+      procedure Internal (Box : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_end_defaults");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Widget)));
    end Pack_End_Defaults;
 
    ----------------
@@ -201,13 +201,13 @@ package body Gtk.Box is
    -------------------------
 
    procedure Pack_Start_Defaults
-      (Self   : access Gtk_Box_Record;
+      (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Self : System.Address; Widget : System.Address);
+      procedure Internal (Box : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_start_defaults");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Widget)));
    end Pack_Start_Defaults;
 
    -------------------------
@@ -215,7 +215,7 @@ package body Gtk.Box is
    -------------------------
 
    procedure Query_Child_Packing
-      (Self      : access Gtk_Box_Record;
+      (Box       : access Gtk_Box_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
@@ -223,7 +223,7 @@ package body Gtk.Box is
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type)
    is
       procedure Internal
-         (Self      : System.Address;
+         (Box       : System.Address;
           Child     : System.Address;
           Expand    : out Integer;
           Fill      : out Integer;
@@ -234,7 +234,7 @@ package body Gtk.Box is
       Tmp_Fill      : Integer;
       Tmp_Pack_Type : Integer;
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Child)), Tmp_Expand, Tmp_Fill, Padding, Tmp_Pack_Type);
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Tmp_Expand, Tmp_Fill, Padding, Tmp_Pack_Type);
       Expand := Boolean'Val (Tmp_Expand);
       Fill := Boolean'Val (Tmp_Fill);
       Pack_Type := Gtk.Enums.Gtk_Pack_Type'Val (Tmp_Pack_Type);
@@ -245,17 +245,17 @@ package body Gtk.Box is
    -------------------
 
    procedure Reorder_Child
-      (Self     : access Gtk_Box_Record;
+      (Box      : access Gtk_Box_Record;
        Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint)
    is
       procedure Internal
-         (Self     : System.Address;
+         (Box      : System.Address;
           Child    : System.Address;
           Position : Gint);
       pragma Import (C, Internal, "gtk_box_reorder_child");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Child)), Position);
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Position);
    end Reorder_Child;
 
    -----------------------
@@ -263,7 +263,7 @@ package body Gtk.Box is
    -----------------------
 
    procedure Set_Child_Packing
-      (Self      : access Gtk_Box_Record;
+      (Box       : access Gtk_Box_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
@@ -271,7 +271,7 @@ package body Gtk.Box is
        Pack_Type : Gtk.Enums.Gtk_Pack_Type)
    is
       procedure Internal
-         (Self      : System.Address;
+         (Box       : System.Address;
           Child     : System.Address;
           Expand    : Integer;
           Fill      : Integer;
@@ -279,7 +279,7 @@ package body Gtk.Box is
           Pack_Type : Integer);
       pragma Import (C, Internal, "gtk_box_set_child_packing");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
    end Set_Child_Packing;
 
    ---------------------
@@ -287,24 +287,24 @@ package body Gtk.Box is
    ---------------------
 
    procedure Set_Homogeneous
-      (Self        : access Gtk_Box_Record;
+      (Box         : access Gtk_Box_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Self : System.Address; Homogeneous : Integer);
+      procedure Internal (Box : System.Address; Homogeneous : Integer);
       pragma Import (C, Internal, "gtk_box_set_homogeneous");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Homogeneous));
+      Internal (Get_Object (Box), Boolean'Pos (Homogeneous));
    end Set_Homogeneous;
 
    -----------------
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (Self : access Gtk_Box_Record; Spacing : Gint) is
-      procedure Internal (Self : System.Address; Spacing : Gint);
+   procedure Set_Spacing (Box : access Gtk_Box_Record; Spacing : Gint) is
+      procedure Internal (Box : System.Address; Spacing : Gint);
       pragma Import (C, Internal, "gtk_box_set_spacing");
    begin
-      Internal (Get_Object (Self), Spacing);
+      Internal (Get_Object (Box), Spacing);
    end Set_Spacing;
 
 end Gtk.Box;

@@ -325,6 +325,7 @@ on how all the parameters for the boxes work.
          <parameter name="fill" default="True"/>
          <parameter name="padding" default="0"/>
       </method>
+      <parameter name="self" ada="Box"/>
 
       <extra>
          <gir:method c:identifier="ada_box_get_child" name="Get_Child"
@@ -348,6 +349,7 @@ on how all the parameters for the boxes work.
          <parameter name="homogeneous" default="False"/>
          <parameter name="spacing" default="0"/>
       </method>
+      <parameter name="self" ada="Box"/>
       <method id="gtk_vbox_get_type" ada="Get_Vbox_Type" />
    </package>
 
@@ -357,6 +359,7 @@ on how all the parameters for the boxes work.
          <parameter name="homogeneous" default="False"/>
          <parameter name="spacing" default="0"/>
       </method>
+      <parameter name="self" ada="Box"/>
       <method id="gtk_hbox_get_type" ada="Get_Hbox_Type" />
    </package>
 

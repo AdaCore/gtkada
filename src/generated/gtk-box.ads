@@ -82,11 +82,11 @@ package Gtk.Box is
    pragma Import (C, Get_Type, "gtk_box_get_type");
 
    procedure Gtk_New_Hbox
-      (Self        : out Gtk_Hbox;
+      (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    procedure Initialize_Hbox
-      (Self        : access Gtk_Hbox_Record'Class;
+      (Box         : access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Hbox.
@@ -98,11 +98,11 @@ package Gtk.Box is
    pragma Import (C, Get_Hbox_Type, "gtk_hbox_get_type");
 
    procedure Gtk_New_Vbox
-      (Self        : out Gtk_Vbox;
+      (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    procedure Initialize_Vbox
-      (Self        : access Gtk_Vbox_Record'Class;
+      (Box         : access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Vbox.
@@ -117,17 +117,17 @@ package Gtk.Box is
    -- Methods --
    -------------
 
-   function Get_Homogeneous (Self : access Gtk_Box_Record) return Boolean;
+   function Get_Homogeneous (Box : access Gtk_Box_Record) return Boolean;
    procedure Set_Homogeneous
-      (Self        : access Gtk_Box_Record;
+      (Box         : access Gtk_Box_Record;
        Homogeneous : Boolean);
    --  Sets the Gtk.Box.Gtk_Box:homogeneous property of Box, controlling
    --  whether or not all children of Box are given equal space in the box.
    --  "homogeneous": a boolean value, True to create equal allotments, %FALSE
    --  for variable allotments
 
-   function Get_Spacing (Self : access Gtk_Box_Record) return Gint;
-   procedure Set_Spacing (Self : access Gtk_Box_Record; Spacing : Gint);
+   function Get_Spacing (Box : access Gtk_Box_Record) return Gint;
+   procedure Set_Spacing (Box : access Gtk_Box_Record; Spacing : Gint);
    --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number
    --  of pixels to place between children of Box.
    --  "spacing": the number of pixels to put between children
@@ -156,7 +156,7 @@ package Gtk.Box is
    --  reference ends of Box, then Padding pixels are also put between
 
    procedure Pack_End_Defaults
-      (Self   : access Gtk_Box_Record;
+      (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    pragma Obsolescent;
    --  Adds Widget to Box, packed with reference to the end of Box. The child
@@ -190,7 +190,7 @@ package Gtk.Box is
    --  reference ends of Box, then Padding pixels are also put between
 
    procedure Pack_Start_Defaults
-      (Self   : access Gtk_Box_Record;
+      (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    pragma Obsolescent;
    --  Adds Widget to Box, packed with reference to the start of Box. The
@@ -203,14 +203,14 @@ package Gtk.Box is
    --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
    procedure Query_Child_Packing
-      (Self      : access Gtk_Box_Record;
+      (Box       : access Gtk_Box_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
        Padding   : out Guint;
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
    procedure Set_Child_Packing
-      (Self      : access Gtk_Box_Record;
+      (Box       : access Gtk_Box_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
@@ -225,7 +225,7 @@ package Gtk.Box is
    --  property
 
    procedure Reorder_Child
-      (Self     : access Gtk_Box_Record;
+      (Box      : access Gtk_Box_Record;
        Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint);
    --  Moves Child to a new Position in the list of Box children. The list is
@@ -241,8 +241,8 @@ package Gtk.Box is
    --  starting from 0. If negative, indicates the end of the list
 
    function Get_Child
-      (Self : access Gtk_Box_Record;
-       Num  : Gint) return Gtk.Widget.Gtk_Widget;
+      (Box : access Gtk_Box_Record;
+       Num : Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
 
