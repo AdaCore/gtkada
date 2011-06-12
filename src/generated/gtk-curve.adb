@@ -70,32 +70,32 @@ package body Gtk.Curve is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Curve) is
+   procedure Gtk_New (Curve : out Gtk_Curve) is
    begin
-      Self := new Gtk_Curve_Record;
-      Gtk.Curve.Initialize (Self);
+      Curve := new Gtk_Curve_Record;
+      Gtk.Curve.Initialize (Curve);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Curve_Record'Class) is
+   procedure Initialize (Curve : access Gtk_Curve_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_curve_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Curve, Internal);
    end Initialize;
 
    -----------
    -- Reset --
    -----------
 
-   procedure Reset (Self : access Gtk_Curve_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Reset (Curve : access Gtk_Curve_Record) is
+      procedure Internal (Curve : System.Address);
       pragma Import (C, Internal, "gtk_curve_reset");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Curve));
    end Reset;
 
    --------------------
@@ -103,24 +103,24 @@ package body Gtk.Curve is
    --------------------
 
    procedure Set_Curve_Type
-      (Self     : access Gtk_Curve_Record;
+      (Curve    : access Gtk_Curve_Record;
        The_Type : Gtk.Enums.Gtk_Curve_Type)
    is
-      procedure Internal (Self : System.Address; The_Type : Integer);
+      procedure Internal (Curve : System.Address; The_Type : Integer);
       pragma Import (C, Internal, "gtk_curve_set_curve_type");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Curve_Type'Pos (The_Type));
+      Internal (Get_Object (Curve), Gtk.Enums.Gtk_Curve_Type'Pos (The_Type));
    end Set_Curve_Type;
 
    ---------------
    -- Set_Gamma --
    ---------------
 
-   procedure Set_Gamma (Self : access Gtk_Curve_Record; Gamma : Gfloat) is
-      procedure Internal (Self : System.Address; Gamma : Gfloat);
+   procedure Set_Gamma (Curve : access Gtk_Curve_Record; Gamma : Gfloat) is
+      procedure Internal (Curve : System.Address; Gamma : Gfloat);
       pragma Import (C, Internal, "gtk_curve_set_gamma");
    begin
-      Internal (Get_Object (Self), Gamma);
+      Internal (Get_Object (Curve), Gamma);
    end Set_Gamma;
 
    ---------------
@@ -128,21 +128,21 @@ package body Gtk.Curve is
    ---------------
 
    procedure Set_Range
-      (Self  : access Gtk_Curve_Record;
+      (Curve : access Gtk_Curve_Record;
        Min_X : Gfloat;
        Max_X : Gfloat;
        Min_Y : Gfloat;
        Max_Y : Gfloat)
    is
       procedure Internal
-         (Self  : System.Address;
+         (Curve : System.Address;
           Min_X : Gfloat;
           Max_X : Gfloat;
           Min_Y : Gfloat;
           Max_Y : Gfloat);
       pragma Import (C, Internal, "gtk_curve_set_range");
    begin
-      Internal (Get_Object (Self), Min_X, Max_X, Min_Y, Max_Y);
+      Internal (Get_Object (Curve), Min_X, Max_X, Min_Y, Max_Y);
    end Set_Range;
 
 end Gtk.Curve;

@@ -51,8 +51,8 @@ package Gtk.List is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_List);
-   procedure Initialize (Self : access Gtk_List_Record'Class);
+   procedure Gtk_New (List : out Gtk_List);
+   procedure Initialize (List : access Gtk_List_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_list_get_type");
@@ -62,88 +62,88 @@ package Gtk.List is
    -------------
 
    procedure Append_Items
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Items : Gtk.Widget.Widget_List.GList);
 
    function Child_Position
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
 
    procedure Clear_Items
-      (Self    : access Gtk_List_Record;
+      (List    : access Gtk_List_Record;
        Start   : Gint;
        The_End : Gint);
    --  Remove some items from the list. If The_End is negative, it means the
    --  end of the list. The first item in the list has an index of 0
 
-   procedure End_Drag_Selection (Self : access Gtk_List_Record);
+   procedure End_Drag_Selection (List : access Gtk_List_Record);
 
-   procedure End_Selection (Self : access Gtk_List_Record);
+   procedure End_Selection (List : access Gtk_List_Record);
 
    procedure Extend_Selection
-      (Self                 : access Gtk_List_Record;
+      (List                 : access Gtk_List_Record;
        Scroll_Type          : Gtk.Enums.Gtk_Scroll_Type;
        Position             : Gfloat;
        Auto_Start_Selection : Boolean);
 
    procedure Insert_Items
-      (Self     : access Gtk_List_Record;
+      (List     : access Gtk_List_Record;
        Items    : Gtk.Widget.Widget_List.GList;
        Position : Gint);
 
    procedure Prepend_Items
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Items : Gtk.Widget.Widget_List.GList);
 
    procedure Remove_Items
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Items : Gtk.Widget.Widget_List.GList);
 
    procedure Remove_Items_No_Unref
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Items : Gtk.Widget.Widget_List.GList);
 
    procedure Scroll_Horizontal
-      (Self        : access Gtk_List_Record;
+      (List        : access Gtk_List_Record;
        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type;
        Position    : Gfloat);
 
    procedure Scroll_Vertical
-      (Self        : access Gtk_List_Record;
+      (List        : access Gtk_List_Record;
        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type;
        Position    : Gfloat);
 
-   procedure Select_All (Self : access Gtk_List_Record);
+   procedure Select_All (List : access Gtk_List_Record);
 
    procedure Select_Child
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Child : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Select_Item (Self : access Gtk_List_Record; Item : Gint);
+   procedure Select_Item (List : access Gtk_List_Record; Item : Gint);
 
    procedure Set_Selection_Mode
-      (Self : access Gtk_List_Record;
+      (List : access Gtk_List_Record;
        Mode : Gtk.Enums.Gtk_Selection_Mode);
 
-   procedure Start_Selection (Self : access Gtk_List_Record);
+   procedure Start_Selection (List : access Gtk_List_Record);
 
-   procedure Toggle_Add_Mode (Self : access Gtk_List_Record);
+   procedure Toggle_Add_Mode (List : access Gtk_List_Record);
 
-   procedure Toggle_Focus_Row (Self : access Gtk_List_Record);
+   procedure Toggle_Focus_Row (List : access Gtk_List_Record);
 
    procedure Toggle_Row
-      (Self : access Gtk_List_Record;
+      (List : access Gtk_List_Record;
        Item : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Undo_Selection (Self : access Gtk_List_Record);
+   procedure Undo_Selection (List : access Gtk_List_Record);
 
-   procedure Unselect_All (Self : access Gtk_List_Record);
+   procedure Unselect_All (List : access Gtk_List_Record);
 
    procedure Unselect_Child
-      (Self  : access Gtk_List_Record;
+      (List  : access Gtk_List_Record;
        Child : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Unselect_Item (Self : access Gtk_List_Record; Item : Gint);
+   procedure Unselect_Item (List : access Gtk_List_Record; Item : Gint);
 
    ----------------------
    -- GtkAda additions --

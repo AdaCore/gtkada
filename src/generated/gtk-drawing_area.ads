@@ -66,8 +66,9 @@ package Gtk.Drawing_Area is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Drawing_Area);
-   procedure Initialize (Self : access Gtk_Drawing_Area_Record'Class);
+   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
+   procedure Initialize
+      (Drawing_Area : access Gtk_Drawing_Area_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
@@ -77,9 +78,9 @@ package Gtk.Drawing_Area is
    -------------
 
    procedure Size
-      (Self   : access Gtk_Drawing_Area_Record;
-       Width  : Gint;
-       Height : Gint);
+      (Drawing_Area : access Gtk_Drawing_Area_Record;
+       Width        : Gint;
+       Height       : Gint);
    pragma Obsolescent;
    --  Request a new size for the area. This queues a resize request for the
    --  area.

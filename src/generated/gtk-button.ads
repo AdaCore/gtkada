@@ -59,10 +59,10 @@ package Gtk.Button is
    ------------------
 
    procedure Gtk_New_From_Stock
-      (Self     : out Gtk_Button;
+      (Button   : out Gtk_Button;
        Stock_Id : UTF8_String);
    procedure Initialize_From_Stock
-      (Self     : access Gtk_Button_Record'Class;
+      (Button   : access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
    --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
@@ -70,17 +70,17 @@ package Gtk.Button is
    --  a mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
    --  "stock_id": the name of the stock item
 
-   procedure Gtk_New (Self : out Gtk_Button; Label : UTF8_String := "");
+   procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
    procedure Initialize
-      (Self  : access Gtk_Button_Record'Class;
-       Label : UTF8_String := "");
+      (Button : access Gtk_Button_Record'Class;
+       Label  : UTF8_String := "");
 
    procedure Gtk_New_With_Mnemonic
-      (Self  : out Gtk_Button;
-       Label : UTF8_String);
+      (Button : out Gtk_Button;
+       Label  : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Self  : access Gtk_Button_Record'Class;
-       Label : UTF8_String);
+      (Button : access Gtk_Button_Record'Class;
+       Label  : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
    --  in Label are preceded by an underscore, they are underlined. If you need
    --  a literal underscore character in a label, use '__' (two underscores).
@@ -96,16 +96,16 @@ package Gtk.Button is
    -- Methods --
    -------------
 
-   procedure Clicked (Self : access Gtk_Button_Record);
+   procedure Clicked (Button : access Gtk_Button_Record);
 
-   procedure Enter (Self : access Gtk_Button_Record);
+   procedure Enter (Button : access Gtk_Button_Record);
 
    procedure Get_Alignment
-      (Self   : access Gtk_Button_Record;
+      (Button : access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
    procedure Set_Alignment
-      (Self   : access Gtk_Button_Record;
+      (Button : access Gtk_Button_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Sets the alignment of the child. This property has no effect unless the
@@ -117,15 +117,15 @@ package Gtk.Button is
    --  is bottom aligned
 
    function Get_Event_Window
-      (Self : access Gtk_Button_Record) return Gdk.Window.Gdk_Window;
+      (Button : access Gtk_Button_Record) return Gdk.Window.Gdk_Window;
    --  Returns the button's event window if it is realized, null otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22
 
    function Get_Focus_On_Click
-      (Self : access Gtk_Button_Record) return Boolean;
+      (Button : access Gtk_Button_Record) return Boolean;
    procedure Set_Focus_On_Click
-      (Self           : access Gtk_Button_Record;
+      (Button         : access Gtk_Button_Record;
        Focus_On_Click : Boolean);
    --  Sets whether the button will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
@@ -136,10 +136,10 @@ package Gtk.Button is
    --  mouse
 
    function Get_Image
-      (Self : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget;
+      (Button : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Image
-      (Self  : access Gtk_Button_Record;
-       Image : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Button : access Gtk_Button_Record;
+       Image  : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set the image of Button to the given widget. Note that it depends on
    --  the Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the
    --  image will be displayed or not, you don't have to call Gtk.Widget.Show
@@ -148,51 +148,51 @@ package Gtk.Button is
    --  "image": a widget to set as the image for the button
 
    function Get_Image_Position
-      (Self : access Gtk_Button_Record) return Gtk.Enums.Gtk_Position_Type;
+      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Position_Type;
    procedure Set_Image_Position
-      (Self     : access Gtk_Button_Record;
+      (Button   : access Gtk_Button_Record;
        Position : Gtk.Enums.Gtk_Position_Type);
    --  Sets the position of the image relative to the text inside the button.
    --  Since: gtk+ 2.10
    --  "position": the position
 
-   function Get_Label (Self : access Gtk_Button_Record) return UTF8_String;
+   function Get_Label (Button : access Gtk_Button_Record) return UTF8_String;
    procedure Set_Label
-      (Self  : access Gtk_Button_Record;
-       Label : UTF8_String);
+      (Button : access Gtk_Button_Record;
+       Label  : UTF8_String);
    --  Sets the text of the label of the button to Str. This text is also used
    --  to select the stock item if Gtk.Button.Set_Use_Stock is used. This will
    --  also clear any previously set labels.
    --  "label": a string
 
    function Get_Relief
-      (Self : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
+      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
    procedure Set_Relief
-      (Self     : access Gtk_Button_Record;
+      (Button   : access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style);
 
-   function Get_Use_Stock (Self : access Gtk_Button_Record) return Boolean;
+   function Get_Use_Stock (Button : access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Stock
-      (Self      : access Gtk_Button_Record;
+      (Button    : access Gtk_Button_Record;
        Use_Stock : Boolean);
    --  If True, the label set on the button is used as a stock id to select
    --  the stock item for the button.
    --  "use_stock": True if the button should use a stock item
 
    function Get_Use_Underline
-      (Self : access Gtk_Button_Record) return Boolean;
+      (Button : access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Underline
-      (Self          : access Gtk_Button_Record;
+      (Button        : access Gtk_Button_Record;
        Use_Underline : Boolean);
    --  If true, an underline in the text of the button label indicates the
    --  next character should be used for the mnemonic accelerator key.
    --  "use_underline": True if underlines in the text indicate mnemonics
 
-   procedure Leave (Self : access Gtk_Button_Record);
+   procedure Leave (Button : access Gtk_Button_Record);
 
-   procedure Pressed (Self : access Gtk_Button_Record);
+   procedure Pressed (Button : access Gtk_Button_Record);
 
-   procedure Released (Self : access Gtk_Button_Record);
+   procedure Released (Button : access Gtk_Button_Record);
 
    ----------------
    -- Properties --

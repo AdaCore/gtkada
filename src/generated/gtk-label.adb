@@ -42,20 +42,23 @@ package body Gtk.Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Label; Str : UTF8_String := "") is
+   procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "") is
    begin
-      Self := new Gtk_Label_Record;
-      Gtk.Label.Initialize (Self, Str);
+      Label := new Gtk_Label_Record;
+      Gtk.Label.Initialize (Label, Str);
    end Gtk_New;
 
    ---------------------------
    -- Gtk_New_With_Mnemonic --
    ---------------------------
 
-   procedure Gtk_New_With_Mnemonic (Self : out Gtk_Label; Str : UTF8_String) is
+   procedure Gtk_New_With_Mnemonic
+      (Label : out Gtk_Label;
+       Str   : UTF8_String)
+   is
    begin
-      Self := new Gtk_Label_Record;
-      Gtk.Label.Initialize_With_Mnemonic (Self, Str);
+      Label := new Gtk_Label_Record;
+      Gtk.Label.Initialize_With_Mnemonic (Label, Str);
    end Gtk_New_With_Mnemonic;
 
    ----------------
@@ -63,8 +66,8 @@ package body Gtk.Label is
    ----------------
 
    procedure Initialize
-      (Self : access Gtk_Label_Record'Class;
-       Str  : UTF8_String := "")
+      (Label : access Gtk_Label_Record'Class;
+       Str   : UTF8_String := "")
    is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
@@ -74,7 +77,7 @@ package body Gtk.Label is
    begin
       Tmp_Return := Internal (Tmp_Str);
       Free (Tmp_Str);
-      Set_Object (Self, Tmp_Return);
+      Set_Object (Label, Tmp_Return);
    end Initialize;
 
    ------------------------------
@@ -82,8 +85,8 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Self : access Gtk_Label_Record'Class;
-       Str  : UTF8_String)
+      (Label : access Gtk_Label_Record'Class;
+       Str   : UTF8_String)
    is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
@@ -93,18 +96,18 @@ package body Gtk.Label is
    begin
       Tmp_Return := Internal (Tmp_Str);
       Free (Tmp_Str);
-      Set_Object (Self, Tmp_Return);
+      Set_Object (Label, Tmp_Return);
    end Initialize_With_Mnemonic;
 
    ---------------
    -- Get_Angle --
    ---------------
 
-   function Get_Angle (Self : access Gtk_Label_Record) return Gdouble is
-      function Internal (Self : System.Address) return Gdouble;
+   function Get_Angle (Label : access Gtk_Label_Record) return Gdouble is
+      function Internal (Label : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_label_get_angle");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Label));
    end Get_Angle;
 
    --------------------
@@ -112,14 +115,14 @@ package body Gtk.Label is
    --------------------
 
    function Get_Attributes
-      (Self : access Gtk_Label_Record)
+      (Label : access Gtk_Label_Record)
        return Pango.Attributes.Pango_Attr_List
    is
       function Internal
-         (Self : System.Address) return Pango.Attributes.Pango_Attr_List;
+         (Label : System.Address) return Pango.Attributes.Pango_Attr_List;
       pragma Import (C, Internal, "gtk_label_get_attributes");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Label));
    end Get_Attributes;
 
    ---------------------
@@ -127,13 +130,13 @@ package body Gtk.Label is
    ---------------------
 
    function Get_Current_Uri
-      (Self : access Gtk_Label_Record) return UTF8_String
+      (Label : access Gtk_Label_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_current_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
    end Get_Current_Uri;
 
    -------------------
@@ -141,13 +144,13 @@ package body Gtk.Label is
    -------------------
 
    function Get_Ellipsize
-      (Self : access Gtk_Label_Record)
+      (Label : access Gtk_Label_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_ellipsize");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Self)));
+      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Label)));
    end Get_Ellipsize;
 
    -----------------
@@ -155,24 +158,24 @@ package body Gtk.Label is
    -----------------
 
    function Get_Justify
-      (Self : access Gtk_Label_Record) return Gtk.Enums.Gtk_Justification
+      (Label : access Gtk_Label_Record) return Gtk.Enums.Gtk_Justification
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_justify");
    begin
-      return Gtk.Enums.Gtk_Justification'Val (Internal (Get_Object (Self)));
+      return Gtk.Enums.Gtk_Justification'Val (Internal (Get_Object (Label)));
    end Get_Justify;
 
    ---------------
    -- Get_Label --
    ---------------
 
-   function Get_Label (Self : access Gtk_Label_Record) return UTF8_String is
+   function Get_Label (Label : access Gtk_Label_Record) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
    end Get_Label;
 
    ----------------
@@ -180,13 +183,13 @@ package body Gtk.Label is
    ----------------
 
    function Get_Layout
-      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Layout
+      (Label : access Gtk_Label_Record) return Pango.Layout.Pango_Layout
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_layout");
       Stub : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Label)), Stub));
    end Get_Layout;
 
    ------------------------
@@ -194,25 +197,28 @@ package body Gtk.Label is
    ------------------------
 
    procedure Get_Layout_Offsets
-      (Self : access Gtk_Label_Record;
-       X    : out Gint;
-       Y    : out Gint)
+      (Label : access Gtk_Label_Record;
+       X     : out Gint;
+       Y     : out Gint)
    is
-      procedure Internal (Self : System.Address; X : out Gint; Y : out Gint);
+      procedure Internal
+         (Label : System.Address;
+          X     : out Gint;
+          Y     : out Gint);
       pragma Import (C, Internal, "gtk_label_get_layout_offsets");
    begin
-      Internal (Get_Object (Self), X, Y);
+      Internal (Get_Object (Label), X, Y);
    end Get_Layout_Offsets;
 
    -------------------
    -- Get_Line_Wrap --
    -------------------
 
-   function Get_Line_Wrap (Self : access Gtk_Label_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Line_Wrap (Label : access Gtk_Label_Record) return Boolean is
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_line_wrap");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Line_Wrap;
 
    ------------------------
@@ -220,23 +226,25 @@ package body Gtk.Label is
    ------------------------
 
    function Get_Line_Wrap_Mode
-      (Self : access Gtk_Label_Record) return Pango.Layout.Pango_Wrap_Mode
+      (Label : access Gtk_Label_Record) return Pango.Layout.Pango_Wrap_Mode
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
    begin
-      return Pango.Layout.Pango_Wrap_Mode'Val (Internal (Get_Object (Self)));
+      return Pango.Layout.Pango_Wrap_Mode'Val (Internal (Get_Object (Label)));
    end Get_Line_Wrap_Mode;
 
    -------------------------
    -- Get_Max_Width_Chars --
    -------------------------
 
-   function Get_Max_Width_Chars (Self : access Gtk_Label_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Max_Width_Chars
+      (Label : access Gtk_Label_Record) return Gint
+   is
+      function Internal (Label : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_label_get_max_width_chars");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Label));
    end Get_Max_Width_Chars;
 
    -------------------------
@@ -244,12 +252,12 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Mnemonic_Keyval
-      (Self : access Gtk_Label_Record) return Guint
+      (Label : access Gtk_Label_Record) return Guint
    is
-      function Internal (Self : System.Address) return Guint;
+      function Internal (Label : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_keyval");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Label));
    end Get_Mnemonic_Keyval;
 
    -------------------------
@@ -257,24 +265,24 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Mnemonic_Widget
-      (Self : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget
+      (Label : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_widget");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub));
    end Get_Mnemonic_Widget;
 
    --------------------
    -- Get_Selectable --
    --------------------
 
-   function Get_Selectable (Self : access Gtk_Label_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Selectable (Label : access Gtk_Label_Record) return Boolean is
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_selectable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Selectable;
 
    --------------------------
@@ -282,13 +290,13 @@ package body Gtk.Label is
    --------------------------
 
    procedure Get_Selection_Bounds
-      (Self          : access Gtk_Label_Record;
+      (Label         : access Gtk_Label_Record;
        Start         : out Gint;
        The_End       : out Gint;
        Has_Selection : out Boolean)
    is
       function Internal
-         (Self        : System.Address;
+         (Label       : System.Address;
           Acc_Start   : access Gint;
           Acc_The_End : access Gint) return Integer;
       pragma Import (C, Internal, "gtk_label_get_selection_bounds");
@@ -296,7 +304,7 @@ package body Gtk.Label is
       Acc_The_End : aliased Gint;
       Tmp_Return  : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Start'Access, Acc_The_End'Access);
+      Tmp_Return := Internal (Get_Object (Label), Acc_Start'Access, Acc_The_End'Access);
       Start := Acc_Start;
       The_End := Acc_The_End;
       Has_Selection := Boolean'Val (Tmp_Return);
@@ -307,24 +315,24 @@ package body Gtk.Label is
    --------------------------
 
    function Get_Single_Line_Mode
-      (Self : access Gtk_Label_Record) return Boolean
+      (Label : access Gtk_Label_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_single_line_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Single_Line_Mode;
 
    --------------
    -- Get_Text --
    --------------
 
-   function Get_Text (Self : access Gtk_Label_Record) return UTF8_String is
+   function Get_Text (Label : access Gtk_Label_Record) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
    end Get_Text;
 
    -----------------------------
@@ -332,23 +340,23 @@ package body Gtk.Label is
    -----------------------------
 
    function Get_Track_Visited_Links
-      (Self : access Gtk_Label_Record) return Boolean
+      (Label : access Gtk_Label_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_track_visited_links");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Track_Visited_Links;
 
    --------------------
    -- Get_Use_Markup --
    --------------------
 
-   function Get_Use_Markup (Self : access Gtk_Label_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Use_Markup (Label : access Gtk_Label_Record) return Boolean is
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_markup");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Use_Markup;
 
    -----------------------
@@ -356,23 +364,23 @@ package body Gtk.Label is
    -----------------------
 
    function Get_Use_Underline
-      (Self : access Gtk_Label_Record) return Boolean
+      (Label : access Gtk_Label_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Label)));
    end Get_Use_Underline;
 
    ---------------------
    -- Get_Width_Chars --
    ---------------------
 
-   function Get_Width_Chars (Self : access Gtk_Label_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Width_Chars (Label : access Gtk_Label_Record) return Gint is
+      function Internal (Label : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_label_get_width_chars");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Label));
    end Get_Width_Chars;
 
    -----------------
@@ -380,17 +388,17 @@ package body Gtk.Label is
    -----------------
 
    function Parse_Uline
-      (Self   : access Gtk_Label_Record;
+      (Label  : access Gtk_Label_Record;
        String : UTF8_String) return Guint
    is
       function Internal
-         (Self   : System.Address;
+         (Label  : System.Address;
           String : Interfaces.C.Strings.chars_ptr) return Guint;
       pragma Import (C, Internal, "gtk_label_parse_uline");
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
       Tmp_Return : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_String);
+      Tmp_Return := Internal (Get_Object (Label), Tmp_String);
       Free (Tmp_String);
       return Tmp_Return;
    end Parse_Uline;
@@ -400,28 +408,28 @@ package body Gtk.Label is
    -------------------
 
    procedure Select_Region
-      (Self         : access Gtk_Label_Record;
+      (Label        : access Gtk_Label_Record;
        Start_Offset : Gint := -1;
        End_Offset   : Gint := -1)
    is
       procedure Internal
-         (Self         : System.Address;
+         (Label        : System.Address;
           Start_Offset : Gint;
           End_Offset   : Gint);
       pragma Import (C, Internal, "gtk_label_select_region");
    begin
-      Internal (Get_Object (Self), Start_Offset, End_Offset);
+      Internal (Get_Object (Label), Start_Offset, End_Offset);
    end Select_Region;
 
    ---------------
    -- Set_Angle --
    ---------------
 
-   procedure Set_Angle (Self : access Gtk_Label_Record; Angle : Gdouble) is
-      procedure Internal (Self : System.Address; Angle : Gdouble);
+   procedure Set_Angle (Label : access Gtk_Label_Record; Angle : Gdouble) is
+      procedure Internal (Label : System.Address; Angle : Gdouble);
       pragma Import (C, Internal, "gtk_label_set_angle");
    begin
-      Internal (Get_Object (Self), Angle);
+      Internal (Get_Object (Label), Angle);
    end Set_Angle;
 
    --------------------
@@ -429,15 +437,15 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Attributes
-      (Self  : access Gtk_Label_Record;
+      (Label : access Gtk_Label_Record;
        Attrs : out Pango.Attributes.Pango_Attr_List)
    is
       procedure Internal
-         (Self  : System.Address;
+         (Label : System.Address;
           Attrs : out Pango.Attributes.Pango_Attr_List);
       pragma Import (C, Internal, "gtk_label_set_attributes");
    begin
-      Internal (Get_Object (Self), Attrs);
+      Internal (Get_Object (Label), Attrs);
    end Set_Attributes;
 
    -------------------
@@ -445,13 +453,13 @@ package body Gtk.Label is
    -------------------
 
    procedure Set_Ellipsize
-      (Self : access Gtk_Label_Record;
-       Mode : Pango.Layout.Pango_Ellipsize_Mode)
+      (Label : access Gtk_Label_Record;
+       Mode  : Pango.Layout.Pango_Ellipsize_Mode)
    is
-      procedure Internal (Self : System.Address; Mode : Integer);
+      procedure Internal (Label : System.Address; Mode : Integer);
       pragma Import (C, Internal, "gtk_label_set_ellipsize");
    begin
-      Internal (Get_Object (Self), Pango.Layout.Pango_Ellipsize_Mode'Pos (Mode));
+      Internal (Get_Object (Label), Pango.Layout.Pango_Ellipsize_Mode'Pos (Mode));
    end Set_Ellipsize;
 
    -----------------
@@ -459,27 +467,27 @@ package body Gtk.Label is
    -----------------
 
    procedure Set_Justify
-      (Self  : access Gtk_Label_Record;
+      (Label : access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Self : System.Address; Jtype : Integer);
+      procedure Internal (Label : System.Address; Jtype : Integer);
       pragma Import (C, Internal, "gtk_label_set_justify");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Justification'Pos (Jtype));
+      Internal (Get_Object (Label), Gtk.Enums.Gtk_Justification'Pos (Jtype));
    end Set_Justify;
 
    ---------------
    -- Set_Label --
    ---------------
 
-   procedure Set_Label (Self : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Label (Label : access Gtk_Label_Record; Str : UTF8_String) is
       procedure Internal
-         (Self : System.Address;
-          Str  : Interfaces.C.Strings.chars_ptr);
+         (Label : System.Address;
+          Str   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_label");
       Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Internal (Get_Object (Self), Tmp_Str);
+      Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Label;
 
@@ -487,11 +495,11 @@ package body Gtk.Label is
    -- Set_Line_Wrap --
    -------------------
 
-   procedure Set_Line_Wrap (Self : access Gtk_Label_Record; Wrap : Boolean) is
-      procedure Internal (Self : System.Address; Wrap : Integer);
+   procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean) is
+      procedure Internal (Label : System.Address; Wrap : Integer);
       pragma Import (C, Internal, "gtk_label_set_line_wrap");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Wrap));
+      Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
 
    ------------------------
@@ -499,27 +507,27 @@ package body Gtk.Label is
    ------------------------
 
    procedure Set_Line_Wrap_Mode
-      (Self      : access Gtk_Label_Record;
+      (Label     : access Gtk_Label_Record;
        Wrap_Mode : Pango.Layout.Pango_Wrap_Mode)
    is
-      procedure Internal (Self : System.Address; Wrap_Mode : Integer);
+      procedure Internal (Label : System.Address; Wrap_Mode : Integer);
       pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
    begin
-      Internal (Get_Object (Self), Pango.Layout.Pango_Wrap_Mode'Pos (Wrap_Mode));
+      Internal (Get_Object (Label), Pango.Layout.Pango_Wrap_Mode'Pos (Wrap_Mode));
    end Set_Line_Wrap_Mode;
 
    ----------------
    -- Set_Markup --
    ----------------
 
-   procedure Set_Markup (Self : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Markup (Label : access Gtk_Label_Record; Str : UTF8_String) is
       procedure Internal
-         (Self : System.Address;
-          Str  : Interfaces.C.Strings.chars_ptr);
+         (Label : System.Address;
+          Str   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_markup");
       Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Internal (Get_Object (Self), Tmp_Str);
+      Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Markup;
 
@@ -528,16 +536,16 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Set_Markup_With_Mnemonic
-      (Self : access Gtk_Label_Record;
-       Str  : UTF8_String)
+      (Label : access Gtk_Label_Record;
+       Str   : UTF8_String)
    is
       procedure Internal
-         (Self : System.Address;
-          Str  : Interfaces.C.Strings.chars_ptr);
+         (Label : System.Address;
+          Str   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_markup_with_mnemonic");
       Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Internal (Get_Object (Self), Tmp_Str);
+      Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Markup_With_Mnemonic;
 
@@ -546,13 +554,13 @@ package body Gtk.Label is
    -------------------------
 
    procedure Set_Max_Width_Chars
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        N_Chars : Gint)
    is
-      procedure Internal (Self : System.Address; N_Chars : Gint);
+      procedure Internal (Label : System.Address; N_Chars : Gint);
       pragma Import (C, Internal, "gtk_label_set_max_width_chars");
    begin
-      Internal (Get_Object (Self), N_Chars);
+      Internal (Get_Object (Label), N_Chars);
    end Set_Max_Width_Chars;
 
    -------------------------
@@ -560,13 +568,13 @@ package body Gtk.Label is
    -------------------------
 
    procedure Set_Mnemonic_Widget
-      (Self   : access Gtk_Label_Record;
+      (Label  : access Gtk_Label_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Self : System.Address; Widget : System.Address);
+      procedure Internal (Label : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_label_set_mnemonic_widget");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Label), Get_Object_Or_Null (GObject (Widget)));
    end Set_Mnemonic_Widget;
 
    -----------------
@@ -574,16 +582,16 @@ package body Gtk.Label is
    -----------------
 
    procedure Set_Pattern
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        Pattern : UTF8_String)
    is
       procedure Internal
-         (Self    : System.Address;
+         (Label   : System.Address;
           Pattern : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_pattern");
       Tmp_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Pattern);
    begin
-      Internal (Get_Object (Self), Tmp_Pattern);
+      Internal (Get_Object (Label), Tmp_Pattern);
       Free (Tmp_Pattern);
    end Set_Pattern;
 
@@ -592,13 +600,13 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Selectable
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Integer);
       pragma Import (C, Internal, "gtk_label_set_selectable");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Setting));
+      Internal (Get_Object (Label), Boolean'Pos (Setting));
    end Set_Selectable;
 
    --------------------------
@@ -606,27 +614,29 @@ package body Gtk.Label is
    --------------------------
 
    procedure Set_Single_Line_Mode
-      (Self             : access Gtk_Label_Record;
+      (Label            : access Gtk_Label_Record;
        Single_Line_Mode : Boolean)
    is
-      procedure Internal (Self : System.Address; Single_Line_Mode : Integer);
+      procedure Internal
+         (Label            : System.Address;
+          Single_Line_Mode : Integer);
       pragma Import (C, Internal, "gtk_label_set_single_line_mode");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Single_Line_Mode));
+      Internal (Get_Object (Label), Boolean'Pos (Single_Line_Mode));
    end Set_Single_Line_Mode;
 
    --------------
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Self : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String) is
       procedure Internal
-         (Self : System.Address;
-          Str  : Interfaces.C.Strings.chars_ptr);
+         (Label : System.Address;
+          Str   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_text");
       Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Internal (Get_Object (Self), Tmp_Str);
+      Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Text;
 
@@ -635,16 +645,16 @@ package body Gtk.Label is
    ----------------------------
 
    procedure Set_Text_With_Mnemonic
-      (Self : access Gtk_Label_Record;
-       Str  : UTF8_String)
+      (Label : access Gtk_Label_Record;
+       Str   : UTF8_String)
    is
       procedure Internal
-         (Self : System.Address;
-          Str  : Interfaces.C.Strings.chars_ptr);
+         (Label : System.Address;
+          Str   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_set_text_with_mnemonic");
       Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
    begin
-      Internal (Get_Object (Self), Tmp_Str);
+      Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Text_With_Mnemonic;
 
@@ -653,13 +663,13 @@ package body Gtk.Label is
    -----------------------------
 
    procedure Set_Track_Visited_Links
-      (Self        : access Gtk_Label_Record;
+      (Label       : access Gtk_Label_Record;
        Track_Links : Boolean)
    is
-      procedure Internal (Self : System.Address; Track_Links : Integer);
+      procedure Internal (Label : System.Address; Track_Links : Integer);
       pragma Import (C, Internal, "gtk_label_set_track_visited_links");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Track_Links));
+      Internal (Get_Object (Label), Boolean'Pos (Track_Links));
    end Set_Track_Visited_Links;
 
    --------------------
@@ -667,13 +677,13 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Use_Markup
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Integer);
       pragma Import (C, Internal, "gtk_label_set_use_markup");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Setting));
+      Internal (Get_Object (Label), Boolean'Pos (Setting));
    end Set_Use_Markup;
 
    -----------------------
@@ -681,13 +691,13 @@ package body Gtk.Label is
    -----------------------
 
    procedure Set_Use_Underline
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Integer);
       pragma Import (C, Internal, "gtk_label_set_use_underline");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Setting));
+      Internal (Get_Object (Label), Boolean'Pos (Setting));
    end Set_Use_Underline;
 
    ---------------------
@@ -695,13 +705,13 @@ package body Gtk.Label is
    ---------------------
 
    procedure Set_Width_Chars
-      (Self    : access Gtk_Label_Record;
+      (Label   : access Gtk_Label_Record;
        N_Chars : Gint)
    is
-      procedure Internal (Self : System.Address; N_Chars : Gint);
+      procedure Internal (Label : System.Address; N_Chars : Gint);
       pragma Import (C, Internal, "gtk_label_set_width_chars");
    begin
-      Internal (Get_Object (Self), N_Chars);
+      Internal (Get_Object (Label), N_Chars);
    end Set_Width_Chars;
 
 end Gtk.Label;

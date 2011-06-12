@@ -103,13 +103,13 @@ package body Gtk.Pixmap is
    -------------
 
    procedure Gtk_New
-      (Self   : out Gtk_Pixmap;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      (Pixmap : out Gtk_Pixmap;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
    begin
-      Self := new Gtk_Pixmap_Record;
-      Gtk.Pixmap.Initialize (Self, Pixmap, Mask);
+      Pixmap := new Gtk_Pixmap_Record;
+      Gtk.Pixmap.Initialize (Pixmap, Val, Mask);
    end Gtk_New;
 
    ----------------
@@ -117,16 +117,16 @@ package body Gtk.Pixmap is
    ----------------
 
    procedure Initialize
-      (Self   : access Gtk_Pixmap_Record'Class;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record'Class;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
       function Internal
-         (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
+         (Val  : Gdk.Pixmap.Gdk_Pixmap;
+          Mask : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
    begin
-      Set_Object (Self, Internal (Pixmap, Mask));
+      Set_Object (Pixmap, Internal (Val, Mask));
    end Initialize;
 
    ---------
@@ -134,17 +134,17 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Get
-      (Self : access Gtk_Pixmap_Record;
-       Val  : out Gdk.Pixmap.Gdk_Pixmap;
-       Mask : out Gdk.Bitmap.Gdk_Bitmap)
+      (Pixmap : access Gtk_Pixmap_Record;
+       Val    : out Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : out Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
-         (Self : System.Address;
-          Val  : out Gdk.Pixmap.Gdk_Pixmap;
-          Mask : out Gdk.Bitmap.Gdk_Bitmap);
+         (Pixmap : System.Address;
+          Val    : out Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : out Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_get");
    begin
-      Internal (Get_Object (Self), Val, Mask);
+      Internal (Get_Object (Pixmap), Val, Mask);
    end Get;
 
    ---------
@@ -152,17 +152,17 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Set
-      (Self : access Gtk_Pixmap_Record;
-       Val  : Gdk.Pixmap.Gdk_Pixmap;
-       Mask : Gdk.Bitmap.Gdk_Bitmap)
+      (Pixmap : access Gtk_Pixmap_Record;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
-         (Self : System.Address;
-          Val  : Gdk.Pixmap.Gdk_Pixmap;
-          Mask : Gdk.Bitmap.Gdk_Bitmap);
+         (Pixmap : System.Address;
+          Val    : Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_set");
    begin
-      Internal (Get_Object (Self), Val, Mask);
+      Internal (Get_Object (Pixmap), Val, Mask);
    end Set;
 
    ---------------------------
@@ -170,13 +170,13 @@ package body Gtk.Pixmap is
    ---------------------------
 
    procedure Set_Build_Insensitive
-      (Self  : access Gtk_Pixmap_Record;
-       Build : Boolean)
+      (Pixmap : access Gtk_Pixmap_Record;
+       Build  : Boolean)
    is
-      procedure Internal (Self : System.Address; Build : Integer);
+      procedure Internal (Pixmap : System.Address; Build : Integer);
       pragma Import (C, Internal, "gtk_pixmap_set_build_insensitive");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Build));
+      Internal (Get_Object (Pixmap), Boolean'Pos (Build));
    end Set_Build_Insensitive;
 
 end Gtk.Pixmap;

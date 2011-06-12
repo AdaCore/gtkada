@@ -42,13 +42,13 @@ package body Gtk.Arrow is
    -------------
 
    procedure Gtk_New
-      (Self        : out Gtk_Arrow;
+      (Arrow       : out Gtk_Arrow;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
    begin
-      Self := new Gtk_Arrow_Record;
-      Gtk.Arrow.Initialize (Self, Arrow_Type, Shadow_Type);
+      Arrow := new Gtk_Arrow_Record;
+      Gtk.Arrow.Initialize (Arrow, Arrow_Type, Shadow_Type);
    end Gtk_New;
 
    ----------------
@@ -56,7 +56,7 @@ package body Gtk.Arrow is
    ----------------
 
    procedure Initialize
-      (Self        : access Gtk_Arrow_Record'Class;
+      (Arrow       : access Gtk_Arrow_Record'Class;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
@@ -65,7 +65,7 @@ package body Gtk.Arrow is
           Shadow_Type : Integer) return System.Address;
       pragma Import (C, Internal, "gtk_arrow_new");
    begin
-      Set_Object (Self, Internal (Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type)));
+      Set_Object (Arrow, Internal (Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type)));
    end Initialize;
 
    ---------
@@ -73,17 +73,17 @@ package body Gtk.Arrow is
    ---------
 
    procedure Set
-      (Self        : access Gtk_Arrow_Record;
+      (Arrow       : access Gtk_Arrow_Record;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
       procedure Internal
-         (Self        : System.Address;
+         (Arrow       : System.Address;
           Arrow_Type  : Integer;
           Shadow_Type : Integer);
       pragma Import (C, Internal, "gtk_arrow_set");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type));
+      Internal (Get_Object (Arrow), Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type));
    end Set;
 
 end Gtk.Arrow;

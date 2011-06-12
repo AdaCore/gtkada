@@ -41,21 +41,23 @@ package body Gtk.Drawing_Area is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Drawing_Area) is
+   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area) is
    begin
-      Self := new Gtk_Drawing_Area_Record;
-      Gtk.Drawing_Area.Initialize (Self);
+      Drawing_Area := new Gtk_Drawing_Area_Record;
+      Gtk.Drawing_Area.Initialize (Drawing_Area);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Drawing_Area_Record'Class) is
+   procedure Initialize
+      (Drawing_Area : access Gtk_Drawing_Area_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Drawing_Area, Internal);
    end Initialize;
 
    ----------
@@ -63,17 +65,17 @@ package body Gtk.Drawing_Area is
    ----------
 
    procedure Size
-      (Self   : access Gtk_Drawing_Area_Record;
-       Width  : Gint;
-       Height : Gint)
+      (Drawing_Area : access Gtk_Drawing_Area_Record;
+       Width        : Gint;
+       Height       : Gint)
    is
       procedure Internal
-         (Self   : System.Address;
-          Width  : Gint;
-          Height : Gint);
+         (Drawing_Area : System.Address;
+          Width        : Gint;
+          Height       : Gint);
       pragma Import (C, Internal, "gtk_drawing_area_size");
    begin
-      Internal (Get_Object (Self), Width, Height);
+      Internal (Get_Object (Drawing_Area), Width, Height);
    end Size;
 
 end Gtk.Drawing_Area;

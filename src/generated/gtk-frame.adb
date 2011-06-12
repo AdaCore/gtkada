@@ -42,10 +42,10 @@ package body Gtk.Frame is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Frame; Label : UTF8_String := "") is
+   procedure Gtk_New (Frame : out Gtk_Frame; Label : UTF8_String := "") is
    begin
-      Self := new Gtk_Frame_Record;
-      Gtk.Frame.Initialize (Self, Label);
+      Frame := new Gtk_Frame_Record;
+      Gtk.Frame.Initialize (Frame, Label);
    end Gtk_New;
 
    ----------------
@@ -53,7 +53,7 @@ package body Gtk.Frame is
    ----------------
 
    procedure Initialize
-      (Self  : access Gtk_Frame_Record'Class;
+      (Frame : access Gtk_Frame_Record'Class;
        Label : UTF8_String := "")
    is
       function Internal
@@ -69,19 +69,19 @@ package body Gtk.Frame is
       end if;
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
-      Set_Object (Self, Tmp_Return);
+      Set_Object (Frame, Tmp_Return);
    end Initialize;
 
    ---------------
    -- Get_Label --
    ---------------
 
-   function Get_Label (Self : access Gtk_Frame_Record) return UTF8_String is
+   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Frame : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Frame)));
    end Get_Label;
 
    ---------------------
@@ -89,17 +89,17 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Get_Label_Align
-      (Self   : access Gtk_Frame_Record;
+      (Frame  : access Gtk_Frame_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Frame  : System.Address;
           Xalign : out Gfloat;
           Yalign : out Gfloat);
       pragma Import (C, Internal, "gtk_frame_get_label_align");
    begin
-      Internal (Get_Object (Self), Xalign, Yalign);
+      Internal (Get_Object (Frame), Xalign, Yalign);
    end Get_Label_Align;
 
    ----------------------
@@ -107,13 +107,13 @@ package body Gtk.Frame is
    ----------------------
 
    function Get_Label_Widget
-      (Self : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget
+      (Frame : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Frame : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_get_label_widget");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub));
    end Get_Label_Widget;
 
    ---------------------
@@ -121,26 +121,29 @@ package body Gtk.Frame is
    ---------------------
 
    function Get_Shadow_Type
-      (Self : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type
+      (Frame : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Frame : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_frame_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Self)));
+      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Frame)));
    end Get_Shadow_Type;
 
    ---------------
    -- Set_Label --
    ---------------
 
-   procedure Set_Label (Self : access Gtk_Frame_Record; Label : UTF8_String) is
+   procedure Set_Label
+      (Frame : access Gtk_Frame_Record;
+       Label : UTF8_String)
+   is
       procedure Internal
-         (Self  : System.Address;
+         (Frame : System.Address;
           Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_frame_set_label");
       Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
    begin
-      Internal (Get_Object (Self), Tmp_Label);
+      Internal (Get_Object (Frame), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;
 
@@ -149,17 +152,17 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Label_Align
-      (Self   : access Gtk_Frame_Record;
+      (Frame  : access Gtk_Frame_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Frame  : System.Address;
           Xalign : Gfloat;
           Yalign : Gfloat);
       pragma Import (C, Internal, "gtk_frame_set_label_align");
    begin
-      Internal (Get_Object (Self), Xalign, Yalign);
+      Internal (Get_Object (Frame), Xalign, Yalign);
    end Set_Label_Align;
 
    ----------------------
@@ -167,15 +170,15 @@ package body Gtk.Frame is
    ----------------------
 
    procedure Set_Label_Widget
-      (Self         : access Gtk_Frame_Record;
+      (Frame        : access Gtk_Frame_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-         (Self         : System.Address;
+         (Frame        : System.Address;
           Label_Widget : System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label_widget");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Label_Widget)));
+      Internal (Get_Object (Frame), Get_Object_Or_Null (GObject (Label_Widget)));
    end Set_Label_Widget;
 
    ---------------------
@@ -183,13 +186,13 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Self     : access Gtk_Frame_Record;
+      (Frame    : access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Self : System.Address; The_Type : Integer);
+      procedure Internal (Frame : System.Address; The_Type : Integer);
       pragma Import (C, Internal, "gtk_frame_set_shadow_type");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Frame), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
 end Gtk.Frame;

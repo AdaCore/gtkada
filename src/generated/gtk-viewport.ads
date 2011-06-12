@@ -53,11 +53,11 @@ package Gtk.Viewport is
    ------------------
 
    procedure Gtk_New
-      (Self        : out Gtk_Viewport;
+      (Viewport    : out Gtk_Viewport;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize
-      (Self        : access Gtk_Viewport_Record'Class;
+      (Viewport    : access Gtk_Viewport_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.
@@ -72,38 +72,39 @@ package Gtk.Viewport is
    -------------
 
    function Get_Bin_Window
-      (Self : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
+      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Viewport : access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Hadjustment
-      (Self       : access Gtk_Viewport_Record;
+      (Viewport   : access Gtk_Viewport_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the horizontal adjustment of the viewport.
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
    function Get_Shadow_Type
-      (Self : access Gtk_Viewport_Record) return Gtk.Enums.Gtk_Shadow_Type;
+      (Viewport : access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Shadow_Type;
    procedure Set_Shadow_Type
-      (Self     : access Gtk_Viewport_Record;
+      (Viewport : access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type of the viewport.
    --  "type": the new shadow type.
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Viewport : access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Vadjustment
-      (Self       : access Gtk_Viewport_Record;
+      (Viewport   : access Gtk_Viewport_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the vertical adjustment of the viewport.
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
    function Get_View_Window
-      (Self : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
+      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
 

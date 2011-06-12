@@ -60,11 +60,11 @@ package Gtk.Arrow is
    ------------------
 
    procedure Gtk_New
-      (Self        : out Gtk_Arrow;
+      (Arrow       : out Gtk_Arrow;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    procedure Initialize
-      (Self        : access Gtk_Arrow_Record'Class;
+      (Arrow       : access Gtk_Arrow_Record'Class;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
@@ -79,7 +79,7 @@ package Gtk.Arrow is
    -------------
 
    procedure Set
-      (Self        : access Gtk_Arrow_Record;
+      (Arrow       : access Gtk_Arrow_Record;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, Arrow.

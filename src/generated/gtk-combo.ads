@@ -75,8 +75,8 @@ package Gtk.Combo is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Combo);
-   procedure Initialize (Self : access Gtk_Combo_Record'Class);
+   procedure Gtk_New (Combo_Box : out Gtk_Combo);
+   procedure Initialize (Combo_Box : access Gtk_Combo_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_combo_get_type");
@@ -85,7 +85,7 @@ package Gtk.Combo is
    -- Methods --
    -------------
 
-   procedure Disable_Activate (Self : access Gtk_Combo_Record);
+   procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
    --  Disable the standard handler for the return key in the entry field. The
    --  default behavior is to popdown the combo box list, so that the user can
    --  choose from it. However, if you want to add your own callback for the
@@ -93,39 +93,39 @@ package Gtk.Combo is
    --  the "activate" signal for the entry.
 
    procedure Set_Case_Sensitive
-      (Self : access Gtk_Combo_Record;
-       Val  : Boolean := True);
+      (Combo_Box : access Gtk_Combo_Record;
+       Val       : Boolean := True);
    --  Specify whether the text entered into the Gtk_Entry field and the text
    --  in the list items are case sensitive. This may be useful, for example,
    --  when you have called Set_Value_In_List to limit the values entered, but
    --  you are not worried about differences in case.
 
    procedure Set_Item_String
-      (Self       : access Gtk_Combo_Record;
+      (Combo_Box  : access Gtk_Combo_Record;
        Item       : access Gtk.Item.Gtk_Item_Record'Class;
        Item_Value : UTF8_String);
    --  Set the string to place in the Gtk_Entry field when a particular list
    --  item is selected. This is needed if the list item is not a simple label.
 
    procedure Set_Popdown_Strings
-      (Self    : access Gtk_Combo_Record;
-       Strings : Gtk.Enums.String_List.Glist);
+      (Combo_Box : access Gtk_Combo_Record;
+       Strings   : Gtk.Enums.String_List.Glist);
    --  Set all the items in the popup list.
 
    procedure Set_Use_Arrows
-      (Self : access Gtk_Combo_Record;
-       Val  : Boolean := True);
+      (Combo_Box : access Gtk_Combo_Record;
+       Val       : Boolean := True);
    --  Specify if the arrow (cursor) keys can be used to step through the
    --  items in the list. This is on by default.
 
    procedure Set_Use_Arrows_Always
-      (Self : access Gtk_Combo_Record;
-       Val  : Boolean := True);
+      (Combo_Box : access Gtk_Combo_Record;
+       Val       : Boolean := True);
    --  Specify if the arrow keys will still work even if the current contents
    --  of the Gtk_Entry field do not match any of the list items.
 
    procedure Set_Value_In_List
-      (Self        : access Gtk_Combo_Record;
+      (Combo_Box   : access Gtk_Combo_Record;
        Val         : Boolean := True;
        Ok_If_Empty : Boolean := False);
    --  Specify whether the value entered in the text entry field must match
@@ -140,13 +140,13 @@ package Gtk.Combo is
    ------------
 
    function Get_Entry
-      (Self : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
+      (Combo_Box : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Entry
-      (Self  : access Gtk_Combo_Record;
-       Value : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Combo_Box : access Gtk_Combo_Record;
+       Value     : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    function Get_List
-      (Self : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
+      (Combo_Box : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
 
    ----------------
    -- Properties --

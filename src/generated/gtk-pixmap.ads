@@ -52,12 +52,12 @@ package Gtk.Pixmap is
    ------------------
 
    procedure Gtk_New
-      (Self   : out Gtk_Pixmap;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      (Pixmap : out Gtk_Pixmap;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap);
    procedure Initialize
-      (Self   : access Gtk_Pixmap_Record'Class;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record'Class;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap);
 
    function Get_Type return Glib.GType;
@@ -68,18 +68,18 @@ package Gtk.Pixmap is
    -------------
 
    procedure Get
-      (Self : access Gtk_Pixmap_Record;
-       Val  : out Gdk.Pixmap.Gdk_Pixmap;
-       Mask : out Gdk.Bitmap.Gdk_Bitmap);
+      (Pixmap : access Gtk_Pixmap_Record;
+       Val    : out Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : out Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Set
-      (Self : access Gtk_Pixmap_Record;
-       Val  : Gdk.Pixmap.Gdk_Pixmap;
-       Mask : Gdk.Bitmap.Gdk_Bitmap);
+      (Pixmap : access Gtk_Pixmap_Record;
+       Val    : Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Set_Build_Insensitive
-      (Self  : access Gtk_Pixmap_Record;
-       Build : Boolean);
+      (Pixmap : access Gtk_Pixmap_Record;
+       Build  : Boolean);
    --  Whether the pixmap should be grayed out, as is done for insensitive
    --  widgets that do not accept user interaction
 

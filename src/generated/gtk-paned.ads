@@ -85,15 +85,15 @@ package Gtk.Paned is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
-   procedure Gtk_New_Hpaned (Self : out Gtk_Hpaned);
-   procedure Initialize_Hpaned (Self : access Gtk_Hpaned_Record'Class);
+   procedure Gtk_New_Hpaned (Paned : out Gtk_Hpaned);
+   procedure Initialize_Hpaned (Paned : access Gtk_Hpaned_Record'Class);
    --  The children will be displayed next to each other
 
    function Get_Type_Hpaned return Glib.GType;
    pragma Import (C, Get_Type_Hpaned, "gtk_hpaned_get_type");
 
-   procedure Gtk_New_Vpaned (Self : out Gtk_Vpaned);
-   procedure Initialize_Vpaned (Self : access Gtk_Vpaned_Record'Class);
+   procedure Gtk_New_Vpaned (Paned : out Gtk_Vpaned);
+   procedure Initialize_Vpaned (Paned : access Gtk_Vpaned_Record'Class);
    --  The children will be displayed one on top of the other
 
    function Get_Type_Vpaned return Glib.GType;
@@ -119,31 +119,31 @@ package Gtk.Paned is
    --  equivalent to using Pack2 with its default parameters.
 
    procedure Compute_Position
-      (Self       : access Gtk_Paned_Record;
+      (Paned      : access Gtk_Paned_Record;
        Allocation : Gint;
        Child1_Req : Gint;
        Child2_Req : Gint);
 
    function Get_Child1
-      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Child2
-      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Handle_Window
-      (Self : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
+      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
    --  Returns the Gdk.Window.Gdk_Window of the handle. This function is
    --  useful when handling button or motion events because it enables the
    --  callback to distinguish between the window of the paned, a child and the
    --  handle.
    --  Since: gtk+ 2.20
 
-   function Get_Position (Self : access Gtk_Paned_Record) return Gint;
-   procedure Set_Position (Self : access Gtk_Paned_Record; Position : Gint);
+   function Get_Position (Paned : access Gtk_Paned_Record) return Gint;
+   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint);
    --  Sets the position of the divider between the two panes.
    --  "position": pixel position of divider, a negative value means that the
    --  position is unset.

@@ -41,21 +41,21 @@ package body Gtk.Hbutton_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Hbutton_Box) is
+   procedure Gtk_New (Widget : out Gtk_Hbutton_Box) is
    begin
-      Self := new Gtk_Hbutton_Box_Record;
-      Gtk.Hbutton_Box.Initialize (Self);
+      Widget := new Gtk_Hbutton_Box_Record;
+      Gtk.Hbutton_Box.Initialize (Widget);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Hbutton_Box_Record'Class) is
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hbutton_box_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Widget, Internal);
    end Initialize;
 
    ------------------------

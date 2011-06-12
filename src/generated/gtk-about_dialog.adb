@@ -43,21 +43,21 @@ package body Gtk.About_Dialog is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_About_Dialog) is
+   procedure Gtk_New (About : out Gtk_About_Dialog) is
    begin
-      Self := new Gtk_About_Dialog_Record;
-      Gtk.About_Dialog.Initialize (Self);
+      About := new Gtk_About_Dialog_Record;
+      Gtk.About_Dialog.Initialize (About);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_About_Dialog_Record'Class) is
+   procedure Initialize (About : access Gtk_About_Dialog_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (About, Internal);
    end Initialize;
 
    -----------------
@@ -65,14 +65,14 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Artists
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
-         (Self : System.Address) return chars_ptr_array_access;
+         (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_artists");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Artists;
 
    -----------------
@@ -80,14 +80,14 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Authors
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
-         (Self : System.Address) return chars_ptr_array_access;
+         (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_authors");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Authors;
 
    ------------------
@@ -95,13 +95,13 @@ package body Gtk.About_Dialog is
    ------------------
 
    function Get_Comments
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_comments");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Comments;
 
    -------------------
@@ -109,13 +109,13 @@ package body Gtk.About_Dialog is
    -------------------
 
    function Get_Copyright
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_copyright");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Copyright;
 
    ---------------------
@@ -123,14 +123,14 @@ package body Gtk.About_Dialog is
    ---------------------
 
    function Get_Documenters
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
-         (Self : System.Address) return chars_ptr_array_access;
+         (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_documenters");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Documenters;
 
    -----------------
@@ -138,13 +138,13 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_License
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_license");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_License;
 
    --------------
@@ -152,13 +152,13 @@ package body Gtk.About_Dialog is
    --------------
 
    function Get_Logo
-      (Self : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+      (About : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
       Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub));
    end Get_Logo;
 
    ------------------------
@@ -166,13 +166,13 @@ package body Gtk.About_Dialog is
    ------------------------
 
    function Get_Logo_Icon_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Logo_Icon_Name;
 
    --------------
@@ -180,13 +180,13 @@ package body Gtk.About_Dialog is
    --------------
 
    function Get_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Name;
 
    ----------------------
@@ -194,13 +194,13 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_Program_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_program_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Program_Name;
 
    ----------------------------
@@ -208,13 +208,13 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    function Get_Translator_Credits
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_translator_credits");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Translator_Credits;
 
    -----------------
@@ -222,13 +222,13 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Version
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_version");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Version;
 
    -----------------
@@ -236,13 +236,13 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Website
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Website;
 
    -----------------------
@@ -250,13 +250,13 @@ package body Gtk.About_Dialog is
    -----------------------
 
    function Get_Website_Label
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Website_Label;
 
    ----------------------
@@ -264,12 +264,12 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_Wrap_License
-      (Self : access Gtk_About_Dialog_Record) return Boolean
+      (About : access Gtk_About_Dialog_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (About : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_about_dialog_get_wrap_license");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (About)));
    end Get_Wrap_License;
 
    -----------------
@@ -277,16 +277,16 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Artists
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Artists : GNAT.Strings.String_List)
    is
       procedure Internal
-         (Self    : System.Address;
+         (About   : System.Address;
           Artists : Interfaces.C.Strings.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_artists");
       Tmp_Artists : Interfaces.C.Strings.chars_ptr_array := From_String_List (Artists);
    begin
-      Internal (Get_Object (Self), Tmp_Artists);
+      Internal (Get_Object (About), Tmp_Artists);
       GtkAda.Types.Free (Tmp_Artists);
    end Set_Artists;
 
@@ -295,16 +295,16 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Authors
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Authors : GNAT.Strings.String_List)
    is
       procedure Internal
-         (Self    : System.Address;
+         (About   : System.Address;
           Authors : Interfaces.C.Strings.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_authors");
       Tmp_Authors : Interfaces.C.Strings.chars_ptr_array := From_String_List (Authors);
    begin
-      Internal (Get_Object (Self), Tmp_Authors);
+      Internal (Get_Object (About), Tmp_Authors);
       GtkAda.Types.Free (Tmp_Authors);
    end Set_Authors;
 
@@ -313,16 +313,16 @@ package body Gtk.About_Dialog is
    ------------------
 
    procedure Set_Comments
-      (Self     : access Gtk_About_Dialog_Record;
+      (About    : access Gtk_About_Dialog_Record;
        Comments : UTF8_String)
    is
       procedure Internal
-         (Self     : System.Address;
+         (About    : System.Address;
           Comments : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_comments");
       Tmp_Comments : Interfaces.C.Strings.chars_ptr := New_String (Comments);
    begin
-      Internal (Get_Object (Self), Tmp_Comments);
+      Internal (Get_Object (About), Tmp_Comments);
       Free (Tmp_Comments);
    end Set_Comments;
 
@@ -331,16 +331,16 @@ package body Gtk.About_Dialog is
    -------------------
 
    procedure Set_Copyright
-      (Self      : access Gtk_About_Dialog_Record;
+      (About     : access Gtk_About_Dialog_Record;
        Copyright : UTF8_String)
    is
       procedure Internal
-         (Self      : System.Address;
+         (About     : System.Address;
           Copyright : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_copyright");
       Tmp_Copyright : Interfaces.C.Strings.chars_ptr := New_String (Copyright);
    begin
-      Internal (Get_Object (Self), Tmp_Copyright);
+      Internal (Get_Object (About), Tmp_Copyright);
       Free (Tmp_Copyright);
    end Set_Copyright;
 
@@ -349,16 +349,16 @@ package body Gtk.About_Dialog is
    ---------------------
 
    procedure Set_Documenters
-      (Self        : access Gtk_About_Dialog_Record;
+      (About       : access Gtk_About_Dialog_Record;
        Documenters : GNAT.Strings.String_List)
    is
       procedure Internal
-         (Self        : System.Address;
+         (About       : System.Address;
           Documenters : Interfaces.C.Strings.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_documenters");
       Tmp_Documenters : Interfaces.C.Strings.chars_ptr_array := From_String_List (Documenters);
    begin
-      Internal (Get_Object (Self), Tmp_Documenters);
+      Internal (Get_Object (About), Tmp_Documenters);
       GtkAda.Types.Free (Tmp_Documenters);
    end Set_Documenters;
 
@@ -367,16 +367,16 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_License
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        License : UTF8_String)
    is
       procedure Internal
-         (Self    : System.Address;
+         (About   : System.Address;
           License : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_license");
       Tmp_License : Interfaces.C.Strings.chars_ptr := New_String (License);
    begin
-      Internal (Get_Object (Self), Tmp_License);
+      Internal (Get_Object (About), Tmp_License);
       Free (Tmp_License);
    end Set_License;
 
@@ -385,13 +385,13 @@ package body Gtk.About_Dialog is
    --------------
 
    procedure Set_Logo
-      (Self : access Gtk_About_Dialog_Record;
-       Logo : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+      (About : access Gtk_About_Dialog_Record;
+       Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
-      procedure Internal (Self : System.Address; Logo : System.Address);
+      procedure Internal (About : System.Address; Logo : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Logo)));
+      Internal (Get_Object (About), Get_Object_Or_Null (GObject (Logo)));
    end Set_Logo;
 
    ------------------------
@@ -399,16 +399,16 @@ package body Gtk.About_Dialog is
    ------------------------
 
    procedure Set_Logo_Icon_Name
-      (Self      : access Gtk_About_Dialog_Record;
+      (About     : access Gtk_About_Dialog_Record;
        Icon_Name : UTF8_String)
    is
       procedure Internal
-         (Self      : System.Address;
+         (About     : System.Address;
           Icon_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
    begin
-      Internal (Get_Object (Self), Tmp_Icon_Name);
+      Internal (Get_Object (About), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Logo_Icon_Name;
 
@@ -417,16 +417,16 @@ package body Gtk.About_Dialog is
    --------------
 
    procedure Set_Name
-      (Self : access Gtk_About_Dialog_Record;
-       Name : UTF8_String)
+      (About : access Gtk_About_Dialog_Record;
+       Name  : UTF8_String)
    is
       procedure Internal
-         (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr);
+         (About : System.Address;
+          Name  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_name");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Get_Object (Self), Tmp_Name);
+      Internal (Get_Object (About), Tmp_Name);
       Free (Tmp_Name);
    end Set_Name;
 
@@ -435,16 +435,16 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_Program_Name
-      (Self : access Gtk_About_Dialog_Record;
-       Name : UTF8_String)
+      (About : access Gtk_About_Dialog_Record;
+       Name  : UTF8_String)
    is
       procedure Internal
-         (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr);
+         (About : System.Address;
+          Name  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_program_name");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Get_Object (Self), Tmp_Name);
+      Internal (Get_Object (About), Tmp_Name);
       Free (Tmp_Name);
    end Set_Program_Name;
 
@@ -453,16 +453,16 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    procedure Set_Translator_Credits
-      (Self               : access Gtk_About_Dialog_Record;
+      (About              : access Gtk_About_Dialog_Record;
        Translator_Credits : UTF8_String)
    is
       procedure Internal
-         (Self               : System.Address;
+         (About              : System.Address;
           Translator_Credits : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_translator_credits");
       Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr := New_String (Translator_Credits);
    begin
-      Internal (Get_Object (Self), Tmp_Translator_Credits);
+      Internal (Get_Object (About), Tmp_Translator_Credits);
       Free (Tmp_Translator_Credits);
    end Set_Translator_Credits;
 
@@ -471,16 +471,16 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Version
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Version : UTF8_String)
    is
       procedure Internal
-         (Self    : System.Address;
+         (About   : System.Address;
           Version : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_version");
       Tmp_Version : Interfaces.C.Strings.chars_ptr := New_String (Version);
    begin
-      Internal (Get_Object (Self), Tmp_Version);
+      Internal (Get_Object (About), Tmp_Version);
       Free (Tmp_Version);
    end Set_Version;
 
@@ -489,16 +489,16 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Website
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Website : UTF8_String)
    is
       procedure Internal
-         (Self    : System.Address;
+         (About   : System.Address;
           Website : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website");
       Tmp_Website : Interfaces.C.Strings.chars_ptr := New_String (Website);
    begin
-      Internal (Get_Object (Self), Tmp_Website);
+      Internal (Get_Object (About), Tmp_Website);
       Free (Tmp_Website);
    end Set_Website;
 
@@ -507,16 +507,16 @@ package body Gtk.About_Dialog is
    -----------------------
 
    procedure Set_Website_Label
-      (Self          : access Gtk_About_Dialog_Record;
+      (About         : access Gtk_About_Dialog_Record;
        Website_Label : UTF8_String)
    is
       procedure Internal
-         (Self          : System.Address;
+         (About         : System.Address;
           Website_Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website_label");
       Tmp_Website_Label : Interfaces.C.Strings.chars_ptr := New_String (Website_Label);
    begin
-      Internal (Get_Object (Self), Tmp_Website_Label);
+      Internal (Get_Object (About), Tmp_Website_Label);
       Free (Tmp_Website_Label);
    end Set_Website_Label;
 
@@ -525,13 +525,13 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_Wrap_License
-      (Self         : access Gtk_About_Dialog_Record;
+      (About        : access Gtk_About_Dialog_Record;
        Wrap_License : Boolean)
    is
-      procedure Internal (Self : System.Address; Wrap_License : Integer);
+      procedure Internal (About : System.Address; Wrap_License : Integer);
       pragma Import (C, Internal, "gtk_about_dialog_set_wrap_license");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Wrap_License));
+      Internal (Get_Object (About), Boolean'Pos (Wrap_License));
    end Set_Wrap_License;
 
    --------------------

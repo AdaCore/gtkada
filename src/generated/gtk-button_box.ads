@@ -64,21 +64,21 @@ package Gtk.Button_Box is
    -------------
 
    procedure Get_Child_Ipadding
-      (Self   : access Gtk_Button_Box_Record;
+      (Widget : access Gtk_Button_Box_Record;
        Ipad_X : out Gint;
        Ipad_Y : out Gint);
    procedure Set_Child_Ipadding
-      (Self   : access Gtk_Button_Box_Record;
+      (Widget : access Gtk_Button_Box_Record;
        Ipad_X : Gint;
        Ipad_Y : Gint);
    pragma Obsolescent;
    --  Deprecated
 
    function Get_Child_Secondary
-      (Self  : access Gtk_Button_Box_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+      (Widget : access Gtk_Button_Box_Record;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
    procedure Set_Child_Secondary
-      (Self         : access Gtk_Button_Box_Record;
+      (Widget       : access Gtk_Button_Box_Record;
        Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean);
    --  Set whether Child should appear in a secondary group of children. A
@@ -95,22 +95,22 @@ package Gtk.Button_Box is
    --  button box.
 
    procedure Get_Child_Size
-      (Self       : access Gtk_Button_Box_Record;
+      (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : out Gint;
        Min_Height : out Gint);
    pragma Obsolescent;
    procedure Set_Child_Size
-      (Self       : access Gtk_Button_Box_Record;
+      (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : Gint;
        Min_Height : Gint);
    pragma Obsolescent;
    --  Deprecated
 
    function Get_Layout
-      (Self : access Gtk_Button_Box_Record)
+      (Widget : access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
    procedure Set_Layout
-      (Self         : access Gtk_Button_Box_Record;
+      (Widget       : access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
 
    ----------------

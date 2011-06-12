@@ -57,8 +57,8 @@ package Gtk.Curve is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Curve);
-   procedure Initialize (Self : access Gtk_Curve_Record'Class);
+   procedure Gtk_New (Curve : out Gtk_Curve);
+   procedure Initialize (Curve : access Gtk_Curve_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_curve_get_type");
@@ -67,26 +67,26 @@ package Gtk.Curve is
    -- Methods --
    -------------
 
-   procedure Reset (Self : access Gtk_Curve_Record);
+   procedure Reset (Curve : access Gtk_Curve_Record);
    --  Reset the curve. Reset to a straight line from the minimum x & y values
    --  to the maximum x & y values (i.e. from the bottom-left to the top-right
    --  corners). The curve type is not changed.
 
    procedure Set_Curve_Type
-      (Self     : access Gtk_Curve_Record;
+      (Curve    : access Gtk_Curve_Record;
        The_Type : Gtk.Enums.Gtk_Curve_Type);
    --  Set the type of the curve. The curve will remain unchanged except when
    --  changing from a free curve to a linear or spline curve, in which case
    --  the curve will be changed as little as possible.
 
-   procedure Set_Gamma (Self : access Gtk_Curve_Record; Gamma : Gfloat);
+   procedure Set_Gamma (Curve : access Gtk_Curve_Record; Gamma : Gfloat);
    --  Recompute the entire curve using the given gamma value. A gamma value
    --  of 1.0 results in a straight line. Values greater than 1.0 result in a
    --  curve above the straight line. Values less than 1.0 result in a curve
    --  below the straight line. The curve type is changed to Curve_Type_Free.
 
    procedure Set_Range
-      (Self  : access Gtk_Curve_Record;
+      (Curve : access Gtk_Curve_Record;
        Min_X : Gfloat;
        Max_X : Gfloat;
        Min_Y : Gfloat;

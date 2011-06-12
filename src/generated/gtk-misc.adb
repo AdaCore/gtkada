@@ -42,17 +42,17 @@ package body Gtk.Misc is
    -------------------
 
    procedure Get_Alignment
-      (Self   : access Gtk_Misc_Record;
+      (Misc   : access Gtk_Misc_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Misc   : System.Address;
           Xalign : out Gfloat;
           Yalign : out Gfloat);
       pragma Import (C, Internal, "gtk_misc_get_alignment");
    begin
-      Internal (Get_Object (Self), Xalign, Yalign);
+      Internal (Get_Object (Misc), Xalign, Yalign);
    end Get_Alignment;
 
    -----------------
@@ -60,17 +60,17 @@ package body Gtk.Misc is
    -----------------
 
    procedure Get_Padding
-      (Self : access Gtk_Misc_Record;
+      (Misc : access Gtk_Misc_Record;
        Xpad : out Gint;
        Ypad : out Gint)
    is
       procedure Internal
-         (Self : System.Address;
+         (Misc : System.Address;
           Xpad : out Gint;
           Ypad : out Gint);
       pragma Import (C, Internal, "gtk_misc_get_padding");
    begin
-      Internal (Get_Object (Self), Xpad, Ypad);
+      Internal (Get_Object (Misc), Xpad, Ypad);
    end Get_Padding;
 
    -------------------
@@ -78,17 +78,17 @@ package body Gtk.Misc is
    -------------------
 
    procedure Set_Alignment
-      (Self   : access Gtk_Misc_Record;
+      (Misc   : access Gtk_Misc_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Misc   : System.Address;
           Xalign : Gfloat;
           Yalign : Gfloat);
       pragma Import (C, Internal, "gtk_misc_set_alignment");
    begin
-      Internal (Get_Object (Self), Xalign, Yalign);
+      Internal (Get_Object (Misc), Xalign, Yalign);
    end Set_Alignment;
 
    -----------------
@@ -96,14 +96,14 @@ package body Gtk.Misc is
    -----------------
 
    procedure Set_Padding
-      (Self : access Gtk_Misc_Record;
+      (Misc : access Gtk_Misc_Record;
        Xpad : Gint;
        Ypad : Gint)
    is
-      procedure Internal (Self : System.Address; Xpad : Gint; Ypad : Gint);
+      procedure Internal (Misc : System.Address; Xpad : Gint; Ypad : Gint);
       pragma Import (C, Internal, "gtk_misc_set_padding");
    begin
-      Internal (Get_Object (Self), Xpad, Ypad);
+      Internal (Get_Object (Misc), Xpad, Ypad);
    end Set_Padding;
 
 end Gtk.Misc;

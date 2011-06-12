@@ -50,8 +50,8 @@ package Gtk.Vbutton_Box is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Vbutton_Box);
-   procedure Initialize (Self : access Gtk_Vbutton_Box_Record'Class);
+   procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
+   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record'Class);
    --  Creates a new vertical button box.
 
    function Get_Type return Glib.GType;

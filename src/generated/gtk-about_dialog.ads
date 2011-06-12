@@ -80,8 +80,8 @@ package Gtk.About_Dialog is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_About_Dialog);
-   procedure Initialize (Self : access Gtk_About_Dialog_Record'Class);
+   procedure Gtk_New (About : out Gtk_About_Dialog);
+   procedure Initialize (About : access Gtk_About_Dialog_Record'Class);
    --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.
    --  Since: gtk+ 2.6
 
@@ -93,10 +93,10 @@ package Gtk.About_Dialog is
    -------------
 
    function Get_Artists
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List;
    procedure Set_Artists
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Artists : GNAT.Strings.String_List);
    --  Sets the strings which are displayed in the artists tab of the
    --  secondary credits dialog.
@@ -104,10 +104,10 @@ package Gtk.About_Dialog is
    --  "artists": a null-terminated array of strings
 
    function Get_Authors
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List;
    procedure Set_Authors
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Authors : GNAT.Strings.String_List);
    --  Sets the strings which are displayed in the authors tab of the
    --  secondary credits dialog.
@@ -115,9 +115,9 @@ package Gtk.About_Dialog is
    --  "authors": a null-terminated array of strings
 
    function Get_Comments
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Comments
-      (Self     : access Gtk_About_Dialog_Record;
+      (About    : access Gtk_About_Dialog_Record;
        Comments : UTF8_String);
    --  Sets the comments string to display in the about dialog. This should be
    --  a short string of one or two lines.
@@ -125,9 +125,9 @@ package Gtk.About_Dialog is
    --  "comments": a comments string
 
    function Get_Copyright
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Copyright
-      (Self      : access Gtk_About_Dialog_Record;
+      (About     : access Gtk_About_Dialog_Record;
        Copyright : UTF8_String);
    --  Sets the copyright string to display in the about dialog. This should
    --  be a short string of one or two lines.
@@ -135,10 +135,10 @@ package Gtk.About_Dialog is
    --  "copyright": (allow-none) the copyright string
 
    function Get_Documenters
-      (Self : access Gtk_About_Dialog_Record)
+      (About : access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List;
    procedure Set_Documenters
-      (Self        : access Gtk_About_Dialog_Record;
+      (About       : access Gtk_About_Dialog_Record;
        Documenters : GNAT.Strings.String_List);
    --  Sets the strings which are displayed in the documenters tab of the
    --  secondary credits dialog.
@@ -146,9 +146,9 @@ package Gtk.About_Dialog is
    --  "documenters": a null-terminated array of strings
 
    function Get_License
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_License
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        License : UTF8_String);
    --  Sets the license information to be displayed in the secondary license
    --  dialog. If License is null, the license button is hidden.
@@ -156,10 +156,10 @@ package Gtk.About_Dialog is
    --  "license": the license information or null
 
    function Get_Logo
-      (Self : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+      (About : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    procedure Set_Logo
-      (Self : access Gtk_About_Dialog_Record;
-       Logo : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+      (About : access Gtk_About_Dialog_Record;
+       Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
    --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
    --  be used.
@@ -167,9 +167,9 @@ package Gtk.About_Dialog is
    --  "logo": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    function Get_Logo_Icon_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Logo_Icon_Name
-      (Self      : access Gtk_About_Dialog_Record;
+      (About     : access Gtk_About_Dialog_Record;
        Icon_Name : UTF8_String);
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
    --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
@@ -178,11 +178,11 @@ package Gtk.About_Dialog is
    --  "icon_name": an icon name, or null
 
    function Get_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    pragma Obsolescent;
    procedure Set_Name
-      (Self : access Gtk_About_Dialog_Record;
-       Name : UTF8_String);
+      (About : access Gtk_About_Dialog_Record;
+       Name  : UTF8_String);
    pragma Obsolescent;
    --  Sets the name to display in the about dialog. If this is not set, it
    --  defaults to g_get_application_name.
@@ -191,19 +191,19 @@ package Gtk.About_Dialog is
    --  "name": the program name
 
    function Get_Program_Name
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Program_Name
-      (Self : access Gtk_About_Dialog_Record;
-       Name : UTF8_String);
+      (About : access Gtk_About_Dialog_Record;
+       Name  : UTF8_String);
    --  Sets the name to display in the about dialog. If this is not set, it
    --  defaults to g_get_application_name.
    --  Since: gtk+ 2.12
    --  "name": the program name
 
    function Get_Translator_Credits
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Translator_Credits
-      (Self               : access Gtk_About_Dialog_Record;
+      (About              : access Gtk_About_Dialog_Record;
        Translator_Credits : UTF8_String);
    --  Sets the translator credits string which is displayed in the
    --  translators tab of the secondary credits dialog. The intended use for
@@ -220,18 +220,18 @@ package Gtk.About_Dialog is
    --  "translator_credits": the translator credits
 
    function Get_Version
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Version
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Version : UTF8_String);
    --  Sets the version string to display in the about dialog.
    --  Since: gtk+ 2.6
    --  "version": the version string
 
    function Get_Website
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Website
-      (Self    : access Gtk_About_Dialog_Record;
+      (About   : access Gtk_About_Dialog_Record;
        Website : UTF8_String);
    --  Sets the URL to use for the website link. Note that that the hook
    --  functions need to be set up before calling this function.
@@ -239,9 +239,9 @@ package Gtk.About_Dialog is
    --  "website": a URL string starting with "http://"
 
    function Get_Website_Label
-      (Self : access Gtk_About_Dialog_Record) return UTF8_String;
+      (About : access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Website_Label
-      (Self          : access Gtk_About_Dialog_Record;
+      (About         : access Gtk_About_Dialog_Record;
        Website_Label : UTF8_String);
    --  Sets the label to be used for the website link. It defaults to the
    --  website URL.
@@ -249,9 +249,9 @@ package Gtk.About_Dialog is
    --  "website_label": the label used for the website link
 
    function Get_Wrap_License
-      (Self : access Gtk_About_Dialog_Record) return Boolean;
+      (About : access Gtk_About_Dialog_Record) return Boolean;
    procedure Set_Wrap_License
-      (Self         : access Gtk_About_Dialog_Record;
+      (About        : access Gtk_About_Dialog_Record;
        Wrap_License : Boolean);
    --  Sets whether the license text in About is automatically wrapped.
    --  Since: gtk+ 2.8

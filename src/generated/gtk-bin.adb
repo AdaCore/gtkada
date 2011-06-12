@@ -42,13 +42,13 @@ package body Gtk.Bin is
    ---------------
 
    function Get_Child
-      (Self : access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget
+      (Bin : access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Bin : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_bin_get_child");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Bin)), Stub));
    end Get_Child;
 
 end Gtk.Bin;

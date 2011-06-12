@@ -34,12 +34,12 @@
 --  window, and thus can not directly get events from the server. The
 --  Gtk_Event_Box widget can be used to force its child to receive events
 --  anyway.
---
+-- 
 --  For instance, this widget is used internally in a Gtk_Combo_Box so that
 --  the application can change the cursor when the mouse is in the popup
 --  window. In that case, it contains a frame, that itself contains the
 --  scrolled window of the popup.
---
+-- 
 --  </description>
 --  <group>Layout Containers</group>
 
@@ -118,11 +118,11 @@ package Gtk.Event_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
+   -- 
    --  Name: Above_Child_Property
    --  Type: Boolean
    --  Flags: read-write
-   --
+   -- 
    --  Name: Visible_Window_Property
    --  Type: Boolean
    --  Flags: read-write

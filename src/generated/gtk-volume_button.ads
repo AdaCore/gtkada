@@ -47,8 +47,8 @@ package Gtk.Volume_Button is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Volume_Button);
-   procedure Initialize (Self : access Gtk_Volume_Button_Record'Class);
+   procedure Gtk_New (Widget : out Gtk_Volume_Button);
+   procedure Initialize (Widget : access Gtk_Volume_Button_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_volume_button_get_type");

@@ -42,13 +42,13 @@ package body Gtk.Viewport is
    -------------
 
    procedure Gtk_New
-      (Self        : out Gtk_Viewport;
+      (Viewport    : out Gtk_Viewport;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
    begin
-      Self := new Gtk_Viewport_Record;
-      Gtk.Viewport.Initialize (Self, Hadjustment, Vadjustment);
+      Viewport := new Gtk_Viewport_Record;
+      Gtk.Viewport.Initialize (Viewport, Hadjustment, Vadjustment);
    end Gtk_New;
 
    ----------------
@@ -56,7 +56,7 @@ package body Gtk.Viewport is
    ----------------
 
    procedure Initialize
-      (Self        : access Gtk_Viewport_Record'Class;
+      (Viewport    : access Gtk_Viewport_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
@@ -65,7 +65,7 @@ package body Gtk.Viewport is
           Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_new");
    begin
-      Set_Object (Self, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      Set_Object (Viewport, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
    end Initialize;
 
    --------------------
@@ -73,12 +73,13 @@ package body Gtk.Viewport is
    --------------------
 
    function Get_Bin_Window
-      (Self : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal
+         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_bin_window");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Viewport));
    end Get_Bin_Window;
 
    ---------------------
@@ -86,14 +87,14 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Viewport : access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
    end Get_Hadjustment;
 
    ---------------------
@@ -101,12 +102,13 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Shadow_Type
-      (Self : access Gtk_Viewport_Record) return Gtk.Enums.Gtk_Shadow_Type
+      (Viewport : access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Viewport : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_viewport_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Self)));
+      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Viewport)));
    end Get_Shadow_Type;
 
    ---------------------
@@ -114,14 +116,14 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Viewport : access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
    end Get_Vadjustment;
 
    ---------------------
@@ -129,12 +131,13 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_View_Window
-      (Self : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal
+         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_view_window");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Viewport));
    end Get_View_Window;
 
    ---------------------
@@ -142,15 +145,15 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Hadjustment
-      (Self       : access Gtk_Viewport_Record;
+      (Viewport   : access Gtk_Viewport_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
-         (Self       : System.Address;
+         (Viewport   : System.Address;
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Viewport), Get_Object_Or_Null (GObject (Adjustment)));
    end Set_Hadjustment;
 
    ---------------------
@@ -158,13 +161,13 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Self     : access Gtk_Viewport_Record;
+      (Viewport : access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Self : System.Address; The_Type : Integer);
+      procedure Internal (Viewport : System.Address; The_Type : Integer);
       pragma Import (C, Internal, "gtk_viewport_set_shadow_type");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Viewport), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
    ---------------------
@@ -172,15 +175,15 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Vadjustment
-      (Self       : access Gtk_Viewport_Record;
+      (Viewport   : access Gtk_Viewport_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
-         (Self       : System.Address;
+         (Viewport   : System.Address;
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Viewport), Get_Object_Or_Null (GObject (Adjustment)));
    end Set_Vadjustment;
 
 end Gtk.Viewport;

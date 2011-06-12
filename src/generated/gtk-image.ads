@@ -74,15 +74,15 @@ package Gtk.Image is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Image);
-   procedure Initialize (Self : access Gtk_Image_Record'Class);
+   procedure Gtk_New (Image : out Gtk_Image);
+   procedure Initialize (Image : access Gtk_Image_Record'Class);
    --  Creates a new empty Gtk.Image.Gtk_Image widget.
 
    procedure Gtk_New
-      (Self      : out Gtk_Image;
+      (Image     : out Gtk_Image;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
    procedure Initialize
-      (Self      : access Gtk_Image_Record'Class;
+      (Image     : access Gtk_Image_Record'Class;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
    --  Creates a Gtk.Image.Gtk_Image displaying the given animation. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the animation; you
@@ -94,9 +94,9 @@ package Gtk.Image is
    --  a higher priority.
    --  "animation": an animation
 
-   procedure Gtk_New (Self : out Gtk_Image; Filename : UTF8_String);
+   procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String);
    procedure Initialize
-      (Self     : access Gtk_Image_Record'Class;
+      (Image    : access Gtk_Image_Record'Class;
        Filename : UTF8_String);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
@@ -111,13 +111,13 @@ package Gtk.Image is
    --  "filename": a filename
 
    procedure Gtk_New_From_Gicon
-      (Self : out Gtk_Image;
-       Icon : Glib.G_Icon.G_Icon;
-       Size : Gtk.Enums.Gtk_Icon_Size);
+      (Image : out Gtk_Image;
+       Icon  : Glib.G_Icon.G_Icon;
+       Size  : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize_From_Gicon
-      (Self : access Gtk_Image_Record'Class;
-       Icon : Glib.G_Icon.G_Icon;
-       Size : Gtk.Enums.Gtk_Icon_Size);
+      (Image : access Gtk_Image_Record'Class;
+       Icon  : Glib.G_Icon.G_Icon;
+       Size  : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
    --  theme. If the icon name isn't known, a "broken image" icon will be
    --  displayed instead. If the current icon theme is changed, the icon will
@@ -127,11 +127,11 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Gtk_New_From_Icon_Name
-      (Self      : out Gtk_Image;
+      (Image     : out Gtk_Image;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize_From_Icon_Name
-      (Self      : access Gtk_Image_Record'Class;
+      (Image     : access Gtk_Image_Record'Class;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
@@ -143,11 +143,11 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Gtk_New
-      (Self     : out Gtk_Image;
+      (Image    : out Gtk_Image;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize
-      (Self     : access Gtk_Image_Record'Class;
+      (Image    : access Gtk_Image_Record'Class;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon set. Sample stock
@@ -164,12 +164,12 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Gtk_New
-      (Self  : out Gtk_Image;
-       Image : Gdk.Image.Gdk_Image;
+      (Image : out Gtk_Image;
+       Val   : Gdk.Image.Gdk_Image;
        Mask  : Gdk.Bitmap.Gdk_Bitmap);
    procedure Initialize
-      (Self  : access Gtk_Image_Record'Class;
-       Image : Gdk.Image.Gdk_Image;
+      (Image : access Gtk_Image_Record'Class;
+       Val   : Gdk.Image.Gdk_Image;
        Mask  : Gdk.Bitmap.Gdk_Bitmap);
    --  Creates a Gtk.Image.Gtk_Image widget displaying a Image with a Mask. A
    --  GdkImage is a client-side image buffer in the pixel format of the
@@ -177,14 +177,14 @@ package Gtk.Image is
    --  the image or mask; you still need to unref them if you own references.
    --  Gtk.Image.Gtk_Image will add its own reference rather than adopting
    --  yours.
-   --  "image": a GdkImage, or null
+   --  "Val": a GdkImage, or null
    --  "mask": a GdkBitmap, or null
 
    procedure Gtk_New
-      (Self   : out Gtk_Image;
+      (Image  : out Gtk_Image;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    procedure Initialize
-      (Self   : access Gtk_Image_Record'Class;
+      (Image  : access Gtk_Image_Record'Class;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Creates a new Gtk.Image.Gtk_Image displaying Pixbuf. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the pixbuf; you still
@@ -196,11 +196,11 @@ package Gtk.Image is
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Gtk_New
-      (Self   : out Gtk_Image;
+      (Image  : out Gtk_Image;
        Pixmap : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap);
    procedure Initialize
-      (Self   : access Gtk_Image_Record'Class;
+      (Image  : access Gtk_Image_Record'Class;
        Pixmap : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap);
    --  Creates a Gtk.Image.Gtk_Image widget displaying Pixmap with a Mask. A
@@ -213,11 +213,11 @@ package Gtk.Image is
    --  "mask": a GdkBitmap, or null
 
    procedure Gtk_New
-      (Self     : out Gtk_Image;
+      (Image    : out Gtk_Image;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize
-      (Self     : access Gtk_Image_Record'Class;
+      (Image    : access Gtk_Image_Record'Class;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying a stock icon. Sample stock
@@ -235,29 +235,29 @@ package Gtk.Image is
    -- Methods --
    -------------
 
-   procedure Clear (Self : access Gtk_Image_Record);
+   procedure Clear (Image : access Gtk_Image_Record);
    --  Resets the image to be empty.
    --  Since: gtk+ 2.8
 
    function Get
-      (Self : access Gtk_Image_Record)
+      (Image : access Gtk_Image_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf_Animation;
    procedure Get
-      (Self  : access Gtk_Image_Record;
+      (Image : access Gtk_Image_Record;
        Gicon : out Glib.G_Icon.G_Icon;
        Size  : out Gtk.Enums.Gtk_Icon_Size);
    procedure Get
-      (Self     : access Gtk_Image_Record;
+      (Image    : access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
    procedure Get
-      (Self      : access Gtk_Image_Record;
+      (Image     : access Gtk_Image_Record;
        Gdk_Image : out Gdk.Image.Gdk_Image;
        Mask      : out Gdk.Bitmap.Gdk_Bitmap);
    function Get
-      (Self : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+      (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    procedure Get
-      (Self   : access Gtk_Image_Record;
+      (Image  : access Gtk_Image_Record;
        Pixmap : out Gdk.Pixmap.Gdk_Pixmap;
        Mask   : out Gdk.Bitmap.Gdk_Bitmap);
    --  Gets the pixmap and mask being displayed by the Gtk.Image.Gtk_Image.
@@ -267,9 +267,9 @@ package Gtk.Image is
    --  "pixmap": location to store the pixmap, or null
    --  "mask": location to store the mask, or null
 
-   function Get_Pixel_Size (Self : access Gtk_Image_Record) return Gint;
+   function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint;
    procedure Set_Pixel_Size
-      (Self       : access Gtk_Image_Record;
+      (Image      : access Gtk_Image_Record;
        Pixel_Size : Gint);
    --  Sets the pixel size to use for named icons. If the pixel size is set to
    --  a value != -1, it is used instead of the icon size set by
@@ -278,36 +278,36 @@ package Gtk.Image is
    --  "pixel_size": the new pixel size
 
    function Get_Storage_Type
-      (Self : access Gtk_Image_Record) return Gtk_Image_Type;
+      (Image : access Gtk_Image_Record) return Gtk_Image_Type;
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
    --  return value will be %GTK_IMAGE_EMPTY.
 
    procedure Set
-      (Self      : access Gtk_Image_Record;
+      (Image     : access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
-   procedure Set (Self : access Gtk_Image_Record; Filename : UTF8_String);
+   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String);
    procedure Set
-      (Self : access Gtk_Image_Record;
-       Icon : Glib.G_Icon.G_Icon;
-       Size : Gtk.Enums.Gtk_Icon_Size);
+      (Image : access Gtk_Image_Record;
+       Icon  : Glib.G_Icon.G_Icon;
+       Size  : Gtk.Enums.Gtk_Icon_Size);
    procedure Set
-      (Self     : access Gtk_Image_Record;
+      (Image    : access Gtk_Image_Record;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Set
-      (Self      : access Gtk_Image_Record;
+      (Image     : access Gtk_Image_Record;
        Gdk_Image : Gdk.Image.Gdk_Image;
        Mask      : Gdk.Bitmap.Gdk_Bitmap);
    procedure Set
-      (Self   : access Gtk_Image_Record;
+      (Image  : access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    procedure Set
-      (Self   : access Gtk_Image_Record;
+      (Image  : access Gtk_Image_Record;
        Pixmap : Gdk.Pixmap.Gdk_Pixmap;
        Mask   : Gdk.Bitmap.Gdk_Bitmap);
    procedure Set
-      (Self     : access Gtk_Image_Record;
+      (Image    : access Gtk_Image_Record;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  See Gtk.Image.Gtk_New for details.
@@ -315,7 +315,7 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Set_From_Icon_Name
-      (Self      : access Gtk_Image_Record;
+      (Image     : access Gtk_Image_Record;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    --  See Gtk.Image.Gtk_New_From_Icon_Name for details.

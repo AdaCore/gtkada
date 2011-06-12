@@ -41,42 +41,42 @@ package body Gtk.Paned is
    -- Gtk_New_Hpaned --
    --------------------
 
-   procedure Gtk_New_Hpaned (Self : out Gtk_Hpaned) is
+   procedure Gtk_New_Hpaned (Paned : out Gtk_Hpaned) is
    begin
-      Self := new Gtk_Hpaned_Record;
-      Gtk.Paned.Initialize_Hpaned (Self);
+      Paned := new Gtk_Hpaned_Record;
+      Gtk.Paned.Initialize_Hpaned (Paned);
    end Gtk_New_Hpaned;
 
    --------------------
    -- Gtk_New_Vpaned --
    --------------------
 
-   procedure Gtk_New_Vpaned (Self : out Gtk_Vpaned) is
+   procedure Gtk_New_Vpaned (Paned : out Gtk_Vpaned) is
    begin
-      Self := new Gtk_Vpaned_Record;
-      Gtk.Paned.Initialize_Vpaned (Self);
+      Paned := new Gtk_Vpaned_Record;
+      Gtk.Paned.Initialize_Vpaned (Paned);
    end Gtk_New_Vpaned;
 
    -----------------------
    -- Initialize_Hpaned --
    -----------------------
 
-   procedure Initialize_Hpaned (Self : access Gtk_Hpaned_Record'Class) is
+   procedure Initialize_Hpaned (Paned : access Gtk_Hpaned_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hpaned_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Paned, Internal);
    end Initialize_Hpaned;
 
    -----------------------
    -- Initialize_Vpaned --
    -----------------------
 
-   procedure Initialize_Vpaned (Self : access Gtk_Vpaned_Record'Class) is
+   procedure Initialize_Vpaned (Paned : access Gtk_Vpaned_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Paned, Internal);
    end Initialize_Vpaned;
 
    ----------
@@ -112,19 +112,19 @@ package body Gtk.Paned is
    ----------------------
 
    procedure Compute_Position
-      (Self       : access Gtk_Paned_Record;
+      (Paned      : access Gtk_Paned_Record;
        Allocation : Gint;
        Child1_Req : Gint;
        Child2_Req : Gint)
    is
       procedure Internal
-         (Self       : System.Address;
+         (Paned      : System.Address;
           Allocation : Gint;
           Child1_Req : Gint;
           Child2_Req : Gint);
       pragma Import (C, Internal, "gtk_paned_compute_position");
    begin
-      Internal (Get_Object (Self), Allocation, Child1_Req, Child2_Req);
+      Internal (Get_Object (Paned), Allocation, Child1_Req, Child2_Req);
    end Compute_Position;
 
    ----------------
@@ -132,13 +132,13 @@ package body Gtk.Paned is
    ----------------
 
    function Get_Child1
-      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
    end Get_Child1;
 
    ----------------
@@ -146,13 +146,13 @@ package body Gtk.Paned is
    ----------------
 
    function Get_Child2
-      (Self : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
    end Get_Child2;
 
    -----------------------
@@ -160,23 +160,24 @@ package body Gtk.Paned is
    -----------------------
 
    function Get_Handle_Window
-      (Self : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window
+      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal
+         (Paned : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "gtk_paned_get_handle_window");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Paned));
    end Get_Handle_Window;
 
    ------------------
    -- Get_Position --
    ------------------
 
-   function Get_Position (Self : access Gtk_Paned_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Position (Paned : access Gtk_Paned_Record) return Gint is
+      function Internal (Paned : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_paned_get_position");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Paned));
    end Get_Position;
 
    -----------
@@ -223,11 +224,11 @@ package body Gtk.Paned is
    -- Set_Position --
    ------------------
 
-   procedure Set_Position (Self : access Gtk_Paned_Record; Position : Gint) is
-      procedure Internal (Self : System.Address; Position : Gint);
+   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint) is
+      procedure Internal (Paned : System.Address; Position : Gint);
       pragma Import (C, Internal, "gtk_paned_set_position");
    begin
-      Internal (Get_Object (Self), Position);
+      Internal (Get_Object (Paned), Position);
    end Set_Position;
 
 end Gtk.Paned;

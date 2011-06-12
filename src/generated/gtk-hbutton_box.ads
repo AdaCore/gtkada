@@ -50,8 +50,8 @@ package Gtk.Hbutton_Box is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Hbutton_Box);
-   procedure Initialize (Self : access Gtk_Hbutton_Box_Record'Class);
+   procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_hbutton_box_get_type");

@@ -41,21 +41,21 @@ package body Gtk.Volume_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Volume_Button) is
+   procedure Gtk_New (Widget : out Gtk_Volume_Button) is
    begin
-      Self := new Gtk_Volume_Button_Record;
-      Gtk.Volume_Button.Initialize (Self);
+      Widget := new Gtk_Volume_Button_Record;
+      Gtk.Volume_Button.Initialize (Widget);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Volume_Button_Record'Class) is
+   procedure Initialize (Widget : access Gtk_Volume_Button_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_volume_button_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Widget, Internal);
    end Initialize;
 
 end Gtk.Volume_Button;
