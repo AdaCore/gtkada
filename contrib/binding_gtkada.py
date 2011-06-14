@@ -61,6 +61,10 @@ Where the package node is defined as follows:
                                 profile -->
        />
 
+       <function id="...">   <!--  repeated as needed, for global functions -->
+                             <!--  content is same as <method> -->
+       </function>
+
        <extra>
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
           <with_spec pkg="..."/>  <!-- extra with clauses for spec -->
@@ -184,11 +188,24 @@ class GtkAdaPackage(object):
                     return p
         return None
 
+    def get_global_functions(self):
+        """Return the list of global functions that should be bound as part
+           of this package.
+        """
+        if self.node is not None:
+            return [GtkAdaMethod(c, self)
+                    for c in self.node.findall("function")]
+        return []
+
 
 class GtkAdaMethod(object):
     def __init__(self, node, pkg):
         self.node = node
         self.pkg  = pkg
+
+    def cname(self):
+        """Return the name of the C function"""
+        return self.node.get("id")
 
     def get_param(self, name):
         default = self.pkg.get_default_param_node(name)

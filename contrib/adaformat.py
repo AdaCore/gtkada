@@ -51,6 +51,10 @@ class AdaNaming(object):
                                             "Gdk.Pixbuf.Gdk_New_From_File",
             "gdk_pixbuf_new":               "Gdk.Pixbuf.Gdk_New",
             "gdk_pixbuf_new_subpixbuf":     "Gdk.Pixbuf.Gdk_New_Subpixbuf",
+            "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
+            "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
+
+            #"gtk_accel_groups_activate":    "Gtk.Accel_Group.Activate",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
@@ -99,11 +103,12 @@ class AdaNaming(object):
             "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
             "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
 
-            "Object":     GObject("Glib.Object.GObject"),
+            "GObject*":     GObject("Glib.Object.GObject"),
 
             # Specific to this binding generator (referenced from binding.xml)
             "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
             "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
+            "ObjectSList": List("Glib.Object.Object_List.GSList"),
             "StringList":  List("Gtk.Enums.String_List.Glist"),
             "MessagesList": List("Gtk.Status_Bar.Messages_List.GSlist"),
 
@@ -126,6 +131,7 @@ class AdaNaming(object):
             "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
 
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
+            "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
             "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
             "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
@@ -156,6 +162,8 @@ class AdaNaming(object):
             "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
             "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
             "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+            "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
+            "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
         }
 
     def add_type_exception(self, cname, type, override=False):

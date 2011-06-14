@@ -66,6 +66,8 @@ class GIR(object):
             naming.add_girname(girname=cl.get("name"), ctype=cl.get(ctype))
             self.classes[cl.get("name")] = GIRClass(self, cl)
 
+        self.globals = GlobalsBinder(self, self.root) # global vars
+
     def debug(self, element):
         """A debug form of element"""
         return tostring(element)
@@ -87,6 +89,23 @@ class GIR(object):
             out.write("\n")
 
         cout.write(self.ccode)
+
+
+class GlobalsBinder(object):
+    def __init__(self, gir, node):
+        self.gir = gir
+        self.globals = dict()
+
+        k = "{%(uri)s}namespace/{%(uri)s}function" % {"uri":uri}
+        all = node.findall(k)
+        if all is not None:
+            for c in all:
+                id = c.get(cidentifier)
+                self.globals[id] = c
+
+    def get_function(self, id):
+        """Return the XML node corresponding to a global function"""
+        return self.globals[id]
 
 
 class GIRClass(object):
@@ -174,96 +193,6 @@ class GIRClass(object):
 
         return result;
 
-    def _constructors(self):
-        section = self.pkg.section("Constructors")
-
-        n = QName(uri, "constructor").text
-        for c in self.node.findall(n):
-            name = c.get("name").title()
-            cname = c.get(cidentifier)
-
-            gtkmethod = self.gtkpkg.get_method(cname=cname)
-            if not gtkmethod.bind():
-                continue
-
-            params = self._parameters(c, gtkmethod)
-            if params is None:
-                naming.add_cmethod(cname, cname)  # Avoid warning later on.
-                print "No binding for %s: varargs" % cname
-                continue
-
-            format_params = ", ".join(p.name for p in params)
-            if format_params:
-                self._subst["internal_params"] = " (%s)" % format_params
-                format_params = ", " + format_params
-                self._subst["params"] = format_params
-            else:
-                self._subst["params"] = ""
-                self._subst["internal_params"] = ""
-
-            returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
-            local_vars = []
-            code = []
-            plist = self._c_plist(params, returns, local_vars, code)
-            internal = Subprogram(
-                name="Internal",
-                plist=plist,
-                returns=returns).import_c(cname)
-
-            call = internal.call()
-            assert(call[1] is not None)   # A function
-
-            adaname = gtkmethod.ada_name() or "Gtk_%s" % name
-
-            doc = self._getdoc(gtkmethod, c)
-
-            selfname = gtkmethod.get_param("self").ada_name() or "Self"
-
-            initialize_params = [Parameter(
-                name=selfname,
-                type=AdaType("%(typename)s_Record'Class" % self._subst,
-                             pkg=self.pkg, in_spec=True),
-                mode="access")] + params
-            initialize = Subprogram(
-                name=adaname.replace("Gtk_New", "Initialize"),
-                plist=initialize_params,
-                local_vars=local_vars + call[2],
-                doc=doc,
-                code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
-                ).add_nested(internal)
-
-            call = initialize.call(in_pkg=self.pkg)
-            assert(call[1] is None)  # This is a procedure
-
-            naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
-            gtk_new = Subprogram(
-                name=adaname,
-                plist=[Parameter(
-                    name=selfname,
-                    type=AdaType("%(typename)s" % self._subst,
-                                 pkg=self.pkg, in_spec=True),
-                    mode="out")] + params,
-                local_vars=call[2],
-                code=selfname + " := new %(typename)s_Record;" % self._subst
-                   + call[0],
-                doc=doc)
-
-            section.add(gtk_new, initialize)
-
-    def _functions(self):
-        all = self.node.findall(nfunction)
-        if all is not None:
-            section = self.pkg.section("Functions")
-            for c in all:
-                self._handle_function(section, c)
-
-    def _methods(self):
-        all = self.node.findall(nmethod)
-        if all is not None:
-            section = self.pkg.section("Methods")
-            for c in all:
-                self._handle_function(section, c, ismethod=True)
-
     def _getdoc(self, gtkmethod, node):
         doc = gtkmethod.get_doc() or node.findtext(ndoc, "")
         if node.get("version"):
@@ -279,9 +208,12 @@ class GIRClass(object):
         else:
             return CType(name=None, cname=returns, pkg=self.pkg)
 
-    def _handle_function(self, section, c, ismethod=False):
+    def _handle_function(self, section, c, ismethod=False, gtkmethod=None):
         cname = c.get(cidentifier)
-        gtkmethod = self.gtkpkg.get_method(cname=cname)
+
+        if gtkmethod is None:
+            gtkmethod = self.gtkpkg.get_method(cname=cname)
+
         if gtkmethod.bind("true"):
             self._handle_function_internal(
                 section, node=c, cname=cname,
@@ -303,8 +235,6 @@ class GIRClass(object):
            `params' is the list of parameters. If set to None, it is computed
            automatically from `node'.
         """
-
-        gtkmethod = self.gtkpkg.get_method(cname=cname)
 
         if params is None:
             params = self._parameters(node, gtkmethod)
@@ -381,6 +311,104 @@ class GIRClass(object):
 
         section.add(subp)
         return subp
+
+    def _constructors(self):
+        section = self.pkg.section("Constructors")
+
+        n = QName(uri, "constructor").text
+        for c in self.node.findall(n):
+            name = c.get("name").title()
+            cname = c.get(cidentifier)
+
+            gtkmethod = self.gtkpkg.get_method(cname=cname)
+            if not gtkmethod.bind():
+                continue
+
+            params = self._parameters(c, gtkmethod)
+            if params is None:
+                naming.add_cmethod(cname, cname)  # Avoid warning later on.
+                print "No binding for %s: varargs" % cname
+                continue
+
+            format_params = ", ".join(p.name for p in params)
+            if format_params:
+                self._subst["internal_params"] = " (%s)" % format_params
+                format_params = ", " + format_params
+                self._subst["params"] = format_params
+            else:
+                self._subst["params"] = ""
+                self._subst["internal_params"] = ""
+
+            returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
+            local_vars = []
+            code = []
+            plist = self._c_plist(params, returns, local_vars, code)
+            internal = Subprogram(
+                name="Internal",
+                plist=plist,
+                returns=returns).import_c(cname)
+
+            call = internal.call()
+            assert(call[1] is not None)   # A function
+
+            adaname = gtkmethod.ada_name() or "Gtk_%s" % name
+
+            doc = self._getdoc(gtkmethod, c)
+
+            selfname = gtkmethod.get_param("self").ada_name() or "Self"
+
+            initialize_params = [Parameter(
+                name=selfname,
+                type=AdaType("%(typename)s_Record'Class" % self._subst,
+                             pkg=self.pkg, in_spec=True),
+                mode="access")] + params
+            initialize = Subprogram(
+                name=adaname.replace("Gtk_New", "Initialize"),
+                plist=initialize_params,
+                local_vars=local_vars + call[2],
+                doc=doc,
+                code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
+                ).add_nested(internal)
+
+            call = initialize.call(in_pkg=self.pkg)
+            assert(call[1] is None)  # This is a procedure
+
+            naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
+            gtk_new = Subprogram(
+                name=adaname,
+                plist=[Parameter(
+                    name=selfname,
+                    type=AdaType("%(typename)s" % self._subst,
+                                 pkg=self.pkg, in_spec=True),
+                    mode="out")] + params,
+                local_vars=call[2],
+                code=selfname + " := new %(typename)s_Record;" % self._subst
+                   + call[0],
+                doc=doc)
+
+            section.add(gtk_new, initialize)
+
+    def _methods(self):
+        all = self.node.findall(nmethod)
+        if all is not None:
+            section = self.pkg.section("Methods")
+            for c in all:
+                self._handle_function(section, c, ismethod=True)
+
+    def _functions(self):
+        all = self.node.findall(nfunction)
+        if all is not None:
+            section = self.pkg.section("Functions")
+            for c in all:
+                self._handle_function(section, c)
+
+    def _globals(self):
+        funcs = self.gtkpkg.get_global_functions() # List of binding.xml nodes
+        if funcs:
+            section = self.pkg.section("Functions") # Make sure section exists
+            for f in funcs:
+                c = self.gir.globals.get_function(f.cname()) # Node in gir file
+                self._handle_function(section, c, gtkmethod=f)
 
     def _method_get_type(self):
         """Generate the Get_Type subprogram"""
@@ -711,6 +739,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     s.add_code(p.text)
 
         self._functions()
+        self._globals()
         self._fields()
         self._properties()
         self._signals()
@@ -795,6 +824,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "VBox", "VButtonBox", "Viewport", "VPaned",
            "VScale", "VolumeButton",
            # "Entry",   # partially done only
+           "AccelGroup",
            "Adjustment",
            "Alignment",
            "Calendar",
