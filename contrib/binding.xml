@@ -1519,4 +1519,39 @@ In addition to the model-view API, Gtk_Combo_Box offers a simple API which is su
      </extra>
   </package>
 
+  <package id="Gtk.Check_Button">
+     <doc screenshot="gtk-check_button" group="Buttons and Toggles"
+          testgtk="create_check_buttons.adb">
+A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget, (usually a Gtk_Label).
+     </doc>
+
+     <parameter name="self" ada="Check_Button"/>
+     <method id="gtk_check_button_new" bind="False"/>
+     <method id="gtk_check_button_new_with_label" ada="Gtk_New" >
+        <parameter name="label" default='""' empty_maps_to_null="True"/>
+        <doc>Create a check button. if Label is null, then no widget is associated with the button, and any widget can be added to the button (with Gtk.Container.Add).</doc>
+     </method>
+  </package>
+
+  <package id="Gtk.Toggle_Button">
+     <doc screenshot="gtk-toggle_button" group="Buttons and Toggles"
+          testgtk="create_toggle_buttons.adb">
+A Gtk_Toggle_Button is like a regular button, but can be in one of two states, "active" or "inactive". Its visual aspect is modified when the state is changed.
+
+You should consider using a Gtk_Check_Button instead, since it looks nicer and provides more visual clues that the button can be toggled.
+     </doc>
+     <parameter name="self" ada="Toggle_Button"/>
+     <method id="gtk_toggle_button_new" bind="False"/>
+     <method id="gtk_toggle_button_new_with_label" ada="Gtk_New" >
+        <doc>Initialize a button. If Label is "", then no label is created inside the button and you will have to provide your own child through a call to Gtk.Container.Add. This is the recommended way to put a pixmap inside a toggle button.</doc>
+        <parameter name="label" default='""' empty_maps_to_null="True"/>
+     </method>
+     <method id="gtk_toggle_button_set_active">
+        <doc>Change the state of the button. When Is_Active is True, the button is drawn as a pressed button</doc>
+     </method>
+     <method id="gtk_toggle_button_set_inconsistent">
+        <parameter name="Setting" default="True"/>
+     </method>
+  </package>
+
 </GIR>

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,79 +30,48 @@
 --  <description>
 --  A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget,
 --  (usually a Gtk_Label).
+-- 
 --  </description>
---  <c_version>2.8.17</c_version>
 --  <screenshot>gtk-check_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_check_buttons.adb</testgtk>
 
-with Glib.Properties;
-with Gtk.Toggle_Button;
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;              use Glib;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
 
-   type Gtk_Check_Button_Record is new
-     Toggle_Button.Gtk_Toggle_Button_Record with private;
+   type Gtk_Check_Button_Record is new Gtk_Toggle_Button_Record with null record;
    type Gtk_Check_Button is access all Gtk_Check_Button_Record'Class;
 
+   ------------------
+   -- Constructors --
+   ------------------
+
    procedure Gtk_New
-     (Check_Button : out Gtk_Check_Button;
-      Label        : UTF8_String := "");
-   --  Create a check button.
-   --  if Label is null, then no widget is associated with the button, and
-   --  any widget can be added to the button (with Gtk.Container.Add).
+      (Check_Button : out Gtk_Check_Button;
+       Label        : UTF8_String := "");
+   procedure Initialize
+      (Check_Button : access Gtk_Check_Button_Record'Class;
+       Label        : UTF8_String := "");
+   --  Create a check button. if Label is null, then no widget is associated
+   --  with the button, and any widget can be added to the button (with
+   --  Gtk.Container.Add).
 
    procedure Gtk_New_With_Mnemonic
-     (Check_Button : out Gtk_Check_Button;
-      Label        : UTF8_String);
-   --  Create a new check button containing a label.
-   --  If characters in Label are preceded by an underscore, they are
-   --  underlined indicating that they represent a keyboard accelerator called
-   --  a mnemonic.
-   --  Pressing Alt and that key activates the checkbutton.
-   --  Label: The text of the button, with an underscore in front of the
-   --         mnemonic character
-
-   procedure Initialize
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : UTF8_String := "");
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
+      (Check_Button : out Gtk_Check_Button;
+       Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : UTF8_String);
-   --  Internal initialization function.
+      (Check_Button : access Gtk_Check_Button_Record'Class;
+       Label        : UTF8_String);
+   --  Creates a new Gtk.Check_Button.Gtk_Check_Button containing a label. The
+   --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the check button.
+   --  "label": The text of the button, with an underscore in front of the
+   --  mnemonic character
 
    function Get_Type return Glib.GType;
-   --  Return the internal value associated with a Gtk_Check_Button.
-
-   ----------------------
-   -- Style Properties --
-   ----------------------
-   --  The following properties can be changed through the gtk theme and
-   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
-
-   --  <style_properties>
-   --  Name:  Indicator_Size_Property
-   --  Type:  Int
-   --  Descr: Size of check or radio indicator
-   --
-   --  Name:  Indicator_Spacing_Property
-   --  Type:  Int
-   --  Descr: Spacing around check or radio indicator
-   --  </style_properties>
-
-   Indicator_Size_Property    : constant Glib.Properties.Property_Int;
-   Indicator_Spacing_Property : constant Glib.Properties.Property_Int;
-
-private
-   type Gtk_Check_Button_Record is new
-     Gtk.Toggle_Button.Gtk_Toggle_Button_Record with null record;
    pragma Import (C, Get_Type, "gtk_check_button_get_type");
 
-   Indicator_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("indicator-size");
-   Indicator_Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("indicator-spacing");
 end Gtk.Check_Button;

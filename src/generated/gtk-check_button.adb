@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,26 +27,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Check_Button is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Check_Button_Record);
-   pragma Warnings (Off, Type_Conversion);
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
    -------------
 
    procedure Gtk_New
-     (Check_Button : out Gtk_Check_Button;
-      Label        : UTF8_String := "") is
+      (Check_Button : out Gtk_Check_Button;
+       Label        : UTF8_String := "")
+   is
    begin
       Check_Button := new Gtk_Check_Button_Record;
-      Initialize (Check_Button, Label);
+      Gtk.Check_Button.Initialize (Check_Button, Label);
    end Gtk_New;
 
    ---------------------------
@@ -54,11 +56,12 @@ package body Gtk.Check_Button is
    ---------------------------
 
    procedure Gtk_New_With_Mnemonic
-     (Check_Button : out Gtk_Check_Button;
-      Label        : UTF8_String) is
+      (Check_Button : out Gtk_Check_Button;
+       Label        : UTF8_String)
+   is
    begin
       Check_Button := new Gtk_Check_Button_Record;
-      Initialize_With_Mnemonic (Check_Button, Label);
+      Gtk.Check_Button.Initialize_With_Mnemonic (Check_Button, Label);
    end Gtk_New_With_Mnemonic;
 
    ----------------
@@ -66,21 +69,23 @@ package body Gtk.Check_Button is
    ----------------
 
    procedure Initialize
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : UTF8_String := "")
+      (Check_Button : access Gtk_Check_Button_Record'Class;
+       Label        : UTF8_String := "")
    is
-      function Internal (Label : UTF8_String) return System.Address;
+      function Internal
+         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
-
-      function Internal2 return System.Address;
-      pragma Import (C, Internal2, "gtk_check_button_new");
-
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return : System.Address;
    begin
       if Label = "" then
-         Set_Object (Check_Button, Internal2);
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
       else
-         Set_Object (Check_Button, Internal (Label & ASCII.NUL));
+         Tmp_Label := New_String (Label);
       end if;
+      Tmp_Return := Internal (Tmp_Label);
+      Free (Tmp_Label);
+      Set_Object (Check_Button, Tmp_Return);
    end Initialize;
 
    ------------------------------
@@ -88,14 +93,18 @@ package body Gtk.Check_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : UTF8_String)
+      (Check_Button : access Gtk_Check_Button_Record'Class;
+       Label        : UTF8_String)
    is
-      function Internal (Label : UTF8_String) return System.Address;
+      function Internal
+         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_mnemonic");
-
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Return : System.Address;
    begin
-      Set_Object (Check_Button, Internal (Label & ASCII.NUL));
+      Tmp_Return := Internal (Tmp_Label);
+      Free (Tmp_Label);
+      Set_Object (Check_Button, Tmp_Return);
    end Initialize_With_Mnemonic;
 
 end Gtk.Check_Button;

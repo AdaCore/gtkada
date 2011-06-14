@@ -32,6 +32,7 @@ with Glib;              use Glib;
 with Gtk;               use Gtk;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Check_Button;  use Gtk.Check_Button;
+with Gtk.Label;         use Gtk.Label;
 
 package body Create_Check_Buttons is
 
@@ -53,6 +54,7 @@ package body Create_Check_Buttons is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1, Box2 : Box.Gtk_Box;
       A_Check_Button : Check_Button.Gtk_Check_Button;
+      Label : Gtk_Label;
    begin
       Set_Label (Frame, "Check Buttons");
 
@@ -71,7 +73,9 @@ package body Create_Check_Buttons is
       Check_Button.Gtk_New (A_Check_Button, "button2");
       Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
 
-      Check_Button.Gtk_New (A_Check_Button, "button3");
+      Check_Button.Gtk_New (A_Check_Button); --  Empty initially
+      Gtk_New (Label, "button3");
+      Add (A_Check_Button, Label);  --  Manually set the label
       Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
 
       Show_All (Box1);

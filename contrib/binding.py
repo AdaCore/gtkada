@@ -800,6 +800,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Calendar",
            # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
                           # Also needs support for interfaces
+           "CheckButton",
            "Curve",
            "Dialog",
            "DrawingArea",
@@ -807,8 +808,9 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Image",
            "SizeGroup",
            "Statusbar",
+           "ToggleButton",
            "Table",
-           "Combo",  # Needs HBox
+           "Combo",  # Needs HBox, so must come after it
           )
 
 for name in binding:
