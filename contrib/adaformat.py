@@ -56,6 +56,7 @@ class AdaNaming(object):
 
             "gtk_action_group_add_action_with_accel":
                 "Gtk.Action_Group.Add_Action_With_Accel",
+            "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
@@ -129,6 +130,8 @@ class AdaNaming(object):
             "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
             "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
             "GtkCurveType":       Enum("Gtk.Enums.Gtk_Curve_Type"),
+            "GtkMetricType":      Enum("Gtk.Enums.Gtk_Metric_Type",
+                                       "Gtk.Enums.Property_Metric_Type"),
             "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
 
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
