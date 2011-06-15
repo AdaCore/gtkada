@@ -65,7 +65,6 @@ with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Container;   use Gtk.Container;
-with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Paned is

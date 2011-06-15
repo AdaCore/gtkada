@@ -294,6 +294,7 @@ class GtkAdaParameter(object):
         return name
 
     def get_type(self, pkg):
+        """pkg is used to set the with statements"""
         type = None
         if self.default is not None:
             t = self.default.get("type", None)

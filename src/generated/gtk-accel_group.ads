@@ -38,7 +38,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GObject;         use GObject;
 with Gdk;             use Gdk;
 with Gdk.Types;       use Gdk.Types;
 with Glib;            use Glib;
@@ -301,7 +300,7 @@ package Gtk.Accel_Group is
    --  "accel-activate"
    --     function Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
-   --        Acceleratable : GObject.Object;
+   --        Acceleratable : Glib.Object.GObject;
    --        Keyval        : Guint;
    --        Modifier      : Gdk.ModifierType) return Boolean;
    --    --  "acceleratable": the object on which the accelerator was activated
@@ -315,7 +314,7 @@ package Gtk.Accel_Group is
    --       (Self          : access Gtk_Accel_Group_Record'Class;
    --        Keyval        : Guint;
    --        Modifier      : Gdk.ModifierType;
-   --        Accel_Closure : GObject.Closure);
+   --        Accel_Closure : System.Address);
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
    --    --  "accel_closure": the GClosure of the accelerator

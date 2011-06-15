@@ -75,7 +75,8 @@ class AdaNaming(object):
             "Gdk.Image":           "GdkImage*",
             "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
             "Gdk.Bitmap":          "GdkBitmap*",
-            "GObject.Object":      "GObject",
+            "GObject.Object":      "GObject*",
+            "GObject.Closure":     "GClosure*",
         }
         self.exceptions = {
             # Naming exceptions. In particular maps Ada keywords.
@@ -107,6 +108,7 @@ class AdaNaming(object):
             "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
 
             "GObject*":     GObject("Glib.Object.GObject"),
+            "GClosure*":    Proxy("System.Address", ""),
 
             # Specific to this binding generator (referenced from binding.xml)
             "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
@@ -421,7 +423,7 @@ class CType(object):
         """Self is an enumeration, setup the conversion hooks
            `td' is an instance of TD"""
         name = td.ada
-        if "." in name:
+        if pkg and "." in name:
             pkg.add_with(name[0:name.rfind(".")])
         self.param = name
         self.cparam = cname
@@ -534,7 +536,8 @@ class CType(object):
                 self.convert = "New_String (%(var)s)"
 
             self.cleanup = "Free (%s);"
-            pkg.add_with("Interfaces.C.Strings", specs=False)
+            if pkg:
+                pkg.add_with("Interfaces.C.Strings", specs=False)
             self.returns = (
                 "UTF8_String", "Interfaces.C.Strings.chars_ptr",
                 "Interfaces.C.Strings.Value (%(var)s)", [])
@@ -577,7 +580,7 @@ class CType(object):
 
             else:
                 ada = full.ada
-                if "." in ada:
+                if pkg and "." in ada:
                     pkg.add_with(ada[0:ada.rfind(".")])
                 self.param = ada
                 self.property = full.property

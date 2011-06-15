@@ -119,12 +119,14 @@ class GIRClass(object):
         self._private = ""
         self._generated = False
 
-    def _parameters(self, c, gtkmethod):
+    def _parameters(self, c, gtkmethod, addwith=True):
         """Format the parameters for the node C by looking at the <parameters>
            child.
            Returns None if the parameter list could not be parsed.
            gtkmethod is the GtkAdaMethod that contains the overriding for the
            various method attributes.
+           If addwith is True, the necessary with statements are automatically
+           added.
         """
         if c is None:
             return []
@@ -141,11 +143,16 @@ class GIRClass(object):
 
             default = gtkparam.get_default()
 
-            type = gtkparam.get_type(pkg=self.pkg) \
+            pkg = self.pkg
+            if not addwith:
+                pkg = None
+
+            type = gtkparam.get_type(pkg=pkg) \
                 or self._get_type(
                     p,
                     empty_maps_to_null=gtkparam.empty_maps_to_null(),
-                    allow_access=not default)
+                    allow_access=not default,
+                    addwith=addwith)
 
             if type is None:
                 return None
@@ -457,12 +464,18 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
             return t.get(ctype)
         return None
 
-    def _get_type(self, node, allow_access=True, empty_maps_to_null=False):
+    def _get_type(self, node, allow_access=True, empty_maps_to_null=False,
+                  addwith=True):
         """Return the type of the node
            `allow_access' should be False if "access Type" parameters should
            not be allowed, and an explicit type is needed instead.
-           `empty_maps_to_null': see doc for CType
+           `empty_maps_to_null': see doc for CType.
+           `addwith' indicates whether to create with statements.
         """
+        pkg = self.pkg
+        if not addwith:
+            pkg = None
+
         t = node.find(ntype)
         if t is not None:
             if t.get("name") == "none":
@@ -470,7 +483,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
             return CType(name=t.get("name"),
                          cname=t.get(ctype), allow_access=allow_access,
                          empty_maps_to_null=empty_maps_to_null,
-                         pkg=self.pkg)
+                         pkg=pkg)
 
         a = node.find(narray)
         if a is not None:
@@ -483,7 +496,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
 
                 return CType(name="array_of_%s" % name,
                              cname=type,
-                             pkg=self.pkg, isArray=True,
+                             pkg=pkg, isArray=True,
                              empty_maps_to_null=empty_maps_to_null,
                              allow_access=allow_access)
 
@@ -628,7 +641,8 @@ See Glib.Properties for more information on properties)""")
             for s in signals:
                 gtkmethod = self.gtkpkg.get_method(
                     cname="%s::%s" % (self.name, s.get("name")))
-                params = self._parameters(s, gtkmethod=gtkmethod)
+                params = self._parameters(
+                    s, gtkmethod=gtkmethod, addwith=False)
                 returns = self._get_method_returns(gtkmethod, s.find(nreturn))
                 sub = Subprogram(
                     name="Handler",

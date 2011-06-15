@@ -83,7 +83,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Menu;         use Gtk.Menu;
 with Gtk.Misc;         use Gtk.Misc;
 with Gtk.Widget;       use Gtk.Widget;
 with Pango.Attributes; use Pango.Attributes;
