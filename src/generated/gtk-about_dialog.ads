@@ -187,7 +187,7 @@ package Gtk.About_Dialog is
    --  Sets the name to display in the about dialog. If this is not set, it
    --  defaults to g_get_application_name.
    --  Since: gtk+ 2.6
-   --  Deprecated since 2.12, Use gtk_about_dialog_set_program_name() instead.
+   --  Deprecated since 2.12, Use Gtk.About_Dialog.Set_Program_Name instead.
    --  "name": the program name
 
    function Get_Program_Name
@@ -271,7 +271,8 @@ package Gtk.About_Dialog is
    --  function which uses gtk_show_uri(). To deactivate it, you can pass null
    --  for Func.
    --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the #GtkAboutDialog::activate-link signal
+   --  Deprecated since 2.24, Use the
+   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when an email link is activated.
    --  "data": data to pass to Func
    --  "destroy": Glib.G_Destroy_Notify_Address for Data
@@ -285,7 +286,8 @@ package Gtk.About_Dialog is
    --  URL link in an about dialog. Since 2.18 there exists a default function
    --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
    --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the #GtkAboutDialog::activate-link signal
+   --  Deprecated since 2.24, Use the
+   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when a URL link is activated.
    --  "data": data to pass to Func
    --  "destroy": Glib.G_Destroy_Notify_Address for Data

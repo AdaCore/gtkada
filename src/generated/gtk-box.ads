@@ -165,7 +165,7 @@ package Gtk.Box is
    --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
    --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
    --  0, respectively.
-   --  Deprecated since 2.14, Use gtk_box_pack_end()
+   --  Deprecated since 2.14, Use Gtk.Box.Pack_End
    --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
    procedure Pack_Start
@@ -199,7 +199,7 @@ package Gtk.Box is
    --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
    --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
    --  0, respectively.
-   --  Deprecated since 2.14, Use gtk_box_pack_start()
+   --  Deprecated since 2.14, Use Gtk.Box.Pack_Start
    --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
    procedure Query_Child_Packing

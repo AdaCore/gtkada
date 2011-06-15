@@ -78,7 +78,7 @@ package Gtk.Fixed is
    --  immediately after the window is created. This function was added to
    --  provide an easy migration path for older applications which may expect
    --  Gtk.Fixed.Gtk_Fixed to have a separate window.
-   --  Deprecated since 2.20, Use gtk_widget_set_has_window() instead.
+   --  Deprecated since 2.20, Use Gtk.Widget.Set_Has_Window instead.
    --  "has_window": True if a separate window should be created
 
    procedure Move

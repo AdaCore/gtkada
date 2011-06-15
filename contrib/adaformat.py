@@ -40,6 +40,7 @@ class AdaNaming(object):
             "gtk_widget_add_events":        "Gtk.Widget.Add_Event",
             "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
             "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
+            "gtk_widget_set_has_window":    "Gtk.Widget.Set_Has_Window",
             "gtk_show_uri":                 "gtk_show_uri()",
             "gtk_widget_show":              "Gtk.Widget.Show",
             "gtk_icon_factory_add_default": "Gtk.Icon_Factory.Add_Default",
@@ -887,7 +888,7 @@ class Subprogram(object):
         if show_doc:
             doc = [self._cleanup_doc(d) for d in self.doc]
             if self._deprecated[0]:
-                doc += [self._deprecated[1]]
+                doc += [self._cleanup_doc(self._deprecated[1])]
             doc += [self._cleanup_doc(p.doc) for p in self.plist]
         else:
             doc = []
