@@ -55,9 +55,15 @@ class AdaNaming(object):
             "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
             "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
+            # ??? Doesn't exist
+            "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
+
+            # Will be bound later
             "gtk_action_group_add_action_with_accel":
                 "Gtk.Action_Group.Add_Action_With_Accel",
             "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
+            "gtk_builder_add_from_file": "Gtk.Builder.Add_From_File",
+            "gtk_builder_add_from_string": "Gtk.Builder.Add_From_String",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
@@ -107,8 +113,11 @@ class AdaNaming(object):
             "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
             "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
 
+            "GdkEvent*":    Proxy("Gdk.Event.Gdk_Event", ""),
+
             "GObject*":     GObject("Glib.Object.GObject"),
             "GClosure*":    Proxy("System.Address", ""),
+            "GValue":       Proxy("Glib.Values.GValue", ""),
 
             # Specific to this binding generator (referenced from binding.xml)
             "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
@@ -136,11 +145,13 @@ class AdaNaming(object):
             "GtkMetricType":      Enum("Gtk.Enums.Gtk_Metric_Type",
                                        "Gtk.Enums.Property_Metric_Type"),
             "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
+            "GtkOrientation":     Enum("Gtk.Enums.Gtk_Orientation"),
 
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
             "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
             "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
+            "GtkCellEditable": GObject("Gtk.Cell_Editable.Gtk_Cell_Editable"),
             "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
             "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
@@ -271,7 +282,8 @@ def fill_text(text, prefix, length, firstLineLength=0):
             result.append(line)
             maxLen = length - len(prefix)
             line = w
-        else:
+
+        elif w:
             line += " " + w
 
     if line != "":
@@ -451,9 +463,15 @@ class CType(object):
         self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
         self.is_ptr = False
         self.property = td.property
+
+        if full == "Glib.Object.GObject":
+            convert = "Get_User_Data (%(var)s, Stub)"
+        else:
+            convert = "%s (Get_User_Data (%%(var)s, Stub))" % full
+
+
         self.returns = (
-            full, self.cparam,
-            "%s (Get_User_Data (%%(var)s, Stub))" % full,
+            full, self.cparam, convert,
             [Local_Var(
                 "Stub", AdaType("%s_Record" % full, pkg=pkg, in_spec=False))])
 
@@ -659,6 +677,9 @@ class CType(object):
                 call=wrapper % conv,
                 precall='', postcall='', tmpvars=[])
 
+    def direct_cmap(self):
+        """Whether the parameter can be passed as is to C"""
+        return self.convert == "%(var)s"
 
 class AdaType(CType):
     """Similar to a CType, but created directly from Ada types"""
@@ -764,6 +785,10 @@ class Parameter(Local_Var):
     def as_call(self, lang="ada"):
         return super(Parameter, self).as_call(lang, mode=self.mode)
 
+    def direct_cmap(self):
+        """Whether the parameter can be passed as is to C"""
+        return self.type.direct_cmap()
+
 
 max_profile_length = 79 - len(" is")
 
@@ -772,7 +797,7 @@ class Subprogram(object):
     """An Ada subprogram that we are generating"""
 
     def __init__(self, name, code="", plist=[], local_vars=[],
-                 returns=None, doc=[]):
+                 returns=None, doc=[], showdoc=True):
         """Create a new subprogram.
            'plist' is a list of Parameter.
            'local_vars' is a list of Local_Var.
@@ -786,10 +811,13 @@ class Subprogram(object):
         self.plist = plist
         self.returns = returns
         self.local = local_vars
+        self.showdoc = showdoc
         self._import = None
         self._nested = []  # nested subprograms
         self._deprecated = (False, "") # True if deprecated
         self._manual_body = None  # Written by user explicitly
+
+        self.lang = "ada"  # Language for the types of parameters
 
         if code and code[-1] != ";":
             self.code = code + ";"
@@ -808,6 +836,12 @@ class Subprogram(object):
         """
         self._import = 'pragma Import (C, %s, "%s");' % (self.name, cname)
         return self
+
+    def set_param_lang(self, lang):
+        """Set the language to use when printing the types of parameters.
+           If "c", prints the C type corresponding to the "ada" types.
+        """
+        self.lang = lang
 
     def mark_deprecated(self, msg):
         """Mark the subprogram as deprecated"""
@@ -831,7 +865,7 @@ class Subprogram(object):
         if returns:
             prefix = indent + "function %s" % self.name
 
-            if self._import:
+            if self.lang == "c":
                 suffix = " return %s" % returns[1]
             else:
                 suffix = " return %s" % returns[0]
@@ -886,7 +920,7 @@ class Subprogram(object):
     def spec(self, indent="   ", show_doc=True, maxlen=max_profile_length):
         """Return the spec of the subprogram"""
 
-        if show_doc:
+        if self.showdoc and show_doc:
             doc = [self._cleanup_doc(d) for d in self.doc]
             if self._deprecated[0]:
                 doc += [self._cleanup_doc(self._deprecated[1])]
@@ -894,14 +928,13 @@ class Subprogram(object):
         else:
             doc = []
 
+        result = self._profile(indent, lang=self.lang, maxlen=maxlen) + ";"
+
         if self._import:
-            result = self._profile(indent, lang="c", maxlen=maxlen) + ";"
             result += "\n" + indent + self._import
-        else:
-            result = self._profile(indent, lang="ada", maxlen=maxlen) + ";"
-            if self._deprecated[0]:
-                result += "\n" + indent \
-                        + "pragma Obsolescent (%s);" % self.name
+
+        if self._deprecated[0]:
+            result += "\n" + indent + "pragma Obsolescent (%s);" % self.name
 
         for d in doc:
             if d:
@@ -948,8 +981,7 @@ class Subprogram(object):
             return ""
 
         result = box(self.name) + "\n\n"
-
-        profile = self._profile()
+        profile = self._profile(lang=self.lang)
         result += profile
 
         if profile.find("\n") != -1:
@@ -1084,7 +1116,9 @@ class Section(object):
            lines if needed. Otherwise, the comment is assumed to be already
            formatted properly, minus the leading --
         """
-        if fill:
+        if comment == "":
+            self.comment += "   --\n"
+        elif fill:
             self.comment += "   -- " + fill_text(comment, "   --  ", 79) + "\n"
         else:
             self.comment += "\n".join(
@@ -1257,7 +1291,10 @@ class Package(object):
 
         if self.doc:
             for d in self.doc:
-                out.write("-- " + fill_text(d, "--  ", 79))
+                if d:
+                    out.write("-- " + fill_text(d, "--  ", 79))
+                else:
+                    out.write("--")
                 out.write("\n")
             out.write("\n")
 
@@ -1278,19 +1315,22 @@ class Package(object):
     def body(self, out):
         """Returns the body of the package"""
 
+        body = ""
+        for s in self.sections:
+            b = s.body()
+            if b:
+                body += "\n"
+                body += b
+
+        if not body:
+            return
+
         if Package.copyright_header:
             out.write(Package.copyright_header + "\n")
 
         out.write("pragma Style_Checks (Off);\n")
         out.write('pragma Warnings (Off, "*is already use-visible*");\n')
-
         out.write(self._output_withs(self.body_withs))
         out.write("package body %s is\n" % self.name)
-
-        for s in self.sections:
-            b = s.body()
-            if b:
-                out.write("\n")
-                out.write(b)
-
+        out.write(body)
         out.write("\nend %s;" % self.name)

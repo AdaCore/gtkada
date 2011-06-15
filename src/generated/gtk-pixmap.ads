@@ -28,19 +28,21 @@
 -----------------------------------------------------------------------
 
 --  <description>
--- 
--- 
+--
+--
 --  </description>
 --  <group>Obsolescent widgets</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Bitmap;   use Gdk.Bitmap;
-with Gdk.Pixmap;   use Gdk.Pixmap;
-with Glib;         use Glib;
-with Gtk.Misc;     use Gtk.Misc;
-with Gtk.Widget;   use Gtk.Widget;
-with Gtk.Window;   use Gtk.Window;
-with Gtkada.Types; use Gtkada.Types;
+with Gdk.Bitmap;    use Gdk.Bitmap;
+with Gdk.Pixmap;    use Gdk.Pixmap;
+with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Misc;      use Gtk.Misc;
+with Gtk.Widget;    use Gtk.Widget;
+with Gtk.Window;    use Gtk.Window;
+with Gtkada.Types;  use Gtkada.Types;
 
 package Gtk.Pixmap is
 
@@ -96,5 +98,23 @@ package Gtk.Pixmap is
      (Data     : Gtkada.Types.Chars_Ptr_Array;
       Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Pixmap_Record, Gtk_Pixmap);
+   function "+"
+     (Widget : access Gtk_Pixmap_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Pixmap
+   renames Implements_Buildable.To_Object;
 
 end Gtk.Pixmap;

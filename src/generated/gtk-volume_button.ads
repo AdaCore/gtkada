@@ -31,11 +31,15 @@
 --  Gtk_Volume_Button is a subclass of Gtk_Scale_Button that has been tailored
 --  for use as a volume control widget with suitable icons, tooltips and
 --  accessible labels.
--- 
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
+with Glib.Types;       use Glib.Types;
+with Gtk.Activatable;  use Gtk.Activatable;
+with Gtk.Buildable;    use Gtk.Buildable;
+with Gtk.Orientable;   use Gtk.Orientable;
 with Gtk.Scale_Button; use Gtk.Scale_Button;
 
 package Gtk.Volume_Button is
@@ -52,5 +56,49 @@ package Gtk.Volume_Button is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_volume_button_get_type");
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Volume_Button_Record, Gtk_Volume_Button);
+   function "+"
+     (Widget : access Gtk_Volume_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Volume_Button
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Volume_Button_Record, Gtk_Volume_Button);
+   function "+"
+     (Widget : access Gtk_Volume_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Volume_Button
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Volume_Button_Record, Gtk_Volume_Button);
+   function "+"
+     (Widget : access Gtk_Volume_Button_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Volume_Button
+   renames Implements_Orientable.To_Object;
 
 end Gtk.Volume_Button;

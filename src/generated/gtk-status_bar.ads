@@ -31,7 +31,7 @@
 --  A status bar is a special widget in which you can display messages. This
 --  type of widget is generally found at the bottom of application windows, and
 --  is used to display help or error messages.
--- 
+--
 --  This widget works as a stack of messages, ie all older messages are kept
 --  when a new one is inserted. It is of course possible to remove the most
 --  recent message from the stack. This stack behavior is especially useful
@@ -40,13 +40,13 @@
 --  on the stack, and does not need to make sure that the user has had enough
 --  time to read the previous message (a timeout can be set to automatically
 --  remove the message after a specific delay)
--- 
+--
 --  Each message is associated with a specific Context_Id. Each of this
 --  context can have a special name, and these context can be used to organize
 --  the messages into categories (for instance one for help messages and one
 --  for error messages). You can then selectively remove the most recent
 --  message of each category.
--- 
+--
 --  </description>
 --  <screenshot>gtk-status_bar</screenshot>
 --  <group>Display widgets</group>
@@ -56,7 +56,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
 with Glib.GSlist;          use Glib.GSlist;
 with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
 with Gtk.Box;              use Gtk.Box;
+with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Orientable;       use Gtk.Orientable;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
@@ -163,11 +166,42 @@ package Gtk.Status_Bar is
        return Gtk.Status_Bar.Messages_List.GSlist;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Status_Bar_Record, Gtk_Status_Bar);
+   function "+"
+     (Widget : access Gtk_Status_Bar_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Status_Bar
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Status_Bar_Record, Gtk_Status_Bar);
+   function "+"
+     (Widget : access Gtk_Status_Bar_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Status_Bar
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Has_Resize_Grip_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -179,7 +213,7 @@ package Gtk.Status_Bar is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "text-popped"
    --     procedure Handler
    --       (Self    : access Gtk_Status_Bar_Record'Class;
@@ -188,7 +222,7 @@ package Gtk.Status_Bar is
    --    --  "context": the context id of the relevant message/statusbar.
    --    --  "text": the message that was just popped.
    --  Is emitted whenever a new message is popped off a statusbar's stack.
-   -- 
+   --
    --  "text-pushed"
    --     procedure Handler
    --       (Self    : access Gtk_Status_Bar_Record'Class;
@@ -202,6 +236,6 @@ package Gtk.Status_Bar is
    Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
 
 private
-   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean:=
+   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-resize-grip");
 end Gtk.Status_Bar;

@@ -31,22 +31,22 @@
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
 --  input, eg. to display a message, ask a question, or anything else that does
 --  not require extensive effort on the user's part.
--- 
+--
 --  Gtkada treats a dialog as a window split horizontally. The top section is
 --  a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should
 --  be packed. The second area is known as the action_area. This is generally
 --  used for packing buttons into the dialog which may perform functions such
 --  as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
--- 
+--
 --  If 'dialog' is a newly created dialog, the two primary areas of the window
 --  can be accessed using Get_Vbox and Get_Action_Area as can be seen from the
 --  example, below.
--- 
+--
 --  A 'modal' dialog (that is, one which freezes the rest of the application
 --  from user input), can be created by calling Set_Modal on the dialog.
--- 
+--
 --  See Gtkada.Dialogs for a higher level dialog interface.
--- 
+--
 --  </description>
 --  <screenshot>gtk-dialog</screenshot>
 --  <group>Windows</group>
@@ -55,7 +55,9 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Box;         use Gtk.Box;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Widget;      use Gtk.Widget;
 with Gtk.Window;      use Gtk.Window;
 
@@ -302,11 +304,29 @@ package Gtk.Dialog is
       (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Dialog_Record, Gtk_Dialog);
+   function "+"
+     (Widget : access Gtk_Dialog_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Dialog
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Has_Separator_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -318,13 +338,13 @@ package Gtk.Dialog is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "close"
    --     procedure Handler (Self : access Gtk_Dialog_Record'Class);
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted when the user uses a keybinding to
    --  close the dialog. The default binding for this signal is the Escape key.
-   -- 
+   --
    --  "response"
    --     procedure Handler
    --       (Self        : access Gtk_Dialog_Record'Class;
@@ -339,6 +359,6 @@ package Gtk.Dialog is
    Signal_Response : constant Glib.Signal_Name := "response";
 
 private
-   Has_Separator_Property : constant Glib.Properties.Property_Boolean:=
+   Has_Separator_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-separator");
 end Gtk.Dialog;

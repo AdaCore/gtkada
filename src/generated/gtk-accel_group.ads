@@ -34,7 +34,7 @@
 --  alongside the menu item they are a shortcut for. Mnemonics are shortcuts
 --  for GUI elements, such as buttons. They appear as underline characters.
 --  Menu items can have both.
--- 
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -280,11 +280,11 @@ package Gtk.Accel_Group is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Is_Locked_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Modifier_Mask_Property
    --  Type: Gdk.ModifierType
    --  Flags: read-write
@@ -296,7 +296,7 @@ package Gtk.Accel_Group is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "accel-activate"
    --     function Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
@@ -308,7 +308,7 @@ package Gtk.Accel_Group is
    --    --  "modifier": the modifier combination of the accelerator
    --  The accel-activate signal is an implementation detail of #GtkAccelGroup
    --  and not meant to be used by applications.
-   -- 
+   --
    --  "accel-changed"
    --     procedure Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
@@ -327,8 +327,8 @@ package Gtk.Accel_Group is
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
 
 private
-   Is_Locked_Property : constant Glib.Properties.Property_Boolean:=
+   Is_Locked_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-locked");
-   Modifier_Mask_Property : constant Glib.Properties.Property_Boxed:=
+   Modifier_Mask_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("modifier-mask");
 end Gtk.Accel_Group;

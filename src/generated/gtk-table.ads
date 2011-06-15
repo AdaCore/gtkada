@@ -30,20 +30,22 @@
 --  <description>
 --  A Gtk_Table is a container that can contain any number of children. Each
 --  of them is attached to a specific row and a specific column in widget.
--- 
+--
 --  Every row in the table must have the same height, and every column must
 --  have the same width if the table was said as Homogeneous. But you can also
 --  decide to have an heterogeneous table, where the width and height are set
 --  by the children contained in the table. Check out the Gtk_Sheet widget for
 --  a different kind of table that can also contain text and images in a more
 --  efficient way.
--- 
+--
 --  </description>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
@@ -169,27 +171,45 @@ package Gtk.Table is
        Spacing : Guint);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Table_Record, Gtk_Table);
+   function "+"
+     (Widget : access Gtk_Table_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Table
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Column_Spacing_Property
    --  Type: Guint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Homogeneous_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: N_Columns_Property
    --  Type: Guint
    --  Flags: read-write
-   -- 
+   --
    --  Name: N_Rows_Property
    --  Type: Guint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Row_Spacing_Property
    --  Type: Guint
    --  Flags: read-write
@@ -201,14 +221,14 @@ package Gtk.Table is
    Row_Spacing_Property : constant Glib.Properties.Property_Uint;
 
 private
-   Column_Spacing_Property : constant Glib.Properties.Property_Uint:=
+   Column_Spacing_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("column-spacing");
-   Homogeneous_Property : constant Glib.Properties.Property_Boolean:=
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
-   N_Columns_Property : constant Glib.Properties.Property_Uint:=
+   N_Columns_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("n-columns");
-   N_Rows_Property : constant Glib.Properties.Property_Uint:=
+   N_Rows_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("n-rows");
-   Row_Spacing_Property : constant Glib.Properties.Property_Uint:=
+   Row_Spacing_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("row-spacing");
 end Gtk.Table;

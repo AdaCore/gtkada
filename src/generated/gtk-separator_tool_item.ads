@@ -30,13 +30,16 @@
 --  <description>
 --  This package defines a separator widget that can be inserted in a toolbar,
 --  to create groups of widgets in the latter.
--- 
+--
 --  </description>
 --  <group>Menus and Toolbars</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Activatable; use Gtk.Activatable;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Tool_Item;   use Gtk.Tool_Item;
 
 package Gtk.Separator_Tool_Item is
@@ -72,11 +75,42 @@ package Gtk.Separator_Tool_Item is
    --  "draw": whether Item is drawn as a vertical line
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Separator_Tool_Item_Record, Gtk_Separator_Tool_Item);
+   function "+"
+     (Widget : access Gtk_Separator_Tool_Item_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Separator_Tool_Item
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Separator_Tool_Item_Record, Gtk_Separator_Tool_Item);
+   function "+"
+     (Widget : access Gtk_Separator_Tool_Item_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Separator_Tool_Item
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Draw_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -84,6 +118,6 @@ package Gtk.Separator_Tool_Item is
    Draw_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Draw_Property : constant Glib.Properties.Property_Boolean:=
+   Draw_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw");
 end Gtk.Separator_Tool_Item;

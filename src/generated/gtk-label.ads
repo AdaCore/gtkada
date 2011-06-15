@@ -30,18 +30,18 @@
 --  <description>
 --  A Gtk_Label is a light widget associated with some text you want to
 --  display on the screen. You can change the text dynamically if needed.
--- 
+--
 --  The text can be on multiple lines if you separate each line with the
 --  ASCII.LF character. However, this is not the recommended way to display
 --  long texts (see the Gtk_Text widget instead).
--- 
+--
 --  == Mnemonics ==
--- 
+--
 --  Labels may contain mnemonics. Mnemonics are underlined characters in the
 --  label, used for keyboard navigation. Mnemonics are created by providing
 --  string with an underscore before the mnemonic character, such as "_File",
 --  to the functions gtk_new_with_mnemonic or set_text_with_mnemonic().
--- 
+--
 --  Mnemonics automatically activate any activatable widget the label is
 --  inside, such as a Gtk_Button; if the label is not inside the mnemonic's
 --  target widget, you have to tell the label about the target using
@@ -49,16 +49,16 @@
 --  Gtk_Label; begin Gtk_New (Button); Gtk_New_With_Mnemonic (Label, "_File");
 --  Add (Button, Label); end; However, there exists a convenience function in
 --  Gtk.Button to create such a button already.
--- 
+--
 --  == Markup ==
--- 
+--
 --  To make it easy to format text in a label (changing colors, fonts, etc.),
 --  label text can be provided in a simple markup format. Here's how to create
 --  a label with a small font: Gtk_New (Label, "<small>hello</small>");
--- 
+--
 --  The markup must be valid, and <>& characters must be escaped with &lt;
 --  &gt; and &amp;
--- 
+--
 --  Markup strings are just a convenient way to set the Pango_Attr_List on
 --  label; Set_Attributes() may be a simpler way to set attributes in some
 --  cases. Be careful though; Pango_Attr_List tends to cause
@@ -67,13 +67,13 @@
 --  G_MAXINT)). The reason is that specifying the start_index and end_index for
 --  a Pango_Attribute requires knowledge of the exact string being displayed,
 --  so translations will cause problems.
--- 
+--
 --  == Selectable labels ==
--- 
+--
 --  Labels can be made selectable with Set_Selectable. Selectable labels allow
 --  the user to copy the label contents to the clipboard. Only should be made
 --  selectable.
--- 
+--
 --  </description>
 --  <screenshot>gtk-label</screenshot>
 --  <group>Display widgets</group>
@@ -82,6 +82,8 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
+with Glib.Types;       use Glib.Types;
+with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Misc;         use Gtk.Misc;
 with Gtk.Widget;       use Gtk.Widget;
@@ -411,11 +413,29 @@ package Gtk.Label is
    --  "str": a string
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Label_Record, Gtk_Label);
+   function "+"
+     (Widget : access Gtk_Label_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Label
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Angle_Property
    --  Type: Gdouble
    --  Flags: read-write
@@ -423,19 +443,19 @@ package Gtk.Label is
    --  degrees, measured counterclockwise. An angle of 90 reads from from
    --  bottom to top, an angle of 270, from top to bottom. Ignored if the label
    --  is selectable, wrapped, or ellipsized.
-   -- 
+   --
    --  Name: Cursor_Position_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Justify_Property
    --  Type: Gtk.Enums.Gtk_Justification
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Max_Width_Chars_Property
    --  Type: Gint
    --  Flags: read-write
@@ -444,27 +464,27 @@ package Gtk.Label is
    --  label will request space for no more than the requested number of
    --  characters. If the #GtkLabel:width-chars property is set to a positive
    --  value, then the "max-width-chars" property is ignored.
-   -- 
+   --
    --  Name: Mnemonic_Keyval_Property
    --  Type: Guint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Mnemonic_Widget_Property
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
-   -- 
+   --
    --  Name: Pattern_Property
    --  Type: UTF8_String
    --  Flags: write
-   -- 
+   --
    --  Name: Selectable_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Selection_Bound_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Single_Line_Mode_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -473,22 +493,22 @@ package Gtk.Label is
    --  to ascent + descent of the font. This can be an advantage in situations
    --  where resizing the label because of text changes would be distracting,
    --  e.g. in a statusbar.
-   -- 
+   --
    --  Name: Track_Visited_Links_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Set this property to %TRUE to make the label track which links have
    --  been clicked. It will then apply the ::visited-link-color color, instead
    --  of ::link-color.
-   -- 
+   --
    --  Name: Use_Markup_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Use_Underline_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Width_Chars_Property
    --  Type: Gint
    --  Flags: read-write
@@ -497,7 +517,7 @@ package Gtk.Label is
    --  will request either 3 characters or the property value, whichever is
    --  greater. If the "width-chars" property is set to a positive value, then
    --  the #GtkLabel:max-width-chars property is ignored.
-   -- 
+   --
    --  Name: Wrap_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -523,7 +543,7 @@ package Gtk.Label is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "activate-current-link"
    --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
@@ -531,7 +551,7 @@ package Gtk.Label is
    --  may also emit the signal with g_signal_emit_by_name() if they need to
    --  control activation of URIs programmatically. The default bindings for
    --  this signal are all forms of the Enter key.
-   -- 
+   --
    --  "activate-link"
    --     function Handler
    --       (Self : access Gtk_Label_Record'Class;
@@ -540,14 +560,14 @@ package Gtk.Label is
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
-   -- 
+   --
    --  "copy-clipboard"
    --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard. The default binding for this
    --  signal is Ctrl-c.
-   -- 
+   --
    --  "move-cursor"
    --     procedure Handler
    --       (Self             : access Gtk_Label_Record'Class;
@@ -570,7 +590,7 @@ package Gtk.Label is
    --  move by individual characters/lines</listitem> <listitem>Ctrl-arrow key
    --  combinations move by words/paragraphs</listitem> <listitem>Home/End keys
    --  move to the ends of the buffer</listitem> </itemizedlist>
-   -- 
+   --
    --  "populate-popup"
    --     procedure Handler
    --       (Self : access Gtk_Label_Record'Class;
@@ -588,36 +608,36 @@ package Gtk.Label is
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
 
 private
-   Angle_Property : constant Glib.Properties.Property_Double:=
+   Angle_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("angle");
-   Cursor_Position_Property : constant Glib.Properties.Property_Int:=
+   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("cursor-position");
-   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification:=
+   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification :=
      Gtk.Enums.Build ("justify");
-   Label_Property : constant Glib.Properties.Property_String:=
+   Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
-   Max_Width_Chars_Property : constant Glib.Properties.Property_Int:=
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("max-width-chars");
-   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint:=
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("mnemonic-keyval");
-   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object:=
+   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("mnemonic-widget");
-   Pattern_Property : constant Glib.Properties.Property_String:=
+   Pattern_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("pattern");
-   Selectable_Property : constant Glib.Properties.Property_Boolean:=
+   Selectable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("selectable");
-   Selection_Bound_Property : constant Glib.Properties.Property_Int:=
+   Selection_Bound_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("selection-bound");
-   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean:=
+   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("single-line-mode");
-   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean:=
+   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("track-visited-links");
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-markup");
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
-   Width_Chars_Property : constant Glib.Properties.Property_Int:=
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-chars");
-   Wrap_Property : constant Glib.Properties.Property_Boolean:=
+   Wrap_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap");
 end Gtk.Label;

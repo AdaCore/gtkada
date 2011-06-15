@@ -1766,4 +1766,24 @@ Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. I
       </method>
   </package>
 
+  <package id="Gtk.Cell_Editable">
+     <doc group="Trees and Lists">The Gtk_Cell_Editable interface must be implemented for widgets to be usable when editing the contents of a Gtk_Tree_View cell</doc>
+     <parameter name="self" ada="Cell_Editable"/>
+  </package>
+
+  <package id="Gtk.Activatable">
+     <doc>Activatable widgets can be connected to a Gtk_Action and reflects the state of its action. A Gtk_Activatable can also provide feedback through its action, as they are responsible for activating their related actions.</doc>
+  </package>
+
+  <package id="Gtk.Orientable">
+     <doc>The Gtk_Orientable interface is implemented by all widgets that can be oriented horizontally or vertically. Historically, such widgets have been realized as subclasses of a common base class (e.g Gtk_Box/Gtk_HBox/Gtk_VBox or Gtk_Scale/Gtk_HScale/Gtk_VScale). Gtk_Orientable is more flexible in that it allows the orientation to be changed at runtime, allowing the widgets to 'flip'.</doc>
+  </package>
+
+  <package id="Gtk.Buildable">
+     <doc>Gtk_Buildable allows objects to extend and customize their deserialization from Gtk_Builder UI descriptions. The interface includes methods for setting names and properties of objects, parsing custom tags and constructing child objects.
+
+The Gtk_Buildable interface is implemented by all widgets and many of the non-widget objects that are provided by GTK+. The main user of this interface is Gtk_Builder. There should be very little need for applications to call any gtk_buildable_... functions.</doc>
+     <method id="gtk_buildable_custom_tag_start" bind="False"/>
+  </package>
+
 </GIR>

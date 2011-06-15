@@ -33,22 +33,24 @@
 --  the arrow can be one of shadow in, shadow out, etched in, or etched out.
 --  Note that these directions and style types may be ammended in versions of
 --  Gtk to come.
--- 
+--
 --  Gtk_Arrow will fill any space alloted to it, but since it is inherited
 --  from Gtk_Misc, it can be padded and/or aligned, to fill exactly the space
 --  you desire.
--- 
+--
 --  Arrows are created with a call to Gtk_New. The direction or style of an
 --  arrow can be changed after creation by using Set.
--- 
+--
 --  </description>
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;      use Glib;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Misc;  use Gtk.Misc;
+with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Enums;     use Gtk.Enums;
+with Gtk.Misc;      use Gtk.Misc;
 
 package Gtk.Arrow is
 
@@ -87,15 +89,33 @@ package Gtk.Arrow is
    --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Arrow_Record, Gtk_Arrow);
+   function "+"
+     (Widget : access Gtk_Arrow_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Arrow
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Arrow_Type_Property
    --  Type: Gtk.Enums.Gtk_Arrow_Type
    --  Flags: read-write
-   -- 
+   --
    --  Name: Shadow_Type_Property
    --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
@@ -104,8 +124,8 @@ package Gtk.Arrow is
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
-   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type:=
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
      Gtk.Enums.Build ("arrow-type");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
 end Gtk.Arrow;

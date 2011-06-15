@@ -30,7 +30,7 @@
 --  <description>
 --  This widget provides a low level graphical representation of a range of
 --  values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.
--- 
+--
 --  </description>
 --  <screenshot>gtk-range</screenshot>
 --  <testgtk>create_range.adb</testgtk>
@@ -39,8 +39,11 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.GRange is
@@ -262,53 +265,84 @@ package Gtk.GRange is
    --  "max": maximum range value
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Range_Record, Gtk_Range);
+   function "+"
+     (Widget : access Gtk_Range_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Range
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Range_Record, Gtk_Range);
+   function "+"
+     (Widget : access Gtk_Range_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Range
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Adjustment_Property
    --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
-   -- 
+   --
    --  Name: Fill_Level_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The fill level (e.g. prebuffering of a network stream). See
    --  gtk_range_set_fill_level().
-   -- 
+   --
    --  Name: Inverted_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Lower_Stepper_Sensitivity_Property
    --  Type: Gtk.Enums.Gtk_Sensitivity_Type
    --  Flags: read-write
-   -- 
+   --
    --  Name: Restrict_To_Fill_Level_Property
    --  Type: Boolean
    --  Flags: read-write
    --  The restrict-to-fill-level property controls whether slider movement is
    --  restricted to an upper boundary set by the fill level. See
    --  gtk_range_set_restrict_to_fill_level().
-   -- 
+   --
    --  Name: Round_Digits_Property
    --  Type: Gint
    --  Flags: read-write
    --  The number of digits to round the value to when it changes, or -1. See
    --  #GtkRange::change-value.
-   -- 
+   --
    --  Name: Show_Fill_Level_Property
    --  Type: Boolean
    --  Flags: read-write
    --  The show-fill-level property controls whether fill level indicator
    --  graphics are displayed on the trough. See
    --  gtk_range_set_show_fill_level().
-   -- 
+   --
    --  Name: Update_Policy_Property
    --  Type: Gtk.Enums.Gtk_Update_Type
    --  Flags: read-write
-   -- 
+   --
    --  Name: Upper_Stepper_Sensitivity_Property
    --  Type: Gtk.Enums.Gtk_Sensitivity_Type
    --  Flags: read-write
@@ -327,12 +361,12 @@ package Gtk.GRange is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "adjust-bounds"
    --     procedure Handler
    --       (Self   : access Gtk_Range_Record'Class;
    --        Object : Gdouble);
-   -- 
+   --
    --  "change-value"
    --     function Handler
    --       (Self   : access Gtk_Range_Record'Class;
@@ -351,14 +385,14 @@ package Gtk.GRange is
    --  default GTK+ handler clamps the value based on #GtkRange:round_digits.
    --  It is not possible to use delayed update policies in an overridden
    --  ::change-value handler.
-   -- 
+   --
    --  "move-slider"
    --     procedure Handler
    --       (Self : access Gtk_Range_Record'Class;
    --        Step : Gtk.Enums.Gtk_Scroll_Type);
    --    --  "step": how to move the slider
    --  Virtual function that moves the slider. Used for keybindings.
-   -- 
+   --
    --  "value-changed"
    --     procedure Handler (Self : access Gtk_Range_Record'Class);
    --  Emitted when the range value changes.
@@ -369,22 +403,22 @@ package Gtk.GRange is
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
 
 private
-   Adjustment_Property : constant Glib.Properties.Property_Object:=
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("adjustment");
-   Fill_Level_Property : constant Glib.Properties.Property_Double:=
+   Fill_Level_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("fill-level");
-   Inverted_Property : constant Glib.Properties.Property_Boolean:=
+   Inverted_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inverted");
-   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type:=
+   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
      Gtk.Enums.Build ("lower-stepper-sensitivity");
-   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
+   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("restrict-to-fill-level");
-   Round_Digits_Property : constant Glib.Properties.Property_Int:=
+   Round_Digits_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("round-digits");
-   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
+   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-fill-level");
-   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type:=
+   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type :=
      Gtk.Enums.Build ("update-policy");
-   Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type:=
+   Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
      Gtk.Enums.Build ("upper-stepper-sensitivity");
 end Gtk.GRange;

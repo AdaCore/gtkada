@@ -43,6 +43,7 @@ nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
 nreturn = QName(uri, "return-value").text
 nfield = QName(uri, "field").text
+nimplements = QName(uri, "implements").text
 
 class GIR(object):
     def __init__(self, filename):
@@ -54,19 +55,28 @@ class GIR(object):
         self.packages = dict() # Ada name (lower case) -> Package instance
         self.ccode = ""
         self.classes = dict()  # Maps GIR's "name" to a GIRClass instance
-        k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
+        self.interfaces = dict() # Maps GIR's "name" to an interface
 
-        # Register all standard gobject types found in the GIR file
+        k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
         for cl in self.root.findall(k):
-            naming.add_type_exception(
-                cname=cl.get(ctype),
-                type=GObject(
-                    "Gtk.%(name)s.Gtk_%(name)s" % {
-                        "name":naming.case(cl.get("name"))}))
-            naming.add_girname(girname=cl.get("name"), ctype=cl.get(ctype))
-            self.classes[cl.get("name")] = GIRClass(self, cl)
+            self.interfaces[cl.get("name")] = self._create_class(
+                cl, is_interface=True)
+
+        k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
+        for cl in self.root.findall(k):
+            self.classes[cl.get("name")] = self._create_class(
+                cl, is_interface=False)
 
         self.globals = GlobalsBinder(self, self.root) # global vars
+
+    def _create_class(self, node, is_interface):
+        n = node.get("name")
+        naming.add_type_exception(
+            cname=node.get(ctype),
+            type=GObject(
+                "Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)}))
+        naming.add_girname(girname=n, ctype=node.get(ctype))
+        return GIRClass(self, node, is_interface)
 
     def debug(self, element):
         """A debug form of element"""
@@ -111,13 +121,15 @@ class GlobalsBinder(object):
 class GIRClass(object):
     """Represents a gtk class"""
 
-    def __init__(self, gir, node):
+    def __init__(self, gir, node, is_interface):
         self.gir = gir
         self.node = node
         self.ctype = self.node.get(ctype)
         self._subst = dict()  # for substitution in string templates
         self._private = ""
         self._generated = False
+        self.implements = dict() # Implemented interfaces
+        self.is_interface = is_interface
 
     def _parameters(self, c, gtkmethod, addwith=True):
         """Format the parameters for the node C by looking at the <parameters>
@@ -215,22 +227,25 @@ class GIRClass(object):
         else:
             return CType(name=None, cname=returns, pkg=self.pkg)
 
-    def _handle_function(self, section, c, ismethod=False, gtkmethod=None):
+    def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
+                         showdoc=True):
         cname = c.get(cidentifier)
 
         if gtkmethod is None:
             gtkmethod = self.gtkpkg.get_method(cname=cname)
 
-        if gtkmethod.bind("true"):
+        if gtkmethod.bind():
             self._handle_function_internal(
                 section, node=c, cname=cname,
                 gtkmethod=gtkmethod,
                 returns=self._get_method_returns(gtkmethod, c.find(nreturn)),
+                showdoc=showdoc,
                 ismethod=ismethod)
 
     def _handle_function_internal(self, section, node, cname,
                                   gtkmethod,
                                   returns=None,
+                                  showdoc=True,
                                   adaname=None,
                                   ismethod=False, params=None):
         """Generate a binding for a function.
@@ -253,22 +268,43 @@ class GIRClass(object):
                 print "No binding for %s: varargs" % cname
                 return None
 
+        is_import = False
+
         if ismethod:
-            if adaname.startswith("Gtk_New"):
+            if not self.is_gobject:
+                pname = gtkmethod.get_param("self").ada_name() or "Self"
+                ptype = "%(typename)s" % self._subst
+                ctype = ptype
+            elif adaname.startswith("Gtk_New"):
                 pname = gtkmethod.get_param("param1").ada_name() or "Param1"
                 ptype = "%(typename)s" % self._subst
+                ctype = "System.Address"
             else:
                 pname = gtkmethod.get_param("self").ada_name() or "Self"
                 ptype = "access %(typename)s_Record" % self._subst
+                ctype = "System.Address"
 
-            params.insert(0 , Parameter(
+            if self.is_gobject:
+                getobject = "Get_Object (%(var)s)"
+            else:
+                getobject = "%(var)s"
+                is_import = returns is None or returns.direct_cmap()
+                for p in params:
+                    if not p.direct_cmap():
+                        is_import = False
+                        break
+
+            if is_import:
+                ctype = ptype
+
+            params.insert(0, Parameter(
                 name=pname,
                 type=AdaType(
                     adatype=ptype,
                     pkg=self.pkg,
                     in_spec=True,
-                    ctype="System.Address",
-                    convert="Get_Object (%(var)s)")))
+                    ctype=ctype,
+                    convert=getobject)))
 
         if adaname.startswith("Gtk_New"):
             self._handle_constructor(
@@ -279,12 +315,13 @@ class GIRClass(object):
         call = []
 
         body = gtkmethod.get_body()
-        if not body:
+        if not body and not is_import:
             plist = self._c_plist(params, returns, local_vars, call)
             internal=Subprogram(
                 name="Internal",
                 returns=returns,
                 plist=plist).import_c(cname)
+            internal.set_param_lang("c")
 
             ret = gtkmethod.return_as_param()
             execute = internal.call(extra_postcall="".join(call))
@@ -312,11 +349,14 @@ class GIRClass(object):
                 name=adaname,
                 plist=params,
                 returns=returns,
+                showdoc=showdoc,
                 doc=doc,
                 local_vars=local_vars,
                 code=call)
 
-        if not body:
+        if is_import:
+            subp.import_c(cname)
+        elif not body:
             subp.add_nested(internal)
         else:
             subp.set_body(body)
@@ -370,6 +410,7 @@ class GIRClass(object):
             name="Internal",
             plist=plist,
             returns=returns).import_c(cname)
+        internal.set_param_lang("c")
 
         call = internal.call()
         assert(call[1] is not None)   # A function
@@ -380,10 +421,14 @@ class GIRClass(object):
 
         selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
+        if self.is_gobject:
+            selftype = "%(typename)s_Record'Class" % self._subst
+        else:
+            selftype = "%(typename)s" % self._subst
+
         initialize_params = [Parameter(
             name=selfname,
-            type=AdaType("%(typename)s_Record'Class" % self._subst,
-                         pkg=self.pkg, in_spec=True),
+            type=AdaType(selftype, pkg=self.pkg, in_spec=True),
             mode="access")] + params
         initialize = Subprogram(
             name=adaname.replace("Gtk_New", "Initialize"),
@@ -451,7 +496,7 @@ class GIRClass(object):
                     returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
                 .import_c(n))
 
-            if not self.gtktype.is_subtype():
+            if not self.gtktype.is_subtype() and not self.is_interface:
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False);
                 section.add_code("""
 package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -628,7 +673,7 @@ See Glib.Properties for more information on properties)""")
                 d = '   %(name)s_Property : constant %(ptype)s' % p
                 section.add (d + ";")
                 self.pkg.add_private(
-                    d + ':=\n     %(pkg)s.Build ("%(cname)s");' % p)
+                    d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
 
     def _signals(self):
         signals = list(self.node.findall(gsignal))
@@ -644,14 +689,18 @@ See Glib.Properties for more information on properties)""")
                 params = self._parameters(
                     s, gtkmethod=gtkmethod, addwith=False)
                 returns = self._get_method_returns(gtkmethod, s.find(nreturn))
+
+                if self.is_gobject:
+                    selftype = "%(typename)s_Record'Class" % self._subst
+                else:
+                    selftype = "%(typename)s" % self._subst
+
                 sub = Subprogram(
                     name="Handler",
                     plist=[
                       Parameter(
-                          name="Self",
-                          type="%(typename)s_Record'Class" % self._subst,
-                          mode="access",
-                          doc="")] + params,
+                          name="Self", type=selftype, mode="access", doc="")]
+                      + params,
                     code="null",
                     returns=returns)
 
@@ -675,6 +724,71 @@ See Glib.Properties for more information on properties)""")
                 section.add_code(
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
                     naming.case(s["name"]), s["name"]))
+
+    def _implements(self):
+        """Bind the interfaces that a class implements"""
+
+        implements = list(self.node.findall(nimplements))
+        if not implements:
+            return
+
+        for impl in implements:
+            name = impl.get("name")
+            if name in ("Atk.ImplementorIface",):
+                continue
+
+            type = naming.full_type_from_girname(girname=name)
+            if "." in type.ada:
+                self.pkg.add_with(type.ada[:type.ada.rfind(".")])
+                self.pkg.add_with("Glib.Types")
+
+            impl = dict(
+                name=name,
+                impl=type.ada,
+                interface=self.gir.interfaces[name],
+                pkg="%(typename)s" % self._subst)
+            impl["code"] = \
+                """package Implements_%(name)s is new Glib.Types.Implements
+       (%(impl)s, %(pkg)s_Record, %(pkg)s);
+   function "+"
+      (Widget : access %(pkg)s_Record'Class)
+      return %(impl)s
+      renames Implements_%(name)s.To_Interface;
+   function "-"
+      (Interf : %(impl)s)
+      return %(pkg)s
+      renames Implements_%(name)s.To_Object;
+""" % impl
+
+            self.implements[name] = impl
+
+        if self.implements:
+
+            # Duplicate the subprograms from the interfaces. This doesn't
+            # quite work: for instance, Gtk.About_Dialog already has a
+            # Get_Name, so we can't redefine the one inherited from Buildable.
+            if False:
+                section = self.pkg.section("Interfaces_Impl")
+                for impl in sorted(self.implements.iterkeys()):
+                    impl = self.implements[impl]["interface"]
+                    all = impl.node.findall(nmethod)
+                    for c in all:
+                        cname = c.get(cidentifier)
+                        gtkmethod = impl.gtkpkg.get_method(cname)
+                        self._handle_function(
+                            section, c, showdoc=False, gtkmethod=gtkmethod,
+                            ismethod=True)
+
+            section = self.pkg.section("Interfaces")
+            section.add_comment(
+                "This class implements several interfaces. See Glib.Types")
+
+            for impl in sorted(self.implements.iterkeys()):
+                impl = self.implements[impl]
+                section.add_comment("")
+                section.add_comment('- "%(name)s"' % impl)
+                section.add_code(impl["code"])
+
 
     def generate(self, gir):
         if self._generated:
@@ -731,7 +845,15 @@ See Glib.Properties for more information on properties)""")
         if self.gtkpkg.is_obsolete():
             section.add_code("pragma Obsolescent;")
 
-        if self.gtktype.is_subtype():
+        self.is_gobject = True
+
+        if self.is_interface:
+            self.pkg.add_with("Glib.Types")
+            section.add_code(
+"type %(typename)s is new Glib.Types.GType_Interface;" % self._subst)
+            self.is_gobject = False
+
+        elif self.gtktype.is_subtype():
             section.add_code(
             """
 subtype %(typename)s_Record is %(parent)s_Record;
@@ -777,6 +899,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._functions()
         self._globals()
         self._fields()
+
+        if not into:
+            self._implements()
         self._properties()
         self._signals()
 
@@ -849,6 +974,14 @@ This file is automatically generated from the .gir files
 """
 
 gtkada = GtkAda(sys.argv[2])
+
+interfaces = ("Activatable",
+              "Buildable",
+              "CellEditable",
+              "Orientable")
+
+for name in interfaces:
+    gir.interfaces[name].generate(gir)
 
 # Contains "GIR names"
 binding = ("AboutDialog", "Arrow", "AspectFrame",

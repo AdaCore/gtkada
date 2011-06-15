@@ -30,15 +30,15 @@
 --  <description>
 --  A Gtk_Frame is a simple border than can be added to any widget or group of
 --  widget to enhance its visual aspect. Optionally, a frame can have a title.
--- 
+--
 --  This is a very convenient widget to visually group related widgets (like
 --  groups of buttons for instance), possibly with a title to explain the
 --  purpose of this group.
--- 
+--
 --  A Gtk_Frame has only one child, so you have to put a container like for
 --  instance a Gtk_Box inside if you want the frame to surround multiple
 --  widgets.
--- 
+--
 --  </description>
 --  <screenshot>gtk-frame</screenshot>
 --  <group>Ornaments</group>
@@ -47,7 +47,9 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
 
@@ -118,31 +120,49 @@ package Gtk.Frame is
    --  "type": the new Gtk.Enums.Gtk_Shadow_Type
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Frame_Record, Gtk_Frame);
+   function "+"
+     (Widget : access Gtk_Frame_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Frame
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Widget_Property
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Shadow_Property
    --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
-   -- 
+   --
    --  Name: Shadow_Type_Property
    --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
@@ -155,16 +175,16 @@ package Gtk.Frame is
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
-   Label_Property : constant Glib.Properties.Property_String:=
+   Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
-   Label_Widget_Property : constant Glib.Properties.Property_Object:=
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("label-widget");
-   Label_Xalign_Property : constant Glib.Properties.Property_Float:=
+   Label_Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("label-xalign");
-   Label_Yalign_Property : constant Glib.Properties.Property_Float:=
+   Label_Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("label-yalign");
-   Shadow_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+   Shadow_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type:=
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
 end Gtk.Frame;

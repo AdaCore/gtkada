@@ -30,18 +30,18 @@
 --  <description>
 --  Gtk_Calendar is a widget that displays a calendar, one month at a time. It
 --  can be created with Gtk_New.
--- 
+--
 --  The month and year currently displayed can be altered with Select_Month.
 --  The exact day can be selected from the displayed month using Select_Day.
--- 
+--
 --  The way in which the calendar itself is displayed can be altered using
 --  Display_Options.
--- 
+--
 --  The selected date can be retrieved from a Gtk_Calendar using Get_Date.
--- 
+--
 --  If performing many 'mark' operations, the calendar can be frozen to
 --  prevent flicker, using Freeze, and 'thawed' again using Thaw.
--- 
+--
 --  </description>
 --  <screenshot>gtk-calendar</screenshot>
 --  <group>Selectors</group>
@@ -50,6 +50,8 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Calendar is
@@ -211,63 +213,81 @@ package Gtk.Calendar is
    --  "day": the day number to unmark between 1 and 31.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Calendar_Record, Gtk_Calendar);
+   function "+"
+     (Widget : access Gtk_Calendar_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Calendar
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Day_Property
    --  Type: Gint
    --  Flags: read-write
    --  The selected day (as a number between 1 and 31, or 0 to unselect the
    --  currently selected day). This property gets initially set to the current
    --  day.
-   -- 
+   --
    --  Name: Detail_Height_Rows_Property
    --  Type: Gint
    --  Flags: read-write
    --  Height of a detail cell, in rows. A value of 0 allows any width. See
    --  gtk_calendar_set_detail_func().
-   -- 
+   --
    --  Name: Detail_Width_Chars_Property
    --  Type: Gint
    --  Flags: read-write
    --  Width of a detail cell, in characters. A value of 0 allows any width.
    --  See gtk_calendar_set_detail_func().
-   -- 
+   --
    --  Name: Month_Property
    --  Type: Gint
    --  Flags: read-write
    --  The selected month (as a number between 0 and 11). This property gets
    --  initially set to the current month.
-   -- 
+   --
    --  Name: No_Month_Change_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether the selected month can be changed.
-   -- 
+   --
    --  Name: Show_Day_Names_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether day names are displayed.
-   -- 
+   --
    --  Name: Show_Details_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether details are shown directly in the widget, or if they
    --  are available only as tooltip. When this property is set days with
    --  details are marked.
-   -- 
+   --
    --  Name: Show_Heading_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether a heading is displayed.
-   -- 
+   --
    --  Name: Show_Week_Numbers_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether week numbers are displayed.
-   -- 
+   --
    --  Name: Year_Property
    --  Type: Gint
    --  Flags: read-write
@@ -289,27 +309,27 @@ package Gtk.Calendar is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "day-selected"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   -- 
+   --
    --  "day-selected-double-click"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   -- 
+   --
    --  "month-changed"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    --  Emitted when the user clicks a button to change the selected month on a
    --  calendar.
-   -- 
+   --
    --  "next-month"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   -- 
+   --
    --  "next-year"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   -- 
+   --
    --  "prev-month"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   -- 
+   --
    --  "prev-year"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
@@ -322,24 +342,24 @@ package Gtk.Calendar is
    Signal_Prev_Year : constant Glib.Signal_Name := "prev-year";
 
 private
-   Day_Property : constant Glib.Properties.Property_Int:=
+   Day_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("day");
-   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int:=
+   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("detail-height-rows");
-   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int:=
+   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("detail-width-chars");
-   Month_Property : constant Glib.Properties.Property_Int:=
+   Month_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("month");
-   No_Month_Change_Property : constant Glib.Properties.Property_Boolean:=
+   No_Month_Change_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("no-month-change");
-   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean:=
+   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-day-names");
-   Show_Details_Property : constant Glib.Properties.Property_Boolean:=
+   Show_Details_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-details");
-   Show_Heading_Property : constant Glib.Properties.Property_Boolean:=
+   Show_Heading_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-heading");
-   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean:=
+   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-week-numbers");
-   Year_Property : constant Glib.Properties.Property_Int:=
+   Year_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("year");
 end Gtk.Calendar;

@@ -28,65 +28,58 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  This widget serves as separator between menu items. It is represented
---  graphically as a horizontal line between two items, and is used to group
---  items into meaningful groups.
+--  The Gtk_Orientable interface is implemented by all widgets that can be
+--  oriented horizontally or vertically. Historically, such widgets have been
+--  realized as subclasses of a common base class (e.g
+--  Gtk_Box/Gtk_HBox/Gtk_VBox or Gtk_Scale/Gtk_HScale/Gtk_VScale).
+--  Gtk_Orientable is more flexible in that it allows the orientation to be
+--  changed at runtime, allowing the widgets to 'flip'.
 --
 --  </description>
---  <group>Menus and Toolbars</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Types;      use Glib.Types;
-with Gtk.Activatable; use Gtk.Activatable;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Menu_Item;   use Gtk.Menu_Item;
+with Glib;       use Glib;
+with Glib.Types; use Glib.Types;
+with Gtk.Enums;  use Gtk.Enums;
 
-package Gtk.Separator_Menu_Item is
+package Gtk.Orientable is
 
-   type Gtk_Separator_Menu_Item_Record is new Gtk_Menu_Item_Record with null record;
-   type Gtk_Separator_Menu_Item is access all Gtk_Separator_Menu_Item_Record'Class;
+   type Gtk_Orientable is new Glib.Types.GType_Interface;
 
    ------------------
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
-   procedure Initialize
-      (Widget : access Gtk_Separator_Menu_Item_Record'Class);
-
    function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "gtk_separator_menu_item_get_type");
+   pragma Import (C, Get_Type, "gtk_orientable_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
+   function Get_Orientation
+      (Self : Gtk_Orientable) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : Gtk_Orientable;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Sets the orientation of the Orientable.
+   --  Since: gtk+ 2.16
+   --  "orientation": the orientable's new orientation.
 
    ----------------
-   -- Interfaces --
+   -- Properties --
    ----------------
-   --  This class implements several interfaces. See Glib.Types
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
    --
-   --  - "Activatable"
-   --
-   --  - "Buildable"
+   --  Name: Orientation_Property
+   --  Type: Gtk.Enums.Gtk_Orientation
+   --  Flags: read-write
+   --  The orientation of the orientable.
 
-   package Implements_Activatable is new Glib.Types.Implements
-     (Gtk.Activatable.Gtk_Activatable, Gtk_Separator_Menu_Item_Record, Gtk_Separator_Menu_Item);
-   function "+"
-     (Widget : access Gtk_Separator_Menu_Item_Record'Class)
-   return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
-   function "-"
-     (Interf : Gtk.Activatable.Gtk_Activatable)
-   return Gtk_Separator_Menu_Item
-   renames Implements_Activatable.To_Object;
+   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
 
-   package Implements_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Separator_Menu_Item_Record, Gtk_Separator_Menu_Item);
-   function "+"
-     (Widget : access Gtk_Separator_Menu_Item_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Separator_Menu_Item
-   renames Implements_Buildable.To_Object;
-
-end Gtk.Separator_Menu_Item;
+private
+   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
+     Gtk.Enums.Build ("orientation");
+end Gtk.Orientable;

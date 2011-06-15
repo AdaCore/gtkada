@@ -37,13 +37,13 @@
 --  located anywhere in the layout (no automatic organization is done). But, as
 --  opposed to Gtk_Fixed widgets, a Gtk_Layout does not try to resize itself to
 --  show all its children.
--- 
+--
 --  Starting from GtkAda 2.0, you have to call Set_Size and specify the
 --  maximum size of the layout, otherwise children added with Put outside the
 --  size defined for the layout will never be visible. One way to do this is to
 --  systematically call Set_Size before calling Put, and make sure you specify
 --  a size big enough for the layout.
--- 
+--
 --  </description>
 --  <screenshot>gtk-layout</screenshot>
 --  <group>Layout containers</group>
@@ -53,7 +53,9 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
 with Gtk.Widget;      use Gtk.Widget;
 
@@ -157,23 +159,41 @@ package Gtk.Layout is
    --  This is a deprecated function, it doesn't do anything useful.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Layout_Record, Gtk_Layout);
+   function "+"
+     (Widget : access Gtk_Layout_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Layout
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Hadjustment_Property
    --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
-   -- 
+   --
    --  Name: Height_Property
    --  Type: Guint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Vadjustment_Property
    --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
-   -- 
+   --
    --  Name: Width_Property
    --  Type: Guint
    --  Flags: read-write
@@ -187,7 +207,7 @@ package Gtk.Layout is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "set-scroll-adjustments"
    --     procedure Handler
    --       (Self   : access Gtk_Layout_Record'Class;
@@ -197,12 +217,12 @@ package Gtk.Layout is
    Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name := "set-scroll-adjustments";
 
 private
-   Hadjustment_Property : constant Glib.Properties.Property_Object:=
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("hadjustment");
-   Height_Property : constant Glib.Properties.Property_Uint:=
+   Height_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("height");
-   Vadjustment_Property : constant Glib.Properties.Property_Object:=
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("vadjustment");
-   Width_Property : constant Glib.Properties.Property_Uint:=
+   Width_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("width");
 end Gtk.Layout;

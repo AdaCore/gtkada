@@ -34,19 +34,21 @@
 --  window, and thus can not directly get events from the server. The
 --  Gtk_Event_Box widget can be used to force its child to receive events
 --  anyway.
--- 
+--
 --  For instance, this widget is used internally in a Gtk_Combo_Box so that
 --  the application can change the cursor when the mouse is in the popup
 --  window. In that case, it contains a frame, that itself contains the
 --  scrolled window of the popup.
--- 
+--
 --  </description>
 --  <group>Layout Containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Buildable;   use Gtk.Buildable;
 
 package Gtk.Event_Box is
 
@@ -114,15 +116,33 @@ package Gtk.Event_Box is
    --  "visible_window": boolean value
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Event_Box_Record, Gtk_Event_Box);
+   function "+"
+     (Widget : access Gtk_Event_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Event_Box
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Above_Child_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Visible_Window_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -131,8 +151,8 @@ package Gtk.Event_Box is
    Visible_Window_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Above_Child_Property : constant Glib.Properties.Property_Boolean:=
+   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("above-child");
-   Visible_Window_Property : constant Glib.Properties.Property_Boolean:=
+   Visible_Window_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible-window");
 end Gtk.Event_Box;

@@ -32,14 +32,17 @@
 --  widgets, to provide visual grouping of the widgets into meaningful groups.
 --  It is for instance used in dialogs to isolate the actual contents of the
 --  dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)
--- 
+--
 --  </description>
 --  <screenshot>gtk-separator</screenshot>
 --  <group>Ornaments</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Gtk.Widget; use Gtk.Widget;
+with Glib;           use Glib;
+with Glib.Types;     use Glib.Types;
+with Gtk.Buildable;  use Gtk.Buildable;
+with Gtk.Orientable; use Gtk.Orientable;
+with Gtk.Widget;     use Gtk.Widget;
 
 package Gtk.Separator is
 
@@ -73,5 +76,36 @@ package Gtk.Separator is
 
    function Hseparator_Get_Type return Glib.GType;
    pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Separator_Record, Gtk_Separator);
+   function "+"
+     (Widget : access Gtk_Separator_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Separator
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Separator_Record, Gtk_Separator);
+   function "+"
+     (Widget : access Gtk_Separator_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Separator
+   renames Implements_Orientable.To_Object;
 
 end Gtk.Separator;

@@ -31,7 +31,7 @@
 --  A Gtk_Radio_Action is similar to Gtk_Radio_Menu_Item. A number of radio
 --  actions can be linked together so that only one may be active at any one
 --  time.
--- 
+--
 --  </description>
 --  <group>Action-based menus</group>
 --  <see>Gtk_Action</see>
@@ -39,6 +39,8 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
 with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Toggle_Action; use Gtk.Toggle_Action;
 with Gtk.Widget;        use Gtk.Widget;
 
@@ -113,22 +115,40 @@ package Gtk.Radio_Action is
    --  "group": a list representing a radio group
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Radio_Action_Record, Gtk_Radio_Action);
+   function "+"
+     (Widget : access Gtk_Radio_Action_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Radio_Action
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Current_Value_Property
    --  Type: Gint
    --  Flags: read-write
    --  The value property of the currently active member of the group to which
    --  this action belongs.
-   -- 
+   --
    --  Name: Group_Property
    --  Type: Gtk.Radio_Action.Gtk_Radio_Action
    --  Flags: write
    --  Sets a new group for a radio action.
-   -- 
+   --
    --  Name: Value_Property
    --  Type: Gint
    --  Flags: read-write
@@ -146,7 +166,7 @@ package Gtk.Radio_Action is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "changed"
    --     procedure Handler
    --       (Self    : access Gtk_Radio_Action_Record'Class;
@@ -160,10 +180,10 @@ package Gtk.Radio_Action is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
-   Current_Value_Property : constant Glib.Properties.Property_Int:=
+   Current_Value_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("current-value");
-   Group_Property : constant Glib.Properties.Property_Object:=
+   Group_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("group");
-   Value_Property : constant Glib.Properties.Property_Int:=
+   Value_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("value");
 end Gtk.Radio_Action;

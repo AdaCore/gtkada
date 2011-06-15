@@ -27,58 +27,35 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  Base class for containers that have only one child. This widget can not be
---  instantiated directly.
---
---  </description>
---  <group>Abstract base classes</group>
-
+pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;          use Glib;
-with Glib.Types;    use Glib.Types;
-with Gtk.Buildable; use Gtk.Buildable;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Widget;    use Gtk.Widget;
+package body Gtk.Orientable is
 
-package Gtk.Bin is
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
 
-   type Gtk_Bin_Record is new Gtk_Container_Record with null record;
-   type Gtk_Bin is access all Gtk_Bin_Record'Class;
+   function Get_Orientation
+      (Self : Gtk_Orientable) return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal (Self : Gtk_Orientable) return Integer;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Gtk.Enums.Gtk_Orientation'Val (Internal (Self));
+   end Get_Orientation;
 
-   ------------------
-   -- Constructors --
-   ------------------
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
 
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "gtk_bin_get_type");
+   procedure Set_Orientation
+      (Self        : Gtk_Orientable;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal (Self : Gtk_Orientable; Orientation : Integer);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Self, Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+   end Set_Orientation;
 
-   -------------
-   -- Methods --
-   -------------
-
-   function Get_Child
-      (Bin : access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget;
-   --  Gets the child of the Gtk.Bin.Gtk_Bin, or null if the bin contains no
-   --  child widget. The returned widget does not have a reference added, so
-   --  you do not need to unref it.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Bin_Record, Gtk_Bin);
-   function "+"
-     (Widget : access Gtk_Bin_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Bin
-   renames Implements_Buildable.To_Object;
-
-end Gtk.Bin;
+end Gtk.Orientable;

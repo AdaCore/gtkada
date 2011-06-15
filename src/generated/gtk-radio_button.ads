@@ -33,10 +33,10 @@
 --  get a special behavior: only one button in the group can be active at any
 --  given time. Thus, when the user selects one of the buttons from the group,
 --  the button that was previously selected is disabled.
--- 
+--
 --  The radio buttons always belongs to a group, even if there is only one in
 --  this group.
--- 
+--
 --  </description>
 --  <screenshot>gtk-radio_button</screenshot>
 --  <group>Buttons and Toggles</group>
@@ -45,6 +45,9 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
+with Glib.Types;       use Glib.Types;
+with Gtk.Activatable;  use Gtk.Activatable;
+with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Widget;       use Gtk.Widget;
 
@@ -133,11 +136,42 @@ package Gtk.Radio_Button is
    --  Gtk.Radio_Button.Get_Group.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Radio_Button_Record, Gtk_Radio_Button);
+   function "+"
+     (Widget : access Gtk_Radio_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Radio_Button
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Radio_Button_Record, Gtk_Radio_Button);
+   function "+"
+     (Widget : access Gtk_Radio_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Radio_Button
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Group_Property
    --  Type: Gtk.Radio_Button.Gtk_Radio_Button
    --  Flags: write
@@ -148,7 +182,7 @@ package Gtk.Radio_Button is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "group-changed"
    --     procedure Handler (Self : access Gtk_Radio_Button_Record'Class);
    --  Emitted when the group of radio buttons that a radio button belongs to
@@ -161,6 +195,6 @@ package Gtk.Radio_Button is
    Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
 
 private
-   Group_Property : constant Glib.Properties.Property_Object:=
+   Group_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("group");
 end Gtk.Radio_Button;

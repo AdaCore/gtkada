@@ -30,7 +30,7 @@
 --  <description>
 --  A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget,
 --  (usually a Gtk_Label).
--- 
+--
 --  </description>
 --  <screenshot>gtk-check_button</screenshot>
 --  <group>Buttons and Toggles</group>
@@ -38,6 +38,9 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
+with Glib.Types;        use Glib.Types;
+with Gtk.Activatable;   use Gtk.Activatable;
+with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
@@ -73,5 +76,36 @@ package Gtk.Check_Button is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_check_button_get_type");
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Check_Button_Record, Gtk_Check_Button);
+   function "+"
+     (Widget : access Gtk_Check_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Check_Button
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Check_Button_Record, Gtk_Check_Button);
+   function "+"
+     (Widget : access Gtk_Check_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Check_Button
+   renames Implements_Buildable.To_Object;
 
 end Gtk.Check_Button;

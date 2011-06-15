@@ -30,12 +30,12 @@
 --  <description>
 --  The Gtk_Fixed widget is a container which can place child widgets at fixed
 --  positions and with fixed sizes, given in pixels.
--- 
+--
 --  Note that it is usually bad practice to use the Gtk_Fixed container in
 --  GtkAda. Instead, you should consider using one of the other many containers
 --  available, that will allow you to handle resizing of your windows, as well
 --  as font size changes easily.
--- 
+--
 --  </description>
 --  <screenshot>gtk-fixed</screenshot>
 --  <group>Layout containers</group>
@@ -43,6 +43,8 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Buildable; use Gtk.Buildable;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Widget;    use Gtk.Widget;
 
@@ -98,5 +100,23 @@ package Gtk.Fixed is
    --  Add Widget to a Fixed container at the given position. X indicates the
    --  horizontal position to place the widget at. Y is the vertical position
    --  to place the widget at.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Fixed_Record, Gtk_Fixed);
+   function "+"
+     (Widget : access Gtk_Fixed_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Fixed
+   renames Implements_Buildable.To_Object;
 
 end Gtk.Fixed;

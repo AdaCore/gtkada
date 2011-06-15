@@ -31,7 +31,7 @@
 --  A scale is a horizontal or vertical widget that a user can slide to choose
 --  a value in a given range. This is a kind of cursor, similar to what one
 --  finds on audio systems to select the volume for instance.
--- 
+--
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
 --  <group>Numeric/Text Data Entry</group>
@@ -39,9 +39,12 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.GRange;      use Gtk.GRange;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Pango.Layout;    use Pango.Layout;
 
 package Gtk.Scale is
@@ -199,19 +202,50 @@ package Gtk.Scale is
    --  "pos": the position in which the current value is displayed
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Scale_Record, Gtk_Scale);
+   function "+"
+     (Widget : access Gtk_Scale_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Scale
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Scale_Record, Gtk_Scale);
+   function "+"
+     (Widget : access Gtk_Scale_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Scale
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Number_Of_Digits_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Draw_Value_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Value_Pos_Property
    --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
@@ -228,7 +262,7 @@ package Gtk.Scale is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "format-value"
    --     function Handler
    --       (Self  : access Gtk_Scale_Record'Class;
@@ -244,10 +278,10 @@ package Gtk.Scale is
    Signal_Format_Value : constant Glib.Signal_Name := "format-value";
 
 private
-   Number_Of_Digits_Property : constant Glib.Properties.Property_Int:=
+   Number_Of_Digits_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("digits");
-   Draw_Value_Property : constant Glib.Properties.Property_Boolean:=
+   Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw-value");
-   Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type:=
+   Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("value-pos");
 end Gtk.Scale;

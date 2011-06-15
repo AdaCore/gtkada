@@ -30,32 +30,34 @@
 --  <description>
 --  This widget provides an empty canvas on which the application can draw
 --  anything.
--- 
+--
 --  Note that this widget is simply an empty space, and that you need to
 --  connect it to events to make it useful. For instance, you might want to do
 --  one of the following :
--- 
+--
 --  * Connect it to "expose_event": The handlers are called every time the
 --  widget needs to be redrawn. You can then draw anything you want on the
 --  canvas, after getting its associated window with a call to
 --  Gtk.Widget.Get_Window. Note that the event mask is automatically set up to
 --  accept expose_events.
--- 
+--
 --  * Connect it to "button_press_event" and "button_release_event" events,
 --  when you want it to react to user input. Note that you need to set up the
 --  event mask with a call to Gtk.Widget.Set_Events.
--- 
+--
 --  See also the Double_Buffer widget provided in the GtkAda examples for an
 --  advanced example that demonstrates how to use double buffering, to avoid
 --  flickering in your drawings.
--- 
+--
 --  </description>
 --  <group>Drawing</group>
 --  <testgtk>libart_demo.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Gtk.Widget; use Gtk.Widget;
+with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Widget;    use Gtk.Widget;
 
 package Gtk.Drawing_Area is
 
@@ -85,5 +87,23 @@ package Gtk.Drawing_Area is
    --  Request a new size for the area. This queues a resize request for the
    --  area.
    --  Deprecated
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Drawing_Area_Record, Gtk_Drawing_Area);
+   function "+"
+     (Widget : access Gtk_Drawing_Area_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Drawing_Area
+   renames Implements_Buildable.To_Object;
 
 end Gtk.Drawing_Area;

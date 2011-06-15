@@ -30,13 +30,15 @@
 --  <description>
 --  This widget is a base class for all the widgets that require an alignment
 --  and padding. This widget can not be instantiated directly.
--- 
+--
 --  </description>
 --  <group>Abstract base classes</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Misc is
@@ -83,23 +85,41 @@ package Gtk.Misc is
    --  Xpad or Ypad is negative, they will be changed to 0.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Misc_Record, Gtk_Misc);
+   function "+"
+     (Widget : access Gtk_Misc_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Misc
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Xpad_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Ypad_Property
    --  Type: Gint
    --  Flags: read-write
@@ -110,12 +130,12 @@ package Gtk.Misc is
    Ypad_Property : constant Glib.Properties.Property_Int;
 
 private
-   Xalign_Property : constant Glib.Properties.Property_Float:=
+   Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("xalign");
-   Xpad_Property : constant Glib.Properties.Property_Int:=
+   Xpad_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("xpad");
-   Yalign_Property : constant Glib.Properties.Property_Float:=
+   Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
-   Ypad_Property : constant Glib.Properties.Property_Int:=
+   Ypad_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("ypad");
 end Gtk.Misc;

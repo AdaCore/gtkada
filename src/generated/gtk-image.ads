@@ -30,12 +30,12 @@
 --  <description>
 --  The Gtk_Image widget displays a graphical image. The image is typically
 --  created using Gdk.Image.Gdk_New.
--- 
+--
 --  The pixels in a Gtk_Image may be manipulated by the application after
 --  creation, as Gtk_Image store the pixel data on the client side. If you wish
 --  to store the pixel data on the server side (thus not allowing manipulation
 --  of the data after creation) you should use Gtk_Pixmap.
--- 
+--
 --  </description>
 --  <screenshot>gtk-image</screenshot>
 --  <group>Display widgets</group>
@@ -49,6 +49,8 @@ with Gdk.Pixmap;       use Gdk.Pixmap;
 with Glib;             use Glib;
 with Glib.G_Icon;      use Glib.G_Icon;
 with Glib.Properties;  use Glib.Properties;
+with Glib.Types;       use Glib.Types;
+with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Icon_Factory; use Gtk.Icon_Factory;
 with Gtk.Misc;         use Gtk.Misc;
@@ -338,66 +340,84 @@ package Gtk.Image is
       Size  : out Gtk.Enums.Gtk_Icon_Size);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Image_Record, Gtk_Image);
+   function "+"
+     (Widget : access Gtk_Image_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Image
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: File_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Gicon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
    --  The GIcon displayed in the GtkImage. For themed icons, If the icon
    --  theme is changed, the image will be updated automatically.
-   -- 
+   --
    --  Name: Icon_Name_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The name of the icon in the icon theme. If the icon theme is changed,
    --  the image will be updated automatically.
-   -- 
+   --
    --  Name: Icon_Set_Property
    --  Type: Gtk.Icon_Factory.Gtk_Icon_Set
    --  Flags: read-write
-   -- 
+   --
    --  Name: Icon_Size_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Image_Property
    --  Type: Gdk.Image.Gdk_Image
    --  Flags: read-write
-   -- 
+   --
    --  Name: Mask_Property
    --  Type: Gdk.Pixmap.Gdk_Pixmap
    --  Flags: read-write
-   -- 
+   --
    --  Name: Pixbuf_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
-   -- 
+   --
    --  Name: Pixbuf_Animation_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf_Animation
    --  Flags: read-write
-   -- 
+   --
    --  Name: Pixel_Size_Property
    --  Type: Gint
    --  Flags: read-write
    --  The "pixel-size" property can be used to specify a fixed size
    --  overriding the #GtkImage:icon-size property for images of type
    --  %GTK_IMAGE_ICON_NAME.
-   -- 
+   --
    --  Name: Pixmap_Property
    --  Type: Gdk.Pixmap.Gdk_Pixmap
    --  Flags: read-write
-   -- 
+   --
    --  Name: Stock_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Storage_Type_Property
    --  Type: Gtk_Image_Type
    --  Flags: read-write
@@ -417,30 +437,30 @@ package Gtk.Image is
    Storage_Type_Property : constant Glib.Properties.Property_Boxed;
 
 private
-   File_Property : constant Glib.Properties.Property_String:=
+   File_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("file");
-   Gicon_Property : constant Glib.Properties.Property_Boxed:=
+   Gicon_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("gicon");
-   Icon_Name_Property : constant Glib.Properties.Property_String:=
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("icon-name");
-   Icon_Set_Property : constant Glib.Properties.Property_Boxed:=
+   Icon_Set_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("icon-set");
-   Icon_Size_Property : constant Glib.Properties.Property_Int:=
+   Icon_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("icon-size");
-   Image_Property : constant Glib.Properties.Property_Boxed:=
+   Image_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("image");
-   Mask_Property : constant Glib.Properties.Property_Boxed:=
+   Mask_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("mask");
-   Pixbuf_Property : constant Glib.Properties.Property_Object:=
+   Pixbuf_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("pixbuf");
-   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed:=
+   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("pixbuf-animation");
-   Pixel_Size_Property : constant Glib.Properties.Property_Int:=
+   Pixel_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixel-size");
-   Pixmap_Property : constant Glib.Properties.Property_Boxed:=
+   Pixmap_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("pixmap");
-   Stock_Property : constant Glib.Properties.Property_String:=
+   Stock_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("stock");
-   Storage_Type_Property : constant Glib.Properties.Property_Boxed:=
+   Storage_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("storage-type");
 end Gtk.Image;

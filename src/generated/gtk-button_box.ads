@@ -30,22 +30,25 @@
 --  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
 --  contain buttons.
--- 
+--
 --  This is only a base class for Gtk_Hbutton_Box and Gtk_Vbutton_Box which
 --  provide a way to arrange their children horizontally (resp. vertically).
 --  You can not instantiate a Gtk_Button_Box directly, and have to use one the
 --  above two instead.
--- 
+--
 --  </description>
 --  <screenshot>gtk-button_box</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_button_box.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Widget; use Gtk.Widget;
+with Glib;           use Glib;
+with Glib.Types;     use Glib.Types;
+with Gtk.Box;        use Gtk.Box;
+with Gtk.Buildable;  use Gtk.Buildable;
+with Gtk.Enums;      use Gtk.Enums;
+with Gtk.Orientable; use Gtk.Orientable;
+with Gtk.Widget;     use Gtk.Widget;
 
 package Gtk.Button_Box is
 
@@ -114,11 +117,42 @@ package Gtk.Button_Box is
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Button_Box_Record, Gtk_Button_Box);
+   function "+"
+     (Widget : access Gtk_Button_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Button_Box
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Button_Box_Record, Gtk_Button_Box);
+   function "+"
+     (Widget : access Gtk_Button_Box_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Button_Box
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Layout_Style_Property
    --  Type: Gtk.Enums.Gtk_Button_Box_Style
    --  Flags: read-write
@@ -126,6 +160,6 @@ package Gtk.Button_Box is
    Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
 
 private
-   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style:=
+   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style :=
      Gtk.Enums.Build ("layout-style");
 end Gtk.Button_Box;

@@ -32,13 +32,13 @@
 --  together so they all request the same amount of space. This is typically
 --  useful when you want a column of widgets to have the same size, but you
 --  can't use a Gtk_Table widget.
--- 
+--
 --  Note that size groups only affect the amount of space requested, not the
 --  size that the widgets finally receive. If you want the widgets in a
 --  Gtk_Size_Group to actually be the same size, you need to pack them in such
 --  a way that they get the size they request and not more. For example, if you
 --  are packing your widgets into a table, you would not include the Fill flag.
--- 
+--
 --  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 
@@ -47,6 +47,8 @@ with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Size_Group is
@@ -138,17 +140,35 @@ package Gtk.Size_Group is
    --  "widget": the Gtk.Widget.Gtk_Widget to remove
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Size_Group_Record, Gtk_Size_Group);
+   function "+"
+     (Widget : access Gtk_Size_Group_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Size_Group
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Ignore_Hidden_Property
    --  Type: Boolean
    --  Flags: read-write
    --  If %TRUE, unmapped widgets are ignored when determining the size of the
    --  group.
-   -- 
+   --
    --  Name: Mode_Property
    --  Type: Size_Group_Mode
    --  Flags: read-write
@@ -157,8 +177,8 @@ package Gtk.Size_Group is
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode;
 
 private
-   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean:=
+   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("ignore-hidden");
-   Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode:=
+   Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode :=
      Gtk.Size_Group.Build ("mode");
 end Gtk.Size_Group;

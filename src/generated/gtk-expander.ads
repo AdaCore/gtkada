@@ -29,7 +29,7 @@
 
 --  <description>
 --  A container that can hide its child.
--- 
+--
 --  </description>
 --  <screenshot>gtk-expanded</screenshot>
 --  <group>Layout containers</group>
@@ -37,7 +37,9 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Expander is
@@ -153,35 +155,53 @@ package Gtk.Expander is
    --  "use_underline": True if underlines in the text indicate mnemonics
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Expander_Record, Gtk_Expander);
+   function "+"
+     (Widget : access Gtk_Expander_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Expander
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Expanded_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Fill_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Label_Widget_Property
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
-   -- 
+   --
    --  Name: Spacing_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Use_Markup_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Use_Underline_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -198,25 +218,25 @@ package Gtk.Expander is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "activate"
    --     procedure Handler (Self : access Gtk_Expander_Record'Class);
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
-   Expanded_Property : constant Glib.Properties.Property_Boolean:=
+   Expanded_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("expanded");
-   Label_Property : constant Glib.Properties.Property_String:=
+   Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
-   Label_Fill_Property : constant Glib.Properties.Property_Boolean:=
+   Label_Fill_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("label-fill");
-   Label_Widget_Property : constant Glib.Properties.Property_Object:=
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("label-widget");
-   Spacing_Property : constant Glib.Properties.Property_Int:=
+   Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("spacing");
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-markup");
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
 end Gtk.Expander;

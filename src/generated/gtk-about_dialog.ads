@@ -34,18 +34,18 @@
 --  artists who have worked on the program. An about dialog is typically opened
 --  when the user selects the About option from the Help menu. All parts of the
 --  dialog are optional.
--- 
+--
 --  About dialog often contain links and email addresses. Gtk_About_Dialog
 --  supports this by offering global hooks, which are called when the user
 --  clicks on a link or email address, see Set_Email_Hook and Set_Url_Hook.
 --  Email addresses in the authors, documenters and artists properties are
 --  recognized by looking for <user@host>, URLs are recognized by looking for
 --  http://url, with url extending to the next space, tab or line break.
--- 
+--
 --  To make constructing a Gtk_About_Dialog as convenient as possible, you can
 --  use the function gtk_show_about_dialog which constructs and shows a dialog
 --  and keeps it around so that it can be shown again.
--- 
+--
 --  </description>
 --  <group>Windows</group>
 --  <testgtk>create_about.adb</testgtk>
@@ -55,6 +55,8 @@ with GNAT.Strings;         use GNAT.Strings;
 with Gdk.Pixbuf;           use Gdk.Pixbuf;
 with Glib;                 use Glib;
 with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+with Gtk.Buildable;        use Gtk.Buildable;
 with Gtk.Dialog;           use Gtk.Dialog;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
@@ -293,23 +295,41 @@ package Gtk.About_Dialog is
    --  "destroy": Glib.G_Destroy_Notify_Address for Data
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_About_Dialog_Record, Gtk_About_Dialog);
+   function "+"
+     (Widget : access Gtk_About_Dialog_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_About_Dialog
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Comments_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  Comments about the program. This string is displayed in a label in the
    --  main dialog, thus it should be a short explanation of the main purpose
    --  of the program, not a detailed list of features.
-   -- 
+   --
    --  Name: Copyright_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  Copyright information for the program.
-   -- 
+   --
    --  Name: License_Property
    --  Type: UTF8_String
    --  Flags: read-write
@@ -318,50 +338,50 @@ package Gtk.About_Dialog is
    --  text. Note that the text is only wrapped in the text view if the
    --  "wrap-license" property is set to %TRUE; otherwise the text itself must
    --  contain the intended linebreaks.
-   -- 
+   --
    --  Name: Logo_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
    --  gtk_window_get_default_icon_list().
-   -- 
+   --
    --  Name: Logo_Icon_Name_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  A named icon to use as the logo for the about box. This property
    --  overrides the #GtkAboutDialog:logo property.
-   -- 
+   --
    --  Name: Program_Name_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The name of the program. If this is not set, it defaults to
    --  g_get_application_name().
-   -- 
+   --
    --  Name: Translator_Credits_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  Credits to the translators. This string should be marked as
    --  translatable. The string may contain email addresses and URLs, which
    --  will be displayed as links, see the introduction for more details.
-   -- 
+   --
    --  Name: Version_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The version of the program.
-   -- 
+   --
    --  Name: Website_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The URL for the link to the website of the program. This should be a
    --  string starting with "http://.
-   -- 
+   --
    --  Name: Website_Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The label for the link to the website of the program. If this is not
    --  set, it defaults to the URL specified in the #GtkAboutDialog:website
    --  property.
-   -- 
+   --
    --  Name: Wrap_License_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -383,7 +403,7 @@ package Gtk.About_Dialog is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "activate-link"
    --     function Handler
    --       (Self : access Gtk_About_Dialog_Record'Class;
@@ -396,26 +416,26 @@ package Gtk.About_Dialog is
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 
 private
-   Comments_Property : constant Glib.Properties.Property_String:=
+   Comments_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("comments");
-   Copyright_Property : constant Glib.Properties.Property_String:=
+   Copyright_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("copyright");
-   License_Property : constant Glib.Properties.Property_String:=
+   License_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("license");
-   Logo_Property : constant Glib.Properties.Property_Object:=
+   Logo_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("logo");
-   Logo_Icon_Name_Property : constant Glib.Properties.Property_String:=
+   Logo_Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("logo-icon-name");
-   Program_Name_Property : constant Glib.Properties.Property_String:=
+   Program_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("program-name");
-   Translator_Credits_Property : constant Glib.Properties.Property_String:=
+   Translator_Credits_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("translator-credits");
-   Version_Property : constant Glib.Properties.Property_String:=
+   Version_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("version");
-   Website_Property : constant Glib.Properties.Property_String:=
+   Website_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("website");
-   Website_Label_Property : constant Glib.Properties.Property_String:=
+   Website_Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("website-label");
-   Wrap_License_Property : constant Glib.Properties.Property_Boolean:=
+   Wrap_License_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap-license");
 end Gtk.About_Dialog;

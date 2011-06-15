@@ -31,11 +31,11 @@
 --  A Gtk_Aspect_Frame is the same type of widget as a frame, but it
 --  constrains its child to a specific aspect ratio between its width and its
 --  height.
--- 
+--
 --  This ratio can either be given explicitly by the user, or chosen from the
 --  widget's initial size request (might be different from the one if was
 --  actually given).
--- 
+--
 --  </description>
 --  <group>Layout Containers</group>
 --  <testgtk>create_frame.adb.adb</testgtk>
@@ -43,6 +43,8 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Frame;       use Gtk.Frame;
 
 package Gtk.Aspect_Frame is
@@ -118,23 +120,41 @@ package Gtk.Aspect_Frame is
       (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Aspect_Frame_Record, Gtk_Aspect_Frame);
+   function "+"
+     (Widget : access Gtk_Aspect_Frame_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Aspect_Frame
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Obey_Child_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Ratio_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
@@ -145,12 +165,12 @@ package Gtk.Aspect_Frame is
    Yalign_Property : constant Glib.Properties.Property_Float;
 
 private
-   Obey_Child_Property : constant Glib.Properties.Property_Boolean:=
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("obey-child");
-   Ratio_Property : constant Glib.Properties.Property_Float:=
+   Ratio_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("ratio");
-   Xalign_Property : constant Glib.Properties.Property_Float:=
+   Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("xalign");
-   Yalign_Property : constant Glib.Properties.Property_Float:=
+   Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
 end Gtk.Aspect_Frame;

@@ -1,3 +1,4 @@
+
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
@@ -28,14 +29,16 @@
 -----------------------------------------------------------------------
 
 --  <description>
--- 
--- 
+--
+--
 --  </description>
 --  <group>Obsolescent widgets</group>
 --  <testgtk>create_list.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Buildable; use Gtk.Buildable;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Widget;    use Gtk.Widget;
@@ -153,11 +156,29 @@ package Gtk.List is
    return Widget_List.Glist;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_List_Record, Gtk_List);
+   function "+"
+     (Widget : access Gtk_List_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_List
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Selection_Mode_Property
    --  Type: Gtk.Enums.Gtk_Selection_Mode
    --  Flags: read-write
@@ -168,15 +189,15 @@ package Gtk.List is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "select-child"
    --     procedure Handler
    --       (Self   : access Gtk_List_Record'Class;
    --        Object : Gtk.Widget.Gtk_Widget);
-   -- 
+   --
    --  "selection-changed"
    --     procedure Handler (Self : access Gtk_List_Record'Class);
-   -- 
+   --
    --  "unselect-child"
    --     procedure Handler
    --       (Self   : access Gtk_List_Record'Class;
@@ -187,6 +208,6 @@ package Gtk.List is
    Signal_Unselect_Child : constant Glib.Signal_Name := "unselect-child";
 
 private
-   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode:=
+   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode :=
      Gtk.Enums.Build ("selection-mode");
 end Gtk.List;

@@ -32,14 +32,17 @@
 --  vertically. The beginning of the box (when you add children with
 --  Gtk.Box.Pack_Start) is on the top of the box. Its end (for
 --  Gtk.Box.Pack_End) is on the bottom.
--- 
+--
 --  </description>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
+with Glib.Types;     use Glib.Types;
+with Gtk.Buildable;  use Gtk.Buildable;
 with Gtk.Button_Box; use Gtk.Button_Box;
 with Gtk.Enums;      use Gtk.Enums;
+with Gtk.Orientable; use Gtk.Orientable;
 
 package Gtk.Vbutton_Box is
 
@@ -77,5 +80,36 @@ package Gtk.Vbutton_Box is
    --  vertical button box.
    --  Deprecated since 2.0, Use Gtk.Box.Set_Spacing instead.
    --  "spacing": an integer value.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Vbutton_Box_Record, Gtk_Vbutton_Box);
+   function "+"
+     (Widget : access Gtk_Vbutton_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Vbutton_Box
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Vbutton_Box_Record, Gtk_Vbutton_Box);
+   function "+"
+     (Widget : access Gtk_Vbutton_Box_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Vbutton_Box
+   renames Implements_Orientable.To_Object;
 
 end Gtk.Vbutton_Box;

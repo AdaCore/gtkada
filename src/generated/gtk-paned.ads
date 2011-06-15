@@ -35,15 +35,15 @@
 --  children, while at the same time shrinking the second one. The bar can be
 --  moved by clicking with the mouse on a small cursor displayed in the bar,
 --  and then dragging the mouse.
--- 
+--
 --  No additional decoration is provided around the children.
--- 
+--
 --  Each child has two parameters, Resize and Shrink.
--- 
+--
 --  If Shrink is True, then the widget can be made smaller than its
 --  requisition size by the user. Set this to False if you want to set a
 --  minimum size.
--- 
+--
 --  if Resize is True, this means that the child accepts to be resized, and
 --  will not require any size. Thus, the size allocated to it will be the total
 --  size allocated to the container minus the size requested by the other
@@ -51,10 +51,10 @@
 --  it will get. The other child will be resized accordingly. If both Child
 --  have the same value for Resize (either True or False), then the size
 --  allocated to each is a ratio between the size requested by both.
--- 
+--
 --  When you use Set_Position with a parameter other than -1, or the user
 --  moves the handle to resize the widgets, the behavior of Resize is canceled.
--- 
+--
 --  </description>
 --  <screenshot>gtk-paned</screenshot>
 --  <group>Layout container</group>
@@ -64,7 +64,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Paned is
@@ -167,27 +170,58 @@ package Gtk.Paned is
        Shrink : Boolean := False);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Paned_Record, Gtk_Paned);
+   function "+"
+     (Widget : access Gtk_Paned_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Paned
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Paned_Record, Gtk_Paned);
+   function "+"
+     (Widget : access Gtk_Paned_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Paned
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Max_Position_Property
    --  Type: Gint
    --  Flags: read-write
    --  The largest possible value for the position property. This property is
    --  derived from the size and shrinkability of the widget's children.
-   -- 
+   --
    --  Name: Min_Position_Property
    --  Type: Gint
    --  Flags: read-write
    --  The smallest possible value for the position property. This property is
    --  derived from the size and shrinkability of the widget's children.
-   -- 
+   --
    --  Name: Position_Property
    --  Type: Gint
    --  Flags: read-write
-   -- 
+   --
    --  Name: Position_Set_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -205,7 +239,7 @@ package Gtk.Paned is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "accept-position"
    --     function Handler
    --       (Self : access Gtk_Paned_Record'Class) return Boolean;
@@ -213,7 +247,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle when moving it using key
    --  bindings. The default binding for this signal is Return or Space.
-   -- 
+   --
    --  "cancel-position"
    --     function Handler
    --       (Self : access Gtk_Paned_Record'Class) return Boolean;
@@ -222,7 +256,7 @@ package Gtk.Paned is
    --  to cancel moving the position of the handle using key bindings. The
    --  position of the handle will be reset to the value prior to moving it.
    --  The default binding for this signal is Escape.
-   -- 
+   --
    --  "cycle-child-focus"
    --     function Handler
    --       (Self     : access Gtk_Paned_Record'Class;
@@ -232,7 +266,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle the focus between the children of the paned. The default
    --  binding is f6.
-   -- 
+   --
    --  "cycle-handle-focus"
    --     function Handler
    --       (Self     : access Gtk_Paned_Record'Class;
@@ -243,7 +277,7 @@ package Gtk.Paned is
    --  to cycle whether the paned should grab focus to allow the user to change
    --  position of the handle by using key bindings. The default binding for
    --  this signal is f8.
-   -- 
+   --
    --  "move-handle"
    --     function Handler
    --       (Self        : access Gtk_Paned_Record'Class;
@@ -252,7 +286,7 @@ package Gtk.Paned is
    --  The ::move-handle signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to move the handle when the user is using key bindings to move it.
-   -- 
+   --
    --  "toggle-handle-focus"
    --     function Handler
    --       (Self : access Gtk_Paned_Record'Class) return Boolean;
@@ -269,12 +303,12 @@ package Gtk.Paned is
    Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
 
 private
-   Max_Position_Property : constant Glib.Properties.Property_Int:=
+   Max_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("max-position");
-   Min_Position_Property : constant Glib.Properties.Property_Int:=
+   Min_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("min-position");
-   Position_Property : constant Glib.Properties.Property_Int:=
+   Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("position");
-   Position_Set_Property : constant Glib.Properties.Property_Boolean:=
+   Position_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("position-set");
 end Gtk.Paned;

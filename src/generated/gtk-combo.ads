@@ -31,17 +31,17 @@
 --  The Gtk_Combo widget consists of a single-line text entry field and a
 --  drop-down list. The drop-down list is displayed when the user clicks on a
 --  small arrow button to the right of the entry field.
--- 
+--
 --  The drop-down list is a Gtk_List widget and can be accessed using the list
 --  member of the Gtk_Combo. List elements can contain arbitrary widgets, but
 --  if an element is not a plain label, then you must use the
 --  Gtk_List.Set_Item_String function. This sets the string which will be
 --  placed in the text entry field when the item is selected.
--- 
+--
 --  By default, the user can step through the items in the list using the
 --  arrow (cursor) keys, though this behaviour can be turned off with
 --  Set_Use_Arrows.
--- 
+--
 --  Normally the arrow keys are only active when the contents of the text
 --  entry field matches one of the items in the list. If the contents of the
 --  entry field do not match any of the list items, then pressing the arrow
@@ -50,7 +50,7 @@
 --  field does not match any of the items in the list, then pressing the up or
 --  down arrow key will set the entry field to the last or first item in the
 --  list, respectively.
--- 
+--
 --  </description>
 --  <screenshot>gtk-combo</screenshot>
 --  <group>Obsolescent widgets</group>
@@ -59,9 +59,12 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
 with Gtk.Box;         use Gtk.Box;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Item;        use Gtk.Item;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Combo is
@@ -149,27 +152,58 @@ package Gtk.Combo is
       (Combo_Box : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Combo_Record, Gtk_Combo);
+   function "+"
+     (Widget : access Gtk_Combo_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Combo
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Combo_Record, Gtk_Combo);
+   function "+"
+     (Widget : access Gtk_Combo_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Combo
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Allow_Empty_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Case_Sensitive_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Enable_Arrow_Keys_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Enable_Arrows_Always_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Value_In_List_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -181,14 +215,14 @@ package Gtk.Combo is
    Value_In_List_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Allow_Empty_Property : constant Glib.Properties.Property_Boolean:=
+   Allow_Empty_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("allow-empty");
-   Case_Sensitive_Property : constant Glib.Properties.Property_Boolean:=
+   Case_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("case-sensitive");
-   Enable_Arrow_Keys_Property : constant Glib.Properties.Property_Boolean:=
+   Enable_Arrow_Keys_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-arrow-keys");
-   Enable_Arrows_Always_Property : constant Glib.Properties.Property_Boolean:=
+   Enable_Arrows_Always_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-arrows-always");
-   Value_In_List_Property : constant Glib.Properties.Property_Boolean:=
+   Value_In_List_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("value-in-list");
 end Gtk.Combo;

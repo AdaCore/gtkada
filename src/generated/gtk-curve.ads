@@ -31,20 +31,22 @@
 --  The Gtk_Curve widget allows the user to edit a curve covering a range of
 --  values. It is typically used to fine-tune color balances in graphics
 --  applications like the Gimp.
--- 
+--
 --  The Gtk_Curve widget has 3 modes of operation: spline, linear and free. In
 --  spline mode the user places points on the curve which are automatically
 --  connected together into a smooth curve. In linear mode the user places
 --  points on the curve which are connected by straight lines. In free mode the
 --  user can draw the points of the curve freely, and they are not connected at
 --  all.
--- 
+--
 --  </description>
 --  <group>Drawing</group>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
+with Glib.Types;       use Glib.Types;
+with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
 
@@ -108,27 +110,45 @@ package Gtk.Curve is
    --  The curve type is set to Curve_Type_Free.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Curve_Record, Gtk_Curve);
+   function "+"
+     (Widget : access Gtk_Curve_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Curve
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Curve_Type_Property
    --  Type: Gtk.Enums.Gtk_Curve_Type
    --  Flags: read-write
-   -- 
+   --
    --  Name: Max_X_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Max_Y_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Min_X_Property
    --  Type: Gfloat
    --  Flags: read-write
-   -- 
+   --
    --  Name: Min_Y_Property
    --  Type: Gfloat
    --  Flags: read-write
@@ -143,21 +163,21 @@ package Gtk.Curve is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "curve-type-changed"
    --     procedure Handler (Self : access Gtk_Curve_Record'Class);
 
    Signal_Curve_Type_Changed : constant Glib.Signal_Name := "curve-type-changed";
 
 private
-   Curve_Type_Property : constant Gtk.Enums.Property_Gtk_Curve_Type:=
+   Curve_Type_Property : constant Gtk.Enums.Property_Gtk_Curve_Type :=
      Gtk.Enums.Build ("curve-type");
-   Max_X_Property : constant Glib.Properties.Property_Float:=
+   Max_X_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("max-x");
-   Max_Y_Property : constant Glib.Properties.Property_Float:=
+   Max_Y_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("max-y");
-   Min_X_Property : constant Glib.Properties.Property_Float:=
+   Min_X_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("min-x");
-   Min_Y_Property : constant Glib.Properties.Property_Float:=
+   Min_Y_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("min-y");
 end Gtk.Curve;

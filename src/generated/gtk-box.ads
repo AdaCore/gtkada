@@ -34,23 +34,23 @@
 --  between the two, but note that the Gtk_Box type is conceptually an abstract
 --  type: there is no way to create a "Gtk_Box", only ways to create either an
 --  horizontal box, or a vertical box.
--- 
+--
 --  Children can be added to one of two positions in the box, either at the
 --  beginning (ie left or top) or at the end (ie right or bottom). Each of
 --  these positions can contain multiple widgets.
--- 
+--
 --  Every time a child is added to the start, it is placed to the right (resp.
 --  the bottom) of the previous widget added to the start.
--- 
+--
 --  Every time a child is added to the end, it is placed to the left (resp.
 --  the top) of the previous widget added to the end.
--- 
+--
 --  There are a number of parameters to specify the behavior of the box when
 --  it is resized, and how the children should be reorganized and/or resized.
--- 
+--
 --  See the testgtk example in the GtkAda distribution to see concrete
 --  examples on how all the parameters for the boxes work.
--- 
+--
 --  </description>
 --  <screenshot>gtk-box</screenshot>
 --  <group>Layout containers</group>
@@ -59,8 +59,11 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Box is
@@ -247,15 +250,46 @@ package Gtk.Box is
    --  Since: gtk+ GtkAda 1.0
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Box_Record, Gtk_Box);
+   function "+"
+     (Widget : access Gtk_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Box
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Box_Record, Gtk_Box);
+   function "+"
+     (Widget : access Gtk_Box_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Box
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Homogeneous_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Spacing_Property
    --  Type: Gint
    --  Flags: read-write
@@ -268,8 +302,8 @@ package Gtk.Box is
    Spacing_Property : constant Glib.Properties.Property_Int;
 
 private
-   Homogeneous_Property : constant Glib.Properties.Property_Boolean:=
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
-   Spacing_Property : constant Glib.Properties.Property_Int:=
+   Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("spacing");
 end Gtk.Box;

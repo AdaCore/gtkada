@@ -32,17 +32,17 @@
 --  other widgets that have such internal values, like Gtk_Scrollbar,
 --  Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is
 --  done through their associated adjustments.
--- 
+--
 --  The modification of the value is left to the user, who should call
 --  Value_Changed or Changed to emit the relevant signals.
--- 
+--
 --  The meaning of the most important fields can be explained on the following
 --  figure (imagine this is a scrollbar):
--- 
+--
 --  [-------|=================|-------------------]
--- 
+--
 --  lower value value + page_size upper
--- 
+--
 --  </description>
 --  <group>Scrolling</group>
 
@@ -200,36 +200,36 @@ package Gtk.Adjustment is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Lower_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The minimum value of the adjustment.
-   -- 
+   --
    --  Name: Page_Increment_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The page increment of the adjustment.
-   -- 
+   --
    --  Name: Page_Size_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The page size of the adjustment. Note that the page-size is irrelevant
    --  and should be set to zero if the adjustment is used for a simple scalar
    --  value, e.g. in a #GtkSpinButton.
-   -- 
+   --
    --  Name: Step_Increment_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The step increment of the adjustment.
-   -- 
+   --
    --  Name: Upper_Property
    --  Type: Gdouble
    --  Flags: read-write
    --  The maximum value of the adjustment. Note that values will be
    --  restricted by <literal>upper - page-size</literal> if the page-size
    --  property is nonzero.
-   -- 
+   --
    --  Name: Value_Property
    --  Type: Gdouble
    --  Flags: read-write
@@ -246,10 +246,10 @@ package Gtk.Adjustment is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "changed"
    --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
-   -- 
+   --
    --  "value-changed"
    --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
 
@@ -257,16 +257,16 @@ package Gtk.Adjustment is
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
 
 private
-   Lower_Property : constant Glib.Properties.Property_Double:=
+   Lower_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("lower");
-   Page_Increment_Property : constant Glib.Properties.Property_Double:=
+   Page_Increment_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("page-increment");
-   Page_Size_Property : constant Glib.Properties.Property_Double:=
+   Page_Size_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("page-size");
-   Step_Increment_Property : constant Glib.Properties.Property_Double:=
+   Step_Increment_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("step-increment");
-   Upper_Property : constant Glib.Properties.Property_Double:=
+   Upper_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("upper");
-   Value_Property : constant Glib.Properties.Property_Double:=
+   Value_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("value");
 end Gtk.Adjustment;

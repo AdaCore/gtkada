@@ -32,10 +32,10 @@
 --  clicked on by the user to start any action. This button does not have
 --  multiple states, it can just be temporarily pressed while the mouse is on
 --  it, but does not keep its pressed state.
--- 
+--
 --  The gtk+ sources provide the following drawing that explains the role of
 --  the various spacings that can be set for a button:
--- 
+--
 --  </description>
 --  <screenshot>gtk-button</screenshot>
 --  <group>Buttons and Toggles</group>
@@ -45,7 +45,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
 
@@ -195,47 +198,78 @@ package Gtk.Button is
    procedure Released (Button : access Gtk_Button_Record);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Button_Record, Gtk_Button);
+   function "+"
+     (Widget : access Gtk_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Button
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Button_Record, Gtk_Button);
+   function "+"
+     (Widget : access Gtk_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Button
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Focus_On_Click_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Image_Property
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
-   -- 
+   --
    --  Name: Image_Position_Property
    --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
    --  The position of the image relative to the text inside the button.
-   -- 
+   --
    --  Name: Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   -- 
+   --
    --  Name: Relief_Property
    --  Type: Gtk.Enums.Gtk_Relief_Style
    --  Flags: read-write
-   -- 
+   --
    --  Name: Use_Stock_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Use_Underline_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
    --  If the child of the button is a #GtkMisc or #GtkAlignment, this
    --  property can be used to control it's horizontal alignment. 0.0 is left
    --  aligned, 1.0 is right aligned.
-   -- 
+   --
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
@@ -257,29 +291,29 @@ package Gtk.Button is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "activate"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
    --  never connect to this signal, but use the #GtkButton::clicked signal.
-   -- 
+   --
    --  "clicked"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button has been activated (pressed and released).
-   -- 
+   --
    --  "enter"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the pointer enters the button.
-   -- 
+   --
    --  "leave"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the pointer leaves the button.
-   -- 
+   --
    --  "pressed"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button is pressed.
-   -- 
+   --
    --  "released"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button is released.
@@ -292,22 +326,22 @@ package Gtk.Button is
    Signal_Released : constant Glib.Signal_Name := "released";
 
 private
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean:=
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("focus-on-click");
-   Image_Property : constant Glib.Properties.Property_Object:=
+   Image_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("image");
-   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type:=
+   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("image-position");
-   Label_Property : constant Glib.Properties.Property_String:=
+   Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
-   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style:=
+   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
      Gtk.Enums.Build ("relief");
-   Use_Stock_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-stock");
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean:=
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
-   Xalign_Property : constant Glib.Properties.Property_Float:=
+   Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("xalign");
-   Yalign_Property : constant Glib.Properties.Property_Float:=
+   Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
 end Gtk.Button;

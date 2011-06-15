@@ -31,7 +31,7 @@
 --  This widget is generally put on the sides of a drawing area to help the
 --  user measure distances. It indicates the current position of the mouse
 --  cursor within the drawing area, and can be graduated in multiple units.
--- 
+--
 --  </description>
 --  <screenshot>gtk-rulers</screenshot>
 --  <group>Drawing</group>
@@ -40,7 +40,10 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Ruler is
@@ -111,28 +114,59 @@ package Gtk.Ruler is
    --  space to leave for the text
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Ruler_Record, Gtk_Ruler);
+   function "+"
+     (Widget : access Gtk_Ruler_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Ruler
+   renames Implements_Buildable.To_Object;
+
+   package Implements_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Ruler_Record, Gtk_Ruler);
+   function "+"
+     (Widget : access Gtk_Ruler_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Ruler
+   renames Implements_Orientable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Lower_Property
    --  Type: Gdouble
    --  Flags: read-write
-   -- 
+   --
    --  Name: Max_Size_Property
    --  Type: Gdouble
    --  Flags: read-write
-   -- 
+   --
    --  Name: Metric_Property
    --  Type: Gtk.Enums.Gtk_Metric_Type
    --  Flags: read-write
    --  The metric used for the ruler.
-   -- 
+   --
    --  Name: Position_Property
    --  Type: Gdouble
    --  Flags: read-write
-   -- 
+   --
    --  Name: Upper_Property
    --  Type: Gdouble
    --  Flags: read-write
@@ -148,14 +182,14 @@ package Gtk.Ruler is
    Upper_Property : constant Glib.Properties.Property_Double;
 
 private
-   Lower_Property : constant Glib.Properties.Property_Double:=
+   Lower_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("lower");
-   Max_Size_Property : constant Glib.Properties.Property_Double:=
+   Max_Size_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("max-size");
-   Metric_Property : constant Gtk.Enums.Property_Metric_Type:=
+   Metric_Property : constant Gtk.Enums.Property_Metric_Type :=
      Gtk.Enums.Build ("metric");
-   Position_Property : constant Glib.Properties.Property_Double:=
+   Position_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("position");
-   Upper_Property : constant Glib.Properties.Property_Double:=
+   Upper_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("upper");
 end Gtk.Ruler;

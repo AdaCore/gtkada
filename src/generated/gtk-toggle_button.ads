@@ -31,10 +31,10 @@
 --  A Gtk_Toggle_Button is like a regular button, but can be in one of two
 --  states, "active" or "inactive". Its visual aspect is modified when the
 --  state is changed.
--- 
+--
 --  You should consider using a Gtk_Check_Button instead, since it looks nicer
 --  and provides more visual clues that the button can be toggled.
--- 
+--
 --  </description>
 --  <screenshot>gtk-toggle_button</screenshot>
 --  <group>Buttons and Toggles</group>
@@ -43,6 +43,9 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Activatable; use Gtk.Activatable;
+with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Button;      use Gtk.Button;
 
 package Gtk.Toggle_Button is
@@ -124,19 +127,50 @@ package Gtk.Toggle_Button is
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Toggle_Button
+   renames Implements_Activatable.To_Object;
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Toggle_Button
+   renames Implements_Buildable.To_Object;
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   -- 
+   --
    --  Name: Active_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Draw_Indicator_Property
    --  Type: Boolean
    --  Flags: read-write
-   -- 
+   --
    --  Name: Inconsistent_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -149,17 +183,17 @@ package Gtk.Toggle_Button is
    -- Signals --
    -------------
    --  The following new signals are defined for this widget:
-   -- 
+   --
    --  "toggled"
    --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
 private
-   Active_Property : constant Glib.Properties.Property_Boolean:=
+   Active_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("active");
-   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean:=
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw-indicator");
-   Inconsistent_Property : constant Glib.Properties.Property_Boolean:=
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
 end Gtk.Toggle_Button;
