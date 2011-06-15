@@ -1745,4 +1745,21 @@ This widget is generally put on the sides of a drawing area to help the user mea
       <method id="gtk_hruler_get_type" ada="Hruler_Get_Type" />
   </package>
 
+  <package id="Gtk.Fixed">
+     <doc group="Layout containers" testgtk="create_fixed.adb"
+          screenshot="gtk-fixed">
+The Gtk_Fixed widget is a container which can place child widgets at fixed positions and with fixed sizes, given in pixels.
+
+Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. Instead, you should consider using one of the other many containers available, that will allow you to handle resizing of your windows, as well as font size changes easily.</doc>
+      <method id="gtk_fixed_put">
+         <doc>Add Widget to a Fixed container at the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at.</doc>
+      </method>
+      <method id="gtk_fixed_move">
+         <doc>Move a child of a GtkFixed container to the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at.</doc>
+      </method>
+      <method id="gtk_fixed_set_has_window">
+         <parameter name="has_window" default="False"/>
+      </method>
+  </package>
+
 </GIR>
