@@ -48,10 +48,14 @@ Where the package node is defined as follows:
                                 an out parameter with this name -->
            return="..."    <!-- Override C type for the returned value -->
        >
+         <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
+            ...
+         </doc>
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
             ada="..."      <!-- optional, name to use in Ada -->
             type="..."     <!-- optional, override Ada type -->
+            ctype="..."    <!-- Override C type (to better qualify it) -->
             default="..."  <!-- optional, the default value for the param-->
             empty_maps_to_null="False"  <!--  If true, an empty string is
                            mapped to a null pointer in C, rather than an empty
@@ -248,16 +252,20 @@ class GtkAdaMethod(object):
             return self.node.findtext("body")
         return None
 
-    def get_doc(self):
+    def get_doc(self, default):
         if self.node is not None:
-            txt = self.node.findtext("doc")
-            if txt:
+            d = self.node.find("doc")
+            if d is not None:
+                txt = d.text
                 doc = []
                 for paragraph in txt.split("\n\n"):
                     doc.append(paragraph)
                     doc.append("")
+
+                if d.get("extend", "false").lower() == "true":
+                    return [default] + doc
                 return doc
-        return None
+        return default
 
 
 class GtkAdaParameter(object):

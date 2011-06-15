@@ -24,11 +24,13 @@ projects/gtkada_gl.gpr
 projects/gtkada.pc
 projects/gtkada_install_dynamic.gpr
 projects/gtkada_install_dynamic_gl.gpr
+projects/gtkada_gnome.gpr
 src/Makefile.common
 src/config.h
 src/gtkada-intl.adb
 src/gtkextra/obj
 src/lib-obj
+src/gnome/obj/libgnomeada-*
 src/opengl/obj/libgtkada_gl-*
 src/tools/gate
 src/tools/gtkada-config

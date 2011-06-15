@@ -140,6 +140,7 @@ class AdaNaming(object):
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
+            "GtkRadioButton":  GObject("Gtk.Radio_Button.Gtk_Radio_Button"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),

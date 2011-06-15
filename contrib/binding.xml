@@ -1640,6 +1640,34 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      </extra>
   </package>
 
+  <package id="Gtk.Radio_Button">
+     <doc screenshot="gtk-radio_button" group="Buttons and Toggles"
+          testgtk="create_radio_button.adb">
+A Gtk_Radio_Button is a simple button that has two states, like a Gtk_Toggle_Button. However, Gtk_Radio_Buttons can be grouped together to get a special behavior: only one button in the group can be active at any given time. Thus, when the user selects one of the buttons from the group, the button that was previously selected is disabled.
 
+The radio buttons always belongs to a group, even if there is only one in this group.</doc>
+     <parameter name="self" ada="Radio_Button"/>
+     <parameter name="param1" ada="Group"/>
+     <method id="gtk_radio_button_new" bind="False"/>
+     <method id="gtk_radio_button_new_from_widget" bind="False"/>
+     <method id="gtk_radio_button_new_with_label" ada="Gtk_New" >
+        <doc>Creates or initializes a new radio button, belonging to Group. If Label is left as the empty string, then the button will not have any child and you are free to put any thing you want in it, including a pixmap. To initialize the group (when creating the first button), leave Group to the Null_List. You can later get the new group that is created with a call to the Group subprogram below.</doc>
+        <parameter name="group" default="Widget_SList.Null_List" ctype="WidgetSList"/>
+        <parameter name="label" default='""' empty_maps_to_null="True"/>
+     </method>
+     <method id="gtk_radio_button_new_with_label_from_widget" ada="Gtk_New" >
+        <parameter name="label" default='""' empty_maps_to_null="True"/>
+     </method>
+     <method id="gtk_radio_button_new_with_mnemonic">
+        <parameter name="group" default="Widget_SList.Null_List" ctype="WidgetSList"/>
+     </method>
+     <method id="gtk_radio_button_new_with_mnemonic_from_widget" ada="Gtk_New_With_Mnemonic">
+        <doc extend="true">To initialize a new group (when creating the first button), you should pass it null or a button that has not been created with Gtk_New, as in the example below.</doc>
+     </method>
+     <method id="gtk_radio_button_get_group" return="WidgetSList"/>
+     <method id="gtk_radio_button_set_group">
+        <parameter name="group" ctype="WidgetSList"/>
+     </method>
+  </package>
 
 </GIR>
