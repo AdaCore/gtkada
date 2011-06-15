@@ -1571,7 +1571,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      <method id="gtk_accel_group_connect_by_path">
         <parameter name="closure" type="C_Gtk_Accel_Group_Activate"/>
      </method>
-     <method id="gtk_accel_group_query" bind="False"/> 
+     <method id="gtk_accel_group_query" bind="False"/>
         <!-- ???Would be nice -->
      <method id="gtk_accel_group_from_accel_closure">
         <parameter name="closure" type="C_Gtk_Accel_Group_Activate"/>
@@ -1717,17 +1717,20 @@ dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
   <package id="Gtk.Separator_Menu_Item">
      <doc group="Menus and Toolbars">
 This widget serves as separator between menu items. It is represented graphically as a horizontal line between two items, and is used to group items into meaningful groups.</doc>
+     <parameter name="self" ada="Widget" />
   </package>
 
   <package id="Gtk.Separator_Tool_Item">
      <doc group="Menus and Toolbars">
 This package defines a separator widget that can be inserted in a toolbar, to create groups of widgets in the latter.</doc>
+     <parameter name="self" ada="Item" />
   </package>
 
   <package id="Gtk.Ruler">
      <doc group="Drawing" testgtk="create_rulers.adb"
           screenshot="gtk-rulers">
-This widget is generally put on the sides of a drawing area to help the user measure distances. It indicates the current position of the mouse cursor within the drawing area, and can be graduated in multiple units.</doc>
+ This widget is generally put on the sides of a drawing area to help the user measure distances. It indicates the current position of the mouse cursor within the drawing area, and can be graduated in multiple units.</doc>
+     <parameter name="self" ada="Ruler" />
      <method id="gtk_ruler_set_metric">
         <doc>Set or get the units used for a Gtk_Ruler. See Set_Metric</doc>
      </method>
@@ -1751,6 +1754,7 @@ This widget is generally put on the sides of a drawing area to help the user mea
 The Gtk_Fixed widget is a container which can place child widgets at fixed positions and with fixed sizes, given in pixels.
 
 Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. Instead, you should consider using one of the other many containers available, that will allow you to handle resizing of your windows, as well as font size changes easily.</doc>
+     <parameter name="self" ada="Fixed" />
       <method id="gtk_fixed_put">
          <doc>Add Widget to a Fixed container at the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at.</doc>
       </method>
