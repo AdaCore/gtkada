@@ -1714,4 +1714,9 @@ dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
       <method id="gtk_hseparator_get_type" ada="Hseparator_Get_Type" />
   </package>
 
+  <package id="Gtk.Separator_Menu_Item">
+     <doc group="Menus and Toolbars">
+This widget serves as separator between menu items. It is represented graphically as a horizontal line between two items, and is used to group items into meaningful groups.</doc>
+  </package>
+
 </GIR>

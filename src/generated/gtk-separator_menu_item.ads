@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---              GtkAda - Ada95 binding for Gtk+/Gnome                --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2003-2006 AdaCore                --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,41 +31,27 @@
 --  This widget serves as separator between menu items. It is represented
 --  graphically as a horizontal line between two items, and is used to group
 --  items into meaningful groups.
+-- 
 --  </description>
---  <c_version>2.8.17</c_version>
 --  <group>Menus and Toolbars</group>
 
-with Gtk.Menu_Item;
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;          use Glib;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
 
 package Gtk.Separator_Menu_Item is
 
-   type Gtk_Separator_Menu_Item_Record is new
-     Gtk.Menu_Item.Gtk_Menu_Item_Record with private;
-   type Gtk_Separator_Menu_Item is access all
-     Gtk_Separator_Menu_Item_Record'Class;
+   type Gtk_Separator_Menu_Item_Record is new Gtk_Menu_Item_Record with null record;
+   type Gtk_Separator_Menu_Item is access all Gtk_Separator_Menu_Item_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
-   --  Create a new Gtk_Image_Menu_Item.
+   ------------------
+   -- Constructors --
+   ------------------
 
-   procedure Initialize (Widget : access Gtk_Separator_Menu_Item_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   procedure Gtk_New (Self : out Gtk_Separator_Menu_Item);
+   procedure Initialize (Self : access Gtk_Separator_Menu_Item_Record'Class);
 
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with this widget.
-
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --
-   --  </signals>
-
-private
-   type Gtk_Separator_Menu_Item_Record is new
-     Gtk.Menu_Item.Gtk_Menu_Item_Record with null record;
-
+   function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_menu_item_get_type");
+
 end Gtk.Separator_Menu_Item;
