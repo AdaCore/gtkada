@@ -172,7 +172,8 @@ package Gtk.Scale is
       (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
-   --  the caller. if the Gtk.Scale.Gtk_Scale:draw-value property is %FALSE.
+   --  the caller. or null if the Gtk.Scale.Gtk_Scale:draw-value property is
+   --  %FALSE.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets

@@ -147,6 +147,19 @@ package body Gtk.GRange is
       return Boolean'Val (Internal (Get_Object (The_Range)));
    end Get_Restrict_To_Fill_Level;
 
+   ----------------------
+   -- Get_Round_Digits --
+   ----------------------
+
+   function Get_Round_Digits
+      (The_Range : access Gtk_Range_Record) return Gint
+   is
+      function Internal (The_Range : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_range_get_round_digits");
+   begin
+      return Internal (Get_Object (The_Range));
+   end Get_Round_Digits;
+
    -------------------------
    -- Get_Show_Fill_Level --
    -------------------------
@@ -366,6 +379,20 @@ package body Gtk.GRange is
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Restrict_To_Fill_Level));
    end Set_Restrict_To_Fill_Level;
+
+   ----------------------
+   -- Set_Round_Digits --
+   ----------------------
+
+   procedure Set_Round_Digits
+      (The_Range    : access Gtk_Range_Record;
+       Round_Digits : Gint)
+   is
+      procedure Internal (The_Range : System.Address; Round_Digits : Gint);
+      pragma Import (C, Internal, "gtk_range_set_round_digits");
+   begin
+      Internal (Get_Object (The_Range), Round_Digits);
+   end Set_Round_Digits;
 
    -------------------------
    -- Set_Show_Fill_Level --

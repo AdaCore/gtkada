@@ -71,6 +71,9 @@ package Gtk.Radio_Button is
    --  initialize the group (when creating the first button), leave Group to
    --  the Null_List. You can later get the new group that is created with a
    --  call to the Group subprogram below.
+   --  "group": an existing radio button group, or null if you are creating a
+   --  new group.
+   --  "label": the text label to display next to the radio button.
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
@@ -108,6 +111,9 @@ package Gtk.Radio_Button is
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
        Group        : Gtk_Radio_Button;
        Label        : UTF8_String := "");
+   --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
+   --  adding it to the same group as Radio_Group_Member.
+   --  "label": a text string to display next to the radio button.
 
    -------------
    -- Methods --

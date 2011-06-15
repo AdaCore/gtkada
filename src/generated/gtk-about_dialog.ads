@@ -265,11 +265,13 @@ package Gtk.About_Dialog is
       (Func    : Activate_Link_Func;
        Data    : System.Address;
        Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
+   pragma Obsolescent;
    --  Installs a global function to be called whenever the user activates an
    --  email link in an about dialog. Since 2.18 there exists a default
    --  function which uses gtk_show_uri(). To deactivate it, you can pass null
    --  for Func.
    --  Since: gtk+ 2.6
+   --  Deprecated since 2.24, Use the #GtkAboutDialog::activate-link signal
    --  "func": a function to call when an email link is activated.
    --  "data": data to pass to Func
    --  "destroy": Glib.G_Destroy_Notify_Address for Data
@@ -278,10 +280,12 @@ package Gtk.About_Dialog is
       (Func    : Activate_Link_Func;
        Data    : System.Address;
        Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
+   pragma Obsolescent;
    --  Installs a global function to be called whenever the user activates a
    --  URL link in an about dialog. Since 2.18 there exists a default function
    --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
    --  Since: gtk+ 2.6
+   --  Deprecated since 2.24, Use the #GtkAboutDialog::activate-link signal
    --  "func": a function to call when a URL link is activated.
    --  "data": data to pass to Func
    --  "destroy": Glib.G_Destroy_Notify_Address for Data
@@ -372,6 +376,20 @@ package Gtk.About_Dialog is
    Website_Property : constant Glib.Properties.Property_String;
    Website_Label_Property : constant Glib.Properties.Property_String;
    Wrap_License_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+   --  The following new signals are defined for this widget:
+   -- 
+   --  "activate-link"
+   --  function Handler (Self : access Gtk_About_Dialog_Record'Class) --
+   --  return gboolean;
+   --  The signal which gets emitted to activate a URI. Applications may
+   --  connect to it to override the default behaviour, which is to call
+   --  gtk_show_uri().
+
+   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 
 private
    Comments_Property : constant Glib.Properties.Property_String:=

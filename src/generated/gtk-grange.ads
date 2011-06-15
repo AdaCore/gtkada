@@ -158,6 +158,16 @@ package Gtk.GRange is
    --  "restrict_to_fill_level": Whether the fill level restricts slider
    --  movement.
 
+   function Get_Round_Digits
+      (The_Range : access Gtk_Range_Record) return Gint;
+   procedure Set_Round_Digits
+      (The_Range    : access Gtk_Range_Record;
+       Round_Digits : Gint);
+   --  Sets the number of digits to round the value to when it changes. See
+   --  Gtk.GRange.Gtk_Range::change-value.
+   --  Since: gtk+ 2.24
+   --  "round_digits": the precision in digits, or -1
+
    function Get_Show_Fill_Level
       (The_Range : access Gtk_Range_Record) return Boolean;
    procedure Set_Show_Fill_Level
@@ -193,9 +203,11 @@ package Gtk.GRange is
 
    function Get_Update_Policy
       (The_Range : access Gtk_Range_Record) return Gtk.Enums.Gtk_Update_Type;
+   pragma Obsolescent;
    procedure Set_Update_Policy
       (The_Range : access Gtk_Range_Record;
        Policy    : Gtk.Enums.Gtk_Update_Type);
+   pragma Obsolescent;
    --  Sets the update policy for the range. GTK_UPDATE_CONTINUOUS means that
    --  anytime the range slider is moved, the range value will change and the
    --  value_changed signal will be emitted. GTK_UPDATE_DELAYED means that the
@@ -203,6 +215,8 @@ package Gtk.GRange is
    --  occurs, so updates are spaced by a short time rather than continuous.
    --  GTK_UPDATE_DISCONTINUOUS means that the value will only be updated when
    --  the user releases the button and ends the slider drag operation.
+   --  updates, you need to code it yourself.
+   --  Deprecated since 2.24, There is no replacement. If you require delayed
    --  "policy": update policy
 
    function Get_Upper_Stepper_Sensitivity
@@ -278,6 +292,12 @@ package Gtk.GRange is
    --  restricted to an upper boundary set by the fill level. See
    --  gtk_range_set_restrict_to_fill_level().
    -- 
+   --  Name: Round_Digits_Property
+   --  Type: Gint
+   --  Flags: read-write
+   --  The number of digits to round the value to when it changes, or -1. See
+   --  #GtkRange::change-value.
+   -- 
    --  Name: Show_Fill_Level_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -298,6 +318,7 @@ package Gtk.GRange is
    Inverted_Property : constant Glib.Properties.Property_Boolean;
    Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
    Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
+   Round_Digits_Property : constant Glib.Properties.Property_Int;
    Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
    Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
@@ -321,8 +342,8 @@ package Gtk.GRange is
    --  the default GTK+ handler is reached. The value parameter is unrounded.
    --  An application that overrides the ::change-value signal is responsible
    --  for clamping the value to the desired number of decimal digits; the
-   --  default GTK+ handler clamps the value based on @range->round_digits. It
-   --  is not possible to use delayed update policies in an overridden
+   --  default GTK+ handler clamps the value based on #GtkRange:round_digits.
+   --  It is not possible to use delayed update policies in an overridden
    --  ::change-value handler.
    -- 
    --  "move-slider"
@@ -349,6 +370,8 @@ private
      Gtk.Enums.Build ("lower-stepper-sensitivity");
    Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
      Glib.Properties.Build ("restrict-to-fill-level");
+   Round_Digits_Property : constant Glib.Properties.Property_Int:=
+     Glib.Properties.Build ("round-digits");
    Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean:=
      Glib.Properties.Build ("show-fill-level");
    Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type:=

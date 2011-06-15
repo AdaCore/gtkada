@@ -129,7 +129,8 @@ package Gtk.Calendar is
        Month    : out Guint;
        Day      : out Guint);
    --  Obtains the selected date from a Gtk.Calendar.Gtk_Calendar.
-   --  "year": location to store the year number, or null
+   --  "year": location to store the year as a decimal number (e.g. 2011), or
+   --  null
    --  "month": location to store the month number (between 0 and 11), or null
    --  "day": location to store the day number (between 1 and 31), or null
 
