@@ -49,7 +49,10 @@ Where the package node is defined as follows:
            return="..."    <!-- Override C type for the returned value -->
        >
          <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
-            ...
+            ...            <!-- "\n" forces a newline, paragraphs are created
+                                on empty lines. A paragraph that starts with
+                                '%PRE%' will be displayed exactly as is, no
+                                line wrapping is done.-->
          </doc>
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
@@ -253,19 +256,21 @@ class GtkAdaMethod(object):
         return None
 
     def get_doc(self, default):
+        """Return the doc, as a list of lines"""
         if self.node is not None:
             d = self.node.find("doc")
             if d is not None:
                 txt = d.text
                 doc = []
                 for paragraph in txt.split("\n\n"):
-                    doc.append(paragraph)
+                    for p in paragraph.split("\\n\n"):
+                        doc.append(p)
                     doc.append("")
 
                 if d.get("extend", "false").lower() == "true":
-                    return [default] + doc
+                    return [default, ""] + doc
                 return doc
-        return default
+        return [default]
 
 
 class GtkAdaParameter(object):

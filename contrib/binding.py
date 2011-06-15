@@ -196,7 +196,7 @@ class GIRClass(object):
     def _getdoc(self, gtkmethod, node):
         doc = gtkmethod.get_doc(default=node.findtext(ndoc, ""))
         if node.get("version"):
-            doc = [doc, "Since: gtk+ %s" % node.get("version")]
+            doc.append("Since: gtk+ %s" % node.get("version"))
         return doc
 
     def _get_method_returns(self, gtkmethod, node):
@@ -852,6 +852,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "DrawingArea",
            "Expander",
            "Image",
+           "RadioAction",
            "RadioButton",
            "SizeGroup",
            "Statusbar",

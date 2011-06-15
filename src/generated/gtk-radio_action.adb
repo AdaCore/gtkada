@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---              GtkAda - Ada95 binding for Gtk+/Gnome                --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2006-2010, AdaCore                  --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,25 +27,73 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Bindings; use Gtkada.Bindings;
-with Gtkada.Types; use Gtkada.Types;
-with Gtk.Widget;   use Gtk.Widget;
-with Interfaces.C.Strings;
-
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Radio_Action is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Radio_Action_Record);
-   pragma Warnings (Off, Type_Conversion);
+   pragma Unreferenced (Type_Conversion);
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Action   : out Gtk_Radio_Action;
+       Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Value    : Gint)
+   is
+   begin
+      Action := new Gtk_Radio_Action_Record;
+      Gtk.Radio_Action.Initialize (Action, Name, Label, Tooltip, Stock_Id, Value);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Action   : access Gtk_Radio_Action_Record'Class;
+       Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Value    : Gint)
+   is
+      function Internal
+         (Name     : Interfaces.C.Strings.chars_ptr;
+          Label    : Interfaces.C.Strings.chars_ptr;
+          Tooltip  : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Value    : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_radio_action_new");
+      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Label    : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr := New_String (Tooltip);
+      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Return   : System.Address;
+   begin
+      Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id, Value);
+      Free (Tmp_Name);
+      Free (Tmp_Label);
+      Free (Tmp_Tooltip);
+      Free (Tmp_Stock_Id);
+      Set_Object (Action, Tmp_Return);
+   end Initialize;
 
    -----------------------
    -- Get_Current_Value --
    -----------------------
 
    function Get_Current_Value
-     (Action : access Gtk_Radio_Action_Record) return Gint
+      (Action : access Gtk_Radio_Action_Record) return Gint
    is
       function Internal (Action : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_radio_action_get_current_value");
@@ -57,73 +106,26 @@ package body Gtk.Radio_Action is
    ---------------
 
    function Get_Group
-     (Action : access Gtk_Radio_Action_Record)
-      return Widget_SList.GSlist
+      (Action : access Gtk_Radio_Action_Record)
+       return Gtk.Widget.Widget_SList.GSList
    is
       function Internal (Action : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_radio_action_get_group");
-      L : Widget_SList.GSlist;
+      Tmp_Return : Gtk.Widget.Widget_SList.GSList;
    begin
-      Widget_SList.Set_Object (L, Internal (Get_Object (Action)));
-      return L;
+      Gtk.Widget.Widget_SList.Set_Object (Tmp_Return, Internal (Get_Object (Action)));
+      return Tmp_Return;
    end Get_Group;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New
-     (Action   : out Gtk_Radio_Action;
-      Name     : String;
-      Label    : String := "";
-      Tooltip  : String := "";
-      Stock_Id : String := "";
-      Value    : Gint) is
-   begin
-      Action := new Gtk_Radio_Action_Record;
-      Initialize (Action, Name, Label, Tooltip,  Stock_Id, Value);
-   end Gtk_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-     (Action   : access Gtk_Radio_Action_Record'Class;
-      Name     : String;
-      Label    : String := "";
-      Tooltip  : String := "";
-      Stock_Id : String := "";
-      Value    : Gint)
-   is
-      function Internal
-        (Name     : String;
-         Label    : Chars_Ptr;
-         Tooltip  : Chars_Ptr;
-         Stock_Id : Chars_Ptr;
-         Value    : Gint) return System.Address;
-      pragma Import (C, Internal, "gtk_radio_action_new");
-      L : Chars_Ptr := String_Or_Null (Label);
-      T : Chars_Ptr := String_Or_Null (Tooltip);
-      S : Chars_Ptr := String_Or_Null (Stock_Id);
-   begin
-      Set_Object (Action, Internal (Name & ASCII.NUL, L, T, S, Value));
-      Interfaces.C.Strings.Free (L);
-      Interfaces.C.Strings.Free (T);
-      Interfaces.C.Strings.Free (S);
-   end Initialize;
 
    -----------------------
    -- Set_Current_Value --
    -----------------------
 
    procedure Set_Current_Value
-     (Action        : access Gtk_Radio_Action_Record;
-      Current_Value : Gint)
+      (Action        : access Gtk_Radio_Action_Record;
+       Current_Value : Gint)
    is
-      procedure Internal
-        (Action        : System.Address;
-         Current_Value : Gint);
+      procedure Internal (Action : System.Address; Current_Value : Gint);
       pragma Import (C, Internal, "gtk_radio_action_set_current_value");
    begin
       Internal (Get_Object (Action), Current_Value);
@@ -134,13 +136,13 @@ package body Gtk.Radio_Action is
    ---------------
 
    procedure Set_Group
-     (Action : access Gtk_Radio_Action_Record;
-      Group  : Widget_SList.GSlist)
+      (Action : access Gtk_Radio_Action_Record;
+       Group  : Gtk.Widget.Widget_SList.GSList)
    is
-      procedure Internal (Action : System.Address; Group  : System.Address);
+      procedure Internal (Action : System.Address; Group : System.Address);
       pragma Import (C, Internal, "gtk_radio_action_set_group");
    begin
-      Internal (Get_Object (Action), Widget_SList.Get_Object (Group));
+      Internal (Get_Object (Action), Gtk.Widget.Widget_SList.Get_Object (Group));
    end Set_Group;
 
 end Gtk.Radio_Action;

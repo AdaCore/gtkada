@@ -54,7 +54,8 @@ class AdaNaming(object):
             "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
             "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
-            #"gtk_accel_groups_activate":    "Gtk.Accel_Group.Activate",
+            "gtk_action_group_add_action_with_accel":
+                "Gtk.Action_Group.Add_Action_With_Accel",
         }
         self.girname_to_ctype = {
             # Maps GIR's "name" to a "c:type". This isn't needed for the
@@ -140,11 +141,13 @@ class AdaNaming(object):
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
+            "GtkRadioAction":  GObject("Gtk.Radio_Action.Gtk_Radio_Action"),
             "GtkRadioButton":  GObject("Gtk.Radio_Button.Gtk_Radio_Button"),
             "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
             "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
             "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
+            "GtkToggleAction": GObject("Gtk.Toggle_Action.Gtk_Toggle_Action"),
             "GtkToggleButton": GObject("Gtk.Toggle_Button.Gtk_Toggle_Button"),
             "GtkTreeIter*":     Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
             "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
@@ -243,9 +246,10 @@ def fill_text(text, prefix, length, firstLineLength=0):
     line = ""
     result = []
     maxLen = firstLineLength or length - len(prefix)
+
     text=text.replace("\n\n", "\n<br>")
 
-    for w in text.split():
+    for w in text.split():  # for each word (this loses whitespaces)
         if w.startswith("<br>"):
             result.append(line)
             maxLen = length - len(prefix)
@@ -423,9 +427,8 @@ class CType(object):
            the record type, rather than use the access type itself.
         """
         full = td.ada
-        if "." in full:
-            if pkg:
-                pkg.add_with(full[0:full.rfind(".")])
+        if pkg and "." in full:
+            pkg.add_with(full[0:full.rfind(".")])
 
         if userecord:
             self.param = "access %s_Record'Class" % full
@@ -442,9 +445,19 @@ class CType(object):
             [Local_Var(
                 "Stub", AdaType("%s_Record" % full, pkg=pkg, in_spec=False))])
 
-    def _as_list(self, td):
+    def _as_list(self, td, pkg):
         adatype = td.ada
         adapkg = adatype[:adatype.rfind(".")]
+
+        # A list comes from an instantiation (pkg.instance.glist), so we need
+        # to skip backward two "."
+
+        if pkg:
+            p = td.ada.rfind(".")
+            if p != -1:
+                p = td.ada[:p].rfind(".")
+                if p != -1:
+                    pkg.add_with(td.ada[:p])
 
         self.param = adatype
         self.cparam = "System.Address"
@@ -550,7 +563,7 @@ class CType(object):
                        and not cname.endswith("**") and allow_access)
 
             elif full.is_list:
-                self._as_list(full)
+                self._as_list(full, pkg)
 
             else:
                 ada = full.ada
@@ -655,7 +668,7 @@ class AdaType(CType):
         if False and (adatype.lower().endswith(".glist") \
            or adatype.lower().endswith(".gslist")):
 
-            self._as_list(GObject(adatype))
+            self._as_list(GObject(adatype), pkg=pkg)
 
         elif pkg and "." in adatype:
             pkg.add_with(adatype[0:adatype.rfind(".")], specs=in_spec)
@@ -880,8 +893,13 @@ class Subprogram(object):
 
         for d in doc:
             if d:
-                result += "\n" + indent + "-- " \
-                    + fill_text(d, indent + "--  ", 79)
+                if d.startswith("%PRE%"):
+                    d = d[5:]
+                    lines = ["\n" + indent + "-- " + l for l in d.split("\n")]
+                    result += "".join(lines)
+                else:
+                    result += "\n" + indent + "-- "
+                    result += fill_text(d, indent + "--  ", 79)
 
         return result
 

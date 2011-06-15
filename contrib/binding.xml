@@ -1670,4 +1670,27 @@ The radio buttons always belongs to a group, even if there is only one in this g
      </method>
   </package>
 
+  <package id="Gtk.Radio_Action">
+     <doc group="Action-based menus" see="Gtk_Action">A Gtk_Radio_Action is similar to Gtk_Radio_Menu_Item. A number of radio actions can be linked together so that only one may be active at any one time.</doc>
+     <parameter name="self" ada="Action"/>
+     <method id="gtk_radio_action_new">
+        <parameter name="label" default='""'/>
+        <parameter name="tooltip" default='""'/>
+        <parameter name="stock_id" default='""'/>
+     </method>
+     <method id="gtk_radio_action_set_group">
+        <parameter name="group" ctype="WidgetSList"/>
+        <doc extend="true">A common way to set up a group of radio group is the following:
+
+%PRE%      Group  : GSlist := null;
+      Action : Gtk_Radio_Action;
+      while ... loop
+         Gtk_New (Action, ...);
+         Set_Group (Action, Group);
+         Group := Get_Group (Action);
+      end loop;</doc>
+     </method>
+     <method id="gtk_radio_action_get_group" return="WidgetSList"/>
+  </package>
+
 </GIR>
