@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,62 +28,62 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  This package defines a separator widget that can be inserted in a
---  toolbar, to create groups of widgets in the latter.
+--  This package defines a separator widget that can be inserted in a toolbar,
+--  to create groups of widgets in the latter.
+-- 
 --  </description>
---  <c_version>2.8.17</c_version>
 --  <group>Menus and Toolbars</group>
 
-with Glib.Properties;
-with Gtk.Tool_Item;
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;            use Glib;
+with Glib.Properties; use Glib.Properties;
+with Gtk.Tool_Item;   use Gtk.Tool_Item;
 
 package Gtk.Separator_Tool_Item is
 
-   type Gtk_Separator_Tool_Item_Record is
-     new Gtk.Tool_Item.Gtk_Tool_Item_Record with null record;
-   type Gtk_Separator_Tool_Item
-     is access all Gtk_Separator_Tool_Item_Record'Class;
+   type Gtk_Separator_Tool_Item_Record is new Gtk_Tool_Item_Record with null record;
+   type Gtk_Separator_Tool_Item is access all Gtk_Separator_Tool_Item_Record'Class;
 
-   procedure Gtk_New
-     (Separator : out Gtk_Separator_Tool_Item);
-   procedure Initialize
-     (Separator : access Gtk_Separator_Tool_Item_Record'Class);
-   --  Create or initialize a new separator
+   ------------------
+   -- Constructors --
+   ------------------
 
-   function Get_Type return GType;
-   --  Return the internal type used for separators
+   procedure Gtk_New (Self : out Gtk_Separator_Tool_Item);
+   procedure Initialize (Self : access Gtk_Separator_Tool_Item_Record'Class);
+   --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+   --  Since: gtk+ 2.4
 
-   procedure Set_Draw
-     (Item : access Gtk_Separator_Tool_Item_Record;
-      Draw : Boolean);
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_separator_tool_item_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
    function Get_Draw
-     (Item : access Gtk_Separator_Tool_Item_Record)
-      return Boolean;
-   --  Sets whether the separator is drawn as a vertical line, or just a
-   --  blank.
-   --  Settings this to False along with using Gtk.Tool_Item.Set_Expand is
-   --  useful to create an item that forces the following items to the end of
-   --  the toolbar.
+      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean;
+   procedure Set_Draw
+      (Self : access Gtk_Separator_Tool_Item_Record;
+       Draw : Boolean);
+   --  Whether Item is drawn as a vertical line, or just blank. Setting this
+   --  to %FALSE along with gtk_tool_item_set_expand is useful to create an
+   --  item that forces following items to the end of the toolbar.
+   --  Since: gtk+ 2.4
+   --  "draw": whether Item is drawn as a vertical line
 
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
+   --  Glib.Properties for more information on properties)
+   -- 
    --  Name: Draw_Property
    --  Type: Boolean
-   --  See:  Set_Draw / Get_Draw
-   --
-   --  </properties>
+   --  Flags: read-write
 
    Draw_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Draw_Property : constant Glib.Properties.Property_Boolean :=
+   Draw_Property : constant Glib.Properties.Property_Boolean:=
      Glib.Properties.Build ("draw");
-
-   pragma Import (C, Get_Type, "gtk_separator_tool_item_get_type");
 end Gtk.Separator_Tool_Item;

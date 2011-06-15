@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,65 +27,62 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Separator_Tool_Item is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Separator_Tool_Item_Record);
-   pragma Warnings (Off, Type_Conversion);
-
-   --------------
-   -- Get_Draw --
-   --------------
-
-   function Get_Draw
-     (Item : access Gtk_Separator_Tool_Item_Record)
-      return Boolean
-   is
-      function Internal (Item : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_separator_tool_item_get_draw");
-   begin
-      return Boolean'Val (Internal (Get_Object (Item)));
-   end Get_Draw;
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Separator : out Gtk_Separator_Tool_Item)  is
+   procedure Gtk_New (Self : out Gtk_Separator_Tool_Item) is
    begin
-      Separator := new Gtk_Separator_Tool_Item_Record;
-      Gtk.Separator_Tool_Item.Initialize (Separator);
+      Self := new Gtk_Separator_Tool_Item_Record;
+      Gtk.Separator_Tool_Item.Initialize (Self);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize
-     (Separator : access Gtk_Separator_Tool_Item_Record'Class)
-   is
-      function Internal  return System.Address;
+   procedure Initialize (Self : access Gtk_Separator_Tool_Item_Record'Class) is
+      function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_tool_item_new");
    begin
-      Set_Object (Separator, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
+
+   --------------
+   -- Get_Draw --
+   --------------
+
+   function Get_Draw
+      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_separator_tool_item_get_draw");
+   begin
+      return Boolean'Val (Internal (Get_Object (Self)));
+   end Get_Draw;
 
    --------------
    -- Set_Draw --
    --------------
 
    procedure Set_Draw
-     (Item : access Gtk_Separator_Tool_Item_Record;
-      Draw : Boolean)
+      (Self : access Gtk_Separator_Tool_Item_Record;
+       Draw : Boolean)
    is
-      procedure Internal
-        (Item : System.Address;
-         Draw : Gboolean);
+      procedure Internal (Self : System.Address; Draw : Integer);
       pragma Import (C, Internal, "gtk_separator_tool_item_set_draw");
    begin
-      Internal (Get_Object (Item), Boolean'Pos (Draw));
+      Internal (Get_Object (Self), Boolean'Pos (Draw));
    end Set_Draw;
 
 end Gtk.Separator_Tool_Item;

@@ -1719,4 +1719,9 @@ dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
 This widget serves as separator between menu items. It is represented graphically as a horizontal line between two items, and is used to group items into meaningful groups.</doc>
   </package>
 
+  <package id="Gtk.Separator_Tool_Item">
+     <doc group="Menus and Toolbars">
+This package defines a separator widget that can be inserted in a toolbar, to create groups of widgets in the latter.</doc>
+  </package>
+
 </GIR>

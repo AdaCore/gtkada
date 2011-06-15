@@ -149,9 +149,12 @@ class AdaNaming(object):
             "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
             "GtkSeparatorMenuItem":
                 GObject("Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item"),
+            "GtkSeparatorToolItem":
+                GObject("Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item"),
             "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
             "GtkToggleAction": GObject("Gtk.Toggle_Action.Gtk_Toggle_Action"),
             "GtkToggleButton": GObject("Gtk.Toggle_Button.Gtk_Toggle_Button"),
+            "GtkToolItem":     GObject("Gtk.Tool_Item.Gtk_Tool_Item"),
             "GtkTreeIter*":     Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
             "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
             "GtkTreeViewRowSeparatorFunc":
