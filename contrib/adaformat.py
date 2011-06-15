@@ -762,10 +762,11 @@ class Parameter(Local_Var):
         return super(Parameter, self).as_call(lang, mode=self.mode)
 
 
+max_profile_length = 79 - len(" is")
+
+
 class Subprogram(object):
     """An Ada subprogram that we are generating"""
-
-    max_profile_length = 79 - len(" is")
 
     def __init__(self, name, code="", plist=[], local_vars=[],
                  returns=None, doc=[]):
@@ -819,7 +820,7 @@ class Subprogram(object):
     def set_body(self, body):
         self._manual_body = body
 
-    def _profile(self, indent="   ", lang="ada"):
+    def _profile(self, indent="   ", lang="ada", maxlen=max_profile_length):
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(lang)
@@ -841,9 +842,7 @@ class Subprogram(object):
             p = " (" + "; ".join(plist) + ")"
 
             # If too long, split on several lines
-            if len(p) + len(prefix) + len(suffix) > \
-               Subprogram.max_profile_length:
-
+            if len(p) + len(prefix) + len(suffix) > maxlen:
                 max = max_length([p.name for p in self.plist])
                 plist = [p.spec(max, lang=lang) for p in self.plist]
                 p = "\n   " + indent + "(" \
@@ -853,8 +852,7 @@ class Subprogram(object):
             p = ""
 
         # Should the "return" go on a separate line ?
-        if p and len(p.splitlines()[-1]) + len(suffix) > \
-           Subprogram.max_profile_length:
+        if p and len(p.splitlines()[-1]) + len(suffix) > maxlen:
             return prefix + p + "\n   " + indent + suffix
         else:
             return prefix + p + suffix
@@ -882,7 +880,7 @@ class Subprogram(object):
 
         return doc
 
-    def spec(self, indent="   ", show_doc=True):
+    def spec(self, indent="   ", show_doc=True, maxlen=max_profile_length):
         """Return the spec of the subprogram"""
 
         if show_doc:
@@ -894,10 +892,10 @@ class Subprogram(object):
             doc = []
 
         if self._import:
-            result = self._profile(indent, lang="c") + ";"
+            result = self._profile(indent, lang="c", maxlen=maxlen) + ";"
             result += "\n" + indent + self._import
         else:
-            result = self._profile(indent, lang="ada") + ";"
+            result = self._profile(indent, lang="ada", maxlen=maxlen) + ";"
             if self._deprecated[0]:
                 result += "\n" + indent \
                         + "pragma Obsolescent (%s);" % self.name
@@ -1078,8 +1076,16 @@ class Section(object):
         self.spec_code = ""  # hard-coded code
         self.body_code = ""  # hard-coded code
 
-    def add_comment(self, comment):
-        self.comment += "   -- " + fill_text(comment, "   --  ", 79) + "\n"
+    def add_comment(self, comment, fill=True):
+        """If 'fill' is true, the comment is automatically split on several
+           lines if needed. Otherwise, the comment is assumed to be already
+           formatted properly, minus the leading --
+        """
+        if fill:
+            self.comment += "   -- " + fill_text(comment, "   --  ", 79) + "\n"
+        else:
+            self.comment += "\n".join(
+                "   -- %s" % p for p in comment.splitlines()) + "\n"
 
     def add(self, *args):
         """Add one or more objects to the section (subprogram, code,...)"""

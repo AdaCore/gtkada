@@ -170,13 +170,17 @@ package Gtk.List is
    --  The following new signals are defined for this widget:
    -- 
    --  "select-child"
-   --  function Handler (Self : access Gtk_List_Record'Class) return none;
+   --     procedure Handler
+   --       (Self   : access Gtk_List_Record'Class;
+   --        Object : Gtk.Widget.Gtk_Widget);
    -- 
    --  "selection-changed"
-   --  function Handler (Self : access Gtk_List_Record'Class) return none;
+   --     procedure Handler (Self : access Gtk_List_Record'Class);
    -- 
    --  "unselect-child"
-   --  function Handler (Self : access Gtk_List_Record'Class) return none;
+   --     procedure Handler
+   --       (Self   : access Gtk_List_Record'Class;
+   --        Object : Gtk.Widget.Gtk_Widget);
 
    Signal_Select_Child : constant Glib.Signal_Name := "select-child";
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";

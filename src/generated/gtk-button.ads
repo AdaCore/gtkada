@@ -259,35 +259,29 @@ package Gtk.Button is
    --  The following new signals are defined for this widget:
    -- 
    --  "activate"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
    --  never connect to this signal, but use the #GtkButton::clicked signal.
    -- 
    --  "clicked"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button has been activated (pressed and released).
    -- 
    --  "enter"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the pointer enters the button.
    -- 
    --  "leave"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the pointer leaves the button.
    -- 
    --  "pressed"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button is pressed.
    -- 
    --  "released"
-   --  function Handler (Self : access Gtk_Button_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  Emitted when the button is released.
 
    Signal_Activate : constant Glib.Signal_Name := "activate";

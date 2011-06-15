@@ -38,6 +38,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with GObject;         use GObject;
 with Gdk;             use Gdk;
 with Gdk.Types;       use Gdk.Types;
 with Glib;            use Glib;
@@ -298,14 +299,26 @@ package Gtk.Accel_Group is
    --  The following new signals are defined for this widget:
    -- 
    --  "accel-activate"
-   --  function Handler (Self : access Gtk_Accel_Group_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self          : access Gtk_Accel_Group_Record'Class;
+   --        Acceleratable : GObject.Object;
+   --        Keyval        : Guint;
+   --        Modifier      : Gdk.ModifierType) return Boolean;
+   --    --  "acceleratable": the object on which the accelerator was activated
+   --    --  "keyval": the accelerator keyval
+   --    --  "modifier": the modifier combination of the accelerator
    --  The accel-activate signal is an implementation detail of #GtkAccelGroup
    --  and not meant to be used by applications.
    -- 
    --  "accel-changed"
-   --  function Handler (Self : access Gtk_Accel_Group_Record'Class) return --
-   --  none;
+   --     procedure Handler
+   --       (Self          : access Gtk_Accel_Group_Record'Class;
+   --        Keyval        : Guint;
+   --        Modifier      : Gdk.ModifierType;
+   --        Accel_Closure : GObject.Closure);
+   --    --  "keyval": the accelerator keyval
+   --    --  "modifier": the modifier combination of the accelerator
+   --    --  "accel_closure": the GClosure of the accelerator
    --  The accel-changed signal is emitted when a #GtkAccelGroupEntry is added
    --  to or removed from the accel group. Widgets like #GtkAccelLabel which
    --  display an associated accelerator should connect to this signal, and

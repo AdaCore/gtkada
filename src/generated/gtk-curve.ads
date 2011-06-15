@@ -145,7 +145,7 @@ package Gtk.Curve is
    --  The following new signals are defined for this widget:
    -- 
    --  "curve-type-changed"
-   --  function Handler (Self : access Gtk_Curve_Record'Class) return none;
+   --     procedure Handler (Self : access Gtk_Curve_Record'Class);
 
    Signal_Curve_Type_Changed : constant Glib.Signal_Name := "curve-type-changed";
 

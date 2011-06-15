@@ -136,8 +136,10 @@ package Gtk.Viewport is
    --  The following new signals are defined for this widget:
    -- 
    --  "set-scroll-adjustments"
-   --  function Handler (Self : access Gtk_Viewport_Record'Class) return --
-   --  none;
+   --     procedure Handler
+   --       (Self   : access Gtk_Viewport_Record'Class;
+   --        Object : Gtk.Adjustment.Gtk_Adjustment;
+   --        P0     : Gtk.Adjustment.Gtk_Adjustment);
 
    Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name := "set-scroll-adjustments";
 

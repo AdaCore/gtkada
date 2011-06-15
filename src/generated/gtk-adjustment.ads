@@ -248,12 +248,10 @@ package Gtk.Adjustment is
    --  The following new signals are defined for this widget:
    -- 
    --  "changed"
-   --  function Handler (Self : access Gtk_Adjustment_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
    -- 
    --  "value-changed"
-   --  function Handler (Self : access Gtk_Adjustment_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";

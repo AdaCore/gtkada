@@ -150,8 +150,7 @@ package Gtk.Radio_Button is
    --  The following new signals are defined for this widget:
    -- 
    --  "group-changed"
-   --  function Handler (Self : access Gtk_Radio_Button_Record'Class) --
-   --  return none;
+   --     procedure Handler (Self : access Gtk_Radio_Button_Record'Class);
    --  Emitted when the group of radio buttons that a radio button belongs to
    --  changes. This is emitted when a radio button switches from being alone
    --  to being part of a group of 2 or more buttons, or vice-versa, and when a

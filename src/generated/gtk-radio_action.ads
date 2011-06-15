@@ -148,8 +148,11 @@ package Gtk.Radio_Action is
    --  The following new signals are defined for this widget:
    -- 
    --  "changed"
-   --  function Handler (Self : access Gtk_Radio_Action_Record'Class) --
-   --  return none;
+   --     procedure Handler
+   --       (Self    : access Gtk_Radio_Action_Record'Class;
+   --        Current : Gtk.Radio_Action.Gtk_Radio_Action);
+   --    --  "current": the member of Action<!-- -->s group which has just been
+   --    --  activated
    --  The ::changed signal is emitted on every member of a radio group when
    --  the active member is changed. The signal gets emitted after the
    --  ::activate signals for the previous and current active members.

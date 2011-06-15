@@ -230,7 +230,10 @@ package Gtk.Scale is
    --  The following new signals are defined for this widget:
    -- 
    --  "format-value"
-   --  function Handler (Self : access Gtk_Scale_Record'Class) return utf8;
+   --     function Handler
+   --       (Self  : access Gtk_Scale_Record'Class;
+   --        Value : Gdouble) return UTF8_String;
+   --    --  "value": the value to format
    --  Signal which allows you to change how the scale value is displayed.
    --  Connect a signal handler which returns an allocated string representing
    --  Here's an example signal handler which displays a value 1.0 as with

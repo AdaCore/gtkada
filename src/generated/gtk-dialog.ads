@@ -320,15 +320,16 @@ package Gtk.Dialog is
    --  The following new signals are defined for this widget:
    -- 
    --  "close"
-   --  function Handler (Self : access Gtk_Dialog_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Dialog_Record'Class);
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted when the user uses a keybinding to
    --  close the dialog. The default binding for this signal is the Escape key.
    -- 
    --  "response"
-   --  function Handler (Self : access Gtk_Dialog_Record'Class) return --
-   --  none;
+   --     procedure Handler
+   --       (Self        : access Gtk_Dialog_Record'Class;
+   --        Response_Id : Gtk_Response_Type);
+   --    --  "response_id": the response ID
    --  Emitted when an action widget is clicked, the dialog receives a delete
    --  event, or the application programmer calls gtk_dialog_response(). On a
    --  delete event, the response ID is #GTK_RESPONSE_DELETE_EVENT. Otherwise,

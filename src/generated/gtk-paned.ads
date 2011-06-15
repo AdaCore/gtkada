@@ -65,6 +65,7 @@ with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Container;   use Gtk.Container;
+with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Paned is
@@ -207,16 +208,16 @@ package Gtk.Paned is
    --  The following new signals are defined for this widget:
    -- 
    --  "accept-position"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
    --  The ::accept-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle when moving it using key
    --  bindings. The default binding for this signal is Return or Space.
    -- 
    --  "cancel-position"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
    --  The ::cancel-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cancel moving the position of the handle using key bindings. The
@@ -224,16 +225,20 @@ package Gtk.Paned is
    --  The default binding for this signal is Escape.
    -- 
    --  "cycle-child-focus"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self     : access Gtk_Paned_Record'Class;
+   --        Reversed : Boolean) return Boolean;
+   --    --  "reversed": whether cycling backward or forward
    --  The ::cycle-child-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle the focus between the children of the paned. The default
    --  binding is f6.
    -- 
    --  "cycle-handle-focus"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self     : access Gtk_Paned_Record'Class;
+   --        Reversed : Boolean) return Boolean;
+   --    --  "reversed": whether cycling backward or forward
    --  The ::cycle-handle-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle whether the paned should grab focus to allow the user to change
@@ -241,15 +246,17 @@ package Gtk.Paned is
    --  this signal is f8.
    -- 
    --  "move-handle"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self        : access Gtk_Paned_Record'Class;
+   --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+   --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
    --  The ::move-handle signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to move the handle when the user is using key bindings to move it.
    -- 
    --  "toggle-handle-focus"
-   --  function Handler (Self : access Gtk_Paned_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
    --  The ::toggle-handle-focus is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle and then move focus to the

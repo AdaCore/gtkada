@@ -329,11 +329,17 @@ package Gtk.GRange is
    --  The following new signals are defined for this widget:
    -- 
    --  "adjust-bounds"
-   --  function Handler (Self : access Gtk_Range_Record'Class) return none;
+   --     procedure Handler
+   --       (Self   : access Gtk_Range_Record'Class;
+   --        Object : Gdouble);
    -- 
    --  "change-value"
-   --  function Handler (Self : access Gtk_Range_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self   : access Gtk_Range_Record'Class;
+   --        Scroll : Gtk.Enums.Gtk_Scroll_Type;
+   --        Value  : Gdouble) return Boolean;
+   --    --  "scroll": the type of scroll action that was performed
+   --    --  "value": the new value resulting from the scroll action
    --  The ::change-value signal is emitted when a scroll action is performed
    --  on a range. It allows an application to determine the type of scroll
    --  event that occurred and the resultant new value. The application can
@@ -347,11 +353,14 @@ package Gtk.GRange is
    --  ::change-value handler.
    -- 
    --  "move-slider"
-   --  function Handler (Self : access Gtk_Range_Record'Class) return none;
+   --     procedure Handler
+   --       (Self : access Gtk_Range_Record'Class;
+   --        Step : Gtk.Enums.Gtk_Scroll_Type);
+   --    --  "step": how to move the slider
    --  Virtual function that moves the slider. Used for keybindings.
    -- 
    --  "value-changed"
-   --  function Handler (Self : access Gtk_Range_Record'Class) return none;
+   --     procedure Handler (Self : access Gtk_Range_Record'Class);
    --  Emitted when the range value changes.
 
    Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust-bounds";

@@ -291,34 +291,27 @@ package Gtk.Calendar is
    --  The following new signals are defined for this widget:
    -- 
    --  "day-selected"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    -- 
    --  "day-selected-double-click"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    -- 
    --  "month-changed"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    --  Emitted when the user clicks a button to change the selected month on a
    --  calendar.
    -- 
    --  "next-month"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    -- 
    --  "next-year"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    -- 
    --  "prev-month"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
    -- 
    --  "prev-year"
-   --  function Handler (Self : access Gtk_Calendar_Record'Class) return --
-   --  none;
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Day_Selected : constant Glib.Signal_Name := "day-selected";
    Signal_Day_Selected_Double_Click : constant Glib.Signal_Name := "day-selected-double-click";

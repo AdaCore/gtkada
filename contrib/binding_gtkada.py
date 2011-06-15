@@ -38,7 +38,9 @@ Where the package node is defined as follows:
                            <!-- fields are not bound by default, but are
                                 associated with
                                     "gtkada_%s_get_%s" % (adapkg, field_name)
-                                methods -->
+                                methods
+                                For signals, we use "package::signal"
+                           -->
            ada="..."       <!-- optional, name of the Ada subprogram -->
            bind="true"     <!-- optional, if false no binding generated -->
            obsolescent=".." <!--  Whether this method is obsolete" -->

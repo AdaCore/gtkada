@@ -83,6 +83,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
 with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Menu;         use Gtk.Menu;
 with Gtk.Misc;         use Gtk.Misc;
 with Gtk.Widget;       use Gtk.Widget;
 with Pango.Attributes; use Pango.Attributes;
@@ -525,7 +526,7 @@ package Gtk.Label is
    --  The following new signals are defined for this widget:
    -- 
    --  "activate-current-link"
-   --  function Handler (Self : access Gtk_Label_Record'Class) return none;
+   --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates a link in the label. Applications
    --  may also emit the signal with g_signal_emit_by_name() if they need to
@@ -533,21 +534,30 @@ package Gtk.Label is
    --  this signal are all forms of the Enter key.
    -- 
    --  "activate-link"
-   --  function Handler (Self : access Gtk_Label_Record'Class) return --
-   --  gboolean;
+   --     function Handler
+   --       (Self : access Gtk_Label_Record'Class;
+   --        Uri  : UTF8_String) return Boolean;
+   --    --  "uri": the URI that is activated
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
    -- 
    --  "copy-clipboard"
-   --  function Handler (Self : access Gtk_Label_Record'Class) return none;
+   --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard. The default binding for this
    --  signal is Ctrl-c.
    -- 
    --  "move-cursor"
-   --  function Handler (Self : access Gtk_Label_Record'Class) return none;
+   --     procedure Handler
+   --       (Self             : access Gtk_Label_Record'Class;
+   --        Step             : MovementStep;
+   --        Count            : Gint;
+   --        Extend_Selection : Boolean);
+   --    --  "step": the granularity of the move, as a GtkMovementStep
+   --    --  "count": the number of Step units to move
+   --    --  "extend_selection": True if the move should extend the selection
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -563,7 +573,10 @@ package Gtk.Label is
    --  move to the ends of the buffer</listitem> </itemizedlist>
    -- 
    --  "populate-popup"
-   --  function Handler (Self : access Gtk_Label_Record'Class) return none;
+   --     procedure Handler
+   --       (Self : access Gtk_Label_Record'Class;
+   --        Menu : Gtk.Menu.Gtk_Menu);
+   --    --  "menu": the menu that is being populated
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the label. Note that only selectable labels have context menus.
    --  If you need to add items to the context menu, connect to this signal and

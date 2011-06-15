@@ -626,6 +626,10 @@ See Glib.Properties for more information on properties)""")
                 "The following new signals are defined for this widget:")
 
             for s in signals:
+                gtkmethod = self.gtkpkg.get_method(
+                    cname="%s::%s" % (self.name, s.get("name")))
+                params = self._parameters(s, gtkmethod=gtkmethod)
+                returns = self._get_method_returns(gtkmethod, s.find(nreturn))
                 sub = Subprogram(
                     name="Handler",
                     plist=[
@@ -633,13 +637,15 @@ See Glib.Properties for more information on properties)""")
                           name="Self",
                           type="%(typename)s_Record'Class" % self._subst,
                           mode="access",
-                          doc="")],
+                          doc="")] + params,
                     code="null",
-                    returns=AdaType(s.find(nreturn).find(ntype).get("name"),
-                                    pkg=self.pkg))
+                    returns=returns)
+
+                spec = sub.spec(maxlen=69)
+
                 adasignals.append({
                     "name": s.get("name"),
-                    "profile": fill_text(sub.spec(), "   --      ", 79, 69),
+                    "profile": spec,
                     "doc": s.findtext(ndoc, "")})
 
             adasignals.sort(lambda x,y: x["name"] <> y["name"])
@@ -647,7 +653,7 @@ See Glib.Properties for more information on properties)""")
             for s in adasignals:
                 section.add_comment("")
                 section.add_comment('"%(name)s"' % s)
-                section.add_comment(" %(profile)s""" % s)
+                section.add_comment(" %(profile)s""" % s, fill=False)
                 if s["doc"]:
                     section.add_comment("  %s""" % s["doc"])
 
