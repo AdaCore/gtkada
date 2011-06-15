@@ -4,12 +4,20 @@
 @settitle GtkAda User's Guide
 @syncodeindex fn cp
 
+@c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+@c                                                                            o
+@c                           GtkAda DOCUMENTATION                             o
+@c                                                                            o
+@c                     Copyright (C) 2000-2011, AdaCore                       o
+@c                                                                            o
+@c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+
 @dircategory User Interface Toolkit
 @direntry
 * GtkAda_Ug: (gtkada_ug).          Ada graphical tookit based on GTK+ (User's Guide)
 @end direntry
 
-@set GtkAdaVersion 2.24.0
+@set GtkAdaVersion 2.24.1
 
 @titlepage
 @title GtkAda User's Guide

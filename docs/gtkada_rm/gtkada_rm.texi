@@ -3,10 +3,18 @@
 @setfilename gtkada_rm.info
 @syncodeindex fn cp
 
+@c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+@c                                                                            o
+@c                           GtkAda DOCUMENTATION                             o
+@c                                                                            o
+@c                     Copyright (C) 2000-2011, AdaCore                       o
+@c                                                                            o
+@c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+
 @dircategory User Interface Toolkit
 @direntry
 * GtkAda_Rm: (gtkada_rm).           Ada graphical tookit based on GTK+ (Reference Manual)
-@end direntry 
+@end direntry
 
 @c --------------------------------------------
 @finalout
@@ -15,16 +23,16 @@
 
 @titlepage
 @title GtkAda Reference Manual
-@subtitle Version 2.24.0
+@subtitle Version 2.24.1
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
 @author E. Briot, J. Brobecker, A. Charlet
-     
+
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2010, AdaCore
+Copyright @copyright{} 2000-2011, AdaCore
 @end titlepage
 
 
