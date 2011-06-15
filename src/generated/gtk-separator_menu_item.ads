@@ -48,8 +48,9 @@ package Gtk.Separator_Menu_Item is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Separator_Menu_Item);
-   procedure Initialize (Self : access Gtk_Separator_Menu_Item_Record'Class);
+   procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
+   procedure Initialize
+      (Widget : access Gtk_Separator_Menu_Item_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_menu_item_get_type");

@@ -55,8 +55,8 @@ package Gtk.Fixed is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Fixed);
-   procedure Initialize (Self : access Gtk_Fixed_Record'Class);
+   procedure Gtk_New (Fixed : out Gtk_Fixed);
+   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class);
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_fixed_get_type");
@@ -65,10 +65,10 @@ package Gtk.Fixed is
    -- Methods --
    -------------
 
-   function Get_Has_Window (Self : access Gtk_Fixed_Record) return Boolean;
+   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean;
    pragma Obsolescent (Get_Has_Window);
    procedure Set_Has_Window
-      (Self       : access Gtk_Fixed_Record;
+      (Fixed      : access Gtk_Fixed_Record;
        Has_Window : Boolean := False);
    pragma Obsolescent (Set_Has_Window);
    --  Sets whether a Gtk.Fixed.Gtk_Fixed widget is created with a separate
@@ -82,7 +82,7 @@ package Gtk.Fixed is
    --  "has_window": True if a separate window should be created
 
    procedure Move
-      (Self   : access Gtk_Fixed_Record;
+      (Fixed  : access Gtk_Fixed_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);
@@ -91,7 +91,7 @@ package Gtk.Fixed is
    --  position to place the widget at.
 
    procedure Put
-      (Self   : access Gtk_Fixed_Record;
+      (Fixed  : access Gtk_Fixed_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);

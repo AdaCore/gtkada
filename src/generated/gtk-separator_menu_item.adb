@@ -41,21 +41,23 @@ package body Gtk.Separator_Menu_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Separator_Menu_Item) is
+   procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item) is
    begin
-      Self := new Gtk_Separator_Menu_Item_Record;
-      Gtk.Separator_Menu_Item.Initialize (Self);
+      Widget := new Gtk_Separator_Menu_Item_Record;
+      Gtk.Separator_Menu_Item.Initialize (Widget);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Separator_Menu_Item_Record'Class) is
+   procedure Initialize
+      (Widget : access Gtk_Separator_Menu_Item_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_menu_item_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Widget, Internal);
    end Initialize;
 
 end Gtk.Separator_Menu_Item;

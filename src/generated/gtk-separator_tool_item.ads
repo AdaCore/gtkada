@@ -48,8 +48,8 @@ package Gtk.Separator_Tool_Item is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Separator_Tool_Item);
-   procedure Initialize (Self : access Gtk_Separator_Tool_Item_Record'Class);
+   procedure Gtk_New (Item : out Gtk_Separator_Tool_Item);
+   procedure Initialize (Item : access Gtk_Separator_Tool_Item_Record'Class);
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
    --  Since: gtk+ 2.4
 
@@ -61,9 +61,9 @@ package Gtk.Separator_Tool_Item is
    -------------
 
    function Get_Draw
-      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean;
+      (Item : access Gtk_Separator_Tool_Item_Record) return Boolean;
    procedure Set_Draw
-      (Self : access Gtk_Separator_Tool_Item_Record;
+      (Item : access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
    --  Whether Item is drawn as a vertical line, or just blank. Setting this
    --  to %FALSE along with Gtk.Tool_Item.Set_Expand is useful to create an

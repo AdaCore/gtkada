@@ -83,22 +83,22 @@ package body Gtk.Ruler is
    -- Draw_Pos --
    --------------
 
-   procedure Draw_Pos (Self : access Gtk_Ruler_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record) is
+      procedure Internal (Ruler : System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_pos");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Ruler));
    end Draw_Pos;
 
    ----------------
    -- Draw_Ticks --
    ----------------
 
-   procedure Draw_Ticks (Self : access Gtk_Ruler_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record) is
+      procedure Internal (Ruler : System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_ticks");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Ruler));
    end Draw_Ticks;
 
    ----------------
@@ -106,12 +106,12 @@ package body Gtk.Ruler is
    ----------------
 
    function Get_Metric
-      (Self : access Gtk_Ruler_Record) return Gtk.Enums.Gtk_Metric_Type
+      (Ruler : access Gtk_Ruler_Record) return Gtk.Enums.Gtk_Metric_Type
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Ruler : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_ruler_get_metric");
    begin
-      return Gtk.Enums.Gtk_Metric_Type'Val (Internal (Get_Object (Self)));
+      return Gtk.Enums.Gtk_Metric_Type'Val (Internal (Get_Object (Ruler)));
    end Get_Metric;
 
    ---------------
@@ -119,21 +119,21 @@ package body Gtk.Ruler is
    ---------------
 
    procedure Get_Range
-      (Self     : access Gtk_Ruler_Record;
+      (Ruler    : access Gtk_Ruler_Record;
        Lower    : out Gdouble;
        Upper    : out Gdouble;
        Position : out Gdouble;
        Max_Size : out Gdouble)
    is
       procedure Internal
-         (Self     : System.Address;
+         (Ruler    : System.Address;
           Lower    : out Gdouble;
           Upper    : out Gdouble;
           Position : out Gdouble;
           Max_Size : out Gdouble);
       pragma Import (C, Internal, "gtk_ruler_get_range");
    begin
-      Internal (Get_Object (Self), Lower, Upper, Position, Max_Size);
+      Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
    end Get_Range;
 
    ----------------
@@ -141,13 +141,13 @@ package body Gtk.Ruler is
    ----------------
 
    procedure Set_Metric
-      (Self   : access Gtk_Ruler_Record;
+      (Ruler  : access Gtk_Ruler_Record;
        Metric : Gtk.Enums.Gtk_Metric_Type)
    is
-      procedure Internal (Self : System.Address; Metric : Integer);
+      procedure Internal (Ruler : System.Address; Metric : Integer);
       pragma Import (C, Internal, "gtk_ruler_set_metric");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Metric_Type'Pos (Metric));
+      Internal (Get_Object (Ruler), Gtk.Enums.Gtk_Metric_Type'Pos (Metric));
    end Set_Metric;
 
    ---------------
@@ -155,21 +155,21 @@ package body Gtk.Ruler is
    ---------------
 
    procedure Set_Range
-      (Self     : access Gtk_Ruler_Record;
+      (Ruler    : access Gtk_Ruler_Record;
        Lower    : Gdouble;
        Upper    : Gdouble;
        Position : Gdouble;
        Max_Size : Gdouble)
    is
       procedure Internal
-         (Self     : System.Address;
+         (Ruler    : System.Address;
           Lower    : Gdouble;
           Upper    : Gdouble;
           Position : Gdouble;
           Max_Size : Gdouble);
       pragma Import (C, Internal, "gtk_ruler_set_range");
    begin
-      Internal (Get_Object (Self), Lower, Upper, Position, Max_Size);
+      Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
    end Set_Range;
 
 end Gtk.Ruler;

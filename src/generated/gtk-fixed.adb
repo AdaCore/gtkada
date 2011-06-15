@@ -41,32 +41,32 @@ package body Gtk.Fixed is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Fixed) is
+   procedure Gtk_New (Fixed : out Gtk_Fixed) is
    begin
-      Self := new Gtk_Fixed_Record;
-      Gtk.Fixed.Initialize (Self);
+      Fixed := new Gtk_Fixed_Record;
+      Gtk.Fixed.Initialize (Fixed);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Fixed_Record'Class) is
+   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_fixed_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Fixed, Internal);
    end Initialize;
 
    --------------------
    -- Get_Has_Window --
    --------------------
 
-   function Get_Has_Window (Self : access Gtk_Fixed_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean is
+      function Internal (Fixed : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_fixed_get_has_window");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Fixed)));
    end Get_Has_Window;
 
    ----------
@@ -74,19 +74,19 @@ package body Gtk.Fixed is
    ----------
 
    procedure Move
-      (Self   : access Gtk_Fixed_Record;
+      (Fixed  : access Gtk_Fixed_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Fixed  : System.Address;
           Widget : System.Address;
           X      : Gint;
           Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_move");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Widget)), X, Y);
+      Internal (Get_Object (Fixed), Get_Object_Or_Null (GObject (Widget)), X, Y);
    end Move;
 
    ---------
@@ -94,19 +94,19 @@ package body Gtk.Fixed is
    ---------
 
    procedure Put
-      (Self   : access Gtk_Fixed_Record;
+      (Fixed  : access Gtk_Fixed_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint)
    is
       procedure Internal
-         (Self   : System.Address;
+         (Fixed  : System.Address;
           Widget : System.Address;
           X      : Gint;
           Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_put");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Widget)), X, Y);
+      Internal (Get_Object (Fixed), Get_Object_Or_Null (GObject (Widget)), X, Y);
    end Put;
 
    --------------------
@@ -114,13 +114,13 @@ package body Gtk.Fixed is
    --------------------
 
    procedure Set_Has_Window
-      (Self       : access Gtk_Fixed_Record;
+      (Fixed      : access Gtk_Fixed_Record;
        Has_Window : Boolean := False)
    is
-      procedure Internal (Self : System.Address; Has_Window : Integer);
+      procedure Internal (Fixed : System.Address; Has_Window : Integer);
       pragma Import (C, Internal, "gtk_fixed_set_has_window");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Has_Window));
+      Internal (Get_Object (Fixed), Boolean'Pos (Has_Window));
    end Set_Has_Window;
 
 end Gtk.Fixed;

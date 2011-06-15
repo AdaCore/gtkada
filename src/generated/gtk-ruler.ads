@@ -79,25 +79,25 @@ package Gtk.Ruler is
    -- Methods --
    -------------
 
-   procedure Draw_Pos (Self : access Gtk_Ruler_Record);
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
 
-   procedure Draw_Ticks (Self : access Gtk_Ruler_Record);
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
 
    function Get_Metric
-      (Self : access Gtk_Ruler_Record) return Gtk.Enums.Gtk_Metric_Type;
+      (Ruler : access Gtk_Ruler_Record) return Gtk.Enums.Gtk_Metric_Type;
    procedure Set_Metric
-      (Self   : access Gtk_Ruler_Record;
+      (Ruler  : access Gtk_Ruler_Record;
        Metric : Gtk.Enums.Gtk_Metric_Type);
    --  Set or get the units used for a Gtk_Ruler. See Set_Metric
 
    procedure Get_Range
-      (Self     : access Gtk_Ruler_Record;
+      (Ruler    : access Gtk_Ruler_Record;
        Lower    : out Gdouble;
        Upper    : out Gdouble;
        Position : out Gdouble;
        Max_Size : out Gdouble);
    procedure Set_Range
-      (Self     : access Gtk_Ruler_Record;
+      (Ruler    : access Gtk_Ruler_Record;
        Lower    : Gdouble;
        Upper    : Gdouble;
        Position : Gdouble;

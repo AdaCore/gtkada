@@ -41,21 +41,21 @@ package body Gtk.Separator_Tool_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Separator_Tool_Item) is
+   procedure Gtk_New (Item : out Gtk_Separator_Tool_Item) is
    begin
-      Self := new Gtk_Separator_Tool_Item_Record;
-      Gtk.Separator_Tool_Item.Initialize (Self);
+      Item := new Gtk_Separator_Tool_Item_Record;
+      Gtk.Separator_Tool_Item.Initialize (Item);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Separator_Tool_Item_Record'Class) is
+   procedure Initialize (Item : access Gtk_Separator_Tool_Item_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_tool_item_new");
    begin
-      Set_Object (Self, Internal);
+      Set_Object (Item, Internal);
    end Initialize;
 
    --------------
@@ -63,12 +63,12 @@ package body Gtk.Separator_Tool_Item is
    --------------
 
    function Get_Draw
-      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean
+      (Item : access Gtk_Separator_Tool_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_separator_tool_item_get_draw");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Item)));
    end Get_Draw;
 
    --------------
@@ -76,13 +76,13 @@ package body Gtk.Separator_Tool_Item is
    --------------
 
    procedure Set_Draw
-      (Self : access Gtk_Separator_Tool_Item_Record;
+      (Item : access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean)
    is
-      procedure Internal (Self : System.Address; Draw : Integer);
+      procedure Internal (Item : System.Address; Draw : Integer);
       pragma Import (C, Internal, "gtk_separator_tool_item_set_draw");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Draw));
+      Internal (Get_Object (Item), Boolean'Pos (Draw));
    end Set_Draw;
 
 end Gtk.Separator_Tool_Item;
