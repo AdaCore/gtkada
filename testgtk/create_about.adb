@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006, AdaCore                   --
+--                     Copyright (C) 2006-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,54 +28,35 @@
 
 with Ada.Text_IO;          use Ada.Text_IO;
 with GNAT.Strings;         use GNAT.Strings;
+with Glib.Values;          use Glib.Values;
 with Gtk.About_Dialog;     use Gtk.About_Dialog;
 with Gtk.Dialog;           use Gtk.Dialog;
 with Gtk.Frame;            use Gtk.Frame;
 with Gtk.Window;           use Gtk.Window;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with System;               use System;
+with Gtkada.Handlers;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Create_About is
 
-   procedure On_Email_Clicked
-     (About : System.Address;
-      Link  : Interfaces.C.Strings.chars_ptr;
-      Data  : System.Address);
-   pragma Convention (C, On_Email_Clicked);
-
-   procedure On_Url_Clicked
-     (About : System.Address;
-      Link  : Interfaces.C.Strings.chars_ptr;
-      Data  : System.Address);
-   pragma Convention (C, On_Url_Clicked);
+   function On_Activate_Link
+      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Params : Glib.Values.GValues) return Boolean;
+   --  Called when a link is clicked
 
    ----------------------
-   -- On_Email_Clicked --
+   -- On_Activate_Link --
    ----------------------
 
-   procedure On_Email_Clicked
-     (About : System.Address;
-      Link  : Interfaces.C.Strings.chars_ptr;
-      Data  : System.Address)
+   function On_Activate_Link
+      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Params : Glib.Values.GValues) return Boolean
    is
-      pragma Unreferenced (About, Data);
+      URI   : constant String := Get_String (Nth (Params, 1));
+      pragma Unreferenced (About);
    begin
-      Put_Line ("Email clicked: " & Value (Link));
-   end On_Email_Clicked;
-
-   --------------------
-   -- On_Url_Clicked --
-   --------------------
-
-   procedure On_Url_Clicked
-     (About : System.Address;
-      Link  : Interfaces.C.Strings.chars_ptr;
-      Data  : System.Address)
-   is
-      pragma Unreferenced (About, Data);
-   begin
-      Put_Line ("Url clicked: " & Value (Link));
-   end On_Url_Clicked;
+      Put_Line ("Url clicked: " & URI);
+      return True;
+   end On_Activate_Link;
 
    ----------
    -- Help --
@@ -93,8 +74,6 @@ package body Create_About is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Dialog : Gtk_About_Dialog;
-      Tmp    : Activate_Link_Func;
-      pragma Unreferenced (Tmp);
    begin
       Set_Label (Frame, "About dialog");
 
@@ -103,14 +82,9 @@ package body Create_About is
       Set_Destroy_With_Parent (Dialog, True);
       Set_Modal (Dialog, True);
 
-      Tmp := Set_Email_Hook
-        (On_Email_Clicked'Access,
-         Data    => System.Null_Address,
-         Destroy => null);
-      Tmp := Set_Url_Hook
-        (On_Url_Clicked'Access,
-         Data    => System.Null_Address,
-         Destroy => null);
+      Gtkada.Handlers.Return_Callback.Connect
+         (Dialog, Gtk.About_Dialog.Signal_Activate_Link,
+          On_Activate_Link'Access);
 
       --  In real applications, you will need to free the allocate strings
       Set_Artists (Dialog, (1 => new String'("Artist1 <artist1@foo.com>"),
@@ -134,7 +108,7 @@ package body Create_About is
          & " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU"
          & " General Public License for more details.");
       Set_Wrap_License (Dialog, True);
-      Set_Name (Dialog, "Testgtk");
+      Set_Program_Name (Dialog, "Testgtk");
       Set_Version (Dialog, "2.8.17");
       Set_Website (Dialog, "http://www.adacore.com");
       Set_Website_Label (Dialog, "AdaCore");
