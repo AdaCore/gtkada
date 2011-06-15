@@ -898,7 +898,8 @@ class Subprogram(object):
         else:
             result = self._profile(indent, lang="ada") + ";"
             if self._deprecated[0]:
-                result += "\n" + indent + "pragma Obsolescent;"
+                result += "\n" + indent \
+                        + "pragma Obsolescent (%s);" % self.name
 
         for d in doc:
             if d:

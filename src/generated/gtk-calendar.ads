@@ -105,7 +105,7 @@ package Gtk.Calendar is
    procedure Display_Options
       (Calendar : access Gtk_Calendar_Record;
        Flags    : Gtk_Calendar_Display_Options);
-   pragma Obsolescent;
+   pragma Obsolescent (Display_Options);
    function Get_Display_Options
       (Calendar : access Gtk_Calendar_Record)
        return Gtk_Calendar_Display_Options;
@@ -118,7 +118,7 @@ package Gtk.Calendar is
    --  "flags": the display options to set
 
    procedure Freeze (Calendar : access Gtk_Calendar_Record);
-   pragma Obsolescent;
+   pragma Obsolescent (Freeze);
    --  Does nothing. Previously locked the display of the calendar until it
    --  was thawed with Gtk.Calendar.Thaw.
    --  Deprecated
@@ -197,7 +197,7 @@ package Gtk.Calendar is
    --  "destroy": a function for releasing Data.
 
    procedure Thaw (Calendar : access Gtk_Calendar_Record);
-   pragma Obsolescent;
+   pragma Obsolescent (Thaw);
    --  Does nothing. Previously defrosted a calendar; all the changes made
    --  since the last Gtk.Calendar.Freeze were displayed.
    --  Deprecated

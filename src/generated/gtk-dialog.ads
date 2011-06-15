@@ -180,11 +180,11 @@ package Gtk.Dialog is
 
    function Get_Has_Separator
       (Dialog : access Gtk_Dialog_Record) return Boolean;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Has_Separator);
    procedure Set_Has_Separator
       (Dialog  : access Gtk_Dialog_Record;
        Setting : Boolean);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Has_Separator);
    --  Sets whether the dialog has a separator above the buttons.
    --  Deprecated since 2.22, This function will be removed in GTK+ 3
    --  "setting": True to have a separator

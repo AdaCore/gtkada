@@ -62,17 +62,17 @@ package Gtk.Vbutton_Box is
    ---------------
 
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Layout_Default);
    procedure Set_Layout_Default (Layout : Gtk.Enums.Gtk_Button_Box_Style);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Layout_Default);
    --  Sets a new layout mode that will be used by all button boxes.
    --  Deprecated since 2.0, Use gtk_button_box_set_layout() instead.
    --  "layout": a new Gtk.Enums.Gtk_Button_Box_Style.
 
    function Get_Spacing_Default return Gint;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Spacing_Default);
    procedure Set_Spacing_Default (Spacing : Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Spacing_Default);
    --  Changes the default spacing that is placed between widgets in an
    --  vertical button box.
    --  Deprecated since 2.0, Use gtk_box_set_spacing() instead.

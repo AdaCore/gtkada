@@ -66,11 +66,11 @@ package Gtk.Fixed is
    -------------
 
    function Get_Has_Window (Self : access Gtk_Fixed_Record) return Boolean;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Has_Window);
    procedure Set_Has_Window
       (Self       : access Gtk_Fixed_Record;
        Has_Window : Boolean := False);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Has_Window);
    --  Sets whether a Gtk.Fixed.Gtk_Fixed widget is created with a separate
    --  Gdk.Window.Gdk_Window for Widget->window or not. (By default, it will be
    --  created with no separate Gdk.Window.Gdk_Window). This function must be

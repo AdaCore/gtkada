@@ -179,11 +179,11 @@ package Gtk.About_Dialog is
 
    function Get_Name
       (About : access Gtk_About_Dialog_Record) return UTF8_String;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Name);
    procedure Set_Name
       (About : access Gtk_About_Dialog_Record;
        Name  : UTF8_String);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Name);
    --  Sets the name to display in the about dialog. If this is not set, it
    --  defaults to g_get_application_name.
    --  Since: gtk+ 2.6
@@ -265,7 +265,7 @@ package Gtk.About_Dialog is
       (Func    : Activate_Link_Func;
        Data    : System.Address;
        Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Email_Hook);
    --  Installs a global function to be called whenever the user activates an
    --  email link in an about dialog. Since 2.18 there exists a default
    --  function which uses gtk_show_uri(). To deactivate it, you can pass null
@@ -280,7 +280,7 @@ package Gtk.About_Dialog is
       (Func    : Activate_Link_Func;
        Data    : System.Address;
        Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Url_Hook);
    --  Installs a global function to be called whenever the user activates a
    --  URL link in an about dialog. Since 2.18 there exists a default function
    --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.

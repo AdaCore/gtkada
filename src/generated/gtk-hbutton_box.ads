@@ -61,18 +61,18 @@ package Gtk.Hbutton_Box is
    ---------------
 
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Layout_Default);
    procedure Set_Layout_Default (Layout : Gtk.Enums.Gtk_Button_Box_Style);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Layout_Default);
    --  Set the the default layout to use for all the hbutton_boxes in your
    --  application that don't have a specific value set by
    --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge
    --  Deprecated
 
    function Get_Spacing_Default return Gint;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Spacing_Default);
    procedure Set_Spacing_Default (Spacing : Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Spacing_Default);
    --  Set the default spacing (space between two adjacent children). This is
    --  done for all the Hbutton_Boxes in your application. This can be
    --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.

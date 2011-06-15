@@ -71,7 +71,7 @@ package Gtk.Button_Box is
       (Widget : access Gtk_Button_Box_Record;
        Ipad_X : Gint;
        Ipad_Y : Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Child_Ipadding);
    --  Deprecated
 
    function Get_Child_Secondary
@@ -98,12 +98,12 @@ package Gtk.Button_Box is
       (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : out Gint;
        Min_Height : out Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Child_Size);
    procedure Set_Child_Size
       (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : Gint;
        Min_Height : Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Child_Size);
    --  Deprecated
 
    function Get_Layout

@@ -158,7 +158,7 @@ package Gtk.Box is
    procedure Pack_End_Defaults
       (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent;
+   pragma Obsolescent (Pack_End_Defaults);
    --  Adds Widget to Box, packed with reference to the end of Box. The child
    --  is packed after any other child packed with reference to the start of
    --  Box. Parameters for how to pack the child Widget,
@@ -192,7 +192,7 @@ package Gtk.Box is
    procedure Pack_Start_Defaults
       (Box    : access Gtk_Box_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent;
+   pragma Obsolescent (Pack_Start_Defaults);
    --  Adds Widget to Box, packed with reference to the start of Box. The
    --  child is packed after any other child packed with reference to the start
    --  of Box. Parameters for how to pack the child Widget,

@@ -81,7 +81,7 @@ package Gtk.Drawing_Area is
       (Drawing_Area : access Gtk_Drawing_Area_Record;
        Width        : Gint;
        Height       : Gint);
-   pragma Obsolescent;
+   pragma Obsolescent (Size);
    --  Request a new size for the area. This queues a resize request for the
    --  area.
    --  Deprecated

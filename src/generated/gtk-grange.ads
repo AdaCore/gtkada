@@ -203,11 +203,11 @@ package Gtk.GRange is
 
    function Get_Update_Policy
       (The_Range : access Gtk_Range_Record) return Gtk.Enums.Gtk_Update_Type;
-   pragma Obsolescent;
+   pragma Obsolescent (Get_Update_Policy);
    procedure Set_Update_Policy
       (The_Range : access Gtk_Range_Record;
        Policy    : Gtk.Enums.Gtk_Update_Type);
-   pragma Obsolescent;
+   pragma Obsolescent (Set_Update_Policy);
    --  Sets the update policy for the range. GTK_UPDATE_CONTINUOUS means that
    --  anytime the range slider is moved, the range value will change and the
    --  value_changed signal will be emitted. GTK_UPDATE_DELAYED means that the
