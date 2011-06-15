@@ -1693,4 +1693,25 @@ The radio buttons always belongs to a group, even if there is only one in this g
      <method id="gtk_radio_action_get_group" return="WidgetSList"/>
   </package>
 
+  <package id="Gtk.Separator">
+     <doc group="Ornaments" screenshot="gtk-separator">
+A separator is a vertical or horizontal line that can be displayed between
+widgets, to provide visual grouping of the widgets into meaningful groups.
+It is for instance used in dialogs to isolate the actual contents of the
+dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
+      <parameter name="self" ada="Separator"/>
+  </package>
+  <package id="Gtk.Vseparator" into="Separator">
+      <type name="Gtk_Vseparator" subtype="true"/>
+      <method id="gtk_vseparator_new" ada="Gtk_New_Vseparator"/>
+      <parameter name="self" ada="Separator"/>
+      <method id="gtk_vseparator_get_type" ada="Vseparator_Get_Type" />
+  </package>
+  <package id="Gtk.Hseparator" into="Separator">
+      <type name="Gtk_Hseparator" subtype="true"/>
+      <method id="gtk_hseparator_new" ada="Gtk_New_Hseparator"/>
+      <parameter name="self" ada="Separator"/>
+      <method id="gtk_hseparator_get_type" ada="Hseparator_Get_Type" />
+  </package>
+
 </GIR>

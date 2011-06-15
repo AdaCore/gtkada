@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,58 +27,60 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  A separator is a vertical or horizontal line that can be displayed between
---  widgets, to provide visual grouping of the widgets into meaningful groups.
---  It is for instance used in dialogs to isolate the actual contents of the
---  dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)
---  </description>
---  <c_version>2.8.17</c_version>
---  <group>Ornaments</group>
---  <screenshot>gtk-separator</screenshot>
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-with Gtk.Widget;
+package body Gtk.Separator is
 
-package Gtk.Separator is
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Separator_Record);
+   pragma Unreferenced (Type_Conversion);
 
-   type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-   subtype Gtk_Hseparator_Record is Gtk_Separator_Record;
-   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
+   ------------------------
+   -- Gtk_New_Hseparator --
+   ------------------------
 
-   type Gtk_Separator is access all Gtk_Separator_Record'Class;
-   subtype Gtk_Hseparator is Gtk_Separator;
-   subtype Gtk_Vseparator is Gtk_Separator;
+   procedure Gtk_New_Hseparator (Separator : out Gtk_Hseparator) is
+   begin
+      Separator := new Gtk_Hseparator_Record;
+      Gtk.Separator.Initialize_Hseparator (Separator);
+   end Gtk_New_Hseparator;
 
-   procedure Gtk_New_Hseparator (Separator : out Gtk_Separator);
+   ------------------------
+   -- Gtk_New_Vseparator --
+   ------------------------
+
+   procedure Gtk_New_Vseparator (Separator : out Gtk_Vseparator) is
+   begin
+      Separator := new Gtk_Vseparator_Record;
+      Gtk.Separator.Initialize_Vseparator (Separator);
+   end Gtk_New_Vseparator;
+
+   ---------------------------
+   -- Initialize_Hseparator --
+   ---------------------------
+
    procedure Initialize_Hseparator
-     (Separator : access Gtk_Separator_Record'Class);
-   --  Creates or initializes a horizontal separator
+      (Separator : access Gtk_Hseparator_Record'Class)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hseparator_new");
+   begin
+      Set_Object (Separator, Internal);
+   end Initialize_Hseparator;
 
-   procedure Gtk_New_Vseparator (Separator : out Gtk_Separator);
+   ---------------------------
+   -- Initialize_Vseparator --
+   ---------------------------
+
    procedure Initialize_Vseparator
-     (Separator : access Gtk_Separator_Record'Class);
-   --  Creates or initializes a vertical separator
+      (Separator : access Gtk_Vseparator_Record'Class)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_vseparator_new");
+   begin
+      Set_Object (Separator, Internal);
+   end Initialize_Vseparator;
 
-   function Get_Type return Gtk.Gtk_Type;
-   function Hseparator_Get_Type return Gtk.Gtk_Type;
-   function Vseparator_Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Separator.
-
-   ----------------
-   -- Properties --
-   ----------------
-
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  </properties>
-
-private
-   type Gtk_Separator_Record is new
-     Gtk.Widget.Gtk_Widget_Record with null record;
-
-   pragma Import (C, Get_Type, "gtk_separator_get_type");
-   pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
-   pragma Import (C, Vseparator_Get_Type, "gtk_vseparator_get_type");
 end Gtk.Separator;
