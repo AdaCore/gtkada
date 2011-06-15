@@ -302,4 +302,31 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale), Gtk.Enums.Gtk_Position_Type'Pos (Pos));
    end Set_Value_Pos;
 
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+   end Get_Orientation;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : access Gtk_Scale_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal (Self : System.Address; Orientation : Integer);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+   end Set_Orientation;
+
 end Gtk.Scale;

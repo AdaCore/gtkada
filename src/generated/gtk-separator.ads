@@ -41,6 +41,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
 with Glib.Types;     use Glib.Types;
 with Gtk.Buildable;  use Gtk.Buildable;
+with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Orientable; use Gtk.Orientable;
 with Gtk.Widget;     use Gtk.Widget;
 
@@ -76,6 +77,16 @@ package Gtk.Separator is
 
    function Hseparator_Get_Type return Glib.GType;
    pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Separator_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Separator_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
    -- Interfaces --

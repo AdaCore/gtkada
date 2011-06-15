@@ -60,4 +60,88 @@ package body Gtk.Separator_Menu_Item is
       Set_Object (Widget, Internal);
    end Initialize;
 
+   ---------------------------
+   -- Do_Set_Related_Action --
+   ---------------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Do_Set_Related_Action;
+
+   ------------------------
+   -- Get_Related_Action --
+   ------------------------
+
+   function Get_Related_Action
+      (Self : access Gtk_Separator_Menu_Item_Record)
+       return Gtk.Action.Gtk_Action
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_activatable_get_related_action");
+      Stub : Gtk.Action.Gtk_Action_Record;
+   begin
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub));
+   end Get_Related_Action;
+
+   -------------------------------
+   -- Get_Use_Action_Appearance --
+   -------------------------------
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Separator_Menu_Item_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
+   begin
+      return Boolean'Val (Internal (Get_Object (Self)));
+   end Get_Use_Action_Appearance;
+
+   ------------------------
+   -- Set_Related_Action --
+   ------------------------
+
+   procedure Set_Related_Action
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_set_related_action");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Set_Related_Action;
+
+   -------------------------------
+   -- Set_Use_Action_Appearance --
+   -------------------------------
+
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Separator_Menu_Item_Record;
+       Use_Appearance : Boolean)
+   is
+      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));
+   end Set_Use_Action_Appearance;
+
+   ----------------------------
+   -- Sync_Action_Properties --
+   ----------------------------
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Sync_Action_Properties;
+
 end Gtk.Separator_Menu_Item;

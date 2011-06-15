@@ -113,6 +113,16 @@ package Gtk.Ruler is
    --  "max_size": the maximum size of the ruler used when calculating the
    --  space to leave for the text
 
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Ruler_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Ruler_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Interfaces --
    ----------------

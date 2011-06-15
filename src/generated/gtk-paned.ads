@@ -67,6 +67,7 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
+with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Widget;      use Gtk.Widget;
 
@@ -168,6 +169,16 @@ package Gtk.Paned is
        Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False);
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Paned_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
    -- Interfaces --

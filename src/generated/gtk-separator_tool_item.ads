@@ -38,6 +38,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Gtk.Action;      use Gtk.Action;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Tool_Item;   use Gtk.Tool_Item;
@@ -73,6 +74,31 @@ package Gtk.Separator_Tool_Item is
    --  item that forces following items to the end of the toolbar.
    --  Since: gtk+ 2.4
    --  "draw": whether Item is drawn as a vertical line
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Separator_Tool_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Related_Action
+      (Self : access Gtk_Separator_Tool_Item_Record)
+       return Gtk.Action.Gtk_Action;
+   procedure Set_Related_Action
+      (Self   : access Gtk_Separator_Tool_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean;
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Separator_Tool_Item_Record;
+       Use_Appearance : Boolean);
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Separator_Tool_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
    -- Interfaces --

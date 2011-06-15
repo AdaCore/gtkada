@@ -767,14 +767,19 @@ See Glib.Properties for more information on properties)""")
             # Duplicate the subprograms from the interfaces. This doesn't
             # quite work: for instance, Gtk.About_Dialog already has a
             # Get_Name, so we can't redefine the one inherited from Buildable.
-            if False:
+            if True:
                 section = self.pkg.section("Interfaces_Impl")
                 for impl in sorted(self.implements.iterkeys()):
-                    impl = self.implements[impl]["interface"]
-                    all = impl.node.findall(nmethod)
+                    impl = self.implements[impl]
+                    if impl["name"] == "Buildable":
+                        # Do not repeat for buildable, that's rarely used
+                        continue
+
+                    interf = impl["interface"]
+                    all = interf.node.findall(nmethod)
                     for c in all:
                         cname = c.get(cidentifier)
-                        gtkmethod = impl.gtkpkg.get_method(cname)
+                        gtkmethod = interf.gtkpkg.get_method(cname)
                         self._handle_function(
                             section, c, showdoc=False, gtkmethod=gtkmethod,
                             ismethod=True)

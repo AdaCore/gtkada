@@ -59,6 +59,7 @@ with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Orientable;       use Gtk.Orientable;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -164,6 +165,16 @@ package Gtk.Status_Bar is
    function Get_Messages
       (Statusbar : access Gtk_Status_Bar_Record)
        return Gtk.Status_Bar.Messages_List.GSlist;
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Status_Bar_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Status_Bar_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
    -- Interfaces --

@@ -210,4 +210,31 @@ package body Gtk.Combo is
       Internal (Get_Object (Combo_Box), Get_Object_Or_Null (GObject (Value)));
    end Set_Entry;
 
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Combo_Record) return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+   end Get_Orientation;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : access Gtk_Combo_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal (Self : System.Address; Orientation : Integer);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+   end Set_Orientation;
+
 end Gtk.Combo;

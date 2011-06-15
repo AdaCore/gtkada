@@ -46,6 +46,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
 with Glib.Types;       use Glib.Types;
+with Gtk.Action;       use Gtk.Action;
 with Gtk.Activatable;  use Gtk.Activatable;
 with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Check_Button; use Gtk.Check_Button;
@@ -134,6 +135,30 @@ package Gtk.Radio_Button is
    --  user interface to reflect these changes.
    --  "group": an existing radio button group, such as one returned from
    --  Gtk.Radio_Button.Get_Group.
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Radio_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Related_Action
+      (Self : access Gtk_Radio_Button_Record) return Gtk.Action.Gtk_Action;
+   procedure Set_Related_Action
+      (Self   : access Gtk_Radio_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Radio_Button_Record) return Boolean;
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Radio_Button_Record;
+       Use_Appearance : Boolean);
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Radio_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
    -- Interfaces --

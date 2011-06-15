@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2000-2011, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +31,7 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
+with Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Separator; use Gtk.Separator;
@@ -98,6 +100,11 @@ package body Create_Box is
       Gtk_New_Hbox (Box, Homogeneous => Homogeneous);
       Pack_Start (Vbox, Box, Expand => False, Fill => False);
 
+      --  Use a function from one of the implemented interfaces.
+      --  This call is not needed, and is just here to check the binding
+      --  itself.
+      Set_Orientation (Box, Gtk.Enums.Orientation_Horizontal);
+
       Gtk_New (Button, "Small");
       Pack_Start (Box, Button, Expand => Expand, Fill => Fill);
 
@@ -161,7 +168,6 @@ package body Create_Box is
 
       Gtk_New (Button, "Pack_End, Third Button");
       Pack_End (Box, Button, Expand => False, Fill => False);
-
 
       Show_All (Frame);
    end Run;

@@ -151,6 +151,16 @@ package Gtk.Combo is
    function Get_List
       (Combo_Box : access Gtk_Combo_Record) return Gtk.Widget.Gtk_Widget;
 
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Combo_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Combo_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Interfaces --
    ----------------

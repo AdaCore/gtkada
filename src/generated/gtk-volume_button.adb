@@ -58,4 +58,115 @@ package body Gtk.Volume_Button is
       Set_Object (Widget, Internal);
    end Initialize;
 
+   ---------------------------
+   -- Do_Set_Related_Action --
+   ---------------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Volume_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Do_Set_Related_Action;
+
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Volume_Button_Record)
+       return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+   end Get_Orientation;
+
+   ------------------------
+   -- Get_Related_Action --
+   ------------------------
+
+   function Get_Related_Action
+      (Self : access Gtk_Volume_Button_Record) return Gtk.Action.Gtk_Action
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_activatable_get_related_action");
+      Stub : Gtk.Action.Gtk_Action_Record;
+   begin
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub));
+   end Get_Related_Action;
+
+   -------------------------------
+   -- Get_Use_Action_Appearance --
+   -------------------------------
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Volume_Button_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
+   begin
+      return Boolean'Val (Internal (Get_Object (Self)));
+   end Get_Use_Action_Appearance;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : access Gtk_Volume_Button_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal (Self : System.Address; Orientation : Integer);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+   end Set_Orientation;
+
+   ------------------------
+   -- Set_Related_Action --
+   ------------------------
+
+   procedure Set_Related_Action
+      (Self   : access Gtk_Volume_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_set_related_action");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Set_Related_Action;
+
+   -------------------------------
+   -- Set_Use_Action_Appearance --
+   -------------------------------
+
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Volume_Button_Record;
+       Use_Appearance : Boolean)
+   is
+      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));
+   end Set_Use_Action_Appearance;
+
+   ----------------------------
+   -- Sync_Action_Properties --
+   ----------------------------
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Volume_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Action : System.Address);
+      pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+   end Sync_Action_Properties;
+
 end Gtk.Volume_Button;

@@ -81,6 +81,17 @@ package Gtk.Hbutton_Box is
    --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.
    --  Deprecated
 
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Hbutton_Box_Record)
+       return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Hbutton_Box_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Interfaces --
    ----------------

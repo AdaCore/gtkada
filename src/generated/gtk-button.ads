@@ -46,6 +46,7 @@ with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Gtk.Action;      use Gtk.Action;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
@@ -196,6 +197,30 @@ package Gtk.Button is
    procedure Pressed (Button : access Gtk_Button_Record);
 
    procedure Released (Button : access Gtk_Button_Record);
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Related_Action
+      (Self : access Gtk_Button_Record) return Gtk.Action.Gtk_Action;
+   procedure Set_Related_Action
+      (Self   : access Gtk_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Button_Record) return Boolean;
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Button_Record;
+       Use_Appearance : Boolean);
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Button_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
    -- Interfaces --

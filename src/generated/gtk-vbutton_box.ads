@@ -81,6 +81,17 @@ package Gtk.Vbutton_Box is
    --  Deprecated since 2.0, Use Gtk.Box.Set_Spacing instead.
    --  "spacing": an integer value.
 
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Vbutton_Box_Record)
+       return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Vbutton_Box_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Interfaces --
    ----------------

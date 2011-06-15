@@ -116,6 +116,16 @@ package Gtk.Button_Box is
       (Widget       : access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
 
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Button_Box_Record) return Gtk.Enums.Gtk_Orientation;
+   procedure Set_Orientation
+      (Self        : access Gtk_Button_Box_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Interfaces --
    ----------------

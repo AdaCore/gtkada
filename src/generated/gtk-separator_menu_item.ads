@@ -38,6 +38,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Types;      use Glib.Types;
+with Gtk.Action;      use Gtk.Action;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
@@ -57,6 +58,31 @@ package Gtk.Separator_Menu_Item is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_menu_item_get_type");
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   procedure Do_Set_Related_Action
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Related_Action
+      (Self : access Gtk_Separator_Menu_Item_Record)
+       return Gtk.Action.Gtk_Action;
+   procedure Set_Related_Action
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   function Get_Use_Action_Appearance
+      (Self : access Gtk_Separator_Menu_Item_Record) return Boolean;
+   procedure Set_Use_Action_Appearance
+      (Self           : access Gtk_Separator_Menu_Item_Record;
+       Use_Appearance : Boolean);
+
+   procedure Sync_Action_Properties
+      (Self   : access Gtk_Separator_Menu_Item_Record;
+       Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
    -- Interfaces --

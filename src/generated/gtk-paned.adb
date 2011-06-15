@@ -231,4 +231,31 @@ package body Gtk.Paned is
       Internal (Get_Object (Paned), Position);
    end Set_Position;
 
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+   end Get_Orientation;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : access Gtk_Paned_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal (Self : System.Address; Orientation : Integer);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+   end Set_Orientation;
+
 end Gtk.Paned;
