@@ -301,6 +301,29 @@ def fill_text(text, prefix, length, firstLineLength=0):
         result.append(line)
     return ("\n" + prefix).join(result)
 
+def cleanup_doc(doc):
+    """Replaces C features in the doc with appropriate Ada equivalents"""
+
+    doc = doc.replace("%NULL", "null")
+    doc = doc.replace("%TRUE", "True")
+    doc = doc.replace("%False", "True")
+
+    doc = doc.replace("<para>", "")
+    doc = doc.replace("</para>", "")
+    doc = doc.replace("<note>", "\nNote: ")
+    doc = doc.replace("</note>", "")
+
+    subp = re.compile("([\S_]+)\(\)")
+    doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
+
+    types = re.compile("#([\w_]+)")
+    doc = types.sub(lambda x: naming.full_type(x.group(1))[0], doc)
+
+    params = re.compile("@([\w_]+)")
+    doc = params.sub(lambda x: x.group(1).title(), doc)
+
+    return doc
+
 
 def box(name, indent="   "):
     return indent + "-" * (len(name) + 6) + "\n" \
@@ -909,37 +932,15 @@ class Subprogram(object):
         else:
             return prefix + p + suffix
 
-    def _cleanup_doc(self, doc):
-        """Replaces C features in the doc with appropriate Ada equivalents"""
-
-        doc = doc.replace("%NULL", "null")
-        doc = doc.replace("%TRUE", "True")
-        doc = doc.replace("%False", "True")
-
-        doc = doc.replace("<para>", "")
-        doc = doc.replace("</para>", "")
-        doc = doc.replace("<note>", "\nNote: ")
-        doc = doc.replace("</note>", "")
-
-        subp = re.compile("([\S_]+)\(\)")
-        doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
-
-        types = re.compile("#([\w_]+)")
-        doc = types.sub(lambda x: naming.full_type(x.group(1))[0], doc)
-
-        params = re.compile("@([\w_]+)")
-        doc = params.sub(lambda x: x.group(1).title(), doc)
-
-        return doc
 
     def spec(self, indent="   ", show_doc=True, maxlen=max_profile_length):
         """Return the spec of the subprogram"""
 
         if self.showdoc and show_doc:
-            doc = [self._cleanup_doc(d) for d in self.doc]
+            doc = [cleanup_doc(d) for d in self.doc]
             if self._deprecated[0]:
-                doc += [self._cleanup_doc(self._deprecated[1])]
-            doc += [self._cleanup_doc(p.doc) for p in self.plist]
+                doc += [cleanup_doc(self._deprecated[1])]
+            doc += [cleanup_doc(p.doc) for p in self.plist]
         else:
             doc = []
 
@@ -1134,10 +1135,12 @@ class Section(object):
         if comment == "":
             self.comment += "   --\n"
         elif fill:
-            self.comment += "   -- " + fill_text(comment, "   --  ", 79) + "\n"
+            self.comment += "   -- " + fill_text(
+                cleanup_doc (comment), "   --  ", 79) + "\n"
         else:
             self.comment += "\n".join(
-                "   -- %s" % p for p in comment.splitlines()) + "\n"
+                "   -- %s" % cleanup_doc(p)
+                for p in comment.splitlines()) + "\n"
 
     def add(self, *args):
         """Add one or more objects to the section (subprogram, code,...)"""
