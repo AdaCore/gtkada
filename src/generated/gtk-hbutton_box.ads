@@ -43,6 +43,7 @@ with Gtk.Buildable;  use Gtk.Buildable;
 with Gtk.Button_Box; use Gtk.Button_Box;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Orientable; use Gtk.Orientable;
+with Gtk.Widget;     use Gtk.Widget;
 
 package Gtk.Hbutton_Box is
 

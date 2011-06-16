@@ -1786,4 +1786,78 @@ The Gtk_Buildable interface is implemented by all widgets and many of the non-wi
      <method id="gtk_buildable_custom_tag_start" bind="False"/>
   </package>
 
+  <package id="Gtk.File_Chooser">
+     <doc group="Selectors">
+This package provides an interface implemented by Gtk.File_Chooser_Widget and Gtk.File_Chooser_Button, and by your own file selection widgets if you wish to expose a standard interface.
+
+Gtk_File_Chooser allows for shortcuts to various places in the filesystem.  In the default implementation these are displayed in the left pane. It may be a bit confusing at first that these shortcuts come from various sources and in various flavours, so lets explain the terminology here:
+
+%PRE%  - Bookmarks
+    are created by the user, by dragging folders from the right pane to the
+    left pane, or by using the "Add". Bookmarks can be renamed and deleted
+    by the user.
+  - Shortcuts
+    can be provided by the application or by the underlying filesystem
+    abstraction (e.g. both the gnome-vfs and the Windows filesystems
+    provide "Desktop" shortcuts). Shortcuts cannot be modified by the user.
+  - Volumes
+    are provided by the underlying filesystem abstraction. They are the
+    "roots" of the filesystem.
+
+File Names and Encodings
+
+When the user is finished selecting files in a Gtk_File_Chooser, your program can get the selected names either as filenames or as URIs. For URIs, the normal escaping rules are applied if the URI contains non-ASCII characters. However, filenames are always returned in the character set specified by the G_FILENAME_ENCODING environment variable. Please see the Glib documentation for more details about this variable.
+
+Important: This means that while you can pass the result of Get_Filename to low-level file system primitives , you will need to convert it to UTF-8 before using it in a Gtk_Label for instance. Conversion is done through Glib.Convert.Filename_To_UTF8.
+
+You can add a custom preview widget to a file chooser and then get notification about when the preview needs to be updated. To install a preview widget, use gtk_file_chooser_set_preview_widget(). Then, connect to the GtkFileChooser::update-preview signal to get notified when you need to update the contents of the preview.
+
+Preview widgets
+
+You can add a custom preview widget to a file chooser and then get notification about when the preview needs to be updated. To install a preview widget, use Set_Preview_Widget. Then, connect to the GtkFileChooser::update-preview signal to get notified when you need to
+update the contents of the preview.
+
+Your callback should use Get_Preview_Filename to see what needs previewing.  Once you have generated the preview for the corresponding file, you must call Set_Preview_Widget_Active with a boolean flag that indicates whether your callback could successfully generate a preview.
+
+Adding Extra Widgets
+
+You can add extra widgets to a file chooser to provide options that are not present in the default design. For example, you can add a toggle button to give the user the option to open a file in read-only mode. You can use Set_Extra_Widget to insert additional widgets in a file chooser.
+
+If you want to set more than one extra widget in the file chooser, you can a container such as a GtkVBox or a GtkTable and include your widgets in it.  Then, set the container as the whole extra widget.
+
+Key bindings
+
+The following default key bindings are provided, but you can use a gtkrc file to override them if you need (see gtk-rc.ads).
+
+%PRE%
+   Signal name    | Key binding
+   location-popup | Control-L  (empty path)
+                  | /          (path of "/")
+                  | ~          (home directory)
+   up-folder      | Alt-Up  or backspace
+   down-folder    | Alt-Down
+   home-folder    | Alt-Home
+   desktop-folder | Alt-D
+   quick-bookmark | Alt-1 through Alt-0
+     </doc>
+  </package>
+
+  <package id="Gtk.Cell_Layout">
+     <doc group="Trees and Lists" testgtk="create_cell_view.adb">
+Gtk_Cell_Layout is an interface to be implemented by all objects which want to provide a Gtk_Tree_View_Column like API for packing cells, setting attributes and data funcs.
+
+The rendering of the widget is done through various Gtk_Cell_Renderer, and by reading data from a Gtk_Tree_Model.
+     </doc>
+     <parameter name="self" ada="Cell_Layout"/>
+     <method id="gtk_cell_layout_set_attributes" bind="False"/>
+     <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
+     <method id="gtk_cell_layout_set_cell_data_func">
+        <parameter name="func" type="Cell_Data_Func"/>
+        <!--<callback func="func" #data="data" destroy="destroy"
+                  gircallback="CellLayoutDataFunc"
+                  ada="Cell_Data_Func"/>
+                  -->
+     </method>
+  </package>
+
 </GIR>

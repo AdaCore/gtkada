@@ -43,6 +43,7 @@ with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Orientable;   use Gtk.Orientable;
 with Gtk.Scale_Button; use Gtk.Scale_Button;
+with Gtk.Widget;       use Gtk.Widget;
 
 package Gtk.Volume_Button is
 

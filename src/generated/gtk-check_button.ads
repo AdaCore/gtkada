@@ -43,6 +43,7 @@ with Gtk.Action;        use Gtk.Action;
 with Gtk.Activatable;   use Gtk.Activatable;
 with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
+with Gtk.Widget;        use Gtk.Widget;
 
 package Gtk.Check_Button is
 

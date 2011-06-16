@@ -51,6 +51,7 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Alignment is
 

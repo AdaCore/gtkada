@@ -42,6 +42,7 @@ with Gtk.Action;      use Gtk.Action;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Separator_Menu_Item is
 

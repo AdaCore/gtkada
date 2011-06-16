@@ -56,6 +56,11 @@ class GIR(object):
         self.ccode = ""
         self.classes = dict()  # Maps GIR's "name" to a GIRClass instance
         self.interfaces = dict() # Maps GIR's "name" to an interface
+        self.callbacks = dict()
+
+        k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
+        for cl in self.root.findall(k):
+            self.callbacks[cl.get("name")] = cl
 
         k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
         for cl in self.root.findall(k):
@@ -118,53 +123,141 @@ class GlobalsBinder(object):
         return self.globals[id]
 
 
-class GIRClass(object):
-    """Represents a gtk class"""
+def _get_type(node, allow_access=True, empty_maps_to_null=False,
+              pkg=None):
+    """Return the type of the GIR XML node.
+       `allow_access' should be False if "access Type" parameters should
+       not be allowed, and an explicit type is needed instead.
+       `empty_maps_to_null': see doc for CType.
+       `pkg' is used to add with statements, if specified
+    """
+    t = node.find(ntype)
+    if t is not None:
+        if t.get("name") == "none":
+            return None
+        return CType(name=t.get("name"),
+                     cname=t.get(ctype), allow_access=allow_access,
+                     empty_maps_to_null=empty_maps_to_null,
+                     pkg=pkg)
 
-    def __init__(self, gir, node, is_interface):
-        self.gir = gir
-        self.node = node
-        self.ctype = self.node.get(ctype)
-        self._subst = dict()  # for substitution in string templates
-        self._private = ""
-        self._generated = False
-        self.implements = dict() # Implemented interfaces
-        self.is_interface = is_interface
+    a = node.find(narray)
+    if a is not None:
+        t = a.find(ntype)
+        if a:
+            type = t.get(ctype)
+            name = t.get("name") or type  # Sometimes name is not set
+            if type:
+                type = "array_of_%s" % type
 
-    def _parameters(self, c, gtkmethod, addwith=True):
-        """Format the parameters for the node C by looking at the <parameters>
-           child.
-           Returns None if the parameter list could not be parsed.
+            return CType(name="array_of_%s" % name,
+                         cname=type,
+                         pkg=pkg, isArray=True,
+                         empty_maps_to_null=empty_maps_to_null,
+                         allow_access=allow_access)
+
+    a = node.find(nvarargs)
+    if a is not None:
+        # A function with multiple arguments cannot be bound
+        # No need for an error message, we will already let the user know
+        # that the function is not bound.
+        return None
+
+    print "Error: XML Node has unknown type\n", node
+    return None
+
+
+
+class SubprogramProfile(object):
+    """A class that groups info on the parameters of a function and
+       its return type.
+    """
+
+    def __init__(self):
+        self.params = None  # list of parameters (None if we have varargs)
+        self.returns = None # return value (None for a procedure)
+
+    @staticmethod
+    def parse(node, gtkmethod, pkg=None):
+        """Parse the parameter info and return type info from the XML
+           GIR node, overriding with binding.xml.
            gtkmethod is the GtkAdaMethod that contains the overriding for the
            various method attributes.
-           If addwith is True, the necessary with statements are automatically
-           added.
+           If pkg is specified, with statements are added as necessary.
         """
+        profile = SubprogramProfile()
+        profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
+        profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
+        return profile
+
+    @staticmethod
+    def setter(node, pkg=None):
+        """Create a new SubprogramProfile for a getter"""
+        profile = SubprogramProfile()
+        profile.params = [Parameter("Value", _get_type(node, pkg))]
+        return profile
+
+    def has_varargs(self):
+        return self.params is None
+
+    def direct_c_map(self):
+        """Wether all parameters and return value can be mapped directly from
+           C to Ada.
+        """
+        for p in self.params:
+            if not p.direct_cmap():
+                return False
+        return self.returns is None or self.returns.direct_cmap()
+
+    def c_params(self, localvars, code):
+        """Returns the list of parameters for an Ada function that would be
+           a direct pragma Import. local variables or additional code will
+           be added as needed to handle conversions.
+        """
+        assert(isinstance(localvars, list))
+        assert(isinstance(code, list))
+
+        result = []
+        for p in self.params:
+            n = p.name
+            m = p.mode
+            t = p.type
+
+            if self.returns is not None and m != "in":
+                m = "access_c"
+                n = "Acc_%s" % p.name
+                localvars.append(Local_Var(
+                    name="Acc_%s" % p.name,
+                    aliased=True,
+                    type=t))
+                code.append("%s := Acc_%s;" % (p.name, p.name))
+
+            result.append(Parameter(name=n, mode=m, type=t))
+
+        return result;
+
+    def _parameters(self, c, gtkmethod, pkg):
+        """Parse the <parameters> child node of c"""
         if c is None:
             return []
 
         params = c.find(nparams)
         if params is None:
             return []
+
         result = []
 
         for p in params.findall(nparam):
             name = p.get("name")
             gtkparam = gtkmethod.get_param(name=name)
             name = gtkparam.ada_name() or name  # override
-
             default = gtkparam.get_default()
 
-            pkg = self.pkg
-            if not addwith:
-                pkg = None
-
             type = gtkparam.get_type(pkg=pkg) \
-                or self._get_type(
+                or _get_type(
                     p,
                     empty_maps_to_null=gtkparam.empty_maps_to_null(),
                     allow_access=not default,
-                    addwith=addwith)
+                    pkg=pkg)
 
             if type is None:
                 return None
@@ -189,43 +282,39 @@ class GIRClass(object):
 
         return result
 
-    def _c_plist(self, plist, returns, localvars, code):
-        """Converts a list of parameters from Ada to C types.
-           This also removes the documentation for the parameters
-        """
-        result = []
-        for p in plist:
-            n = p.name
-            m = p.mode
-            t = p.type
+    def _returns(self, node, gtkmethod, pkg):
+        """Parse the method's return type"""
 
-            if returns is not None and m != "in":
-                m = "access_c"
-                n = "Acc_%s" % p.name
-                localvars.append(Local_Var(
-                    name="Acc_%s" % p.name,
-                    aliased=True,
-                    type=t))
-                code.append("%s := Acc_%s;" % (p.name, p.name))
+        returns = gtkmethod.returned_c_type()
+        if returns is None:
+            ret = node.find(nreturn)
+            if ret is None:
+                # For a <field>, the method's return value will be the type
+                # of the field itself
+                ret = node
+            return _get_type(ret, allow_access=False, pkg=pkg)
+        else:
+            return CType(name=None, cname=returns, pkg=pkg)
 
-            result.append(Parameter(name=n, mode=m, type=t))
 
-        return result;
+class GIRClass(object):
+    """Represents a gtk class"""
+
+    def __init__(self, gir, node, is_interface):
+        self.gir = gir
+        self.node = node
+        self.ctype = self.node.get(ctype)
+        self._subst = dict()  # for substitution in string templates
+        self._private = ""
+        self._generated = False
+        self.implements = dict() # Implemented interfaces
+        self.is_interface = is_interface
 
     def _getdoc(self, gtkmethod, node):
         doc = gtkmethod.get_doc(default=node.findtext(ndoc, ""))
         if node.get("version"):
             doc.append("Since: gtk+ %s" % node.get("version"))
         return doc
-
-    def _get_method_returns(self, gtkmethod, node):
-        """The method's return type. `node' is the XML node that describes the
-           return type in the GIR file"""
-        returns = gtkmethod.returned_c_type()
-        if returns is None:
-            return self._get_type(node, allow_access=False)
-        else:
-            return CType(name=None, cname=returns, pkg=self.pkg)
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
@@ -235,80 +324,93 @@ class GIRClass(object):
             gtkmethod = self.gtkpkg.get_method(cname=cname)
 
         if gtkmethod.bind():
+            profile = SubprogramProfile.parse(
+                node=c, gtkmethod=gtkmethod, pkg=self.pkg)
             self._handle_function_internal(
                 section, node=c, cname=cname,
                 gtkmethod=gtkmethod,
-                returns=self._get_method_returns(gtkmethod, c.find(nreturn)),
+                profile=profile,
                 showdoc=showdoc,
                 ismethod=ismethod)
 
+    def _func_is_direct_import(self, profile):
+        """Whether a function with this profile
+           should be implemented directly as a pragma Import, rather than
+           require its own body.
+        """
+        return not self.is_gobject and profile.direct_c_map()
+
+    def _add_self_param(self, adaname, gtkmethod, profile, is_import):
+        """Add a Self parameter to the list of parameters in profile.
+           The exact type of the parameter depends on several criteria.
+           'is_import' should be true if the function will be implemented as
+           a pragma Import, with no body.
+        """
+
+        getobject = "Get_Object (%(var)s)"
+
+        if not self.is_gobject:
+            # An interface
+            pname = gtkmethod.get_param("self").ada_name() or "Self"
+            ptype = "%(typename)s" % self._subst
+            ctype = ptype
+            getobject = "%(var)s"
+
+        elif adaname.startswith("Gtk_New"):
+            # Implement as a constructor, even if the GIR file reported this
+            # as a function or method
+            pname = gtkmethod.get_param("param1").ada_name() or "Param1"
+            ptype = "%(typename)s" % self._subst
+            ctype = "System.Address"
+
+        else:
+            pname = gtkmethod.get_param("self").ada_name() or "Self"
+            ptype = "access %(typename)s_Record" % self._subst
+            ctype = "System.Address"
+
+        if is_import:
+            ctype = ptype
+
+        profile.params.insert(0, Parameter(
+            name=pname,
+            type=AdaType(
+                adatype=ptype, pkg=self.pkg, in_spec=True, ctype=ctype,
+                convert=getobject)))
+
     def _handle_function_internal(self, section, node, cname,
                                   gtkmethod,
-                                  returns=None,
+                                  profile=None,
                                   showdoc=True,
                                   adaname=None,
-                                  ismethod=False, params=None):
+                                  ismethod=False):
         """Generate a binding for a function.
            This returns None if no binding was made, an instance of Subprogram
            otherwise.
            `adaname' is the name of the generated Ada subprograms. By default,
            it is computed automatically from either binding.xml or the "name"
            attribute of `node'.
-           `params' is the list of parameters. If set to None, it is computed
-           automatically from `node'.
+           `profile' is an instance of SubprogramProfile
         """
+        assert(profile is None or isinstance(profile, SubprogramProfile))
 
-        adaname = adaname or gtkmethod.ada_name() \
-                or node.get("name").title()
+        if profile.has_varargs():
+            naming.add_cmethod(cname, cname)  # Avoid warning later on.
+            print "No binding for %s: varargs" % cname
+            return None
 
-        if params is None:
-            params = self._parameters(node, gtkmethod)
-            if params is None:
-                naming.add_cmethod(cname, cname)  # Avoid warning later on.
-                print "No binding for %s: varargs" % cname
-                return None
-
-        is_import = False
+        is_import = self._func_is_direct_import(profile)
+        adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
+        doc = self._getdoc(gtkmethod, node)
+        naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
         if ismethod:
-            if not self.is_gobject:
-                pname = gtkmethod.get_param("self").ada_name() or "Self"
-                ptype = "%(typename)s" % self._subst
-                ctype = ptype
-            elif adaname.startswith("Gtk_New"):
-                pname = gtkmethod.get_param("param1").ada_name() or "Param1"
-                ptype = "%(typename)s" % self._subst
-                ctype = "System.Address"
-            else:
-                pname = gtkmethod.get_param("self").ada_name() or "Self"
-                ptype = "access %(typename)s_Record" % self._subst
-                ctype = "System.Address"
-
-            if self.is_gobject:
-                getobject = "Get_Object (%(var)s)"
-            else:
-                getobject = "%(var)s"
-                is_import = returns is None or returns.direct_cmap()
-                for p in params:
-                    if not p.direct_cmap():
-                        is_import = False
-                        break
-
-            if is_import:
-                ctype = ptype
-
-            params.insert(0, Parameter(
-                name=pname,
-                type=AdaType(
-                    adatype=ptype,
-                    pkg=self.pkg,
-                    in_spec=True,
-                    ctype=ctype,
-                    convert=getobject)))
+            self._add_self_param(
+                adaname, gtkmethod, profile, is_import=is_import)
 
         if adaname.startswith("Gtk_New"):
+            # Overrides the GIR file even if it reported a function or method
             self._handle_constructor(
-                node, gtkmethod=gtkmethod, cname=cname, params=params)
+                node, gtkmethod=gtkmethod, cname=cname, profile=profile)
             return
 
         local_vars = []
@@ -316,11 +418,10 @@ class GIRClass(object):
 
         body = gtkmethod.get_body()
         if not body and not is_import:
-            plist = self._c_plist(params, returns, local_vars, call)
             internal=Subprogram(
                 name="Internal",
-                returns=returns,
-                plist=plist).import_c(cname)
+                returns=profile.returns,
+                plist=profile.c_params(local_vars, call)).import_c(cname)
             internal.set_param_lang("c")
 
             ret = gtkmethod.return_as_param()
@@ -328,8 +429,9 @@ class GIRClass(object):
 
             if ret is not None:
                 # Ada return value goes into an "out" parameter
-                params += [Parameter(name=ret, type=returns, mode="out")]
-                returns = None
+                profile.params.append(
+                    Parameter(name=ret, type=profile.returns, mode="out"))
+                profile.returns = None
 
                 assert(execute[1] is not None)  # We must have a C function
                 call = "%s%s := %s;" % (execute[0], ret, execute[1])
@@ -342,13 +444,10 @@ class GIRClass(object):
 
             local_vars += execute[2]
 
-        doc = self._getdoc(gtkmethod, node)
-        naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
-
         subp = Subprogram(
                 name=adaname,
-                plist=params,
-                returns=returns,
+                plist=profile.params,
+                returns=profile.returns,
                 showdoc=showdoc,
                 doc=doc,
                 local_vars=local_vars,
@@ -380,20 +479,23 @@ class GIRClass(object):
             if not gtkmethod.bind():
                 continue
 
-            params = self._parameters(c, gtkmethod)
-            if params is None:
+            profile = SubprogramProfile.parse(
+                node=c, gtkmethod=gtkmethod, pkg=self.pkg)
+            if profile.has_varargs():
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
                 print "No binding for %s: varargs" % cname
                 continue
 
             self._handle_constructor(
-                c, gtkmethod=gtkmethod, cname=cname, params=params)
+                c, gtkmethod=gtkmethod, cname=cname, profile=profile)
 
-    def _handle_constructor(self, c, cname, gtkmethod, params=None):
+    def _handle_constructor(self, c, cname, gtkmethod, profile=None):
+        assert(profile is None or isinstance(profile, SubprogramProfile))
+
         section = self.pkg.section("Constructors")
         name = c.get("name").title()
 
-        format_params = ", ".join(p.name for p in params)
+        format_params = ", ".join(p.name for p in profile.params)
         if format_params:
             self._subst["internal_params"] = " (%s)" % format_params
             format_params = ", " + format_params
@@ -402,23 +504,21 @@ class GIRClass(object):
             self._subst["params"] = ""
             self._subst["internal_params"] = ""
 
-        returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
+        profile.returns = AdaType(
+            "System.Address", pkg=self.pkg, in_spec=False)
         local_vars = []
         code = []
-        plist = self._c_plist(params, returns, local_vars, code)
         internal = Subprogram(
             name="Internal",
-            plist=plist,
-            returns=returns).import_c(cname)
+            plist=profile.c_params(local_vars, code),
+            returns=profile.returns).import_c(cname)
         internal.set_param_lang("c")
 
         call = internal.call()
         assert(call[1] is not None)   # A function
 
         adaname = gtkmethod.ada_name() or "Gtk_%s" % name
-
         doc = self._getdoc(gtkmethod, c)
-
         selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
         if self.is_gobject:
@@ -429,7 +529,7 @@ class GIRClass(object):
         initialize_params = [Parameter(
             name=selfname,
             type=AdaType(selftype, pkg=self.pkg, in_spec=True),
-            mode="access")] + params
+            mode="access")] + profile.params
         initialize = Subprogram(
             name=adaname.replace("Gtk_New", "Initialize"),
             plist=initialize_params,
@@ -448,7 +548,7 @@ class GIRClass(object):
                 name=selfname,
                 type=AdaType("%(typename)s" % self._subst,
                              pkg=self.pkg, in_spec=True),
-                mode="out")] + params,
+                mode="out")] + profile.params,
             local_vars=call[2],
             code=selfname + " := new %(typename)s_Record;" % self._subst
                + call[0],
@@ -509,52 +609,6 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
             return t.get(ctype)
         return None
 
-    def _get_type(self, node, allow_access=True, empty_maps_to_null=False,
-                  addwith=True):
-        """Return the type of the node
-           `allow_access' should be False if "access Type" parameters should
-           not be allowed, and an explicit type is needed instead.
-           `empty_maps_to_null': see doc for CType.
-           `addwith' indicates whether to create with statements.
-        """
-        pkg = self.pkg
-        if not addwith:
-            pkg = None
-
-        t = node.find(ntype)
-        if t is not None:
-            if t.get("name") == "none":
-                return None
-            return CType(name=t.get("name"),
-                         cname=t.get(ctype), allow_access=allow_access,
-                         empty_maps_to_null=empty_maps_to_null,
-                         pkg=pkg)
-
-        a = node.find(narray)
-        if a is not None:
-            t = a.find(ntype)
-            if a:
-                type = t.get(ctype)
-                name = t.get("name") or type  # Sometimes name is not set
-                if type:
-                    type = "array_of_%s" % type
-
-                return CType(name="array_of_%s" % name,
-                             cname=type,
-                             pkg=pkg, isArray=True,
-                             empty_maps_to_null=empty_maps_to_null,
-                             allow_access=allow_access)
-
-        a = node.find(nvarargs)
-        if a is not None:
-            # A function with multiple arguments cannot be bound
-            # No need for an error message, we will already let the user know
-            # that the function is not bound.
-            return None
-
-        print "Error: XML Node has unknown type\n", self.gir.debug(node)
-        return None
-
     def _fields(self):
         fields = self.node.findall(nfield)
         if fields:
@@ -572,17 +626,16 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                         "cname":self._subst["cname"], "name":name}
                     gtkmethod = self.gtkpkg.get_method(cname=cname)
                     if gtkmethod.bind(default="false"):
-                        returns = self._get_method_returns(gtkmethod, f)
-
+                        profile = SubprogramProfile.parse(
+                            node=f, gtkmethod=gtkmethod, pkg=self.pkg)
                         func = self._handle_function_internal(
                             section,
                             node=f,
                             cname=cname,
                             adaname="Get_%s" % name,
                             ismethod=True,
-                            params=[],
-                            gtkmethod=gtkmethod,
-                            returns=returns)
+                            profile=profile,
+                            gtkmethod=gtkmethod)
 
                         if func is not None:
                             ctype = self._get_c_type(f)
@@ -602,6 +655,8 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                         "cname":self._subst["cname"], "name":name}
                     gtkmethod = self.gtkpkg.get_method(cname=cname)
                     if gtkmethod.bind("false"):
+                        profile = SubprogramProfile.setter(
+                            node=f, pkg=self.pkg)
                         func = self._handle_function_internal(
                             section,
                             node=f,
@@ -609,7 +664,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
                             adaname="Set_%s" % name,
                             ismethod=True,
                             gtkmethod=gtkmethod,
-                            params=[Parameter("Value", self._get_type(f))])
+                            profile=profile)
 
                         if func is not None:
                             ctype = self._get_c_type(f)
@@ -641,7 +696,7 @@ See Glib.Properties for more information on properties)""")
                 if p.get("writable", "1") != "0":
                     flags.append("write")
 
-                tp = self._get_type(p)
+                tp = _get_type(p, pkg=self.pkg)
                 ptype = tp.as_property()
                 if ptype:
                     pkg = ptype[:ptype.rfind(".")]
@@ -686,9 +741,8 @@ See Glib.Properties for more information on properties)""")
             for s in signals:
                 gtkmethod = self.gtkpkg.get_method(
                     cname="%s::%s" % (self.name, s.get("name")))
-                params = self._parameters(
-                    s, gtkmethod=gtkmethod, addwith=False)
-                returns = self._get_method_returns(gtkmethod, s.find(nreturn))
+                profile = SubprogramProfile.parse(
+                    node=s, gtkmethod=gtkmethod, pkg=None)
 
                 if self.is_gobject:
                     selftype = "%(typename)s_Record'Class" % self._subst
@@ -700,9 +754,9 @@ See Glib.Properties for more information on properties)""")
                     plist=[
                       Parameter(
                           name="Self", type=selftype, mode="access", doc="")]
-                      + params,
+                      + profile.params,
                     code="null",
-                    returns=returns)
+                    returns=profile.returns)
 
                 spec = sub.spec(maxlen=69)
 
@@ -983,10 +1037,12 @@ gtkada = GtkAda(sys.argv[2])
 interfaces = ("Activatable",
               "Buildable",
               "CellEditable",
-              "Orientable")
-
-for name in interfaces:
-    gir.interfaces[name].generate(gir)
+              #"CellLayout",
+              #"FileChooser",
+              #"RecentChooser",
+              "Orientable",
+              #"TreeSortable"
+             )
 
 # Contains "GIR names"
 binding = ("AboutDialog", "Arrow", "AspectFrame",
@@ -1023,6 +1079,9 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Table",
            "Combo",  # Needs HBox, so must come after it
           )
+
+for name in interfaces:
+    gir.interfaces[name].generate(gir)
 
 for name in binding:
     gir.classes[name].generate(gir)

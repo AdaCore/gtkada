@@ -49,6 +49,7 @@ with Glib.Types;       use Glib.Types;
 with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Widget;       use Gtk.Widget;
 
 package Gtk.Curve is
 

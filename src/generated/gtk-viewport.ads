@@ -44,6 +44,7 @@ with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Viewport is
 

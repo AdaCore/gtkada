@@ -122,6 +122,7 @@ class AdaNaming(object):
             # Specific to this binding generator (referenced from binding.xml)
             "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
             "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
+            "ObjectList":  List("Glib.Object.Object_Simple_List.GList"),
             "ObjectSList": List("Glib.Object.Object_List.GSList"),
             "StringList":  List("Gtk.Enums.String_List.Glist"),
             "MessagesList": List("Gtk.Status_Bar.Messages_List.GSlist"),
@@ -147,16 +148,26 @@ class AdaNaming(object):
             "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
             "GtkOrientation":     Enum("Gtk.Enums.Gtk_Orientation"),
 
+            # interfaces
+            "GtkCellEditable": GObject("Gtk.Cell_Editable.Gtk_Cell_Editable"),
+            "GtkCellLayout":   GObject("Gtk.Cell_Layout.Gtk_Cell_Layout"),
+            "GtkFileChooser":  GObject("Gtk.File_Chooser.Gtk_File_Chooser"),
+            "GtkRecentChooser":
+                GObject("Gtk.Recent_Chooser.Gtk_Recent_Chooser"),
+            "GtkTreeSortable": GObject("Gtk.Tree_Sortable.Gtk_Tree_Sortable"),
+
             "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
             "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
             "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
             "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
-            "GtkCellEditable": GObject("Gtk.Cell_Editable.Gtk_Cell_Editable"),
+            "GtkCellRenderer":
+                GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
             "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
             "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
             "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
+            "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
             "GtkMenuItem":     GObject("Gtk.Menu_Item.Gtk_Menu_Item"),
             "GtkRadioAction":  GObject("Gtk.Radio_Action.Gtk_Radio_Action"),
@@ -539,10 +550,11 @@ class CType(object):
                 "GNAT.Strings.String_List", "chars_ptr_array_access",
                 "To_String_List (%(var)s.all)", [])
             self.property = ""   # Can't map those
-            pkg.add_with("GNAT.Strings")
-            pkg.add_with("Gtkada.Types", specs=False)
-            pkg.add_with("Interfaces.C.Strings", specs=False)
-            pkg.add_with("Gtkada.Bindings", specs=False)
+            if pkg:
+                pkg.add_with("GNAT.Strings")
+                pkg.add_with("Gtkada.Types", specs=False)
+                pkg.add_with("Interfaces.C.Strings", specs=False)
+                pkg.add_with("Gtkada.Bindings", specs=False)
 
         elif name == "utf8":
             self.param = "UTF8_String"
@@ -1291,14 +1303,17 @@ class Package(object):
 
         if self.doc:
             for d in self.doc:
-                if d:
+                if d.startswith("%PRE%"):
+                    d = d[5:]
+                    lines = ["\n-- " + l for l in d.split("\n")]
+                    out.write("".join(lines))
+                elif d:
                     out.write("-- " + fill_text(d, "--  ", 79))
                 else:
                     out.write("--")
                 out.write("\n")
-            out.write("\n")
 
-        out.write('pragma Warnings (Off, "*is already use-visible*");\n')
+        out.write('\npragma Warnings (Off, "*is already use-visible*");\n')
 
         out.write(self._output_withs(self.spec_withs))
         out.write("package %s is" % self.name)

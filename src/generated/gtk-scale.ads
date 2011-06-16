@@ -45,6 +45,7 @@ with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.GRange;      use Gtk.GRange;
 with Gtk.Orientable;  use Gtk.Orientable;
+with Gtk.Widget;      use Gtk.Widget;
 with Pango.Layout;    use Pango.Layout;
 
 package Gtk.Scale is
