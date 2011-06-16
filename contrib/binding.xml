@@ -1647,7 +1647,7 @@ A Gtk_Radio_Button is a simple button that has two states, like a Gtk_Toggle_But
 
 The radio buttons always belongs to a group, even if there is only one in this group.</doc>
      <parameter name="self" ada="Radio_Button"/>
-     <parameter name="param1" ada="Group"/>
+     <parameter name="radio_group_member" ada="Group"/>
      <method id="gtk_radio_button_new" bind="False"/>
      <method id="gtk_radio_button_new_from_widget" bind="False"/>
      <method id="gtk_radio_button_new_with_label" ada="Gtk_New" >
