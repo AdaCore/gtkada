@@ -96,6 +96,9 @@ package Gtk.Button_Box is
    --  appear immediately next to the main children.
    --  Is_Secondary: if True, the Child appears in a secondary group of the
    --  button box.
+   --  "child": a child of Widget
+   --  "is_secondary": if True, the Child appears in a secondary group of the
+   --  button box.
 
    procedure Get_Child_Size
       (Widget     : access Gtk_Button_Box_Record;

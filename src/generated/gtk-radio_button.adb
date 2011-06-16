@@ -58,7 +58,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "")
    is
    begin
@@ -86,7 +86,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String)
    is
    begin
@@ -126,7 +126,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -141,7 +141,7 @@ package body Gtk.Radio_Button is
       else
          Tmp_Label := New_String (Label);
       end if;
-      Tmp_Return := Internal (Get_Object (Group), Tmp_Label);
+      Tmp_Return := Internal (Get_Object_Or_Null (GObject (Group)), Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Radio_Button, Tmp_Return);
    end Initialize;
@@ -173,7 +173,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String)
    is
       function Internal
@@ -183,7 +183,7 @@ package body Gtk.Radio_Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Group), Tmp_Label);
+      Tmp_Return := Internal (Get_Object_Or_Null (GObject (Group)), Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Radio_Button, Tmp_Return);
    end Initialize_With_Mnemonic;

@@ -79,6 +79,19 @@ package Gtk.Radio_Button is
    --  new group.
    --  "label": the text label to display next to the radio button.
 
+   procedure Gtk_New
+      (Radio_Button : out Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
+       Label        : UTF8_String := "");
+   procedure Initialize
+      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
+       Label        : UTF8_String := "");
+   --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
+   --  adding it to the same group as Radio_Group_Member.
+   --  "Group": widget to get radio group from or null
+   --  "label": a text string to display next to the radio button.
+
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
        Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
@@ -89,11 +102,11 @@ package Gtk.Radio_Button is
        Label        : UTF8_String);
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk.Radio_Button.Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String);
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button containing a label. The
    --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
@@ -101,23 +114,12 @@ package Gtk.Radio_Button is
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
+   --  "Group": widget to get radio group from or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_radio_button_get_type");
-
-   procedure Gtk_New
-      (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
-       Label        : UTF8_String := "");
-   procedure Initialize
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
-       Label        : UTF8_String := "");
-   --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
-   --  adding it to the same group as Radio_Group_Member.
-   --  "label": a text string to display next to the radio button.
 
    -------------
    -- Methods --
