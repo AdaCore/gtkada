@@ -306,7 +306,7 @@ def cleanup_doc(doc):
 
     doc = doc.replace("%NULL", "null")
     doc = doc.replace("%TRUE", "True")
-    doc = doc.replace("%False", "True")
+    doc = doc.replace("%FALSE", "False")
 
     doc = doc.replace("<para>", "")
     doc = doc.replace("</para>", "")
