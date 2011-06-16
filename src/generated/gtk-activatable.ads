@@ -131,7 +131,7 @@ package Gtk.Activatable is
    --  setting the related action or when the action changes appearance. See
    --  the Gtk.Action.Gtk_Action documentation directly to find which
    --  properties should be ignored by the Gtk.Activatable.Gtk_Activatable when
-   --  this property is %FALSE.
+   --  this property is False.
    --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle this
    --  property and call Gtk.Activatable.Sync_Action_Properties on the
    --  activatable widget when it changes.

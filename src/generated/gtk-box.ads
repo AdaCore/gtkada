@@ -126,7 +126,7 @@ package Gtk.Box is
        Homogeneous : Boolean);
    --  Sets the Gtk.Box.Gtk_Box:homogeneous property of Box, controlling
    --  whether or not all children of Box are given equal space in the box.
-   --  "homogeneous": a boolean value, True to create equal allotments, %FALSE
+   --  "homogeneous": a boolean value, True to create equal allotments, False
    --  for variable allotments
 
    function Get_Spacing (Box : access Gtk_Box_Record) return Gint;
@@ -150,7 +150,7 @@ package Gtk.Box is
    --  that use this option
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to %FALSE. A child is always allocated the full
+   --  effect if Expand is set to False. A child is always allocated the full
    --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
    --  This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
@@ -184,7 +184,7 @@ package Gtk.Box is
    --  "expand": True if the new child is to be given extra space allocated to
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to %FALSE. A child is always allocated the full
+   --  effect if Expand is set to False. A child is always allocated the full
    --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
    --  This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its

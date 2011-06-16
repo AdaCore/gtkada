@@ -227,7 +227,7 @@ package Gtk.Label is
    function Get_Line_Wrap (Label : access Gtk_Label_Record) return Boolean;
    procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean);
    --  Toggles line wrapping within the Gtk.Label.Gtk_Label widget. True makes
-   --  it break lines if text exceeds the widget's size. %FALSE lets the text
+   --  it break lines if text exceeds the widget's size. False lets the text
    --  get cut off by the edge of the widget if it exceeds the widget size.
    --  Note that setting line wrapping to True does not make the label wrap at
    --  its parent container's width, because GTK+ widgets conceptually can't

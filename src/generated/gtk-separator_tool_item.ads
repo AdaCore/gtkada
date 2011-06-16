@@ -70,8 +70,8 @@ package Gtk.Separator_Tool_Item is
       (Item : access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
    --  Whether Item is drawn as a vertical line, or just blank. Setting this
-   --  to %FALSE along with Gtk.Tool_Item.Set_Expand is useful to create an
-   --  item that forces following items to the end of the toolbar.
+   --  to False along with Gtk.Tool_Item.Set_Expand is useful to create an item
+   --  that forces following items to the end of the toolbar.
    --  Since: gtk+ 2.4
    --  "draw": whether Item is drawn as a vertical line
 

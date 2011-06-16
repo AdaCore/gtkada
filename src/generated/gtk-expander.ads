@@ -88,7 +88,7 @@ package Gtk.Expander is
       (Expander : access Gtk_Expander_Record;
        Expanded : Boolean);
    --  Sets the state of the expander. Set to True, if you want the child
-   --  widget to be revealed, and %FALSE if you want the child widget to be
+   --  widget to be revealed, and False if you want the child widget to be
    --  hidden.
    --  Since: gtk+ 2.4
    --  "expanded": whether the child widget is revealed

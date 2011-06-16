@@ -388,7 +388,7 @@ package Gtk.GRange is
    --  on a range. It allows an application to determine the type of scroll
    --  event that occurred and the resultant new value. The application can
    --  handle the event itself and return True to prevent further processing.
-   --  Or, by returning %FALSE, it can pass the event to other handlers until
+   --  Or, by returning False, it can pass the event to other handlers until
    --  the default GTK+ handler is reached. The value parameter is unrounded.
    --  An application that overrides the ::change-value signal is responsible
    --  for clamping the value to the desired number of decimal digits; the

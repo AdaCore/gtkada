@@ -175,7 +175,7 @@ package Gtk.Accel_Group is
    function Get_Is_Locked
       (Accel_Group : access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
-   --  Gtk.Accel_Group.Unlock. %FALSE otherwise.
+   --  Gtk.Accel_Group.Unlock. False otherwise.
    --  Since: gtk+ 2.14
 
    function Get_Modifier_Mask

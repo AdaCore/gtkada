@@ -124,7 +124,7 @@ package Gtk.Toggle_Button is
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
    --  Gtk.Toggle_Button.Gtk_Toggle_Button itself.
    --  "draw_indicator": if True, draw the button as a separate indicator and
-   --  label; if %FALSE, draw the button like a normal button
+   --  label; if False, draw the button like a normal button
 
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
 

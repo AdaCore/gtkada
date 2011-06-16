@@ -177,7 +177,7 @@ package Gtk.Scale is
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
    --  the caller. or null if the Gtk.Scale.Gtk_Scale:draw-value property is
-   --  %FALSE.
+   --  False.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets
@@ -188,7 +188,7 @@ package Gtk.Scale is
    --  Pango.Layout.Pango_Layout representing the text in the scale. Remember
    --  when using the Pango.Layout.Pango_Layout function you need to convert to
    --  and from pixels using PANGO_PIXELS or PANGO_SCALE. If the
-   --  Gtk.Scale.Gtk_Scale:draw-value property is %FALSE, the return values are
+   --  Gtk.Scale.Gtk_Scale:draw-value property is False, the return values are
    --  undefined.
    --  Since: gtk+ 2.4
    --  "x": location to store X offset of layout, or null
