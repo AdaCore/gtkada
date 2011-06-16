@@ -408,7 +408,7 @@ package Gtk.Image is
    --  Type: Gint
    --  Flags: read-write
    --  The "pixel-size" property can be used to specify a fixed size
-   --  overriding the #GtkImage:icon-size property for images of type
+   --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
    --  %GTK_IMAGE_ICON_NAME.
    --
    --  Name: Pixmap_Property

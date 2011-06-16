@@ -247,13 +247,13 @@ package Gtk.Calendar is
    --  Type: Gint
    --  Flags: read-write
    --  Height of a detail cell, in rows. A value of 0 allows any width. See
-   --  gtk_calendar_set_detail_func().
+   --  Gtk.Calendar.Set_Detail_Func.
    --
    --  Name: Detail_Width_Chars_Property
    --  Type: Gint
    --  Flags: read-write
    --  Width of a detail cell, in characters. A value of 0 allows any width.
-   --  See gtk_calendar_set_detail_func().
+   --  See Gtk.Calendar.Set_Detail_Func.
    --
    --  Name: Month_Property
    --  Type: Gint

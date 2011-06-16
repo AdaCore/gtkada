@@ -93,20 +93,21 @@ package Gtk.Cell_Editable is
    --  "editing-done"
    --     procedure Handler (Self : access Gtk_Cell_Editable);
    --  This signal is a sign for the cell renderer to update its value from
-   --  the @cell_editable. Implementations of #GtkCellEditable are responsible
-   --  for emitting this signal when they are done editing, e.g. #GtkEntry is
-   --  emitting it when the user presses Enter.
-   --  gtk_cell_editable_editing_done() is a convenience method for emitting
-   --  GtkCellEditable::editing-done.
+   --  the Cell_Editable. Implementations of
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable are responsible for emitting this
+   --  signal when they are done editing, e.g. Gtk.GEntry.Gtk_Entry is emitting
+   --  it when the user presses Enter. Gtk.Cell_Editable.Editing_Done is a
+   --  convenience method for emitting GtkCellEditable::editing-done.
    --
    --  "remove-widget"
    --     procedure Handler (Self : access Gtk_Cell_Editable);
    --  This signal is meant to indicate that the cell is finished editing, and
-   --  the widget may now be destroyed. Implementations of #GtkCellEditable are
-   --  responsible for emitting this signal when they are done editing. It must
-   --  be emitted after the #GtkCellEditable::editing-done signal, to give the
+   --  the widget may now be destroyed. Implementations of
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable are responsible for emitting this
+   --  signal when they are done editing. It must be emitted after the
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal, to give the
    --  cell renderer a chance to update the cell's value before the widget is
-   --  removed. gtk_cell_editable_remove_widget() is a convenience method for
+   --  removed. Gtk.Cell_Editable.Remove_Widget is a convenience method for
    --  emitting GtkCellEditable::remove-widget.
 
    Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";

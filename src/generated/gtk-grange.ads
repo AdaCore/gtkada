@@ -319,7 +319,7 @@ package Gtk.GRange is
    --  Type: Gdouble
    --  Flags: read-write
    --  The fill level (e.g. prebuffering of a network stream). See
-   --  gtk_range_set_fill_level().
+   --  Gtk.GRange.Set_Fill_Level.
    --
    --  Name: Inverted_Property
    --  Type: Boolean
@@ -334,20 +334,20 @@ package Gtk.GRange is
    --  Flags: read-write
    --  The restrict-to-fill-level property controls whether slider movement is
    --  restricted to an upper boundary set by the fill level. See
-   --  gtk_range_set_restrict_to_fill_level().
+   --  Gtk.GRange.Set_Restrict_To_Fill_Level.
    --
    --  Name: Round_Digits_Property
    --  Type: Gint
    --  Flags: read-write
    --  The number of digits to round the value to when it changes, or -1. See
-   --  #GtkRange::change-value.
+   --  Gtk.GRange.Gtk_Range::change-value.
    --
    --  Name: Show_Fill_Level_Property
    --  Type: Boolean
    --  Flags: read-write
    --  The show-fill-level property controls whether fill level indicator
    --  graphics are displayed on the trough. See
-   --  gtk_range_set_show_fill_level().
+   --  Gtk.GRange.Set_Show_Fill_Level.
    --
    --  Name: Update_Policy_Property
    --  Type: Gtk.Enums.Gtk_Update_Type
@@ -387,14 +387,14 @@ package Gtk.GRange is
    --  The ::change-value signal is emitted when a scroll action is performed
    --  on a range. It allows an application to determine the type of scroll
    --  event that occurred and the resultant new value. The application can
-   --  handle the event itself and return %TRUE to prevent further processing.
+   --  handle the event itself and return True to prevent further processing.
    --  Or, by returning %FALSE, it can pass the event to other handlers until
    --  the default GTK+ handler is reached. The value parameter is unrounded.
    --  An application that overrides the ::change-value signal is responsible
    --  for clamping the value to the desired number of decimal digits; the
-   --  default GTK+ handler clamps the value based on #GtkRange:round_digits.
-   --  It is not possible to use delayed update policies in an overridden
-   --  ::change-value handler.
+   --  default GTK+ handler clamps the value based on
+   --  Gtk.GRange.Gtk_Range:round_digits. It is not possible to use delayed
+   --  update policies in an overridden ::change-value handler.
    --
    --  "move-slider"
    --     procedure Handler

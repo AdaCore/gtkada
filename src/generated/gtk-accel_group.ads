@@ -306,8 +306,9 @@ package Gtk.Accel_Group is
    --    --  "acceleratable": the object on which the accelerator was activated
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
-   --  The accel-activate signal is an implementation detail of #GtkAccelGroup
-   --  and not meant to be used by applications.
+   --  The accel-activate signal is an implementation detail of
+   --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
+   --  applications.
    --
    --  "accel-changed"
    --     procedure Handler
@@ -318,10 +319,11 @@ package Gtk.Accel_Group is
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
    --    --  "accel_closure": the GClosure of the accelerator
-   --  The accel-changed signal is emitted when a #GtkAccelGroupEntry is added
-   --  to or removed from the accel group. Widgets like #GtkAccelLabel which
-   --  display an associated accelerator should connect to this signal, and
-   --  rebuild their visual representation if the @accel_closure is theirs.
+   --  The accel-changed signal is emitted when a GtkAccelGroupEntry is added
+   --  to or removed from the accel group. Widgets like
+   --  Gtk.Accellabel.Gtk_Accellabel which display an associated accelerator
+   --  should connect to this signal, and rebuild their visual representation
+   --  if the Accel_Closure is theirs.
 
    Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";

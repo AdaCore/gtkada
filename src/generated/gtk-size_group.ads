@@ -166,7 +166,7 @@ package Gtk.Size_Group is
    --  Name: Ignore_Hidden_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  If %TRUE, unmapped widgets are ignored when determining the size of the
+   --  If True, unmapped widgets are ignored when determining the size of the
    --  group.
    --
    --  Name: Mode_Property

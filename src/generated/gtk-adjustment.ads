@@ -216,7 +216,7 @@ package Gtk.Adjustment is
    --  Flags: read-write
    --  The page size of the adjustment. Note that the page-size is irrelevant
    --  and should be set to zero if the adjustment is used for a simple scalar
-   --  value, e.g. in a #GtkSpinButton.
+   --  value, e.g. in a Gtk.Spinbutton.Gtk_Spinbutton.
    --
    --  Name: Step_Increment_Property
    --  Type: Gdouble

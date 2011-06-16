@@ -337,26 +337,26 @@ package Gtk.About_Dialog is
    --  The license of the program. This string is displayed in a text view in
    --  a secondary dialog, therefore it is fine to use a long multi-paragraph
    --  text. Note that the text is only wrapped in the text view if the
-   --  "wrap-license" property is set to %TRUE; otherwise the text itself must
+   --  "wrap-license" property is set to True; otherwise the text itself must
    --  contain the intended linebreaks.
    --
    --  Name: Logo_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
-   --  gtk_window_get_default_icon_list().
+   --  gtk_window_get_default_icon_list.
    --
    --  Name: Logo_Icon_Name_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  A named icon to use as the logo for the about box. This property
-   --  overrides the #GtkAboutDialog:logo property.
+   --  overrides the Gtk.About_Dialog.Gtk_About_Dialog:logo property.
    --
    --  Name: Program_Name_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The name of the program. If this is not set, it defaults to
-   --  g_get_application_name().
+   --  g_get_application_name.
    --
    --  Name: Translator_Credits_Property
    --  Type: UTF8_String
@@ -380,8 +380,8 @@ package Gtk.About_Dialog is
    --  Type: UTF8_String
    --  Flags: read-write
    --  The label for the link to the website of the program. If this is not
-   --  set, it defaults to the URL specified in the #GtkAboutDialog:website
-   --  property.
+   --  set, it defaults to the URL specified in the
+   --  Gtk.About_Dialog.Gtk_About_Dialog:website property.
    --
    --  Name: Wrap_License_Property
    --  Type: Boolean

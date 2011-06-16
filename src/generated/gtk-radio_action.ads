@@ -155,7 +155,7 @@ package Gtk.Radio_Action is
    --  The value is an arbitrary integer which can be used as a convenient way
    --  to determine which action in the group is currently active in an
    --  ::activate or ::changed signal handler. See
-   --  gtk_radio_action_get_current_value() and #GtkRadioActionEntry for
+   --  Gtk.Radio_Action.Get_Current_Value and GtkRadioActionEntry for
    --  convenient ways to get and set this property.
 
    Current_Value_Property : constant Glib.Properties.Property_Int;

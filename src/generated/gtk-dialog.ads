@@ -330,7 +330,7 @@ package Gtk.Dialog is
    --  Name: Has_Separator_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  When %TRUE, the dialog has a separator bar above its buttons.
+   --  When True, the dialog has a separator bar above its buttons.
 
    Has_Separator_Property : constant Glib.Properties.Property_Boolean;
 
@@ -351,8 +351,8 @@ package Gtk.Dialog is
    --        Response_Id : Gtk_Response_Type);
    --    --  "response_id": the response ID
    --  Emitted when an action widget is clicked, the dialog receives a delete
-   --  event, or the application programmer calls gtk_dialog_response(). On a
-   --  delete event, the response ID is #GTK_RESPONSE_DELETE_EVENT. Otherwise,
+   --  event, or the application programmer calls Gtk.Dialog.Response. On a
+   --  delete event, the response ID is GTK_RESPONSE_DELETE_EVENT. Otherwise,
    --  it depends on which action widget was clicked.
 
    Signal_Close : constant Glib.Signal_Name := "close";

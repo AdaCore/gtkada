@@ -291,16 +291,16 @@ package Gtk.Button is
    --  Name: Xalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   --  If the child of the button is a #GtkMisc or #GtkAlignment, this
-   --  property can be used to control it's horizontal alignment. 0.0 is left
-   --  aligned, 1.0 is right aligned.
+   --  If the child of the button is a Gtk.Misc.Gtk_Misc or
+   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control it's
+   --  horizontal alignment. 0.0 is left aligned, 1.0 is right aligned.
    --
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
-   --  If the child of the button is a #GtkMisc or #GtkAlignment, this
-   --  property can be used to control it's vertical alignment. 0.0 is top
-   --  aligned, 1.0 is bottom aligned.
+   --  If the child of the button is a Gtk.Misc.Gtk_Misc or
+   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control it's
+   --  vertical alignment. 0.0 is top aligned, 1.0 is bottom aligned.
 
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
    Image_Property : constant Glib.Properties.Property_Object;
@@ -321,7 +321,8 @@ package Gtk.Button is
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
-   --  never connect to this signal, but use the #GtkButton::clicked signal.
+   --  never connect to this signal, but use the Gtk.Button.Gtk_Button::clicked
+   --  signal.
    --
    --  "clicked"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);

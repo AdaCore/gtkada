@@ -462,8 +462,8 @@ package Gtk.Label is
    --  The desired maximum width of the label, in characters. If this property
    --  is set to -1, the width will be calculated automatically, otherwise the
    --  label will request space for no more than the requested number of
-   --  characters. If the #GtkLabel:width-chars property is set to a positive
-   --  value, then the "max-width-chars" property is ignored.
+   --  characters. If the Gtk.Label.Gtk_Label:width-chars property is set to a
+   --  positive value, then the "max-width-chars" property is ignored.
    --
    --  Name: Mnemonic_Keyval_Property
    --  Type: Guint
@@ -497,9 +497,9 @@ package Gtk.Label is
    --  Name: Track_Visited_Links_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  Set this property to %TRUE to make the label track which links have
-   --  been clicked. It will then apply the ::visited-link-color color, instead
-   --  of ::link-color.
+   --  Set this property to True to make the label track which links have been
+   --  clicked. It will then apply the ::visited-link-color color, instead of
+   --  ::link-color.
    --
    --  Name: Use_Markup_Property
    --  Type: Boolean
@@ -516,7 +516,7 @@ package Gtk.Label is
    --  to -1, the width will be calculated automatically, otherwise the label
    --  will request either 3 characters or the property value, whichever is
    --  greater. If the "width-chars" property is set to a positive value, then
-   --  the #GtkLabel:max-width-chars property is ignored.
+   --  the Gtk.Label.Gtk_Label:max-width-chars property is ignored.
    --
    --  Name: Wrap_Property
    --  Type: Boolean
@@ -548,7 +548,7 @@ package Gtk.Label is
    --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates a link in the label. Applications
-   --  may also emit the signal with g_signal_emit_by_name() if they need to
+   --  may also emit the signal with g_signal_emit_by_name if they need to
    --  control activation of URIs programmatically. The default bindings for
    --  this signal are all forms of the Enter key.
    --
@@ -580,9 +580,9 @@ package Gtk.Label is
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
-   --  in @entry, this signal causes the viewport to be moved instead.
+   --  in Entry, this signal causes the viewport to be moved instead.
    --  Applications should not connect to it, but may emit it with
-   --  g_signal_emit_by_name() if they need to control the cursor
+   --  g_signal_emit_by_name if they need to control the cursor
    --  programmatically. The default bindings for this signal come in two
    --  variants, the variant with the Shift modifier extends the selection, the
    --  variant without the Shift modifer does not. There are too many key
@@ -599,7 +599,7 @@ package Gtk.Label is
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the label. Note that only selectable labels have context menus.
    --  If you need to add items to the context menu, connect to this signal and
-   --  append your menuitems to the @menu.
+   --  append your menuitems to the Menu.
 
    Signal_Activate_Current_Link : constant Glib.Signal_Name := "activate-current-link";
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";

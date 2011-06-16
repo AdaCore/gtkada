@@ -162,8 +162,9 @@ package Gtk.Viewport is
    --        Object : Gtk.Adjustment.Gtk_Adjustment;
    --        P0     : Gtk.Adjustment.Gtk_Adjustment);
    --  Set the scroll adjustments for the viewport. Usually scrolled
-   --  containers like #GtkScrolledWindow will emit this signal to connect two
-   --  instances of #GtkScrollbar to the scroll directions of the #GtkViewport.
+   --  containers like Gtk.Scrolledwindow.Gtk_Scrolledwindow will emit this
+   --  signal to connect two instances of Gtk.Scrollbar.Gtk_Scrollbar to the
+   --  scroll directions of the Gtk.Viewport.Gtk_Viewport.
 
    Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name := "set-scroll-adjustments";
 

@@ -119,20 +119,22 @@ package Gtk.Activatable is
    --  Type: Gtk.Action.Gtk_Action
    --  Flags: read-write
    --  The action that this activatable will activate and receive updates from
-   --  for various states and possibly appearance. <note><para>#GtkActivatable
-   --  implementors need to handle the this property and call
-   --  gtk_activatable_do_set_related_action() when it changes.</para></note>
+   --  for various states and possibly appearance.
+   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --  this property and call Gtk.Activatable.Do_Set_Related_Action when it
+   --  changes.
    --
    --  Name: Use_Action_Appearance_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Whether this activatable should reset its layout and appearance when
    --  setting the related action or when the action changes appearance. See
-   --  the #GtkAction documentation directly to find which properties should be
-   --  ignored by the #GtkActivatable when this property is %FALSE.
-   --  <note><para>#GtkActivatable implementors need to handle this property
-   --  and call gtk_activatable_sync_action_properties() on the activatable
-   --  widget when it changes.</para></note>
+   --  the Gtk.Action.Gtk_Action documentation directly to find which
+   --  properties should be ignored by the Gtk.Activatable.Gtk_Activatable when
+   --  this property is %FALSE.
+   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle this
+   --  property and call Gtk.Activatable.Sync_Action_Properties on the
+   --  activatable widget when it changes.
 
    Related_Action_Property : constant Glib.Properties.Property_Object;
    Use_Action_Appearance_Property : constant Glib.Properties.Property_Boolean;
