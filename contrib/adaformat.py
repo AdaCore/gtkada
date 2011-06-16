@@ -519,7 +519,9 @@ class CType(object):
            as 'access Type', rather than an explicit type, in the case of
            GObject descendants.
            If `empty_maps_to_null' is True, then an empty string maps to a
-           NULL pointer in C, rather than an empty C string.
+           NULL pointer in C, rather than an empty C string. For a GObject,
+           this means the parameter should not be passed with mode="access",
+           since the user is allowed to pass null.
         """
 
         self.is_ptr = cname \
@@ -602,7 +604,8 @@ class CType(object):
             elif full.is_gobject:
                 self._as_gobject(
                     full, pkg,
-                    userecord=cname
+                    userecord=not empty_maps_to_null
+                       and cname
                        and not cname.endswith("**") and allow_access)
 
             elif full.is_list:

@@ -123,8 +123,7 @@ class GlobalsBinder(object):
         return self.globals[id]
 
 
-def _get_type(node, allow_access=True, empty_maps_to_null=False,
-              pkg=None):
+def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
     """Return the type of the GIR XML node.
        `allow_access' should be False if "access Type" parameters should
        not be allowed, and an explicit type is needed instead.

@@ -1656,6 +1656,7 @@ The radio buttons always belongs to a group, even if there is only one in this g
         <parameter name="label" default='""' empty_maps_to_null="True"/>
      </method>
      <method id="gtk_radio_button_new_with_label_from_widget" ada="Gtk_New" >
+        <parameter name="radio_group_member" empty_maps_to_null="True"/>
         <parameter name="label" default='""' empty_maps_to_null="True"/>
      </method>
      <method id="gtk_radio_button_new_with_mnemonic">
@@ -1663,6 +1664,7 @@ The radio buttons always belongs to a group, even if there is only one in this g
      </method>
      <method id="gtk_radio_button_new_with_mnemonic_from_widget" ada="Gtk_New_With_Mnemonic">
         <doc extend="true">To initialize a new group (when creating the first button), you should pass it null or a button that has not been created with Gtk_New, as in the example below.</doc>
+        <parameter name="radio_group_member" empty_maps_to_null="True"/>
      </method>
      <method id="gtk_radio_button_get_group" return="WidgetSList"/>
      <method id="gtk_radio_button_set_group">
