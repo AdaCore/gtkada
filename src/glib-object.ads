@@ -127,6 +127,15 @@ package Glib.Object is
    --  This design is limited to support only one allocation strategy for each
    --  class, as the class tag is used to identify the applicable strategy.
 
+   procedure Ref_Sink (Object : access GObject_Record);
+   --  Increase the reference count of Object, and possibly remove the
+   --  floating reference, if Object has a floating reference.
+   --  In other words, if the object is floating, then this call "assumes
+   --  ownership" of the floating reference, converting it to a normal
+   --  reference by clearing the floating flag while leaving the reference
+   --  count unchanged.  If the object is not floating, then this call
+   --  adds a new normal reference increasing the reference count by one.
+
    ------------------------
    -- Interfacing with C --
    ------------------------

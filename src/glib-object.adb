@@ -422,6 +422,17 @@ package body Glib.Object is
       Internal (Get_Object (Object));
    end Ref;
 
+   --------------
+   -- Ref_Sink --
+   --------------
+
+   procedure Ref_Sink (Object : access GObject_Record) is
+      procedure Internal (Object : System.Address);
+      pragma Import (C, Internal, "g_object_ref_sink");
+   begin
+      Internal (Get_Object (Object));
+   end Ref_Sink;
+
    -----------
    -- Unref --
    -----------
