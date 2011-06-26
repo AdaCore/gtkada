@@ -1086,5 +1086,5 @@ for name in binding:
     gir.classes[name].generate(gir)
 
 out = file("src/generated/tmp.ada", "w")
-cout = file("src/genmisc.c", "w")
+cout = file("src/misc_generated.c", "w")
 gir.generate(out, cout)

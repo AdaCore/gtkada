@@ -17,7 +17,7 @@ SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 endif
 ARCHIVENAME   = libgtkada.a
 
-c_objects = misc.o misc_extra.o misc_broken.o genmisc.o
+c_objects = misc.o misc_extra.o misc_broken.o misc_generated.o
 c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
 c_extra_objects = ../gtkextra/obj/gtk*.o
 
