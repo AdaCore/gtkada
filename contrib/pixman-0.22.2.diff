@@ -10,24 +10,22 @@
  
 -hwcap_1 = V0x0 FPU OVERRIDE;
 +# hwcap_1 = V0x0 FPU OVERRIDE;
-*** Makefile.in.orig	2010-09-28 14:27:41.000000000 +0200
---- Makefile.in	2010-09-28 14:27:50.000000000 +0200
-***************
-*** 267,273 ****
+*** Makefile.in.orig	2011-07-04 22:24:39.000000000 +0200
+--- Makefile.in	2011-07-19 13:41:57.000000000 +0200
+*************** target_alias = @target_alias@
+*** 269,275 ****
   top_build_prefix = @top_build_prefix@
   top_builddir = @top_builddir@
   top_srcdir = @top_srcdir@
-! SUBDIRS = pixman test
+! SUBDIRS = pixman demos test
   pkgconfigdir = $(libdir)/pkgconfig
   pkgconfig_DATA = pixman-1.pc
   GPGKEY = 6FF7C1A8
---- 267,273 ----
+--- 269,275 ----
   top_build_prefix = @top_build_prefix@
   top_builddir = @top_builddir@
   top_srcdir = @top_srcdir@
-! SUBDIRS = pixman 
+! SUBDIRS = pixman
   pkgconfigdir = $(libdir)/pkgconfig
   pkgconfig_DATA = pixman-1.pc
   GPGKEY = 6FF7C1A8
-	* pixman/solaris-hwcap.mapfile: Fix build failure on Solaris 8 x86
-
