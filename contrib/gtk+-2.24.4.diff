@@ -1,8 +1,14 @@
-2011-05-17  Jerome Lambourg <lambourg@adacore.com>
+2011-07-19  Nicolas Setton  <setton@adacore.com>
 
-       * gtk/gtkrc.c (gtk_rc_style_finalize): Fix a potential issue when
-       freeing a rc style and the corresponding style is NULL, as found
-       sometimes with the win32 backend.
+	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
+	functions external, so it is possible to break on them in the
+	stripped version of the library.
+
+2011-05-17  Jerome Lambourg  <lambourg@adacore.com>
+
+	* gtk/gtkrc.c (gtk_rc_style_finalize): Fix a potential issue when
+	freeing a rc style and the corresponding style is NULL, as found
+	sometimes with the win32 backend.
 
 2010-09-28  Nicolas Setton  <setton@adacore.com>
 
@@ -314,3 +320,36 @@
   
         /* Remove the list of styles from the other rc_styles
          * in the list
+--- gdk/x11/gdkmain-x11.c.orig	2011-07-19 10:56:20.000000000 +0200
++++ gdk/x11/gdkmain-x11.c	2011-07-19 11:01:32.000000000 +0200
+@@ -79,9 +79,9 @@
+ #define XConvertCase gdkx_XConvertCase
+ #endif
+ 
+-static int	    gdk_x_error			 (Display     *display, 
+-						  XErrorEvent *error);
+-static int	    gdk_x_io_error		 (Display     *display);
++int	    gdk_x_error			 (Display     *display, 
++					  XErrorEvent *error);
++int	    gdk_x_io_error		 (Display     *display);
+ 
+ /* Private variable declarations
+  */
+@@ -452,7 +452,7 @@
+  *--------------------------------------------------------------
+  */
+ 
+-static int
++int
+ gdk_x_error (Display	 *display,
+ 	     XErrorEvent *error)
+ {
+@@ -515,7 +515,7 @@
+  *--------------------------------------------------------------
+  */
+ 
+-static int
++int
+ gdk_x_io_error (Display *display)
+ {
+   /* This is basically modelled after the code in XLib. We need
