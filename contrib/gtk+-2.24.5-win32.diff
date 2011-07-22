@@ -1,6 +1,11 @@
+2011-07-22	Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/win32/gdkdisplay-win32.c (inner_clipboard_window_procedure): Fix
+	build with --disable-debug
+
 2011-05-25	Nicolas Setton  <setton@adacore.com>
 
-	* gtkimcontextsimple.c(gtk_im_context_simple_filter_keypress): Do not
+	* gtkimcontextsimple.c (gtk_im_context_simple_filter_keypress): Do not
 	discard key events with state CTRL + ALT, as some keyboards do use this
 	key combination for legitimate character input.
 	* gdkevents-win32.c(build_key_event_state): Detect CTRL + ALT as an
@@ -1605,3 +1610,14 @@
      }
  }
  
+--- gdk/win32/gdkdisplay-win32.c.old	2011-07-22 12:06:42.618000000 +0200
++++ gdk/win32/gdkdisplay-win32.c	2011-07-22 12:07:29.311000000 +0200
+@@ -386,7 +386,7 @@ inner_clipboard_window_procedure (HWND  
+         if (_gdk_debug_flags & GDK_DEBUG_DND)
+           {
+             while ((nFormat = EnumClipboardFormats (nFormat)) != 0)
+-              g_print ("%s ", _gdk_win32_cf_to_string (nFormat));
++              GDK_NOTE (DND, g_print ("%s ", _gdk_win32_cf_to_string (nFormat)));
+           }
+ 
+         GDK_NOTE (DND, g_print (" \n"));
