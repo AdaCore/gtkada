@@ -30,12 +30,6 @@
 	This chunk should be considered temporary and not to be submitted
 	for the time being.
 
-2011-04-27	Nicolas Setton  <setton@adacore.com>
-
-	* gtk/gtkselection.c: (_gtk_selection_request): Properly fill the
-	window information. Prevents a crash when copying selection to the
-	clipboard under Windows.
-
 2011-04-10      Arnaud Charlet  <charlet@adacore.com>
 
 	* modules/engines/ms-windows/msw_style.c (setup_system_styles): Fix
@@ -329,18 +323,6 @@
      {
        /* experimental tab-drawing code from mozilla */
        RECT rect;
---- gtk/gtkselection.c.orig	2011-04-26 11:45:47.000000000 +0200
-+++ gtk/gtkselection.c	2011-04-26 12:05:34.000000000 +0200
-@@ -2280,7 +2280,8 @@ _gtk_selection_request (GtkWidget *widge
- #ifdef GDK_WINDOWING_X11
-   info->requestor = gdk_x11_window_foreign_new_for_display (display, event->requestor);
- #else
--  info->requestor = NULL;
-+  info->requestor = gdk_window_lookup_for_display (display,
-+						   event->requestor);
- #endif
- 
-   /* Determine conversions we need to perform */
 --- gdk/win32/gdkevents-win32.c.intermediate	2011-04-26 16:44:14.000000000 +0200
 +++ gdk/win32/gdkevents-win32.c	2011-04-27 13:54:12.000000000 +0200
 @@ -2301,7 +2301,8 @@ gdk_event_translate (MSG  *msg,
@@ -1586,17 +1568,16 @@
 + };
 + 
   #endif /* XP_THEME_DFNS_H */
-*** modules/engines/ms-windows/Theme/gtk-2.0/gtkrc.old	2011-05-19 15:14:54.359375000 +0200
---- modules/engines/ms-windows/Theme/gtk-2.0/gtkrc	2011-05-19 15:15:01.406250000 +0200
-***************
-*** 28,34 ****
-    #GtkUIManager::add-tearoffs = 0
-    #GtkComboBox::add-tearoffs = 0
-    
--   GtkComboBox::appears-as-list = 1
-    GtkComboBox::focus-on-click = 0
-    
-    GOComboBox::add_tearoffs = 0
+--- modules/engines/ms-windows/Theme/gtk-2.0/gtkrc.old	2011-04-01 21:50:06.000000000 +0200
++++ modules/engines/ms-windows/Theme/gtk-2.0/gtkrc	2011-07-22 10:03:07.930000000 +0200
+@@ -28,7 +28,6 @@ style "msw-default"
+   #GtkUIManager::add-tearoffs = 0
+   #GtkComboBox::add-tearoffs = 0
+   
+-  GtkComboBox::appears-as-list = 1
+   GtkComboBox::focus-on-click = 0
+   
+   GOComboBox::add_tearoffs = 0
 --- gtk/gtkimcontextsimple.c.orig	2011-05-24 16:55:44.000000000 +0200
 +++ gtk/gtkimcontextsimple.c	2011-07-13 10:43:17.000000000 +0200
 @@ -877,7 +877,11 @@ gtk_im_context_simple_filter_keypress (G
