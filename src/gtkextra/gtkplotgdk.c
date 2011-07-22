@@ -1049,6 +1049,7 @@ scale_pixmap (GdkWindow *window, GdkPixmap *pixmap, gdouble scale_x, gdouble sca
                     0, 0,
                     0, 0,
                     width, height);
+    gdk_gc_unref(gc);
     return new_pixmap;
   }
 
@@ -1099,6 +1100,7 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
                     0, 0,
                     0, 0,
                     width, height);
+    gdk_gc_unref(gc);
     return new_bitmap;
   }
 
@@ -1141,6 +1143,8 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
 
   gdk_image_destroy(image);
   gdk_image_destroy(new_image);
+
+  gdk_gc_unref(gc);
 
   return new_bitmap;
 }

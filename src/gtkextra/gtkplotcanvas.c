@@ -1678,11 +1678,12 @@ gtk_plot_canvas_create_pixmap(GtkWidget *widget, gint width, gint height)
                                      height, -1);
   else{
     gdk_window_get_size(canvas->pixmap, &pixmap_width, &pixmap_height);
-    if(width != pixmap_width || height != pixmap_height)
+    if(width != pixmap_width || height != pixmap_height) {
         gdk_pixmap_unref(canvas->pixmap);
         canvas->pixmap = gdk_pixmap_new (widget->window,
                                          width,
                                          height, -1);
+	}
   }
 
   if(canvas->pc && GTK_IS_PLOT_GDK(canvas->pc)){
