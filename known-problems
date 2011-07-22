@@ -1,5 +1,10 @@
 Known problems fixed in GtkAda 2.22.0
 
+- K718-021 X11 resources leak in Gtk.Extra.Plot
+  Problem:    The Gtk_Plot widget causes X11 resources leak every time
+              the plot size is changed or the axis are modified.
+  Workaround: No known workaround.
+
 - JC10-011 Gtkada.MDI gives focus when raising a window
   Problem:    When selecting a floating window via the /Window
               menu, there were a number of cases where the window was
