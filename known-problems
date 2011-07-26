@@ -1,6 +1,6 @@
 Known problems fixed in GtkAda 2.22.0
 
-- K721-007 Support for dead keys under Windows
+- K726-004 Support for dead keys under Windows
   Problem:    Under windows, the dead keys for acute accent and diaeresis,
               followed by a space, should produce respectively an apostrophe
               and double quotes.
