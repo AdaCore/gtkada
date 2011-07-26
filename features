@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.22.0
 -----------------------------
 
+K506-019 Binding for GtkSpinner
+
+  A new binding Gtk.Spinner has been added.  A Gtk.Spinner is an animated
+  widget that can be used to signal the user that some program activity is
+  occurring.
+
 K422-015 Design changes and preparation for Gtk-3
 
   Gtkada.MDI has been slightly changed so that MDI children now have nicer
@@ -29,7 +35,7 @@ K422-015 Design changes and preparation for Gtk-3
 
 K125-039 Glade-3 GUI builder
 
-  The GUI builder shiped with GtkAda has been upgraded to Glade-3.
+  The GUI builder shipped with GtkAda has been upgraded to Glade-3.
 
 JC10-012 MDI: short titles also applies to title bars
 

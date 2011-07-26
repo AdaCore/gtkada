@@ -1862,4 +1862,15 @@ The rendering of the widget is done through various Gtk_Cell_Renderer, and by re
      </method>
   </package>
 
+  <package id="Gtk.Spinner">
+    <doc group="Ornaments">
+A Gtk_Spinner widget displays an icon-size spinning animation.
+It is often used as an alternative to a Gtk_Progress for
+displaying indefinite activity, instead of actual progress.
+To start the animation, use Gtk.Spinner.Start; to stop it
+use Gtk.Spinner.Stop.
+    </doc>
+    <parameter name="self" ada="Spinner"/>
+  </package>
+
 </GIR>

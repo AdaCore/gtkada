@@ -126,6 +126,7 @@ with Create_Size_Groups;
 with Create_Sheet;
 with Create_Sources;
 with Create_Spin;
+with Create_Spinners;
 with Create_Splittable;
 with Create_Status;
 with Create_Status_Icons;
@@ -367,6 +368,8 @@ package body Main_Windows is
                                          Create_Sources.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
+      (NS ("spinner"),          Base,    Create_Spinners.Run'Access,
+                                         Create_Spinners.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
                                          Create_Status.Help'Access),
       (NS ("status icons"),     Base,    Create_Status_Icons.Run'Access,
