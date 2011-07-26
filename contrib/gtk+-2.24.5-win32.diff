@@ -1,3 +1,11 @@
+2011-07-26	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkimcontextsimple.c (check_win32_special_cases): Fix handling
+	of special cases for dead acute and dead diaeresis under Win32. For
+	these characters followed by a space, emit an apostrophe and double
+	quotes respectively.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655357
+
 2011-07-22	Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkdisplay-win32.c (inner_clipboard_window_procedure): Fix
@@ -1621,3 +1629,17 @@
            }
  
          GDK_NOTE (DND, g_print (" \n"));
+--- gtk/gtkimcontextsimple.c.original	2011-07-26 15:59:06.000000000 +0200
++++ gtk/gtkimcontextsimple.c	2011-07-26 16:00:44.000000000 +0200
+@@ -302,9 +302,9 @@ check_win32_special_cases (GtkIMContextS
+       switch (context_simple->compose_buffer[0])
+ 	{
+ 	case GDK_dead_acute:
+-	  value = 0x00B4; break;
++	  value = 0x0027; break;
+ 	case GDK_dead_diaeresis:
+-	  value = 0x00A8; break;
++	  value = 0x0022; break;
+ 	}
+       if (value > 0)
+ 	{
