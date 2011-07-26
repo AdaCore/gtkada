@@ -1,4 +1,4 @@
-Known problems fixed in GtkAda 2.22.0
+Known problems fixed in GtkAda 2.24.0
 
 - K726-004 Support for dead keys under Windows
   Problem:    Under windows, the dead keys for acute accent and diaeresis,
@@ -10,6 +10,8 @@ Known problems fixed in GtkAda 2.22.0
   Problem:    The Gtk_Plot widget causes X11 resources leak every time
               the plot size is changed or the axis are modified.
   Workaround: No known workaround.
+
+Known problems fixed in GtkAda 2.22.0
 
 - JC10-011 Gtkada.MDI gives focus when raising a window
   Problem:    When selecting a floating window via the /Window
