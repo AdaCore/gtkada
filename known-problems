@@ -1,5 +1,11 @@
 Known problems fixed in GtkAda 2.22.0
 
+- K721-007 Support for dead keys under Windows
+  Problem:    Under windows, the dead keys for acute accent and diaeresis,
+              followed by a space, should produce respectively an apostrophe
+              and double quotes.
+  Workaround: No known workaround.
+
 - K718-021 X11 resources leak in Gtk.Extra.Plot
   Problem:    The Gtk_Plot widget causes X11 resources leak every time
               the plot size is changed or the axis are modified.
