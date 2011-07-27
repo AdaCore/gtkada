@@ -1,7 +1,8 @@
 2011-07-27  Jerome Lambourg <lambourg@adacore.com>
 
-        * gtk/gtkcolorbutton.c (expose_event): Make sure that the cairo context
-        is properly released before leaving.
+	* gtk/gtkcolorbutton.c (expose_event): Make sure that the cairo context
+	is properly released before leaving.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655392
 
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
