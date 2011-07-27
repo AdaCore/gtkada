@@ -1,9 +1,9 @@
 2011-07-27      Jerome Lambourg <lambourg@adacore.com>
 
-        * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
-        the display of the GtkComboBox on Windows XP, where not all combobox
-        style elements are available.
-        For K726-005
+	* modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
+	the display of the GtkComboBox on Windows XP, where not all combobox
+	style elements are available.
+	For K726-005
 
 2011-07-26	Nicolas Setton  <setton@adacore.com>
 
@@ -29,15 +29,15 @@
 
 2011-05-19	Jerome Lambourg  <lambourg@adacore.com>
 
-        * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
-        the display of the GtkComboBox and improve the display of menus.
-        For K510-021
+	* modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
+	the display of the GtkComboBox and improve the display of menus.
+	For K510-021
 
 2011-05-16	Jerome Lambourg  <lambourg@adacore.com>
 
-        * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
-        the display of notebook tabs in the wimp engine.
-        Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=650300
+	* modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
+	the display of notebook tabs in the wimp engine.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=650300
 
 2011-04-27	Nicolas Setton  <setton@adacore.com>
 
