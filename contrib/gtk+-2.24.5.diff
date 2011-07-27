@@ -1,3 +1,8 @@
+2011-07-27  Jerome Lambourg <lambourg@adacore.com>
+
+        * gtk/gtkcolorbutton.c (expose_event): Make sure that the cairo context
+        is properly released before leaving.
+
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
 	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
@@ -353,3 +358,16 @@
  gdk_x_io_error (Display *display)
  {
    /* This is basically modelled after the code in XLib. We need
+*** ../orig/gtk+-2.24.5/gtk/gtkcolorbutton.c	Thu Jun 16 00:37:19 2011
+--- gtk/gtkcolorbutton.c	Wed Jul 27 10:42:39 2011
+***************
+*** 317,322 ****
+--- 317,324 ----
+        cairo_pattern_destroy (checkered);
+      }
+  
++   cairo_destroy (cr);
++ 
+    return FALSE;
+  }
+  
