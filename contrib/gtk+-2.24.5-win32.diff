@@ -1,3 +1,10 @@
+2011-07-27      Jerome Lambourg <lambourg@adacore.com>
+
+        * modules/engines/ms-windows/xp_theme.h, xp_theme.c, msw_style.c: Fix
+        the display of the GtkComboBox on Windows XP, where not all combobox
+        style elements are available.
+        For K726-005
+
 2011-07-26	Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtkimcontextsimple.c (check_win32_special_cases): Fix handling
@@ -1643,3 +1650,111 @@
  	}
        if (value > 0)
  	{
+diff -up -r ../orig/gtk+-2.24.5/modules/engines/ms-windows/msw_style.c modules/engines/ms-windows/msw_style.c
+--- ../orig/gtk+-2.24.5/modules/engines/ms-windows/msw_style.c	2011-07-27 12:54:26.725586000 +0200
++++ modules/engines/ms-windows/msw_style.c	2011-07-27 12:57:21.710937500 +0200
+@@ -1800,33 +1800,53 @@ draw_box (GtkStyle *style,
+ 	  const gchar *detail, gint x, gint y, gint width, gint height)
+ {
+   if (is_combo_box_child (widget) && detail && !strcmp (detail, "button"))
++  {
++    GtkComboBox *combo = get_parent_combo_box (widget);
++    XpThemeElement element;
++    gboolean old_style = get_windows_version () <= WINXP_VERSION;
++
++    if (!gtk_combo_box_get_has_entry (combo))
+     {
+-      GtkComboBox *combo = get_parent_combo_box (widget);
+-      XpThemeElement element;
++      /* This covers the full combobox area: let's use the COMBOBOX bg
++         element */
++      /* Combo box theme elements are not available in XP and older: in this
++         case we use a simple button element */
++      element = old_style ? XP_THEME_ELEMENT_BUTTON : XP_THEME_ELEMENT_COMBOBOX;
++      if (xp_theme_draw (window, element, style, x, y, width, height, state_type, area))
++      {
++        int cx = GetSystemMetrics(SM_CXVSCROLL);
++        x += width - cx;
++        width = cx;
++
++        if (!old_style) {
++          /* print the right arrow above the COMBOBOX background */
++          xp_theme_draw 
++           (window, XP_THEME_ELEMENT_COMBOBUTTON, style, x, y, width, height, GTK_STATE_NORMAL, area);
++        } else {
++          /* Just display an arrow above the COMBOBOX button */
++	  x += (width - 7) / 2;
++	  y += (height - 5) / 2;
+ 
+-      if (!gtk_combo_box_get_has_entry (combo)) {
+-        /* This covers the full combobox area: let's use the COMBOBOX bg
+-           element */
+-	if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBOX, style,
++          draw_varrow (window, &style->fg[state_type], shadow_type, area,
++		       GTK_ARROW_DOWN, x, y, 7, 5);
++        }
++        return;
++      }
++    } else {
++      /* The right button next to the entry */
++      /* We need to expand the button, so that it covers entirely the
++         background's borders on the right */
++      if (old_style) {
++        if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON_OLD, style,
+                            x, y, width, height, state_type, area))
+-	{
+-            /* print the right arrow above the COMBOBOX background */
+-            int cx = GetSystemMetrics(SM_CXVSCROLL);
+-      x += width - cx;
+-      width = cx;
+-            xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style, x, y,
+-                           width, height, GTK_STATE_NORMAL, area);
+-            return;
+-          }
++          return;
+       } else {
+-        /* The right button next to the entry */
+-        /* We need to expand the button, so that it covers entirely the
+-           background's borders on the right */
+-	if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style,
++        if (xp_theme_draw (window, XP_THEME_ELEMENT_COMBOBUTTON, style,
+                            x, y - 1, width + 1, height + 2, state_type, area))
+-      return;
+-	}
++          return;
++      }
+     }
++  }
+ 
+   if (detail &&
+       (!strcmp (detail, "button") || !strcmp (detail, "buttondefault")))
+diff -up -r ../orig/gtk+-2.24.5/modules/engines/ms-windows/xp_theme.c modules/engines/ms-windows/xp_theme.c
+--- ../orig/gtk+-2.24.5/modules/engines/ms-windows/xp_theme.c	2011-07-27 12:54:26.756836000 +0200
++++ modules/engines/ms-windows/xp_theme.c	2011-07-26 18:08:15.558593700 +0200
+@@ -105,6 +105,7 @@ static const short element_part_map[XP_T
+   BP_CHECKBOX, // INCONSISTENT_CHECKBOX
+   BP_PUSHBUTTON, // BUTTON
+   HP_HEADERITEM, // LIST_HEADER
++  CP_DROPDOWNBUTTON,        // COMBOBUTTON_OLD
+   CP_DROPDOWNBUTTONRIGHT,   // COMBOBUTTON
+   CP_READONLY,              // COMBOBOX
+   TABP_BODY,                // BODY
+@@ -399,6 +400,7 @@ xp_theme_get_handle_by_element (XpThemeE
+       klazz = XP_THEME_CLASS_HEADER;
+       break;
+ 
++    case XP_THEME_ELEMENT_COMBOBUTTON_OLD:
+     case XP_THEME_ELEMENT_COMBOBUTTON:
+     case XP_THEME_ELEMENT_COMBOBOX:
+       klazz = XP_THEME_CLASS_COMBOBOX;
+diff -up -r ../orig/gtk+-2.24.5/modules/engines/ms-windows/xp_theme.h modules/engines/ms-windows/xp_theme.h
+--- ../orig/gtk+-2.24.5/modules/engines/ms-windows/xp_theme.h	2011-07-27 12:54:26.756836000 +0200
++++ modules/engines/ms-windows/xp_theme.h	2011-07-26 18:07:59.324218700 +0200
+@@ -54,6 +54,7 @@ typedef enum
+   XP_THEME_ELEMENT_INCONSISTENT_CHECKBOX,
+   XP_THEME_ELEMENT_BUTTON,
+   XP_THEME_ELEMENT_LIST_HEADER,
++  XP_THEME_ELEMENT_COMBOBUTTON_OLD,
+   XP_THEME_ELEMENT_COMBOBUTTON,
+   XP_THEME_ELEMENT_COMBOBOX,
+   XP_THEME_ELEMENT_BODY,
