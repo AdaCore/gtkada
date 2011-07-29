@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2010, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,13 +30,15 @@
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
 
+with Gdk.Color;   use Gdk.Color;
+
 with Gtk;                   use Gtk;
-with Gtk.Handlers;
 with Gtkada.Handlers;       use Gtkada.Handlers;
 
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
 with Gtk.Menu;              use Gtk.Menu;
+with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
 with Gtk.Menu_Item;         use Gtk.Menu_Item;
 
@@ -116,7 +118,6 @@ package body Create_Menu is
       Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
-
       Val : aliased Gint := Get_Value_As_Int (Spin);
    begin
       Gtk_New (Menu);
@@ -211,10 +212,12 @@ package body Create_Menu is
    -----------------
 
    function Create_Menu
-     (Depth : Integer; Tearoff : Boolean) return Gtk_Menu is
+     (Depth : Integer; Tearoff : Boolean) return Gtk_Menu
+   is
       Menu      : Gtk_Menu;
       Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
+      Red : constant Gdk_Color := Parse ("red");
    begin
       Gtk_New (Menu);
 
@@ -234,6 +237,12 @@ package body Create_Menu is
          Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
          Append (Menu, Menu_Item);
          Show (Menu_Item);
+
+         if J = 1 then
+            for S in Gtk_State_Type'Range loop
+               Modify_Fg (Get_Child (Menu_Item), S, Red);
+            end loop;
+         end if;
 
          if J = 3 then
             Set_Sensitive (Menu_Item, False);
