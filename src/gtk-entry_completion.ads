@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -245,14 +245,15 @@ package Gtk.Entry_Completion is
    --    Gets emitted when an action is activated.
    --
    --  - "match_selected"
-   --    procedure Handler
+   --    function Handler
    --       (Completion : access Gtk_Entry_Completion_Record'Class;
    --        Model      : Gtk_Tree_Model;
-   --        Iter       : Gtk_Tree_Iter);
+   --        Iter       : Gtk_Tree_Iter) return Boolean;
    --    Gets emitted when a match from the list is selected. The default
    --    behaviour is to replace the contents of the entry with the contents of
    --    the text column in the row pointed to by Iter.
    --    Return value: %TRUE if the signal has been handled
+
    --
    --  </signals>
 
