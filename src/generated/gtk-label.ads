@@ -169,6 +169,7 @@ package Gtk.Label is
    --  use in a Gtk.Widget.Gtk_Widget::query-tooltip handler. not be freed or
    --  modified.
    --  Since: gtk+ 2.18
+   --  Returns the currently active URI. The string is owned by GTK+ and must
 
    function Get_Ellipsize
       (Label : access Gtk_Label_Record)
@@ -207,6 +208,7 @@ package Gtk.Label is
    --  layout is useful to e.g. convert text positions to pixel positions, in
    --  combination with Gtk.Label.Get_Layout_Offsets. The returned layout is
    --  owned by the label so need not be freed by the caller.
+   --  Returns the Pango.Layout.Pango_Layout for this label
 
    procedure Get_Layout_Offsets
       (Label : access Gtk_Label_Record;
@@ -261,6 +263,7 @@ package Gtk.Label is
    --  If the label has been set so that it has an mnemonic key this function
    --  returns the keyval used for the mnemonic accelerator. If there is no
    --  mnemonic set up it returns GDK_VoidSymbol.
+   --  Returns GDK keyval usable for accelerators, or GDK_VoidSymbol
 
    function Get_Mnemonic_Widget
       (Label : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget;
@@ -297,6 +300,7 @@ package Gtk.Label is
        Has_Selection : out Boolean);
    --  Gets the selected range of characters in the label, returning True if
    --  there's a selection.
+   --  Returns True if selection is non-empty
    --  "start": return location for start of selection, as a character offset
    --  "end": return location for end of selection, as a character offset
 
@@ -560,6 +564,7 @@ package Gtk.Label is
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
+   --  Returns True if the link has been activated
    --
    --  "copy-clipboard"
    --     procedure Handler (Self : access Gtk_Label_Record'Class);

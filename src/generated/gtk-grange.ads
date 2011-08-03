@@ -395,6 +395,8 @@ package Gtk.GRange is
    --  default GTK+ handler clamps the value based on
    --  Gtk.GRange.Gtk_Range:round_digits. It is not possible to use delayed
    --  update policies in an overridden ::change-value handler.
+   --  Returns True to prevent other handlers from being invoked for the
+   --  signal, False to propagate the signal further
    --
    --  "move-slider"
    --     procedure Handler

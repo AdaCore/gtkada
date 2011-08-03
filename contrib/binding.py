@@ -174,6 +174,7 @@ class SubprogramProfile(object):
     def __init__(self):
         self.params = None  # list of parameters (None if we have varargs)
         self.returns = None # return value (None for a procedure)
+        self.returns_doc = "" # documentation for returned value
 
     @staticmethod
     def parse(node, gtkmethod, pkg=None):
@@ -291,6 +292,10 @@ class SubprogramProfile(object):
                 # For a <field>, the method's return value will be the type
                 # of the field itself
                 ret = node
+            else:
+                self.returns_doc = ret.findtext(ndoc, "")
+                if self.returns_doc:
+                    self.returns_doc = "Returns %s" % self.returns_doc
             return _get_type(ret, allow_access=False, pkg=pkg)
         else:
             return CType(name=None, cname=returns, pkg=pkg)
@@ -400,6 +405,9 @@ class GIRClass(object):
         is_import = self._func_is_direct_import(profile)
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         doc = self._getdoc(gtkmethod, node)
+        if profile.returns_doc:
+            doc.append(profile.returns_doc)
+
         naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
         if ismethod:
@@ -758,11 +766,14 @@ See Glib.Properties for more information on properties)""")
                     returns=profile.returns)
 
                 spec = sub.spec(maxlen=69)
+                doc = s.findtext(ndoc, "")
+                if profile.returns_doc:
+                    doc += "\n\n%s" % profile.returns_doc
 
                 adasignals.append({
                     "name": s.get("name"),
                     "profile": spec,
-                    "doc": s.findtext(ndoc, "")})
+                    "doc": doc})
 
             adasignals.sort(lambda x,y: x["name"] <> y["name"])
 
@@ -820,15 +831,20 @@ See Glib.Properties for more information on properties)""")
             # Duplicate the subprograms from the interfaces. This doesn't
             # quite work: for instance, Gtk.About_Dialog already has a
             # Get_Name, so we can't redefine the one inherited from Buildable.
-            if True:
-                section = self.pkg.section("Interfaces_Impl")
-                for impl in sorted(self.implements.iterkeys()):
-                    impl = self.implements[impl]
-                    if impl["name"] == "Buildable":
-                        # Do not repeat for buildable, that's rarely used
-                        continue
+            section = self.pkg.section("Interfaces_Impl")
+            for impl in sorted(self.implements.iterkeys()):
+                impl = self.implements[impl]
+                if impl["name"] == "Buildable":
+                    # Do not repeat for buildable, that's rarely used
+                    continue
 
-                    interf = impl["interface"]
+                interf = impl["interface"]
+
+                # Ignore interfaces that we haven't bound
+                if not hasattr(interf, "gtkpkg"):
+                    print "%s: methods for interface %s were not bound" % (
+                        self.name, impl["name"])
+                else:
                     all = interf.node.findall(nmethod)
                     for c in all:
                         cname = c.get(cidentifier)
@@ -1063,6 +1079,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Curve",
            "Dialog",
            "DrawingArea",
+           "EntryCompletion",
            "Expander",
            "Fixed",
            "Image",

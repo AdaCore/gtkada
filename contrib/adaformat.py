@@ -166,6 +166,8 @@ class AdaNaming(object):
             "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
             "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
             "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
+            "GtkEntryCompletion":
+                GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
             "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
             "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),
             "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),

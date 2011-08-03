@@ -132,11 +132,13 @@ package Gtk.Paned is
       (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
+   --  Returns first child, or null if it is not set.
 
    function Get_Child2
       (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
+   --  Returns second child, or null if it is not set.
 
    function Get_Handle_Window
       (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
@@ -145,6 +147,7 @@ package Gtk.Paned is
    --  callback to distinguish between the window of the paned, a child and the
    --  handle.
    --  Since: gtk+ 2.20
+   --  Returns the paned's handle window.
 
    function Get_Position (Paned : access Gtk_Paned_Record) return Gint;
    procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint);

@@ -179,6 +179,7 @@ package Gtk.Scale is
    --  the caller. or null if the Gtk.Scale.Gtk_Scale:draw-value property is
    --  False.
    --  Since: gtk+ 2.4
+   --  Returns the Pango.Layout.Pango_Layout for this scale,
 
    procedure Get_Layout_Offsets
       (Scale : access Gtk_Scale_Record;
@@ -285,6 +286,7 @@ package Gtk.Scale is
    --  "--&gt;1.0&lt;--". |[ static gchar* format_value_callback (GtkScale
    --  *scale, gdouble value) { return g_strdup_printf
    --  ("--&gt;&percnt;0.*g&lt;--", gtk_scale_get_digits (scale), value); } ]|
+   --  Returns allocated string representing Value
 
    Signal_Format_Value : constant Glib.Signal_Name := "format-value";
 

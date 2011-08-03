@@ -125,6 +125,7 @@ package Gtk.Button is
    --  Returns the button's event window if it is realized, null otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22
+   --  Returns Button's event window.
 
    function Get_Focus_On_Click
       (Button : access Gtk_Button_Record) return Boolean;

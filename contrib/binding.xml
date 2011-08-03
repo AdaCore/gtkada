@@ -1873,4 +1873,157 @@ use Gtk.Spinner.Stop.
     <parameter name="self" ada="Spinner"/>
   </package>
 
+  <package id="Gtk.Entry_Completion">
+     <doc group="Numeric/Text Data Entry">
+This widget provides completion functionality for Gtk.Gentry.Gtk_Entry.
+
+"Completion functionality" means that when the user modifies the text in
+the entry, GtkEntryCompletion checks which rows in the model match the
+current content of the entry, and displays a list of matches. By default,
+the matching is done by comparing the entry text case-insensitively against
+the text column of the model (see Set_Text_Column), but this can be
+overridden with a custom match function (see Set_Match_Func).
+
+When the user selects a completion, the content of the entry is updated. By
+default, the content of the entry is replaced by the text column of the
+model, but this can be overridden by connecting to the ::match-selected
+signal and updating the entry in the signal handler. Note that you should
+return TRUE from the signal handler to suppress the default behaviour.
+
+To add completion functionality to an entry, use Gtk.Entry.Set_Completion.
+
+In addition to regular completion matches, which will be inserted into the
+entry when they are selected, GtkEntryCompletion also allows to display
+"actions" in the popup window. Their appearance is similar to menuitems, to
+differentiate them clearly from completion strings. When an action is
+selected, the ::action-activated signal is emitted.
+     </doc>
+     <parameter name="self" ada="Completion"/>
+     <extra>
+        <with_spec pkg="Interfaces.C.Strings" />
+        <with_body pkg="Ada.Unchecked_Conversion" use="false"/>
+        <with_body pkg="Ada.Unchecked_Deallocation" use="false"/>
+        <type ctype="GtkEntryCompletionMatchFunc" ada="C_Gtk_Entry_Completion_Match_Func">
+   type C_Gtk_Entry_Completion_Match_Func is access function
+      (Completion    : System.Address;
+       Key           : Interfaces.C.Strings.chars_ptr;
+       Iter          : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Data          : System.Address) return Boolean;
+   pragma Convention (C, C_Gtk_Entry_Completion_Match_Func);
+        </type>
+        <spec>
+   generic
+      type Data_Type (&lt;&gt;) is private;
+   package Match_Functions is
+      type Gtk_Entry_Completion_Match_Func is access
+        function (Completion : access Gtk_Entry_Completion_Record'Class;
+                  Key        : String;
+                  Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+                  User_Data  : Data_Type) return Boolean;
+
+      type Destroy_Notify is access procedure (Data : in out Data_Type);
+
+      procedure Set_Match_Func
+        (Completion  : access Gtk_Entry_Completion_Record;
+         Func        : Gtk_Entry_Completion_Match_Func;
+         Func_Data   : Data_Type;
+         Func_Notify : Destroy_Notify);
+      --  Sets the match function for completion to be Func. The match function
+      --  is used to determine if a row should or should not be in the
+      --  completion list.
+   end Match_Functions;
+        </spec>
+        <body>
+   package body Match_Functions is
+
+      function Internal_Completion_Func
+        (Completion : System.Address;
+         Key        : Interfaces.C.Strings.chars_ptr;
+         Iter       : Gtk_Tree_Iter;
+         Data       : System.Address) return Gboolean;
+      pragma Convention (C, Internal_Completion_Func);
+      --  Internal callback
+
+      procedure Internal_Notify (Data : System.Address);
+      pragma Convention (C, Internal_Notify);
+      --  Internal notification function
+
+      type Data_Type_Access is access Data_Type;
+      type Completion_User_Data_Record is record
+         Callback  : Gtk_Entry_Completion_Match_Func;
+         User_Data : Data_Type_Access;
+         Notify    : Destroy_Notify;
+      end record;
+      type Completion_User_Data is access Completion_User_Data_Record;
+
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Completion_User_Data_Record, Completion_User_Data);
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Data_Type, Data_Type_Access);
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Completion_User_Data);
+
+      ------------------------------
+      -- Internal_Completion_Func --
+      ------------------------------
+
+      function Internal_Completion_Func
+        (Completion : System.Address;
+         Key        : Interfaces.C.Strings.chars_ptr;
+         Iter       : Gtk_Tree_Iter;
+         Data       : System.Address) return Gboolean
+      is
+         D : constant Completion_User_Data := Convert (Data);
+         Stub : Gtk_Entry_Completion_Record;
+         Complete : Gtk_Entry_Completion;
+      begin
+         Complete := Gtk_Entry_Completion (Get_User_Data (Completion, Stub));
+         return Boolean'Pos
+           (D.Callback (Complete, Value (Key), Iter, D.User_Data.all));
+      end Internal_Completion_Func;
+
+      ---------------------
+      -- Internal_Notify --
+      ---------------------
+
+      procedure Internal_Notify (Data : System.Address) is
+         D : Completion_User_Data := Convert (Data);
+      begin
+         D.Notify (D.User_Data.all);
+         Unchecked_Free (D.User_Data);
+         Unchecked_Free (D);
+      end Internal_Notify;
+
+      --------------------
+      -- Set_Match_Func --
+      --------------------
+
+      procedure Set_Match_Func
+        (Completion  : access Gtk_Entry_Completion_Record;
+         Func        : Gtk_Entry_Completion_Match_Func;
+         Func_Data   : Data_Type;
+         Func_Notify : Destroy_Notify)
+      is
+         procedure Internal
+           (Completion  : System.Address;
+            Func        : System.Address;
+            Func_Data   : Completion_User_Data;
+            Func_Notify : System.Address);
+         pragma Import (C, Internal, "gtk_entry_completion_set_match_func");
+
+         Data : constant Completion_User_Data :=
+           new Completion_User_Data_Record'
+             (Callback    => Func,
+              User_Data   => new Data_Type'(Func_Data),
+              Notify      => Func_Notify);
+      begin
+         Internal (Get_Object (Completion),
+                   Internal_Completion_Func'Address,
+                   Data, Internal_Notify'Address);
+      end Set_Match_Func;
+   end Match_Functions;
+        </body>
+     </extra>
+  </package>
+
 </GIR>

@@ -126,11 +126,13 @@ package Gtk.Table is
       (Table : access Gtk_Table_Record) return Guint;
    --  Gets the default column spacing for the table. This is the spacing that
    --  will be used for newly added columns. (See Gtk.Table.Set_Col_Spacings)
+   --  Returns the default column spacing
 
    function Get_Default_Row_Spacing
       (Table : access Gtk_Table_Record) return Guint;
    --  Gets the default row spacing for the table. This is the spacing that
    --  will be used for newly added rows. (See Gtk.Table.Set_Row_Spacings)
+   --  Returns the default row spacing
 
    function Get_Homogeneous (Table : access Gtk_Table_Record) return Boolean;
    procedure Set_Homogeneous

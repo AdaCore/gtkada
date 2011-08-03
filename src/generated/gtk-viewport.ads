@@ -78,6 +78,7 @@ package Gtk.Viewport is
       (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
+   --  Returns a Gdk.Window.Gdk_Window
 
    function Get_Hadjustment
       (Viewport : access Gtk_Viewport_Record)
@@ -110,6 +111,7 @@ package Gtk.Viewport is
       (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
+   --  Returns a Gdk.Window.Gdk_Window
 
    ----------------
    -- Interfaces --

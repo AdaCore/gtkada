@@ -62,6 +62,7 @@ package Gtk.Bin is
    --  Gets the child of the Gtk.Bin.Gtk_Bin, or null if the bin contains no
    --  child widget. The returned widget does not have a reference added, so
    --  you do not need to unref it.
+   --  Returns pointer to child of the Gtk.Bin.Gtk_Bin
 
    ----------------
    -- Interfaces --
