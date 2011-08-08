@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -655,8 +655,7 @@ package Gtk.Style is
       Area        : Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area;
       Widget      : access Glib.Object.GObject_Record'Class;
       Detail      : String := "";
-      Points      : Gdk.Types.Gdk_Point;
-      Npoints     : Gint;
+      Points      : Gdk.Types.Gdk_Points_Array;
       Fill        : Boolean);
    --  Draws a polygon on Window with the given parameters.
 
@@ -795,7 +794,6 @@ package Gtk.Style is
    pragma Obsolescent;  --  Draw_Shadow
    --  Draws a shadow around the given rectangle in @window
    --  using the given style and state and shadow type.
-
 
    procedure Draw_String
      (Style       : Gtk_Style;

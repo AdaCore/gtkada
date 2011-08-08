@@ -1493,8 +1493,7 @@ package body Gtk.Style is
       Area        : Gdk_Rectangle := Full_Area;
       Widget      : access GObject_Record'Class;
       Detail      : String := "";
-      Points      : Gdk.Types.Gdk_Point;
-      Npoints     : Gint;
+      Points      : Gdk.Types.Gdk_Points_Array;
       Fill        : Boolean)
    is
       procedure Internal
@@ -1505,13 +1504,14 @@ package body Gtk.Style is
          Area        : Gdk_Rectangle;
          Widget      : System.Address;
          Detail      : String;
-         Points      : Gdk.Types.Gdk_Point;
+         Points      : System.Address;
          Npoints     : Gint;
          Fill        : Gboolean);
       pragma Import (C, Internal, "gtk_paint_polygon");
    begin
       Internal (Get_Object (Style), Window, State_Type, Shadow_Type, Area,
-                Get_Object (Widget), Detail & ASCII.NUL, Points, Npoints,
+                Get_Object (Widget), Detail & ASCII.NUL,
+                Points (Points'First)'Address, Points'Length,
                 Boolean'Pos (Fill));
    end Paint_Polygon;
 
