@@ -8,6 +8,12 @@ subdir=$5
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
+if [ "${module}" = GtkAda_Gnome ]; then
+   library_name=gnomeada
+else
+   library_name="${lcmodule}"
+fi
+
 if [ "$OS" = "Windows_NT" ]; then
 lcversion="-$version"
 else
@@ -91,10 +97,10 @@ EOF
        cat <<EOF >> ${lc}.gpr
    case Gtkada_Kind is
       when "static" =>
-         for Library_Name use "${lcmodule}";
+         for Library_Name use "${library_name}";
          for Library_Dir use "../gtkada/static/$subdir";
       when "relocatable" =>
-         for Library_Name use "${lcmodule}${lcversion}";
+         for Library_Name use "${library_name}${lcversion}";
          for Library_Dir use "../../bin";
          for Library_ALI_Dir use "../gtkada/relocatable/$subdir";
    end case;
@@ -105,9 +111,9 @@ EOF
       cat <<EOF >> ${lc}.gpr
    case Gtkada_Kind is
       when "static" =>
-         for Library_Name use "${lcmodule}";
+         for Library_Name use "${library_name}";
       when "relocatable" =>
-         for Library_Name use "${lcmodule}${lcversion}";
+         for Library_Name use "${library_name}${lcversion}";
    end case;
 
    for Library_Dir use "../gtkada/" & Project'Library_Kind;
