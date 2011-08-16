@@ -6,7 +6,6 @@ SOVER=${MAJOR}.${MINOR}
 
 install: force
 	${MKDIR} "${DESTDIR}$(prefix)/lib/gnat/"
-	${MKDIR} "${DESTDIR}$(prefix)/lib/gnat/gtkada"
 	$(MKDIR) "${DESTDIR}$(prefix)/lib/pkgconfig/"
 	${CP} gtkada.pc "${DESTDIR}$(prefix)/lib/pkgconfig/"
 	-${RM} "${DESTDIR}${prefix}"/projects/gtkada*
