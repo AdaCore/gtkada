@@ -201,7 +201,7 @@ class AdaNaming(object):
             "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
             "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
             "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
-            "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+            "GdkRectangle*":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
             "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
             "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
         }
