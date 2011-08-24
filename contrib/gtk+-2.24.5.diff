@@ -3,7 +3,8 @@
 	* gtk/gtkcolorbutton.c (expose_event): Make sure that the cairo context
 	is properly released before leaving.
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655392
-	Committed in Gtk+ 3.1.x
+	Patch needs to be adapted to Gtk+ trunk where ::draw semantics
+	changed
 
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
