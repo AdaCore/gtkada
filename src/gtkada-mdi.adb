@@ -5215,12 +5215,13 @@ package body Gtkada.MDI is
          --  in the central area)
 
          if Child = null
-           and then Child_Node.Child /= null
+           and then (Child_Node.Child /= null
+                     or else Child_Node.Attributes /= null)
          then
             Register := Registers;
             while Child = null and then Register /= null loop
                Child := Register.Load
-                 (MDI_Window (MDI), Child_Node.Child, User);
+                 (MDI_Window (MDI), Child_Node, User);
                Register := Register.Next;
             end loop;
          end if;
