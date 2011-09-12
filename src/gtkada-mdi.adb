@@ -6005,6 +6005,7 @@ package body Gtkada.MDI is
             Raised     : Boolean;
             In_Central : Boolean)
          is
+            pragma Unreferenced (In_Central);
             Widget_Node : Node_Ptr;
             Tmp_Node    : Node_Ptr;
          begin
@@ -6015,25 +6016,41 @@ package body Gtkada.MDI is
             Widget_Node := Get_XML_For_Widget (Child, User);
 
             if Widget_Node /= null then
-               --  We only save the name of the child, not its contents, which
-               --  is project specific and thus goes into the central area's
-               --  XML
+               --  When a window is in the perspective (and not in the central
+               --  area), we used to save its location in the <perspective>
+               --  node, and its contents in <central>, since it is project
+               --  specific..
+               --  This works fine for the location window, for instance.
+               --  But this doesn't work well for editors (for which there
+               --  appears an empty area in the newly loaded desktop). Getting
+               --  rid of the emplty areas requires restarting the MDI.
+               --  Since the latter is blocking, the safest route for now is to
+               --  always save the contents in the perspective, independently
+               --  of the project. Most users always load the same project
+               --  anyway.
+               --  For windows that are in multiple perspectives, their
+               --  contents is only saved in the current perspective. That
+               --  works as expected because this is also the perspective that
+               --  is reloaded.
+               --  ??? One solution might be to let the widget itself decide
+               --  where to save the contents when the window is not in the
+               --  central area. Note that saving in <central> works best if
+               --  there is a single window of a kind (so not for editors).
 
-               if not MDI.Independent_Perspectives
-                 and then not In_Central
-                 and then
-                   (Widget_Node.Child /= null
-                    or else Widget_Node.Attributes /= null)
-               then
-                  Tmp_Node := new Node;
-                  Tmp_Node.Tag := new String'(Widget_Node.Tag.all);
-                  Add_Child (Central, Widget_Node, Append => True);
+               Tmp_Node := Widget_Node;
 
-               else
-                  --  For independent perspectives, always store the whole
-                  --  contents in the perspective
-                  Tmp_Node := Widget_Node;
-               end if;
+               --  Old code, left for reference
+
+--                 if not MDI.Independent_Perspectives
+--                   and then not In_Central
+--                   and then
+--                     (Widget_Node.Child /= null
+--                      or else Widget_Node.Attributes /= null)
+--                 then
+--                    Tmp_Node := new Node;
+--                    Tmp_Node.Tag := new String'(Widget_Node.Tag.all);
+--                    Add_Child (Central, Widget_Node, Append => True);
+--                 end if;
 
                --  Note: We need to insert the children in the opposite order
                --  from Restore_Desktop, since the children are added at the
