@@ -4573,11 +4573,15 @@ package body Gtkada.MDI is
 
    package body Desktop is
 
-      function Get_XML_For_Widget
-        (Child : MDI_Child;
-         User  : User_Data) return Node_Ptr;
+      procedure Get_XML_For_Widget
+        (Child            : MDI_Child;
+         User             : User_Data;
+         Widget_Is_Unique : out Boolean;
+         Data             : out Node_Ptr);
       --  Get the XML node for a given widget. This automatically sets
-      --  Child.XML_Node_Name as well
+      --  Child.XML_Node_Name as well.
+      --  Widget_Is_Unique is set to True if there can be only one of the
+      --  corresponding widget.
 
       procedure Parse_Child_Node
         (MDI         : access MDI_Window_Record'Class;
@@ -5207,6 +5211,20 @@ package body Gtkada.MDI is
             Next (Iter);
          end loop;
 
+         --  Is there data associated with the node (in particular for widgets
+         --  in the central area)
+
+         if Child = null
+           and then Child_Node.Child /= null
+         then
+            Register := Registers;
+            while Child = null and then Register /= null loop
+               Child := Register.Load
+                 (MDI_Window (MDI), Child_Node.Child, User);
+               Register := Register.Next;
+            end loop;
+         end if;
+
          --  Check whether we have a project-specific contents for this child.
          --  This always takes priority other any project-independent contents.
          --  When we have multiple children with the same XML node name, we
@@ -5809,6 +5827,7 @@ package body Gtkada.MDI is
             Tmp2        : Widget_List.Glist;
             C           : MDI_Child;
             Widget_Node : Node_Ptr;
+            Widget_Is_Unique : Boolean;
          begin
             while Tmp /= Null_List loop
                Tmp2 := Next (Tmp);
@@ -5828,7 +5847,9 @@ package body Gtkada.MDI is
                --  just waste memory (and result in memory leaks)
 
                if C.XML_Node_Name = null then
-                  Widget_Node := Get_XML_For_Widget (Child => C, User => User);
+                  Get_XML_For_Widget
+                    (Child => C, User => User, Data => Widget_Node,
+                     Widget_Is_Unique => Widget_Is_Unique);
                   Free (Widget_Node);
                end if;
 
@@ -5906,9 +5927,11 @@ package body Gtkada.MDI is
       -- Get_XML_For_Widget --
       ------------------------
 
-      function Get_XML_For_Widget
-        (Child : MDI_Child;
-         User  : User_Data) return Node_Ptr
+      procedure Get_XML_For_Widget
+        (Child            : MDI_Child;
+         User             : User_Data;
+         Widget_Is_Unique : out Boolean;
+         Data             : out Node_Ptr)
       is
          Register    : Register_Node := Registers;
          Widget_Node : Node_Ptr;
@@ -5926,7 +5949,10 @@ package body Gtkada.MDI is
             Child.XML_Node_Name := new String'(Widget_Node.Tag.all);
          end if;
 
-         return Widget_Node;
+         Data := Widget_Node;
+
+         --  ??? Hard-coded for now. See comments in Save_Widget
+         Widget_Is_Unique := True;
       end Get_XML_For_Widget;
 
       ------------------
@@ -6005,15 +6031,15 @@ package body Gtkada.MDI is
             Raised     : Boolean;
             In_Central : Boolean)
          is
-            pragma Unreferenced (In_Central);
             Widget_Node : Node_Ptr;
             Tmp_Node    : Node_Ptr;
+            Widget_Is_Unique : Boolean;
          begin
             if Child.State = Invisible then
                return;
             end if;
 
-            Widget_Node := Get_XML_For_Widget (Child, User);
+            Get_XML_For_Widget (Child, User, Widget_Is_Unique, Widget_Node);
 
             if Widget_Node /= null then
                --  When a window is in the perspective (and not in the central
@@ -6039,18 +6065,17 @@ package body Gtkada.MDI is
 
                Tmp_Node := Widget_Node;
 
-               --  Old code, left for reference
-
---                 if not MDI.Independent_Perspectives
---                   and then not In_Central
---                   and then
---                     (Widget_Node.Child /= null
---                      or else Widget_Node.Attributes /= null)
---                 then
---                    Tmp_Node := new Node;
---                    Tmp_Node.Tag := new String'(Widget_Node.Tag.all);
---                    Add_Child (Central, Widget_Node, Append => True);
---                 end if;
+               if Widget_Is_Unique
+                 and then not MDI.Independent_Perspectives
+                 and then not In_Central
+                 and then
+                   (Widget_Node.Child /= null
+                    or else Widget_Node.Attributes /= null)
+               then
+                  Tmp_Node := new Node;
+                  Tmp_Node.Tag := new String'(Widget_Node.Tag.all);
+                  Add_Child (Central, Widget_Node, Append => True);
+               end if;
 
                --  Note: We need to insert the children in the opposite order
                --  from Restore_Desktop, since the children are added at the
