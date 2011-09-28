@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -73,6 +73,9 @@ package Gtk.Cell_Layout is
    --  on Cell to be set from the value. So for example if column of the model
    --  contains strings, you could have the "text" attribute of
    --  Gtk_Cell_Renderer_Text get its values from column 2.
+   --  To mark rows as insensitive, create a column containing booleans in
+   --  your model, and add an attribute "sensitive" to your renderer that
+   --  points to this column.
 
    procedure Clear (Cell_Layout : Gtk_Cell_Layout);
    --  Unsets all the mappings on all renderers on Cell_Layout and
