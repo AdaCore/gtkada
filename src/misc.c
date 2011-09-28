@@ -432,17 +432,6 @@ ada_gtk_debug_get_ref_count (GObject* object) {
 }
 
 /********************************************************************
- **  Returns the real widget name (as opposed to gtk_widget_get_name,
- **  this one returns NULL instead of the class name if no name was
- **  set.
- ********************************************************************/
-
-char*
-ada_gtk_get_real_name (GtkWidget* w) {
-  return w->name;
-}
-
-/********************************************************************
  **  This function parses the command line and returns
  **  true if macro_switch exists. It is also removed from
  **  the command line
@@ -700,11 +689,6 @@ ada_gtk_widget_set_default_size_allocate_handler
   GTK_WIDGET_CLASS (klass)->size_allocate = handler;
 }
 
-void
-ada_gtk_widget_set_allocation (GtkWidget* widget, GtkAllocation* allocation) {
-  widget->allocation = *allocation;
-}
-
 gpointer
 ada_gtk_default_expose_event_handler (gpointer klass) {
   return GTK_WIDGET_CLASS (klass)->expose_event;
@@ -726,82 +710,18 @@ ada_rgb_cmap_set (GdkRgbCmap* cmap, gint index, guint32 value)
   cmap->colors [index] = value;
 }
 
-/******************************************************
- **  Gtk.Socket
- ******************************************************/
-
-GdkWindow*
-ada_gtk_socket_get_plug_window (GtkSocket* socket)
-{
-  return socket->plug_window;
-}
-
 /*****************************************************
  ** Gtk.Selection and Gtk.Dnd functions
  *****************************************************/
 
-GdkAtom
-ada_gtk_dnd_get_selection (GtkSelectionData* selection)
-{
-  return selection->selection;
-}
-
-GdkAtom
-ada_gtk_dnd_get_target (GtkSelectionData* selection)
-{
-  return selection->target;
-}
-
-GdkAtom
-ada_gtk_dnd_get_type (GtkSelectionData* selection)
-{
-  return selection->type;
-}
-
-gint
-ada_gtk_dnd_get_format (GtkSelectionData* selection)
-{
-  return selection->format;
-}
-
-guchar*
-ada_gtk_dnd_get_data (GtkSelectionData* selection)
-{
-  return selection->data;
-}
-
-gint
-ada_gtk_dnd_get_length (GtkSelectionData* selection)
-{
-  return selection->length;
-}
-
-GdkDragAction
-ada_gtk_dnd_context_get_actions (GdkDragContext* context)
-{
-  return context->actions;
-}
-
-GdkDragAction
-ada_gtk_dnd_context_get_suggested_action (GdkDragContext* context)
-{
-  return context->suggested_action;
-}
-
-GdkDragAction
-ada_gtk_dnd_context_get_action (GdkDragContext* context)
-{
-  return context->action;
-}
-
 guint ada_gtk_dnd_context_targets_count (GdkDragContext* context)
 {
-  return g_list_length (context->targets);
+  return g_list_length (gdk_drag_context_list_targets (context));
 }
 
 void ada_gtk_dnd_context_get_targets (GdkDragContext* context, GdkAtom* result)
 {
-  GList *glist = context->targets;
+  GList *glist = gdk_drag_context_list_targets (context);
   GdkAtom* tmp = result;
   while (glist != NULL)
     {

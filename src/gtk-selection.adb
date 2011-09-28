@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@ package body Gtk.Selection is
    is
       function Internal
         (Selection : Selection_Data) return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gtk_dnd_get_data");
+      pragma Import (C, Internal, "gtk_selection_data_get_data");
 
    begin
       return Interfaces.C.Strings.Value (Internal (Selection));

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2000-2009, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -537,12 +537,12 @@ private
    pragma Import (C, Target_List_Add, "gtk_target_list_add");
    pragma Import (C, Target_List_Remove, "gtk_target_list_remove");
 
-   pragma Import (C, Get_Selection, "ada_gtk_dnd_get_selection");
-   pragma Import (C, Get_Target,    "ada_gtk_dnd_get_target");
-   pragma Import (C, Get_Type,      "ada_gtk_dnd_get_type");
-   pragma Import (C, Get_Format,    "ada_gtk_dnd_get_format");
-   pragma Import (C, Get_Data,      "ada_gtk_dnd_get_data");
-   pragma Import (C, Get_Length,    "ada_gtk_dnd_get_length");
+   pragma Import (C, Get_Selection, "gtk_selection_data_get_selection");
+   pragma Import (C, Get_Target,    "gtk_selection_data_get_target");
+   pragma Import (C, Get_Type,      "gtk_selection_data_get_data_type");
+   pragma Import (C, Get_Format,    "gtk_selection_data_get_format");
+   pragma Import (C, Get_Data,      "gtk_selection_data_get_data");
+   pragma Import (C, Get_Length,    "gtk_selection_data_get_length");
 
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");

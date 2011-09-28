@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,7 +79,7 @@ package body Gtk.Socket is
      (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window
    is
       function Internal (Socket : System.Address) return Gdk.Window.Gdk_Window;
-      pragma Import (C, Internal, "ada_gtk_socket_get_plug_window");
+      pragma Import (C, Internal, "gtk_socket_get_plug_window");
 
    begin
       return Internal (Get_Object (Socket));
