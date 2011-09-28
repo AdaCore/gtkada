@@ -432,6 +432,17 @@ ada_gtk_debug_get_ref_count (GObject* object) {
 }
 
 /********************************************************************
+ **  Returns the real widget name (as opposed to gtk_widget_get_name,
+ **  this one returns NULL instead of the class name if no name was
+ **  set.
+ ********************************************************************/
+
+char*
+ada_gtk_get_real_name (GtkWidget* w) {
+  return w->name;
+}
+
+/********************************************************************
  **  This function parses the command line and returns
  **  true if macro_switch exists. It is also removed from
  **  the command line
