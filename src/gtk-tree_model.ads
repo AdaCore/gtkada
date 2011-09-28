@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2001-2010, AdaCore                    --
+--               Copyright (C) 2001-2011, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -174,7 +174,7 @@ package Gtk.Tree_Model is
    function Up (Path : Gtk_Tree_Path) return Boolean;
    --  Moves the Path to point to it's parent node, if it has a parent.
    --  Return True if Path has a parent, and the move was made.
-   --  In practive, the depth of Path is decreased by 1.
+   --  In practice, the depth of Path is decreased by 1.
 
    procedure Down (Path : Gtk_Tree_Path);
    --  Moves Path to point to the first child of the current path.
