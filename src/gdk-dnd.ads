@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2005                          --
---                         AdaCore                                   --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -121,12 +120,16 @@ package Gdk.Dnd is
    --  actually used is the one returned by Get_Action, and depends on the
    --  mask set by the target.
 
-   function Get_Action (Context : Drag_Context) return Drag_Action;
+   function Get_Selected_Action (Context : Drag_Context) return Drag_Action;
    --  Return the action selected for the drag-and-drop operation.
    --  This is the highest priority action common between the drag site and the
    --  drop widget (for instance, if Source_Set was used with Action_Copy +
    --  Action_Move and Dest_Set was used with only Action_Move, this will
    --  be Action_Move).
+
+   function Get_Action (Context : Drag_Context) return Drag_Action
+                        renames Get_Selected_Action;
+   --  For backwards compatibility.
 
    type Gdk_Atom_Array is array (Natural range <>) of Gdk.Types.Gdk_Atom;
    function Get_Targets (Context : Drag_Context) return Gdk_Atom_Array;
@@ -187,11 +190,11 @@ package Gdk.Dnd is
 
 private
 
-   pragma Import (C, Get_Actions, "ada_gtk_dnd_context_get_actions");
+   pragma Import (C, Get_Actions, "gdk_drag_context_get_actions");
    pragma Import
      (C, Get_Suggested_Action,
-     "ada_gtk_dnd_context_get_suggested_action");
-   pragma Import (C, Get_Action, "ada_gtk_dnd_context_get_action");
+     "gdk_drag_context_get_suggested_action");
+   pragma Import (C, Get_Action, "gdk_drag_context_get_selected_action");
 
    Action_Default : constant Drag_Action := 2 ** 0;
    Action_Copy    : constant Drag_Action := 2 ** 1;
