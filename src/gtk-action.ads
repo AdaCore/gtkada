@@ -59,16 +59,16 @@
 --  <group>Action-based menus</group>
 
 with Glib.G_Icon;
+with Glib.Object;
 with Glib.Properties;
 with Gtk.Accel_Group;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 with System;
 
 package Gtk.Action is
 
-   type Gtk_Action_Record is new Gtk.Object.Gtk_Object_Record with private;
+   type Gtk_Action_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Action is access all Gtk_Action_Record'Class;
 
    procedure Gtk_New
@@ -384,7 +384,7 @@ package Gtk.Action is
    Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
-   type Gtk_Action_Record is new Gtk.Object.Gtk_Object_Record with null record;
+   type Gtk_Action_Record is new Glib.Object.GObject_Record with null record;
 
    Action_Group_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("action-group");

@@ -773,27 +773,27 @@ ada_gnode_first_child (GNode * node)
  *
  */
 
-guint32 ada_object_flags (GtkObject * object)
+guint32 ada_widget_flags (GtkWidget * widget)
 {
-  return GTK_OBJECT_FLAGS (object);
+  return GTK_WIDGET_FLAGS (widget);
 }
 
 void
-ada_object_set_flags (GtkObject * object, guint32 flags)
+ada_widget_set_flags (GtkWidget * widget, guint32 flags)
 {
-  GTK_OBJECT_SET_FLAGS (object, flags);
+  GTK_WIDGET_SET_FLAGS (widget, flags);
 }
 
 gint
-ada_object_flag_is_set (GtkObject * object, guint32 flag)
+ada_widget_flag_is_set (GtkWidget * widget, guint32 flag)
 {
-  return ((GTK_OBJECT_FLAGS (object) & flag) != 0);
+  return ((GTK_WIDGET_FLAGS (widget) & flag) != 0);
 }
 
 void
-ada_object_unset_flags (GtkObject * object, guint32 flags)
+ada_widget_unset_flags (GtkWidget * widget, guint32 flags)
 {
-  GTK_OBJECT_UNSET_FLAGS (object, flags);
+  GTK_WIDGET_UNSET_FLAGS (widget, flags);
 }
 
 /*
@@ -801,12 +801,6 @@ ada_object_unset_flags (GtkObject * object, guint32 flags)
  * Widget macros
  *
  */
-
-guint32
-ada_widget_is_sensitive (GtkWidget * widget)
-{
-  return GTK_WIDGET_IS_SENSITIVE (widget);
-}
 
 guint32
 ada_widget_drawable (GtkWidget * widget)

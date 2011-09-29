@@ -37,10 +37,11 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 
+with Glib.Object;
+
 with Gdk.Event;
 with Gdk.Types;
 with Gtk.Widget;
-with Gtk.Object;
 with Pango.Font;
 with System;
 
@@ -461,7 +462,7 @@ package Gtk.Main is
 
    function Quit_Add_Destroy
      (Main_Level : Guint;
-      Object     : access Gtk.Object.Gtk_Object_Record'Class)
+      Object     : access Glib.Object.GObject_Record'Class)
       return Quit_Handler_Id;
    pragma Obsolescent (Quit_Add_Destroy);
    --  Ensure that Object is destroyed when exiting the main loop at Main_Level

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -383,13 +383,13 @@ package body Gtk.File_Chooser is
 
    function List_Filters
      (Chooser : Gtk_File_Chooser)
-      return Gtk.Object.Object_SList.GSlist
+      return Glib.Object.Object_List.GSlist
    is
       function Internal (Chooser : Gtk_File_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_list_filters");
-      L : Gtk.Object.Object_SList.GSlist;
+      L : Glib.Object.Object_List.GSlist;
    begin
-      Gtk.Object.Object_SList.Set_Object (L, Internal (Chooser));
+      Glib.Object.Object_List.Set_Object (L, Internal (Chooser));
       return L;
    end List_Filters;
 

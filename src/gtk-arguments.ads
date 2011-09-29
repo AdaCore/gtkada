@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2004 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                  Copyright (C) 2000-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,8 +46,8 @@
 --  <group>Signal handling</group>
 
 with Glib.Values;
+with Glib.Object;
 with Gdk.Event;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Arguments is
@@ -80,7 +80,7 @@ package Gtk.Arguments is
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
    function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
    function To_Object
-     (Args : Gtk_Args; Num : Positive) return Gtk.Object.Gtk_Object;
+     (Args : Gtk_Args; Num : Positive) return Glib.Object.GObject;
    --  This function can return null, if the C object was not created.
    function To_Requisition (Args : Gtk_Args; Num : Positive)
       return Gtk.Widget.Gtk_Requisition_Access;

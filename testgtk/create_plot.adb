@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003-2006 AdaCore               --
+--                Copyright (C) 2003-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -251,8 +251,8 @@ package body Create_Plot is
    --------------
 
    function Gaussian  (Plot  : access Gtk_Plot_Record'Class;
-                       Set   : in     Gtk_Plot_Data;
-                       X     : in     Gdouble;
+                       Set   :        Gtk_Plot_Data;
+                       X     :        Gdouble;
                        Error : access Boolean)
                       return Gdouble
    is

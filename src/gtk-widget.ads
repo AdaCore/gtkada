@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,11 +70,10 @@ with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Adjustment;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Style;
 
 package Gtk.Widget is
-   type Gtk_Widget_Record is new Object.Gtk_Object_Record with private;
+   type Gtk_Widget_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
    type Gtk_Requisition is record
@@ -128,6 +127,28 @@ package Gtk.Widget is
    -------------------------
    -- Widgets' life cycle --
    -------------------------
+
+   procedure Destroy (Widget : access Gtk_Widget_Record);
+   --  Destroy the widget.
+   --  This emits a "destroy" signal, calls all your handlers, and then
+   --  unconnects them all. The object is then unref-ed, and if its reference
+   --  count goes down to 0, the memory associated with the object and its
+   --  user data is freed.
+   --  Note that when you destroy handlers are called, the user_data is still
+   --  available.
+   --
+   --  When a widget is destroyed, it will break any references it holds to
+   --  other objects. If the widget is inside a container, the widget will be
+   --  removed from the container. If the widget is a toplevel (derived from
+   --  Gtk_Window), it will be removed from the list of toplevels, and the
+   --  reference GTK+ holds to it will be removed. Removing widget from its
+   --  container or the list of toplevels results in the widget being
+   --  finalized, unless you've added additional references to the widget with
+   --  Ref.
+   --
+   --  In most cases, only toplevel widgets (windows) require explicit
+   --  destruction, because when you destroy a toplevel its children will be
+   --  destroyed as well.
 
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
    --  This function should be used as a callback to destroy a widget.
@@ -968,7 +989,7 @@ package Gtk.Widget is
       Vadj   : Gtk.Adjustment.Gtk_Adjustment);
    --  Emit the "set_scroll_adjustments" signal.
    --  The exact signal emitted depends on the widget type (see
-   --  Gtk.Object.Initialize_Class_Record).
+   --  Glib.Object.Initialize_Class_Record).
    --  The handler creates the adjustments if null is passed as argument, and
    --  makes sure both adjustments are in the correct range.
 
@@ -1239,8 +1260,7 @@ package Gtk.Widget is
    -----------
    -- Flags --
    -----------
-   --  Some additional flags are defined for all the visual objects (widgets).
-   --  They are defined in addition to the ones defined in Gtk.Object.
+   --  Some flags are defined for all the visual objects (widgets).
    --  These flags are important in that they define exactly the different
    --  states a widget can be in.
    --
@@ -1322,6 +1342,10 @@ package Gtk.Widget is
    --    focus. This is how the default button in a dialog is automatically
    --    changed when you press another button.
 
+   In_Destruction : constant := 2 ** 0;
+   Floating       : constant := 2 ** 1;
+   Reserved_1     : constant := 2 ** 2;
+   Reserved_2     : constant := 2 ** 3;
    Toplevel         : constant := 2 ** 4;
    No_Window        : constant := 2 ** 5;
    Realized         : constant := 2 ** 6;
@@ -1340,6 +1364,36 @@ package Gtk.Widget is
    App_Paintable    : constant := 2 ** 19;
    Receives_Default : constant := 2 ** 20;
    Double_Buffered  : constant := 2 ** 21;
+
+   function Flags (Widget : access Gtk_Widget_Record) return Guint32;
+   --  Return the flags that are set for the object, as a binary mask.
+
+   procedure Set_Flags (Widget : access Gtk_Widget_Record; Flags : Guint32);
+   --  Set some specific flags for the object.
+   --  Flags is a mask that will be added to the current flags of the object.
+
+   procedure Unset_Flags (Widget : access Gtk_Widget_Record; Flags : Guint32);
+   --  Unset some specific flags for the object.
+   --  Flags is a mask that will be deleted from the current flags of the
+   --  object.
+
+   function Flag_Is_Set
+     (Widget : access Gtk_Widget_Record; Flag : Guint32) return Boolean;
+   --  Return True if the specific flag Flag is set for the object.
+
+   function In_Destruction_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   --  Test if the Destroyed flag is set for the object.
+
+   --  <doc_ignore>
+   function Destroyed_Is_Set (Widget : access Gtk_Widget_Record'Class)
+      return Boolean renames In_Destruction_Is_Set;
+   --  backward compatibility only
+   --  </doc_ignore>
+
+   function Floating_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   --  Test if the Floating flag is set for the object.
 
    function Toplevel_Is_Set
      (Widget : access Gtk_Widget_Record'Class) return Boolean;
@@ -1957,12 +2011,22 @@ package Gtk.Widget is
    --    window if there should be some clean ups first (like saving the
    --    document).
    --
+   --  - "destroy"
+   --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
+   --
+   --    Raised when the widget is about to be destroyed. The "destroyed"
+   --    flag has been set on the object first. Handlers should not keep
+   --    a reference on the object.
+   --    Note that when your destroy handlers are called, the user_data is
+   --    still available.
+   --    The default implementation destroys all the handlers.
+   --
    --  - "destroy_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
    --    This signal is apparently never emitted by Gtk+. You might want to
-   --    use "destroy" instead, which is documented in Gtk.Object.
+   --    use "destroy" instead.
    --
    --  - "expose_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
@@ -2194,6 +2258,8 @@ package Gtk.Widget is
                                       "configure_event";
    Signal_Delete_Event            : constant Glib.Signal_Name :=
                                       "delete_event";
+   Signal_Destroy                 : constant Glib.Signal_Name :=
+                                      "destroy";
    Signal_Destroy_Event           : constant Glib.Signal_Name :=
                                       "destroy_event";
    Signal_Direction_Changed       : constant Glib.Signal_Name :=
@@ -2307,7 +2373,7 @@ package Gtk.Widget is
 
 private
 
-   type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
+   type Gtk_Widget_Record is new Glib.Object.GObject_Record with null record;
 
    Name_Property                : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("name");

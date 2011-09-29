@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2002                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,12 +28,12 @@
 
 with Glib; use Glib;
 with Gnome.Dialog;
-with Gtk.Object;
+with Glib.Object;
 with Gtkada.Types; use Gtkada.Types;
 
 package Gnome.Client is
 
-   type Gnome_Client_Record is new Gtk.Object.Gtk_Object_Record with private;
+   type Gnome_Client_Record is new Glib.Object.GObject_Record with private;
    type Gnome_Client is access all Gnome_Client_Record'Class;
 
    type Gnome_Interact_Style is (
@@ -242,7 +241,7 @@ package Gnome.Client is
 
 private
    type Gnome_Client_Record is new
-     Gtk.Object.Gtk_Object_Record with null record;
+     Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gnome_client_get_type");
 end Gnome.Client;

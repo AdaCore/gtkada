@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,7 +52,7 @@
 --
 --  If you want to create your own new widget type that can be inserted
 --  directly into a scrolled_window, you need to specify a signal for
---  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
+--  Set_Scroll_Adjustments in the call to Glib.Object.Initialize_Class_Record.
 --
 --  </description>
 --  <c_version>2.16.6</c_version>

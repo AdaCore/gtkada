@@ -53,7 +53,6 @@ with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Object;
 with Pango.Font;
 with Pango.Layout;
 with Interfaces.C.Strings;
@@ -425,7 +424,7 @@ package Gtk.Style is
    --  things depending on the widget type.
 
    procedure Draw_Insertion_Cursor
-     (Widget     : access Gtk.Object.Gtk_Object_Record'Class;
+     (Widget     : access Glib.Object.GObject_Record'Class;
       Drawable   : Gdk_Drawable;
       Area       : Gdk.Rectangle.Gdk_Rectangle;
       Location   : Gdk.Rectangle.Gdk_Rectangle;
@@ -445,7 +444,7 @@ package Gtk.Style is
       State_Type          : Gtk.Enums.Gtk_State_Type;
       Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
       Area                : Gdk.Rectangle.Gdk_Rectangle;
-      Widget              : access Gtk.Object.Gtk_Object_Record'Class;
+      Widget              : access Glib.Object.GObject_Record'Class;
       Detail              : String := "paned";
       X, Y, Width, Height : Gint;
       Orientation         : Gtk.Enums.Gtk_Orientation);

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2010, AdaCore                  --
+--                 Copyright (C) 2003-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -49,7 +49,6 @@ with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Fixed;            use Gtk.Fixed;
 with Gtk.Notebook;         use Gtk.Notebook;
-with Gtk.Object;           use Gtk.Object;
 with Gtk.Style;            use Gtk.Style;
 with Gtk.Widget;           use Gtk.Widget;
 
@@ -63,8 +62,8 @@ package body Gtkada.Multi_Paned is
    Minimum_Width : constant := 1;
    --  Minimum width for a child
 
-   Paned_Class_Record : Gtk.Object.GObject_Class :=
-     Gtk.Object.Uninitialized_Class;
+   Paned_Class_Record : Glib.Object.GObject_Class :=
+     Glib.Object.Uninitialized_Class;
 
    type Resize_Handle is record
       Position : Gtk.Widget.Gtk_Allocation;
@@ -520,7 +519,7 @@ package body Gtkada.Multi_Paned is
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class) is
    begin
       Gtk.Fixed.Initialize (Win);
-      Gtk.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Win,
          Signals      => (1 .. 0 => Null_Ptr),
          Class_Record => Paned_Class_Record,

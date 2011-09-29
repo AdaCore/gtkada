@@ -60,11 +60,11 @@
 
 with Glib.Properties;
 with Glib.Generic_Properties;
+with Glib.Object;
 with Gdk.Rectangle;
 with Gtk;
 with Gtk.Cell_Renderer;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 with Gtk.Tree_Model;
 with Gtk.Widget;
 
@@ -75,7 +75,7 @@ with Ada.Unchecked_Conversion;
 package Gtk.Tree_View_Column is
 
    type Gtk_Tree_View_Column_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+     new Glib.Object.GObject_Record with private;
    type Gtk_Tree_View_Column is access all Gtk_Tree_View_Column_Record'Class;
 
    function Convert is new Ada.Unchecked_Conversion
@@ -584,7 +584,7 @@ package Gtk.Tree_View_Column is
 
 private
    type Gtk_Tree_View_Column_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
 
       Alignment_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("alignment");

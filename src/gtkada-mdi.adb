@@ -95,7 +95,6 @@ pragma Elaborate_All (Gtk.Main);
 with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
-with Gtk.Object;              use Gtk.Object;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Rc;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
@@ -141,10 +140,10 @@ package body Gtkada.MDI is
    --  Windows the later seems to be set to 0, and thus we can't change a
    --  notebook page by clicking on its tab without splitting the notebook
 
-   MDI_Class_Record        : Gtk.Object.GObject_Class :=
-     Gtk.Object.Uninitialized_Class;
-   Child_Class_Record      : Gtk.Object.GObject_Class :=
-     Gtk.Object.Uninitialized_Class;
+   MDI_Class_Record        : Glib.Object.GObject_Class :=
+     Glib.Object.Uninitialized_Class;
+   Child_Class_Record      : Glib.Object.GObject_Class :=
+     Glib.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
      (1 => New_String (String (Signal_Child_Selected)),
@@ -853,7 +852,7 @@ package body Gtkada.MDI is
 
       MDI.Default_Title_Color := Get_Bg (Get_Default_Style, State_Normal);
 
-      Gtk.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (MDI,
          Signals      => MDI_Signals,
          Class_Record => MDI_Class_Record,
@@ -1585,7 +1584,7 @@ package body Gtkada.MDI is
          Destroy (C.Menu_Item);
       end if;
 
-      if not Gtk.Object.In_Destruction_Is_Set (C.MDI) then
+      if not In_Destruction_Is_Set (C.MDI) then
          --  Do not unfloat the child, since the toplevel is no longer a
          --  Gtk_Window, and we would get a CE in Float_Child.
 
@@ -1652,7 +1651,7 @@ package body Gtkada.MDI is
 
    procedure Destroy_Initial_Child (Child : access Gtk_Widget_Record'Class) is
    begin
-      if not Gtk.Object.Destroyed_Is_Set (Child) then
+      if not In_Destruction_Is_Set (Child) then
          Destroy (Child);
       end if;
    end Destroy_Initial_Child;
@@ -2458,7 +2457,7 @@ package body Gtkada.MDI is
       end if;
 
       Gtk.Event_Box.Initialize (Child);
-      Gtk.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Child,
          Signals      => Child_Signals,
          Class_Record => Child_Class_Record,
@@ -3205,7 +3204,7 @@ package body Gtkada.MDI is
 
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
-      if C = Old or else Gtk.Object.In_Destruction_Is_Set (C.MDI) then
+      if C = Old or else In_Destruction_Is_Set (C.MDI) then
          return;
       end if;
 
@@ -4184,9 +4183,8 @@ package body Gtkada.MDI is
    procedure Removed_From_Notebook
      (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args)
    is
-      C                     : constant  Gtk_Widget :=
-                                Gtk_Widget (To_Object (Args, 1));
-      Child                 : MDI_Child;
+      C     : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      Child : MDI_Child;
    begin
       if C.all not in MDI_Child_Record'Class then
          return;
@@ -4196,7 +4194,7 @@ package body Gtkada.MDI is
       Child.Tab_Label := null;
       Set_State (Child, Normal);
 
-      if not Gtk.Object.In_Destruction_Is_Set (Note) then
+      if not In_Destruction_Is_Set (Note) then
          Print_Debug ("Removed_From_Notebook: " & Get_Title (Child));
 
          --  No more pages in the notebook ? => Destroy it

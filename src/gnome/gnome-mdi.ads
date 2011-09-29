@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,14 +30,14 @@ with Glib; use Glib;
 with Gnome.App;
 with Gnome.App_Helper;
 with Gnome.MDI_Child;
-with Gtk.Object;
+with Glib.Object;
 with Gtk.Widget;
 
 package Gnome.MDI is
 
    use Gnome.MDI_Child;
 
-   type Gnome_MDI_Record is new Gtk.Object.Gtk_Object_Record with private;
+   type Gnome_MDI_Record is new Glib.Object.GObject_Record with private;
    type Gnome_MDI is access all Gnome_MDI_Record'Class;
 
    type Gnome_MDI_Mode is mod 2 ** 32;
@@ -120,7 +119,7 @@ package Gnome.MDI is
 
    procedure Register
      (MDI    : access Gnome_MDI_Record;
-      Object : access Gtk.Object.Gtk_Object_Record'Class);
+      Object : access Glib.Object.GObject_Record'Class);
 
    function Remove_All
      (MDI    : access Gnome_MDI_Record;
@@ -162,7 +161,7 @@ package Gnome.MDI is
 
    procedure Unregister
      (MDI    : access Gnome_MDI_Record;
-      Object : access Gtk.Object.Gtk_Object_Record'Class);
+      Object : access Glib.Object.Gtk_Object_Record'Class);
 
    procedure Update_Child
      (MDI   : access Gnome_MDI_Record;
@@ -210,7 +209,7 @@ package Gnome.MDI is
    --  </signals>
 
 private
-   type Gnome_MDI_Record is new Gtk.Object.Gtk_Object_Record with null record;
+   type Gnome_MDI_Record is new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gnome_mdi_get_type");
 end Gnome.MDI;
