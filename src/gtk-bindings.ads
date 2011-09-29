@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -103,7 +103,6 @@
 with Gdk.Event;
 with Gdk.Types;
 with Glib.Object;
-with Gtk.Object;
 
 package Gtk.Bindings is
 
@@ -131,7 +130,7 @@ package Gtk.Bindings is
    --  used in Binding_Set_By_Class.
 
    function Activate
-     (Object    : access Gtk.Object.Gtk_Object_Record'Class;
+     (Object    : access Glib.Object.GObject_Record'Class;
       Keyval    : Guint;
       Modifiers : Gdk.Types.Gdk_Modifier_Type)
       return Boolean;
@@ -139,7 +138,7 @@ package Gtk.Bindings is
    --  binding on object.
 
    function Activate_Event
-     (Object : access Gtk.Object.Gtk_Object_Record;
+     (Object : access Glib.Object.GObject_Record;
       Event  : Gdk.Event.Gdk_Event_Key)
       return Boolean;
    --  Looks up key bindings for Object to find one matching
@@ -150,7 +149,7 @@ package Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Object      : access Gtk.Object.Gtk_Object_Record'Class)
+      Object      : access Glib.Object.GObject_Record'Class)
       return Boolean;
    --  Find a key binding matching keyval and modifiers within binding_set and
    --  activate the binding on object.

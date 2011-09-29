@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007, AdaCore                   --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,13 +52,12 @@
 with Glib.Object;
 with Glib.Properties;
 with Gtk.Action;
-with Gtk.Object;
 with Interfaces.C.Strings;
 with System;
 
 package Gtk.Action_Group is
 
-   type Gtk_Action_Group_Record is new Gtk.Object.Gtk_Object_Record with
+   type Gtk_Action_Group_Record is new Glib.Object.GObject_Record with
      null record;
    type Gtk_Action_Group is access all Gtk_Action_Group_Record'Class;
 

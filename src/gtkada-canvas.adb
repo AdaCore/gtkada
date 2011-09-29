@@ -63,7 +63,6 @@ with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;
 with Gtk.Main;                           use Gtk.Main;
 pragma Elaborate_All (Gtk.Main);
-with Gtk.Object;
 with Gtk.Style;                          use Gtk.Style;
 with Gtk.Widget;                         use Gtk.Widget;
 
@@ -590,8 +589,8 @@ package body Gtkada.Canvas is
 
       Unref (C.Annotation_Layout);
 
-      Destroy (C.Hadj);
-      Destroy (C.Vadj);
+      Unref (C.Hadj);
+      Unref (C.Vadj);
    end Canvas_Destroyed;
 
    ----------------------------
@@ -618,7 +617,7 @@ package body Gtkada.Canvas is
          Gtk_New (Canv.Hadj, 0.0, 0.0, 0.0, 1.0, 1.0);
       end if;
       Ref (Canv.Hadj);
-      Sink (Canv.Hadj);
+      Ref_Sink (Canv.Hadj);
 
       if Canv.Vadj /= null then
          Unref (Canv.Vadj);
@@ -630,7 +629,7 @@ package body Gtkada.Canvas is
          Gtk_New (Canv.Vadj, 0.0, 0.0, 0.0, 1.0, 1.0);
       end if;
       Ref (Canv.Vadj);
-      Sink (Canv.Vadj);
+      Ref_Sink (Canv.Vadj);
 
       Scrolled (Canvas);
 
@@ -3586,7 +3585,7 @@ package body Gtkada.Canvas is
       if Item.Selected then
          Canvas.Selected_Count := Canvas.Selected_Count - 1;
          Item.Selected := False;
-         if not Gtk.Object.In_Destruction_Is_Set (Canvas) then
+         if not In_Destruction_Is_Set (Canvas) then
             Selected (Item, Canvas, Is_Selected => False);
          end if;
 

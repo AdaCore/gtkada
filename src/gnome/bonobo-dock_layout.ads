@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2002                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,14 +29,14 @@
 with Glib; use Glib;
 with Gtk;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
+with Glib.Object;
 with Bonobo.Dock;
 with Bonobo.Dock_Item;
 
 package Bonobo.Dock_Layout is
 
    type Bonobo_Dock_Layout_Record is new
-     Gtk.Object.Gtk_Object_Record with private;
+     Glib.Object.GObject_Record with private;
    type Bonobo_Dock_Layout is access all Bonobo_Dock_Layout_Record'Class;
 
    procedure Bonobo_New (Widget : out Bonobo_Dock_Layout);
@@ -116,7 +115,7 @@ package Bonobo.Dock_Layout is
 
 private
    type Bonobo_Dock_Layout_Record is new
-     Gtk.Object.Gtk_Object_Record with null record;
+     Glin.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "bonobo_dock_layout_get_type");
 end Bonobo.Dock_Layout;

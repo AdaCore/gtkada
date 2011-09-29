@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2010, AdaCore                    --
+--                Copyright (C) 2010-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,12 +46,12 @@
 --  <c_version>2.16.6</c_version>
 
 with Glib.GSlist;
-with Gtk.Object;
+with Glib.Object;
 
 package Gtk.Recent_Filter is
 
    type Gtk_Recent_Filter_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+     new Glib.Object.GObject_Record with private;
    type Gtk_Recent_Filter is access all Gtk_Recent_Filter_Record'Class;
 
    function Get_Type return GType;
@@ -122,7 +122,7 @@ package Gtk.Recent_Filter is
 private
 
    type Gtk_Recent_Filter_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_recent_filter_get_type");
 

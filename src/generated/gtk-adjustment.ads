@@ -48,12 +48,12 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
-with Gtk.Object;      use Gtk.Object;
 
 package Gtk.Adjustment is
 
-   type Gtk_Adjustment_Record is new Gtk_Object_Record with null record;
+   type Gtk_Adjustment_Record is new GObject_Record with null record;
    type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 
    ------------------

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                Copyright (C) 2006-2008, AdaCore                   --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,7 +50,6 @@ with Gtk.Label;                use Gtk.Label;
 with Gtk.GEntry;               use Gtk.GEntry;
 with Gtk.Handlers;             use Gtk.Handlers;
 with Gtk.Notebook;             use Gtk.Notebook;
-with Gtk.Object;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
 with Gtk.Spin_Button;          use Gtk.Spin_Button;
 with Gtk.Table;                use Gtk.Table;
@@ -813,7 +812,7 @@ package body Gtkada.Properties is
 
       Gtk_New (Editor.Tips);
       Ref (Editor.Tips);
-      Sink (Editor.Tips);
+      Ref_Sink (Editor.Tips);
 
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Editor, Box);
@@ -1026,7 +1025,7 @@ package body Gtkada.Properties is
    is
       T : GType;
    begin
-      if not Gtk.Object.In_Destruction_Is_Set (Editor) then
+      if not In_Destruction_Is_Set (Editor) then
          if Editor.Object /= null then
             Weak_Unref
               (Editor.Object, Object_Destroyed'Access, Get_Object (Editor));

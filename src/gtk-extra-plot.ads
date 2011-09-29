@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -98,6 +98,8 @@
 --  <testgtk>create_plot.adb</testgtk>
 --  <screenshot>gtk-plot</screenshot>
 
+with Glib.Object;
+
 with System;
 with Gdk.Color;
 with Gdk.Drawable;
@@ -105,7 +107,6 @@ with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gtk.Enums;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Extra.Plot is
@@ -113,7 +114,7 @@ package Gtk.Extra.Plot is
    type Gtk_Plot_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Plot is access all Gtk_Plot_Record'Class;
 
-   type Gtk_Plot_Axis_Record is new Gtk.Object.Gtk_Object_Record with private;
+   type Gtk_Plot_Axis_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Plot_Axis is access all Gtk_Plot_Axis_Record'Class;
    --  One of the axis of the plot.
    --  There are up to six axis for each plot, one on each side. They can have
@@ -984,8 +985,8 @@ package Gtk.Extra.Plot is
    --  <doc_ignore>
    generic
       with function Func (Plot  : access Gtk_Plot_Record'Class;
-                          Set   : in     Gtk_Plot_Data;
-                          X     : in     Gdouble;
+                          Set   :        Gtk_Plot_Data;
+                          X     :        Gdouble;
                           Error : access Boolean)
                          return Gdouble;
    function Generic_Plot_Function (Plot  : System.Address;
@@ -999,9 +1000,9 @@ package Gtk.Extra.Plot is
    --  <doc_ignore>
    generic
       with function Func (Plot  : access Gtk_Plot_Record'Class;
-                          Set   : in     Gtk_Plot_Data;
-                          X     : in     Gdouble;
-                          Y     : in     Gdouble;
+                          Set   :        Gtk_Plot_Data;
+                          X     :        Gdouble;
+                          Y     :        Gdouble;
                           Error : access Boolean)
                          return Gdouble;
    function Generic_Plot3D_Function (Plot  : System.Address;
@@ -1097,7 +1098,7 @@ package Gtk.Extra.Plot is
 
 private
    type Gtk_Plot_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
-   type Gtk_Plot_Axis_Record is new Gtk.Object.Gtk_Object_Record with
+   type Gtk_Plot_Axis_Record is new Glib.Object.GObject_Record with
      null record;
 
    Label_None   : constant Plot_Label_Pos := 0;

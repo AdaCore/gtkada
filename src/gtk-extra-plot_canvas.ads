@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,10 +41,10 @@
 --  <c_version>gtkextra 2.1.1</c_version>
 --  <group>Plotting Data</group>
 
+with Glib.Object;
 with Gdk;
 with Gtk.Extra.Plot_Data;
 with Gtk.Fixed;
-with Gtk.Object;
 with Gdk.Color;
 
 package Gtk.Extra.Plot_Canvas is
@@ -53,7 +53,7 @@ package Gtk.Extra.Plot_Canvas is
    type Gtk_Plot_Canvas is access all Gtk_Plot_Canvas_Record'Class;
 
    type Gtk_Plot_Canvas_Child_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+     new Glib.Object.GObject_Record with private;
    type Gtk_Plot_Canvas_Child is access all Gtk_Plot_Canvas_Child_Record'Class;
 
    ----------------
@@ -274,7 +274,7 @@ package Gtk.Extra.Plot_Canvas is
    -- Flags --
    -----------
    --  Some flags are defined for this widget. You can not access them through
-   --  the usual interface in Gtk.Object.Flag_Is_Set since this widget is not
+   --  the usual interface in Gtk.Widget.Flag_Is_Set since this widget is not
    --  part of the standard gtk+ packages. Instead, use the functions below.
    --
    --  - "can_select"
@@ -294,14 +294,14 @@ package Gtk.Extra.Plot_Canvas is
 
    function Plot_Canvas_Flag_Is_Set
      (Plot_Canvas : access Gtk_Plot_Canvas_Record;
-      Flag        : in Guint16)
+      Flag        : Guint16)
      return Boolean;
    --  Test whether one of the flags for a Gtk_Plot_Canvas widget or its
    --  children is set.
 
    procedure Plot_Canvas_Set_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
-      Flags        : in Guint16);
+      Flags        : Guint16);
    --  Set the flags for a Gtk_Plot_Canvas widget or its children.
    --  Note that the flags currently set are not touched by this function.
    --  This can only be used for the flags defined in the
@@ -309,7 +309,7 @@ package Gtk.Extra.Plot_Canvas is
 
    procedure Plot_Canvas_Unset_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
-      Flags        : in Guint16);
+      Flags        : Guint16);
    --  Unset the flags for a Gtk_Plot_Canvas.
 
    -------------
@@ -383,7 +383,7 @@ private
    type Gtk_Plot_Canvas_Record is new Gtk.Fixed.Gtk_Fixed_Record
      with null record;
    type Gtk_Plot_Canvas_Child_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
    pragma Import (C, Get_Type, "gtk_plot_canvas_get_type");
    pragma Import (C, Child_Get_Type, "gtk_plot_canvas_child_get_type");
 

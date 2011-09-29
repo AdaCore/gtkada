@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,10 +29,10 @@
 -----------------------------------------------------------------------
 
 with Glib;             use Glib;
+with Glib.Object;      use Glib.Object;
 with Gdk.Event;        use Gdk.Event;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Object;       use Gtk.Object;
 with Gtk.Ruler;        use Gtk.Ruler;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Table;        use Gtk.Table;
@@ -80,7 +81,7 @@ package body Create_Rulers is
       Gtk_New_Hruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
       Motion_Cb.Object_Connect
-        (Gtk_Object (Darea), "motion_notify_event",
+        (GObject (Darea), "motion_notify_event",
          Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
          Slot_Object => Ruler);
       Attach
@@ -89,7 +90,7 @@ package body Create_Rulers is
       Gtk_New_Vruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
       Motion_Cb.Object_Connect
-        (Gtk_Object (Darea), "motion_notify_event",
+        (GObject (Darea), "motion_notify_event",
          Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
          Slot_Object => Ruler);
       Attach
@@ -99,4 +100,3 @@ package body Create_Rulers is
    end Run;
 
 end Create_Rulers;
-

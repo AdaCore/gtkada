@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -114,7 +114,6 @@ with Glib.Properties;
 with Glib.Types;
 with Gtk.Enums;
 with Gtk.File_Filter;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.File_Chooser is
@@ -430,11 +429,11 @@ package Gtk.File_Chooser is
 
    function List_Filters
      (Chooser : Gtk_File_Chooser)
-      return Gtk.Object.Object_SList.GSlist;
+      return Glib.Object.Object_List.GSlist;
    --  Lists the current set of user-selectable filters. The list contains
    --  Gtk_File_Filter instances.
    --  Do not free the contents of list, still owned by gtk+, but you must free
-   --  the list itself with Gtk.Object.Object_SList.Free.
+   --  the list itself with Glib.Object.Object_List.Free.
 
    ---------------------
    -- Shorcut folders --

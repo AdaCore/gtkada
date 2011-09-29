@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -165,7 +165,7 @@ package body Gtk.Main is
 
    function Quit_Add_Destroy
      (Main_Level : Guint;
-      Object     : access Gtk.Object.Gtk_Object_Record'Class)
+      Object     : access Glib.Object.GObject_Record'Class)
       return Quit_Handler_Id
    is
       function Internal
@@ -515,7 +515,7 @@ package body Gtk.Main is
         (Interval : Guint32;
          Func     : Callback;
          D        : Data_Type;
-         Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id
+         Destroy  : Destroy_Callback := null) return Timeout_Handler_Id
       is
          function Internal
            (Interval : Guint32;

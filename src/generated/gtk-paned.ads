@@ -163,8 +163,9 @@ package Gtk.Paned is
    --  Add a child to the top or left pane. You can not change dynamically the
    --  attributes Resize and Shrink. Instead, you have to remove the child from
    --  the container, and put it back with the new value of the attributes. You
-   --  should also first call Gtk.Object.Ref on the child so as to be sure it
-   --  is not destroyed when you remove it, and Gtk.Object.Unref it at the end.
+   --  should also first call Glib.Object.Ref on the child so as to be sure it
+   --  is not destroyed when you remove it, and Glib.Object.Unref it at the
+   --  end.
    --  See the example in testgtk/ in the GtkAda distribution.
 
    procedure Pack2

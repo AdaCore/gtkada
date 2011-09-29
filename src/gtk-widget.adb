@@ -1188,7 +1188,7 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record'Class) return Boolean
    is
       function Internal (Widget : System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_widget_is_sensitive");
+      pragma Import (C, Internal, "gtk_widget_is_sensitive");
 
    begin
       return Boolean'Val (Internal (Get_Object (Widget)));
@@ -2432,5 +2432,115 @@ package body Gtk.Widget is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, Visible);
    end Visible_Is_Set;
+
+   -----------
+   -- Flags --
+   -----------
+
+   function Flags (Widget : access Gtk_Widget_Record) return Guint32 is
+      function Internal (Object : System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_widget_flags");
+
+   begin
+      return Internal (Get_Object (Widget));
+   end Flags;
+
+   ---------------
+   -- Set_Flags --
+   ---------------
+
+   procedure Set_Flags (Widget : access Gtk_Widget_Record; Flags : Guint32) is
+      procedure Internal (Widget : System.Address; Flags : Guint32);
+      pragma Import (C, Internal, "ada_widget_set_flags");
+
+   begin
+      Internal (Get_Object (Widget), Flags);
+   end Set_Flags;
+
+   -----------------
+   -- Unset_Flags --
+   -----------------
+
+   procedure Unset_Flags
+     (Widget : access Gtk_Widget_Record; Flags : Guint32)
+   is
+      procedure Internal (Object : System.Address; Flags : Guint32);
+      pragma Import (C, Internal, "ada_widget_unset_flags");
+
+   begin
+      Internal (Get_Object (Widget), Flags);
+   end Unset_Flags;
+
+   -----------------
+   -- Flag_Is_Set --
+   -----------------
+
+   function Flag_Is_Set
+     (Widget : access Gtk_Widget_Record; Flag : Guint32) return Boolean
+   is
+      function Internal (Widget : System.Address; Flag : Guint32) return Gint;
+      pragma Import (C, Internal, "ada_widget_flag_is_set");
+
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget), Flag));
+   end Flag_Is_Set;
+
+   ---------------------
+   -- Floating_Is_Set --
+   ---------------------
+
+   function Floating_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean is
+   begin
+      return Flag_Is_Set (Widget, Floating);
+   end Floating_Is_Set;
+
+   ---------------------------
+   -- In_Destruction_Is_Set --
+   ---------------------------
+
+   function In_Destruction_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean
+   is
+      use type System.Address;
+   begin
+      return Get_Object (Widget) = System.Null_Address
+        or else Flag_Is_Set (Widget, In_Destruction);
+   end In_Destruction_Is_Set;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   procedure Destroy (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_destroy");
+
+      procedure Unref_Internal (Widget : System.Address);
+      pragma Import (C, Unref_Internal, "g_object_unref");
+      --  External binding: g_object_unref
+
+      Ptr : constant System.Address := Get_Object (Widget);
+
+      use type System.Address;
+   begin
+      --  Keep a reference on the object, so that the Ada structure is
+      --  never automatically deleted when the C object is.
+      --  We can't reset the content of Widget to System.Null_Address before
+      --  calling the C function, because we want the user's destroy
+      --  callbacks to be called with the appropriate object.
+      Ref (Widget);
+      Internal (Ptr);
+
+      --  We then can make sure that the object won't be referenced any
+      --  more, (The Ada structure won't be free before the ref count goes
+      --  down to 0, and we don't want the user to use a deleted object...).
+      Set_Object (Widget, System.Null_Address);
+
+      --  Free the reference we had. In most cases, this results in the
+      --  object being freed. We can't use directly Unref, since the Ptr
+      --  field for Object is Null_Address.
+      Unref_Internal (Ptr);
+   end Destroy;
 
 end Gtk.Widget;

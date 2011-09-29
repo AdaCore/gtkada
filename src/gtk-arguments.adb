@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                  Copyright (C) 2000-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -65,12 +65,11 @@ package body Gtk.Arguments is
    ---------------
 
    function To_Object (Args : Gtk_Args; Num : Positive)
-     return Gtk.Object.Gtk_Object
+     return Glib.Object.GObject
    is
-      Stub : Gtk.Object.Gtk_Object_Record;
+      Stub : Glib.Object.GObject_Record;
    begin
-      return Gtk.Object.Gtk_Object
-        (Get_User_Data (Get_Address (Nth (Args, Guint (Num))), Stub));
+      return Get_User_Data (Get_Address (Nth (Args, Guint (Num))), Stub);
    end To_Object;
 
    ----------------

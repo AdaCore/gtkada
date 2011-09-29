@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,13 +42,13 @@
 --  <testgtk>create_tooltips.adb</testgtk>
 
 with Glib;
+with Glib.Object;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Tooltips is
 
-   type Gtk_Tooltips_Record is new Gtk.Object.Gtk_Object_Record with private;
+   type Gtk_Tooltips_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Tooltips is access all Gtk_Tooltips_Record'Class;
 
    --  <doc_ignore>
@@ -159,7 +159,7 @@ package Gtk.Tooltips is
 
 private
    type Gtk_Tooltips_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_tooltips_get_type");
 end Gtk.Tooltips;

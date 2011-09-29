@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,16 +34,17 @@
 --  <c_version>2.8.17</c_version>
 --  <testgtk>create_item_factory.adb</testgtk>
 
+with Glib.Object;
+
 with Gdk.Types;
 with Gtk.Accel_Group;
 with Gtk.Widget;
-with Gtk.Object;
 with Gtkada.Types;
 
 package Gtk.Item_Factory is
    pragma Obsolescent;
 
-   type Gtk_Item_Factory_Record is new Object.Gtk_Object_Record with private;
+   type Gtk_Item_Factory_Record is new Object.GObject_Record with private;
    type Gtk_Item_Factory is access all Gtk_Item_Factory_Record'Class;
 
    --  <doc_ignore>
@@ -284,7 +285,7 @@ package Gtk.Item_Factory is
    --  </properties>
 
 private
-   type Gtk_Item_Factory_Record is new Gtk.Object.Gtk_Object_Record
+   type Gtk_Item_Factory_Record is new Glib.Object.GObject_Record
      with null record;
 
    type Gtk_Item_Factory_Entry is record

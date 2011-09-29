@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2009, AdaCore                   --
+--                Copyright (C) 2001-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,12 +58,13 @@
 --  <c_version>2.14</c_version>
 --  <group>Trees and Lists</group>
 
+with Glib.Object;
+
 with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk;
 with Gtk.Cell_Editable;
-with Gtk.Object;
 with Gtk.Widget;
 with Glib.Properties;
 with Glib.Generic_Properties;
@@ -73,7 +74,7 @@ pragma Elaborate_All (Glib.Glist);
 package Gtk.Cell_Renderer is
 
    type Gtk_Cell_Renderer_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+     new Glib.Object.GObject_Record with private;
    type Gtk_Cell_Renderer is access all Gtk_Cell_Renderer_Record'Class;
 
    function Convert (R : Gtk_Cell_Renderer) return System.Address;
@@ -318,7 +319,7 @@ package Gtk.Cell_Renderer is
 
 private
    type Gtk_Cell_Renderer_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_cell_renderer_get_type");
 

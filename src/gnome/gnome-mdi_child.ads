@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,15 +26,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib.Object;
 with Gnome.App_Helper;
 with Gtk;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gnome.MDI_Child is
 
    type Gnome_MDI_Child_Record is new
-     Gtk.Object.Gtk_Object_Record with private;
+     Glib.Object.GObject_Record with private;
    type Gnome_MDI_Child is access all Gnome_MDI_Child_Record'Class;
 
    function Add_View
@@ -64,6 +63,6 @@ package Gnome.MDI_Child is
 
 private
    type Gnome_MDI_Child_Record is new
-     Gtk.Object.Gtk_Object_Record with null record;
+     Glib.Object.GObject_Record with null record;
 
 end Gnome.MDI_Child;

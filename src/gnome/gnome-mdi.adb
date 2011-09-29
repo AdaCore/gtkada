@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2011, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -297,7 +296,7 @@ package body Gnome.MDI is
 
    procedure Register
      (MDI    : access Gnome_MDI_Record;
-      Object : access Gtk.Object.Gtk_Object_Record'Class)
+      Object : access Glib.Object.GObject_Record'Class)
    is
       procedure Internal
         (MDI    : System.Address;
@@ -475,7 +474,7 @@ package body Gnome.MDI is
 
    procedure Unregister
      (MDI    : access Gnome_MDI_Record;
-      Object : access Gtk.Object.Gtk_Object_Record'Class)
+      Object : access Glib.Object.GObject_Record'Class)
    is
       procedure Internal
         (MDI    : System.Address;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,13 +46,13 @@
 --  <group>Selectors</group>
 
 with Glib;
-with Gtk.Object;
+with Glib.Object;
 with System;
 
 package Gtk.File_Filter is
 
    type Gtk_File_Filter_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+     new Glib.Object.GObject_Record with private;
    type Gtk_File_Filter is access all Gtk_File_Filter_Record'Class;
 
    type File_Filter_Info is new Glib.C_Proxy;
@@ -130,7 +130,7 @@ package Gtk.File_Filter is
 
 private
    type Gtk_File_Filter_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+     new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_file_filter_get_type");
 end Gtk.File_Filter;
