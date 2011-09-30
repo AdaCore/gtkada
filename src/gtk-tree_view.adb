@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2010, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1510,7 +1510,7 @@ package body Gtk.Tree_View is
 
    procedure Set_Tooltip_Row
      (Tree_View : access Gtk_Tree_View_Record;
-      Tooltip   : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
       procedure Internal
