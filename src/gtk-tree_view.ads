@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2010, AdaCore                   --
+--                Copyright (C) 2001-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,6 @@ with Gtk.Container;
 with Gtk.Enums;
 with Gtk.GEntry;
 with Gtk.Selection;
-with Gtk.Tooltips;
 with Gtk.Tooltip;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
@@ -789,7 +788,7 @@ package Gtk.Tree_View is
 
    procedure Set_Tooltip_Row
      (Tree_View : access Gtk_Tree_View_Record;
-      Tooltip   : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Sets the tip area of tooltip to be the area covered by the row at path.
    --  See also Set_Tooltip_Column for a simpler alternative. See also
