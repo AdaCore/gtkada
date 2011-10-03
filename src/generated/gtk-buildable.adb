@@ -32,7 +32,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Buildable is
-
    ---------------
    -- Add_Child --
    ---------------

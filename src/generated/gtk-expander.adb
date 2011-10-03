@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Expander is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Expander_Record);
    pragma Unreferenced (Type_Conversion);

@@ -34,7 +34,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Pixmap is
-
    Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
      (New_String ("1 1 1 1"),
       New_String ("c None"),

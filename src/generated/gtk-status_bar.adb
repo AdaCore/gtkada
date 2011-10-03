@@ -29,11 +29,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Unchecked_Conversion;  
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Status_Bar is
-
    function Convert (Msg : Status_Bar_Msg) return System.Address is
    begin
       return Msg'Address;

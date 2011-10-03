@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Dialog is
-
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
       New_Order : Response_Type_Array)

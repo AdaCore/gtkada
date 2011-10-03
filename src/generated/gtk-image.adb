@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Image is
-
    procedure Get_Icon_Name
      (Image : access Gtk_Image_Record;
       Name  : out GNAT.Strings.String_Access;

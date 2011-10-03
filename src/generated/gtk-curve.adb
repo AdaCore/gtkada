@@ -32,7 +32,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Curve is
-
    procedure Get_Vector
      (Curve  : access Gtk_Curve_Record;
       Vector : out Gfloat_Array)
