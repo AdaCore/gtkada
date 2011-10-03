@@ -248,7 +248,7 @@ package body Gtk.Expander is
           Label_Widget : System.Address);
       pragma Import (C, Internal, "gtk_expander_set_label_widget");
    begin
-      Internal (Get_Object (Expander), Get_Object_Or_Null (GObject (Label_Widget)));
+      Internal (Get_Object (Expander), Get_Object (Label_Widget));
    end Set_Label_Widget;
 
    -----------------

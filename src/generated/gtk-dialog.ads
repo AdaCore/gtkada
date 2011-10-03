@@ -167,7 +167,6 @@ package Gtk.Dialog is
    --  Gtk.Dialog.Gtk_Dialog::response signal with the given Response_Id. The
    --  button is appended to the end of the dialog's action area. The button
    --  widget is returned, but usually you don't need it.
-   --  Returns the button widget that was added
    --  "text": text of button, or stock ID
    --  "response_id": response ID for the button
 
@@ -207,7 +206,6 @@ package Gtk.Dialog is
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
    --  Since: gtk+ 2.20
-   --  Returns the Widget button that uses the given Response_Id, or null.
    --  "response_id": the response ID used by the Dialog widget
 
    procedure Response

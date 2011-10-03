@@ -82,7 +82,6 @@ package Gtk.Buildable is
    --  Gtk.Builder.Gtk_Builder calls this function if a "constructor" has been
    --  specified in the UI definition.
    --  Since: gtk+ 2.12
-   --  Returns the constructed child
    --  "builder": Gtk.Builder.Gtk_Builder used to construct this object
    --  "name": name of child to construct
 
@@ -120,7 +119,6 @@ package Gtk.Buildable is
        Childname : UTF8_String) return Glib.Object.GObject;
    --  Get the internal child called Childname of the Buildable object.
    --  Since: gtk+ 2.12
-   --  Returns the internal child of the buildable object
    --  "builder": a Gtk.Builder.Gtk_Builder
    --  "childname": name of child
 

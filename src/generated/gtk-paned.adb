@@ -89,7 +89,7 @@ package body Gtk.Paned is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add1");
    begin
-      Internal (Get_Object (Paned), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (Paned), Get_Object (Child));
    end Add1;
 
    ----------
@@ -103,7 +103,7 @@ package body Gtk.Paned is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add2");
    begin
-      Internal (Get_Object (Paned), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (Paned), Get_Object (Child));
    end Add2;
 
    ----------------------
@@ -196,7 +196,7 @@ package body Gtk.Paned is
           Shrink : Integer);
       pragma Import (C, Internal, "gtk_paned_pack1");
    begin
-      Internal (Get_Object (Paned), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Resize), Boolean'Pos (Shrink));
+      Internal (Get_Object (Paned), Get_Object (Child), Boolean'Pos (Resize), Boolean'Pos (Shrink));
    end Pack1;
 
    -----------
@@ -216,7 +216,7 @@ package body Gtk.Paned is
           Shrink : Integer);
       pragma Import (C, Internal, "gtk_paned_pack2");
    begin
-      Internal (Get_Object (Paned), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Resize), Boolean'Pos (Shrink));
+      Internal (Get_Object (Paned), Get_Object (Child), Boolean'Pos (Resize), Boolean'Pos (Shrink));
    end Pack2;
 
    ------------------

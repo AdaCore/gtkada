@@ -440,7 +440,7 @@ package body Gtk.Entry_Completion is
           Model      : System.Address);
       pragma Import (C, Internal, "gtk_entry_completion_set_model");
    begin
-      Internal (Get_Object (Completion), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Completion), Get_Object (Model));
    end Set_Model;
 
    --------------------------

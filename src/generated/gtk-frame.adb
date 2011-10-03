@@ -177,7 +177,7 @@ package body Gtk.Frame is
           Label_Widget : System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label_widget");
    begin
-      Internal (Get_Object (Frame), Get_Object_Or_Null (GObject (Label_Widget)));
+      Internal (Get_Object (Frame), Get_Object (Label_Widget));
    end Set_Label_Widget;
 
    ---------------------

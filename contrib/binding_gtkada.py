@@ -97,7 +97,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType, CType
+from adaformat import AdaType, CType, naming
 
 
 class GtkAda(object):
@@ -310,7 +310,7 @@ class GtkAdaParameter(object):
             if type is None:
                 t = self.node.get("ctype", None)
                 if t:
-                    type = CType(name=t, cname=t, pkg=pkg)
+                    type = naming.type(name=t, cname=t, pkg=pkg)
 
         return type
 

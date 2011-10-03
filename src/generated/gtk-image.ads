@@ -285,7 +285,6 @@ package Gtk.Image is
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
    --  return value will be %GTK_IMAGE_EMPTY.
-   --  Returns image representation being used
 
    procedure Set
       (Image     : access Gtk_Image_Record;

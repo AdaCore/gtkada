@@ -274,7 +274,6 @@ package Gtk.About_Dialog is
    --  function which uses gtk_show_uri(). To deactivate it, you can pass null
    --  for Func.
    --  Since: gtk+ 2.6
-   --  Returns the previous email hook.
    --  Deprecated since 2.24, Use the
    --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when an email link is activated.
@@ -290,7 +289,6 @@ package Gtk.About_Dialog is
    --  URL link in an about dialog. Since 2.18 there exists a default function
    --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
    --  Since: gtk+ 2.6
-   --  Returns the previous URL hook.
    --  Deprecated since 2.24, Use the
    --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when a URL link is activated.

@@ -157,7 +157,7 @@ package body Gtk.Layout is
           Y            : Gint);
       pragma Import (C, Internal, "gtk_layout_move");
    begin
-      Internal (Get_Object (Layout), Get_Object_Or_Null (GObject (Child_Widget)), X, Y);
+      Internal (Get_Object (Layout), Get_Object (Child_Widget), X, Y);
    end Move;
 
    ---------
@@ -177,7 +177,7 @@ package body Gtk.Layout is
           Y            : Gint);
       pragma Import (C, Internal, "gtk_layout_put");
    begin
-      Internal (Get_Object (Layout), Get_Object_Or_Null (GObject (Child_Widget)), X, Y);
+      Internal (Get_Object (Layout), Get_Object (Child_Widget), X, Y);
    end Put;
 
    ---------------------
@@ -193,7 +193,7 @@ package body Gtk.Layout is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_layout_set_hadjustment");
    begin
-      Internal (Get_Object (Layout), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Layout), Get_Object (Adjustment));
    end Set_Hadjustment;
 
    --------------
@@ -227,7 +227,7 @@ package body Gtk.Layout is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_layout_set_vadjustment");
    begin
-      Internal (Get_Object (Layout), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Layout), Get_Object (Adjustment));
    end Set_Vadjustment;
 
    ----------

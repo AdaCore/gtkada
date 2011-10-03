@@ -99,7 +99,7 @@ package body Gtk.Combo is
       pragma Import (C, Internal, "gtk_combo_set_item_string");
       Tmp_Item_Value : Interfaces.C.Strings.chars_ptr := New_String (Item_Value);
    begin
-      Internal (Get_Object (Combo_Box), Get_Object_Or_Null (GObject (Item)), Tmp_Item_Value);
+      Internal (Get_Object (Combo_Box), Get_Object (Item), Tmp_Item_Value);
       Free (Tmp_Item_Value);
    end Set_Item_String;
 
@@ -206,7 +206,7 @@ package body Gtk.Combo is
           Value     : System.Address);
       pragma Import (C, Internal, "gtkada_GtkCombo_set_entry");
    begin
-      Internal (Get_Object (Combo_Box), Get_Object_Or_Null (GObject (Value)));
+      Internal (Get_Object (Combo_Box), Get_Object (Value));
    end Set_Entry;
 
    ---------------------

@@ -162,7 +162,6 @@ package Gtk.Calendar is
    --  Places a visual marker on a particular day. Note that this function
    --  always returns True, and you should ignore the return value. In GTK+ 3,
    --  this function will not return a value.
-   --  Returns True, always
    --  "day": the day number to mark between 1 and 31.
 
    procedure Select_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
@@ -177,7 +176,6 @@ package Gtk.Calendar is
    --  Shifts the calendar to a different month. Note that this function
    --  always returns True, and you should ignore the return value. In GTK+ 3,
    --  this function will not return a value.
-   --  Returns True, always
    --  "month": a month number between 0 and 11.
    --  "year": the year the month is in.
 
@@ -212,7 +210,6 @@ package Gtk.Calendar is
    --  Removes the visual marker from a particular day. Note that this
    --  function always returns True, and you should ignore the return value. In
    --  GTK+ 3, this function will not return a value.
-   --  Returns True, always
    --  "day": the day number to unmark between 1 and 31.
 
    ----------------

@@ -145,7 +145,7 @@ package Gtk.Radio_Action is
    --  this action belongs.
    --
    --  Name: Group_Property
-   --  Type: Gtk.Radio_Action.Gtk_Radio_Action
+   --  Type: Gtk_Radio_Action
    --  Flags: write
    --  Sets a new group for a radio action.
    --
@@ -170,7 +170,7 @@ package Gtk.Radio_Action is
    --  "changed"
    --     procedure Handler
    --       (Self    : access Gtk_Radio_Action_Record'Class;
-   --        Current : Gtk.Radio_Action.Gtk_Radio_Action);
+   --        Current : Gtk_Radio_Action);
    --    --  "current": the member of Action<!-- -->s group which has just been
    --    --  activated
    --  The ::changed signal is emitted on every member of a radio group when

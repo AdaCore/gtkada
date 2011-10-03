@@ -57,7 +57,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String := "")
    is
    begin
@@ -85,7 +85,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String)
    is
    begin
@@ -125,7 +125,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -172,7 +172,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String)
    is
       function Internal
@@ -231,7 +231,7 @@ package body Gtk.Radio_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Do_Set_Related_Action;
 
    ------------------------
@@ -272,7 +272,7 @@ package body Gtk.Radio_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Set_Related_Action;
 
    -------------------------------
@@ -300,7 +300,7 @@ package body Gtk.Radio_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Sync_Action_Properties;
 
 end Gtk.Radio_Button;

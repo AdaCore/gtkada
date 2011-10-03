@@ -292,7 +292,7 @@ package body Gtk.Image is
       function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_pixbuf");
    begin
-      Set_Object (Image, Internal (Get_Object_Or_Null (GObject (Pixbuf))));
+      Set_Object (Image, Internal (Get_Object (Pixbuf)));
    end Initialize;
 
    ----------------
@@ -603,7 +603,7 @@ package body Gtk.Image is
       procedure Internal (Image : System.Address; Pixbuf : System.Address);
       pragma Import (C, Internal, "gtk_image_set_from_pixbuf");
    begin
-      Internal (Get_Object (Image), Get_Object_Or_Null (GObject (Pixbuf)));
+      Internal (Get_Object (Image), Get_Object (Pixbuf));
    end Set;
 
    ---------

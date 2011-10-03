@@ -95,7 +95,6 @@ package Gtk.Layout is
       (Layout : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
-   --  Returns a Gdk.Window.Gdk_Window
 
    function Get_Hadjustment
       (Layout : access Gtk_Layout_Record)

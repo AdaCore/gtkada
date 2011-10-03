@@ -67,7 +67,7 @@ package body Gtk.Button_Box is
           Child  : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_box_get_child_secondary");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Get_Object_Or_Null (GObject (Child))));
+      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
    end Get_Child_Secondary;
 
    --------------------
@@ -135,7 +135,7 @@ package body Gtk.Button_Box is
           Is_Secondary : Integer);
       pragma Import (C, Internal, "gtk_button_box_set_child_secondary");
    begin
-      Internal (Get_Object (Widget), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Is_Secondary));
+      Internal (Get_Object (Widget), Get_Object (Child), Boolean'Pos (Is_Secondary));
    end Set_Child_Secondary;
 
    --------------------

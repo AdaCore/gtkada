@@ -99,7 +99,7 @@ package body Gtk.Table is
           Ypadding      : Guint);
       pragma Import (C, Internal, "gtk_table_attach");
    begin
-      Internal (Get_Object (Table), Get_Object_Or_Null (GObject (Child)), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach, Gtk.Enums.Gtk_Attach_Options'Pos (Xoptions), Gtk.Enums.Gtk_Attach_Options'Pos (Yoptions), Xpadding, Ypadding);
+      Internal (Get_Object (Table), Get_Object (Child), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach, Gtk.Enums.Gtk_Attach_Options'Pos (Xoptions), Gtk.Enums.Gtk_Attach_Options'Pos (Yoptions), Xpadding, Ypadding);
    end Attach;
 
    ---------------------
@@ -123,7 +123,7 @@ package body Gtk.Table is
           Bottom_Attach : Guint);
       pragma Import (C, Internal, "gtk_table_attach_defaults");
    begin
-      Internal (Get_Object (Table), Get_Object_Or_Null (GObject (Widget)), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach);
+      Internal (Get_Object (Table), Get_Object (Widget), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach);
    end Attach_Defaults;
 
    ---------------------

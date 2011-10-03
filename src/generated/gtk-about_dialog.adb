@@ -390,7 +390,7 @@ package body Gtk.About_Dialog is
       procedure Internal (About : System.Address; Logo : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");
    begin
-      Internal (Get_Object (About), Get_Object_Or_Null (GObject (Logo)));
+      Internal (Get_Object (About), Get_Object (Logo));
    end Set_Logo;
 
    ------------------------

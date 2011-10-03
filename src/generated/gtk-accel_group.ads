@@ -108,7 +108,6 @@ package Gtk.Accel_Group is
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in Accel_Group that matches Accel_Key and
    --  Accel_Mods, and activates it.
-   --  Returns True if an accelerator was activated and handled this keypress
    --  "accel_quark": the quark for the accelerator name
    --  "acceleratable": the GObject, usually a Gtk.Window.Gtk_Window, on which
    --  to activate the accelerator.
@@ -153,7 +152,6 @@ package Gtk.Accel_Group is
        Closure     : C_Gtk_Accel_Group_Activate) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect. Since 2.20 Closure can be null.
-   --  Returns True if the closure was found and got disconnected
    --  "closure": the closure to remove from this accelerator group, or null
    --  to remove all closures
 
@@ -163,8 +161,6 @@ package Gtk.Accel_Group is
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  Returns True if there was an accelerator which could be removed, False
-   --  otherwise
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
 
@@ -173,7 +169,6 @@ package Gtk.Accel_Group is
        Find_Func   : C_Gtk_Accel_Group_Find_Func;
        Data        : System.Address) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which
-   --  Returns the key of the first entry passing
    --  "find_func": a function to filter the entries of Accel_Group with
    --  "data": data to pass to Find_Func
 
@@ -182,14 +177,12 @@ package Gtk.Accel_Group is
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
    --  Gtk.Accel_Group.Unlock. False otherwise.
    --  Since: gtk+ 2.14
-   --  Returns True if there are 1 or more locks on the Accel_Group,
 
    function Get_Modifier_Mask
       (Accel_Group : access Gtk_Accel_Group_Record)
        return Gdk.Types.Gdk_Modifier_Type;
    --  Gets a Gdk.Types.Gdk_Modifier_Type representing the mask for this
    --  Since: gtk+ 2.14
-   --  Returns the modifier mask for this accel group.
 
    procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
    --  Locks the given accelerator group. Locking an acelerator group prevents
@@ -210,8 +203,6 @@ package Gtk.Accel_Group is
        return Gtk.Accel_Group.Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
-   --  Returns the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
-   --  connected, or null.
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
@@ -221,7 +212,6 @@ package Gtk.Accel_Group is
    --  Finds the first accelerator in any Gtk.Accel_Group.Gtk_Accel_Group
    --  attached to Object that matches Accel_Key and Accel_Mods, and activates
    --  that accelerator.
-   --  Returns True if an accelerator was activated and handled this keypress
    --  "object": the GObject, usually a Gtk.Window.Gtk_Window, on which to
    --  activate the accelerator.
    --  "accel_key": accelerator keyval from a key event
@@ -240,7 +230,6 @@ package Gtk.Accel_Group is
    --  keyboard accelerator. For example, the GDK_a keyval plus
    --  GDK_CONTROL_MASK is valid - this is a "Ctrl+a" accelerator. But, you
    --  can't, for instance, use the GDK_Control_L keyval as an accelerator.
-   --  Returns True if the accelerator is valid
    --  "keyval": a GDK keyval
    --  "modifiers": modifier mask
 
@@ -269,7 +258,6 @@ package Gtk.Accel_Group is
    --  in GDK_q and GDK_CONTROL_MASK, this function returns "&lt;Control&gt;q".
    --  If you need to display accelerators in the user interface, see
    --  Gtk.Accel_Group.Accelerator_Get_Label.
-   --  Returns a newly-allocated accelerator name
    --  "accelerator_key": accelerator keyval
    --  "accelerator_mods": accelerator modifier mask
 
@@ -279,7 +267,6 @@ package Gtk.Accel_Group is
    --  Converts an accelerator keyval and modifier mask into a string which
    --  can be used to represent the accelerator to the user.
    --  Since: gtk+ 2.6
-   --  Returns a newly-allocated string representing the accelerator.
    --  "accelerator_key": accelerator keyval
    --  "accelerator_mods": accelerator modifier mask
 
