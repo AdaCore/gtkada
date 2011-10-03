@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -475,7 +475,7 @@ package body Gtk.Container is
      (Container : access Gtk_Container_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Container : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_container_get_focus_child");
+      pragma Import (C, Internal, "gtk_container_get_focus_child");
 
       Child : constant System.Address := Internal (Get_Object (Container));
    begin

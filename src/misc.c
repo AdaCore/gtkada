@@ -769,35 +769,6 @@ ada_gnode_first_child (GNode * node)
 
 /*
  *
- * object macros
- *
- */
-
-guint32 ada_widget_flags (GtkWidget * widget)
-{
-  return GTK_WIDGET_FLAGS (widget);
-}
-
-void
-ada_widget_set_flags (GtkWidget * widget, guint32 flags)
-{
-  GTK_WIDGET_SET_FLAGS (widget, flags);
-}
-
-gint
-ada_widget_flag_is_set (GtkWidget * widget, guint32 flag)
-{
-  return ((GTK_WIDGET_FLAGS (widget) & flag) != 0);
-}
-
-void
-ada_widget_unset_flags (GtkWidget * widget, guint32 flags)
-{
-  GTK_WIDGET_UNSET_FLAGS (widget, flags);
-}
-
-/*
- *
  * Widget macros
  *
  */
@@ -811,25 +782,33 @@ ada_widget_drawable (GtkWidget * widget)
 gint
 ada_widget_allocation_height (GtkWidget* widget)
 {
-  return widget->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation (widget, &allocation);
+  return allocation.height;
 }
 
 gint
 ada_widget_allocation_width (GtkWidget* widget)
 {
-  return widget->allocation.width;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation (widget, &allocation);
+  return allocation.width;
 }
 
 gint
 ada_widget_allocation_x (GtkWidget* widget)
 {
-  return (gint) widget->allocation.x;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation (widget, &allocation);
+  return (gint) allocation.x;
 }
 
 gint
 ada_widget_allocation_y (GtkWidget* widget)
 {
-  return (gint) widget->allocation.y;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation (widget, &allocation);
+  return (gint) allocation.y;
 }
 
 /*
@@ -843,7 +822,7 @@ ada_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
 {
   GSList *l = NULL;
   if (group)
-    l = gtk_radio_menu_item_group (group);
+    l = gtk_radio_menu_item_get_group (group);
   return gtk_radio_menu_item_new (l);
 }
 
@@ -853,18 +832,8 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 {
   GSList *l = NULL;
   if (group)
-    l = gtk_radio_menu_item_group (group);
+    l = gtk_radio_menu_item_get_group (group);
   return gtk_radio_menu_item_new_with_label (l, label);
-}
-
-/*********************
- * Gtk_Container
- *********************/
-
-GtkWidget *
-ada_gtk_container_get_focus_child (GtkContainer* container)
-{
-  return container->focus_child;
 }
 
 /*********************
@@ -881,28 +850,6 @@ gint
 ada_gdk_font_get_descent (GdkFont* font)
 {
   return font->descent;
-}
-
-/********************
- * Font_Selection
- ********************/
-
-GtkWidget*
-ada_gtk_font_selection_dialog_get_cancel (GtkFontSelectionDialog* fsd)
-{
-  return fsd->cancel_button;
-}
-
-GtkWidget*
-ada_gtk_font_selection_dialog_get_ok (GtkFontSelectionDialog* fsd)
-{
-  return fsd->ok_button;
-}
-
-GtkWidget*
-ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
-{
-  return fsd->apply_button;
 }
 
 /********************
@@ -4323,3 +4270,36 @@ ada_paned_get_child2_shrink (GtkPaned* widget)
   return widget->child2_shrink;
 }
 
+/****  Below this point are calls that will produce an error with
+       -DGTK_DISABLE_DEPRECATED
+       but which will be removed with the switch to Gtk+ 3.x
+*/
+
+/*
+ *
+ * object macros
+ *
+ */
+
+guint32 ada_widget_flags (GtkWidget * widget)
+{
+  return GTK_WIDGET_FLAGS (widget);
+}
+
+void
+ada_widget_set_flags (GtkWidget * widget, guint32 flags)
+{
+  GTK_WIDGET_SET_FLAGS (widget, flags);
+}
+
+gint
+ada_widget_flag_is_set (GtkWidget * widget, guint32 flag)
+{
+  return ((GTK_WIDGET_FLAGS (widget) & flag) != 0);
+}
+
+void
+ada_widget_unset_flags (GtkWidget * widget, guint32 flags)
+{
+  GTK_WIDGET_UNSET_FLAGS (widget, flags);
+}
