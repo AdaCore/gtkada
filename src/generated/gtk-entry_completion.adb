@@ -29,12 +29,11 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Unchecked_Conversion;  
+with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Entry_Completion is
-
    package body Match_Functions is
 
       function Internal_Completion_Func

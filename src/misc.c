@@ -802,12 +802,6 @@ ada_widget_unset_flags (GtkWidget * widget, guint32 flags)
  *
  */
 
-guint32
-ada_widget_drawable (GtkWidget * widget)
-{
-  return GTK_WIDGET_DRAWABLE (widget);
-}
-
 gint
 ada_widget_allocation_height (GtkWidget* widget)
 {

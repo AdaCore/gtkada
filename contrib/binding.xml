@@ -1257,7 +1257,7 @@ If performing many 'mark' operations, the calendar can be frozen to prevent flic
                 Detail_Callback'Address, D.all'Address,
                 Free_Detail_Func_Data'Access);
    end Set_Detail_Func;
-        </body>
+      </body>
      </method>
      <extra>
         <type ctype="GtkCalendarDisplayOptions"
@@ -1860,6 +1860,141 @@ The rendering of the widget is done through various Gtk_Cell_Renderer, and by re
                   ada="Cell_Data_Func"/>
                   -->
      </method>
+  </package>
+
+  <package id="Gtk.Assistant">
+     <doc group="Windows" testgtk="create_assistant.adb">
+A Gtk_Assistant is a widget used to represent a generally complex
+operation split into several steps, guiding the user through its
+pages and controlling the page flow to collect the necessary data.
+     </doc>
+     <parameter name="self" ada="Assistant"/>
+     <extra>
+         <type ctype="GtkAssistantPageType" ada="Gtk_Assistant_Page_Type">
+type Gtk_Assistant_Page_Type is
+   (Gtk_Assistant_Page_Content,
+    Gtk_Assistant_Page_Intro,
+    Gtk_Assistant_Page_Confirm,
+    Gtk_Assistant_Page_Summary,
+    Gtk_Assistant_Page_Progress);
+--  Definition of various page types.  See Get_Page_Type/Set_Page_Type
+--  for more info.
+         </type>
+         <type ctype="GtkAssistantPageFunc" ada="Gtk_Assistant_Page_Func">
+type Gtk_Assistant_Page_Func is access function
+   (Current_Page : Gint; D : System.Address) return Gint;
+pragma Convention (C, Gtk_Assistant_Page_Func);
+         </type>
+         <with_body pkg="Ada.Unchecked_Conversion" use="false"/>
+         <with_body pkg="Ada.Unchecked_Deallocation" use="false"/>
+         <spec>
+   generic
+      type Data_Type (&lt;&gt;) is private;
+   package Generic_Assistant_Functions is
+      type Page_Func is access function
+        (Current_Page : Gint;
+         User_Data    : Data_Type)
+         return Gint;
+      --  Spec for page forwarding function.
+
+      type Destroy_Notify is access procedure (User_Data : in out Data_Type);
+      --  Destroy_Notify is called just prior to the destruction of
+      --  User_Data.
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null);
+      --  Sets the Assistant's page forwarding function to be Func.  This
+      --  function will be used to determine what will be the next page when
+      --  the user presses the forward button. Setting Func to null will make
+      --  the assistant use the default forward function, which just goes
+      --  to the next visible page.
+   end Generic_Assistant_Functions;
+         </spec>
+         <body>
+   package body Generic_Assistant_Functions is
+
+      type Data_Type_Access is access Data_Type;
+
+      type Cb_Record is record
+         Func      : Page_Func;
+         Notify    : Destroy_Notify;
+         User_Data : Data_Type_Access;
+      end record;
+      type Cb_Record_Access is access Cb_Record;
+
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Cb_Record_Access);
+
+      function Convert is new Ada.Unchecked_Conversion
+        (Cb_Record_Access, System.Address);
+
+      function General_Cb
+        (Current_Page : Gint; D : System.Address)
+         return Gint;
+      pragma Convention (C, General_Cb);
+
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback used to free data associated with Set_Forward_Page_Func
+
+      function General_Cb
+        (Current_Page : Gint; D : System.Address)
+        return Gint
+      is
+         Data : constant Cb_Record_Access := Convert (D);
+      begin
+         return Data.Func (Current_Page, Data.User_Data.all);
+      end General_Cb;
+
+      procedure Free_Data (D : System.Address) is
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Cb_Record, Cb_Record_Access);
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Data_Type, Data_Type_Access);
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         if Data.Notify /= null then
+            Data.Notify (Data.User_Data.all);
+         end if;
+         Free (Data.User_Data);
+         Free (Data);
+      end Free_Data;
+
+      ---------------------------
+      -- Set_Forward_Page_Func --
+      ---------------------------
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null)
+      is
+         procedure Internal
+           (Assistant : System.Address;
+            Page_Func : System.Address;
+            Data      : System.Address;
+            Destroy   : System.Address);
+         pragma Import (C, Internal, "gtk_assistant_set_forward_page_func");
+
+         D : constant Cb_Record_Access := new Cb_Record'
+           (Func      => Func,
+            Notify    => Destroy,
+            User_Data => new Data_Type'(User_Data));
+      begin
+         Internal
+           (Get_Object (Assistant),
+            General_Cb'Address,
+            Convert (D),
+            Free_Data'Address);
+      end Set_Forward_Page_Func;
+
+   end Generic_Assistant_Functions;
+         </body>
+      </extra>
   </package>
 
   <package id="Gtk.Spinner">

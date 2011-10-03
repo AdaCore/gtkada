@@ -7,7 +7,6 @@
 # Issues:
 #   - Missing access to gtk+ enum types
 #   - Missing handling of <field> nodes (see GtkArrow for instance)
-#   - Missing handling of interfaces
 #   - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
 #
@@ -15,10 +14,6 @@
 #   - Missing documentation for some properties.
 #     SOLVE: we could point to the corresponding Set_* and Get_* subprograms,
 #            or simply ignore the missing doc
-#
-#   - Gtk.Button.Gtk_New used to have a "Label" parameter
-#     Users must now use Gtk_New_With_Label.
-#     SOLVE: we could have special cases
 
 from xml.etree.cElementTree import parse, QName, tostring
 from adaformat import *
@@ -465,7 +460,7 @@ class GIRClass(object):
         elif not body:
             subp.add_nested(internal)
         else:
-            subp.set_body(body)
+            subp.set_body("   " + body.strip() + "\n")
 
         depr = node.get("deprecated")
         if depr is not None:
@@ -1072,6 +1067,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "AccelGroup",
            "Adjustment",
            "Alignment",
+           "Assistant",
            "Calendar",
            "CheckButton",
            # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility

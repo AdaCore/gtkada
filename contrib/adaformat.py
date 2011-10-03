@@ -1237,6 +1237,8 @@ class Section(object):
             if b:
                 result.append(b)
 
+        result.append("")
+
         return "\n".join(result)
 
 
@@ -1297,8 +1299,7 @@ class Package(object):
                     result.append(
                         "with %-*s use %s;" % (m + 1, w + ";", w))
                 else:
-                    result.append(
-                        "with %-*s" % (m + 1, w + ";"))
+                    result.append("with %s;" % w)
 
             return "\n".join(result) + "\n\n"
         return ""
@@ -1342,7 +1343,6 @@ class Package(object):
         for s in self.sections:
             b = s.body()
             if b:
-                body += "\n"
                 body += b
 
         if not body:
@@ -1356,4 +1356,4 @@ class Package(object):
         out.write(self._output_withs(self.body_withs))
         out.write("package body %s is\n" % self.name)
         out.write(body)
-        out.write("\nend %s;" % self.name)
+        out.write("end %s;" % self.name)

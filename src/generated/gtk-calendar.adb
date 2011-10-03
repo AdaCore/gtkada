@@ -29,13 +29,12 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Unchecked_Conversion;  
+with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Calendar is
-
    type Detail_Func_Data is record
       Callback   : Gtk_Calendar_Detail_Func;
       User_Data  : System.Address;
@@ -253,7 +252,6 @@ package body Gtk.Calendar is
       return Boolean'Val (Internal (Get_Object (Calendar), Month, Year));
    end Select_Month;
 
-
    procedure Set_Detail_Func
      (Calendar : access Gtk_Calendar_Record;
       Func     : Gtk_Calendar_Detail_Func;
@@ -273,7 +271,7 @@ package body Gtk.Calendar is
                 Detail_Callback'Address, D.all'Address,
                 Free_Detail_Func_Data'Access);
    end Set_Detail_Func;
-        
+
    ----------------------------
    -- Set_Detail_Height_Rows --
    ----------------------------

@@ -30,7 +30,6 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 package body Gtk.Activatable is
-
    ---------------------------
    -- Do_Set_Related_Action --
    ---------------------------

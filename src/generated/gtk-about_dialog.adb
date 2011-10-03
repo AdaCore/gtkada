@@ -34,7 +34,6 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.About_Dialog is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_About_Dialog_Record);
    pragma Unreferenced (Type_Conversion);

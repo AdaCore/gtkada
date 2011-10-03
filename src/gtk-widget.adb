@@ -410,8 +410,8 @@ package body Gtk.Widget is
    function Drawable_Is_Set
      (Widget : access Gtk_Widget_Record'Class) return Boolean
    is
-      function Internal (Widget : System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_widget_drawable");
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_is_drawable");
 
    begin
       return Boolean'Val (Internal (Get_Object (Widget)));
