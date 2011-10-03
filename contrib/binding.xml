@@ -1853,13 +1853,11 @@ The rendering of the widget is done through various Gtk_Cell_Renderer, and by re
      <parameter name="self" ada="Cell_Layout"/>
      <method id="gtk_cell_layout_set_attributes" bind="False"/>
      <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
-     <method id="gtk_cell_layout_set_cell_data_func">
-        <parameter name="func" type="Cell_Data_Func"/>
-        <!--<callback func="func" #data="data" destroy="destroy"
+     <!--<method id="gtk_cell_layout_set_cell_data_func">
+        <callback func="func" #data="data" destroy="destroy"
                   gircallback="CellLayoutDataFunc"
                   ada="Cell_Data_Func"/>
-                  -->
-     </method>
+     </method>-->
   </package>
 
   <package id="Gtk.Assistant">

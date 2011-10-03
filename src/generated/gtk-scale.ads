@@ -179,7 +179,6 @@ package Gtk.Scale is
    --  the caller. or null if the Gtk.Scale.Gtk_Scale:draw-value property is
    --  False.
    --  Since: gtk+ 2.4
-   --  Returns the Pango.Layout.Pango_Layout for this scale,
 
    procedure Get_Layout_Offsets
       (Scale : access Gtk_Scale_Record;

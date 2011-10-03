@@ -112,14 +112,12 @@ package Gtk.Entry_Completion is
    --  Get the original text entered by the user that triggered the completion
    --  or null if there's no completion ongoing.
    --  Since: gtk+ 2.12
-   --  Returns the prefix for the current completion
 
    function Get_Entry
       (Completion : access Gtk_Entry_Completion_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the entry Completion has been attached to.
    --  Since: gtk+ 2.4
-   --  Returns The entry Completion has been attached to.
 
    function Get_Inline_Completion
       (Completion : access Gtk_Entry_Completion_Record) return Boolean;

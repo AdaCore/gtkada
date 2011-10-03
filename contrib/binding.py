@@ -71,10 +71,14 @@ class GIR(object):
 
     def _create_class(self, node, is_interface):
         n = node.get("name")
-        naming.add_type_exception(
-            cname=node.get(ctype),
-            type=GObject(
-                "Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)}))
+
+        if is_interface:
+            t = Interface(
+                "Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)})
+        else:
+            t = GObject("Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)})
+
+        naming.add_type_exception(cname=node.get(ctype), type=t)
         naming.add_girname(girname=n, ctype=node.get(ctype))
         return GIRClass(self, node, is_interface)
 
@@ -129,7 +133,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
     if t is not None:
         if t.get("name") == "none":
             return None
-        return CType(name=t.get("name"),
+        return naming.type(name=t.get("name"),
                      cname=t.get(ctype), allow_access=allow_access,
                      empty_maps_to_null=empty_maps_to_null,
                      pkg=pkg)
@@ -143,7 +147,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
             if type:
                 type = "array_of_%s" % type
 
-            return CType(name="array_of_%s" % name,
+            return naming.type(name="array_of_%s" % name,
                          cname=type,
                          pkg=pkg, isArray=True,
                          empty_maps_to_null=empty_maps_to_null,
@@ -167,9 +171,19 @@ class SubprogramProfile(object):
     """
 
     def __init__(self):
+        self.node = None    # the XML node for this profile
+        self.gtkmethod = None
         self.params = None  # list of parameters (None if we have varargs)
         self.returns = None # return value (None for a procedure)
         self.returns_doc = "" # documentation for returned value
+        self.doc = ""       # documentation for the subprogram
+
+        # The following fields are used to handle callback parameters
+        # and generate an Ada generic
+
+        self.callback_param = -1  # index of the callback parameter
+        self.user_data_param = -1 # index of the "user data" parameter
+        self.destroy_param = -1   # index of the parameter to destroy data
 
     @staticmethod
     def parse(node, gtkmethod, pkg=None):
@@ -180,16 +194,29 @@ class SubprogramProfile(object):
            If pkg is specified, with statements are added as necessary.
         """
         profile = SubprogramProfile()
+        profile.node = node
+        profile.gtkmethod = gtkmethod
         profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
         profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
+        profile.doc = profile._getdoc(gtkmethod, node)
         return profile
 
     @staticmethod
     def setter(node, pkg=None):
         """Create a new SubprogramProfile for a getter"""
         profile = SubprogramProfile()
+        profile.node = node
         profile.params = [Parameter("Value", _get_type(node, pkg))]
         return profile
+
+    def callback_param_type(self):
+        """If there is one callback parameter in this profile, return its
+           type so that we can generate the appropriate function.
+           Returns None if there is no such parameter.
+        """
+        if self.callback_param == -1:
+            return None
+        return self.params[self.callback_param].type
 
     def has_varargs(self):
         return self.params is None
@@ -230,6 +257,44 @@ class SubprogramProfile(object):
 
         return result;
 
+    def add_param(self, pos, param):
+        """Add a new parameter in the list, at the given position"""
+        self.params.insert(pos, param)
+        if self.callback_param != -1 and self.callback_param >= pos:
+            self.callback_param += 1
+        if self.user_data_param != -1 and self.user_data_param >= pos:
+            self.user_data_param += 1
+        if self.destroy_param != -1 and self.destroy_param >= pos:
+            self.destroy_param += 1
+
+    def subprogram(self, name, showdoc=True, local_vars=[], code=[]):
+        """Return an instance of Subprogram with the corresponding profile"""
+        subp = Subprogram(
+                name=name,
+                plist=self.params,
+                returns=self.returns,
+                showdoc=showdoc,
+                doc=self.doc,
+                local_vars=local_vars,
+                code=code)
+
+        depr = self.node.get("deprecated")
+        if depr is not None:
+            subp.mark_deprecated(
+                "\nDeprecated since %s, %s"
+                % (self.node.get("deprecated-version"), depr))
+        elif self.gtkmethod and self.gtkmethod.is_obsolete():
+            subp.mark_deprecated("Deprecated")
+
+        return subp
+
+    def _getdoc(self, gtkmethod, node):
+        doc = gtkmethod.get_doc(default=node.findtext(ndoc, ""))
+        if node.get("version"):
+            doc.append("Since: gtk+ %s" % node.get("version"))
+        # doc.append(self.returns_doc)
+        return doc
+
     def _parameters(self, c, gtkmethod, pkg):
         """Parse the <parameters> child node of c"""
         if c is None:
@@ -256,6 +321,11 @@ class SubprogramProfile(object):
 
             if type is None:
                 return None
+
+            if p.get("scope", "") == "notified":
+                self.callback_param = len(result)
+                self.user_data_param = int(p.get("closure")) - 1
+                self.destroy_param = int(p.get("destroy")) - 1
 
             if p.get("direction", "in") == "out":
                 mode = "out"
@@ -293,7 +363,7 @@ class SubprogramProfile(object):
                     self.returns_doc = "Returns %s" % self.returns_doc
             return _get_type(ret, allow_access=False, pkg=pkg)
         else:
-            return CType(name=None, cname=returns, pkg=pkg)
+            return naming.type(name=None, cname=returns, pkg=pkg)
 
 
 class GIRClass(object):
@@ -308,12 +378,6 @@ class GIRClass(object):
         self._generated = False
         self.implements = dict() # Implemented interfaces
         self.is_interface = is_interface
-
-    def _getdoc(self, gtkmethod, node):
-        doc = gtkmethod.get_doc(default=node.findtext(ndoc, ""))
-        if node.get("version"):
-            doc.append("Since: gtk+ %s" % node.get("version"))
-        return doc
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
@@ -331,6 +395,8 @@ class GIRClass(object):
                 profile=profile,
                 showdoc=showdoc,
                 ismethod=ismethod)
+        else:
+            naming.add_cmethod(cname, cname)  # Avoid warning later on.
 
     def _func_is_direct_import(self, profile):
         """Whether a function with this profile
@@ -345,6 +411,8 @@ class GIRClass(object):
            'is_import' should be true if the function will be implemented as
            a pragma Import, with no body.
         """
+
+        t = naming.type(self._subst["cname"])
 
         getobject = "Get_Object (%(var)s)"
 
@@ -370,8 +438,9 @@ class GIRClass(object):
         if is_import:
             ctype = ptype
 
-        profile.params.insert(0, Parameter(
+        profile.add_param(0, Parameter(
             name=pname,
+        #    type=t))
             type=AdaType(
                 adatype=ptype, pkg=self.pkg, in_spec=True, ctype=ctype,
                 convert=getobject)))
@@ -399,9 +468,6 @@ class GIRClass(object):
 
         is_import = self._func_is_direct_import(profile)
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
-        doc = self._getdoc(gtkmethod, node)
-        if profile.returns_doc:
-            doc.append(profile.returns_doc)
 
         naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
@@ -414,6 +480,10 @@ class GIRClass(object):
             self._handle_constructor(
                 node, gtkmethod=gtkmethod, cname=cname, profile=profile)
             return
+
+        cb = profile.callback_param_type()
+        if cb is not None:
+            self._callback_support(cb)
 
         local_vars = []
         call = []
@@ -446,14 +516,8 @@ class GIRClass(object):
 
             local_vars += execute[2]
 
-        subp = Subprogram(
-                name=adaname,
-                plist=profile.params,
-                returns=profile.returns,
-                showdoc=showdoc,
-                doc=doc,
-                local_vars=local_vars,
-                code=call)
+        subp = profile.subprogram(name=adaname, showdoc=showdoc,
+                                  local_vars=local_vars, code=call)
 
         if is_import:
             subp.import_c(cname)
@@ -462,16 +526,25 @@ class GIRClass(object):
         else:
             subp.set_body("   " + body.strip() + "\n")
 
-        depr = node.get("deprecated")
-        if depr is not None:
-            subp.mark_deprecated(
-                "\nDeprecated since %s, %s"
-                % (node.get("deprecated-version"), depr))
-        elif gtkmethod.is_obsolete():
-            subp.mark_deprecated("Deprecated")
-
         section.add(subp)
         return subp
+
+    def _callback_support(self, cb):
+        """Add support for a function with a callback parameter"""
+
+        return
+        girname = cb.girname
+        gtkmethod = self.gtkpkg.get_method(cname=girname)
+        cb_profile = SubprogramProfile.parse(
+            self.gir.callbacks[cb.girname], gtkmethod=gtkmethod, pkg=self.pkg)
+        section = self.pkg.section("Callbacks")
+
+        funcname = naming.full_type_from_girname(girname).ada
+        if "." in funcname:
+            funcname = funcname[funcname.rfind(".") + 1:]
+
+        subp = cb_profile.subprogram(name="")
+        section.add_code("type %s is %s" % (funcname, subp.spec()))
 
     def _constructors(self):
         n = QName(uri, "constructor").text
@@ -520,7 +593,6 @@ class GIRClass(object):
         assert(call[1] is not None)   # A function
 
         adaname = gtkmethod.ada_name() or "Gtk_%s" % name
-        doc = self._getdoc(gtkmethod, c)
         selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
         if self.is_gobject:
@@ -536,7 +608,7 @@ class GIRClass(object):
             name=adaname.replace("Gtk_New", "Initialize"),
             plist=initialize_params,
             local_vars=local_vars + call[2],
-            doc=doc,
+            doc=profile.doc,
             code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
             ).add_nested(internal)
 
@@ -554,7 +626,7 @@ class GIRClass(object):
             local_vars=call[2],
             code=selfname + " := new %(typename)s_Record;" % self._subst
                + call[0],
-            doc=doc)
+            doc=profile.doc)
 
         section.add(gtk_new, initialize)
 
@@ -796,7 +868,7 @@ See Glib.Properties for more information on properties)""")
             if name in ("Atk.ImplementorIface",):
                 continue
 
-            type = naming.full_type_from_girname(girname=name)
+            type = naming.type(name)
             if "." in type.ada:
                 self.pkg.add_with(type.ada[:type.ada.rfind(".")])
                 self.pkg.add_with("Glib.Types")
@@ -863,15 +935,19 @@ See Glib.Properties for more information on properties)""")
         if self._generated:
             return
 
-        typename = naming.full_type(self.ctype)[0]
+        typename = naming.type(self.ctype).ada   # The type we are mapping
+
         self.name = typename[:typename.rfind(".")]    # Only package part
         self._subst["name"] = self.name
         self._subst["typename"] = typename[typename.rfind(".") + 1:]
         self._subst["cname"] = self.ctype
 
-        parent_ctype = naming.ctype_from_girname(self.node.get("parent"))
-        parent = naming.full_type(parent_ctype)[0]
-        if parent.rfind(".") != -1:
+        #parent_ctype = naming.ctype_from_girname(self.node.get("parent"))
+        #parent = naming.full_type(parent_ctype).ada
+
+        parent = naming.type(self.node.get("parent")).ada
+
+        if parent and parent.rfind(".") != -1:
             self._subst["parent_pkg"] = parent[:parent.rfind(".")]
             self._subst["parent"] = parent[parent.rfind(".") + 1:]
         else:
@@ -1047,7 +1123,7 @@ gtkada = GtkAda(sys.argv[2])
 interfaces = ("Activatable",
               "Buildable",
               "CellEditable",
-              #"CellLayout",
+              #              "CellLayout",
               #"FileChooser",
               #"RecentChooser",
               "Orientable",

@@ -30,6 +30,7 @@ with Glib; use Glib;
 with Gnome.Dialog;
 with Glib.Object;
 with Gtkada.Types; use Gtkada.Types;
+with Gtk;
 
 package Gnome.Client is
 

@@ -91,7 +91,6 @@ package Gtk.Assistant is
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
    --  Appends a page to the Assistant.
    --  Since: gtk+ 2.10
-   --  Returns the index (starting at 0) of the inserted page
    --  "page": a Gtk.Widget.Gtk_Widget
 
    procedure Commit (Assistant : access Gtk_Assistant_Record);
@@ -120,7 +119,6 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record) return Gint;
    --  Returns the number of pages in the Assistant
    --  Since: gtk+ 2.10
-   --  Returns The number of pages in the Assistant.
 
    function Get_Nth_Page
       (Assistant : access Gtk_Assistant_Record;
@@ -128,7 +126,6 @@ package Gtk.Assistant is
    --  Returns the child widget contained in page number Page_Num. if Page_Num
    --  is out of bounds.
    --  Since: gtk+ 2.10
-   --  Returns The child widget, or null
    --  "page_num": The index of a page in the Assistant, or -1 to get the last
    --  page;
 
@@ -206,7 +203,6 @@ package Gtk.Assistant is
        Position  : Gint) return Gint;
    --  Inserts a page in the Assistant at a given position.
    --  Since: gtk+ 2.10
-   --  Returns the index (starting from 0) of the inserted page
    --  "page": a Gtk.Widget.Gtk_Widget
    --  "position": the index (starting at 0) at which to insert the page, or
    --  -1 to append the page to the Assistant
@@ -216,7 +212,6 @@ package Gtk.Assistant is
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
    --  Prepends a page to the Assistant.
    --  Since: gtk+ 2.10
-   --  Returns the index (starting at 0) of the inserted page
    --  "page": a Gtk.Widget.Gtk_Widget
 
    procedure Remove_Action_Widget

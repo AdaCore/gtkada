@@ -123,7 +123,6 @@ package Gtk.Status_Bar is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the box containing the label widget.
    --  Since: gtk+ 2.20
-   --  Returns a Gtk.Box.Gtk_Box
 
    procedure Pop
       (Statusbar : access Gtk_Status_Bar_Record;
