@@ -1341,6 +1341,9 @@ naming.type_exceptions = {
     "GtkEntryCompletion": GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
     "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
     "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),
+    "GtkFontSelection": GObject("Gtk.Font_Selection.Gtk_Font_Selection"),
+    "GtkFontSelectionDialog":
+       GObject("Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog"),
     "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
     "GtkMenuItem":     GObject("Gtk.Menu_Item.Gtk_Menu_Item"),
     "GtkRadioAction":  GObject("Gtk.Radio_Action.Gtk_Radio_Action"),
@@ -1366,6 +1369,7 @@ naming.type_exceptions = {
     "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
     "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
+    "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
     "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
