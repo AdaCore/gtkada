@@ -156,7 +156,7 @@ package body Gtk.Box is
           Padding : Guint);
       pragma Import (C, Internal, "gtk_box_pack_end");
    begin
-      Internal (Get_Object (In_Box), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
+      Internal (Get_Object (In_Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_End;
 
    -----------------------
@@ -170,7 +170,7 @@ package body Gtk.Box is
       procedure Internal (Box : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_end_defaults");
    begin
-      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Box), Get_Object (Widget));
    end Pack_End_Defaults;
 
    ----------------
@@ -192,7 +192,7 @@ package body Gtk.Box is
           Padding : Guint);
       pragma Import (C, Internal, "gtk_box_pack_start");
    begin
-      Internal (Get_Object (In_Box), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
+      Internal (Get_Object (In_Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_Start;
 
    -------------------------
@@ -206,7 +206,7 @@ package body Gtk.Box is
       procedure Internal (Box : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_start_defaults");
    begin
-      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Box), Get_Object (Widget));
    end Pack_Start_Defaults;
 
    -------------------------
@@ -233,7 +233,7 @@ package body Gtk.Box is
       Tmp_Fill      : Integer;
       Tmp_Pack_Type : Integer;
    begin
-      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Tmp_Expand, Tmp_Fill, Padding, Tmp_Pack_Type);
+      Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Tmp_Pack_Type);
       Expand := Boolean'Val (Tmp_Expand);
       Fill := Boolean'Val (Tmp_Fill);
       Pack_Type := Gtk.Enums.Gtk_Pack_Type'Val (Tmp_Pack_Type);
@@ -254,7 +254,7 @@ package body Gtk.Box is
           Position : Gint);
       pragma Import (C, Internal, "gtk_box_reorder_child");
    begin
-      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Position);
+      Internal (Get_Object (Box), Get_Object (Child), Position);
    end Reorder_Child;
 
    -----------------------
@@ -278,7 +278,7 @@ package body Gtk.Box is
           Pack_Type : Integer);
       pragma Import (C, Internal, "gtk_box_set_child_packing");
    begin
-      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Child)), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
+      Internal (Get_Object (Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
    end Set_Child_Packing;
 
    ---------------------

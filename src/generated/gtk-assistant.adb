@@ -155,7 +155,7 @@ package body Gtk.Assistant is
           Child     : System.Address);
       pragma Import (C, Internal, "gtk_assistant_add_action_widget");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (Assistant), Get_Object (Child));
    end Add_Action_Widget;
 
    -----------------
@@ -171,7 +171,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_assistant_append_page");
    begin
-      return Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)));
+      return Internal (Get_Object (Assistant), Get_Object (Page));
    end Append_Page;
 
    ------------
@@ -241,7 +241,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_assistant_get_page_complete");
    begin
-      return Boolean'Val (Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page))));
+      return Boolean'Val (Internal (Get_Object (Assistant), Get_Object (Page)));
    end Get_Page_Complete;
 
    ---------------------------
@@ -259,7 +259,7 @@ package body Gtk.Assistant is
       pragma Import (C, Internal, "gtk_assistant_get_page_header_image");
       Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page))), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Header_Image;
 
    -------------------------
@@ -277,7 +277,7 @@ package body Gtk.Assistant is
       pragma Import (C, Internal, "gtk_assistant_get_page_side_image");
       Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page))), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Side_Image;
 
    --------------------
@@ -294,7 +294,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_assistant_get_page_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page))));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Assistant), Get_Object (Page)));
    end Get_Page_Title;
 
    -------------------
@@ -311,7 +311,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Gtk_Assistant_Page_Type;
       pragma Import (C, Internal, "gtk_assistant_get_page_type");
    begin
-      return Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)));
+      return Internal (Get_Object (Assistant), Get_Object (Page));
    end Get_Page_Type;
 
    -----------------
@@ -329,7 +329,7 @@ package body Gtk.Assistant is
           Position  : Gint) return Gint;
       pragma Import (C, Internal, "gtk_assistant_insert_page");
    begin
-      return Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), Position);
+      return Internal (Get_Object (Assistant), Get_Object (Page), Position);
    end Insert_Page;
 
    ------------------
@@ -345,7 +345,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_assistant_prepend_page");
    begin
-      return Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)));
+      return Internal (Get_Object (Assistant), Get_Object (Page));
    end Prepend_Page;
 
    --------------------------
@@ -361,7 +361,7 @@ package body Gtk.Assistant is
           Child     : System.Address);
       pragma Import (C, Internal, "gtk_assistant_remove_action_widget");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (Assistant), Get_Object (Child));
    end Remove_Action_Widget;
 
    ----------------------
@@ -413,7 +413,7 @@ package body Gtk.Assistant is
           Complete  : Integer);
       pragma Import (C, Internal, "gtk_assistant_set_page_complete");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), Boolean'Pos (Complete));
+      Internal (Get_Object (Assistant), Get_Object (Page), Boolean'Pos (Complete));
    end Set_Page_Complete;
 
    ---------------------------
@@ -431,7 +431,7 @@ package body Gtk.Assistant is
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_assistant_set_page_header_image");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), Get_Object_Or_Null (GObject (Pixbuf)));
+      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object (Pixbuf));
    end Set_Page_Header_Image;
 
    -------------------------
@@ -449,7 +449,7 @@ package body Gtk.Assistant is
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_assistant_set_page_side_image");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), Get_Object_Or_Null (GObject (Pixbuf)));
+      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object (Pixbuf));
    end Set_Page_Side_Image;
 
    --------------------
@@ -468,7 +468,7 @@ package body Gtk.Assistant is
       pragma Import (C, Internal, "gtk_assistant_set_page_title");
       Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), Tmp_Title);
+      Internal (Get_Object (Assistant), Get_Object (Page), Tmp_Title);
       Free (Tmp_Title);
    end Set_Page_Title;
 
@@ -487,7 +487,7 @@ package body Gtk.Assistant is
           The_Type  : Gtk_Assistant_Page_Type);
       pragma Import (C, Internal, "gtk_assistant_set_page_type");
    begin
-      Internal (Get_Object (Assistant), Get_Object_Or_Null (GObject (Page)), The_Type);
+      Internal (Get_Object (Assistant), Get_Object (Page), The_Type);
    end Set_Page_Type;
 
    --------------------------

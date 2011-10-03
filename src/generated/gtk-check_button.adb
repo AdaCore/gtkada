@@ -117,7 +117,7 @@ package body Gtk.Check_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Do_Set_Related_Action;
 
    ------------------------
@@ -158,7 +158,7 @@ package body Gtk.Check_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Set_Related_Action;
 
    -------------------------------
@@ -186,7 +186,7 @@ package body Gtk.Check_Button is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
+      Internal (Get_Object (Self), Get_Object (Action));
    end Sync_Action_Properties;
 
 end Gtk.Check_Button;

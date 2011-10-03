@@ -254,7 +254,7 @@ package body Gtk.GRange is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_range_set_adjustment");
    begin
-      Internal (Get_Object (The_Range), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (The_Range), Get_Object (Adjustment));
    end Set_Adjustment;
 
    --------------------

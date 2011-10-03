@@ -573,7 +573,7 @@ package body Gtk.Label is
       procedure Internal (Label : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_label_set_mnemonic_widget");
    begin
-      Internal (Get_Object (Label), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Label), Get_Object (Widget));
    end Set_Mnemonic_Widget;
 
    -----------------

@@ -135,7 +135,7 @@ package body Gtk.Dialog is
           Response_Id : Gtk_Response_Type);
       pragma Import (C, Internal, "gtk_dialog_add_action_widget");
    begin
-      Internal (Get_Object (Dialog), Get_Object_Or_Null (GObject (Child)), Response_Id);
+      Internal (Get_Object (Dialog), Get_Object (Child), Response_Id);
    end Add_Action_Widget;
 
    ----------------
@@ -216,7 +216,7 @@ package body Gtk.Dialog is
           Widget : System.Address) return Gtk_Response_Type;
       pragma Import (C, Internal, "gtk_dialog_get_response_for_widget");
    begin
-      return Internal (Get_Object (Dialog), Get_Object_Or_Null (GObject (Widget)));
+      return Internal (Get_Object (Dialog), Get_Object (Widget));
    end Get_Response_For_Widget;
 
    -----------------------------

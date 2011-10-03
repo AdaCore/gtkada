@@ -412,38 +412,10 @@ class GIRClass(object):
            a pragma Import, with no body.
         """
 
-        t = naming.type(self._subst["cname"])
-
-        getobject = "Get_Object (%(var)s)"
-
-        if not self.is_gobject:
-            # An interface
-            pname = gtkmethod.get_param("self").ada_name() or "Self"
-            ptype = "%(typename)s" % self._subst
-            ctype = ptype
-            getobject = "%(var)s"
-
-        elif adaname.startswith("Gtk_New"):
-            # Implement as a constructor, even if the GIR file reported this
-            # as a function or method
-            pname = gtkmethod.get_param("param1").ada_name() or "Param1"
-            ptype = "%(typename)s" % self._subst
-            ctype = "System.Address"
-
-        else:
-            pname = gtkmethod.get_param("self").ada_name() or "Self"
-            ptype = "access %(typename)s_Record" % self._subst
-            ctype = "System.Address"
-
-        if is_import:
-            ctype = ptype
-
-        profile.add_param(0, Parameter(
-            name=pname,
-        #    type=t))
-            type=AdaType(
-                adatype=ptype, pkg=self.pkg, in_spec=True, ctype=ctype,
-                convert=getobject)))
+        t = naming.type(self._subst["cname"], cname=self._subst["cname"],
+                        useclass=False)
+        pname = gtkmethod.get_param("self").ada_name() or "Self"
+        profile.add_param(0, Parameter(name=pname, type=t))
 
     def _handle_function_internal(self, section, node, cname,
                                   gtkmethod,
@@ -786,7 +758,7 @@ See Glib.Properties for more information on properties)""")
                     "doc": p.findtext(ndoc, ""),
                     "pkg": pkg,
                     "ptype": ptype,
-                    "type": tp.as_ada_param()})
+                    "type": tp.as_ada_param(self.pkg)})
 
             adaprops.sort(lambda x,y: x["name"] <> y["name"])
 
@@ -832,7 +804,7 @@ See Glib.Properties for more information on properties)""")
                     code="null",
                     returns=profile.returns)
 
-                spec = sub.spec(maxlen=69)
+                spec = sub.spec(pkg=self.pkg, maxlen=69)
                 doc = s.findtext(ndoc, "")
                 if profile.returns_doc:
                     doc += "\n\n%s" % profile.returns_doc

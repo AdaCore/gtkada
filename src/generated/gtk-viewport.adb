@@ -152,7 +152,7 @@ package body Gtk.Viewport is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
    begin
-      Internal (Get_Object (Viewport), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Viewport), Get_Object (Adjustment));
    end Set_Hadjustment;
 
    ---------------------
@@ -182,7 +182,7 @@ package body Gtk.Viewport is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
    begin
-      Internal (Get_Object (Viewport), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Viewport), Get_Object (Adjustment));
    end Set_Vadjustment;
 
 end Gtk.Viewport;

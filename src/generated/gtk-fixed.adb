@@ -85,7 +85,7 @@ package body Gtk.Fixed is
           Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_move");
    begin
-      Internal (Get_Object (Fixed), Get_Object_Or_Null (GObject (Widget)), X, Y);
+      Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Move;
 
    ---------
@@ -105,7 +105,7 @@ package body Gtk.Fixed is
           Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_put");
    begin
-      Internal (Get_Object (Fixed), Get_Object_Or_Null (GObject (Widget)), X, Y);
+      Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Put;
 
    --------------------

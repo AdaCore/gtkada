@@ -213,7 +213,7 @@ package body Gtk.Status_Bar is
    is
       function Internal (Statusbar : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkStatusbar_get_messages");
-      Tmp_Return : Gtk.Status_Bar.Messages_List.GSlist;
+      Tmp_Return : Messages_List.GSlist;
    begin
       Gtk.Status_Bar.Messages_List.Set_Object (Tmp_Return, Internal (Get_Object (Statusbar)));
       return Tmp_Return;

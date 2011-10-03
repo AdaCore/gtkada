@@ -76,7 +76,7 @@ package body Gtk.Size_Group is
           Widget     : System.Address);
       pragma Import (C, Internal, "gtk_size_group_add_widget");
    begin
-      Internal (Get_Object (Size_Group), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Size_Group), Get_Object (Widget));
    end Add_Widget;
 
    -----------------------
@@ -134,7 +134,7 @@ package body Gtk.Size_Group is
           Widget     : System.Address);
       pragma Import (C, Internal, "gtk_size_group_remove_widget");
    begin
-      Internal (Get_Object (Size_Group), Get_Object_Or_Null (GObject (Widget)));
+      Internal (Get_Object (Size_Group), Get_Object (Widget));
    end Remove_Widget;
 
    -----------------------

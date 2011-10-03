@@ -77,7 +77,7 @@ package body Gtk.Accel_Group is
           Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Accel_Group), Accel_Quark, Get_Object_Or_Null (GObject (Acceleratable)), Accel_Key, Accel_Mods));
+      return Boolean'Val (Internal (Get_Object (Accel_Group), Accel_Quark, Get_Object (Acceleratable), Accel_Key, Accel_Mods));
    end Activate;
 
    -------------
@@ -239,7 +239,7 @@ package body Gtk.Accel_Group is
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accel_groups_activate");
    begin
-      return Boolean'Val (Internal (Get_Object_Or_Null (GObject (Object)), Accel_Key, Accel_Mods));
+      return Boolean'Val (Internal (Get_Object (Object), Accel_Key, Accel_Mods));
    end Accel_Groups_Activate;
 
    ---------------------------
@@ -323,7 +323,7 @@ package body Gtk.Accel_Group is
       function Internal
          (Closure : C_Gtk_Accel_Group_Activate) return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_from_accel_closure");
-      Stub : Gtk.Accel_Group.Gtk_Accel_Group_Record;
+      Stub : Gtk_Accel_Group_Record;
    begin
       return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Closure), Stub));
    end From_Accel_Closure;
@@ -340,7 +340,7 @@ package body Gtk.Accel_Group is
       pragma Import (C, Internal, "gtk_accel_groups_from_object");
       Tmp_Return : Glib.Object.Object_List.GSList;
    begin
-      Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Get_Object_Or_Null (GObject (Object))));
+      Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Get_Object (Object)));
       return Tmp_Return;
    end From_Object;
 

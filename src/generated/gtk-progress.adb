@@ -156,7 +156,7 @@ package body Gtk.Progress is
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_progress_set_adjustment");
    begin
-      Internal (Get_Object (Progress), Get_Object_Or_Null (GObject (Adjustment)));
+      Internal (Get_Object (Progress), Get_Object (Adjustment));
    end Set_Adjustment;
 
    -----------------------

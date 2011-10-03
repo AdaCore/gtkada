@@ -81,11 +81,11 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String := "");
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String := "");
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
    --  adding it to the same group as Radio_Group_Member.
@@ -102,11 +102,11 @@ package Gtk.Radio_Button is
        Label        : UTF8_String);
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Radio_Button.Gtk_Radio_Button;
+       Group        : Gtk_Radio_Button;
        Label        : UTF8_String);
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button containing a label. The
    --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
@@ -200,7 +200,7 @@ package Gtk.Radio_Button is
    --  Glib.Properties for more information on properties)
    --
    --  Name: Group_Property
-   --  Type: Gtk.Radio_Button.Gtk_Radio_Button
+   --  Type: Gtk_Radio_Button
    --  Flags: write
 
    Group_Property : constant Glib.Properties.Property_Object;

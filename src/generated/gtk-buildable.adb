@@ -50,7 +50,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_add_child");
       Tmp_The_Type : Interfaces.C.Strings.chars_ptr := New_String (The_Type);
    begin
-      Internal (Self, Get_Object_Or_Null (GObject (Builder)), Get_Object_Or_Null (GObject (Child)), Tmp_The_Type);
+      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_The_Type);
       Free (Tmp_The_Type);
    end Add_Child;
 
@@ -72,7 +72,7 @@ package body Gtk.Buildable is
       Stub       : Glib.Object.GObject_Record;
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Builder)), Tmp_Name);
+      Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Name);
       Free (Tmp_Name);
       return Get_User_Data (Tmp_Return, Stub);
    end Construct_Child;
@@ -97,7 +97,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_custom_finished");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object_Or_Null (GObject (Builder)), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Finished;
 
@@ -121,7 +121,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_custom_tag_end");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object_Or_Null (GObject (Builder)), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Tag_End;
 
@@ -143,7 +143,7 @@ package body Gtk.Buildable is
       Stub          : Glib.Object.GObject_Record;
       Tmp_Return    : System.Address;
    begin
-      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Builder)), Tmp_Childname);
+      Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Childname);
       Free (Tmp_Childname);
       return Get_User_Data (Tmp_Return, Stub);
    end Get_Internal_Child;
@@ -171,7 +171,7 @@ package body Gtk.Buildable is
       procedure Internal (Self : Gtk_Buildable; Builder : System.Address);
       pragma Import (C, Internal, "gtk_buildable_parser_finished");
    begin
-      Internal (Self, Get_Object_Or_Null (GObject (Builder)));
+      Internal (Self, Get_Object (Builder));
    end Parser_Finished;
 
    ----------------------------
@@ -192,7 +192,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_set_buildable_property");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Self, Get_Object_Or_Null (GObject (Builder)), Tmp_Name, Value);
+      Internal (Self, Get_Object (Builder), Tmp_Name, Value);
       Free (Tmp_Name);
    end Set_Buildable_Property;
 

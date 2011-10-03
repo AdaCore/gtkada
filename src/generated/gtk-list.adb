@@ -97,7 +97,7 @@ package body Gtk.List is
           Child : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_list_child_position");
    begin
-      return Internal (Get_Object (List), Get_Object_Or_Null (GObject (Child)));
+      return Internal (Get_Object (List), Get_Object (Child));
    end Child_Position;
 
    -----------------
@@ -278,7 +278,7 @@ package body Gtk.List is
       procedure Internal (List : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_list_select_child");
    begin
-      Internal (Get_Object (List), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (List), Get_Object (Child));
    end Select_Child;
 
    -----------------
@@ -350,7 +350,7 @@ package body Gtk.List is
       procedure Internal (List : System.Address; Item : System.Address);
       pragma Import (C, Internal, "gtk_list_toggle_row");
    begin
-      Internal (Get_Object (List), Get_Object_Or_Null (GObject (Item)));
+      Internal (Get_Object (List), Get_Object (Item));
    end Toggle_Row;
 
    --------------------
@@ -386,7 +386,7 @@ package body Gtk.List is
       procedure Internal (List : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_list_unselect_child");
    begin
-      Internal (Get_Object (List), Get_Object_Or_Null (GObject (Child)));
+      Internal (Get_Object (List), Get_Object (Child));
    end Unselect_Child;
 
    -------------------

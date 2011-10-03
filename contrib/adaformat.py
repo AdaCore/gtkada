@@ -87,17 +87,23 @@ class CType(object):
         """See CType documentation for a description of the returned tuple"""
         return self.returns
 
-    def as_ada_param(self):
+    def as_ada_param(self, pkg):
         """Converts self to a description for an Ada parameter to a
            subprogram.
+           `pkg` is the package in which we insert the name. It is used to
+           avoid qualified name when in the same package
         """
-        return self.param
+        # Do not fully qualify within the current package
+        p = self.ada[:self.ada.rfind(".")]
+        return self.param.replace("%s." % pkg.name, "")
 
-    def as_c_param(self):
+    def as_c_param(self, pkg):
         """Returns the C type (as a parameter to a subprogram that imports
            a C function)
         """
-        return self.cparam
+        # Do not fully qualify within the current package
+        p = self.ada[:self.ada.rfind(".")]
+        return self.cparam.replace("%s." % pkg.name, "")
 
     def as_call(self, name, wrapper="%s", lang="ada", mode="in"):
         """'name' represents a parameter of type 'self'.
@@ -196,7 +202,11 @@ class GObject(CType):
     def copy(self, **kwargs):
         result = CType.copy(self)
         if "userecord" in kwargs and kwargs["userecord"]:
-            result.param = "access %s_Record'Class" % self.ada
+            if "useclass" not in kwargs or kwargs["useclass"]:
+                result.param = "access %s_Record'Class" % self.ada
+            else:
+                result.param = "access %s_Record" % self.ada
+            result.convert = "Get_Object (%(var)s)"
         return result
 
 
@@ -359,7 +369,8 @@ class AdaNaming(object):
                 Proxy(girname)))  # Else return the GIR name itself
 
     def type(self, name, cname=None, pkg=None, isArray=False,
-             allow_access=True, empty_maps_to_null=False):
+             allow_access=True, empty_maps_to_null=False,
+             useclass=True):
         """Build an instance of CType for the corresponding cname.
            A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
@@ -403,8 +414,9 @@ class AdaNaming(object):
             t.is_ptr = cname and cname[-1] == '*'
 
         t = t.copy(userecord=not empty_maps_to_null
-                   and cname and allow_access
-                   and not cname.endswith("**"))
+                      and cname and allow_access
+                      and not cname.endswith("**"),
+                   useclass=useclass)
         t.add_with(pkg, specs=True)
         t.isArray = isArray
         return t
@@ -577,20 +589,21 @@ class Local_Var(object):
         self.default = default
         self.aliased = aliased
 
-    def _type(self, lang):
+    def _type(self, lang, pkg):
+        """`pkg` is the package in which we insert the variable"""
         if isinstance(self.type, CType):
             if lang == "ada":
-                return self.type.as_ada_param()
+                return self.type.as_ada_param(pkg)
             elif lang == "c":
-                return self.type.as_c_param()
+                return self.type.as_c_param(pkg)
         return self.type
 
-    def spec(self, length=0, lang="ada"):
+    def spec(self, pkg, length=0, lang="ada"):
         """Format the declaration for the variable or parameter.
            'length' is the minimum length that the name should occupy (for
            proper alignment when there are several variables.
         """
-        t = self._type(lang)
+        t = self._type(lang=lang, pkg=pkg)
         aliased = ""
         if self.aliased:
             aliased = "aliased "
@@ -629,8 +642,8 @@ class Parameter(Local_Var):
         self.mode = mode
         self.doc  = doc
 
-    def _type(self, lang):
-        t = super(Parameter, self)._type(lang)
+    def _type(self, lang, pkg):
+        t = super(Parameter, self)._type(lang=lang, pkg=pkg)
         mode = self.mode
         if self.mode == "access_c":
             mode = "access"
@@ -714,7 +727,8 @@ class Subprogram(object):
     def set_body(self, body):
         self._manual_body = body
 
-    def _profile(self, indent="   ", lang="ada", maxlen=max_profile_length):
+    def _profile(self, pkg, indent="   ", lang="ada",
+                 maxlen=max_profile_length):
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(lang)
@@ -737,13 +751,14 @@ class Subprogram(object):
 
         if self.plist:
             # First test: all parameters on same line
-            plist = [p.spec(lang=lang) for p in self.plist]
+            plist = [p.spec(pkg=pkg, lang=lang) for p in self.plist]
             p = " (" + "; ".join(plist) + ")"
 
             # If too long, split on several lines
             if len(p) + len(prefix) + len(suffix) > maxlen:
                 max = max_length([p.name for p in self.plist])
-                plist = [p.spec(max, lang=lang) for p in self.plist]
+                plist = [p.spec(pkg=pkg, length=max, lang=lang)
+                         for p in self.plist]
                 p = "\n   " + indent + "(" \
                     + (";\n    " + indent).join(plist) + ")"
 
@@ -756,7 +771,8 @@ class Subprogram(object):
         else:
             return prefix + p + suffix
 
-    def spec(self, indent="   ", show_doc=True, maxlen=max_profile_length):
+    def spec(self, pkg, indent="   ", show_doc=True,
+             maxlen=max_profile_length):
         """Return the spec of the subprogram"""
 
         if self.showdoc and show_doc:
@@ -767,7 +783,8 @@ class Subprogram(object):
         else:
             doc = []
 
-        result = self._profile(indent, lang=self.lang, maxlen=maxlen) + ";"
+        result = self._profile(
+            pkg=pkg, indent=indent, lang=self.lang, maxlen=maxlen) + ";"
 
         if self._import:
             result += "\n" + indent + self._import
@@ -803,16 +820,16 @@ class Subprogram(object):
         else:
             return ""
 
-    def _format_local_vars(self, indent="   "):
+    def _format_local_vars(self, pkg, indent="   "):
         """The list of local variable declarations"""
         if self.local:
             max = max_length([p.name for p in self.local])
-            result = [v.spec(max) for v in self.local]
+            result = [v.spec(pkg=pkg, length=max) for v in self.local]
             return indent + "   " + (";\n   " + indent).join(result) + ";\n"
         else:
             return ""
 
-    def body(self, indent="   "):
+    def body(self, pkg, indent="   "):
         if self._manual_body:
             return self._manual_body
 
@@ -820,7 +837,7 @@ class Subprogram(object):
             return ""
 
         result = box(self.name) + "\n\n"
-        profile = self._profile(lang=self.lang)
+        profile = self._profile(pkg=pkg, lang=self.lang)
         result += profile
 
         if profile.find("\n") != -1:
@@ -828,12 +845,12 @@ class Subprogram(object):
         else:
             result += " is\n"
 
-        local = self._format_local_vars(indent=indent)
+        local = self._format_local_vars(pkg=pkg, indent=indent)
         result += self._find_unreferenced(local_vars=local, indent=indent)
 
         for s in self._nested:
-            result += s.spec(indent=indent + "   ") + "\n"
-            result += s.body(indent=indent + "   ")
+            result += s.spec(pkg=pkg, indent=indent + "   ") + "\n"
+            result += s.body(pkg=pkg, indent=indent + "   ")
 
         result += local
         result += indent + "begin\n"
@@ -1020,7 +1037,7 @@ class Section(object):
         else:
             return [[s] for s in self.subprograms]
 
-    def spec(self):
+    def spec(self, pkg):
         """Return the spec of the section"""
 
         result = []
@@ -1040,13 +1057,13 @@ class Section(object):
 
             for group in self._group_subprograms():
                 for s in group:
-                    result.append(s.spec(show_doc=s == group[-1]))
+                    result.append(s.spec(pkg=pkg, show_doc=s == group[-1]))
                     if s == group[-1]:
                         result.append("")
 
         return "\n".join(result)
 
-    def body(self):
+    def body(self, pkg):
         result = []
 
         if self.body_code:
@@ -1054,7 +1071,7 @@ class Section(object):
 
         self.subprograms.sort(lambda x, y: cmp(x.name, y.name))
         for s in self.subprograms:
-            b = s.body()
+            b = s.body(pkg=pkg)
             if b:
                 result.append(b)
 
@@ -1149,7 +1166,7 @@ class Package(object):
         out.write("package %s is" % self.name)
 
         for s in self.sections:
-            out.write(s.spec())
+            out.write(s.spec(pkg=self))
 
         if self.private:
             out.write("\nprivate\n")
@@ -1162,7 +1179,7 @@ class Package(object):
 
         body = ""
         for s in self.sections:
-            b = s.body()
+            b = s.body(pkg=self)
             if b:
                 body += b
 
