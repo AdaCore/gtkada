@@ -161,7 +161,7 @@ package Gnome.MDI is
 
    procedure Unregister
      (MDI    : access Gnome_MDI_Record;
-      Object : access Glib.Object.Gtk_Object_Record'Class);
+      Object : access Glib.Object.GObject_Record'Class);
 
    procedure Update_Child
      (MDI   : access Gnome_MDI_Record;

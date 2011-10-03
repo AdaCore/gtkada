@@ -115,7 +115,7 @@ package Bonobo.Dock_Layout is
 
 private
    type Bonobo_Dock_Layout_Record is new
-     Glin.Object.GObject_Record with null record;
+     Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "bonobo_dock_layout_get_type");
 end Bonobo.Dock_Layout;
