@@ -2847,7 +2847,6 @@ package body Gtkada.Canvas is
       --  Clicks other than left mouse button are transmitted directly
 
       if Get_Button (Event) /= 1 then
-         Set_Cursor (Get_Window (Canvas), null);
          return False;
       end if;
 
