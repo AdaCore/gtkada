@@ -2844,6 +2844,13 @@ package body Gtkada.Canvas is
          end if;
       end if;
 
+      --  Clicks other than left mouse button are transmitted directly
+
+      if Get_Button (Event) /= 1 then
+         Set_Cursor (Get_Window (Canvas), null);
+         return False;
+      end if;
+
       --  Change the cursor to give visual feedback
 
       Gdk_New (Cursor, Fleur);
