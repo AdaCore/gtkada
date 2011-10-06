@@ -32,6 +32,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Box is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Box_Record);
    pragma Unreferenced (Type_Conversion);
@@ -110,9 +111,9 @@ package body Gtk.Box is
          (Box : System.Address;
           Num : Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box), Num), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box), Num), Stub_Gtk_Widget));
    end Get_Child;
 
    ---------------------

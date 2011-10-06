@@ -29,11 +29,77 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
+with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.About_Dialog is
+
+   function To_Activate_Link_Func is new Ada.Unchecked_Conversion
+     (System.Address, Activate_Link_Func);
+
+   procedure C_Gtk_About_Dialog_Set_Email_Hook
+      (Func    : System.Address;
+       Data    : System.Address;
+       Destroy : System.Address);
+   pragma Import (C, C_Gtk_About_Dialog_Set_Email_Hook, "gtk_about_dialog_set_email_hook");
+   pragma Obsolescent (C_Gtk_About_Dialog_Set_Email_Hook);
+   --  Installs a global function to be called whenever the user activates an
+   --  email link in an about dialog. Since 2.18 there exists a default
+   --  function which uses gtk_show_uri(). To deactivate it, you can pass null
+   --  for Func.
+   --  Since: gtk+ 2.6
+   --  Deprecated since 2.24, Use the
+   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
+   --  "func": a function to call when an email link is activated.
+   --  "data": data to pass to Func
+   --  "destroy": Glib.G_Destroy_Notify_Address for Data
+
+   procedure C_Gtk_About_Dialog_Set_Url_Hook
+      (Func    : System.Address;
+       Data    : System.Address;
+       Destroy : System.Address);
+   pragma Import (C, C_Gtk_About_Dialog_Set_Url_Hook, "gtk_about_dialog_set_url_hook");
+   pragma Obsolescent (C_Gtk_About_Dialog_Set_Url_Hook);
+   --  Installs a global function to be called whenever the user activates a
+   --  URL link in an about dialog. Since 2.18 there exists a default function
+   --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
+   --  Since: gtk+ 2.6
+   --  Deprecated since 2.24, Use the
+   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
+   --  "func": a function to call when a URL link is activated.
+   --  "data": data to pass to Func
+   --  "destroy": Glib.G_Destroy_Notify_Address for Data
+
+   procedure Internal_Activate_Link_Func
+      (About : System.Address;
+       Link  : Interfaces.C.Strings.chars_ptr;
+       Data  : System.Address);
+   pragma Convention (C, Internal_Activate_Link_Func);
+   --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
+   --  activated
+   --  "link_": the URL or email address to which the activated link points
+   --  "data": user data that was passed when the function was registered with
+   --  Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
+
+   ---------------------------------
+   -- Internal_Activate_Link_Func --
+   ---------------------------------
+
+   procedure Internal_Activate_Link_Func
+      (About : System.Address;
+       Link  : Interfaces.C.Strings.chars_ptr;
+       Data  : System.Address)
+   is
+      Func                  : constant Activate_Link_Func := To_Activate_Link_Func (Data);
+      Stub_Gtk_About_Dialog : Gtk_About_Dialog_Record;
+   begin
+      Func (Gtk.About_Dialog.Gtk_About_Dialog (Get_User_Data (About, Stub_Gtk_About_Dialog)), Interfaces.C.Strings.Value (Link));
+   end Internal_Activate_Link_Func;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_About_Dialog_Record);
    pragma Unreferenced (Type_Conversion);
@@ -155,9 +221,9 @@ package body Gtk.About_Dialog is
    is
       function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
-      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub_Gdk_Pixbuf));
    end Get_Logo;
 
    ------------------------
@@ -361,6 +427,62 @@ package body Gtk.About_Dialog is
       GtkAda.Types.Free (Tmp_Documenters);
    end Set_Documenters;
 
+   --------------------
+   -- Set_Email_Hook --
+   --------------------
+
+   procedure Set_Email_Hook (Func : Activate_Link_Func) is
+   begin
+      C_Gtk_About_Dialog_Set_Email_Hook (Internal_Activate_Link_Func'Address, Func'Address, System.Null_Address);
+   end Set_Email_Hook;
+
+   package body Set_Email_Hook_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+      function To_Activate_Link_Func is new Ada.Unchecked_Conversion
+        (System.Address, Activate_Link_Func);
+
+      procedure Internal_Cb
+         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
+          Link  : UTF8_String;
+          Data  : System.Address);
+      --  The type of a function which is called when a URL or email link is
+      --  activated.
+      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
+      --  activated
+      --  "link_": the URL or email address to which the activated link points
+      --  "data": user data that was passed when the function was registered
+      --  with Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
+          Link  : UTF8_String;
+          Data  : System.Address)
+      is
+         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+      begin
+         To_Activate_Link_Func (D.Func) (About, Link, D.Data.all);
+      end Internal_Cb;
+
+      --------------------
+      -- Set_Email_Hook --
+      --------------------
+
+      procedure Set_Email_Hook
+         (Func : Activate_Link_Func;
+          Data : User_Data_Type)
+      is
+      begin
+         C_Gtk_About_Dialog_Set_Email_Hook (Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
+      end Set_Email_Hook;
+
+   end Set_Email_Hook_User_Data;
+
    -----------------
    -- Set_License --
    -----------------
@@ -465,6 +587,62 @@ package body Gtk.About_Dialog is
       Free (Tmp_Translator_Credits);
    end Set_Translator_Credits;
 
+   ------------------
+   -- Set_Url_Hook --
+   ------------------
+
+   procedure Set_Url_Hook (Func : Activate_Link_Func) is
+   begin
+      C_Gtk_About_Dialog_Set_Url_Hook (Internal_Activate_Link_Func'Address, Func'Address, System.Null_Address);
+   end Set_Url_Hook;
+
+   package body Set_Url_Hook_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+      function To_Activate_Link_Func is new Ada.Unchecked_Conversion
+        (System.Address, Activate_Link_Func);
+
+      procedure Internal_Cb
+         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
+          Link  : UTF8_String;
+          Data  : System.Address);
+      --  The type of a function which is called when a URL or email link is
+      --  activated.
+      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
+      --  activated
+      --  "link_": the URL or email address to which the activated link points
+      --  "data": user data that was passed when the function was registered
+      --  with Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
+          Link  : UTF8_String;
+          Data  : System.Address)
+      is
+         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+      begin
+         To_Activate_Link_Func (D.Func) (About, Link, D.Data.all);
+      end Internal_Cb;
+
+      ------------------
+      -- Set_Url_Hook --
+      ------------------
+
+      procedure Set_Url_Hook
+         (Func : Activate_Link_Func;
+          Data : User_Data_Type)
+      is
+      begin
+         C_Gtk_About_Dialog_Set_Url_Hook (Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
+      end Set_Url_Hook;
+
+   end Set_Url_Hook_User_Data;
+
    -----------------
    -- Set_Version --
    -----------------
@@ -532,41 +710,5 @@ package body Gtk.About_Dialog is
    begin
       Internal (Get_Object (About), Boolean'Pos (Wrap_License));
    end Set_Wrap_License;
-
-   --------------------
-   -- Set_Email_Hook --
-   --------------------
-
-   function Set_Email_Hook
-      (Func    : Activate_Link_Func;
-       Data    : System.Address;
-       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func
-   is
-      function Internal
-         (Func    : Activate_Link_Func;
-          Data    : System.Address;
-          Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-      pragma Import (C, Internal, "gtk_about_dialog_set_email_hook");
-   begin
-      return Internal (Func, Data, Destroy);
-   end Set_Email_Hook;
-
-   ------------------
-   -- Set_Url_Hook --
-   ------------------
-
-   function Set_Url_Hook
-      (Func    : Activate_Link_Func;
-       Data    : System.Address;
-       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func
-   is
-      function Internal
-         (Func    : Activate_Link_Func;
-          Data    : System.Address;
-          Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-      pragma Import (C, Internal, "gtk_about_dialog_set_url_hook");
-   begin
-      return Internal (Func, Data, Destroy);
-   end Set_Url_Hook;
 
 end Gtk.About_Dialog;

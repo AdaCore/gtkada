@@ -32,6 +32,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Layout is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Layout_Record);
    pragma Unreferenced (Type_Conversion);
@@ -102,9 +103,9 @@ package body Gtk.Layout is
    is
       function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_hadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    --------------
@@ -135,9 +136,9 @@ package body Gtk.Layout is
    is
       function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_vadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    ----------

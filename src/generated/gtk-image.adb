@@ -33,6 +33,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Image is
+
    procedure Get_Icon_Name
      (Image : access Gtk_Image_Record;
       Name  : out GNAT.Strings.String_Access;
@@ -460,9 +461,9 @@ package body Gtk.Image is
    is
       function Internal (Image : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_get_pixbuf");
-      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Image)), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Image)), Stub_Gdk_Pixbuf));
    end Get;
 
    ---------

@@ -32,6 +32,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.List is
+
    function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
    return Widget_List.Glist
    is

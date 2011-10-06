@@ -76,11 +76,11 @@ package Gtk.Accel_Group is
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
 
-   type C_Gtk_Accel_Group_Find_Func is access function
+   type Gtk_Accel_Group_Find_Func is access function
      (Key           : access Gtk_Accel_Key;
       Closure       : C_Gtk_Accel_Group_Activate;
       Data          : System.Address) return Boolean;
-   pragma Convention (C, C_Gtk_Accel_Group_Find_Func);
+   pragma Convention (C, Gtk_Accel_Group_Find_Func);
    --  When a match is found, must return True.
    --  Must not modify Key
 
@@ -166,7 +166,7 @@ package Gtk.Accel_Group is
 
    function Find
       (Accel_Group : access Gtk_Accel_Group_Record;
-       Find_Func   : C_Gtk_Accel_Group_Find_Func;
+       Find_Func   : Gtk_Accel_Group_Find_Func;
        Data        : System.Address) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which
    --  "find_func": a function to filter the entries of Accel_Group with
@@ -199,8 +199,7 @@ package Gtk.Accel_Group is
    ---------------
 
    function From_Accel_Closure
-      (Closure : C_Gtk_Accel_Group_Activate)
-       return Gtk.Accel_Group.Gtk_Accel_Group;
+      (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
    --  "closure": a GClosure

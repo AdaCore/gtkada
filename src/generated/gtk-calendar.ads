@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  Gtk_Calendar is a widget that displays a calendar, one month at a time. It
 --  can be created with Gtk_New.
@@ -78,13 +79,19 @@ package Gtk.Calendar is
    --  Start the calendar week on Monday, instead of the default Sunday.
 
    type Gtk_Calendar_Detail_Func is access function
-     (Calendar  : access Gtk_Calendar_Record'Class;
-      Year      : Guint;
-      Month     : Guint;
-      Day       : Guint;
-      User_Data : System.Address) return String;
-   --  Return the details for the given day, or the empty string when there
-   --  are no details.
+     (Calendar : access Gtk_Calendar_Record'Class;
+      Year     : Guint;
+      Month    : Guint;
+      Day      : Guint) return UTF8_String;
+   --  This kind of functions provide Pango markup with detail information for
+   --  the specified day. Examples for such details are holidays or
+   --  appointments. The function returns null when no information is
+   --  available. for the specified day, or null.
+   --  Since: gtk+ 2.14
+   --  "calendar": a Gtk.Calendar.Gtk_Calendar.
+   --  "year": the year for which details are needed.
+   --  "month": the month for which details are needed.
+   --  "day": the day of Month for which details are needed.
 
    ------------------
    -- Constructors --
@@ -181,9 +188,7 @@ package Gtk.Calendar is
 
    procedure Set_Detail_Func
       (Calendar : access Gtk_Calendar_Record;
-       Func     : Gtk_Calendar_Detail_Func;
-       Data     : System.Address;
-       Destroy  : Glib.G_Destroy_Notify_Address);
+       Func     : Gtk_Calendar_Detail_Func);
    --  Installs a function which provides Pango markup with detail information
    --  for each day. Examples for such details are holidays or appointments.
    --  That information is shown below each day when
@@ -195,8 +200,48 @@ package Gtk.Calendar is
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
    --  Since: gtk+ 2.14
    --  "func": a function providing details for each day.
-   --  "data": data to pass to Func invokations.
-   --  "destroy": a function for releasing Data.
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Set_Detail_Func_User_Data is
+
+      type Gtk_Calendar_Detail_Func is access function
+        (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         Year      : Guint;
+         Month     : Guint;
+         Day       : Guint;
+         User_Data : User_Data_Type) return UTF8_String;
+      --  This kind of functions provide Pango markup with detail information for
+      --  the specified day. Examples for such details are holidays or
+      --  appointments. The function returns null when no information is
+      --  available. for the specified day, or null.
+      --  Since: gtk+ 2.14
+      --  "calendar": a Gtk.Calendar.Gtk_Calendar.
+      --  "year": the year for which details are needed.
+      --  "month": the month for which details are needed.
+      --  "day": the day of Month for which details are needed.
+      --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
+
+      procedure Set_Detail_Func
+         (Calendar : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+          Func     : Gtk_Calendar_Detail_Func;
+          Data     : User_Data_Type);
+      --  Installs a function which provides Pango markup with detail
+      --  information for each day. Examples for such details are holidays or
+      --  appointments. That information is shown below each day when
+      --  Gtk.Calendar.Gtk_Calendar:show-details is set. A tooltip containing
+      --  with full detail information is provided, if the entire text should
+      --  not fit into the details area, or if
+      --  Gtk.Calendar.Gtk_Calendar:show-details is not set. The size of the
+      --  details area can be restricted by setting the
+      --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
+      --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
+      --  Since: gtk+ 2.14
+      --  "func": a function providing details for each day.
+      --  "data": data to pass to Func invokations.
+
+   end Set_Detail_Func_User_Data;
 
    procedure Thaw (Calendar : access Gtk_Calendar_Record);
    pragma Obsolescent (Thaw);

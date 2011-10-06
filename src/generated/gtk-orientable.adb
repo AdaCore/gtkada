@@ -29,7 +29,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+
 package body Gtk.Orientable is
+
    ---------------------
    -- Get_Orientation --
    ---------------------
