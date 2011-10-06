@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Font_Selection is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Font_Selection_Record);
    pragma Unreferenced (Type_Conversion);
@@ -69,9 +68,9 @@ package body Gtk.Font_Selection is
    is
       function Internal (Fontsel : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_get_face_list");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub));
    end Get_Face_List;
 
    ---------------------
@@ -84,9 +83,9 @@ package body Gtk.Font_Selection is
    is
       function Internal (Fontsel : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_get_family_list");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub));
    end Get_Family_List;
 
    --------------
@@ -126,9 +125,9 @@ package body Gtk.Font_Selection is
    is
       function Internal (Fontsel : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_get_preview_entry");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub));
    end Get_Preview_Entry;
 
    ----------------------
@@ -168,9 +167,9 @@ package body Gtk.Font_Selection is
    is
       function Internal (Fontsel : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_get_size_entry");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub));
    end Get_Size_Entry;
 
    -------------------
@@ -183,9 +182,9 @@ package body Gtk.Font_Selection is
    is
       function Internal (Fontsel : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_get_size_list");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Fontsel)), Stub));
    end Get_Size_List;
 
    -------------------

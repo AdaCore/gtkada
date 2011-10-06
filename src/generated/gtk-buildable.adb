@@ -32,7 +32,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Buildable is
-
    ---------------
    -- Add_Child --
    ---------------
@@ -69,13 +68,13 @@ package body Gtk.Buildable is
           Builder : System.Address;
           Name    : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_construct_child");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Stub_GObject : Glib.Object.GObject_Record;
-      Tmp_Return   : System.Address;
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Stub       : Glib.Object.GObject_Record;
+      Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Name);
       Free (Tmp_Name);
-      return Get_User_Data (Tmp_Return, Stub_GObject);
+      return Get_User_Data (Tmp_Return, Stub);
    end Construct_Child;
 
    ---------------------
@@ -141,12 +140,12 @@ package body Gtk.Buildable is
           Childname : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_get_internal_child");
       Tmp_Childname : Interfaces.C.Strings.chars_ptr := New_String (Childname);
-      Stub_GObject  : Glib.Object.GObject_Record;
+      Stub          : Glib.Object.GObject_Record;
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Childname);
       Free (Tmp_Childname);
-      return Get_User_Data (Tmp_Return, Stub_GObject);
+      return Get_User_Data (Tmp_Return, Stub);
    end Get_Internal_Child;
 
    --------------

@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Accel_Group is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Accel_Group_Record);
    pragma Unreferenced (Type_Conversion);
@@ -163,16 +162,16 @@ package body Gtk.Accel_Group is
 
    function Find
       (Accel_Group : access Gtk_Accel_Group_Record;
-       Find_Func   : Gtk_Accel_Group_Find_Func;
+       Find_Func   : C_Gtk_Accel_Group_Find_Func;
        Data        : System.Address) return Gtk_Accel_Key
    is
       function Internal
          (Accel_Group : System.Address;
-          Find_Func   : System.Address;
+          Find_Func   : C_Gtk_Accel_Group_Find_Func;
           Data        : System.Address) return Gtk_Accel_Key;
       pragma Import (C, Internal, "gtk_accel_group_find");
    begin
-      return Internal (Get_Object (Accel_Group), Find_Func'Address, Data);
+      return Internal (Get_Object (Accel_Group), Find_Func, Data);
    end Find;
 
    -------------------
@@ -318,14 +317,15 @@ package body Gtk.Accel_Group is
    ------------------------
 
    function From_Accel_Closure
-      (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group
+      (Closure : C_Gtk_Accel_Group_Activate)
+       return Gtk.Accel_Group.Gtk_Accel_Group
    is
       function Internal
          (Closure : C_Gtk_Accel_Group_Activate) return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_from_accel_closure");
-      Stub_Gtk_Accel_Group : Gtk_Accel_Group_Record;
+      Stub : Gtk_Accel_Group_Record;
    begin
-      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Closure), Stub_Gtk_Accel_Group));
+      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Closure), Stub));
    end From_Accel_Closure;
 
    -----------------

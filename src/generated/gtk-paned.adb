@@ -32,7 +32,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Paned is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Paned_Record);
    pragma Unreferenced (Type_Conversion);
@@ -136,9 +135,9 @@ package body Gtk.Paned is
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
    end Get_Child1;
 
    ----------------
@@ -150,9 +149,9 @@ package body Gtk.Paned is
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
    end Get_Child2;
 
    -----------------------

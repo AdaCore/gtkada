@@ -30,51 +30,92 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.Object;
+with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Assistant is
+   package body Generic_Assistant_Functions is
 
-   function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Assistant_Page_Func);
+      type Data_Type_Access is access Data_Type;
 
-   procedure C_Gtk_Assistant_Set_Forward_Page_Func
-      (Assistant : System.Address;
-       Page_Func : System.Address;
-       Data      : System.Address;
-       Destroy   : System.Address);
-   pragma Import (C, C_Gtk_Assistant_Set_Forward_Page_Func, "gtk_assistant_set_forward_page_func");
-   --  Sets the page forwarding function to be Page_Func, this function will
-   --  be used to determine what will be the next page when the user presses
-   --  the forward button. Setting Page_Func to null will make the assistant to
-   --  use the default forward function, which just goes to the next visible
-   --  page.
-   --  Since: gtk+ 2.10
-   --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to use
-   --  the default one
-   --  "data": user data for Page_Func
-   --  "destroy": destroy notifier for Data
+      type Cb_Record is record
+         Func      : Page_Func;
+         Notify    : Destroy_Notify;
+         User_Data : Data_Type_Access;
+      end record;
+      type Cb_Record_Access is access Cb_Record;
 
-   function Internal_Gtk_Assistant_Page_Func
-      (Current_Page : Gint;
-       Data         : System.Address) return Gint;
-   pragma Convention (C, Internal_Gtk_Assistant_Page_Func);
-   --  "current_page": The page number used to calculate the next page.
-   --  "data": user data.
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Cb_Record_Access);
 
-   --------------------------------------
-   -- Internal_Gtk_Assistant_Page_Func --
-   --------------------------------------
+      function Convert is new Ada.Unchecked_Conversion
+        (Cb_Record_Access, System.Address);
 
-   function Internal_Gtk_Assistant_Page_Func
-      (Current_Page : Gint;
-       Data         : System.Address) return Gint
-   is
-      Func : constant Gtk_Assistant_Page_Func := To_Gtk_Assistant_Page_Func (Data);
-   begin
-      return Func (Current_Page);
-   end Internal_Gtk_Assistant_Page_Func;
+      function General_Cb
+        (Current_Page : Gint;
+         D : System.Address)
+      return Gint;
+      pragma Convention (C, General_Cb);
+
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback used to free data associated with Set_Forward_Page_Func
+
+      function General_Cb
+        (Current_Page : Gint;
+         D : System.Address)
+      return Gint
+      is
+         Data : constant Cb_Record_Access := Convert (D);
+      begin
+         return Data.Func (Current_Page, Data.User_Data.all);
+      end General_Cb;
+
+      procedure Free_Data (D : System.Address) is
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Cb_Record, Cb_Record_Access);
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Data_Type, Data_Type_Access);
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         if Data.Notify /= null then
+            Data.Notify (Data.User_Data.all);
+         end if;
+         Free (Data.User_Data);
+         Free (Data);
+      end Free_Data;
+
+      ---------------------------
+      -- Set_Forward_Page_Func --
+      ---------------------------
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null)
+      is
+         procedure Internal
+           (Assistant : System.Address;
+            Page_Func : System.Address;
+            Data      : System.Address;
+            Destroy   : System.Address);
+         pragma Import (C, Internal, "gtk_assistant_set_forward_page_func");
+
+         D : constant Cb_Record_Access := new Cb_Record'
+           (Func      => Func,
+            Notify    => Destroy,
+            User_Data => new Data_Type'(User_Data));
+      begin
+         Internal
+           (Get_Object (Assistant),
+            General_Cb'Address,
+            Convert (D),
+            Free_Data'Address);
+      end Set_Forward_Page_Func;
+
+   end Generic_Assistant_Functions;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Assistant_Record);
@@ -182,9 +223,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page_Num  : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_nth_page");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Assistant), Page_Num), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Assistant), Page_Num), Stub));
    end Get_Nth_Page;
 
    -----------------------
@@ -216,9 +257,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_header_image");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Header_Image;
 
    -------------------------
@@ -234,9 +275,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_side_image");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Side_Image;
 
    --------------------
@@ -343,56 +384,19 @@ package body Gtk.Assistant is
 
    procedure Set_Forward_Page_Func
       (Assistant : access Gtk_Assistant_Record;
-       Page_Func : Gtk_Assistant_Page_Func)
+       Page_Func : Gtk_Assistant_Page_Func;
+       Data      : System.Address;
+       Destroy   : Glib.G_Destroy_Notify_Address)
    is
-   begin
-      C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Gtk_Assistant_Page_Func'Address, Page_Func'Address, System.Null_Address);
-   end Set_Forward_Page_Func;
-
-   package body Set_Forward_Page_Func_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Assistant_Page_Func);
-
-      function Internal_Cb
-         (Current_Page : Gint;
-          Data         : System.Address) return Gint;
-      --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which
-      --  is the next page given a current one. It's called both for computing
-      --  the next page when the user presses the "forward" button and for
-      --  handling the behavior of the "last" button.
-      --  "current_page": The page number used to calculate the next page.
-      --  "data": user data.
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Current_Page : Gint;
-          Data         : System.Address) return Gint
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
-      begin
-         return To_Gtk_Assistant_Page_Func (D.Func) (Current_Page, D.Data.all);
-      end Internal_Cb;
-
-      ---------------------------
-      -- Set_Forward_Page_Func --
-      ---------------------------
-
-      procedure Set_Forward_Page_Func
-         (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
+      procedure Internal
+         (Assistant : System.Address;
           Page_Func : Gtk_Assistant_Page_Func;
-          Data      : User_Data_Type)
-      is
-      begin
-         C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Cb'Address, Users.Build (Page_Func'Address, Data), Users.Free_Data'Address);
-      end Set_Forward_Page_Func;
-
-   end Set_Forward_Page_Func_User_Data;
+          Data      : System.Address;
+          Destroy   : Glib.G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_assistant_set_forward_page_func");
+   begin
+      Internal (Get_Object (Assistant), Page_Func, Data, Destroy);
+   end Set_Forward_Page_Func;
 
    -----------------------
    -- Set_Page_Complete --

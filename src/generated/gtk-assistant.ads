@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk_Assistant is a widget used to represent a generally complex
 --  operation split into several steps, guiding the user through its pages and
@@ -59,12 +58,10 @@ package Gtk.Assistant is
       --  Definition of various page types.  See Get_Page_Type/Set_Page_Type
       --  for more info.
 
-      type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
-      --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
-      --  the next page given a current one. It's called both for computing the
-      --  next page when the user presses the "forward" button and for handling
-      --  the behavior of the "last" button.
-      --  "current_page": The page number used to calculate the next page.
+      type Gtk_Assistant_Page_Func is access function
+        (Current_Page : Gint;
+         D : System.Address) return Gint;
+      pragma Convention (C, Gtk_Assistant_Page_Func);
 
    ------------------
    -- Constructors --
@@ -226,45 +223,19 @@ package Gtk.Assistant is
 
    procedure Set_Forward_Page_Func
       (Assistant : access Gtk_Assistant_Record;
-       Page_Func : Gtk_Assistant_Page_Func);
+       Page_Func : Gtk_Assistant_Page_Func;
+       Data      : System.Address;
+       Destroy   : Glib.G_Destroy_Notify_Address);
    --  Sets the page forwarding function to be Page_Func, this function will
    --  be used to determine what will be the next page when the user presses
    --  the forward button. Setting Page_Func to null will make the assistant to
    --  use the default forward function, which just goes to the next visible
    --  page.
    --  Since: gtk+ 2.10
-   --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to use
-   --  the default one
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Forward_Page_Func_User_Data is
-
-      type Gtk_Assistant_Page_Func is access function (Current_Page : Gint;
-         Data : User_Data_Type) return Gint;
-      --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
-      --  the next page given a current one. It's called both for computing the
-      --  next page when the user presses the "forward" button and for handling
-      --  the behavior of the "last" button.
-      --  "current_page": The page number used to calculate the next page.
-      --  "data": user data.
-
-      procedure Set_Forward_Page_Func
-         (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
-          Page_Func : Gtk_Assistant_Page_Func;
-          Data      : User_Data_Type);
-      --  Sets the page forwarding function to be Page_Func, this function
-      --  will be used to determine what will be the next page when the user
-      --  presses the forward button. Setting Page_Func to null will make the
-      --  assistant to use the default forward function, which just goes to the
-      --  next visible page.
-      --  Since: gtk+ 2.10
-      --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to
-      --  use the default one
-      --  "data": user data for Page_Func
-
-   end Set_Forward_Page_Func_User_Data;
+   --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
+   --  one
+   --  "data": user data for Page_Func
+   --  "destroy": destroy notifier for Data
 
    procedure Update_Buttons_State (Assistant : access Gtk_Assistant_Record);
    --  Forces Assistant to recompute the buttons state. GTK+ automatically
@@ -274,6 +245,35 @@ package Gtk.Assistant is
    --  is when changing a value on the current page affects the future page
    --  flow of the assistant.
    --  Since: gtk+ 2.10
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   generic
+   type Data_Type (<>) is private;
+   package Generic_Assistant_Functions is
+      type Page_Func is access function
+        (Current_Page : Gint;
+         User_Data    : Data_Type)
+      return Gint;
+      --  Spec for page forwarding function.
+
+      type Destroy_Notify is access procedure (User_Data : in out Data_Type);
+      --  Destroy_Notify is called just prior to the destruction of
+      --  User_Data.
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null);
+      --  Sets the Assistant's page forwarding function to be Func.  This
+      --  function will be used to determine what will be the next page when
+      --  the user presses the forward button. Setting Func to null will make
+      --  the assistant use the default forward function, which just goes
+      --  to the next visible page.
+   end Generic_Assistant_Functions;
 
    ----------------
    -- Interfaces --

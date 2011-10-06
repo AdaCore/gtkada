@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Scale is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Scale_Record);
    pragma Unreferenced (Type_Conversion);
@@ -224,9 +223,9 @@ package body Gtk.Scale is
    is
       function Internal (Scale : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_get_layout");
-      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
+      Stub : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub_Pango_Layout));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub));
    end Get_Layout;
 
    ------------------------

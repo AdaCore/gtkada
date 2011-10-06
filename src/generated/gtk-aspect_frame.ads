@@ -38,7 +38,7 @@
 --
 --  </description>
 --  <group>Layout Containers</group>
---  <testgtk>create_frame.adb</testgtk>
+--  <testgtk>create_frame.adb.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

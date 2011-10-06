@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk_About_Dialog offers a simple way to display information about a
 --  program like its logo, name, copyright, website and license. It is also
@@ -52,14 +51,15 @@ pragma Ada_05;
 --  <testgtk>create_about.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;    use GNAT.Strings;
-with Gdk.Pixbuf;      use Gdk.Pixbuf;
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Dialog;      use Gtk.Dialog;
-with Gtk.Widget;      use Gtk.Widget;
+with GNAT.Strings;         use GNAT.Strings;
+with Gdk.Pixbuf;           use Gdk.Pixbuf;
+with Glib;                 use Glib;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Dialog;           use Gtk.Dialog;
+with Gtk.Widget;           use Gtk.Widget;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package Gtk.About_Dialog is
 
@@ -67,13 +67,17 @@ package Gtk.About_Dialog is
    type Gtk_About_Dialog is access all Gtk_About_Dialog_Record'Class;
 
    type Activate_Link_Func is access procedure
-     (About : access Gtk_About_Dialog_Record'Class;
-      Link  : UTF8_String);
-   --  The type of a function which is called when a URL or email link is
-   --  activated.
-   --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-   --  activated
-   --  "link_": the URL or email address to which the activated link points
+     (About : System.Address;
+      Link  : Interfaces.C.Strings.chars_ptr;
+      Data  : System.Address);
+   pragma Convention (C, Activate_Link_Func);
+   --  A callback called when the user presses an hyper link in the about
+   --  dialog. This is a low-level function, and you'll need to convert the
+   --  parameters to more useful types with:
+   --     Stub : Gtk_About_Dialog_Record;
+   --     A    : constant Gtk_About_Dialog :=
+   --       Gtk_About_Dialog (Get_User_Data (About, Stub));
+   --     L    : constant String := Interfaces.C.Strings.Value (Link);
 
    ------------------
    -- Constructors --
@@ -256,7 +260,14 @@ package Gtk.About_Dialog is
    --  Since: gtk+ 2.8
    --  "wrap_license": whether to wrap the license
 
-   procedure Set_Email_Hook (Func : Activate_Link_Func);
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Set_Email_Hook
+      (Func    : Activate_Link_Func;
+       Data    : System.Address;
+       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
    pragma Obsolescent (Set_Email_Hook);
    --  Installs a global function to be called whenever the user activates an
    --  email link in an about dialog. Since 2.18 there exists a default
@@ -266,41 +277,13 @@ package Gtk.About_Dialog is
    --  Deprecated since 2.24, Use the
    --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when an email link is activated.
+   --  "data": data to pass to Func
+   --  "destroy": Glib.G_Destroy_Notify_Address for Data
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Email_Hook_User_Data is
-
-      type Activate_Link_Func is access procedure
-        (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-         Link  : UTF8_String;
-         Data  : User_Data_Type);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered with
-      --  Gtk.About_Dialog.Set_Email_Hook or gtk_about_dialog_set_url_hook
-
-      procedure Set_Email_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type);
-      pragma Obsolescent (Set_Email_Hook);
-      --  Installs a global function to be called whenever the user activates
-      --  an email link in an about dialog. Since 2.18 there exists a default
-      --  function which uses gtk_show_uri(). To deactivate it, you can pass
-      --  null for Func.
-      --  Since: gtk+ 2.6
-      --  Deprecated since 2.24, Use the
-      --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-      --  "func": a function to call when an email link is activated.
-      --  "data": data to pass to Func
-
-   end Set_Email_Hook_User_Data;
-
-   procedure Set_Url_Hook (Func : Activate_Link_Func);
+   function Set_Url_Hook
+      (Func    : Activate_Link_Func;
+       Data    : System.Address;
+       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
    pragma Obsolescent (Set_Url_Hook);
    --  Installs a global function to be called whenever the user activates a
    --  URL link in an about dialog. Since 2.18 there exists a default function
@@ -309,39 +292,8 @@ package Gtk.About_Dialog is
    --  Deprecated since 2.24, Use the
    --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
    --  "func": a function to call when a URL link is activated.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Url_Hook_User_Data is
-
-      type Activate_Link_Func is access procedure
-        (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-         Link  : UTF8_String;
-         Data  : User_Data_Type);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered with
-      --  Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
-
-      procedure Set_Url_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type);
-      pragma Obsolescent (Set_Url_Hook);
-      --  Installs a global function to be called whenever the user activates
-      --  a URL link in an about dialog. Since 2.18 there exists a default
-      --  function which uses gtk_show_uri(). To deactivate it, you can pass
-      --  null for Func.
-      --  Since: gtk+ 2.6
-      --  Deprecated since 2.24, Use the
-      --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-      --  "func": a function to call when a URL link is activated.
-      --  "data": data to pass to Func
-
-   end Set_Url_Hook_User_Data;
+   --  "data": data to pass to Func
+   --  "destroy": Glib.G_Destroy_Notify_Address for Data
 
    ----------------
    -- Interfaces --

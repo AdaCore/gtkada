@@ -29,9 +29,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-
 package body Gtk.Activatable is
-
    ---------------------------
    -- Do_Set_Related_Action --
    ---------------------------
@@ -55,9 +53,9 @@ package body Gtk.Activatable is
    is
       function Internal (Self : Gtk_Activatable) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Self), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Self), Stub));
    end Get_Related_Action;
 
    -------------------------------

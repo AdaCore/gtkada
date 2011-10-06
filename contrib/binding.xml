@@ -795,6 +795,26 @@ use the function gtk_show_about_dialog which constructs and shows a dialog
 and keeps it around so that it can be shown again.
      </doc>
      <parameter name="self" ada="About"/>
+     <extra>
+        <with_spec pkg="Interfaces.C.Strings"/>
+        <!-- This is defined in a <callback> node in GIR, but not processed
+             automatically yet -->
+        <type ctype="GtkAboutDialogActivateLinkFunc"
+           ada="Activate_Link_Func">
+   type Activate_Link_Func is access procedure
+     (About : System.Address;
+      Link  : Interfaces.C.Strings.chars_ptr;
+      Data  : System.Address);
+   pragma Convention (C, Activate_Link_Func);
+   --  A callback called when the user presses an hyper link in the about
+   --  dialog. This is a low-level function, and you'll need to convert the
+   --  parameters to more useful types with:
+   --     Stub : Gtk_About_Dialog_Record;
+   --     A    : constant Gtk_About_Dialog :=
+   --       Gtk_About_Dialog (Get_User_Data (About, Stub));
+   --     L    : constant String := Interfaces.C.Strings.Value (Link);
+        </type>
+     </extra>
   </package>
 
   <package id="Gtk.GEntry">
@@ -1260,6 +1280,29 @@ If performing many 'mark' operations, the calendar can be frozen to prevent flic
      <parameter name="self" ada="Calendar"/>
      <method id="gtk_calendar_freeze" obsolescent="True"/>
      <method id="gtk_calendar_thaw" obsolescent="True"/>
+     <method id="gtk_calendar_set_detail_func">
+        <body>
+   procedure Set_Detail_Func
+     (Calendar : access Gtk_Calendar_Record;
+      Func     : Gtk_Calendar_Detail_Func;
+      Data     : System.Address;
+      Destroy  : G_Destroy_Notify_Address)
+   is
+      procedure Internal
+        (Calendar : System.Address;
+         Func     : System.Address;
+         Data     : System.Address;
+         Destroy  : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_calendar_set_detail_func");
+      D : constant Detail_Func_Data_Access :=
+         new Detail_Func_Data'(Func, Data, Destroy);
+   begin
+      Internal (Get_Object (Calendar),
+                Detail_Callback'Address, D.all'Address,
+                Free_Detail_Func_Data'Access);
+   end Set_Detail_Func;
+      </body>
+     </method>
      <extra>
         <type ctype="GtkCalendarDisplayOptions"
               ada="Gtk_Calendar_Display_Options">
@@ -1281,6 +1324,69 @@ If performing many 'mark' operations, the calendar can be frozen to prevent flic
    Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
    --  Start the calendar week on Monday, instead of the default Sunday.
         </type>
+        <type ctype="GtkCalendarDetailFunc"
+              ada="Gtk_Calendar_Detail_Func">
+   type Gtk_Calendar_Detail_Func is access function
+      (Calendar  : access Gtk_Calendar_Record'Class;
+       Year      : Guint;
+       Month     : Guint;
+       Day       : Guint;
+       User_Data : System.Address) return String;
+   --  Return the details for the given day, or the empty string when there
+   --  are no details.
+        </type>
+        <with_body pkg="Interfaces.C.Strings"/>
+        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
+        <with_body pkg="Ada.Unchecked_Deallocation" use="False"/>
+        <body>
+   type Detail_Func_Data is record
+      Callback   : Gtk_Calendar_Detail_Func;
+      User_Data  : System.Address;
+      On_Destroy : G_Destroy_Notify_Address;
+   end record;
+   type Detail_Func_Data_Access is access Detail_Func_Data;
+   function Convert is new Ada.Unchecked_Conversion
+      (System.Address, Detail_Func_Data_Access);
+   procedure Free_Detail_Func_Data (Data : System.Address);
+   pragma Convention (C, Free_Detail_Func_Data);
+   function Detail_Callback
+      (Calendar : System.Address;
+       Year, Month, Day : Guint;
+       User_Data : System.Address) return chars_ptr;
+   pragma Convention (C, Detail_Callback);
+   --  Support for GtkCalendarDetailFunc
+
+   function Detail_Callback
+      (Calendar : System.Address;
+       Year, Month, Day : Guint;
+       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+   is
+      Stub : Gtk_Calendar_Record;
+      Cal  : constant Gtk_Calendar :=
+         Gtk_Calendar (Get_User_Data (Calendar, Stub));
+      Data : constant Detail_Func_Data_Access := Convert (User_Data);
+      Details : constant String :=
+         Data.Callback (Cal, Year, Month, Day, Data.User_Data);
+   begin
+      if Details = "" then
+         return Interfaces.C.Strings.Null_Ptr;
+      else
+         return New_String (Details);
+      end if;
+   end Detail_Callback;
+
+   procedure Free_Detail_Func_Data (Data : System.Address) is
+      use System;
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (Detail_Func_Data, Detail_Func_Data_Access);
+      D : Detail_Func_Data_Access := Convert (Data);
+   begin
+      if D.On_Destroy /= null and then D.User_Data /= Null_Address then
+         D.On_Destroy (D.User_Data);
+      end if;
+      Unchecked_Free (D);
+   end Free_Detail_Func_Data;
+        </body>
      </extra>
   </package>
 
@@ -1566,12 +1672,12 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
         </type>
-        <type ctype="GtkAccelGroupFindFunc" ada="Gtk_Accel_Group_Find_Func">
-   type Gtk_Accel_Group_Find_Func is access function
+        <type ctype="GtkAccelGroupFindFunc" ada="C_Gtk_Accel_Group_Find_Func">
+   type C_Gtk_Accel_Group_Find_Func is access function
       (Key           : access Gtk_Accel_Key;
        Closure       : C_Gtk_Accel_Group_Activate;
        Data          : System.Address) return Boolean;
-   pragma Convention (C, Gtk_Accel_Group_Find_Func);
+   pragma Convention (C, C_Gtk_Accel_Group_Find_Func);
    --  When a match is found, must return True.
    --  Must not modify Key
         </type>
@@ -1791,7 +1897,7 @@ The rendering of the widget is done through various Gtk_Cell_Renderer, and by re
      <parameter name="self" ada="Cell_Layout"/>
      <method id="gtk_cell_layout_set_attributes" bind="False"/>
      <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
-     <!--<method id="gtk_cell_layout_set_cell_data_func" bind="False"/>-->
+     <method id="gtk_cell_layout_set_cell_data_func" bind="False"/>
   </package>
 
   <package id="Gtk.Assistant">
@@ -1812,6 +1918,120 @@ type Gtk_Assistant_Page_Type is
 --  Definition of various page types.  See Get_Page_Type/Set_Page_Type
 --  for more info.
          </type>
+         <type ctype="GtkAssistantPageFunc" ada="Gtk_Assistant_Page_Func">
+type Gtk_Assistant_Page_Func is access function
+   (Current_Page : Gint; D : System.Address) return Gint;
+pragma Convention (C, Gtk_Assistant_Page_Func);
+         </type>
+         <with_body pkg="Ada.Unchecked_Conversion" use="false"/>
+         <with_body pkg="Ada.Unchecked_Deallocation" use="false"/>
+         <spec>
+   generic
+      type Data_Type (&lt;&gt;) is private;
+   package Generic_Assistant_Functions is
+      type Page_Func is access function
+        (Current_Page : Gint;
+         User_Data    : Data_Type)
+         return Gint;
+      --  Spec for page forwarding function.
+
+      type Destroy_Notify is access procedure (User_Data : in out Data_Type);
+      --  Destroy_Notify is called just prior to the destruction of
+      --  User_Data.
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null);
+      --  Sets the Assistant's page forwarding function to be Func.  This
+      --  function will be used to determine what will be the next page when
+      --  the user presses the forward button. Setting Func to null will make
+      --  the assistant use the default forward function, which just goes
+      --  to the next visible page.
+   end Generic_Assistant_Functions;
+         </spec>
+         <body>
+   package body Generic_Assistant_Functions is
+
+      type Data_Type_Access is access Data_Type;
+
+      type Cb_Record is record
+         Func      : Page_Func;
+         Notify    : Destroy_Notify;
+         User_Data : Data_Type_Access;
+      end record;
+      type Cb_Record_Access is access Cb_Record;
+
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Cb_Record_Access);
+
+      function Convert is new Ada.Unchecked_Conversion
+        (Cb_Record_Access, System.Address);
+
+      function General_Cb
+        (Current_Page : Gint; D : System.Address)
+         return Gint;
+      pragma Convention (C, General_Cb);
+
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback used to free data associated with Set_Forward_Page_Func
+
+      function General_Cb
+        (Current_Page : Gint; D : System.Address)
+        return Gint
+      is
+         Data : constant Cb_Record_Access := Convert (D);
+      begin
+         return Data.Func (Current_Page, Data.User_Data.all);
+      end General_Cb;
+
+      procedure Free_Data (D : System.Address) is
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Cb_Record, Cb_Record_Access);
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Data_Type, Data_Type_Access);
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         if Data.Notify /= null then
+            Data.Notify (Data.User_Data.all);
+         end if;
+         Free (Data.User_Data);
+         Free (Data);
+      end Free_Data;
+
+      ---------------------------
+      -- Set_Forward_Page_Func --
+      ---------------------------
+
+      procedure Set_Forward_Page_Func
+        (Assistant : Gtk_Assistant;
+         Func      : Page_Func;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify := null)
+      is
+         procedure Internal
+           (Assistant : System.Address;
+            Page_Func : System.Address;
+            Data      : System.Address;
+            Destroy   : System.Address);
+         pragma Import (C, Internal, "gtk_assistant_set_forward_page_func");
+
+         D : constant Cb_Record_Access := new Cb_Record'
+           (Func      => Func,
+            Notify    => Destroy,
+            User_Data => new Data_Type'(User_Data));
+      begin
+         Internal
+           (Get_Object (Assistant),
+            General_Cb'Address,
+            Convert (D),
+            Free_Data'Address);
+      end Set_Forward_Page_Func;
+
+   end Generic_Assistant_Functions;
+         </body>
       </extra>
   </package>
 

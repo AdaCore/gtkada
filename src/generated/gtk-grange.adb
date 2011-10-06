@@ -32,7 +32,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.GRange is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Range_Record);
    pragma Unreferenced (Type_Conversion);
@@ -47,9 +46,9 @@ package body Gtk.GRange is
    is
       function Internal (The_Range : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_range_get_adjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Range)), Stub_Gtk_Adjustment));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Range)), Stub));
    end Get_Adjustment;
 
    --------------------

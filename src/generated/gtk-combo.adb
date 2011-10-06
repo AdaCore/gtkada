@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Combo is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Combo_Record);
    pragma Unreferenced (Type_Conversion);
@@ -175,9 +174,9 @@ package body Gtk.Combo is
    is
       function Internal (Combo_Box : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkCombo_get_entry");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_Entry;
 
    --------------
@@ -189,9 +188,9 @@ package body Gtk.Combo is
    is
       function Internal (Combo_Box : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkCombo_get_list");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_List;
 
    ---------------

@@ -34,7 +34,6 @@ with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Entry_Completion is
-
    package body Match_Functions is
 
       function Internal_Completion_Func
@@ -124,93 +123,6 @@ package body Gtk.Entry_Completion is
       end Set_Match_Func;
    end Match_Functions;
 
-   function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Entry_Completion_Match_Func);
-
-   function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Cell_Data_Func);
-
-   procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
-      (Cell_Layout : System.Address;
-       Cell        : System.Address;
-       Func        : System.Address;
-       Func_Data   : System.Address;
-       Destroy     : System.Address);
-   pragma Import (C, C_Gtk_Cell_Layout_Set_Cell_Data_Func, "gtk_cell_layout_set_cell_data_func");
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-   --  function is used instead of the standard attributes mapping for setting
-   --  the column value, and should set the value of Cell_Layout's cell
-   --  renderer(s) as appropriate. Func may be null to remove and older one.
-   --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-   --  "func_data": The user data for Func.
-   --  "destroy": The destroy notification for Func_Data.
-
-   procedure C_Gtk_Entry_Completion_Set_Match_Func
-      (Completion  : System.Address;
-       Func        : System.Address;
-       Func_Data   : System.Address;
-       Func_Notify : System.Address);
-   pragma Import (C, C_Gtk_Entry_Completion_Set_Match_Func, "gtk_entry_completion_set_match_func");
-   --  Sets the match function for Completion to be Func. The match function
-   --  is used to determine if a row should or should not be in the completion
-   --  list.
-   --  Since: gtk+ 2.4
-   --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-   --  use.
-   --  "func_data": The user data for Func.
-   --  "func_notify": Destroy notifier for Func_Data.
-
-   procedure Internal_Cell_Data_Func
-      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-       Cell        : System.Address;
-       Tree_Model  : System.Address;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data        : System.Address);
-   pragma Convention (C, Internal_Cell_Data_Func);
-
-   -----------------------------
-   -- Internal_Cell_Data_Func --
-   -----------------------------
-
-   procedure Internal_Cell_Data_Func
-      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-       Cell        : System.Address;
-       Tree_Model  : System.Address;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data        : System.Address)
-   is
-      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-   begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
-   end Internal_Cell_Data_Func;
-
-   function Internal_Gtk_Entry_Completion_Match_Func
-      (Completion : System.Address;
-       Key        : Interfaces.C.Strings.chars_ptr;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data  : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
-
-   ----------------------------------------------
-   -- Internal_Gtk_Entry_Completion_Match_Func --
-   ----------------------------------------------
-
-   function Internal_Gtk_Entry_Completion_Match_Func
-      (Completion : System.Address;
-       Key        : Interfaces.C.Strings.chars_ptr;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data  : System.Address) return Integer
-   is
-      Func                      : constant Gtk_Entry_Completion_Match_Func := To_Gtk_Entry_Completion_Match_Func (User_Data);
-      Stub_Gtk_Entry_Completion : Gtk_Entry_Completion_Record;
-   begin
-      return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Interfaces.C.Strings.Value (Key), Iter));
-   end Internal_Gtk_Entry_Completion_Match_Func;
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Entry_Completion_Record);
    pragma Unreferenced (Type_Conversion);
@@ -287,9 +199,9 @@ package body Gtk.Entry_Completion is
    is
       function Internal (Completion : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_get_entry");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Completion)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Completion)), Stub));
    end Get_Entry;
 
    ---------------------------
@@ -341,9 +253,9 @@ package body Gtk.Entry_Completion is
    is
       function Internal (Completion : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Completion)), Stub_Gtk_Tree_Model));
+      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Completion)), Stub));
    end Get_Model;
 
    --------------------------
@@ -449,65 +361,6 @@ package body Gtk.Entry_Completion is
       Internal (Get_Object (Completion));
    end Insert_Prefix;
 
-   ------------------------
-   -- Set_Cell_Data_Func --
-   ------------------------
-
-   procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func        : Gtk.Cell_Layout.Cell_Data_Func)
-   is
-   begin
-      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, Func'Address, System.Null_Address);
-   end Set_Cell_Data_Func;
-
-   package body Set_Cell_Data_Func_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-        (System.Address, Cell_Data_Func);
-
-      procedure Internal_Cb
-         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data        : System.Address);
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      procedure Internal_Cb
-         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data        : System.Address)
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
-      begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Cell, Tree_Model, Iter, D.Data.all);
-      end Internal_Cb;
-
-      ------------------------
-      -- Set_Cell_Data_Func --
-      ------------------------
-
-      procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Func        : Cell_Data_Func;
-          Func_Data   : User_Data_Type)
-      is
-      begin
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
-      end Set_Cell_Data_Func;
-
-   end Set_Cell_Data_Func_User_Data;
-
    ---------------------------
    -- Set_Inline_Completion --
    ---------------------------
@@ -545,55 +398,20 @@ package body Gtk.Entry_Completion is
    --------------------
 
    procedure Set_Match_Func
-      (Completion : access Gtk_Entry_Completion_Record;
-       Func       : Gtk_Entry_Completion_Match_Func)
+      (Completion  : access Gtk_Entry_Completion_Record;
+       Func        : C_Gtk_Entry_Completion_Match_Func;
+       Func_Data   : System.Address;
+       Func_Notify : Glib.G_Destroy_Notify_Address)
    is
+      procedure Internal
+         (Completion  : System.Address;
+          Func        : C_Gtk_Entry_Completion_Match_Func;
+          Func_Data   : System.Address;
+          Func_Notify : Glib.G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_entry_completion_set_match_func");
    begin
-      C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Gtk_Entry_Completion_Match_Func'Address, Func'Address, System.Null_Address);
+      Internal (Get_Object (Completion), Func, Func_Data, Func_Notify);
    end Set_Match_Func;
-
-   package body Set_Match_Func_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Entry_Completion_Match_Func);
-
-      function Internal_Cb
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Key        : UTF8_String;
-          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Boolean;
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Key        : UTF8_String;
-          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Boolean
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-      begin
-         return To_Gtk_Entry_Completion_Match_Func (D.Func) (Completion, Key, Iter, D.Data.all);
-      end Internal_Cb;
-
-      --------------------
-      -- Set_Match_Func --
-      --------------------
-
-      procedure Set_Match_Func
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Func       : Gtk_Entry_Completion_Match_Func;
-          Func_Data  : User_Data_Type)
-      is
-      begin
-         C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
-      end Set_Match_Func;
-
-   end Set_Match_Func_User_Data;
 
    ----------------------------
    -- Set_Minimum_Key_Length --
@@ -686,125 +504,5 @@ package body Gtk.Entry_Completion is
    begin
       Internal (Get_Object (Completion), Column);
    end Set_Text_Column;
-
-   -------------------
-   -- Add_Attribute --
-   -------------------
-
-   procedure Add_Attribute
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Attribute   : UTF8_String;
-       Column      : Gint)
-   is
-      procedure Internal
-         (Cell_Layout : System.Address;
-          Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
-      pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
-   begin
-      Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
-      Free (Tmp_Attribute);
-   end Add_Attribute;
-
-   -----------
-   -- Clear --
-   -----------
-
-   procedure Clear (Cell_Layout : access Gtk_Entry_Completion_Record) is
-      procedure Internal (Cell_Layout : System.Address);
-      pragma Import (C, Internal, "gtk_cell_layout_clear");
-   begin
-      Internal (Get_Object (Cell_Layout));
-   end Clear;
-
-   ----------------------
-   -- Clear_Attributes --
-   ----------------------
-
-   procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
-   is
-      procedure Internal
-         (Cell_Layout : System.Address;
-          Cell        : System.Address);
-      pragma Import (C, Internal, "gtk_cell_layout_clear_attributes");
-   begin
-      Internal (Get_Object (Cell_Layout), Get_Object (Cell));
-   end Clear_Attributes;
-
-   ---------------
-   -- Get_Cells --
-   ---------------
-
-   function Get_Cells
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
-       return Glib.Object.Object_Simple_List.GList
-   is
-      function Internal (Cell_Layout : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_cell_layout_get_cells");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
-   begin
-      Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Get_Object (Cell_Layout)));
-      return Tmp_Return;
-   end Get_Cells;
-
-   --------------
-   -- Pack_End --
-   --------------
-
-   procedure Pack_End
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Expand      : Boolean)
-   is
-      procedure Internal
-         (Cell_Layout : System.Address;
-          Cell        : System.Address;
-          Expand      : Integer);
-      pragma Import (C, Internal, "gtk_cell_layout_pack_end");
-   begin
-      Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
-   end Pack_End;
-
-   ----------------
-   -- Pack_Start --
-   ----------------
-
-   procedure Pack_Start
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Expand      : Boolean)
-   is
-      procedure Internal
-         (Cell_Layout : System.Address;
-          Cell        : System.Address;
-          Expand      : Integer);
-      pragma Import (C, Internal, "gtk_cell_layout_pack_start");
-   begin
-      Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
-   end Pack_Start;
-
-   -------------
-   -- Reorder --
-   -------------
-
-   procedure Reorder
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
-   is
-      procedure Internal
-         (Cell_Layout : System.Address;
-          Cell        : System.Address;
-          Position    : Gint);
-      pragma Import (C, Internal, "gtk_cell_layout_reorder");
-   begin
-      Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
-   end Reorder;
 
 end Gtk.Entry_Completion;

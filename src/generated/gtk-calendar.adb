@@ -30,64 +30,58 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.Object;
+with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Calendar is
+   type Detail_Func_Data is record
+      Callback   : Gtk_Calendar_Detail_Func;
+      User_Data  : System.Address;
+      On_Destroy : G_Destroy_Notify_Address;
+   end record;
+   type Detail_Func_Data_Access is access Detail_Func_Data;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Detail_Func_Data_Access);
+   procedure Free_Detail_Func_Data (Data : System.Address);
+   pragma Convention (C, Free_Detail_Func_Data);
+   function Detail_Callback
+     (Calendar : System.Address;
+      Year, Month, Day : Guint;
+      User_Data : System.Address) return chars_ptr;
+   pragma Convention (C, Detail_Callback);
+   --  Support for GtkCalendarDetailFunc
 
-   function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Calendar_Detail_Func);
-
-   procedure C_Gtk_Calendar_Set_Detail_Func
-      (Calendar : System.Address;
-       Func     : System.Address;
-       Data     : System.Address;
-       Destroy  : System.Address);
-   pragma Import (C, C_Gtk_Calendar_Set_Detail_Func, "gtk_calendar_set_detail_func");
-   --  Installs a function which provides Pango markup with detail information
-   --  for each day. Examples for such details are holidays or appointments.
-   --  That information is shown below each day when
-   --  Gtk.Calendar.Gtk_Calendar:show-details is set. A tooltip containing with
-   --  full detail information is provided, if the entire text should not fit
-   --  into the details area, or if Gtk.Calendar.Gtk_Calendar:show-details is
-   --  not set. The size of the details area can be restricted by setting the
-   --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
-   --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
-   --  Since: gtk+ 2.14
-   --  "func": a function providing details for each day.
-   --  "data": data to pass to Func invokations.
-   --  "destroy": a function for releasing Data.
-
-   function Internal_Gtk_Calendar_Detail_Func
-      (Calendar  : System.Address;
-       Year      : Guint;
-       Month     : Guint;
-       Day       : Guint;
-       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
-   pragma Convention (C, Internal_Gtk_Calendar_Detail_Func);
-   --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-   --  "year": the year for which details are needed.
-   --  "month": the month for which details are needed.
-   --  "day": the day of Month for which details are needed.
-   --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
-
-   ---------------------------------------
-   -- Internal_Gtk_Calendar_Detail_Func --
-   ---------------------------------------
-
-   function Internal_Gtk_Calendar_Detail_Func
-      (Calendar  : System.Address;
-       Year      : Guint;
-       Month     : Guint;
-       Day       : Guint;
-       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+   function Detail_Callback
+     (Calendar : System.Address;
+      Year, Month, Day : Guint;
+      User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
    is
-      Func              : constant Gtk_Calendar_Detail_Func := To_Gtk_Calendar_Detail_Func (User_Data);
-      Stub_Gtk_Calendar : Gtk_Calendar_Record;
+      Stub : Gtk_Calendar_Record;
+      Cal  : constant Gtk_Calendar :=
+      Gtk_Calendar (Get_User_Data (Calendar, Stub));
+      Data : constant Detail_Func_Data_Access := Convert (User_Data);
+      Details : constant String :=
+      Data.Callback (Cal, Year, Month, Day, Data.User_Data);
    begin
-      return New_String (Func (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_Gtk_Calendar)), Year, Month, Day));
-   end Internal_Gtk_Calendar_Detail_Func;
+      if Details = "" then
+         return Interfaces.C.Strings.Null_Ptr;
+      else
+         return New_String (Details);
+      end if;
+   end Detail_Callback;
+
+   procedure Free_Detail_Func_Data (Data : System.Address) is
+      use System;
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Detail_Func_Data, Detail_Func_Data_Access);
+      D : Detail_Func_Data_Access := Convert (Data);
+   begin
+      if D.On_Destroy /= null and then D.User_Data /= Null_Address then
+         D.On_Destroy (D.User_Data);
+      end if;
+      Unchecked_Free (D);
+   end Free_Detail_Func_Data;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Calendar_Record);
@@ -258,72 +252,25 @@ package body Gtk.Calendar is
       return Boolean'Val (Internal (Get_Object (Calendar), Month, Year));
    end Select_Month;
 
-   ---------------------
-   -- Set_Detail_Func --
-   ---------------------
-
    procedure Set_Detail_Func
-      (Calendar : access Gtk_Calendar_Record;
-       Func     : Gtk_Calendar_Detail_Func)
+     (Calendar : access Gtk_Calendar_Record;
+      Func     : Gtk_Calendar_Detail_Func;
+      Data     : System.Address;
+      Destroy  : G_Destroy_Notify_Address)
    is
+      procedure Internal
+        (Calendar : System.Address;
+         Func     : System.Address;
+         Data     : System.Address;
+         Destroy  : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_calendar_set_detail_func");
+      D : constant Detail_Func_Data_Access :=
+         new Detail_Func_Data'(Func, Data, Destroy);
    begin
-      C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Gtk_Calendar_Detail_Func'Address, Func'Address, System.Null_Address);
+      Internal (Get_Object (Calendar),
+                Detail_Callback'Address, D.all'Address,
+                Free_Detail_Func_Data'Access);
    end Set_Detail_Func;
-
-   package body Set_Detail_Func_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Calendar_Detail_Func);
-
-      function Internal_Cb
-         (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
-          Year      : Guint;
-          Month     : Guint;
-          Day       : Guint;
-          User_Data : System.Address) return UTF8_String;
-      --  This kind of functions provide Pango markup with detail information
-      --  for the specified day. Examples for such details are holidays or
-      --  appointments. The function returns null when no information is
-      --  available. for the specified day, or null.
-      --  Since: gtk+ 2.14
-      --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-      --  "year": the year for which details are needed.
-      --  "month": the month for which details are needed.
-      --  "day": the day of Month for which details are needed.
-      --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
-          Year      : Guint;
-          Month     : Guint;
-          Day       : Guint;
-          User_Data : System.Address) return UTF8_String
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-      begin
-         return To_Gtk_Calendar_Detail_Func (D.Func) (Calendar, Year, Month, Day, D.Data.all);
-      end Internal_Cb;
-
-      ---------------------
-      -- Set_Detail_Func --
-      ---------------------
-
-      procedure Set_Detail_Func
-         (Calendar : access Gtk.Calendar.Gtk_Calendar_Record'Class;
-          Func     : Gtk_Calendar_Detail_Func;
-          Data     : User_Data_Type)
-      is
-      begin
-         C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
-      end Set_Detail_Func;
-
-   end Set_Detail_Func_User_Data;
 
    ----------------------------
    -- Set_Detail_Height_Rows --

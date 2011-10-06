@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Expander is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Expander_Record);
    pragma Unreferenced (Type_Conversion);
@@ -148,9 +147,9 @@ package body Gtk.Expander is
    is
       function Internal (Expander : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_expander_get_label_widget");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Expander)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Expander)), Stub));
    end Get_Label_Widget;
 
    -----------------

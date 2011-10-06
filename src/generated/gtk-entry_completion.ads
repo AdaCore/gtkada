@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  This widget provides completion functionality for Gtk.Gentry.Gtk_Entry.
 --
@@ -62,7 +61,6 @@ with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Gtk.Buildable;        use Gtk.Buildable;
 with Gtk.Cell_Layout;      use Gtk.Cell_Layout;
-with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
 with Gtk.Tree_Model;       use Gtk.Tree_Model;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -78,17 +76,6 @@ package Gtk.Entry_Completion is
       Iter          : Gtk.Tree_Model.Gtk_Tree_Iter;
       Data          : System.Address) return Boolean;
    pragma Convention (C, C_Gtk_Entry_Completion_Match_Func);
-
-   type Gtk_Entry_Completion_Match_Func is access function
-     (Completion : access Gtk_Entry_Completion_Record'Class;
-      Key        : UTF8_String;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-
-   type Cell_Data_Func is access procedure
-     (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
 
    ------------------
    -- Constructors --
@@ -250,80 +237,17 @@ package Gtk.Entry_Completion is
    --  Since: gtk+ 2.6
 
    procedure Set_Match_Func
-      (Completion : access Gtk_Entry_Completion_Record;
-       Func       : Gtk_Entry_Completion_Match_Func);
+      (Completion  : access Gtk_Entry_Completion_Record;
+       Func        : C_Gtk_Entry_Completion_Match_Func;
+       Func_Data   : System.Address;
+       Func_Notify : Glib.G_Destroy_Notify_Address);
    --  Sets the match function for Completion to be Func. The match function
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-   --  use.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Match_Func_User_Data is
-
-      type Gtk_Entry_Completion_Match_Func is access function
-        (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-         Key        : UTF8_String;
-         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data  : User_Data_Type) return Boolean;
-
-      procedure Set_Match_Func
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Func       : Gtk_Entry_Completion_Match_Func;
-          Func_Data  : User_Data_Type);
-      --  Sets the match function for Completion to be Func. The match
-      --  function is used to determine if a row should or should not be in the
-      --  completion list.
-      --  Since: gtk+ 2.4
-      --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-      --  use.
-      --  "func_data": The user data for Func.
-
-   end Set_Match_Func_User_Data;
-
-   procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func        : Gtk.Cell_Layout.Cell_Data_Func);
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-   --  function is used instead of the standard attributes mapping for setting
-   --  the column value, and should set the value of Cell_Layout's cell
-   --  renderer(s) as appropriate. Func may be null to remove and older one.
-   --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Cell_Data_Func_User_Data is
-
-      type Cell_Data_Func is access procedure
-        (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-         Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Data        : User_Data_Type);
-
-      procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Func        : Cell_Data_Func;
-          Func_Data   : User_Data_Type);
-      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-      --  function is used instead of the standard attributes mapping for
-      --  setting the column value, and should set the value of Cell_Layout's
-      --  cell renderer(s) as appropriate. Func may be null to remove and older
-      --  one.
-      --  Since: gtk+ 2.4
-      --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-      --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-      --  "func_data": The user data for Func.
-
-   end Set_Cell_Data_Func_User_Data;
+   --  "func": The C_Gtk_Entry_Completion_Match_Func to use.
+   --  "func_data": The user data for Func.
+   --  "func_notify": Destroy notifier for Func_Data.
 
    ----------------------
    -- GtkAda additions --
@@ -349,42 +273,6 @@ package Gtk.Entry_Completion is
       --  is used to determine if a row should or should not be in the
       --  completion list.
    end Match_Functions;
-
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
-
-   procedure Add_Attribute
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Attribute   : UTF8_String;
-       Column      : Gint);
-
-   procedure Clear (Cell_Layout : access Gtk_Entry_Completion_Record);
-
-   procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
-
-   function Get_Cells
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
-       return Glib.Object.Object_Simple_List.GList;
-
-   procedure Pack_End
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Expand      : Boolean);
-
-   procedure Pack_Start
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Expand      : Boolean);
-
-   procedure Reorder
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
 
    ----------------
    -- Interfaces --

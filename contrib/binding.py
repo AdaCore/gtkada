@@ -51,14 +51,11 @@ class GIR(object):
         self.ccode = ""
         self.classes = dict()  # Maps GIR's "name" to a GIRClass instance
         self.interfaces = dict() # Maps GIR's "name" to an interface
-        self.callbacks = dict()  # Ada name to GIR XML node
+        self.callbacks = dict()
 
         k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
         for cl in self.root.findall(k):
-            ct = cl.get(ctype)
-            naming.add_type_exception(cname=ct, type=Proxy(ct))
-            ct = naming.type(ct).ada
-            self.callbacks[ct] = cl
+            self.callbacks[cl.get("name")] = cl
 
         k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
         for cl in self.root.findall(k):
@@ -100,9 +97,9 @@ class GIR(object):
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
         for pkg in self.packages.itervalues():
-            out.write(pkg.spec())
+            pkg.spec(out)
             out.write("\n")
-            out.write(pkg.body())
+            pkg.body(out)
             out.write("\n")
 
         cout.write(self.ccode)
@@ -212,24 +209,14 @@ class SubprogramProfile(object):
         profile.params = [Parameter("Value", _get_type(node, pkg))]
         return profile
 
-    def callback_param_info(self):
-        """If there is one callback parameter in this profile, return it
-           so that we can generate the appropriate function.
+    def callback_param_type(self):
+        """If there is one callback parameter in this profile, return its
+           type so that we can generate the appropriate function.
            Returns None if there is no such parameter.
         """
         if self.callback_param == -1:
             return None
-        return self.params[self.callback_param]
-
-    def callback_destroy(self):
-        if self.destroy_param == -1:
-            return None
-        return self.params[self.destroy_param]
-
-    def callback_user_data(self):
-        if self.user_data_param == -1:
-            return None
-        return self.params[self.user_data_param]
+        return self.params[self.callback_param].type
 
     def has_varargs(self):
         return self.params is None
@@ -270,13 +257,6 @@ class SubprogramProfile(object):
 
         return result;
 
-    def set_class_wide(self):
-        """This profile is not for a primitive operation, but for a class-wide
-           operation.
-        """
-        if self.params[0].type.param.endswith("_Record"):
-            self.params[0].type.param += "'Class"
-
     def add_param(self, pos, param):
         """Add a new parameter in the list, at the given position"""
         self.params.insert(pos, param)
@@ -286,33 +266,6 @@ class SubprogramProfile(object):
             self.user_data_param += 1
         if self.destroy_param != -1 and self.destroy_param >= pos:
             self.destroy_param += 1
-
-    def replace_param(self, name, type):
-        """Overrides the type of a parameter"""
-        for idx, p in enumerate(self.params):
-            if p.name.lower() == name.lower():
-                self.params[idx].set_type(type)
-                return
-
-    def remove_param(self, names):
-        """Remove the parameter with the given names from the list"""
-        assert(isinstance(names, list))
-
-        for n in names:
-            n = n.lower()
-            for p in self.params:
-                if p.name.lower() == n:
-                    self.params.remove(p)
-                    break
-
-    def find_param(self, names):
-        """Return the first name for which there is a parameter"""
-        for n in names:
-            lo = n.lower()
-            for p in self.params:
-                if p.name.lower() == lo:
-                    return n
-        return None
 
     def subprogram(self, name, showdoc=True, local_vars=[], code=[]):
         """Return an instance of Subprogram with the corresponding profile"""
@@ -325,14 +278,13 @@ class SubprogramProfile(object):
                 local_vars=local_vars,
                 code=code)
 
-        if name != "":
-            depr = self.node.get("deprecated")
-            if depr is not None:
-                subp.mark_deprecated(
-                    "\nDeprecated since %s, %s"
-                    % (self.node.get("deprecated-version"), depr))
-            elif self.gtkmethod and self.gtkmethod.is_obsolete():
-                subp.mark_deprecated("Deprecated")
+        depr = self.node.get("deprecated")
+        if depr is not None:
+            subp.mark_deprecated(
+                "\nDeprecated since %s, %s"
+                % (self.node.get("deprecated-version"), depr))
+        elif self.gtkmethod and self.gtkmethod.is_obsolete():
+            subp.mark_deprecated("Deprecated")
 
         return subp
 
@@ -426,7 +378,6 @@ class GIRClass(object):
         self._generated = False
         self.implements = dict() # Implemented interfaces
         self.is_interface = is_interface
-        self.callbacks = set() # The callback functions
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
@@ -502,9 +453,9 @@ class GIRClass(object):
                 node, gtkmethod=gtkmethod, cname=cname, profile=profile)
             return
 
-        cb = profile.callback_param_info()
+        cb = profile.callback_param_type()
         if cb is not None:
-            return self._callback_support(adaname, cname, profile, cb)
+            self._callback_support(cb)
 
         local_vars = []
         call = []
@@ -550,183 +501,22 @@ class GIRClass(object):
         section.add(subp)
         return subp
 
-    def _callback_support(self, adaname, cname, profile, cb):
-        """Add support for a function with a callback parameter and user data.
-           We generate multiple bindings for such a function:
-           * One version that doesn't take a user_data. This looks like:
-                type My_Callback is access function (Self, other_params);
-                procedure Gtk_Func (Self : ...; Cb : My_Callback);
+    def _callback_support(self, cb):
+        """Add support for a function with a callback parameter"""
 
-             since My_Callback doesn't have exactly the same profile as
-             required by gtk+, we in fact go through an intermediate function
-             in the body, to which we pass, as user_data, a pointer to the
-             user's callback:
+        return
+        girname = cb.girname
+        gtkmethod = self.gtkpkg.get_method(cname=girname)
+        cb_profile = SubprogramProfile.parse(
+            self.gir.callbacks[cb.girname], gtkmethod=gtkmethod, pkg=self.pkg)
+        section = self.pkg.section("Callbacks")
 
-                 function Internal_Callback (same_profile_as_c, user_data) is
-                    User_Func : My_Callback := convert (user_data);
-                 begin
-                    return User_Func (...);
-                 end Internal_Callback;
-                 pragma Convention (C, Internal_Callback);
-
-            * Ideally we want to generate a generic package to which users
-              can pass their own user data type. We then need to generate the
-              proper Destroy callback that C will call to free that user data.
-
-           PROFILE is an instance of SubprogramProfile.
-           CNAME is the name of the gtk+ C function.
-           ADANAME is the name of the corresponding Ada function.
-           CB is an instance of Parameter representing the callback parameter.
-        """
-
-        cbname = cb.type.param
-
-        # Compute the name of the Ada type representing the user callback
-
-        funcname = naming.type(name=cb.type.ada, cname=cbname).ada
+        funcname = naming.full_type_from_girname(girname).ada
         if "." in funcname:
             funcname = funcname[funcname.rfind(".") + 1:]
 
-        user_data = profile.find_param(user_data_params)
-        destroy   = profile.find_param(destroy_data_params)
-
-        # The gtk C function, will all parameters.
-        # This will be used to generate the "Internal" nested subprogram.
-
-        local_vars = []
-        call = []
-        gtk_func_profile = copy.deepcopy(profile)
-        gtk_func_profile.replace_param(destroy, "System.Address")
-        gtk_func = gtk_func_profile.subprogram(
-            name="C_%s" % cname).import_c(cname)
-        gtk_func.set_param_lang("c")
-        self.pkg.section("").add(gtk_func, in_spec=False)
-
-        # Compute the profile of the callback (will all its arguments)
-
-        gtkmethod = self.gtkpkg.get_method(cname=cname)
-        cb_profile = SubprogramProfile.parse(
-            self.gir.callbacks[cb.type.ada],
-            gtkmethod=gtkmethod, pkg=self.pkg)
-
-        # Generate the access-to-subprogram type for the user callback, unless
-        # we have already done so. This is the type that doesn't receive
-        # user data.
-
-        if cbname not in self.callbacks:
-            self.callbacks.add(cbname)   # Prevent multiple generations
-
-            section = self.pkg.section("")
-            cb_user_data = cb_profile.find_param(user_data_params)
-
-            # Generate a simpler version of the callback, without
-            # user data, that the Ada applications can use
-
-            nouser_cb_profile = copy.deepcopy(cb_profile)
-            nouser_cb_profile.remove_param(
-                destroy_data_params + [cb_user_data])
-            subp = nouser_cb_profile.subprogram(name="")
-            section.add_code(
-                "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
-
-            # Generate a subprogram in the body to act as the C callback.
-            # This subprogram is responsible for calling the user's callback.
-            # In the call to the user's callback, we need to convert the
-            # parameters from the C values to the corresponding Ada values.
-
-            self.pkg.add_with(
-                "Ada.Unchecked_Conversion", do_use=False, specs=False)
-            section.add_code(
-                ("function To_%s is new Ada.Unchecked_Conversion\n"
-                + "   (System.Address, %s);\n") % (funcname, funcname),
-                specs=False)
-
-            ada_func = copy.deepcopy(subp)
-            ada_func.name = "Func"
-            ada_func_call = ada_func.call(lang="c->ada")
-            body_cb = cb_profile.subprogram(
-                name="Internal_%s" % funcname,
-                local_vars=[Local_Var("Func", "constant %s" % funcname,
-                                      "To_%s (%s)" % (funcname, cb_user_data))]
-                    + ada_func_call[2],
-                code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
-            body_cb.set_param_lang("c")
-            body_cb.convention = "C"
-            body_cb.doc = []
-            section.add(body_cb, in_spec=False)
-
-        # Create a version of the function without a user data.
-
-        section = self.pkg.section("Methods")
-
-        nouser_profile = copy.deepcopy(profile)
-        nouser_profile.remove_param(destroy_data_params + [user_data])
-        values = {destroy: "System.Null_Address",
-                  cb.name.lower(): "Internal_%s" % funcname,
-                  user_data.lower(): "%s'Address" % cb.name}
-        subp = nouser_profile.subprogram(
-            name=adaname, local_vars=local_vars,
-            code=gtk_func.call_to_string(
-                gtk_func.call(extra_postcall="".join(call), values=values),
-                lang="ada->c"))
-        section.add(subp)
-
-        # Now create a generic package that will provide access to
-        # user_data
-
-        self.pkg.language_version = "pragma Ada_05;"
-        self.pkg.add_with("Glib.Object", do_use=False, specs=False)
-
-        pkg2 = Package(name="%s_User_Data" % adaname)
-        section.add(pkg2)
-        pkg2.formal_params = """type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;"""
-
-        sect2 = pkg2.section("")
-        sect2.add_code("""package Users is new Glib.Object.User_Data_Closure
-         (User_Data_Type, Destroy);""", specs=False)
-
-        sect2.add_code(
-            ("function To_%s is new Ada.Unchecked_Conversion\n"
-            + "   (System.Address, %s);\n") % (funcname, funcname),
-            specs=False)
-
-        user_data2 = cb_profile.find_param(user_data_params)
-
-        cb_profile2 = copy.deepcopy(cb_profile)
-        cb_profile2.replace_param(user_data2, "User_Data_Type")
-        cb2 = cb_profile2.subprogram(name="")
-        sect2.add_code(
-            "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
-
-        values = {user_data2.lower(): "D.Data.all"}
-        user_cb = cb_profile2.subprogram(name="To_%s (D.Func)" % funcname)
-        internal_cb = cb_profile.subprogram(
-            name="Internal_Cb",
-            local_vars=[Local_Var("D", "constant Users.Internal_Data_Access",
-                                  "Users.Convert (%s)" % user_data2)],
-            code=user_cb.call_to_string(
-                user_cb.call(extra_postcall="".join(call), values=values)))
-        sect2.add(internal_cb, in_spec=False)
-
-        values = {destroy: "Users.Free_Data'Address",
-                  cb.name.lower(): internal_cb.name,
-                  user_data.lower(): "Users.Build (%s'Address, %s)" % (
-                      cb.name, user_data)}
-
-        full_profile = copy.deepcopy(profile)
-        full_profile.set_class_wide()
-        full_profile.remove_param(destroy_data_params)
-        full_profile.replace_param(cb.name, funcname)
-        full_profile.replace_param(user_data, "User_Data_Type")
-        subp2 = full_profile.subprogram(
-            name=adaname,
-            code=gtk_func.call_to_string(
-                gtk_func.call(extra_postcall="".join(call), values=values),
-                lang="ada->c"))
-        sect2.add(subp2)
-
-        return subp
+        subp = cb_profile.subprogram(name="")
+        section.add_code("type %s is %s" % (funcname, subp.spec()))
 
     def _constructors(self):
         n = QName(uri, "constructor").text
@@ -810,8 +600,7 @@ class GIRClass(object):
                + call[0],
             doc=profile.doc)
 
-        section.add(gtk_new)
-        section.add(initialize)
+        section.add(gtk_new, initialize)
 
     def _methods(self):
         all = self.node.findall(nmethod)
@@ -1306,7 +1095,7 @@ gtkada = GtkAda(sys.argv[2])
 interfaces = ("Activatable",
               "Buildable",
               "CellEditable",
-              "CellLayout",
+              #              "CellLayout",
               #"FileChooser",
               #"RecentChooser",
               "Orientable",

@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Progress is
-
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Progress_Record);
    pragma Unreferenced (Type_Conversion);
@@ -261,9 +260,9 @@ package body Gtk.Progress is
    is
       function Internal (Progress : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkProgress_get_adjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Progress)), Stub_Gtk_Adjustment));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Progress)), Stub));
    end Get_Adjustment;
 
 end Gtk.Progress;

@@ -33,7 +33,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Dialog is
-
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
       New_Order : Response_Type_Array)
@@ -153,13 +152,13 @@ package body Gtk.Dialog is
           Text        : Interfaces.C.Strings.chars_ptr;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
-      Tmp_Text        : Interfaces.C.Strings.chars_ptr := New_String (Text);
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
-      Tmp_Return      : System.Address;
+      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Stub       : Gtk.Widget.Gtk_Widget_Record;
+      Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Dialog), Tmp_Text, Response_Id);
       Free (Tmp_Text);
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub));
    end Add_Button;
 
    ---------------------
@@ -171,9 +170,9 @@ package body Gtk.Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_action_area");
-      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Action_Area;
 
    ----------------------
@@ -185,9 +184,9 @@ package body Gtk.Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_content_area");
-      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Content_Area;
 
    -----------------------
@@ -232,9 +231,9 @@ package body Gtk.Dialog is
          (Dialog      : System.Address;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_widget_for_response");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub));
    end Get_Widget_For_Response;
 
    --------------
@@ -321,9 +320,9 @@ package body Gtk.Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkDialog_get_vbox");
-      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Vbox;
 
 end Gtk.Dialog;
