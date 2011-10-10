@@ -1,4 +1,5 @@
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Gdk;             use Gdk;
 with Gtk;             use Gtk;
 with Gdk.Color;       use Gdk.Color;
@@ -7,7 +8,6 @@ with Gdk.Event;       use Gdk.Event;
 with Gdk.GC;          use Gdk.GC;
 with Gtk.Widget;      use Gtk.Widget;
 with Gdk.Window;      use Gdk.Window;
-with Gtk.Object;      use Gtk.Object;
 with Gtk.Handlers;    use Gtk.Handlers;
 with Gtkada.Types;    use Gtkada.Types;
 
@@ -213,7 +213,7 @@ package body My_Widget is
       --  Used to create a new widget
    begin
       Widget := new Target_Widget_Record;
-      Initialize (Widget);
+      My_Widget.Initialize (Widget);
    end Gtk_New;
 
    ----------------
@@ -233,7 +233,7 @@ package body My_Widget is
       --  to put their name in a table.
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Gtk.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Widget, Signals, Class_Record, "TestGtkTargetWidget");
 
       --  Note: We can not create the GC here, since the widget is not
