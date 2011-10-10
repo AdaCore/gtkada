@@ -2382,35 +2382,6 @@ ada_gvalue_set (GValue* value, void *val)
     fprintf (stderr, "GtkAda: Return value type not supported\n");
 }
 
-/***************************************************
- *  Functions to get the field of a color selection
- *  dialog
- ***************************************************/
-
-GtkWidget*
-ada_colorsel_dialog_get_colorsel (GtkColorSelectionDialog* dialog)
-{
-  return dialog->colorsel;
-}
-
-GtkWidget*
-ada_colorsel_dialog_get_ok_button (GtkColorSelectionDialog* dialog)
-{
-  return dialog->ok_button;
-}
-
-GtkWidget*
-ada_colorsel_dialog_get_cancel_button (GtkColorSelectionDialog* dialog)
-{
-  return dialog->cancel_button;
-}
-
-GtkWidget*
-ada_colorsel_dialog_get_help_button (GtkColorSelectionDialog* dialog)
-{
-  return dialog->help_button;
-}
-
 /********************************************************
  *  Functions to get the fields of a gamma curve
  ********************************************************/

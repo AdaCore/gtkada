@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib.Object; use Glib.Object;
-with Gtk.Object, Gtk.Handlers, Gtk.Main, Gtk.Table;
+with Gtk.Handlers, Gtk.Main, Gtk.Table;
 with Gtkada.Types; use Gtkada.Types;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -84,7 +84,7 @@ package body Tictactoe is
       --  and the new signals created for this widget.
       --  Note that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Gtk.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Tictactoe, Signals, Class_Record, "TicTacToe");
 
       --  Now initialize the composite part
