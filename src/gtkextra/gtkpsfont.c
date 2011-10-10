@@ -1,5 +1,5 @@
 /* gtkpsfont - PostScript Fonts handling
- * Copyright 1999-2001  Adrian E. Feiguin <feiguin@ifir.edu.ar>
+ * Copyright 1999-2006  Adrian E. Feiguin <feiguin@ifir.edu.ar>
  *
  * Some code borrowed from
  * DiaCanvas -- a technical canvas widget
@@ -25,6 +25,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION: gtkpsfont
+ * @short_description: PostScript Fonts handling.
+ *
+ *  Handles Postscript fonts.
+ */
+
+
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
@@ -40,28 +48,28 @@ static GtkPSFont font_data[] =
   { "Times-Roman",
     "Times-Roman",
     "Times-Roman",
-    "Nimbus Roman No9 L, Regular",
+    "Times New Roman, Regular",
     NULL,
     FALSE, FALSE
   },
   { "Times-Italic",
     "Times-Italic",
     "Times-Roman",
-    "Nimbus Roman No9 L, Italic",
+    "Times New Roman, Italic",
     NULL,
     TRUE, FALSE
   },
   { "Times-Bold",
     "Times-Bold",
     "Times-Roman",
-    "Nimbus Roman No9 L, Bold",
+    "Times New Roman, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Times-BoldItalic",
     "Times-BoldItalic",
     "Times-Roman",
-    "Nimbus Roman No9 L, Bold Italic",
+    "Times New Roman, Bold Italic",
     NULL,
     TRUE, TRUE
   },
@@ -124,84 +132,84 @@ static GtkPSFont font_data[] =
   { "Courier",
     "Courier",
     "Courier",
-    "Nimbus Mono L, Regular",
+    "Monospace, Regular",
     NULL,
     FALSE, FALSE
   },
   { "Courier-Oblique",
     "Courier-Oblique",
     "Courier",
-    "Nimbus Mono L, Regular Oblique",
+    "Monospace, Regular Oblique",
     NULL,
     TRUE, FALSE
   },
   { "Courier-Bold",
     "Courier-Bold",
     "Courier",
-    "Nimbus Mono L, Bold",
+    "Monospace, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Courier-BoldOblique",
     "Courier-BoldOblique",
     "Courier",
-    "Nimbus Mono L, Bold Oblique",
+    "Monospace, Bold Oblique",
     NULL,
     TRUE, TRUE
   },
   { "Helvetica",
     "Helvetica",
     "Helvetica",
-    "Nimbus Sans L, Regular",
+    "Helvetica",
     NULL,
     FALSE, FALSE
   },
   { "Helvetica-Oblique",
     "Helvetica-Oblique",
     "Helvetica",
-    "Nimbus Sans L, Regular Italic",
+    "Helvetica, Regular Italic",
     NULL,
     TRUE, FALSE
   },
   { "Helvetica-Bold",
     "Helvetica-Bold",
     "Helvetica",
-    "Nimbus Sans L, Bold",
+    "Helvetica, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Helvetica-BoldOblique",
     "Helvetica-BoldOblique",
     "Helvetica",
-    "Nimbus Sans L, Bold Italic",
+    "Helvetica, Bold Italic",
     NULL,
     TRUE, TRUE
   },
   { "Helvetica-Narrow",
     "Helvetica-Narrow",
     "Helvetica-Narrow",
-    "Nimbus Sans L, Regular Condensed",
+    "Helvetica, Regular Condensed",
     NULL,
     FALSE, FALSE
   },
   { "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow",
-    "Nimbus Sans L, Regular Condensed Italic",
+    "Helvetica, Regular Condensed Italic",
     NULL,
     TRUE, FALSE
   },
   { "Helvetica-Narrow-Bold",
     "Helvetica-Narrow-Bold",
     "Helvetica-Narrow",
-    "Nimbus Sans L, Bold Condensed",
+    "Helvetica, Bold Condensed",
     NULL,
     FALSE, TRUE
   },
   { "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow",
-    "Nimbus Sans L, Bold Condensed Italic",
+    "Helvetica, Bold Condensed Italic",
     NULL,
     TRUE, TRUE
   },
@@ -301,7 +309,7 @@ static const char *default_font = "fixed";
 
 static GtkPSFont *find_psfont		(const gchar *name);
 
-gint 
+gint
 gtk_psfont_init()
 {
   GtkPSFont *data = NULL;
@@ -331,7 +339,7 @@ gtk_psfont_init()
     if(new_family){
          numf = numf + 1;
          psfont_families = g_list_append(psfont_families, font_data[i].family);
-    }     
+    }
   }
 
   fonts = user_fonts;
@@ -339,21 +347,25 @@ gtk_psfont_init()
     data = (GtkPSFont *) fonts->data;
     new_family = TRUE;
     for(j = 0; j < numf; j++){
-       if(strcmp(data->family, (gchar *)g_list_nth_data(psfont_families, j)) == 0) 
+       if(strcmp(data->family, (gchar *)g_list_nth_data(psfont_families, j)) == 0)
          new_family = FALSE;
     }
     if(new_family){
          numf = numf + 1;
          psfont_families = g_list_append(psfont_families, data->family);
-    }     
+    }
     fonts = fonts->next;
   }
 
   return TRUE;
 }
 
-
-void 
+/**
+ * gtk_psfont_unref:
+ *
+ * Unref ps fonts.
+ */
+void
 gtk_psfont_unref()
 {
   GList *list;
@@ -381,6 +393,38 @@ gtk_psfont_unref()
   psfont_init = FALSE;
 }
 
+/*
+ * gtk_psfont_init:
+ *
+ * Unref ps fonts.
+ *
+void
+gtk_psfont_unref()
+{
+  GList *list;
+
+  if(psfont_refcount <= 0) return;
+
+  psfont_refcount--;
+
+  if(psfont_refcount > 0) return;
+
+  list = psfont_families;
+  while(list){
+    psfont_families = g_list_remove_link(psfont_families, list);
+    g_list_free_1(list);
+    list = psfont_families;
+  }
+*/
+
+/**
+ * gtk_psfont_get_by_name:
+ * @name: font name
+ *
+ * Get PS Font by font name.
+ *
+ * Returns: a #GtkPSFont pointer.
+ */
 GtkPSFont *
 gtk_psfont_get_by_name(const gchar *name)
 {
@@ -401,6 +445,15 @@ gtk_psfont_get_by_name(const gchar *name)
   return (GtkPSFont *)font;
 }
 
+/**
+ * gtk_psfont_get_by_gdkfont:
+ * @font: a #GtkPSFont
+ * @height: font height
+ *
+ * Get #GdkFOnt by PS Font.
+ *
+ * Returns: a #GdkFont pointer.
+ */
 GdkFont *
 gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
 {
@@ -432,6 +485,15 @@ gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
   return gdkfont;
 }
 
+/**
+ * gtk_psfont_get_font_description:
+ * @font: a #GtkPSFont
+ * @height: font height
+ *
+ * Get a #PangoDescriptionFont from PS Font.
+ *
+ * Returns: a #PangoFontDescription pointer.
+ */
 PangoFontDescription *
 gtk_psfont_get_font_description(GtkPSFont *font, gint height)
 {
@@ -459,7 +521,10 @@ http://mail.gnome.org/archives/gtk-i18n-list/2003-August/msg00001.html
     g_object_get(G_OBJECT(settings),
     	         "gtk-xft-dpi", &int_dpi,
 	         NULL);
-    dpi = int_dpi / PANGO_SCALE;
+    if(int_dpi <= 0)
+      dpi = 96;
+    else
+      dpi = int_dpi / PANGO_SCALE;
   }
 
 /*
@@ -473,13 +538,13 @@ http://mail.gnome.org/archives/gtk-i18n-list/2003-August/msg00001.html
         XftDefaultSubstitute (GDK_SCREEN_XDISPLAY (screen),
                               GDK_SCREEN_XNUMBER (screen),
                               pattern);
-        FcPatternGetDouble (pattern, FC_DPI, 0, &dpi); 
+        FcPatternGetDouble (pattern, FC_DPI, 0, &dpi);
         FcPatternDestroy (pattern);
       }
 }
 */
   height *= 75./dpi;
- 
+
   font_string = g_strdup_printf("%s %i", font->pango_description, height);
   font_desc = pango_font_description_from_string(font_string);
   g_free(font_string);
@@ -525,17 +590,36 @@ http://mail.gnome.org/archives/gtk-i18n-list/2003-August/msg00001.html
 }
 
 
+/**
+ * gtk_psfont_get_psfontname:
+ * @psfont: a #GtkPSFont
+ *
+ * Get font name from PS Font.
+ *
+ * Returns: font name.
+ */
 const gchar *
-gtk_psfont_get_psfontname(GtkPSFont *font)
+gtk_psfont_get_psfontname(GtkPSFont *psfont)
 {
 
-  g_return_val_if_fail (font != NULL, NULL);
+  g_return_val_if_fail (psfont != NULL, NULL);
 
-  return font->psname;
+  return psfont->psname;
 }
 
+/**
+ * gtk_psfont_add_font:
+ * @fontname: font name
+ * @psname: PS font name
+ * @family: font family
+ * @pango_description: font Pango description
+ * @italic: TRUE or FALSE
+ * @bold: TRUE or FALSE
+ *
+ * Add font in user font list.
+ */
 void
-gtk_psfont_add_font (const gchar *fontname, 
+gtk_psfont_add_font (const gchar *fontname,
                      const gchar *psname, const gchar *family,
                      const gchar *pango_description,
                      gboolean italic, gboolean bold)
@@ -544,10 +628,10 @@ gtk_psfont_add_font (const gchar *fontname,
 
   font = g_new0(GtkPSFont, 1);
 
-  font->fontname = g_strdup(fontname); 
-  font->psname = g_strdup(psname); 
-  font->family = g_strdup(family); 
-  font->pango_description = g_strdup(pango_description); 
+  font->fontname = g_strdup(fontname);
+  font->psname = g_strdup(psname);
+  font->family = g_strdup(family);
+  font->pango_description = g_strdup(pango_description);
   font->i18n_latinfamily = NULL;
   font->italic = italic;
   font->bold = bold;
@@ -556,10 +640,23 @@ gtk_psfont_add_font (const gchar *fontname,
   user_fonts = g_list_append(user_fonts, font);
 }
 
+/**
+ * gtk_psfont_add_i18n_font:
+ * @fontname: font name
+ * @psname: PS font name
+ * @family: font family
+ * @i18n_latinfamily: International font family
+ * @pango_description: font Pango description
+ * @italic: TRUE or FALSE
+ * @bold: TRUE or FALSE
+ * @vertical: TRUE or FALSE
+ *
+ * Add international font in user font list.
+ */
 void
-gtk_psfont_add_i18n_font (const gchar *fontname, 
+gtk_psfont_add_i18n_font (const gchar *fontname,
                          const gchar *psname, const gchar *family,
-                         const gchar *i18n_latinfamily, 
+                         const gchar *i18n_latinfamily,
                          const gchar *pango_description,
                          gboolean italic, gboolean bold, gboolean vertical)
 {
@@ -567,10 +664,10 @@ gtk_psfont_add_i18n_font (const gchar *fontname,
 
   font = g_new0(GtkPSFont, 1);
 
-  font->fontname = g_strdup(fontname); 
-  font->psname = g_strdup(psname); 
-  font->family = g_strdup(family); 
-  font->pango_description = g_strdup(pango_description); 
+  font->fontname = g_strdup(fontname);
+  font->psname = g_strdup(psname);
+  font->family = g_strdup(family);
+  font->pango_description = g_strdup(pango_description);
   font->i18n_latinfamily = g_strdup(i18n_latinfamily);
   font->italic = italic;
   font->bold = bold;
@@ -578,7 +675,6 @@ gtk_psfont_add_i18n_font (const gchar *fontname,
 
   user_fonts = g_list_append(user_fonts, font);
 }
-
 
 static GtkPSFont *
 find_psfont(const gchar *name)
@@ -609,22 +705,32 @@ find_psfont(const gchar *name)
 
   if(fontdata == NULL) {
     for(i = 0; i < NUM_FONTS; i++){
-      if(strcmp(name, font_data[i].fontname) == 0) { 
+      if(strcmp(name, font_data[i].fontname) == 0) {
 	fontdata = &font_data[i];
 	break;
       }
-      if(strcmp(name, font_data[i].psname) == 0) { 
+      if(strcmp(name, font_data[i].psname) == 0) {
 	fontdata = &font_data[i];
        break;
       }
     }
   }
-  
+
   return fontdata;
 }
 
+/**
+ * gtk_psfont_get_by_family:
+ * @family_name: font name
+ * @italic: TRUE or FALSE
+ * @bold: TRUE or FALSE
+ *
+ * Get #GtkPSFont by family.
+ *
+ * Returns: the #GtkPSFont
+ */
 GtkPSFont *
-gtk_psfont_get_by_family(const gchar *name, gboolean italic, gboolean bold)
+gtk_psfont_get_by_family(const gchar *family_name, gboolean italic, gboolean bold)
 {
   GtkPSFont *fontdata = NULL;
   GtkPSFont *data = NULL;
@@ -640,7 +746,7 @@ gtk_psfont_get_by_family(const gchar *name, gboolean italic, gboolean bold)
   fonts = user_fonts;
   while(fonts){
     data = (GtkPSFont *) fonts->data;
-    if(strcmp(name, data->family) == 0) {
+    if(strcmp(family_name, data->family) == 0) {
       return_data = data;
       if(data->italic == italic && data->bold == bold){
 	fontdata = data;
@@ -649,10 +755,10 @@ gtk_psfont_get_by_family(const gchar *name, gboolean italic, gboolean bold)
     }
     fonts = fonts->next;
   }
-    
+
   if(fontdata == NULL) {
     for(i = 0; i < NUM_FONTS; i++){
-      if(strcmp(name, font_data[i].family) == 0) { 
+      if(strcmp(family_name, font_data[i].family) == 0) {
 	return_data = &font_data[i];
 	if(font_data[i].italic == italic && font_data[i].bold == bold){
 	  fontdata = &font_data[i];
@@ -667,6 +773,13 @@ gtk_psfont_get_by_family(const gchar *name, gboolean italic, gboolean bold)
 }
 
 
+/**
+ * gtk_psfont_get_families:
+ * @families:  font families
+ * @num_families: families number
+ *
+ * Get #GtkPSFont by family.
+ */
 void
 gtk_psfont_get_families(GList **families, gint *num_families)
 {
@@ -680,6 +793,19 @@ gtk_psfont_get_families(GList **families, gint *num_families)
 }
 
 /* get the width, ascent and descent of a character. */
+
+/**
+ * gtk_psfont_get_char_size:
+ * @psfont: a #GtkPSFont
+ * @font: a #GdkFont
+ * @latin_font: a #GdkFont
+ * @wc: a #GdkWchar
+ * @width: font width
+ * @ascent: font ascent
+ * @descent: font  descent
+ *
+ * Get font character size.
+ */
 void
 gtk_psfont_get_char_size(GtkPSFont *psfont,
                          GdkFont *font,
@@ -691,7 +817,7 @@ gtk_psfont_get_char_size(GtkPSFont *psfont,
 {
   GdkFont *dfont;
   gint w, a, d, w0;
-  
+
   if (psfont->i18n_latinfamily && psfont->vertical && (0 > wc || wc > 0x7f)) {
     /* vertical-writing CJK postscript fonts. */
     w = (font->ascent + font->descent);
