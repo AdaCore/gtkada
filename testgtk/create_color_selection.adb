@@ -35,6 +35,7 @@ with Glib;                        use Glib;
 with Glib.Properties;
 with Gtk.Color_Selection;         use Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;  use Gtk.Color_Selection_Dialog;
+with Gtk.Button;                  use Gtk.Button;
 with Gtk.Enums;
 with Gtk.Handlers;
 with Gtk.Settings;                use Gtk.Settings;
@@ -123,14 +124,14 @@ package body Create_Color_Selection is
    is
       Color : Gdk_Color;
    begin
-      Get_Current_Color (Get_Colorsel (Dialog), Color);
+      Get_Current_Color (Get_Color_Selection (Dialog), Color);
 
       Put_Line ("Selected color is: ");
       Put ("Red=" & Guint16'Image (Red (Color)));
       Put (" Green=" & Guint16'Image (Green (Color)));
       Put (" Blue=" & Guint16'Image (Blue (Color)));
       Put (" Alpha="
-           & Guint16'Image (Get_Current_Alpha (Get_Colorsel (Dialog))));
+           & Guint16'Image (Get_Current_Alpha (Get_Color_Selection (Dialog))));
    end Color_Ok;
 
    ---------
@@ -139,17 +140,14 @@ package body Create_Color_Selection is
 
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
       pragma Warnings (Off, Frame);
-      Old : Gtk_Color_Selection_Change_Palette_With_Screen_Func;
-      pragma Unreferenced (Old);
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
 
-         Set_Has_Palette (Get_Colorsel (Dialog), True);
-         Set_Has_Opacity_Control (Get_Colorsel (Dialog), True);
-         Old :=
-           Set_Change_Palette_With_Screen_Hook (On_Palette_Changed'Access);
+         Set_Has_Palette (Get_Color_Selection (Dialog), True);
+         Set_Has_Opacity_Control (Get_Color_Selection (Dialog), True);
+         Set_Change_Palette_With_Screen_Hook (On_Palette_Changed'Access);
 
          Destroy_Dialog_Cb.Connect
            (Dialog, "destroy",
@@ -157,12 +155,14 @@ package body Create_Color_Selection is
             Dialog'Access);
 
          Color_Sel_Cb.Object_Connect
-           (Get_OK_Button (Dialog),
+           (Gtk_Button
+              (Glib.Properties.Get_Property (Dialog, Ok_Button_Property)),
             "clicked",
             Color_Sel_Cb.To_Marshaller (Color_Ok'Access),
             Slot_Object => Dialog);
          Widget_Handler.Object_Connect
-           (Get_Cancel_Button (Dialog),
+           (Gtk_Button
+              (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
             "clicked",
             Widget_Handler.To_Marshaller (Close_Window'Access),
             Slot_Object => Dialog);

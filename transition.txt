@@ -1,5 +1,23 @@
 This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
 
+Gtk.Color_Selection
+===================
+
+Get_Color and Set_Color have been removed: use Get_Current_Color and
+Set_Current_Color instead.
+
+Gtk.Color_Selection_Dialog
+==========================
+
+Subprogram Get_Colorsel has been renamed Get_Color_Selection, to match
+the Gtk+ naming.
+
+Get_OK_Button, Get_Cancel_Button, Get_Help_Button have been removed.
+Instead, use:
+   Gtk_Button (Glib.Properties.Get_Property (Dialog, Ok_Button_Property)),
+   Gtk_Button (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
+   Gtk_Button (Glib.Properties.Get_Property (Dialog, Help_Button_Property))
+
 Gtk.Object
 ==========
 
