@@ -1,3 +1,11 @@
+Known problems fixed in GtkAda 2.24.2
+
+- KA07-026 Text alignment in Gtk_Plot_Canvas
+  Problem:    Under Windows, when displaying text in a Gtk_Plot_Canvas,
+              the base line for digits is not aligned with the base line for
+              text.
+  Workaround: No known workaround.
+
 Known problems fixed in GtkAda 2.24.0
 
 - K726-004 Support for dead keys under Windows
