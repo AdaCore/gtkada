@@ -32,6 +32,8 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "CheckButton",
            # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
                           # Also needs support for interfaces
+           "ColorSelection",
+           "ColorSelectionDialog",
            "Curve",
            "Dialog",
            "DrawingArea",
@@ -194,6 +196,10 @@ naming.type_exceptions = {
     "GtkCellRenderer":
         GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
     "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
+    "GtkColorSelection":
+        GObject("Gtk.Color_Selection.Gtk_Color_Selection"),
+    "GtkColorSelectionDialog":
+        GObject("Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog"),
     "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
     "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
@@ -229,6 +235,8 @@ naming.type_exceptions = {
         Callback("Gtk.About_Dialog.Activate_Link_Func"),
     "GtkAccelGroupFindFunc":
         Callback("Gtk.Accel_Group.Gtk_Accel_Group_Find_Func"),
+    "GtkColorSelectionChangePaletteWithScreenFunc":
+        Callback("Gtk.Color_Selection.Gtk_Color_Selection_Change_Palette_With_Screen_Func"),
     "GtkEntryCompletionMatchFunc":
         Callback("Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func"),
     "GtkCalendarDetailFunc":
@@ -240,6 +248,7 @@ naming.type_exceptions = {
     "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
     "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
+    "GdkColor":           DirectBinding("Gdk.Color.Gdk_Color"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),

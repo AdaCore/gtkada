@@ -32,6 +32,7 @@ actually given).
    <!-- ###################################################
         Gtk.Button
         ###################################################-->
+
    <package id="Gtk.Button">
       <doc screenshot="gtk-button"
            group="Buttons and Toggles"
@@ -49,6 +50,136 @@ the various spacings that can be set for a button:
       <method id="gtk_button_new_with_label" ada="Gtk_New" >
          <parameter name="label" default='""' empty_maps_to_null="True"/>
       </method>
+   </package>
+
+   <!-- ################################################
+        Gtk.Color_Selection
+        ################################################-->
+
+   <package id="Gtk.Color_Selection">
+      <doc testgtk="create_color_selection.adb"
+           screenshot="gtk-colorsel"
+           group="Drawing">
+A Gtk_Color_Selection widget is a complex dialog that allows the user
+to select a color based either on its (Red, Green, Blue) or its
+(Hue, Saturation, Value).
+An additional field is provided to select the opacity of the color (this
+is usually called the alpha channel).
+
+See Gtk.Color_Selection_Dialog for a version of this widget that comes with
+its own dialog.
+
+See Gtk.Extra.Color_Combo for a different way to select colors.
+      </doc>
+     <parameter name="self" ada="Colorsel"/>
+
+     <!-- Bound manually below -->
+     <method id="gtk_color_selection_palette_from_string" bind="False"/>
+     <method id="gtk_color_selection_palette_to_string" bind="False"/>
+
+     <!-- Obsolescent, and not present in 2.x -->
+     <method id="gtk_color_selection_set_change_palette_hook" bind="False"/>
+
+     <extra>
+        <spec>
+   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access
+     procedure (Screen : Gdk.Gdk_Screen;
+                Colors : Gdk.Color.Gdk_Color_Array);
+   --  This function should save the new palette contents, and update the
+   --  Gtk_Settings property "gtk-color-palette" so all Gtk_Color_Selection
+   --  widgets will be modified, including the current one. For instance, you
+   --  would do:
+   --    Set_String_Property
+   --      (Get_Default, Gtk_Color_Palette, Palette_To_String (Colors), "Foo");
+
+   function Palette_From_String
+     (Str : String) return Gdk.Color.Gdk_Color_Array;
+   --  Parses a color palette string. This string is a colon-separated list of
+   --  color names readable by Gdk.Color.Parse.
+   --  An empty array is returned if Str couldn't be parsed
+
+   function Palette_To_String
+     (Colors   : Gdk.Color.Gdk_Color_Array) return String;
+   --  Encodes a palette as a string, useful for persistent storage.
+        </spec>
+
+        <with_body pkg="GtkAda.C"/>
+        <with_body pkg="Interfaces.C.Strings"/>
+
+        <body>
+   package Color_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
+      Gdk.Color.Gdk_Color_Array);
+
+   -------------------------
+   -- Palette_From_String --
+   -------------------------
+
+   function Palette_From_String (Str : String) return Gdk_Color_Array is
+      use Color_Arrays;
+      function Internal
+        (Str : String;
+         Colors : access Unbounded_Array_Access; N : access Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_color_selection_palette_from_string");
+
+      N      : aliased Gint;
+      Output : aliased Unbounded_Array_Access;
+   begin
+      if Internal (Str &amp; ASCII.NUL, Output'Access, N'Access) = 0 then
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Color_Array := To_Array (Output, Integer (N));
+      begin
+         G_Free (Output);
+         return Result;
+      end;
+   end Palette_From_String;
+
+   -----------------------
+   -- Palette_To_String --
+   -----------------------
+
+   function Palette_To_String (Colors : Gdk_Color_Array) return String is
+      function Internal
+        (Colors   : System.Address;
+         N_Colors : Gint)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_color_selection_palette_to_string");
+      Str : chars_ptr;
+   begin
+      if Colors'Length = 0 then
+         return "";
+      else
+         Str := Internal (Colors (Colors'First)'Address, Colors'Length);
+         declare
+            Result : constant String := Value (Str);
+         begin
+            Free (Str);
+            return Result;
+         end;
+      end if;
+   end Palette_To_String;
+       </body>
+     </extra>
+   </package>
+
+   <!-- ################################################
+        Gtk.Color_Selection_Dialog
+        ################################################-->
+
+   <package id="Gtk.Color_Selection_Dialog">
+      <doc group="Drawing">
+The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
+user to select a color much like the Gtk_File_Selection provides a standard
+dialog for file selection.
+      </doc>
+     <parameter name="self" ada="Color_Selection_Dialog"/>
+     <method id="gtk_color_selection_dialog_get_color_selection"
+         return="GtkColorSelection">
+     </method>
    </package>
 
    <!-- ################################################
