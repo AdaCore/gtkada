@@ -355,6 +355,15 @@ class AdaType(CType):
             self.add_with(pkg, specs=in_spec)
 
 
+class DirectBinding(CType):
+    def __init__(self, ada):
+        CType.__init__(self, ada, "")
+        self.cparam = ada
+        self.convert = "%(var)s"
+        self.is_ptr = False
+        self.returns = (self.param, self.cparam, "%(var)s", [])
+
+
 class AdaNaming(object):
     def __init__(self):
         self.cname_to_adaname = {}  # c methods to Ada subprograms
