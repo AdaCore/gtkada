@@ -1,4 +1,8 @@
 project Contrib is
    for Source_Dirs use (".");
-   for Languages use ("Python", "Xml");
+   for Languages use ("Python", "Xml", "Gir");
+
+   package Naming is
+      for Implementation_Suffix ("Gir") use ".gir";
+   end Naming;
 end Contrib;
