@@ -1,0 +1,29 @@
+This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
+
+Gtk.Object
+==========
+
+Gtk.Object has been removed in Gtk+-3.
+
+The following subprograms and declarations are now in Gtk.Widget:
+
+    Flags
+    Unset_Flags
+ 
+    Floating
+    In_Destruction_Is_Set
+
+    Signal_Destroy
+
+The subprogram Gtk.Object.Sink has been removed: use Glib.Object.Ref_Sink
+ instead.
+
+
+Gtk.Tooltips
+============
+
+The package Gtk.Tooltips has been removed, in favor of Gtk.Tooltip.
+
+For creating simple tooltips on all GtkAda widgets, the easiest is to use 
+Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup.
+
