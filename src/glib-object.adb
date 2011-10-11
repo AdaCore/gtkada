@@ -668,6 +668,47 @@ package body Glib.Object is
       end Remove;
    end User_Data;
 
+   -----------------------
+   -- User_Data_Closure --
+   -----------------------
+
+   package body User_Data_Closure is
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (User_Data_Type, Data_Access);
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (Internal_Data, Internal_Data_Access);
+
+      ---------------
+      -- Free_Data --
+      ---------------
+
+      procedure Free_Data (Data : System.Address) is
+         D : Internal_Data_Access := Convert (Data);
+      begin
+         if D /= null and then D.Data /= null then
+            Destroy (D.Data.all);
+            Unchecked_Free (D.Data);
+         end if;
+         Unchecked_Free (D);
+      end Free_Data;
+
+      -----------
+      -- Build --
+      -----------
+
+      function Build
+         (Func : System.Address; Data : User_Data_Type)
+         return System.Address
+      is
+         D : constant Internal_Data_Access := new Internal_Data'
+            (Func => Func,
+             Data => new User_Data_Type'(Data));
+      begin
+         return D.all'Address;
+      end Build;
+
+   end User_Data_Closure;
+
    -------------
    -- Convert --
    -------------

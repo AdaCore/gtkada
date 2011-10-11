@@ -424,6 +424,43 @@ package Glib.Object is
    package Object_List is new Glib.GSlist.Generic_SList (GObject);
    package Object_Simple_List is new Glib.Glist.Generic_List (GObject);
 
+   --  <doc_ignore>
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type);
+   package User_Data_Closure is
+      --  This package is meant for internal use in GtkAda application.
+      --  It provides a convenient wrapper around user-provided data, to
+      --  be passed to callbacks.
+
+      type Data_Access is access all User_Data_Type;
+
+      type Internal_Data is record
+         Func       : System.Address;  --  The actual user callback
+         Data       : Data_Access;
+      end record;
+      type Internal_Data_Access is access all Internal_Data;
+
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Internal_Data_Access);
+
+      function Build
+         (Func : System.Address; Data : User_Data_Type)
+         return System.Address;
+      pragma Inline (Build);
+      --  Allocate a new user data.
+      --  It returns an access to Internal_Data_Access, but in a form easier
+      --  to pass to a C function.
+
+      procedure Free_Data (Data : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback suitable for calling from C, to free user data
+
+   end User_Data_Closure;
+
+   --  </doc_ignore>
+
 private
 
    type GObject_Record is tagged record

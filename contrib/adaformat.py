@@ -9,6 +9,17 @@ import re
 import copy
 from collections import namedtuple, defaultdict
 
+# A lot of subprograms below take a "lang" parameter, which indicates how
+# values should be converted:
+#
+#     LANG should be one of:
+#        "ada->ada":  the value of the parameter is read from an Ada
+#           value (as subprogram whose code is Ada) and passed to a
+#           similar subprogram. No conversion needed.
+#        "ada->c": all Ada values will be converted to their C equivalent,
+#           since the target subprogram's code is written in C.
+#        "c->ada": case of C callbacks: the value is passed from C to
+#           an Ada subprogram in the user application.
 
 class CType(object):
     """Describes the types in the various cases where they can be used.
@@ -67,12 +78,12 @@ class CType(object):
         self.param = ada     # type as parameter
         self.cparam = ada    # type for Ada subprograms binding to C
         self.returns = (self.param, self.cparam, "%(var)s", [])
+                             # third: converts from C to Ada value
+                             # fourth: list of needed temporary variables
         self.convert = "%(var)s"  # Convert from Ada parameter to C parameter
                              # If it used %(tmp)s, we assume the converter sets
                              # the value of the temporary variable itself.
                              # Otherwise, it is used as " Tmp := <convert>"
-        self.postconvert = "%(var)s" # Convert from C to Ada value
-                             # %(var)s is the value to convert
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
@@ -83,9 +94,17 @@ class CType(object):
         """The type to use for the property"""
         return self.property
 
-    def as_return(self, lang="ada"):
+    def as_return(self, pkg=None):
         """See CType documentation for a description of the returned tuple"""
-        return self.returns
+
+        if self.returns and pkg:
+            p = self.ada[:self.ada.rfind(".")]
+            return (self.returns[0].replace("%s." % pkg.name, ""),
+                    self.returns[1].replace("%s." % pkg.name, ""),
+                    self.returns[2],
+                    self.returns[3])
+        else:
+            return self.returns
 
     def as_ada_param(self, pkg):
         """Converts self to a description for an Ada parameter to a
@@ -105,53 +124,65 @@ class CType(object):
         p = self.ada[:self.ada.rfind(".")]
         return self.cparam.replace("%s." % pkg.name, "")
 
-    def as_call(self, name, wrapper="%s", lang="ada", mode="in"):
+    def as_call(
+        self, name, wrapper="%s", lang="ada->ada", mode="in", value=None):
         """'name' represents a parameter of type 'self'.
            'wrapper' is used in the call itself, and %s is replaced by the
               name of the variable (or the temporary variable).
            Returns an instance of VariableCall.
+           See comments at the beginning of this package for valid LANG values
         """
-        if lang == "ada":
+        assert(lang in ("ada->ada", "c->ada", "ada->c"))
+
+        if lang == "ada->ada":
             return VariableCall(
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
-        elif self.postconvert != "%(var)s" and mode != "in":
-            # An "out" parameter for an enumeration requires a temporary
-            # variable: Internal(Enum'Pos (Param)) is invalid
-            tmp = "Tmp_%s" % name
-            return VariableCall(
-                call=wrapper % tmp,
-                precall="",
-                postcall='%s := %s;' % (name, self.postconvert % {"var":tmp}),
-                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+        elif lang == "ada->c":
+            ret = self.returns and self.returns[2]
+            if ret and ret != "%(var)s" and mode != "in":
+                # An "out" parameter for an enumeration requires a temporary
+                # variable: Internal(Enum'Pos (Param)) is invalid
+                tmp = "Tmp_%s" % name
+                return VariableCall(
+                    call=wrapper % tmp,
+                    precall="",
+                    postcall='%s := %s;' % (name, ret % {"var":tmp}),
+                    tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
-        elif "%(tmp)" in self.convert:
-            # The conversion sets the temporary variable itself
-            tmp = "Tmp_%s" % name
-            return VariableCall(
-                call=wrapper % tmp,
-                precall=self.convert % {"var":name, "tmp":tmp},
-                postcall=self.cleanup % tmp,
-                tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+            elif "%(tmp)" in self.convert:
+                # The conversion sets the temporary variable itself
+                tmp = "Tmp_%s" % name
+                return VariableCall(
+                    call=wrapper % tmp,
+                    precall=self.convert % {"var":name, "tmp":tmp},
+                    postcall=self.cleanup % tmp,
+                    tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
-        elif self.cleanup:
-            tmp = "Tmp_%s" % name
-            conv = self.convert % {"var":name}
+            elif self.cleanup:
+                tmp = "Tmp_%s" % name
+                conv = self.convert % {"var":name}
 
-            # Initialize the temporary variable with a default value, in case
-            # it is an unconstrained type (a chars_ptr_array for instance)
-            return VariableCall(
-                call=wrapper % tmp,
-                precall='',
-                postcall=self.cleanup % tmp,
-                tmpvars=[Local_Var(
-                    name=tmp, type=AdaType(self.cparam), default=conv)])
+                # Initialize the temporary variable with a default value, in case
+                # it is an unconstrained type (a chars_ptr_array for instance)
+                return VariableCall(
+                    call=wrapper % tmp,
+                    precall='',
+                    postcall=self.cleanup % tmp,
+                    tmpvars=[Local_Var(
+                        name=tmp, type=AdaType(self.cparam), default=conv)])
 
-        else:
-            conv = self.convert % {"var":name}
+            else:
+                conv = self.convert % {"var":name}
+                return VariableCall(
+                    call=wrapper % conv,
+                    precall='', postcall='', tmpvars=[])
+
+        elif lang == "c->ada":
+            ret = self.returns
             return VariableCall(
-                call=wrapper % conv,
-                precall='', postcall='', tmpvars=[])
+                call=wrapper % (ret[2] % {"var": name}),
+                precall='', postcall='', tmpvars=ret[3])
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
@@ -179,8 +210,7 @@ class Enum(CType):
 
         self.cparam = "Integer"
         self.convert = "%s'Pos (%%(var)s)" % ada
-        self.postconvert = "%s'Val (%%(var)s)" % ada
-        self.returns = (ada, self.cparam, self.postconvert, [])
+        self.returns = (ada, self.cparam, "%s'Val (%%(var)s)" % ada, [])
 
 
 class GObject(CType):
@@ -190,14 +220,19 @@ class GObject(CType):
         self.convert = "Get_Object_Or_Null (GObject (%(var)s))"
         self.is_ptr = False
 
+        base = ada
+        if "." in base:
+            base = base[base.rfind(".")+1:]
+        stub = "Stub_%s" % base
+
         if ada == "Glib.Object.GObject":
-            convert = "Get_User_Data (%(var)s, Stub)"
+            conv = "Get_User_Data (%%(var)s, %s)" % stub
         else:
-            convert = "%s (Get_User_Data (%%(var)s, Stub))" % ada
+            conv = "%s (Get_User_Data (%%(var)s, %s))" % (ada, stub)
 
         self.returns = (
-            self.param, self.cparam, convert,
-            [Local_Var("Stub", AdaType("%s_Record" % ada, in_spec=False))])
+            self.param, self.cparam, conv,
+            [Local_Var(stub, AdaType("%s_Record" % ada, in_spec=False))])
 
     def copy(self, **kwargs):
         result = CType.copy(self)
@@ -256,6 +291,19 @@ class Proxy(CType):
             CType.__init__(self, ada, property)
 
 
+class Callback(CType):
+    def __init__(self, ada):
+        CType.__init__(self, ada, "")
+        self.cparam = "System.Address"
+        self.convert = "%(var)s'Address"
+
+        # Never return such a callback to Ada (because in fact we are pointing
+        # to a function in one of the bodies of GtkAda, not the actual user
+        # callback.
+        self.returns = ("", "", "", [])
+        self.returns = None
+
+
 class Interface(CType):
     def __init__(self, ada):
         CType.__init__(self, ada, "")
@@ -300,7 +348,6 @@ class AdaType(CType):
         self.cparam  = ctype or adatype
         self.returns = (self.param, self.cparam, "%(var)s", [])
         self.convert = convert
-        self.postconvert = "%(var)s"
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
 
@@ -407,7 +454,8 @@ class AdaNaming(object):
                         basename = basename[0:-1]
                     t = self.__full_type_from_girname(basename)
 
-            if not isinstance(t, GObject):
+            if not isinstance(t, GObject) \
+               and not isinstance(t, Interface):
                 t.is_ptr = is_ptr
         else:
             t = self.__full_type_from_girname(name)
@@ -580,14 +628,16 @@ class Local_Var(object):
     __slots__ = ["name", "type", "default", "aliased"]
 
     def __init__(self, name, type, default="", aliased=False):
+        self.set_type(type)
+        self.name = name
+        self.default = default
+        self.aliased = aliased
+
+    def set_type(self, type):
         if isinstance(type, str):
             self.type = AdaType(type)
         else:
             self.type = type
-
-        self.name = name
-        self.default = default
-        self.aliased = aliased
 
     def _type(self, lang, pkg):
         """`pkg` is the package in which we insert the variable"""
@@ -614,13 +664,15 @@ class Local_Var(object):
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
-    def as_call(self, lang="ada", mode="in"):
-        """Pass 'self' as a parameter to an Ada subprogram call, implemented
-           in the given language.
-           Returns an instance of VariableCall
+    def as_call(self, lang="ada->ada", mode="in", value=None):
+        """Pass self (or the value) as a parameter to an Ada subprogram call,
+           implemented in the given language. See comments at the beginning
+           of this package for valid values of LANG.
         """
+        assert(lang in ("ada->ada", "c->ada", "ada->c"))
+
         wrapper = "%s"
-        n = self.name
+        n = value or self.name
         if mode == "access_c":
             mode = "access"
             wrapper="%s'Access"
@@ -652,8 +704,9 @@ class Parameter(Local_Var):
             return "%s %s" % (mode, t)
         return t
 
-    def as_call(self, lang="ada"):
-        return super(Parameter, self).as_call(lang, mode=self.mode)
+    def as_call(self, lang="ada->ada", value=None):
+        return super(Parameter, self).as_call(
+            lang, mode=self.mode, value=value)
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
@@ -667,7 +720,7 @@ class Subprogram(object):
     """An Ada subprogram that we are generating"""
 
     def __init__(self, name, code="", plist=[], local_vars=[],
-                 returns=None, doc=[], showdoc=True):
+                 returns=None, doc=[], showdoc=True, convention=None):
         """Create a new subprogram.
            'plist' is a list of Parameter.
            'local_vars' is a list of Local_Var.
@@ -682,6 +735,7 @@ class Subprogram(object):
         self.returns = returns
         self.local = local_vars
         self.showdoc = showdoc
+        self.convention = convention   # "lang"
         self._import = None
         self._nested = []  # nested subprograms
         self._deprecated = (False, "") # True if deprecated
@@ -725,13 +779,14 @@ class Subprogram(object):
         return self
 
     def set_body(self, body):
+        """Overrides the body of the subprogram (including profile,...)"""
         self._manual_body = body
 
     def _profile(self, pkg, indent="   ", lang="ada",
                  maxlen=max_profile_length):
         """Compute the profile for the subprogram"""
 
-        returns = self.returns and self.returns.as_return(lang)
+        returns = self.returns and self.returns.as_return(pkg=pkg)
 
         if returns:
             prefix = "function"
@@ -792,6 +847,10 @@ class Subprogram(object):
         if self._deprecated[0]:
             result += "\n" + indent + "pragma Obsolescent (%s);" % self.name
 
+        if self.convention:
+            result += "\n" + indent \
+                + "pragma Convention (%s, %s);" % (self.convention, self.name)
+
         for d in doc:
             if d:
                 if d.startswith("%PRE%"):
@@ -836,12 +895,12 @@ class Subprogram(object):
         if not self.code:
             return ""
 
-        result = box(self.name) + "\n\n"
-        profile = self._profile(pkg=pkg, lang=self.lang)
+        result = box(self.name, indent=indent) + "\n\n"
+        profile = self._profile(pkg=pkg, lang=self.lang, indent=indent)
         result += profile
 
         if profile.find("\n") != -1:
-            result += "\n   is\n"
+            result += "\n" + indent + "is\n"
         else:
             result += " is\n"
 
@@ -854,10 +913,10 @@ class Subprogram(object):
 
         result += local
         result += indent + "begin\n"
-        result += indent_code(self.code, indent=6)
+        result += indent_code(self.code, indent=len(indent) + 3)
         return result + indent + "end %s;\n" % self.name
 
-    def call(self, in_pkg="", extra_postcall=""):
+    def call(self, in_pkg="", extra_postcall="", values=dict(), lang=None):
         """A call to 'self'.
            The parameters that are passed to self are assumed to have the
            same name as in self's declaration. When 'self' is implemented
@@ -879,12 +938,18 @@ class Subprogram(object):
                   extra_postcall;
                   return variable_for_return;  --  Omitted for procedures
                end;
+
+           See comments at the beginning of this package for valid LANG values.
         """
 
-        if self._import:
-            lang = "c"
+        if lang:
+            pass
+        elif self._import:
+            lang = "ada->c"
         else:
-            lang = "ada"
+            lang = "ada->ada"
+
+        assert(lang in ("ada->ada", "c->ada", "ada->c"))
 
         tmpvars  = []
         precall  = ""
@@ -892,7 +957,9 @@ class Subprogram(object):
         postcall = extra_postcall
 
         for arg in self.plist:
-            c = arg.as_call(lang)   # An instance of VariableCall
+            c = arg.as_call(
+                lang,   # An instance of VariableCall
+                value=values.get(arg.name.lower(), None))
             params.append(c.call)
             tmpvars.extend(c.tmpvars)
             precall += c.precall
@@ -909,9 +976,9 @@ class Subprogram(object):
             else:
                 call = "%s.%s" % (in_pkg, call)
 
-        returns = self.returns and self.returns.as_return(lang)
+        returns = self.returns and self.returns.as_return()
         if returns is not None:
-            if lang == "c":
+            if lang == "ada->c":
                 tmpvars.extend(returns[3])
                 if "%(tmp)s" in returns[2]:
                     # Result of Internal is used to create a temp. variable,
@@ -932,6 +999,7 @@ class Subprogram(object):
                 else:
                     # No need for a temporary variable
                     return (precall, returns[2] % {"var":call}, tmpvars)
+
             else:
                 if postcall:
                     # We need to use a temporary variable, since there are
@@ -944,10 +1012,26 @@ class Subprogram(object):
                             tmpvars)
                 else:
                     # No need for a temporary variable
-                    return ("%s" % precall, call, tmpvars)
+                    return (precall, call, tmpvars)
+
         else:
             # A procedure
             return ("%s%s;%s" % (precall, call, postcall), None, tmpvars)
+
+    def call_to_string(self, call, lang="ada->ada"):
+        """CALL is the result of call() above.
+           This function returns a string that contains the code for the
+           subprogram.
+        """
+        result = call[0]
+        if call[1]:
+            if lang == "c->ada":
+                # The return value (Ada) needs to be converted back to C (this
+                # is the returned value from a callback, for instance)
+                result += "return %s" % (self.returns.convert % {"var": call[1]})
+            else:
+                result += "return %s" % call[1]
+        return result
 
 
 class Section(object):
@@ -963,7 +1047,7 @@ class Section(object):
     def __init__(self, name):
         self.name = name
         self.comment = ""
-        self.subprograms = []  # All subprograms
+        self.__subprograms = []  # All subprograms  (in_spec, Subprogram())
         self.spec_code = ""  # hard-coded code
         self.body_code = ""  # hard-coded code
 
@@ -982,13 +1066,15 @@ class Section(object):
                 "   -- %s" % cleanup_doc(p)
                 for p in comment.splitlines()) + "\n"
 
-    def add(self, *args):
+    def add(self, obj, in_spec=True):
         """Add one or more objects to the section (subprogram, code,...)"""
-        for a in args:
-            if isinstance(a, Subprogram):
-                self.subprograms.append(a)
-            elif isinstance(a, str):
-                self.spec_code += a + "\n"
+        if isinstance(obj, Subprogram):
+            self.__subprograms.append((in_spec, obj))
+        elif isinstance(obj, Package):
+            obj.isnested = True
+            self.__subprograms.append((in_spec, obj))
+        elif isinstance(obj, str):
+            self.add_code(obj, specs=in_spec)
 
     def add_code(self, code, specs=True):
         if specs:
@@ -997,8 +1083,8 @@ class Section(object):
             self.body_code += code + "\n"
 
     def _group_subprograms(self):
-        """Returns a list of list of subprograms. In each nested list, the
-           subprograms are grouped and a single documentation is output for
+        """Returns a list of subprograms for the specs. In each nested list,
+           the subprograms are grouped and a single documentation is output for
            the whole group. At the same time, this preserves the order of
            groups, so they appear in the order in which the first subprogram
            in the group appeared.
@@ -1010,7 +1096,10 @@ class Section(object):
 
             gtk_new_index = 0;
 
-            for s in self.subprograms:
+            for in_spec, s in self.__subprograms:
+                if not in_spec:
+                    continue
+
                 name = s.name.replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
@@ -1035,16 +1124,14 @@ class Section(object):
             return result
 
         else:
-            return [[s] for s in self.subprograms]
+            return [[s] for in_spec, s in self.__subprograms]
 
-    def spec(self, pkg):
+    def spec(self, pkg, indent):
         """Return the spec of the section"""
 
         result = []
 
-        if self.subprograms or self.spec_code:
-            result.append("") # A separator with previous section
-
+        if self.__subprograms or self.spec_code:
             if self.name:
                 result.append(box(self.name))
             if self.comment:
@@ -1053,29 +1140,44 @@ class Section(object):
                 result.append("")
 
             if self.spec_code:
-                result.append(indent_code(self.spec_code))
+                result.append(indent_code(self.spec_code, indent=len(indent)))
 
             for group in self._group_subprograms():
                 for s in group:
-                    result.append(s.spec(pkg=pkg, show_doc=s == group[-1]))
+                    if isinstance(s, Subprogram):
+                        result.append(s.spec(pkg=pkg, show_doc=s == group[-1],
+                                             indent=indent))
+                    else:
+                        result.append(s.spec())
+
                     if s == group[-1]:
                         result.append("")
 
         return "\n".join(result)
 
-    def body(self, pkg):
+    def body(self, pkg, indent):
         result = []
 
         if self.body_code:
-            result.append(indent_code(self.body_code))
+            result.append(indent_code(self.body_code, indent=len(indent)))
 
-        self.subprograms.sort(lambda x, y: cmp(x.name, y.name))
-        for s in self.subprograms:
-            b = s.body(pkg=pkg)
+        self.__subprograms.sort(lambda x, y: cmp(x[1].name, y[1].name))
+        for in_spec, s in self.__subprograms:
+            if not in_spec:
+                if isinstance(s, Subprogram):
+                    result.append(s.spec(pkg=pkg, indent=indent))
+                else:
+                    result.append(s.spec())
+
+                result.append("")
+
+            if isinstance(s, Subprogram):
+                b = s.body(pkg=pkg, indent=indent)
+            else:
+                b = s.body() + "\n"
+
             if b:
                 result.append(b)
-
-        result.append("")
 
         return "\n".join(result)
 
@@ -1084,7 +1186,7 @@ class Package(object):
     copyright_header = ""
     # Can be overridden by applications to change the copyright header
 
-    def __init__(self, name, doc=[]):
+    def __init__(self, name, doc=[], isnested=False):
         """'doc' is a list of strings, where each string is a paragraph"""
         self.name = name
         self.doc  = doc
@@ -1093,6 +1195,9 @@ class Package(object):
         self.spec_withs = dict() #  "pkg" -> use:Boolean
         self.body_withs = dict() #  "pkg" -> use:Boolean
         self.private = []        # Private section
+        self.language_version = "" # a pragma to be put just after the headers
+        self.formal_params = ""  # generic formal parameters
+        self.isnested = isnested
 
     def section(self, name):
         """Return an existing section (or create a new one) with the given
@@ -1139,62 +1244,88 @@ class Package(object):
                 else:
                     result.append("with %s;" % w)
 
-            return "\n".join(result) + "\n\n"
+            return "\n".join(result) + "\n"
         return ""
 
-    def spec(self, out):
+    def spec(self):
         """Returns the spec of the package, in the file `out`"""
 
-        if Package.copyright_header:
-            out.write(Package.copyright_header + "\n")
+        result = []
 
-        if self.doc:
-            for d in self.doc:
-                if d.startswith("%PRE%"):
-                    d = d[5:]
-                    lines = ["\n-- " + l for l in d.split("\n")]
-                    out.write("".join(lines))
-                elif d:
-                    out.write("-- " + fill_text(d, "--  ", 79))
-                else:
-                    out.write("--")
-                out.write("\n")
+        if not self.isnested:
+            indent = ""
+            if Package.copyright_header:
+                result.append(Package.copyright_header)
 
-        out.write('\npragma Warnings (Off, "*is already use-visible*");\n')
+            if self.language_version:
+                result.append(self.language_version)
 
-        out.write(self._output_withs(self.spec_withs))
-        out.write("package %s is" % self.name)
+            if self.doc:
+                for d in self.doc:
+                    if d.startswith("%PRE%"):
+                        d = d[5:]
+                        lines = ["\n-- " + l for l in d.split("\n")]
+                        result.append("".join(lines))
+                    elif d:
+                        result.append("-- " + fill_text(d, "--  ", 79))
+                    else:
+                        result.append("--")
+
+            result.append("")
+            result.append('pragma Warnings (Off, "*is already use-visible*");')
+            result.append(self._output_withs(self.spec_withs))
+
+        else:
+            indent = "   "
+
+        if self.formal_params:
+            result.append(indent + "generic")
+            result.append(indent + "   %s" % self.formal_params)
+        result.append(indent + "package %s is" % self.name)
 
         for s in self.sections:
-            out.write(s.spec(pkg=self))
+            sec = s.spec(pkg=self, indent=indent + "   ")
+            if sec:
+                result.append(sec)
 
         if self.private:
-            out.write("\nprivate\n")
-            out.write("\n".join(self.private))
+            result.append(indent + "private")
+            result.extend(self.private)
 
-        out.write("\nend %s;" % self.name)
+        result.append(indent + "end %s;" % self.name)
+        return "\n".join(result)
 
-    def body(self, out):
+    def body(self):
         """Returns the body of the package"""
 
+        result = []
         body = ""
+
+        if self.isnested:
+            indent = "   "
+        else:
+            indent = ""
+
         for s in self.sections:
-            b = s.body(pkg=self)
+            b = s.body(pkg=self, indent=indent + "   ")
             if b:
-                body += b
+                body += "\n" + b
 
         if not body:
-            return
+            return ""
 
-        if Package.copyright_header:
-            out.write(Package.copyright_header + "\n")
+        if not self.isnested:
+            if Package.copyright_header:
+                result.append(Package.copyright_header)
 
-        out.write("pragma Style_Checks (Off);\n")
-        out.write('pragma Warnings (Off, "*is already use-visible*");\n')
-        out.write(self._output_withs(self.body_withs))
-        out.write("package body %s is\n" % self.name)
-        out.write(body)
-        out.write("end %s;" % self.name)
+            result.append("pragma Style_Checks (Off);")
+            result.append('pragma Warnings (Off, "*is already use-visible*");')
+            result.append(self._output_withs(self.body_withs))
+
+        result.append(indent + "package body %s is" % self.name)
+        result.append(body)
+        result.append(indent + "end %s;" % self.name)
+        return "\n".join(result)
 
 
 naming.cname_to_adaname = {
@@ -1361,11 +1492,23 @@ naming.type_exceptions = {
     "GtkToolItem":     GObject("Gtk.Tool_Item.Gtk_Tool_Item"),
     "GtkTreeIter*":     Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
-    "GtkTreeViewRowSeparatorFunc":
-        Proxy("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
     "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
 
+    "GtkTreeViewRowSeparatorFunc":
+        Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
+    "GtkAboutDialogActivateLinkFunc":
+        Callback("Gtk.About_Dialog.Activate_Link_Func"),
+    "GtkAccelGroupFindFunc":
+        Callback("Gtk.Accel_Group.Gtk_Accel_Group_Find_Func"),
+    "GtkEntryCompletionMatchFunc":
+        Callback("Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func"),
+    "GtkCalendarDetailFunc":
+        Callback("Gtk.Calendar.Gtk_Calendar_Detail_Func"),
+    "GtkCellLayoutDataFunc":
+        Callback("Gtk.Cell_Layout.Cell_Data_Func"),
+    "GtkAssistantPageFunc":
+        Callback("Gtk.Assistant.Gtk_Assistant_Page_Func"),
     "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
     "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
@@ -1380,3 +1523,9 @@ naming.type_exceptions = {
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
 }
+
+user_data_params = ["Data", "Func_Data", "User_Data", "D"]
+destroy_data_params = ["destroy", "func_notify"]
+# List of possible names for user data parameters, for functions that take
+# callbacks as parameters
+# ??? Should use info from gir, see callback_user_data()

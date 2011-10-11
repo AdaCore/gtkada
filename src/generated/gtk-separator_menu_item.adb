@@ -32,6 +32,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Separator_Menu_Item is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Separator_Menu_Item_Record);
    pragma Unreferenced (Type_Conversion);
@@ -83,9 +84,9 @@ package body Gtk.Separator_Menu_Item is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------------

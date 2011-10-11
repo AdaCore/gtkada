@@ -163,8 +163,7 @@ package Gtk.Status_Bar is
    ------------
 
    function Get_Messages
-      (Statusbar : access Gtk_Status_Bar_Record)
-       return Gtk.Status_Bar.Messages_List.GSlist;
+      (Statusbar : access Gtk_Status_Bar_Record) return Messages_List.GSlist;
 
    ---------------------
    -- Interfaces_Impl --

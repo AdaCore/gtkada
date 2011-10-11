@@ -33,6 +33,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Frame is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Frame_Record);
    pragma Unreferenced (Type_Conversion);
@@ -110,9 +111,9 @@ package body Gtk.Frame is
    is
       function Internal (Frame : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_get_label_widget");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub_Gtk_Widget));
    end Get_Label_Widget;
 
    ---------------------

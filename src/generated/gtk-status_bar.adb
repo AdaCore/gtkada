@@ -33,6 +33,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Status_Bar is
+
    function Convert (Msg : Status_Bar_Msg) return System.Address is
    begin
       return Msg'Address;
@@ -116,9 +117,9 @@ package body Gtk.Status_Bar is
    is
       function Internal (Statusbar : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_get_message_area");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub_Gtk_Widget));
    end Get_Message_Area;
 
    ---------
@@ -208,8 +209,7 @@ package body Gtk.Status_Bar is
    ------------------
 
    function Get_Messages
-      (Statusbar : access Gtk_Status_Bar_Record)
-       return Gtk.Status_Bar.Messages_List.GSlist
+      (Statusbar : access Gtk_Status_Bar_Record) return Messages_List.GSlist
    is
       function Internal (Statusbar : System.Address) return System.Address;
       pragma Import (C, Internal, "gtkada_GtkStatusbar_get_messages");

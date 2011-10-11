@@ -32,6 +32,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Viewport is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Viewport_Record);
    pragma Unreferenced (Type_Conversion);
@@ -91,9 +92,9 @@ package body Gtk.Viewport is
    is
       function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    ---------------------
@@ -120,9 +121,9 @@ package body Gtk.Viewport is
    is
       function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    ---------------------

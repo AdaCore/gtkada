@@ -33,6 +33,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Check_Button is
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Check_Button_Record);
    pragma Unreferenced (Type_Conversion);
@@ -129,9 +130,9 @@ package body Gtk.Check_Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------------
