@@ -107,19 +107,6 @@ package Gtk.Aspect_Frame is
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
 
-   ------------
-   -- Fields --
-   ------------
-
-   function Get_Xalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
-
-   function Get_Yalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
-
-   function Get_Ratio
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
-
    ----------------
    -- Interfaces --
    ----------------

@@ -2351,28 +2351,6 @@ ada_gvalue_set (GValue* value, void *val)
 }
 
 /******************************************
- ** Functions for Aspect_Frame
- ******************************************/
-
-gfloat
-ada_aspect_frame_get_ratio (GtkAspectFrame* widget)
-{
-   return widget->ratio;
-}
-
-gfloat
-ada_aspect_frame_get_xalign (GtkAspectFrame* widget)
-{
-   return widget->xalign;
-}
-
-gfloat
-ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
-{
-   return widget->yalign;
-}
-
-/******************************************
  ** Functions for Layout
  ******************************************/
 

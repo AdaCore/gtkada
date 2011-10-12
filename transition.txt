@@ -15,6 +15,12 @@ use Gdk.Pixbuf for offscreen image manipulation and rendering to drawables.
 
 Instead of Gdk.Rgb.Get_Cmap, use Gtk.Widget.Get_Default_Colormap.
 
+Gtk.Aspect_Frame
+================
+
+Direct accessors Get_Xalign, Get_Yalign and Get_Ratio have been removed:
+instead, use the corresponding properties.
+
 Gtk.Color_Selection
 ===================
 

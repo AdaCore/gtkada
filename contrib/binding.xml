@@ -21,9 +21,6 @@ widget's initial size request (might be different from the one if was
 actually given).
       </doc>
      <parameter name="self" ada="Aspect_Frame"/>
-     <method id="gtkada_GtkAspectFrame_get_xalign" bind="True"/>
-     <method id="gtkada_GtkAspectFrame_get_yalign" bind="True"/>
-     <method id="gtkada_GtkAspectFrame_get_ratio" bind="True"/>
      <method id="gtk_aspect_frame_new">
        <parameter name="label" default='""' empty_maps_to_null="True" />
      </method>

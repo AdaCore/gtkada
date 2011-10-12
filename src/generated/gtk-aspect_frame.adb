@@ -109,43 +109,4 @@ package body Gtk.Aspect_Frame is
       Internal (Get_Object (Aspect_Frame), Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
    end Set;
 
-   ---------------
-   -- Get_Ratio --
-   ---------------
-
-   function Get_Ratio
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_ratio");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Ratio;
-
-   ----------------
-   -- Get_Xalign --
-   ----------------
-
-   function Get_Xalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_xalign");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Xalign;
-
-   ----------------
-   -- Get_Yalign --
-   ----------------
-
-   function Get_Yalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_yalign");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Yalign;
-
 end Gtk.Aspect_Frame;
