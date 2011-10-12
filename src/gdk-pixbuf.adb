@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -650,10 +650,10 @@ package body Gdk.Pixbuf is
    ----------------
 
    function Get_Pixels
-     (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access
+     (Pixbuf : Gdk_Pixbuf) return Rgb_Buffer_Access
    is
       function Internal
-        (Pixbuf : System.Address) return Gdk.Rgb.Rgb_Buffer_Access;
+        (Pixbuf : System.Address) return Rgb_Buffer_Access;
       pragma Import (C, Internal, "gdk_pixbuf_get_pixels");
 
    begin
@@ -830,7 +830,7 @@ package body Gdk.Pixbuf is
       Dest_Y   : Gint;
       Width    : Gint;
       Height   : Gint;
-      Dither   : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      Dither   : Gdk_Rgb_Dither := Dither_Normal;
       X_Dither : Gint := 0;
       Y_Dither : Gint := 0)
    is
@@ -844,7 +844,7 @@ package body Gdk.Pixbuf is
          Dest_Y   : Gint;
          Width    : Gint;
          Height   : Gint;
-         Dither   : Gdk.Rgb.Gdk_Rgb_Dither;
+         Dither   : Gdk_Rgb_Dither;
          X_Dither : Gint;
          Y_Dither : Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable");
@@ -880,7 +880,7 @@ package body Gdk.Pixbuf is
       Height          : Gint;
       Alpha           : Alpha_Mode;
       Alpha_Threshold : Alpha_Range;
-      Dither          : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      Dither          : Gdk_Rgb_Dither := Dither_Normal;
       X_Dither        : Gint := 0;
       Y_Dither        : Gint := 0)
    is
@@ -895,7 +895,7 @@ package body Gdk.Pixbuf is
          Height          : Gint;
          Alpha           : Alpha_Mode;
          Alpha_Threshold : Alpha_Range;
-         Dither          : Gdk.Rgb.Gdk_Rgb_Dither;
+         Dither          : Gdk_Rgb_Dither;
          X_Dither        : Gint;
          Y_Dither        : Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable_alpha");

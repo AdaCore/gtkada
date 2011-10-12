@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,6 @@ with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
-with Gdk.Rgb;           use Gdk.Rgb;
 
 package body Libart_Demo is
 
@@ -123,7 +122,7 @@ package body Libart_Demo is
       --  The drawing area MUST be created with Gdk.Rgb colormap,
       --  otherwise the image can not be rendered correctly.
 
-      Gtk.Widget.Push_Colormap (Gdk.Rgb.Get_Cmap);
+      Gtk.Widget.Push_Colormap (Get_Default_Colormap);
 
       Draw := new Image_Drawing_Record;
       Initialize_Vbox (Draw, Homogeneous => False, Spacing => 0);

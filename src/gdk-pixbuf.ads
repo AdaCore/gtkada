@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,7 +58,6 @@ with Gdk.Cursor;
 with Gdk.Display;
 with Gdk.GC;
 with Gdk.Pixmap;
-with Gdk.Rgb;
 
 package Gdk.Pixbuf is
 
@@ -151,7 +150,34 @@ package Gdk.Pixbuf is
 
    type Alpha_Range is range 0 .. 255;
    --  Valid values for alpha parameters.
+
    pragma Convention (C, Alpha_Range);
+   type Gdk_Rgb_Dither is (Dither_None, Dither_Normal, Dither_Max);
+   --  The three kinds of dithering that are implemented in this package:
+   --  - Dither_None: No dithering will be done
+   --  - Dither_Normal: Specifies dithering on 8 bit displays, but not 16-bit.
+   --                   Usually the best choice.
+   --  - Dither_Max: Specifies dithering on every kind of display
+   for Gdk_Rgb_Dither'Size use Glib.Gint'Size;
+
+   type Rgb_Record is record
+      Red, Green, Blue : Glib.Guchar;
+   end record;
+   pragma Convention (C, Rgb_Record);
+
+   --  This is the buffer that will contain the image. You can manipulate each
+   --  byte in it independantly, although there is no high level routine
+   --  to draw lines, circles, ...
+   --  Once you are done drawing into this buffer, you can copy it to any
+   --  drawable on the screen, *if* the widget was created with the correct
+   --  visual and colormap (see above).
+
+   type Unchecked_Rgb_Buffer is array (Glib.Guint) of Rgb_Record;
+   pragma Convention (C, Unchecked_Rgb_Buffer);
+   type Rgb_Buffer_Access is access all Unchecked_Rgb_Buffer;
+   pragma Convention (C, Rgb_Buffer_Access);
+   --  Type used By Get_Pixels to return an array with no
+   --  bound checks that is compatible with C (also known as a flat array).
 
    --------------
    -- Get_Type --
@@ -176,7 +202,7 @@ package Gdk.Pixbuf is
    function Get_Bits_Per_Sample (Pixbuf : Gdk_Pixbuf) return Gint;
    --  Number of bits per color sample.
 
-   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access;
+   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Rgb_Buffer_Access;
    --  Return a pointer to the pixel data of the image.
 
    function Get_Width (Pixbuf : Gdk_Pixbuf) return Gint;
@@ -323,7 +349,7 @@ package Gdk.Pixbuf is
       Dest_Y   : Gint;
       Width    : Gint;
       Height   : Gint;
-      Dither   : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      Dither   : Gdk_Rgb_Dither := Dither_Normal;
       X_Dither : Gint := 0;
       Y_Dither : Gint := 0);
    --  Render a rectangular portion of a pixbuf to a drawable while using the
@@ -351,7 +377,7 @@ package Gdk.Pixbuf is
       Height          : Gint;
       Alpha           : Alpha_Mode;
       Alpha_Threshold : Alpha_Range;
-      Dither          : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      Dither          : Gdk_Rgb_Dither := Dither_Normal;
       X_Dither        : Gint := 0;
       Y_Dither        : Gint := 0);
    --  Render a rectangular portion of a pixbuf to a drawable.

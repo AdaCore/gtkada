@@ -1,5 +1,13 @@
 This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
 
+Gdk.RGB
+=======
+
+This package is deprecated in Gtk3. Use Pixmaps/Cairo for drawing, and
+use Gdk.Pixbuf for offscreen image manipulation and rendering to drawables.
+
+Instead of Gdk.Rgb.Get_Cmap, use Gtk.Widget.Get_Default_Colormap.
+
 Gtk.Color_Selection
 ===================
 

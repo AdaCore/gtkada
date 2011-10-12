@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003-2006 AdaCore               --
+--                Copyright (C) 2003-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,6 @@ with Glib.Main;        use Glib.Main;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Gdk.Rgb;          use Gdk.Rgb;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Image;        use Gtk.Image;
@@ -137,12 +136,10 @@ package body Create_Pixbuf is
       --  Num_Bytes_Per_Pixel : constant := 3;
       --  Number of bytes for each pixel (Red, Green, Blue)
 
-      Rowstride : constant Gint := Get_Rowstride (Frame);
-      Pixels    : constant Rgb_Buffer_Access := Get_Pixels (Frame);
       X         : constant Gint := Get_Area (Event).X;
       Y         : constant Gint := Get_Area (Event).Y;
-      W         : Gint := Gint (Get_Area (Event).Width);
-      H         : Gint := Gint (Get_Area (Event).Height);
+      W         : Gint := Get_Area (Event).Width;
+      H         : Gint := Get_Area (Event).Height;
 
    begin
       --  The following tests handle the cases where we try to redraw the area
@@ -159,18 +156,18 @@ package body Create_Pixbuf is
          return True;
       end if;
 
-      Draw_Rgb_Image_Dithalign
-        (Drawable  => Get_Window (Widget),
-         GC        => Get_Black_GC (Get_Style (Widget)),
-         X         => X,
-         Y         => Y,
-         Width     => W,
-         Height    => H,
-         Dith      => Dither_Normal,
-         Rgb_Buf   => Pixels.all,
-         Rowstride => Rowstride,
-         Xdith     => X,
-         Ydith     => Y);
+      Render_To_Drawable (Pixbuf   => Frame,
+                          Drawable => Get_Window (Widget),
+                          GC       => Get_Black_GC (Get_Style (Widget)),
+                          Src_X    => X,
+                          Src_Y    => Y,
+                          Dest_X   => 0,
+                          Dest_Y   => 0,
+                          Width    => W,
+                          Height   => H,
+                          Dither   => Dither_Normal,
+                          X_Dither => X,
+                          Y_Dither => Y);
       return True;
    end Expose_Cb;
 
