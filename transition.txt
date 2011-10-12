@@ -1,5 +1,12 @@
 This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
 
+Gdk.Font
+========
+
+Metrics subprograms Get_Ascent and Get_Descent have been removed:
+instead, use the corresponding functions in Pango.Font to get font
+metrics.
+
 Gdk.RGB
 =======
 

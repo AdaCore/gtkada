@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -159,16 +159,6 @@ package Gdk.Font is
    --  Compare two fonts or two fontsets for equality.
    --  Two fonts are equal if they have the same font Id.
    --  Two fontsets are equal if the name given to Fontset_Load was the same.
-
-   function Get_Ascent (Font : Gdk_Font) return Gint;
-   --  Return the maximal ascent for the font.
-   --  This is the logical extent above the baseline for spacing between two
-   --  lines.
-
-   function Get_Descent (Font : Gdk_Font) return Gint;
-   --  Return the maximal descent for the font.
-   --  This is the logical extent below the baseline for spacing between two
-   --  lines.
 
    function String_Width (Font : Gdk_Font; Str : String) return Gint;
    --  Return the width in pixels that Str will occupy if drawn with Font.

@@ -814,22 +814,6 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
   return gtk_radio_menu_item_new_with_label (l, label);
 }
 
-/*********************
- * Gdk_Font support
- *********************/
-
-gint
-ada_gdk_font_get_ascent (GdkFont* font)
-{
-  return font->ascent;
-}
-
-gint
-ada_gdk_font_get_descent (GdkFont* font)
-{
-  return font->descent;
-}
-
 /********************
  * GdkPoint
  ********************/
