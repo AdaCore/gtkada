@@ -693,7 +693,7 @@ private
    pragma Import (C, Move, "gdk_window_move");
    pragma Import (C, Move_Resize, "gdk_window_move_resize");
    pragma Import (C, Gdk_Raise, "gdk_window_raise");
-   pragma Import (C, Ref, "gdk_drawable_ref");
+   pragma Import (C, Ref, "g_object_ref");
    pragma Import (C, Remove_Filter, "gdk_window_remove_filter");
    pragma Import (C, Reparent, "gdk_window_reparent");
    pragma Import (C, Resize, "gdk_window_resize");
@@ -707,7 +707,7 @@ private
    pragma Import (C, Set_Transient_For, "gdk_window_set_transient_for");
    pragma Import (C, Show, "gdk_window_show");
    pragma Import (C, Show_Unraised, "gdk_window_show_unraised");
-   pragma Import (C, Unref, "gdk_drawable_unref");
+   pragma Import (C, Unref, "g_object_unref");
    pragma Import (C, Withdraw, "gdk_window_withdraw");
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
