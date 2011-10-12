@@ -2595,17 +2595,6 @@ ada_widget_has_default_motion_notify (GtkWidget* widget)
   return (GTK_WIDGET_GET_CLASS (widget)->motion_notify_event) != 0;
 }
 
-/*******************************************
- ** Functions for Notebook
- *******************************************/
-
-GList*
-ada_notebook_get_children (GtkNotebook* widget)
-{
-  /** ??? Should use gtk_container_get_children instead **/
-  return widget->children;
-}
-
 /**********************************************
  ** Functions for Box
  **********************************************/

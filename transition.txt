@@ -56,6 +56,11 @@ Gtk.Layout
 
 Get_Width and Get_Height have been removed, use Get_Size instead.
 
+Gtk.Notebook
+============
+
+Get_Children has been removed: call Gtk.Container.Get_Children instead.
+
 Gtk.Object
 ==========
 

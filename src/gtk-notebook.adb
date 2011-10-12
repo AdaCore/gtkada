@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2010, AdaCore                  --
+--                 Copyright (C) 2000-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -117,24 +117,6 @@ package body Gtk.Notebook is
    begin
       return Internal (Get_Object (Notebook));
    end Get_Current_Page;
-
-   ------------------
-   -- Get_Children --
-   ------------------
-
-   function Get_Children
-     (Widget : access Gtk_Notebook_Record) return Page_List.Glist
-   is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_notebook_get_children");
-
-      use Page_List;
-      List : Page_List.Glist;
-
-   begin
-      Set_Object (List, Internal (Get_Object (Widget)));
-      return List;
-   end Get_Children;
 
    ---------------
    -- Get_Group --
