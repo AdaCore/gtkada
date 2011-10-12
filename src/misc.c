@@ -2583,24 +2583,6 @@ ada_c_gtk_text_iter_size ()
  ********************************************/
 
 gint
-ada_widget_get_state (GtkWidget *widget)
-{
-  return widget->state;
-}
-
-GdkWindow*
-ada_widget_get_window (GtkWidget* widget)
-{
-  return widget->window;
-}
-
-void
-ada_widget_set_window (GtkWidget* widget, GdkWindow *window)
-{
-  widget->window = window;
-}
-
-gint
 ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
   return (GTK_WIDGET_GET_CLASS (widget)

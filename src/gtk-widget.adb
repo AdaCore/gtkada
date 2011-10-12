@@ -861,7 +861,7 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record) return Enums.Gtk_State_Type
    is
       function Internal (Widget : System.Address) return Enums.Gtk_State_Type;
-      pragma Import (C, Internal, "ada_widget_get_state");
+      pragma Import (C, Internal, "gtk_widget_get_state");
 
    begin
       return Internal (Get_Object (Widget));
@@ -978,7 +978,7 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record) return Gdk.Window.Gdk_Window
    is
       function Internal (Widget : System.Address) return Gdk.Window.Gdk_Window;
-      pragma Import (C, Internal, "ada_widget_get_window");
+      pragma Import (C, Internal, "gtk_widget_get_window");
 
    begin
       return Internal (Get_Object (Widget));
@@ -2209,7 +2209,7 @@ package body Gtk.Widget is
    is
       procedure Internal
         (Widget : System.Address; Window : Gdk.Window.Gdk_Window);
-      pragma Import (C, Internal, "ada_widget_set_window");
+      pragma Import (C, Internal, "gtk_widget_set_window");
 
    begin
       Internal (Get_Object (Widget), Window);
