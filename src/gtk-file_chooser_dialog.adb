@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,7 +44,7 @@ package body Gtk.File_Chooser_Dialog is
    procedure Gtk_New
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action)
    is
    begin
@@ -59,7 +59,7 @@ package body Gtk.File_Chooser_Dialog is
    procedure Initialize
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action)
    is
       function Internal
@@ -68,10 +68,14 @@ package body Gtk.File_Chooser_Dialog is
          Action            : File_Chooser_Action)
          return System.Address;
       pragma Import (C, Internal, "ada_gtk_file_chooser_dialog_new");
+
+      P : System.Address := System.Null_Address;
    begin
-      Set_Object
-        (Dialog,
-         Internal (Title & ASCII.NUL, Get_Object (Parent), Action));
+      if Parent /= null then
+         P := Get_Object (Parent);
+      end if;
+
+      Set_Object (Dialog, Internal (Title & ASCII.NUL, P, Action));
    end Initialize;
 
    --------------------------
@@ -81,7 +85,7 @@ package body Gtk.File_Chooser_Dialog is
    procedure Gtk_New_With_Backend
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action;
       Backend           : String)
    is
@@ -97,7 +101,7 @@ package body Gtk.File_Chooser_Dialog is
    procedure Initialize_With_Backend
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action;
       Backend           : String)
    is
@@ -109,11 +113,15 @@ package body Gtk.File_Chooser_Dialog is
          return System.Address;
       pragma Import
         (C, Internal, "ada_gtk_file_chooser_dialog_new_with_backend");
+      P : System.Address := System.Null_Address;
    begin
+      if Parent /= null then
+         P := Get_Object (Parent);
+      end if;
+
       Set_Object
         (Dialog,
-         Internal (Title & ASCII.NUL, Get_Object (Parent), Action,
-                   Backend & ASCII.NUL));
+         Internal (Title & ASCII.NUL, P, Action, Backend & ASCII.NUL));
    end Initialize_With_Backend;
 
 end Gtk.File_Chooser_Dialog;

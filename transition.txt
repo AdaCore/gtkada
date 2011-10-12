@@ -39,6 +39,13 @@ Instead, use:
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Help_Button_Property))
 
+Gtk.File_Selection
+==================
+
+This package has been replaced by Gtk.File_Chooser.
+You may also use Gtkada.File_Selection for a simple interface to the
+Gtk.File_Chooser.
+
 Gtk.Gamma_Curve
 ===============
 

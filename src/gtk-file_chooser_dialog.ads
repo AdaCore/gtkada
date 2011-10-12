@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,30 +53,30 @@ package Gtk.File_Chooser_Dialog is
      access all Gtk_File_Chooser_Dialog_Record'Class;
 
    function Get_Type return GType;
-   --  Return the internal value associated with a Gtk_File_Chooser_Button
+   --  Return the internal value asociated with a Gtk_File_Chooser_Button
 
    procedure Gtk_New
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action);
    procedure Initialize
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action);
    --  Creates a new file chooser dialog
 
    procedure Gtk_New_With_Backend
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action;
       Backend           : String);
    procedure Initialize_With_Backend
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
-      Parent            : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent            : Gtk.Window.Gtk_Window;
       Action            : Gtk.File_Chooser.File_Chooser_Action;
       Backend           : String);
    --  Creates a new file chooser dialog
