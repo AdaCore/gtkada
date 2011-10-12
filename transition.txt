@@ -33,6 +33,11 @@ Instead, use:
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Help_Button_Property))
 
+Gtk.Gamma_Curve
+===============
+
+This widget has been removed without any replacement.
+
 Gtk.Object
 ==========
 

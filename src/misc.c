@@ -1465,7 +1465,7 @@ ada_gdk_event_create (gint type, GdkWindow* win)
   event->any.window = win;
 
   if (win != NULL)
-    gdk_window_ref (win);
+    g_object_ref (win);
 
   return event;
 }
@@ -2348,22 +2348,6 @@ ada_gvalue_set (GValue* value, void *val)
     g_value_set_pointer (value, *(gpointer*)val);
   else
     fprintf (stderr, "GtkAda: Return value type not supported\n");
-}
-
-/********************************************************
- *  Functions to get the fields of a gamma curve
- ********************************************************/
-
-GtkWidget*
-ada_gamma_curve_get_curve (GtkGammaCurve* widget)
-{
-  return widget->curve;
-}
-
-gfloat
-ada_gamma_curve_get_gamma (GtkGammaCurve* widget)
-{
-  return widget->gamma;
 }
 
 /******************************************

@@ -91,7 +91,6 @@ with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
-with Create_Gamma_Curve;
 with Create_Gc;
 with Create_Handle_Box;
 with Create_Icon_View;
@@ -291,8 +290,6 @@ package body Main_Windows is
                                          Create_Font_Selection.Help'Access),
       (NS ("frame/aspect frame"), Box,   Create_Frame.Run'Access,
                                          Create_Frame.Help'Access),
-      (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
-                                         Create_Gamma_Curve.Help'Access),
       (NS ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
                                          Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
