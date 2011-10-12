@@ -694,22 +694,6 @@ ada_gtk_default_expose_event_handler (gpointer klass) {
   return GTK_WIDGET_CLASS (klass)->expose_event;
 }
 
-/*********************************************************************
- **  Gdk.RGB functions
- *********************************************************************/
-
-guint32
-ada_rgb_cmap_get (GdkRgbCmap* cmap, gint index)
-{
-  return cmap->colors [index];
-}
-
-void
-ada_rgb_cmap_set (GdkRgbCmap* cmap, gint index, guint32 value)
-{
-  cmap->colors [index] = value;
-}
-
 /*****************************************************
  ** Gtk.Selection and Gtk.Dnd functions
  *****************************************************/
