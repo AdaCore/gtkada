@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2011, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -473,36 +473,6 @@ package body Gtk.Text_View is
    begin
       Internal (Get_Object (Text_View), The_Type, Size);
    end Set_Border_Window_Size;
-
-   ---------------------------------
-   -- Set_Disable_Scroll_On_Focus --
-   ---------------------------------
-
-   procedure Set_Disable_Scroll_On_Focus
-     (Text_View : access Gtk_Text_View_Record;
-      Set       : Boolean)
-   is
-      procedure Internal
-        (Text_View : System.Address;
-         Set       : Gboolean);
-      pragma Import (C, Internal, "ada_text_view_set_disable_scroll_on_focus");
-
-   begin
-      Internal (Get_Object (Text_View), Boolean'Pos (Set));
-   end Set_Disable_Scroll_On_Focus;
-
-   ---------------------------------
-   -- Get_Disable_Scroll_On_Focus --
-   ---------------------------------
-
-   function Get_Disable_Scroll_On_Focus
-     (Text_View : access Gtk_Text_View_Record) return Boolean
-   is
-      function Internal (Text_View : System.Address) return Gboolean;
-      pragma Import (C, Internal, "ada_text_view_get_disable_scroll_on_focus");
-   begin
-      return Internal (Get_Object (Text_View)) /= 0;
-   end Get_Disable_Scroll_On_Focus;
 
    --------------------------
    -- Forward_Display_Line --

@@ -2351,16 +2351,6 @@ ada_gvalue_set (GValue* value, void *val)
 }
 
 /******************************************
- ** Functions for Viewport
- ******************************************/
-
-GdkWindow*
-ada_gtk_viewport_get_bin_window (GtkViewport* viewport)
-{
-  return viewport->bin_window;
-}
-
-/******************************************
  ** Functions for Text_Attributes
  ******************************************/
 
@@ -2586,44 +2576,6 @@ int
 ada_c_gtk_text_iter_size ()
 {
   return sizeof (GtkTextIter);
-}
-
-/******************************************
- ** Functions for Text_View
- ******************************************/
-
-GtkAdjustment*
-ada_text_view_get_hadj (GtkTextView* widget)
-{
-  return widget->hadjustment;
-}
-
-GtkAdjustment*
-ada_text_view_get_vadj (GtkTextView* widget)
-{
-  return widget->vadjustment;
-}
-
-gboolean
-ada_text_view_get_disable_scroll_on_focus (GtkTextView* widget)
-{
-#if (GTK_CHECK_VERSION (2, 2, 2))
-  return TRUE;
-#else
-  return widget->disable_scroll_on_focus;
-#endif
-}
-
-void
-ada_text_view_set_disable_scroll_on_focus (GtkTextView* widget, gboolean flag)
-{
-#if (GTK_CHECK_VERSION (2, 2, 2))
-  /*  Nothing to do, disable scroll on focus is the default, and we can't
-   *  override this anyway
-   */
-#else
-  widget->disable_scroll_on_focus = flag;
-#endif
 }
 
 /******************************************

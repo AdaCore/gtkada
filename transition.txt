@@ -67,6 +67,11 @@ The following subprograms and declarations are now in Gtk.Widget:
 The subprogram Gtk.Object.Sink has been removed: use Glib.Object.Ref_Sink
  instead.
 
+Gtk.Text_View
+=============
+
+The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
+versions of Gtk+ and have been removed.
 
 Gtk.Tooltips
 ============
