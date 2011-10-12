@@ -44,6 +44,11 @@ Gtk.Gamma_Curve
 
 This widget has been removed without any replacement.
 
+Gtk.Layout
+==========
+
+Get_Width and Get_Height have been removed, use Get_Size instead.
+
 Gtk.Object
 ==========
 

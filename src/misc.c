@@ -2351,32 +2351,6 @@ ada_gvalue_set (GValue* value, void *val)
 }
 
 /******************************************
- ** Functions for Layout
- ******************************************/
-
-guint
-ada_gtk_layout_get_width (GtkLayout* layout)
-{
-  /** ??? Should not be needed with gtk_layout_get_size,
-      ??? but kept for compatibility with GVD **/
-  return layout->width;
-}
-
-guint
-ada_gtk_layout_get_height (GtkLayout* layout)
-{
-  /** ??? Should not be needed with gtk_layout_get_size,
-      ??? but kept for compatibility with GVD **/
-  return layout->height;
-}
-
-GdkWindow*
-ada_gtk_layout_get_bin_window (GtkLayout* layout)
-{
-  return layout->bin_window;
-}
-
-/******************************************
  ** Functions for Viewport
  ******************************************/
 
