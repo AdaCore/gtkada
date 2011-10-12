@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2011, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -85,8 +86,8 @@ package body Create_Layout is
       Jmin := Guint (Area.Y) / 10;
       Jmax := (Guint (Area.Y) + Guint (Area.Height) + 9) / 10;
 
-      Clear_Area (Get_Window (Layout), Area.X, Area.Y, Gint (Area.Width),
-                  Gint (Area.Height));
+      Clear_Area (Get_Window (Layout), Area.X, Area.Y, Area.Width,
+                  Area.Height);
 
       for I in Imin .. Imax - 1 loop
          for J in Jmin .. Jmax - 1 loop
@@ -126,7 +127,6 @@ package body Create_Layout is
 
       Set_Step_Increment (Get_Hadjustment (Layout), 10.0);
       Set_Step_Increment (Get_Vadjustment (Layout), 10.0);
-
 
       Event_Cb.Connect (Layout, "expose_event",
                         Event_Cb.To_Marshaller (Expose_Handler'Access));
