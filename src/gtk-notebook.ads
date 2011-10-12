@@ -479,11 +479,6 @@ package Gtk.Notebook is
      (System.Address, Gtk_Notebook_Page);
    package Page_List is new Glib.Glist.Generic_List (Gtk_Notebook_Page);
 
-   function Get_Children
-     (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
-   pragma Obsolescent (Get_Children);
-   --  Return the list of all pages in the notebook.
-
    procedure Set_Homogeneous_Tabs
      (Notebook    : access Gtk_Notebook_Record;
       Homogeneous : Boolean := True);
