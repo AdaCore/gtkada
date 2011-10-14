@@ -49,6 +49,12 @@ Instead, use:
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Help_Button_Property))
 
+Gtk.File_Chooser_Dialog
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
+
 Gtk.File_Selection
 ==================
 

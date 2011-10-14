@@ -3453,16 +3453,23 @@ ada_gdk_get_window_id (GdkWindow *w)
 gint
 ada_gtk_tree_view_freeze_sort (GtkTreeStore* tree)
 {
-  gint save = tree->sort_column_id;
-  tree->sort_column_id = -2;
+  gint save;
+  GtkSortType order;
+  gtk_tree_sortable_get_sort_column_id
+    (GTK_TREE_SORTABLE (tree), &save, &order);
+  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (tree), -2, order);
   return save;
 }
 
 void
 ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
 {
+  gint save;
+  GtkSortType order;
+  gtk_tree_sortable_get_sort_column_id
+    (GTK_TREE_SORTABLE (tree), &save, &order);
   gtk_tree_sortable_set_sort_column_id
-    (GTK_TREE_SORTABLE (tree), id, tree->order);
+    (GTK_TREE_SORTABLE (tree), id, order);
 }
 
 /*****************************************************
@@ -3616,17 +3623,6 @@ ada_gtk_file_chooser_dialog_new
 {
   return gtk_file_chooser_dialog_new
     (title, parent, action, NULL, (char *)NULL);
-}
-
-GtkWidget *
-ada_gtk_file_chooser_dialog_new_with_backend
-  (const gchar          *title,
-   GtkWindow            *parent,
-   GtkFileChooserAction  action,
-   const gchar          *backend)
-{
-  return gtk_file_chooser_dialog_new_with_backend
-    (title, parent, action, backend, NULL, (char *)NULL);
 }
 
 /***********************************************************

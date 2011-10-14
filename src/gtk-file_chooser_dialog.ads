@@ -67,20 +67,6 @@ package Gtk.File_Chooser_Dialog is
       Action            : Gtk.File_Chooser.File_Chooser_Action);
    --  Creates a new file chooser dialog
 
-   procedure Gtk_New_With_Backend
-     (Dialog            : out Gtk_File_Chooser_Dialog;
-      Title             : String;
-      Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.File_Chooser.File_Chooser_Action;
-      Backend           : String);
-   procedure Initialize_With_Backend
-     (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
-      Title             : String;
-      Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.File_Chooser.File_Chooser_Action;
-      Backend           : String);
-   --  Creates a new file chooser dialog
-
    ----------------
    -- Interfaces --
    ----------------
