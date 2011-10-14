@@ -64,6 +64,7 @@ package body Create_Spinners is
       Active_Label,   Transition_Label,   Inactive_Label   : Gtk_Label;
       Table1 : Gtk_Table;
       Timer  : G_Source_Id;
+      pragma Unreferenced (Timer);
 
    begin
       Set_Label (Frame, "Spinners");

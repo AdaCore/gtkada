@@ -21,6 +21,16 @@ Gtk.Aspect_Frame
 Direct accessors Get_Xalign, Get_Yalign and Get_Ratio have been removed:
 instead, use the corresponding properties.
 
+Gtk.Clist
+=========
+
+This widget has been removed: use a Gtk.Tree_View instead.
+
+Gtk.Ctree
+=========
+
+This widget has been removed: use a Gtk.Tree_View instead.
+
 Gtk.Color_Selection
 ===================
 
@@ -60,6 +70,11 @@ Gtk.Notebook
 ============
 
 Get_Children has been removed: call Gtk.Container.Get_Children instead.
+
+Gtk.List
+========
+
+This package has been removed: use a Gtk_Tree_View instead.
 
 Gtk.Object
 ==========

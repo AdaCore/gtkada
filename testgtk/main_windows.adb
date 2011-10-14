@@ -78,8 +78,6 @@ with Create_Canvas;
 with Create_Cell_View;
 with Create_Check_Buttons;
 with Create_Clipboard;
-with Create_Clist;
-with Create_Ctree;
 with Create_Color_Selection;
 with Create_Combo_Box;
 with Create_Cursors;
@@ -98,7 +96,6 @@ with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
 with Create_Link_Buttons;
-with Create_List;
 with Create_Main_Loop;
 with Create_Menu;
 with Create_MDI;
@@ -262,10 +259,6 @@ package body Main_Windows is
                                          Create_Check_Buttons.Help'Access),
       (NS ("clipboard"),        Misc,    Create_Clipboard.Run'Access,
                                          Create_Clipboard.Help'Access),
-      (NS ("clist"),            Complex, Create_Clist.Run'Access,
-                                         Create_Clist.Help'Access),
-      (NS ("ctree"),            Complex, Create_Ctree.Run'Access,
-                                         Create_Ctree.Help'Access),
       (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
                                          Create_Color_Selection.Help'Access),
       (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
@@ -304,8 +297,6 @@ package body Main_Windows is
                                          Create_Layout.Help'Access),
       (NS ("link buttons"),     Base,    Create_Link_Buttons.Run'Access,
                                          Create_Link_Buttons.Help'Access),
-      (NS ("list"),             Base,    Create_List.Run'Access,
-                                         Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
                                          Create_Menu.Help'Access),
       (NS ("mdi"),              Gtkada,  Create_MDI.Run'Access,
