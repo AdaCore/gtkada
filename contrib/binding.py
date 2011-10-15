@@ -1273,7 +1273,7 @@ if options.ada_outfile == None:
     missing_files.append("Ada output file")
 if options.c_outfile == None:
     missing_files.append("C output file")
-if missing_files != []:
+if missing_files:
     parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
 gir = GIR(options.gir_file)
