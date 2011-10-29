@@ -43,14 +43,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtktextview.h>
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkwidget.h>
-
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtktreestore.h>
-#include <gtk/gtktreesortable.h>
-#include <gtk/gtkenums.h>
 
 gint
 convert_a (gpointer a)
@@ -3738,34 +3730,6 @@ ada_gdk_get_default_modifier ()
 #else
   return GDK_CONTROL_MASK;
 #endif
-}
-
-/********************
-* Paned
-********************/
-
-gboolean
-ada_paned_get_child1_resize (GtkPaned* widget)
-{
-  return widget->child1_resize;
-}
-
-gboolean
-ada_paned_get_child2_resize (GtkPaned* widget)
-{
-  return widget->child2_resize;
-}
-
-gboolean
-ada_paned_get_child1_shrink (GtkPaned* widget)
-{
-  return widget->child1_shrink;
-}
-
-gboolean
-ada_paned_get_child2_shrink (GtkPaned* widget)
-{
-  return widget->child2_shrink;
 }
 
 /****  Below this point are calls that will produce an error with
