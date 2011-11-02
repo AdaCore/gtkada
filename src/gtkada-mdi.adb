@@ -7010,20 +7010,22 @@ package body Gtkada.MDI is
                Set_Opacity (Get_Window (MDI.Dnd_Target_Window), 0.5);
             end if;
 
-            Resize (MDI.Dnd_Target_Window,
-                    MDI.Dnd_Rectangle.Width, MDI.Dnd_Rectangle.Height);
+            if Ref_Window /= null then
+               Resize (MDI.Dnd_Target_Window,
+                       MDI.Dnd_Rectangle.Width, MDI.Dnd_Rectangle.Height);
 
-            Get_Origin (Ref_Window, Root_X, Root_Y, Success);
+               Get_Origin (Ref_Window, Root_X, Root_Y, Success);
 
-            Move (MDI.Dnd_Target_Window,
-                  Root_X + MDI.Dnd_Rectangle.X,
-                  Root_Y + MDI.Dnd_Rectangle.Y);
+               Move (MDI.Dnd_Target_Window,
+                     Root_X + MDI.Dnd_Rectangle.X,
+                     Root_Y + MDI.Dnd_Rectangle.Y);
 
-            --  Keep the text above, for readability, especially when the
-            --  dnd window is not transparent
-            Gdk_Raise (Get_Window (MDI.Dnd_Window));
+               --  Keep the text above, for readability, especially when the
+               --  dnd window is not transparent
+               Gdk_Raise (Get_Window (MDI.Dnd_Window));
 
-            Show (MDI.Dnd_Target_Window);
+               Show (MDI.Dnd_Target_Window);
+            end if;
       end case;
    end Draw_Dnd_Rectangle;
 
