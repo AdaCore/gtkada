@@ -5,11 +5,15 @@
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655392
 	Fixed on Gtk+ 3.1.
 
+        Gtk3: not needed, already there.
+
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
 	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
 	functions external, so it is possible to break on them in the
 	stripped version of the library.
+
+        Gtk3: to be ported.
 
 2011-05-17  Jerome Lambourg  <lambourg@adacore.com>
 
@@ -32,6 +36,8 @@
 	* gdk/x11/gdkdnd-x11.c (gdk_window_cache_new): Disable use of
 	XCompositeGetOverlayWindow/XCompositeReleaseOverlayWindow, apparently
 	not available on older linux distribs.
+
+        Gtk3: not needed, replaced by configuring with --disable-libxcomposite
 
 2010-03-27  Arnaud Charlet  <charlet@adacore.com>
 
