@@ -26,11 +26,6 @@ Gtk.Clist
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
-Gtk.Ctree
-=========
-
-This widget has been removed: use a Gtk.Tree_View instead.
-
 Gtk.Color_Selection
 ===================
 
@@ -49,6 +44,22 @@ Instead, use:
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
    Gtk_Button (Glib.Properties.Get_Property (Dialog, Help_Button_Property))
 
+Gtk.Combo
+=========
+
+This widget has been removed: use a Gtk.Combo_Box instead.
+
+Gtk.Ctree
+=========
+
+This widget has been removed: use a Gtk.Tree_View instead.
+
+Gtk.Curve
+=========
+
+This widget has been removed, with no direct replacement.  Use drawing
+functionality from Cairo instead.
+
 Gtk.File_Chooser_Dialog
 =======================
 
@@ -61,6 +72,11 @@ Gtk.File_Selection
 This package has been replaced by Gtk.File_Chooser.
 You may also use Gtkada.File_Selection for a simple interface to the
 Gtk.File_Chooser.
+
+Gtk.HRuler
+==========
+
+This widget has been removed without any replacement.
 
 Gtk.Gamma_Curve
 ===============
@@ -100,6 +116,16 @@ The following subprograms and declarations are now in Gtk.Widget:
 The subprogram Gtk.Object.Sink has been removed: use Glib.Object.Ref_Sink
  instead.
 
+Gtk.Progress
+============
+
+This widget has been removed without any replacement.
+
+Gtk.Ruler
+=========
+
+This widget has been removed without any replacement.
+
 Gtk.Text_View
 =============
 
@@ -114,3 +140,7 @@ The package Gtk.Tooltips has been removed, in favor of Gtk.Tooltip.
 For creating simple tooltips on all GtkAda widgets, the easiest is to use 
 Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup.
 
+Gtk.VRuler
+==========
+
+This widget has been removed without any replacement.
