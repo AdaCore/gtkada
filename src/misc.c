@@ -36,13 +36,11 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <glib/gmain.h>
 
 #include <pango/pango.h>
 
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <gtk/gtksignal.h>
 
 gint
 convert_a (gpointer a)
