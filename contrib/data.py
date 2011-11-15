@@ -9,8 +9,8 @@ interfaces = ("Activatable",
               "CellEditable",
               "CellLayout",
               #"FileChooser",
-              #"RecentChooser",
               "Orientable",
+              #"RecentChooser",
               #"TreeSortable"
              )
 
@@ -19,8 +19,8 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Bin", "Box", "Button", "ButtonBox",
            "EventBox",
            "Frame", "Range", "HBox", "HButtonBox", "HPaned", "HScale",
-           "Label", "Layout", "List",
-           "Misc", "Paned", "Pixmap", "Progress", "Scale",
+           "Label", "Layout",
+           "Misc", "Paned", "Scale",
            "VBox", "VButtonBox", "Viewport", "VPaned",
            "VScale", "VolumeButton",
            # "Entry",   # partially done only
@@ -34,7 +34,6 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
                           # Also needs support for interfaces
            "ColorSelection",
            "ColorSelectionDialog",
-           "Curve",
            "Dialog",
            "DrawingArea",
            "EntryCompletion",
@@ -45,7 +44,6 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Image",
            "RadioAction",
            "RadioButton",
-           "Ruler", "VRuler", "HRuler",
            "Separator", "VSeparator", "HSeparator",
            "SeparatorMenuItem",
            "SeparatorToolItem",
@@ -53,8 +51,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Spinner",
            "Statusbar",
            "ToggleButton",
-           "Table",
-           "Combo",  # Needs HBox, so must come after it
+           "Table"
           )
 
 
@@ -65,7 +62,9 @@ naming.cname_to_adaname = {
     "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
     "gtk_widget_add_events":        "Gtk.Widget.Add_Event",
     "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
+    "gtk_window_get_default_icon_list": "Gtk.Window.Get_Default_Icon_List",
     "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
+    "gtk_widget_set_direction":     "Gtk.Window.Set_Direction",
     "gtk_widget_set_has_window":    "Gtk.Widget.Set_Has_Window",
     "gtk_show_uri":                 "gtk_show_uri()",
     "gtk_widget_show":              "Gtk.Widget.Show",
@@ -90,6 +89,7 @@ naming.cname_to_adaname = {
     "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
     "gtk_builder_add_from_file": "Gtk.Builder.Add_From_File",
     "gtk_builder_add_from_string": "Gtk.Builder.Add_From_String",
+    "gtk_container_add": "Gtk.Container.Add"
 }
 
 naming.girname_to_ctype = {
