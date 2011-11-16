@@ -5,12 +5,22 @@
 from adaformat import *
 
 interfaces = ("Activatable",
+              #"AppChooser",
               "Buildable",
               "CellEditable",
               "CellLayout",
+              #"Editable",
               #"FileChooser",
+              #"FontChooser",
               "Orientable",
+              #"PrintOperationPreview",
               #"RecentChooser",
+              #"Scrollable",
+              #"StyleProvider",
+              #"ToolShell",
+              #"TreeDragDest",
+              #"TreeDragSource",
+              #"TreeModel",
               #"TreeSortable"
              )
 
@@ -110,7 +120,7 @@ naming.girname_to_ctype = {
     "Gdk.Bitmap":          "GdkBitmap*",
     "GObject.Object":      "GObject*",
     "GObject.Closure":     "GClosure*",
-    "Object":              "GtkObject",
+    "GObject.InitiallyUnowned": "GInitiallyUnowned"
 }
 
 naming.exceptions = {
@@ -143,11 +153,12 @@ naming.type_exceptions = {
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
 
-    "GdkEvent*":    Proxy("Gdk.Event.Gdk_Event", ""),
+    "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 
-    "GObject*":     GObject("Glib.Object.GObject"),
-    "GClosure*":    Proxy("System.Address", ""),
-    "GValue":       Proxy("Glib.Values.GValue", ""),
+    "GObject*":          GObject("Glib.Object.GObject"),
+    "GClosure*":         Proxy("System.Address", ""),
+    "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),
+    "GValue":            Proxy("Glib.Values.GValue", ""),
 
     # Specific to this binding generator (referenced from binding.xml)
     "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
@@ -186,8 +197,6 @@ naming.type_exceptions = {
     "GtkRecentChooser":
         Interface("Gtk.Recent_Chooser.Gtk_Recent_Chooser"),
     "GtkTreeSortable": Interface("Gtk.Tree_Sortable.Gtk_Tree_Sortable"),
-
-    "GtkObject": GObject("Glib.Object.GObject"),
 
     "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
     "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
