@@ -23,6 +23,17 @@ from data import interfaces, binding
 # For parsing command line options
 from optparse import OptionParser
 
+# Python interpreter version check: this script does not work with Python
+# version 2.6 or earlier!
+from sys import version_info
+version_string = '.'.join(map(str, version_info[0:3]))
+if version_info[0] < 2:
+    print('Need at least Python 2.7, got version ' + version_string)
+    quit(1)
+if version_info[0] == 2 and version_info[1] < 7:
+    print('Need at least Python 2.7, got version ' + version_string)
+    quit(1)
+
 uri = "http://www.gtk.org/introspection/core/1.0"
 glib_uri = "http://www.gtk.org/introspection/glib/1.0"
 c_uri = "http://www.gtk.org/introspection/c/1.0"
