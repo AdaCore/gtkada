@@ -1,13 +1,3 @@
-2011-11-29  Nicolas Setton  <setton@adacore.com>
-
-	* gtk/gtkwindow.c (_gtk_window_query_nonaccels): Remove the
-	Tab keys from the list of keys which should not show as
-	accelerators: in GPS for instance it makes sense to want to
-	use Tab as a key shortcut for /Edit/Format Selection.
-	* gtk/gtkaccelgroup.c (gtk_accelerator_valid): Ditto.
-
-	Gtk3: to be ported.
-
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
 	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
@@ -367,24 +357,3 @@
  gdk_x_io_error (Display *display)
  {
    /* This is basically modelled after the code in XLib. We need
---- gtk/gtkwindow.c.orig	2011-11-28 15:23:11.000000000 +0100
-+++ gtk/gtkwindow.c	2011-11-28 15:23:37.000000000 +0100
-@@ -5139,7 +5139,7 @@ _gtk_window_query_nonaccels (GtkWindow  
-     {
-       static const guint bindings[] = {
- 	GDK_space, GDK_KP_Space, GDK_Return, GDK_ISO_Enter, GDK_KP_Enter, GDK_Up, GDK_KP_Up, GDK_Down, GDK_KP_Down,
--	GDK_Left, GDK_KP_Left, GDK_Right, GDK_KP_Right, GDK_Tab, GDK_KP_Tab, GDK_ISO_Left_Tab,
-+	GDK_Left, GDK_KP_Left, GDK_Right, GDK_KP_Right,
-       };
-       guint i;
-       
---- gtk/gtkaccelgroup.c.orig	2011-11-29 17:51:52.000000000 +0100
-+++ gtk/gtkaccelgroup.c	2011-11-29 18:00:11.000000000 +0100
-@@ -956,7 +956,6 @@ gtk_accelerator_valid (guint		  keyval,
-     GDK_ISO_First_Group, GDK_ISO_Last_Group,
-     GDK_Mode_switch, GDK_Num_Lock, GDK_Multi_key,
-     GDK_Scroll_Lock, GDK_Sys_Req, 
--    GDK_Tab, GDK_ISO_Left_Tab, GDK_KP_Tab,
-     GDK_First_Virtual_Screen, GDK_Prev_Virtual_Screen,
-     GDK_Next_Virtual_Screen, GDK_Last_Virtual_Screen,
-     GDK_Terminate_Server, GDK_AudibleBell_Enable,
