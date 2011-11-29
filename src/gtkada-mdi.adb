@@ -4866,12 +4866,38 @@ package body Gtkada.MDI is
       function Create_Menu
         (MDI               : access MDI_Window_Record'Class;
          Accel_Path_Prefix : String := "<gtkada>";
-         User              : User_Data) return Gtk.Menu.Gtk_Menu
+         User              : User_Data;
+         Registration      : Menu_Registration_Procedure := null)
+         return Gtk.Menu.Gtk_Menu
       is
          Item  : Gtk_Menu_Item;
          Child : MDI_Child;
          Tmp   : Widget_List.Glist;
          Sep   : Gtk_Separator_Menu_Item;
+
+         procedure Connect_Menu
+           (Item       : Gtk_Menu_Item;
+            Callback   : Widget_Callback.Marshallers.Void_Marshaller.Handler;
+            Accel_Path : String);
+         --  Utility function, factorizes code
+
+         procedure Connect_Menu
+           (Item       : Gtk_Menu_Item;
+            Callback   : Widget_Callback.Marshallers.Void_Marshaller.Handler;
+            Accel_Path : String)
+         is
+            Full_Accel_Path : constant String :=
+              Accel_Path_Prefix & "/window/" & Accel_Path;
+         begin
+            Append (MDI.Menu, Item);
+            Widget_Callback.Object_Connect
+              (Item, Gtk.Menu_Item.Signal_Activate,
+               Widget_Callback.To_Marshaller (Callback), MDI);
+            Set_Accel_Path (Item, Full_Accel_Path, MDI.Group);
+            if Registration /= null then
+               Registration (User, Get_Label (Item), Full_Accel_Path);
+            end if;
+         end Connect_Menu;
 
       begin
          if MDI.Menu = null then
@@ -4883,20 +4909,10 @@ package body Gtkada.MDI is
             Create_Perspective_Menu (MDI, User);
 
             Gtk_New (Item, "Split Side-by-Side");
-            Append (MDI.Menu, Item);
-            Widget_Callback.Object_Connect
-              (Item, Gtk.Menu_Item.Signal_Activate,
-               Widget_Callback.To_Marshaller (Split_H_Cb'Access), MDI);
-            Set_Accel_Path (Item, Accel_Path_Prefix
-                            & "/window/split_horizontal", MDI.Group);
+            Connect_Menu (Item, Split_H_Cb'Access, "split_horizontal");
 
             Gtk_New (Item, "Split Up-Down");
-            Append (MDI.Menu, Item);
-            Widget_Callback.Object_Connect
-              (Item, Gtk.Menu_Item.Signal_Activate,
-               Widget_Callback.To_Marshaller (Split_V_Cb'Access), MDI);
-            Set_Accel_Path (Item, Accel_Path_Prefix
-                            & "/window/split_vertical", MDI.Group);
+            Connect_Menu (Item, Split_V_Cb'Access, "split_vertical");
 
             Gtk_New (Sep);
             Append (MDI.Menu, Sep);
@@ -4912,17 +4928,16 @@ package body Gtkada.MDI is
             Set_Accel_Path
               (MDI.Float_Menu_Item, Accel_Path_Prefix
                & "/window/floating", MDI.Group);
+            if Registration /= null then
+               Registration
+                 (User, "Floating", Accel_Path_Prefix & "/window/floating");
+            end if;
 
             Gtk_New (Sep);
             Append (MDI.Menu, Sep);
 
             Gtk_New (MDI.Close_Menu_Item, "Close");
-            Append (MDI.Menu, MDI.Close_Menu_Item);
-            Widget_Callback.Object_Connect
-              (MDI.Close_Menu_Item, Gtk.Menu_Item.Signal_Activate,
-               Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
-            Set_Accel_Path (Item, Accel_Path_Prefix
-                            & "/window/close", MDI.Group);
+            Connect_Menu (MDI.Close_Menu_Item, Close_Cb'Access, "close");
 
             Gtk_New (Sep);
             Append (MDI.Menu, Sep);
