@@ -4,6 +4,7 @@
 	Tab keys from the list of keys which should not show as
 	accelerators: in GPS for instance it makes sense to want to
 	use Tab as a key shortcut for /Edit/Format Selection.
+	* gtk/gtkaccelgroup.c (gtk_accelerator_valid): Ditto.
 
 	Gtk3: to be ported.
 
@@ -377,3 +378,13 @@
        };
        guint i;
        
+--- gtk/gtkaccelgroup.c.orig	2011-11-29 17:51:52.000000000 +0100
++++ gtk/gtkaccelgroup.c	2011-11-29 18:00:11.000000000 +0100
+@@ -956,7 +956,6 @@ gtk_accelerator_valid (guint		  keyval,
+     GDK_ISO_First_Group, GDK_ISO_Last_Group,
+     GDK_Mode_switch, GDK_Num_Lock, GDK_Multi_key,
+     GDK_Scroll_Lock, GDK_Sys_Req, 
+-    GDK_Tab, GDK_ISO_Left_Tab, GDK_KP_Tab,
+     GDK_First_Virtual_Screen, GDK_Prev_Virtual_Screen,
+     GDK_Next_Virtual_Screen, GDK_Last_Virtual_Screen,
+     GDK_Terminate_Server, GDK_AudibleBell_Enable,
