@@ -4881,13 +4881,17 @@ package body Gtkada.MDI is
             Accel_Path : String);
          --  Utility function, factorizes code
 
+         ------------------
+         -- Connect_Menu --
+         ------------------
+
          procedure Connect_Menu
            (Item       : Gtk_Menu_Item;
             Callback   : Widget_Callback.Marshallers.Void_Marshaller.Handler;
             Accel_Path : String)
          is
             Full_Accel_Path : constant String :=
-              Accel_Path_Prefix & "/window/" & Accel_Path;
+                                Accel_Path_Prefix & "/window/" & Accel_Path;
          begin
             Append (MDI.Menu, Item);
             Widget_Callback.Object_Connect
@@ -5042,17 +5046,17 @@ package body Gtkada.MDI is
       -------------------------
 
       procedure Parse_Notebook_Node
-        (MDI                   : access MDI_Window_Record'Class;
-         Child_Node            : Node_Ptr;
-         User                  : User_Data;
+        (MDI                         : access MDI_Window_Record'Class;
+         Child_Node                  : Node_Ptr;
+         User                        : User_Data;
          Parent_Width, Parent_Height : Gint;
          Parent_Orientation          : Gtk_Orientation;
-         Focus_Child           : in out MDI_Child;
-         Width, Height         : out Gint;
-         Notebook              : out Gtk_Notebook;
-         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
-         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
-         Empty_Notebook_Filler : in out MDI_Child)
+         Focus_Child                 : in out MDI_Child;
+         Width, Height               : out Gint;
+         Notebook                    : out Gtk_Notebook;
+         To_Raise                    : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide                     : in out Gtk.Widget.Widget_List.Glist;
+         Empty_Notebook_Filler       : in out MDI_Child)
       is
          N            : Node_Ptr := Child_Node.Child;
          State        : State_Type;
@@ -5391,17 +5395,17 @@ package body Gtkada.MDI is
       ---------------------
 
       procedure Parse_Pane_Node
-        (Paned                 : access Gtkada_Multi_Paned_Record'Class;
-         MDI                   : access MDI_Window_Record'Class;
-         Node                  : Node_Ptr;
-         Focus_Child           : in out MDI_Child;
+        (Paned                       : access Gtkada_Multi_Paned_Record'Class;
+         MDI                         : access MDI_Window_Record'Class;
+         Node                        : Node_Ptr;
+         Focus_Child                 : in out MDI_Child;
          Parent_Width, Parent_Height : Gint;
          Parent_Orientation          : Gtk_Orientation;
-         User                  : User_Data;
-         Initial_Ref_Child     : Gtk_Notebook := null;
-         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
-         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
-         Empty_Notebook_Filler : in out MDI_Child)
+         User                        : User_Data;
+         Initial_Ref_Child           : Gtk_Notebook := null;
+         To_Raise                    : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide                     : in out Gtk.Widget.Widget_List.Glist;
+         Empty_Notebook_Filler       : in out MDI_Child)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
@@ -5838,10 +5842,10 @@ package body Gtkada.MDI is
          --  preserve them, but they do not apply to the current desktop)
 
          declare
-            Tmp         : Widget_List.Glist := MDI.Items;
-            Tmp2        : Widget_List.Glist;
-            C           : MDI_Child;
-            Widget_Node : Node_Ptr;
+            Tmp              : Widget_List.Glist := MDI.Items;
+            Tmp2             : Widget_List.Glist;
+            C                : MDI_Child;
+            Widget_Node      : Node_Ptr;
             Widget_Is_Unique : Boolean;
          begin
             while Tmp /= Null_List loop
@@ -5894,15 +5898,15 @@ package body Gtkada.MDI is
 
          if not MDI.Independent_Perspectives and then From_Tree /= null then
             Restore_Multi_Pane
-              (Pane                  => MDI.Central,
-               MDI                   => MDI,
-               Focus_Child           => Focus_Child,
-               To_Raise              => To_Raise,
-               To_Hide               => To_Hide,
-               User                  => User,
-               Node                  => From_Tree,
-               Full_Width            => MDI_Width,
-               Full_Height           => MDI_Height);
+              (Pane        => MDI.Central,
+               MDI         => MDI,
+               Focus_Child => Focus_Child,
+               To_Raise    => To_Raise,
+               To_Hide     => To_Hide,
+               User        => User,
+               Node        => From_Tree,
+               Full_Width  => MDI_Width,
+               Full_Height => MDI_Height);
          end if;
 
          Set_Child_Visible (MDI.Central, True);
@@ -5981,9 +5985,9 @@ package body Gtkada.MDI is
          Central      : out Glib.Xml_Int.Node_Ptr)
       is
          MDI_Width  : constant Gint :=
-           Gint (Get_Allocation_Width (Get_Toplevel (MDI)));
+                        Gint (Get_Allocation_Width (Get_Toplevel (MDI)));
          MDI_Height : constant Gint :=
-           Gint (Get_Allocation_Height (Get_Toplevel (MDI)));
+                        Gint (Get_Allocation_Height (Get_Toplevel (MDI)));
 
          Item             : Widget_List.Glist;
          Child_Node       : Node_Ptr;
@@ -6046,8 +6050,8 @@ package body Gtkada.MDI is
             Raised     : Boolean;
             In_Central : Boolean)
          is
-            Widget_Node : Node_Ptr;
-            Tmp_Node    : Node_Ptr;
+            Widget_Node      : Node_Ptr;
+            Tmp_Node         : Node_Ptr;
             Widget_Is_Unique : Boolean;
          begin
             if Child.State = Invisible then
