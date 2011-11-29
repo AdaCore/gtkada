@@ -639,10 +639,19 @@ package Gtkada.MDI is
 
    package Desktop is
 
+      type Menu_Registration_Procedure is access procedure
+        (User       : User_Data;
+         Item_Name  : String;
+         Accel_Path : String);
+      --  Function used to register in the application a static menu
+      --  created by the MDI.
+
       function Create_Menu
         (MDI               : access MDI_Window_Record'Class;
          Accel_Path_Prefix : String := "<gtkada>";
-         User              : User_Data) return Gtk.Menu.Gtk_Menu;
+         User              : User_Data;
+         Registration      : Menu_Registration_Procedure := null)
+         return Gtk.Menu.Gtk_Menu;
       --  Create a dynamic menu that can then be inserted into a menu bar. This
       --  menu is dynamic, ie its content will changed based on the focus
       --  child.
@@ -653,6 +662,7 @@ package Gtkada.MDI is
       --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
       --  User is used for the callbacks on perspective changes, and passed to
       --  Load_Perspective
+      --  If Registration is specified, call it for
 
       type Save_Desktop_Function is access function
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
