@@ -1,3 +1,8 @@
+2011-11-30	Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/win32/gdkpixmap-win32.c (_gdk_pixmap_new): Add fallback code
+	for 16bits depth display.
+
 2011-07-26	Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtkimcontextsimple.c (check_win32_special_cases): Fix handling
@@ -140,3 +145,16 @@
  	}
        if (value > 0)
  	{
+--- gdk/win32/gdkpixmap-win32.c.old	2011-11-10 18:38:03.000000000 +0100
++++ gdk/win32/gdkpixmap-win32.c	2011-11-30 16:15:45.976000000 +0100
+@@ -175,6 +175,10 @@ _gdk_pixmap_new (GdkDrawable *drawable,
+       format = CAIRO_FORMAT_A8;
+       break;
+ 
++    case 16:
++      g_warning ("_gdk_pixmap_new: depth = %d, falling back to 24", depth);
++      /* fallthrough */
++
+     case 24:
+     case 32:
+       format = CAIRO_FORMAT_RGB24;
