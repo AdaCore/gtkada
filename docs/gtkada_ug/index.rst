@@ -14,7 +14,7 @@ GtkAda User's Guide
    memory
    tasking
    external_events
-   Object-oriented_features
+   object_oriented
    glade
    new_widgets
    debugging
