@@ -5,7 +5,9 @@
 *.pyc
 /Makefile
 docs/gtkada_rm/Makefile
-docs/gtkada_ug/Makefile
+docs/gtkada_rm/doc_obj/
+docs/gtkada_ug/_build
+docs/Makefile
 src/Makefile
 src/gnome/Makefile
 src/gtkextra/Makefile
