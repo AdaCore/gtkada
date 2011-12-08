@@ -10,7 +10,7 @@ all::
 install::
 	${MAKE} -C gtkada_rm install
 	$(MKDIR) $(docdir)/gtkada_ug/
-	$(CP) -r gtkada_ug/_build/html/* $(docdir)/gtkada_ug/
+	-$(CP) -r gtkada_ug/_build/html/* $(docdir)/gtkada_ug/
 
 clean::
 	${MAKE} -C gtkada_rm clean
