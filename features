@@ -9,6 +9,14 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 2.24.1
+-----------------------------
+
+KC08-027 Documentation converted to Sphinx (2011-12-08)
+
+  The new format provides nicer output, as well as an integrated search
+  facility for the HTML version
+
 New features in GtkAda 2.22.0
 -----------------------------
 
