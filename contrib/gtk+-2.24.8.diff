@@ -365,8 +365,8 @@
  gdk_x_io_error (Display *display)
  {
    /* This is basically modelled after the code in XLib. We need
---- gtk/gtkbutton.c.old	2011-12-09 10:40:29.263671900 +0100
-+++ gtk/gtkbutton.c	2011-12-09 10:40:55.625976600 +0100
+--- gtk/gtkbutton.c.old	2011-12-12 18:09:53.000000000 +0100
++++ gtk/gtkbutton.c	2011-12-12 18:10:38.000000000 +0100
 @@ -2128,9 +2128,15 @@
    list = gtk_window_list_toplevels ();
  
@@ -374,7 +374,7 @@
 +    g_object_ref (G_OBJECT (l->data));
 +
 +  for (l = list; l; l = l->next)
-     gtk_container_forall (GTK_CONTAINER (l->data),
+     gtk_container_forall (GTK_CONTAINER (l->data), 
  			  traverse_container, NULL);
  
 +  for (l = list; l; l = l->next)
