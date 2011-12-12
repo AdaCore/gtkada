@@ -1,3 +1,11 @@
+2011-12-12  Jerome Lambourg <lambourg@adacore.com>
+
+        * gtk/gtkbutton.c (gtk_button_setting_changed): Make sure that
+        no top-level window is being deallocated while iterating through
+        them during a theme change (KC01-003).
+
+        See https://bugzilla.gnome.org/show_bug.cgi?id=665852
+
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
 	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
@@ -357,3 +365,21 @@
  gdk_x_io_error (Display *display)
  {
    /* This is basically modelled after the code in XLib. We need
+--- gtk/gtkbutton.c.old	2011-12-09 10:40:29.263671900 +0100
++++ gtk/gtkbutton.c	2011-12-09 10:40:55.625976600 +0100
+@@ -2128,9 +2128,15 @@
+   list = gtk_window_list_toplevels ();
+ 
+   for (l = list; l; l = l->next)
++    g_object_ref (G_OBJECT (l->data));
++
++  for (l = list; l; l = l->next)
+     gtk_container_forall (GTK_CONTAINER (l->data),
+ 			  traverse_container, NULL);
+ 
++  for (l = list; l; l = l->next)
++    g_object_unref (G_OBJECT (l->data));
++
+   g_list_free (list);
+ }
+ 
