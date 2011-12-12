@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, time
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -39,9 +39,12 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+def get_copyright():
+    return u'2000-%s, AdaCore' % time.strftime("%Y")
+
 # General information about the project.
 project = u'GtkAda'
-copyright = u'2000-2011, AdaCore'
+copyright = get_copyright()
 
 def get_version():
     major = minor = micro = ""
@@ -233,7 +236,7 @@ man_pages = [
 epub_title = u'GtkAda'
 epub_author = u'AdaCore'
 epub_publisher = u'AdaCore'
-epub_copyright = u'2000-2011, AdaCore'
+epub_copyright = copyright
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
