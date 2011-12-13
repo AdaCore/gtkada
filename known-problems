@@ -1,5 +1,12 @@
 Known problems fixed in GtkAda 2.24.2
 
+- KC06-031 Glade-3 crash with combo box
+  Problem:    When using Glade-3 to create a combo box, if the combo box
+              has the property "Has Entry" enabled, glade-3 will crash
+              when editing columns of the combo model.
+  Workaround: Disable "Has Entry" in the combo box, or set the model
+              in the application code. 
+
 - KA07-026 Text alignment in Gtk_Plot_Canvas
   Problem:    Under Windows, when displaying text in a Gtk_Plot_Canvas,
               the base line for digits is not aligned with the base line for
