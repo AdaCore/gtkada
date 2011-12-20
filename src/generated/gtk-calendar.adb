@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -125,33 +119,6 @@ package body Gtk.Calendar is
       Internal (Get_Object (Calendar));
    end Clear_Marks;
 
-   ---------------------
-   -- Display_Options --
-   ---------------------
-
-   procedure Display_Options
-      (Calendar : access Gtk_Calendar_Record;
-       Flags    : Gtk_Calendar_Display_Options)
-   is
-      procedure Internal
-         (Calendar : System.Address;
-          Flags    : Gtk_Calendar_Display_Options);
-      pragma Import (C, Internal, "gtk_calendar_display_options");
-   begin
-      Internal (Get_Object (Calendar), Flags);
-   end Display_Options;
-
-   ------------
-   -- Freeze --
-   ------------
-
-   procedure Freeze (Calendar : access Gtk_Calendar_Record) is
-      procedure Internal (Calendar : System.Address);
-      pragma Import (C, Internal, "gtk_calendar_freeze");
-   begin
-      Internal (Get_Object (Calendar));
-   end Freeze;
-
    --------------
    -- Get_Date --
    --------------
@@ -171,6 +138,22 @@ package body Gtk.Calendar is
    begin
       Internal (Get_Object (Calendar), Year, Month, Day);
    end Get_Date;
+
+   -----------------------
+   -- Get_Day_Is_Marked --
+   -----------------------
+
+   function Get_Day_Is_Marked
+      (Calendar : access Gtk_Calendar_Record;
+       Day      : Guint) return Boolean
+   is
+      function Internal
+         (Calendar : System.Address;
+          Day      : Guint) return Integer;
+      pragma Import (C, Internal, "gtk_calendar_get_day_is_marked");
+   begin
+      return Boolean'Val (Internal (Get_Object (Calendar), Day));
+   end Get_Day_Is_Marked;
 
    ----------------------------
    -- Get_Detail_Height_Rows --
@@ -217,16 +200,11 @@ package body Gtk.Calendar is
    -- Mark_Day --
    --------------
 
-   function Mark_Day
-      (Calendar : access Gtk_Calendar_Record;
-       Day      : Guint) return Boolean
-   is
-      function Internal
-         (Calendar : System.Address;
-          Day      : Guint) return Integer;
+   procedure Mark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint) is
+      procedure Internal (Calendar : System.Address; Day : Guint);
       pragma Import (C, Internal, "gtk_calendar_mark_day");
    begin
-      return Boolean'Val (Internal (Get_Object (Calendar), Day));
+      Internal (Get_Object (Calendar), Day);
    end Mark_Day;
 
    ----------------
@@ -244,18 +222,18 @@ package body Gtk.Calendar is
    -- Select_Month --
    ------------------
 
-   function Select_Month
+   procedure Select_Month
       (Calendar : access Gtk_Calendar_Record;
        Month    : Guint;
-       Year     : Guint) return Boolean
+       Year     : Guint)
    is
-      function Internal
+      procedure Internal
          (Calendar : System.Address;
           Month    : Guint;
-          Year     : Guint) return Integer;
+          Year     : Guint);
       pragma Import (C, Internal, "gtk_calendar_select_month");
    begin
-      return Boolean'Val (Internal (Get_Object (Calendar), Month, Year));
+      Internal (Get_Object (Calendar), Month, Year);
    end Select_Month;
 
    ---------------------
@@ -369,31 +347,15 @@ package body Gtk.Calendar is
       Internal (Get_Object (Calendar), Flags);
    end Set_Display_Options;
 
-   ----------
-   -- Thaw --
-   ----------
-
-   procedure Thaw (Calendar : access Gtk_Calendar_Record) is
-      procedure Internal (Calendar : System.Address);
-      pragma Import (C, Internal, "gtk_calendar_thaw");
-   begin
-      Internal (Get_Object (Calendar));
-   end Thaw;
-
    ----------------
    -- Unmark_Day --
    ----------------
 
-   function Unmark_Day
-      (Calendar : access Gtk_Calendar_Record;
-       Day      : Guint) return Boolean
-   is
-      function Internal
-         (Calendar : System.Address;
-          Day      : Guint) return Integer;
+   procedure Unmark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint) is
+      procedure Internal (Calendar : System.Address; Day : Guint);
       pragma Import (C, Internal, "gtk_calendar_unmark_day");
    begin
-      return Boolean'Val (Internal (Get_Object (Calendar), Day));
+      Internal (Get_Object (Calendar), Day);
    end Unmark_Day;
 
 end Gtk.Calendar;

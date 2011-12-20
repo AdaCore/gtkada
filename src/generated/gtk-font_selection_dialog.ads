@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This widget provides a dialog for selecting a font. See also
@@ -37,7 +31,6 @@
 --  <testgtk>create_font_selection.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Font;      use Gdk.Font;
 with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;
 with Gtk.Buildable; use Gtk.Buildable;
@@ -69,56 +62,51 @@ package Gtk.Font_Selection_Dialog is
    -- Methods --
    -------------
 
-   function Get_Apply_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
-       return Gtk.Widget.Gtk_Widget;
-   pragma Obsolescent (Get_Apply_Button);
-   --  Obtains a button. The button doesn't have any function.
-   --  Since: gtk+ 2.14
-   --  Deprecated since 2.16, Don't use this function.
-
    function Get_Cancel_Button
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Cancel_Button);
    --  Gets the 'Cancel' button. for the 'Cancel' button.
    --  Since: gtk+ 2.14
-
-   function Get_Font
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
-       return Gdk.Font.Gdk_Font;
-   pragma Obsolescent (Get_Font);
-   --  Gets the currently-selected font. currently selected font in the
-   --  dialog, or null if no font is selected
-   --  Deprecated since 2.0, Use Gtk.Font_Selection_Dialog.Get_Font_Name
-   --  instead.
+   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
 
    function Get_Font_Name
       (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
+   pragma Obsolescent (Get_Font_Name);
    function Set_Font_Name
       (Dialog   : access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean;
+   pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
+   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Font_Selection
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Font_Selection);
    --  Retrieves the Gtk.Font_Selection.Gtk_Font_Selection widget embedded in
    --  the dialog.
    --  Since: gtk+ 2.22
+   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
 
    function Get_Ok_Button
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Ok_Button);
    --  Gets the 'OK' button. for the 'OK' button.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
 
    function Get_Preview_Text
       (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
+   pragma Obsolescent (Get_Preview_Text);
    procedure Set_Preview_Text
       (Dialog : access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String);
+   pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area.
+   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
    --  "text": the text to display in the preview area
 
    ----------------

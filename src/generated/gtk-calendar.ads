@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Ada_05;
 --  <description>
@@ -111,27 +105,6 @@ package Gtk.Calendar is
    procedure Clear_Marks (Calendar : access Gtk_Calendar_Record);
    --  Remove all visual markers.
 
-   procedure Display_Options
-      (Calendar : access Gtk_Calendar_Record;
-       Flags    : Gtk_Calendar_Display_Options);
-   pragma Obsolescent (Display_Options);
-   function Get_Display_Options
-      (Calendar : access Gtk_Calendar_Record)
-       return Gtk_Calendar_Display_Options;
-   procedure Set_Display_Options
-      (Calendar : access Gtk_Calendar_Record;
-       Flags    : Gtk_Calendar_Display_Options);
-   --  Sets display options (whether to display the heading and the month
-   --  headings).
-   --  Since: gtk+ 2.4
-   --  "flags": the display options to set
-
-   procedure Freeze (Calendar : access Gtk_Calendar_Record);
-   pragma Obsolescent (Freeze);
-   --  Does nothing. Previously locked the display of the calendar until it
-   --  was thawed with Gtk.Calendar.Thaw.
-   --  Deprecated
-
    procedure Get_Date
       (Calendar : access Gtk_Calendar_Record;
        Year     : out Guint;
@@ -142,6 +115,13 @@ package Gtk.Calendar is
    --  null
    --  "month": location to store the month number (between 0 and 11), or null
    --  "day": location to store the day number (between 1 and 31), or null
+
+   function Get_Day_Is_Marked
+      (Calendar : access Gtk_Calendar_Record;
+       Day      : Guint) return Boolean;
+   --  Returns if the Day of the Calendar is already marked.
+   --  Since: gtk+ 3.0
+   --  "day": the day number between 1 and 31.
 
    function Get_Detail_Height_Rows
       (Calendar : access Gtk_Calendar_Record) return Gint;
@@ -163,12 +143,19 @@ package Gtk.Calendar is
    --  Since: gtk+ 2.14
    --  "chars": detail width in characters.
 
-   function Mark_Day
+   function Get_Display_Options
+      (Calendar : access Gtk_Calendar_Record)
+       return Gtk_Calendar_Display_Options;
+   procedure Set_Display_Options
       (Calendar : access Gtk_Calendar_Record;
-       Day      : Guint) return Boolean;
-   --  Places a visual marker on a particular day. Note that this function
-   --  always returns True, and you should ignore the return value. In GTK+ 3,
-   --  this function will not return a value.
+       Flags    : Gtk_Calendar_Display_Options);
+   --  Sets display options (whether to display the heading and the month
+   --  headings).
+   --  Since: gtk+ 2.4
+   --  "flags": the display options to set
+
+   procedure Mark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
+   --  Places a visual marker on a particular day.
    --  "day": the day number to mark between 1 and 31.
 
    procedure Select_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
@@ -176,13 +163,11 @@ package Gtk.Calendar is
    --  "day": the day number between 1 and 31, or 0 to unselect the currently
    --  selected day.
 
-   function Select_Month
+   procedure Select_Month
       (Calendar : access Gtk_Calendar_Record;
        Month    : Guint;
-       Year     : Guint) return Boolean;
-   --  Shifts the calendar to a different month. Note that this function
-   --  always returns True, and you should ignore the return value. In GTK+ 3,
-   --  this function will not return a value.
+       Year     : Guint);
+   --  Shifts the calendar to a different month.
    --  "month": a month number between 0 and 11.
    --  "year": the year the month is in.
 
@@ -243,18 +228,8 @@ package Gtk.Calendar is
 
    end Set_Detail_Func_User_Data;
 
-   procedure Thaw (Calendar : access Gtk_Calendar_Record);
-   pragma Obsolescent (Thaw);
-   --  Does nothing. Previously defrosted a calendar; all the changes made
-   --  since the last Gtk.Calendar.Freeze were displayed.
-   --  Deprecated
-
-   function Unmark_Day
-      (Calendar : access Gtk_Calendar_Record;
-       Day      : Guint) return Boolean;
-   --  Removes the visual marker from a particular day. Note that this
-   --  function always returns True, and you should ignore the return value. In
-   --  GTK+ 3, this function will not return a value.
+   procedure Unmark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
+   --  Removes the visual marker from a particular day.
    --  "day": the day number to unmark between 1 and 31.
 
    ----------------
@@ -357,9 +332,11 @@ package Gtk.Calendar is
    --
    --  "day-selected"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when the user selects a day.
    --
    --  "day-selected-double-click"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when the user double-clicks a day.
    --
    --  "month-changed"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
@@ -368,15 +345,19 @@ package Gtk.Calendar is
    --
    --  "next-month"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when the user switched to the next month.
    --
    --  "next-year"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when user switched to the next year.
    --
    --  "prev-month"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when the user switched to the previous month.
    --
    --  "prev-year"
    --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+   --  Emitted when user switched to the previous year.
 
    Signal_Day_Selected : constant Glib.Signal_Name := "day-selected";
    Signal_Day_Selected_Double_Click : constant Glib.Signal_Name := "day-selected-double-click";

@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  An accel group represents a group of keyboard accelerators, generally
@@ -106,11 +100,10 @@ package Gtk.Accel_Group is
        Acceleratable : access Glib.Object.GObject_Record'Class;
        Accel_Key     : Guint;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
-   --  Finds the first accelerator in Accel_Group that matches Accel_Key and
-   --  Accel_Mods, and activates it.
+   --  Finds the first accelerator in Accel_Group that matches this keypress
    --  "accel_quark": the quark for the accelerator name
    --  "acceleratable": the GObject, usually a Gtk.Window.Gtk_Window, on which
-   --  to activate the accelerator.
+   --  to activate the accelerator
    --  "accel_key": accelerator keyval from a key event
    --  "accel_mods": keyboard state mask from a key event
 
@@ -122,11 +115,11 @@ package Gtk.Accel_Group is
        Closure     : C_Gtk_Accel_Group_Activate);
    --  Installs an accelerator in this group. When Accel_Group is being
    --  activated in response to a call to
-   --  Gtk.Accel_Group.Accel_Groups_Activate, Closure will be invoked if the
-   --  Accel_Key and Accel_Mods from Gtk.Accel_Group.Accel_Groups_Activate
-   --  match those of this connection. The signature used for the Closure is
-   --  that of GtkAccelGroupActivate. Note that, due to implementation details,
-   --  a single closure can only be connected to one accelerator group.
+   --  Gtk.Accel_Group.Accel_Groups_Activate,
+   --  Gtk.Accel_Group.Accel_Groups_Activate match those of this connection.
+   --  The signature used for the Closure is that of GtkAccelGroupActivate.
+   --  Note that, due to implementation details, a single closure can only be
+   --  connected to one accelerator group.
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
    --  "accel_flags": a flag mask to configure this accelerator
@@ -140,11 +133,12 @@ package Gtk.Accel_Group is
    --  look up the appropriate key and modifiers (see Gtk.Accel_Map.Add_Entry).
    --  When Accel_Group is being activated in response to a call to
    --  Gtk.Accel_Group.Accel_Groups_Activate, Closure will be invoked if the
-   --  Accel_Key and for the path. The signature used for the Closure is that
-   --  of GtkAccelGroupActivate. Note that Accel_Path string will be stored in
-   --  a GQuark. Therefore, if you pass a static string, you can save some
-   --  memory by interning it first with g_intern_static_string.
-   --  "accel_path": path used for determining key and modifiers.
+   --  Accel_Key and Accel_Mods from Gtk.Accel_Group.Accel_Groups_Activate
+   --  match the key and modifiers for the path. The signature used for the
+   --  Closure is that of GtkAccelGroupActivate. Note that Accel_Path string
+   --  will be stored in a GQuark. Therefore, if you pass a static string, you
+   --  can save some memory by interning it first with g_intern_static_string.
+   --  "accel_path": path used for determining key and modifiers
    --  "closure": closure to be executed upon accelerator activation
 
    function Disconnect
@@ -160,7 +154,7 @@ package Gtk.Accel_Group is
        Accel_Key   : Guint;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
-   --  Gtk.Accel_Group.Connect.
+   --  Gtk.Accel_Group.Connect. removed, False otherwise
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
 
@@ -201,7 +195,7 @@ package Gtk.Accel_Group is
    function From_Accel_Closure
       (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
-   --  connected; see Gtk.Accel_Group.Connect.
+   --  connected; see Gtk.Accel_Group.Connect. is connected, or null
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
@@ -210,25 +204,26 @@ package Gtk.Accel_Group is
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in any Gtk.Accel_Group.Gtk_Accel_Group
    --  attached to Object that matches Accel_Key and Accel_Mods, and activates
-   --  that accelerator.
+   --  that accelerator. this keypress
    --  "object": the GObject, usually a Gtk.Window.Gtk_Window, on which to
-   --  activate the accelerator.
+   --  activate the accelerator
    --  "accel_key": accelerator keyval from a key event
    --  "accel_mods": keyboard state mask from a key event
 
    function From_Object
       (Object : access Glib.Object.GObject_Record'Class)
        return Glib.Object.Object_List.GSList;
-   --  Gets a list of all accel groups which are attached to Object.
+   --  Gets a list of all accel groups which are attached to Object. all accel
+   --  groups which are attached to Object
    --  "object": a GObject, usually a Gtk.Window.Gtk_Window
 
    function Accelerator_Valid
       (Keyval    : Gdk.Types.Gdk_Key_Type;
        Modifiers : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Determines whether a given keyval and modifier mask constitute a valid
-   --  keyboard accelerator. For example, the GDK_a keyval plus
+   --  keyboard accelerator. For example, the GDK_KEY_a keyval plus
    --  GDK_CONTROL_MASK is valid - this is a "Ctrl+a" accelerator. But, you
-   --  can't, for instance, use the GDK_Control_L keyval as an accelerator.
+   --  can't, for instance, use the GDK_KEY_Control_L keyval as an accelerator.
    --  "keyval": a GDK keyval
    --  "modifiers": modifier mask
 
@@ -246,17 +241,17 @@ package Gtk.Accel_Group is
    --  parse fails, Accelerator_Key and Accelerator_Mods will be set to 0
    --  (zero).
    --  "accelerator": string representing an accelerator
-   --  "accelerator_key": return location for accelerator keyval
-   --  "accelerator_mods": return location for accelerator modifier mask
+   --  "accelerator_key": return location for accelerator keyval, or null
+   --  "accelerator_mods": return location for accelerator modifier mask, null
 
    function Accelerator_Name
       (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
        Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return UTF8_String;
    --  Converts an accelerator keyval and modifier mask into a string
    --  parseable by Gtk.Accel_Group.Accelerator_Parse. For example, if you pass
-   --  in GDK_q and GDK_CONTROL_MASK, this function returns "&lt;Control&gt;q".
-   --  If you need to display accelerators in the user interface, see
-   --  Gtk.Accel_Group.Accelerator_Get_Label.
+   --  in GDK_KEY_q and GDK_CONTROL_MASK, this function returns
+   --  "&lt;Control&gt;q". If you need to display accelerators in the user
+   --  interface, see Gtk.Accel_Group.Accelerator_Get_Label.
    --  "accelerator_key": accelerator keyval
    --  "accelerator_mods": accelerator modifier mask
 

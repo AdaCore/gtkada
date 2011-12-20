@@ -1,104 +1,34 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Unchecked_Conversion;
-with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.About_Dialog is
-
-   function To_Activate_Link_Func is new Ada.Unchecked_Conversion
-     (System.Address, Activate_Link_Func);
-
-   procedure C_Gtk_About_Dialog_Set_Email_Hook
-      (Func    : System.Address;
-       Data    : System.Address;
-       Destroy : System.Address);
-   pragma Import (C, C_Gtk_About_Dialog_Set_Email_Hook, "gtk_about_dialog_set_email_hook");
-   pragma Obsolescent (C_Gtk_About_Dialog_Set_Email_Hook);
-   --  Installs a global function to be called whenever the user activates an
-   --  email link in an about dialog. Since 2.18 there exists a default
-   --  function which uses gtk_show_uri(). To deactivate it, you can pass null
-   --  for Func.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the
-   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-   --  "func": a function to call when an email link is activated.
-   --  "data": data to pass to Func
-   --  "destroy": Glib.G_Destroy_Notify_Address for Data
-
-   procedure C_Gtk_About_Dialog_Set_Url_Hook
-      (Func    : System.Address;
-       Data    : System.Address;
-       Destroy : System.Address);
-   pragma Import (C, C_Gtk_About_Dialog_Set_Url_Hook, "gtk_about_dialog_set_url_hook");
-   pragma Obsolescent (C_Gtk_About_Dialog_Set_Url_Hook);
-   --  Installs a global function to be called whenever the user activates a
-   --  URL link in an about dialog. Since 2.18 there exists a default function
-   --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the
-   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-   --  "func": a function to call when a URL link is activated.
-   --  "data": data to pass to Func
-   --  "destroy": Glib.G_Destroy_Notify_Address for Data
-
-   procedure Internal_Activate_Link_Func
-      (About : System.Address;
-       Link  : Interfaces.C.Strings.chars_ptr;
-       Data  : System.Address);
-   pragma Convention (C, Internal_Activate_Link_Func);
-   --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-   --  activated
-   --  "link_": the URL or email address to which the activated link points
-   --  "data": user data that was passed when the function was registered with
-   --  Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
-
-   ---------------------------------
-   -- Internal_Activate_Link_Func --
-   ---------------------------------
-
-   procedure Internal_Activate_Link_Func
-      (About : System.Address;
-       Link  : Interfaces.C.Strings.chars_ptr;
-       Data  : System.Address)
-   is
-      Func                  : constant Activate_Link_Func := To_Activate_Link_Func (Data);
-      Stub_Gtk_About_Dialog : Gtk_About_Dialog_Record;
-   begin
-      Func (Gtk.About_Dialog.Gtk_About_Dialog (Get_User_Data (About, Stub_Gtk_About_Dialog)), Interfaces.C.Strings.Value (Link));
-   end Internal_Activate_Link_Func;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_About_Dialog_Record);
@@ -212,6 +142,19 @@ package body Gtk.About_Dialog is
       return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_License;
 
+   ----------------------
+   -- Get_License_Type --
+   ----------------------
+
+   function Get_License_Type
+      (About : access Gtk_About_Dialog_Record) return GtkLicense
+   is
+      function Internal (About : System.Address) return GtkLicense;
+      pragma Import (C, Internal, "gtk_about_dialog_get_license_type");
+   begin
+      return Internal (Get_Object (About));
+   end Get_License_Type;
+
    --------------
    -- Get_Logo --
    --------------
@@ -239,20 +182,6 @@ package body Gtk.About_Dialog is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
    end Get_Logo_Icon_Name;
-
-   --------------
-   -- Get_Name --
-   --------------
-
-   function Get_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
-   is
-      function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gtk_about_dialog_get_name");
-   begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
-   end Get_Name;
 
    ----------------------
    -- Get_Program_Name --
@@ -427,62 +356,6 @@ package body Gtk.About_Dialog is
       GtkAda.Types.Free (Tmp_Documenters);
    end Set_Documenters;
 
-   --------------------
-   -- Set_Email_Hook --
-   --------------------
-
-   procedure Set_Email_Hook (Func : Activate_Link_Func) is
-   begin
-      C_Gtk_About_Dialog_Set_Email_Hook (Internal_Activate_Link_Func'Address, Func'Address, System.Null_Address);
-   end Set_Email_Hook;
-
-   package body Set_Email_Hook_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Activate_Link_Func is new Ada.Unchecked_Conversion
-        (System.Address, Activate_Link_Func);
-
-      procedure Internal_Cb
-         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-          Link  : UTF8_String;
-          Data  : System.Address);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered
-      --  with Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      procedure Internal_Cb
-         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-          Link  : UTF8_String;
-          Data  : System.Address)
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
-      begin
-         To_Activate_Link_Func (D.Func) (About, Link, D.Data.all);
-      end Internal_Cb;
-
-      --------------------
-      -- Set_Email_Hook --
-      --------------------
-
-      procedure Set_Email_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type)
-      is
-      begin
-         C_Gtk_About_Dialog_Set_Email_Hook (Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
-      end Set_Email_Hook;
-
-   end Set_Email_Hook_User_Data;
-
    -----------------
    -- Set_License --
    -----------------
@@ -500,6 +373,20 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Tmp_License);
       Free (Tmp_License);
    end Set_License;
+
+   ----------------------
+   -- Set_License_Type --
+   ----------------------
+
+   procedure Set_License_Type
+      (About        : access Gtk_About_Dialog_Record;
+       License_Type : GtkLicense)
+   is
+      procedure Internal (About : System.Address; License_Type : GtkLicense);
+      pragma Import (C, Internal, "gtk_about_dialog_set_license_type");
+   begin
+      Internal (Get_Object (About), License_Type);
+   end Set_License_Type;
 
    --------------
    -- Set_Logo --
@@ -532,24 +419,6 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Logo_Icon_Name;
-
-   --------------
-   -- Set_Name --
-   --------------
-
-   procedure Set_Name
-      (About : access Gtk_About_Dialog_Record;
-       Name  : UTF8_String)
-   is
-      procedure Internal
-         (About : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, Internal, "gtk_about_dialog_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
-   begin
-      Internal (Get_Object (About), Tmp_Name);
-      Free (Tmp_Name);
-   end Set_Name;
 
    ----------------------
    -- Set_Program_Name --
@@ -586,62 +455,6 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Tmp_Translator_Credits);
       Free (Tmp_Translator_Credits);
    end Set_Translator_Credits;
-
-   ------------------
-   -- Set_Url_Hook --
-   ------------------
-
-   procedure Set_Url_Hook (Func : Activate_Link_Func) is
-   begin
-      C_Gtk_About_Dialog_Set_Url_Hook (Internal_Activate_Link_Func'Address, Func'Address, System.Null_Address);
-   end Set_Url_Hook;
-
-   package body Set_Url_Hook_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-      function To_Activate_Link_Func is new Ada.Unchecked_Conversion
-        (System.Address, Activate_Link_Func);
-
-      procedure Internal_Cb
-         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-          Link  : UTF8_String;
-          Data  : System.Address);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered
-      --  with Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      procedure Internal_Cb
-         (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-          Link  : UTF8_String;
-          Data  : System.Address)
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
-      begin
-         To_Activate_Link_Func (D.Func) (About, Link, D.Data.all);
-      end Internal_Cb;
-
-      ------------------
-      -- Set_Url_Hook --
-      ------------------
-
-      procedure Set_Url_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type)
-      is
-      begin
-         C_Gtk_About_Dialog_Set_Url_Hook (Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
-      end Set_Url_Hook;
-
-   end Set_Url_Hook_User_Data;
 
    -----------------
    -- Set_Version --

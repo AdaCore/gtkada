@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  The Gtk_Cell_Editable interface must be implemented for widgets to be
@@ -97,7 +91,8 @@ package Gtk.Cell_Editable is
    --  Gtk.Cell_Editable.Gtk_Cell_Editable are responsible for emitting this
    --  signal when they are done editing, e.g. Gtk.GEntry.Gtk_Entry is emitting
    --  it when the user presses Enter. Gtk.Cell_Editable.Editing_Done is a
-   --  convenience method for emitting GtkCellEditable::editing-done.
+   --  convenience method for emitting
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
    --
    --  "remove-widget"
    --     procedure Handler (Self : access Gtk_Cell_Editable);
@@ -108,7 +103,7 @@ package Gtk.Cell_Editable is
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal, to give the
    --  cell renderer a chance to update the cell's value before the widget is
    --  removed. Gtk.Cell_Editable.Remove_Widget is a convenience method for
-   --  emitting GtkCellEditable::remove-widget.
+   --  emitting Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget.
 
    Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
    Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";

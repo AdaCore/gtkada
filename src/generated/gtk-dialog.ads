@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
@@ -53,13 +47,12 @@
 --  <testgtk>create_dialog.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Box;         use Gtk.Box;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Widget;      use Gtk.Widget;
-with Gtk.Window;      use Gtk.Window;
+with Glib;          use Glib;
+with Glib.Types;    use Glib.Types;
+with Gtk.Box;       use Gtk.Box;
+with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Widget;    use Gtk.Widget;
+with Gtk.Window;    use Gtk.Window;
 
 package Gtk.Dialog is
 
@@ -121,6 +114,9 @@ package Gtk.Dialog is
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+   --  Creates a new dialog box. Widgets should not be packed into this
+   --  Gtk.Window.Gtk_Window directly, but into the Vbox and Action_Area, as
+   --  described above.
 
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
@@ -179,17 +175,6 @@ package Gtk.Dialog is
       (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the content area of Dialog.
    --  Since: gtk+ 2.14
-
-   function Get_Has_Separator
-      (Dialog : access Gtk_Dialog_Record) return Boolean;
-   pragma Obsolescent (Get_Has_Separator);
-   procedure Set_Has_Separator
-      (Dialog  : access Gtk_Dialog_Record;
-       Setting : Boolean);
-   pragma Obsolescent (Set_Has_Separator);
-   --  Sets whether the dialog has a separator above the buttons.
-   --  Deprecated since 2.22, This function will be removed in GTK+ 3
-   --  "setting": True to have a separator
 
    function Get_Response_For_Widget
       (Dialog : access Gtk_Dialog_Record;
@@ -296,13 +281,6 @@ package Gtk.Dialog is
    --
    --  Returns: Whether the alternative button order should be used
 
-   ------------
-   -- Fields --
-   ------------
-
-   function Get_Vbox
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
-
    ----------------
    -- Interfaces --
    ----------------
@@ -320,19 +298,6 @@ package Gtk.Dialog is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Dialog
    renames Implements_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Has_Separator_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  When True, the dialog has a separator bar above its buttons.
-
-   Has_Separator_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -358,7 +323,4 @@ package Gtk.Dialog is
    Signal_Close : constant Glib.Signal_Name := "close";
    Signal_Response : constant Glib.Signal_Name := "response";
 
-private
-   Has_Separator_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-separator");
 end Gtk.Dialog;

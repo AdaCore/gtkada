@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A status bar is a special widget in which you can display messages. This
@@ -55,7 +49,6 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
 with Glib.GSlist;          use Glib.GSlist;
-with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Buildable;        use Gtk.Buildable;
@@ -66,7 +59,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package Gtk.Status_Bar is
 
-   type Gtk_Status_Bar_Record is new Gtk_Hbox_Record with null record;
+   type Gtk_Status_Bar_Record is new Gtk_Box_Record with null record;
    type Gtk_Status_Bar is access all Gtk_Status_Bar_Record'Class;
 
    type Context_Id is new Guint;
@@ -110,14 +103,6 @@ package Gtk.Status_Bar is
    --  "context_description": textual description of what context the new
    --  message is being used in
 
-   function Get_Has_Resize_Grip
-      (Statusbar : access Gtk_Status_Bar_Record) return Boolean;
-   procedure Set_Has_Resize_Grip
-      (Statusbar : access Gtk_Status_Bar_Record;
-       Setting   : Boolean);
-   --  Sets whether the statusbar has a resize grip. True by default.
-   --  "setting": True to have a resize grip
-
    function Get_Message_Area
       (Statusbar : access Gtk_Status_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
@@ -157,13 +142,6 @@ package Gtk.Status_Bar is
    --  exact Context_Id.
    --  Since: gtk+ 2.22
    --  "context": a context identifier
-
-   ------------
-   -- Fields --
-   ------------
-
-   function Get_Messages
-      (Statusbar : access Gtk_Status_Bar_Record) return Messages_List.GSlist;
 
    ---------------------
    -- Interfaces_Impl --
@@ -206,19 +184,6 @@ package Gtk.Status_Bar is
    return Gtk_Status_Bar
    renames Implements_Orientable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Has_Resize_Grip_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether the statusbar has a grip for resizing the toplevel window.
-
-   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
-
    -------------
    -- Signals --
    -------------
@@ -229,8 +194,8 @@ package Gtk.Status_Bar is
    --       (Self    : access Gtk_Status_Bar_Record'Class;
    --        Context : Context_Id;
    --        Text    : UTF8_String);
-   --    --  "context": the context id of the relevant message/statusbar.
-   --    --  "text": the message that was just popped.
+   --    --  "context": the context id of the relevant message/statusbar
+   --    --  "text": the message that was just popped
    --  Is emitted whenever a new message is popped off a statusbar's stack.
    --
    --  "text-pushed"
@@ -238,14 +203,11 @@ package Gtk.Status_Bar is
    --       (Self    : access Gtk_Status_Bar_Record'Class;
    --        Context : Context_Id;
    --        Text    : UTF8_String);
-   --    --  "context": the context id of the relevant message/statusbar.
-   --    --  "text": the message that was pushed.
+   --    --  "context": the context id of the relevant message/statusbar
+   --    --  "text": the message that was pushed
    --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
 
    Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
    Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
 
-private
-   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-resize-grip");
 end Gtk.Status_Bar;

@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Ada_05;
 --  <description>
@@ -127,10 +121,10 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page_Num  : Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num. if Page_Num
-   --  is out of bounds.
+   --  is out of bounds
    --  Since: gtk+ 2.10
-   --  "page_num": The index of a page in the Assistant, or -1 to get the last
-   --  page;
+   --  "page_num": the index of a page in the Assistant, or -1 to get the last
+   --  page
 
    function Get_Page_Complete
       (Assistant : access Gtk_Assistant_Record;
@@ -139,7 +133,8 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Complete  : Boolean);
-   --  Sets whether Page contents are complete. This will make
+   --  Sets whether Page contents are complete. This will make Assistant
+   --  update the buttons state to be able to continue the task.
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "complete": the completeness status of the page
@@ -148,13 +143,16 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Page_Header_Image);
    procedure Set_Page_Header_Image
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
-   --  Sets a header image for Page. This image is displayed in the header
-   --  area of the assistant when Page is the current page.
+   pragma Obsolescent (Set_Page_Header_Image);
+   --  Sets a header image for Page. add your header decoration to the page
+   --  content instead.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown;
    --  "page": a page of Assistant
    --  "pixbuf": the new header image Page
 
@@ -162,15 +160,18 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Page_Side_Image);
    procedure Set_Page_Side_Image
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
-   --  Sets a header image for Page. This image is displayed in the side area
-   --  of the assistant when Page is the current page.
+   pragma Obsolescent (Set_Page_Side_Image);
+   --  Sets a side image for Page. This image used to be displayed in the side
+   --  area of the assistant when Page is the current page. shown anymore.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not
    --  "page": a page of Assistant
-   --  "pixbuf": the new header image Page
+   --  "pixbuf": the new side image Page
 
    function Get_Page_Title
       (Assistant : access Gtk_Assistant_Record;
@@ -210,12 +211,24 @@ package Gtk.Assistant is
    --  "position": the index (starting at 0) at which to insert the page, or
    --  -1 to append the page to the Assistant
 
+   procedure Next_Page (Assistant : access Gtk_Assistant_Record);
+   --  Navigate to the next page. It is a programming error to call this
+   --  function when there is no next page. This function is for use when
+   --  creating pages of the GTK_ASSISTANT_PAGE_CUSTOM type.
+   --  Since: gtk+ 3.0
+
    function Prepend_Page
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
    --  Prepends a page to the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
+
+   procedure Previous_Page (Assistant : access Gtk_Assistant_Record);
+   --  Navigate to the previous visited page. It is a programming error to
+   --  call this function when no previous page is available. This function is
+   --  for use when creating pages of the GTK_ASSISTANT_PAGE_CUSTOM type.
+   --  Since: gtk+ 3.0
 
    procedure Remove_Action_Widget
       (Assistant : access Gtk_Assistant_Record;
@@ -224,10 +237,18 @@ package Gtk.Assistant is
    --  Since: gtk+ 2.10
    --  "child": a Gtk.Widget.Gtk_Widget
 
+   procedure Remove_Page
+      (Assistant : access Gtk_Assistant_Record;
+       Page_Num  : Gint);
+   --  Removes the Page_Num's page from Assistant.
+   --  Since: gtk+ 3.2
+   --  "page_num": the index of a page in the Assistant, or -1 to remove the
+   --  last page
+
    procedure Set_Forward_Page_Func
       (Assistant : access Gtk_Assistant_Record;
        Page_Func : Gtk_Assistant_Page_Func);
-   --  Sets the page forwarding function to be Page_Func, this function will
+   --  Sets the page forwarding function to be Page_Func. This function will
    --  be used to determine what will be the next page when the user presses
    --  the forward button. Setting Page_Func to null will make the assistant to
    --  use the default forward function, which just goes to the next visible
@@ -254,7 +275,7 @@ package Gtk.Assistant is
          (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type);
-      --  Sets the page forwarding function to be Page_Func, this function
+      --  Sets the page forwarding function to be Page_Func. This function
       --  will be used to determine what will be the next page when the user
       --  presses the forward button. Setting Page_Func to null will make the
       --  assistant to use the default forward function, which just goes to the
@@ -327,7 +348,7 @@ package Gtk.Assistant is
    --    --  "page": the current page
    --  The ::prepare signal is emitted when a new page is set as the
    --  assistant's current page, before making the new page visible. A handler
-   --  for this signal can do any preparation which are necessary before
+   --  for this signal can do any preparations which are necessary before
    --  showing Page.
 
    Signal_Apply : constant Glib.Signal_Name := "apply";

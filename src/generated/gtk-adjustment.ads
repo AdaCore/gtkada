@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This object represents an adjustable bounded value. It is used in many
@@ -53,7 +47,7 @@ with Glib.Properties; use Glib.Properties;
 
 package Gtk.Adjustment is
 
-   type Gtk_Adjustment_Record is new GObject_Record with null record;
+   type Gtk_Adjustment_Record is new GInitiallyUnowned_Record with null record;
    type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 
    ------------------
@@ -83,6 +77,12 @@ package Gtk.Adjustment is
    --  scrollbar. Page_Increment is used to make major adjustments, such as
    --  when the user clicks in the through on a scrollbar. Page_Size is
    --  deprecated, use the default value.
+   --  "value": the initial value.
+   --  "lower": the minimum value.
+   --  "upper": the maximum value.
+   --  "step_increment": the step increment.
+   --  "page_increment": the page increment.
+   --  "page_size": the page size.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
@@ -92,6 +92,10 @@ package Gtk.Adjustment is
    -------------
 
    procedure Changed (Adjustment : access Gtk_Adjustment_Record);
+   --  Emits a Gtk.Adjustment.Gtk_Adjustment::changed signal from the
+   --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
+   --  the Gtk.Adjustment.Gtk_Adjustment after it has changed any of the
+   --  Gtk.Adjustment.Gtk_Adjustment fields other than the value.
 
    procedure Clamp_Page
       (Adjustment : access Gtk_Adjustment_Record;
@@ -102,6 +106,8 @@ package Gtk.Adjustment is
    --  If the range is larger than the page size, then only the start of it
    --  will be in the current page. A "value_changed" signal will be emitted if
    --  the value is changed.
+   --  "lower": the lower value.
+   --  "upper": the upper value.
 
    procedure Configure
       (Adjustment     : access Gtk_Adjustment_Record;
@@ -140,6 +146,11 @@ package Gtk.Adjustment is
    --  emissions.
    --  Since: gtk+ 2.14
    --  "lower": the new minimum value
+
+   function Get_Minimum_Increment
+      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+   --  Gets the smaller of step increment and page increment.
+   --  Since: gtk+ 3.2
 
    function Get_Page_Increment
       (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
@@ -192,8 +203,20 @@ package Gtk.Adjustment is
    procedure Set_Value
       (Adjustment : access Gtk_Adjustment_Record;
        Value      : Gdouble);
+   --  Sets the Gtk.Adjustment.Gtk_Adjustment value. The value is clamped to
+   --  lie between Gtk.Adjustment.Gtk_Adjustment.lower and
+   --  Gtk.Adjustment.Gtk_Adjustment.upper. Note that for adjustments which are
+   --  used in a Gtk.Scrollbar.Gtk_Scrollbar, the effective range of allowed
+   --  values goes from Gtk.Adjustment.Gtk_Adjustment.lower to
+   --  Gtk.Adjustment.Gtk_Adjustment.upper -
+   --  Gtk.Adjustment.Gtk_Adjustment.page_size.
+   --  "value": the new value.
 
    procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record);
+   --  Emits a Gtk.Adjustment.Gtk_Adjustment::value_changed signal from the
+   --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
+   --  the Gtk.Adjustment.Gtk_Adjustment after it has changed the
+   --  Gtk.Adjustment.Gtk_Adjustment value field.
 
    ----------------
    -- Properties --
@@ -249,9 +272,13 @@ package Gtk.Adjustment is
    --
    --  "changed"
    --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
+   --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment fields
+   --  have been changed, other than the value field.
    --
    --  "value-changed"
    --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
+   --  Emitted when the Gtk.Adjustment.Gtk_Adjustment value field has been
+   --  changed.
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";

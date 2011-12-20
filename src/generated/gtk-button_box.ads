@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
@@ -59,6 +53,16 @@ package Gtk.Button_Box is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Widget      : out Gtk_Button_Box;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   procedure Initialize
+      (Widget      : access Gtk_Button_Box_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box' orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
 
@@ -66,16 +70,17 @@ package Gtk.Button_Box is
    -- Methods --
    -------------
 
-   procedure Get_Child_Ipadding
+   function Get_Child_Non_Homogeneous
       (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : out Gint;
-       Ipad_Y : out Gint);
-   procedure Set_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : Gint;
-       Ipad_Y : Gint);
-   pragma Obsolescent (Set_Child_Ipadding);
-   --  Deprecated
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+   procedure Set_Child_Non_Homogeneous
+      (Widget          : access Gtk_Button_Box_Record;
+       Child           : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Non_Homogeneous : Boolean);
+   --  Sets whether the child is exempted from homogeous sizing.
+   --  Since: gtk+ 3.2
+   --  "child": a child of Widget
+   --  "non_homogeneous": the new value
 
    function Get_Child_Secondary
       (Widget : access Gtk_Button_Box_Record;
@@ -100,24 +105,14 @@ package Gtk.Button_Box is
    --  "is_secondary": if True, the Child appears in a secondary group of the
    --  button box.
 
-   procedure Get_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : out Gint;
-       Min_Height : out Gint);
-   pragma Obsolescent (Get_Child_Size);
-   procedure Set_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : Gint;
-       Min_Height : Gint);
-   pragma Obsolescent (Set_Child_Size);
-   --  Deprecated
-
    function Get_Layout
       (Widget : access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
    procedure Set_Layout
       (Widget       : access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
+   --  Changes the way buttons are arranged in their container.
+   --  "layout_style": the new layout style
 
    ---------------------
    -- Interfaces_Impl --

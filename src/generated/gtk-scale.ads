@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A scale is a horizontal or vertical widget that a user can slide to choose
@@ -62,6 +56,45 @@ package Gtk.Scale is
    ------------------
    -- Constructors --
    ------------------
+
+   procedure Gtk_New
+      (Scale       : out Gtk_Scale;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   procedure Initialize
+      (Scale       : access Gtk_Scale_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   --  Creates a new Gtk.Scale.Gtk_Scale.
+   --  Since: gtk+ 3.0
+   --  "orientation": the scale's orientation.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale, or null to create a new adjustment.
+
+   procedure Gtk_New_With_Range
+      (Scale       : out Gtk_Scale;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Min         : Gdouble;
+       Max         : Gdouble;
+       Step        : Gdouble);
+   procedure Initialize_With_Range
+      (Scale       : access Gtk_Scale_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Min         : Gdouble;
+       Max         : Gdouble;
+       Step        : Gdouble);
+   --  Creates a new scale widget with the given orientation that lets the
+   --  user input a number between Min and Max (including Min and Max) with the
+   --  increment Step. Step must be nonzero; it's the distance the slider moves
+   --  when using the arrow keys to adjust the scale value. Note that the way
+   --  in which the precision is derived works best if Step is a power of ten.
+   --  If the resulting precision is not suitable for your needs, use
+   --  Gtk.Scale.Set_Digits to correct it.
+   --  Since: gtk+ 3.0
+   --  "orientation": the scale's orientation.
+   --  "min": minimum value
+   --  "max": maximum value
+   --  "step": step increment (tick size) used with keyboard shortcuts
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_scale_get_type");
@@ -144,9 +177,9 @@ package Gtk.Scale is
    --  "value": the value at which the mark is placed, must be between the
    --  lower and upper limits of the scales' adjustment
    --  "position": where to draw the mark. For a horizontal scale, GTK_POS_TOP
-   --  is drawn above the scale, anything else below. For a vertical scale,
-   --  GTK_POS_LEFT is drawn to the left of the scale, anything else to the
-   --  right.
+   --  and %GTK_POS_LEFT are drawn above the scale, anything else below. For a
+   --  vertical scale, GTK_POS_LEFT and %GTK_POS_TOP are drawn to the left of
+   --  the scale, anything else to the right.
    --  "markup": Text to be shown at the mark, using <link
    --  linkend="PangoMarkupFormat">Pango markup</link>, or null
 

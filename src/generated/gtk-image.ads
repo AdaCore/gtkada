@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  The Gtk_Image widget displays a graphical image. The image is typically
@@ -42,10 +36,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;
-with Gdk.Bitmap;       use Gdk.Bitmap;
-with Gdk.Image;        use Gdk.Image;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Gdk.Pixmap;       use Gdk.Pixmap;
 with Glib;             use Glib;
 with Glib.G_Icon;      use Glib.G_Icon;
 with Glib.Properties;  use Glib.Properties;
@@ -97,10 +88,10 @@ package Gtk.Image is
    --  a higher priority.
    --  "animation": an animation
 
-   procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String);
+   procedure Gtk_New (Image : out Gtk_Image; Filename : filename);
    procedure Initialize
       (Image    : access Gtk_Image_Record'Class;
-       Filename : UTF8_String);
+       Filename : filename);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
    --  will display a "broken image" icon. This function never returns null, it
@@ -167,23 +158,6 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Gtk_New
-      (Image : out Gtk_Image;
-       Val   : Gdk.Image.Gdk_Image;
-       Mask  : Gdk.Bitmap.Gdk_Bitmap);
-   procedure Initialize
-      (Image : access Gtk_Image_Record'Class;
-       Val   : Gdk.Image.Gdk_Image;
-       Mask  : Gdk.Bitmap.Gdk_Bitmap);
-   --  Creates a Gtk.Image.Gtk_Image widget displaying a Image with a Mask. A
-   --  GdkImage is a client-side image buffer in the pixel format of the
-   --  current display. The Gtk.Image.Gtk_Image does not assume a reference to
-   --  the image or mask; you still need to unref them if you own references.
-   --  Gtk.Image.Gtk_Image will add its own reference rather than adopting
-   --  yours.
-   --  "Val": a GdkImage, or null
-   --  "mask": a GdkBitmap, or null
-
-   procedure Gtk_New
       (Image  : out Gtk_Image;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    procedure Initialize
@@ -197,23 +171,6 @@ package Gtk.Image is
    --  created will not react to state changes. Should you want that, you
    --  should use Gtk.Image.Gtk_New.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
-
-   procedure Gtk_New
-      (Image  : out Gtk_Image;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap);
-   procedure Initialize
-      (Image  : access Gtk_Image_Record'Class;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap);
-   --  Creates a Gtk.Image.Gtk_Image widget displaying Pixmap with a Mask. A
-   --  GdkPixmap is a server-side image buffer in the pixel format of the
-   --  current display. The Gtk.Image.Gtk_Image does not assume a reference to
-   --  the pixmap or mask; you still need to unref them if you own references.
-   --  Gtk.Image.Gtk_Image will add its own reference rather than adopting
-   --  yours.
-   --  "pixmap": a GdkPixmap, or null
-   --  "mask": a GdkBitmap, or null
 
    procedure Gtk_New
       (Image    : out Gtk_Image;
@@ -253,22 +210,13 @@ package Gtk.Image is
       (Image    : access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
-   procedure Get
-      (Image     : access Gtk_Image_Record;
-       Gdk_Image : out Gdk.Image.Gdk_Image;
-       Mask      : out Gdk.Bitmap.Gdk_Bitmap);
    function Get
       (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
-   procedure Get
-      (Image  : access Gtk_Image_Record;
-       Pixmap : out Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : out Gdk.Bitmap.Gdk_Bitmap);
-   --  Gets the pixmap and mask being displayed by the Gtk.Image.Gtk_Image.
-   --  The storage type of the image must be %GTK_IMAGE_EMPTY or
-   --  %GTK_IMAGE_PIXMAP (see Gtk.Image.Get_Storage_Type). The caller of this
-   --  function does not own a reference to the returned pixmap and mask.
-   --  "pixmap": location to store the pixmap, or null
-   --  "mask": location to store the mask, or null
+   --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
+   --  Gtk.Image.Gtk_Image. The storage type of the image must be
+   --  %GTK_IMAGE_EMPTY or %GTK_IMAGE_PIXBUF (see Gtk.Image.Get_Storage_Type).
+   --  The caller of this function does not own a reference to the returned
+   --  pixbuf. the image is empty
 
    function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint;
    procedure Set_Pixel_Size
@@ -289,7 +237,7 @@ package Gtk.Image is
    procedure Set
       (Image     : access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
-   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String);
+   procedure Set (Image : access Gtk_Image_Record; Filename : filename);
    procedure Set
       (Image : access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;
@@ -299,16 +247,8 @@ package Gtk.Image is
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Set
-      (Image     : access Gtk_Image_Record;
-       Gdk_Image : Gdk.Image.Gdk_Image;
-       Mask      : Gdk.Bitmap.Gdk_Bitmap);
-   procedure Set
       (Image  : access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
-   procedure Set
-      (Image  : access Gtk_Image_Record;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap);
    procedure Set
       (Image    : access Gtk_Image_Record;
        Stock_Id : UTF8_String;
@@ -388,14 +328,6 @@ package Gtk.Image is
    --  Type: Gint
    --  Flags: read-write
    --
-   --  Name: Image_Property
-   --  Type: Gdk.Image.Gdk_Image
-   --  Flags: read-write
-   --
-   --  Name: Mask_Property
-   --  Type: Gdk.Pixmap.Gdk_Pixmap
-   --  Flags: read-write
-   --
    --  Name: Pixbuf_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
@@ -411,10 +343,6 @@ package Gtk.Image is
    --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
    --  %GTK_IMAGE_ICON_NAME.
    --
-   --  Name: Pixmap_Property
-   --  Type: Gdk.Pixmap.Gdk_Pixmap
-   --  Flags: read-write
-   --
    --  Name: Stock_Property
    --  Type: UTF8_String
    --  Flags: read-write
@@ -422,20 +350,25 @@ package Gtk.Image is
    --  Name: Storage_Type_Property
    --  Type: Gtk_Image_Type
    --  Flags: read-write
+   --
+   --  Name: Use_Fallback_Property
+   --  Type: Boolean
+   --  Flags: read-write
+   --  Whether the icon displayed in the GtkImage will use standard icon names
+   --  fallback. The value of this property is only relevant for images of type
+   --  %GTK_IMAGE_ICON_NAME and %GTK_IMAGE_GICON.
 
    File_Property : constant Glib.Properties.Property_String;
    Gicon_Property : constant Glib.Properties.Property_Boxed;
    Icon_Name_Property : constant Glib.Properties.Property_String;
    Icon_Set_Property : constant Glib.Properties.Property_Boxed;
    Icon_Size_Property : constant Glib.Properties.Property_Int;
-   Image_Property : constant Glib.Properties.Property_Boxed;
-   Mask_Property : constant Glib.Properties.Property_Boxed;
    Pixbuf_Property : constant Glib.Properties.Property_Object;
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed;
    Pixel_Size_Property : constant Glib.Properties.Property_Int;
-   Pixmap_Property : constant Glib.Properties.Property_Boxed;
    Stock_Property : constant Glib.Properties.Property_String;
    Storage_Type_Property : constant Glib.Properties.Property_Boxed;
+   Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
 
 private
    File_Property : constant Glib.Properties.Property_String :=
@@ -448,20 +381,16 @@ private
      Glib.Properties.Build ("icon-set");
    Icon_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("icon-size");
-   Image_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("image");
-   Mask_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("mask");
    Pixbuf_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("pixbuf");
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("pixbuf-animation");
    Pixel_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixel-size");
-   Pixmap_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("pixmap");
    Stock_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("stock");
    Storage_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("storage-type");
+   Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-fallback");
 end Gtk.Image;

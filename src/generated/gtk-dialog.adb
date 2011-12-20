@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -190,19 +184,6 @@ package body Gtk.Dialog is
       return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Content_Area;
 
-   -----------------------
-   -- Get_Has_Separator --
-   -----------------------
-
-   function Get_Has_Separator
-      (Dialog : access Gtk_Dialog_Record) return Boolean
-   is
-      function Internal (Dialog : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_dialog_get_has_separator");
-   begin
-      return Boolean'Val (Internal (Get_Object (Dialog)));
-   end Get_Has_Separator;
-
    -----------------------------
    -- Get_Response_For_Widget --
    -----------------------------
@@ -280,20 +261,6 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id);
    end Set_Default_Response;
 
-   -----------------------
-   -- Set_Has_Separator --
-   -----------------------
-
-   procedure Set_Has_Separator
-      (Dialog  : access Gtk_Dialog_Record;
-       Setting : Boolean)
-   is
-      procedure Internal (Dialog : System.Address; Setting : Integer);
-      pragma Import (C, Internal, "gtk_dialog_set_has_separator");
-   begin
-      Internal (Get_Object (Dialog), Boolean'Pos (Setting));
-   end Set_Has_Separator;
-
    ----------------------------
    -- Set_Response_Sensitive --
    ----------------------------
@@ -311,19 +278,5 @@ package body Gtk.Dialog is
    begin
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
-
-   --------------
-   -- Get_Vbox --
-   --------------
-
-   function Get_Vbox
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
-   is
-      function Internal (Dialog : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtkada_GtkDialog_get_vbox");
-      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
-   begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
-   end Get_Vbox;
 
 end Gtk.Dialog;

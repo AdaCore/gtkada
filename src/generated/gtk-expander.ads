@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A container that can hide its child.
@@ -124,6 +118,16 @@ package Gtk.Expander is
    --  Since: gtk+ 2.4
    --  "label_widget": the new label widget
 
+   function Get_Resize_Toplevel
+      (Expander : access Gtk_Expander_Record) return Boolean;
+   procedure Set_Resize_Toplevel
+      (Expander        : access Gtk_Expander_Record;
+       Resize_Toplevel : Boolean);
+   --  Sets whether the expander will resize the toplevel widget containing
+   --  the expander upon resizing and collpasing.
+   --  Since: gtk+ 3.2
+   --  "resize_toplevel": whether to resize the toplevel
+
    function Get_Spacing (Expander : access Gtk_Expander_Record) return Gint;
    procedure Set_Spacing
       (Expander : access Gtk_Expander_Record;
@@ -131,7 +135,7 @@ package Gtk.Expander is
    --  Sets the spacing field of Expander, which is the number of pixels to
    --  place between expander and the child.
    --  Since: gtk+ 2.4
-   --  "spacing": distance between the expander and child in pixels.
+   --  "spacing": distance between the expander and child in pixels
 
    function Get_Use_Markup
       (Expander : access Gtk_Expander_Record) return Boolean;
@@ -194,6 +198,12 @@ package Gtk.Expander is
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
    --
+   --  Name: Resize_Toplevel_Property
+   --  Type: Boolean
+   --  Flags: read-write
+   --  When this property is True, the expander will resize the toplevel
+   --  widget containing the expander upon expanding and collapsing.
+   --
    --  Name: Spacing_Property
    --  Type: Gint
    --  Flags: read-write
@@ -210,6 +220,7 @@ package Gtk.Expander is
    Label_Property : constant Glib.Properties.Property_String;
    Label_Fill_Property : constant Glib.Properties.Property_Boolean;
    Label_Widget_Property : constant Glib.Properties.Property_Object;
+   Resize_Toplevel_Property : constant Glib.Properties.Property_Boolean;
    Spacing_Property : constant Glib.Properties.Property_Int;
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
@@ -233,6 +244,8 @@ private
      Glib.Properties.Build ("label-fill");
    Label_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("label-widget");
+   Resize_Toplevel_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resize-toplevel");
    Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("spacing");
    Use_Markup_Property : constant Glib.Properties.Property_Boolean :=

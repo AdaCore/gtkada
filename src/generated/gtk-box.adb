@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -36,6 +30,20 @@ package body Gtk.Box is
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Box_Record);
    pragma Unreferenced (Type_Conversion);
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Box         : out Gtk_Box;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint)
+   is
+   begin
+      Box := new Gtk_Box_Record;
+      Gtk.Box.Initialize (Box, Orientation, Spacing);
+   end Gtk_New;
 
    ------------------
    -- Gtk_New_Hbox --
@@ -64,6 +72,23 @@ package body Gtk.Box is
       Box := new Gtk_Vbox_Record;
       Gtk.Box.Initialize_Vbox (Box, Homogeneous, Spacing);
    end Gtk_New_Vbox;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Box         : access Gtk_Box_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint)
+   is
+      function Internal
+         (Orientation : Integer;
+          Spacing     : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_box_new");
+   begin
+      Set_Object (Box, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Spacing));
+   end Initialize;
 
    ---------------------
    -- Initialize_Hbox --
@@ -160,20 +185,6 @@ package body Gtk.Box is
       Internal (Get_Object (In_Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_End;
 
-   -----------------------
-   -- Pack_End_Defaults --
-   -----------------------
-
-   procedure Pack_End_Defaults
-      (Box    : access Gtk_Box_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-   is
-      procedure Internal (Box : System.Address; Widget : System.Address);
-      pragma Import (C, Internal, "gtk_box_pack_end_defaults");
-   begin
-      Internal (Get_Object (Box), Get_Object (Widget));
-   end Pack_End_Defaults;
-
    ----------------
    -- Pack_Start --
    ----------------
@@ -195,20 +206,6 @@ package body Gtk.Box is
    begin
       Internal (Get_Object (In_Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_Start;
-
-   -------------------------
-   -- Pack_Start_Defaults --
-   -------------------------
-
-   procedure Pack_Start_Defaults
-      (Box    : access Gtk_Box_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-   is
-      procedure Internal (Box : System.Address; Widget : System.Address);
-      pragma Import (C, Internal, "gtk_box_pack_start_defaults");
-   begin
-      Internal (Get_Object (Box), Get_Object (Widget));
-   end Pack_Start_Defaults;
 
    -------------------------
    -- Query_Child_Packing --

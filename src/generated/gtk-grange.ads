@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This widget provides a low level graphical representation of a range of
@@ -134,7 +128,7 @@ package Gtk.GRange is
       (The_Range : access Gtk_Range_Record) return Gint;
    procedure Set_Min_Slider_Size
       (The_Range : access Gtk_Range_Record;
-       Min_Size  : Boolean);
+       Min_Size  : Gint);
    --  Sets the minimum size of the range's slider. This function is useful
    --  mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
@@ -199,28 +193,10 @@ package Gtk.GRange is
       (The_Range  : access Gtk_Range_Record;
        Size_Fixed : Boolean);
    --  Sets whether the range's slider has a fixed size, or a size that
-   --  depends on it's adjustment's page size. This function is useful mainly
+   --  depends on its adjustment's page size. This function is useful mainly
    --  for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "size_fixed": True to make the slider size constant
-
-   function Get_Update_Policy
-      (The_Range : access Gtk_Range_Record) return Gtk.Enums.Gtk_Update_Type;
-   pragma Obsolescent (Get_Update_Policy);
-   procedure Set_Update_Policy
-      (The_Range : access Gtk_Range_Record;
-       Policy    : Gtk.Enums.Gtk_Update_Type);
-   pragma Obsolescent (Set_Update_Policy);
-   --  Sets the update policy for the range. GTK_UPDATE_CONTINUOUS means that
-   --  anytime the range slider is moved, the range value will change and the
-   --  value_changed signal will be emitted. GTK_UPDATE_DELAYED means that the
-   --  value will be updated after a brief timeout where no slider motion
-   --  occurs, so updates are spaced by a short time rather than continuous.
-   --  GTK_UPDATE_DISCONTINUOUS means that the value will only be updated when
-   --  the user releases the button and ends the slider drag operation.
-   --  updates, you need to code it yourself.
-   --  Deprecated since 2.24, There is no replacement. If you require delayed
-   --  "policy": update policy
 
    function Get_Upper_Stepper_Sensitivity
       (The_Range : access Gtk_Range_Record)
@@ -349,10 +325,6 @@ package Gtk.GRange is
    --  graphics are displayed on the trough. See
    --  Gtk.GRange.Set_Show_Fill_Level.
    --
-   --  Name: Update_Policy_Property
-   --  Type: Gtk.Enums.Gtk_Update_Type
-   --  Flags: read-write
-   --
    --  Name: Upper_Stepper_Sensitivity_Property
    --  Type: Gtk.Enums.Gtk_Sensitivity_Type
    --  Flags: read-write
@@ -364,7 +336,6 @@ package Gtk.GRange is
    Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
    Round_Digits_Property : constant Glib.Properties.Property_Int;
    Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
-   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
 
    -------------
@@ -374,8 +345,11 @@ package Gtk.GRange is
    --
    --  "adjust-bounds"
    --     procedure Handler
-   --       (Self   : access Gtk_Range_Record'Class;
-   --        Object : Gdouble);
+   --       (Self  : access Gtk_Range_Record'Class;
+   --        Value : Gdouble);
+   --    --  "value": the value before we clamp
+   --  Emitted before clamping a value, to give the application a chance to
+   --  adjust the bounds.
    --
    --  "change-value"
    --     function Handler
@@ -384,17 +358,18 @@ package Gtk.GRange is
    --        Value  : Gdouble) return Boolean;
    --    --  "scroll": the type of scroll action that was performed
    --    --  "value": the new value resulting from the scroll action
-   --  The ::change-value signal is emitted when a scroll action is performed
-   --  on a range. It allows an application to determine the type of scroll
-   --  event that occurred and the resultant new value. The application can
-   --  handle the event itself and return True to prevent further processing.
-   --  Or, by returning False, it can pass the event to other handlers until
-   --  the default GTK+ handler is reached. The value parameter is unrounded.
-   --  An application that overrides the ::change-value signal is responsible
-   --  for clamping the value to the desired number of decimal digits; the
-   --  default GTK+ handler clamps the value based on
-   --  Gtk.GRange.Gtk_Range:round_digits. It is not possible to use delayed
-   --  update policies in an overridden ::change-value handler.
+   --  The Gtk.GRange.Gtk_Range::change-value signal is emitted when a scroll
+   --  action is performed on a range. It allows an application to determine
+   --  the type of scroll event that occurred and the resultant new value. The
+   --  application can handle the event itself and return True to prevent
+   --  further processing. Or, by returning False, it can pass the event to
+   --  other handlers until the default GTK+ handler is reached. The value
+   --  parameter is unrounded. An application that overrides the
+   --  GtkRange::change-value signal is responsible for clamping the value to
+   --  the desired number of decimal digits; the default GTK+ handler clamps
+   --  the value based on Gtk.GRange.Gtk_Range:round-digits. It is not possible
+   --  to use delayed update policies in an overridden
+   --  Gtk.GRange.Gtk_Range::change-value handler.
    --  Returns True to prevent other handlers from being invoked for the
    --  signal, False to propagate the signal further
    --
@@ -429,8 +404,6 @@ private
      Glib.Properties.Build ("round-digits");
    Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-fill-level");
-   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type :=
-     Gtk.Enums.Build ("update-policy");
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
      Gtk.Enums.Build ("upper-stepper-sensitivity");
 end Gtk.GRange;

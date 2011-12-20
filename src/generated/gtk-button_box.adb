@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -37,23 +31,48 @@ package body Gtk.Button_Box is
      (Get_Type'Access, Gtk_Button_Box_Record);
    pragma Unreferenced (Type_Conversion);
 
-   ------------------------
-   -- Get_Child_Ipadding --
-   ------------------------
+   -------------
+   -- Gtk_New --
+   -------------
 
-   procedure Get_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : out Gint;
-       Ipad_Y : out Gint)
+   procedure Gtk_New
+      (Widget      : out Gtk_Button_Box;
+       Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal
-         (Widget : System.Address;
-          Ipad_X : out Gint;
-          Ipad_Y : out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_ipadding");
    begin
-      Internal (Get_Object (Widget), Ipad_X, Ipad_Y);
-   end Get_Child_Ipadding;
+      Widget := new Gtk_Button_Box_Record;
+      Gtk.Button_Box.Initialize (Widget, Orientation);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget      : access Gtk_Button_Box_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      function Internal (Orientation : Integer) return System.Address;
+      pragma Import (C, Internal, "gtk_button_box_new");
+   begin
+      Set_Object (Widget, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation)));
+   end Initialize;
+
+   -------------------------------
+   -- Get_Child_Non_Homogeneous --
+   -------------------------------
+
+   function Get_Child_Non_Homogeneous
+      (Widget : access Gtk_Button_Box_Record;
+       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
+   is
+      function Internal
+         (Widget : System.Address;
+          Child  : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_button_box_get_child_non_homogeneous");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
+   end Get_Child_Non_Homogeneous;
 
    -------------------------
    -- Get_Child_Secondary --
@@ -71,24 +90,6 @@ package body Gtk.Button_Box is
       return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
    end Get_Child_Secondary;
 
-   --------------------
-   -- Get_Child_Size --
-   --------------------
-
-   procedure Get_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : out Gint;
-       Min_Height : out Gint)
-   is
-      procedure Internal
-         (Widget     : System.Address;
-          Min_Width  : out Gint;
-          Min_Height : out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_size");
-   begin
-      Internal (Get_Object (Widget), Min_Width, Min_Height);
-   end Get_Child_Size;
-
    ----------------
    -- Get_Layout --
    ----------------
@@ -103,23 +104,23 @@ package body Gtk.Button_Box is
       return Gtk.Enums.Gtk_Button_Box_Style'Val (Internal (Get_Object (Widget)));
    end Get_Layout;
 
-   ------------------------
-   -- Set_Child_Ipadding --
-   ------------------------
+   -------------------------------
+   -- Set_Child_Non_Homogeneous --
+   -------------------------------
 
-   procedure Set_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : Gint;
-       Ipad_Y : Gint)
+   procedure Set_Child_Non_Homogeneous
+      (Widget          : access Gtk_Button_Box_Record;
+       Child           : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Non_Homogeneous : Boolean)
    is
       procedure Internal
-         (Widget : System.Address;
-          Ipad_X : Gint;
-          Ipad_Y : Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_ipadding");
+         (Widget          : System.Address;
+          Child           : System.Address;
+          Non_Homogeneous : Integer);
+      pragma Import (C, Internal, "gtk_button_box_set_child_non_homogeneous");
    begin
-      Internal (Get_Object (Widget), Ipad_X, Ipad_Y);
-   end Set_Child_Ipadding;
+      Internal (Get_Object (Widget), Get_Object (Child), Boolean'Pos (Non_Homogeneous));
+   end Set_Child_Non_Homogeneous;
 
    -------------------------
    -- Set_Child_Secondary --
@@ -138,24 +139,6 @@ package body Gtk.Button_Box is
    begin
       Internal (Get_Object (Widget), Get_Object (Child), Boolean'Pos (Is_Secondary));
    end Set_Child_Secondary;
-
-   --------------------
-   -- Set_Child_Size --
-   --------------------
-
-   procedure Set_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : Gint;
-       Min_Height : Gint)
-   is
-      procedure Internal
-         (Widget     : System.Address;
-          Min_Width  : Gint;
-          Min_Height : Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_size");
-   begin
-      Internal (Get_Object (Widget), Min_Width, Min_Height);
-   end Set_Child_Size;
 
    ----------------
    -- Set_Layout --

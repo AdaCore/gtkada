@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Layout is a widget that can have an almost infinite size, without
@@ -57,6 +51,7 @@ with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
+with Gtk.Scrollable;  use Gtk.Scrollable;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Layout is
@@ -88,9 +83,6 @@ package Gtk.Layout is
    -- Methods --
    -------------
 
-   procedure Freeze (Layout : access Gtk_Layout_Record);
-   --  This is a deprecated function, it doesn't do anything useful.
-
    function Get_Bin_Window
       (Layout : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
@@ -99,13 +91,16 @@ package Gtk.Layout is
    function Get_Hadjustment
       (Layout : access Gtk_Layout_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   pragma Obsolescent (Get_Hadjustment);
    procedure Set_Hadjustment
       (Layout     : access Gtk_Layout_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   pragma Obsolescent (Set_Hadjustment);
    --  Return the adjustment that indicate the horizontal visual area of the
    --  layout. You generally do not have to modify the value of this adjustment
    --  yourself, since this is done automatically when the layout has been put
    --  in a Gtk_Scrolled_Window.
+   --  Deprecated since 3.0, Use gtk_scrollable_set_hadjustment
    --  "adjustment": new scroll adjustment
 
    procedure Get_Size
@@ -123,12 +118,15 @@ package Gtk.Layout is
    function Get_Vadjustment
       (Layout : access Gtk_Layout_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   pragma Obsolescent (Get_Vadjustment);
    procedure Set_Vadjustment
       (Layout     : access Gtk_Layout_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   pragma Obsolescent (Set_Vadjustment);
    --  Sets the vertical scroll adjustment for the layout. See
    --  Gtk.Scrolledwindow.Gtk_Scrolledwindow, Gtk.Scrollbar.Gtk_Scrollbar,
    --  Gtk.Adjustment.Gtk_Adjustment for details.
+   --  Deprecated since 3.0, Use gtk_scrollable_set_vadjustment
    --  "adjustment": new scroll adjustment
 
    procedure Move
@@ -155,15 +153,14 @@ package Gtk.Layout is
    --  "x": X position of child widget
    --  "y": Y position of child widget
 
-   procedure Thaw (Layout : access Gtk_Layout_Record);
-   --  This is a deprecated function, it doesn't do anything useful.
-
    ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
    --  - "Buildable"
+   --
+   --  - "Scrollable"
 
    package Implements_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Layout_Record, Gtk_Layout);
@@ -176,57 +173,37 @@ package Gtk.Layout is
    return Gtk_Layout
    renames Implements_Buildable.To_Object;
 
+   package Implements_Scrollable is new Glib.Types.Implements
+     (Gtk.Scrollable.Gtk_Scrollable, Gtk_Layout_Record, Gtk_Layout);
+   function "+"
+     (Widget : access Gtk_Layout_Record'Class)
+   return Gtk.Scrollable.Gtk_Scrollable
+   renames Implements_Scrollable.To_Interface;
+   function "-"
+     (Interf : Gtk.Scrollable.Gtk_Scrollable)
+   return Gtk_Layout
+   renames Implements_Scrollable.To_Object;
+
    ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
    --
-   --  Name: Hadjustment_Property
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
    --  Name: Height_Property
    --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Vadjustment_Property
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
    --  Flags: read-write
    --
    --  Name: Width_Property
    --  Type: Guint
    --  Flags: read-write
 
-   Hadjustment_Property : constant Glib.Properties.Property_Object;
    Height_Property : constant Glib.Properties.Property_Uint;
-   Vadjustment_Property : constant Glib.Properties.Property_Object;
    Width_Property : constant Glib.Properties.Property_Uint;
 
-   -------------
-   -- Signals --
-   -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "set-scroll-adjustments"
-   --     procedure Handler
-   --       (Self   : access Gtk_Layout_Record'Class;
-   --        Object : Gtk.Adjustment.Gtk_Adjustment;
-   --        P0     : Gtk.Adjustment.Gtk_Adjustment);
-   --  Set the scroll adjustments for the layout. Usually scrolled containers
-   --  like Gtk.Scrolledwindow.Gtk_Scrolledwindow will emit this signal to
-   --  connect two instances of Gtk.Scrollbar.Gtk_Scrollbar to the scroll
-   --  directions of the Gtk.Layout.Gtk_Layout.
-
-   Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name := "set-scroll-adjustments";
-
 private
-   Hadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("hadjustment");
    Height_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("height");
-   Vadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("vadjustment");
    Width_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("width");
 end Gtk.Layout;

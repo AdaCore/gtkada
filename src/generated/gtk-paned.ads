@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Paned is a container that organizes its two children either
@@ -86,6 +80,16 @@ package Gtk.Paned is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Paned       : out Gtk_Paned;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   procedure Initialize
+      (Paned       : access Gtk_Paned_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Paned.Gtk_Paned widget.
+   --  Since: gtk+ 3.0
+   --  "orientation": the paned's orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
@@ -114,6 +118,7 @@ package Gtk.Paned is
    --  either in the top or in the left pane, depending on the orientation of
    --  the container. This is equivalent to using the Pack1 procedure with its
    --  default parameters.
+   --  "child": the child to add
 
    procedure Add2
       (Paned : access Gtk_Paned_Record;
@@ -121,12 +126,7 @@ package Gtk.Paned is
    --  Add the second child of the container. It will be displayed in the
    --  bottom or right pane, depending on the container's orientation. This is
    --  equivalent to using Pack2 with its default parameters.
-
-   procedure Compute_Position
-      (Paned      : access Gtk_Paned_Record;
-       Allocation : Gint;
-       Child1_Req : Gint;
-       Child2_Req : Gint);
+   --  "child": the child to add
 
    function Get_Child1
       (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
@@ -163,12 +163,19 @@ package Gtk.Paned is
    --  should also first call Glib.Object.Ref on the child so as to be sure it
    --  is not destroyed when you remove it, and Glib.Object.Unref it at the
    --  end. See the example in testgtk/ in the GtkAda distribution.
+   --  "child": the child to add
+   --  "resize": should this child expand when the paned widget is resized.
+   --  "shrink": can this child be made smaller than its requisition.
 
    procedure Pack2
       (Paned  : access Gtk_Paned_Record;
        Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False);
+   --  Adds a child to the bottom or right pane.
+   --  "child": the child to add
+   --  "resize": should this child expand when the paned widget is resized.
+   --  "shrink": can this child be made smaller than its requisition.
 
    ---------------------
    -- Interfaces_Impl --

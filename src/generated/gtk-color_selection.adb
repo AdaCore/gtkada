@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -118,20 +112,6 @@ package body Gtk.Color_Selection is
       Set_Object (Colorsel, Internal);
    end Initialize;
 
-   ---------------
-   -- Get_Color --
-   ---------------
-
-   procedure Get_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdouble)
-   is
-      procedure Internal (Colorsel : System.Address; Color : out Gdouble);
-      pragma Import (C, Internal, "gtk_color_selection_get_color");
-   begin
-      Internal (Get_Object (Colorsel), Color);
-   end Get_Color;
-
    -----------------------
    -- Get_Current_Alpha --
    -----------------------
@@ -160,6 +140,20 @@ package body Gtk.Color_Selection is
    begin
       Internal (Get_Object (Colorsel), Color);
    end Get_Current_Color;
+
+   ----------------------
+   -- Get_Current_Rgba --
+   ----------------------
+
+   procedure Get_Current_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA)
+   is
+      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      pragma Import (C, Internal, "gtk_color_selection_get_current_rgba");
+   begin
+      Internal (Get_Object (Colorsel), Rgba);
+   end Get_Current_Rgba;
 
    -----------------------------
    -- Get_Has_Opacity_Control --
@@ -216,6 +210,20 @@ package body Gtk.Color_Selection is
       Internal (Get_Object (Colorsel), Color);
    end Get_Previous_Color;
 
+   -----------------------
+   -- Get_Previous_Rgba --
+   -----------------------
+
+   procedure Get_Previous_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA)
+   is
+      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      pragma Import (C, Internal, "gtk_color_selection_get_previous_rgba");
+   begin
+      Internal (Get_Object (Colorsel), Rgba);
+   end Get_Previous_Rgba;
+
    ------------------
    -- Is_Adjusting --
    ------------------
@@ -228,20 +236,6 @@ package body Gtk.Color_Selection is
    begin
       return Boolean'Val (Internal (Get_Object (Colorsel)));
    end Is_Adjusting;
-
-   ---------------
-   -- Set_Color --
-   ---------------
-
-   procedure Set_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdouble)
-   is
-      procedure Internal (Colorsel : System.Address; Color : out Gdouble);
-      pragma Import (C, Internal, "gtk_color_selection_set_color");
-   begin
-      Internal (Get_Object (Colorsel), Color);
-   end Set_Color;
 
    -----------------------
    -- Set_Current_Alpha --
@@ -272,6 +266,20 @@ package body Gtk.Color_Selection is
    begin
       Internal (Get_Object (Colorsel), Color);
    end Set_Current_Color;
+
+   ----------------------
+   -- Set_Current_Rgba --
+   ----------------------
+
+   procedure Set_Current_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA)
+   is
+      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      pragma Import (C, Internal, "gtk_color_selection_set_current_rgba");
+   begin
+      Internal (Get_Object (Colorsel), Rgba);
+   end Set_Current_Rgba;
 
    -----------------------------
    -- Set_Has_Opacity_Control --
@@ -332,18 +340,18 @@ package body Gtk.Color_Selection is
    end Set_Previous_Color;
 
    -----------------------
-   -- Set_Update_Policy --
+   -- Set_Previous_Rgba --
    -----------------------
 
-   procedure Set_Update_Policy
+   procedure Set_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Policy   : Gtk.Enums.Gtk_Update_Type)
+       Rgba     : out GdkRGBA)
    is
-      procedure Internal (Colorsel : System.Address; Policy : Integer);
-      pragma Import (C, Internal, "gtk_color_selection_set_update_policy");
+      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      pragma Import (C, Internal, "gtk_color_selection_set_previous_rgba");
    begin
-      Internal (Get_Object (Colorsel), Gtk.Enums.Gtk_Update_Type'Pos (Policy));
-   end Set_Update_Policy;
+      Internal (Get_Object (Colorsel), Rgba);
+   end Set_Previous_Rgba;
 
    -----------------------------------------
    -- Set_Change_Palette_With_Screen_Hook --

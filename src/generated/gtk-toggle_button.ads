@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Toggle_Button is like a regular button, but can be in one of two
@@ -69,6 +63,8 @@ package Gtk.Toggle_Button is
    --  the button and you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
    --  toggle button.
+   --  "label": a string containing the message to be placed in the toggle
+   --  button.
 
    procedure Gtk_New_With_Mnemonic
       (Toggle_Button : out Gtk_Toggle_Button;
@@ -96,6 +92,7 @@ package Gtk.Toggle_Button is
        Is_Active     : Boolean);
    --  Change the state of the button. When Is_Active is True, the button is
    --  drawn as a pressed button
+   --  "is_active": True or False.
 
    function Get_Inconsistent
       (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
@@ -127,6 +124,9 @@ package Gtk.Toggle_Button is
    --  label; if False, draw the button like a normal button
 
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+   --  Emits the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal on the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button. There is no good reason for an
+   --  application ever to call this function.
 
    ---------------------
    -- Interfaces_Impl --
@@ -212,6 +212,8 @@ package Gtk.Toggle_Button is
    --
    --  "toggled"
    --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
+   --  Should be connected if you wish to perform an action whenever the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
 

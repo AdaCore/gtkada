@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Color_Selection widget is a complex dialog that allows the user to
@@ -57,7 +51,7 @@ with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Color_Selection is
 
-   type Gtk_Color_Selection_Record is new Gtk_Vbox_Record with null record;
+   type Gtk_Color_Selection_Record is new Gtk_Box_Record with null record;
    type Gtk_Color_Selection is access all Gtk_Color_Selection_Record'Class;
 
    ------------------
@@ -75,21 +69,6 @@ package Gtk.Color_Selection is
    -- Methods --
    -------------
 
-   procedure Get_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdouble);
-   pragma Obsolescent (Get_Color);
-   procedure Set_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdouble);
-   pragma Obsolescent (Set_Color);
-   --  Sets the current color to be Color. The first time this is called, it
-   --  will also set the original color to be Color too.
-   --  Deprecated since 2.0, Use Gtk.Color_Selection.Set_Current_Color
-   --  instead.
-   --  "color": an array of 4 doubles specifying the red, green, blue and
-   --  opacity to set the current color to.
-
    function Get_Current_Alpha
       (Colorsel : access Gtk_Color_Selection_Record) return guint16;
    procedure Set_Current_Alpha
@@ -97,7 +76,7 @@ package Gtk.Color_Selection is
        Alpha    : guint16);
    --  Sets the current opacity to be Alpha. The first time this is called, it
    --  will also set the original opacity to be Alpha too.
-   --  "alpha": an integer between 0 and 65535.
+   --  "alpha": an integer between 0 and 65535
 
    procedure Get_Current_Color
       (Colorsel : access Gtk_Color_Selection_Record;
@@ -107,7 +86,18 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color. The first time this is called, it
    --  will also set the original color to be Color too.
-   --  "color": A Gdk.Color.Gdk_Color to set the current color with.
+   --  "color": a Gdk.Color.Gdk_Color to set the current color with
+
+   procedure Get_Current_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA);
+   procedure Set_Current_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA);
+   --  Sets the current color to be Rgba. The first time this is called, it
+   --  will also set the original color to be Rgba too.
+   --  Since: gtk+ 3.0
+   --  "rgba": A GdkRGBA to set the current color with
 
    function Get_Has_Opacity_Control
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
@@ -115,7 +105,7 @@ package Gtk.Color_Selection is
       (Colorsel    : access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean);
    --  Sets the Colorsel to use or not use opacity.
-   --  "has_opacity": True if Colorsel can set the opacity, False otherwise.
+   --  "has_opacity": True if Colorsel can set the opacity, False otherwise
 
    function Get_Has_Palette
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
@@ -123,7 +113,7 @@ package Gtk.Color_Selection is
       (Colorsel    : access Gtk_Color_Selection_Record;
        Has_Palette : Boolean);
    --  Shows and hides the palette based upon the value of Has_Palette.
-   --  "has_palette": True if palette is to be visible, False otherwise.
+   --  "has_palette": True if palette is to be visible, False otherwise
 
    function Get_Previous_Alpha
       (Colorsel : access Gtk_Color_Selection_Record) return guint16;
@@ -133,7 +123,7 @@ package Gtk.Color_Selection is
    --  Sets the 'previous' alpha to be Alpha. This function should be called
    --  with some hesitations, as it might seem confusing to have that alpha
    --  change.
-   --  "alpha": an integer between 0 and 65535.
+   --  "alpha": an integer between 0 and 65535
 
    procedure Get_Previous_Color
       (Colorsel : access Gtk_Color_Selection_Record;
@@ -145,15 +135,25 @@ package Gtk.Color_Selection is
    --  with some hesitations, as it might seem confusing to have that color
    --  change. Calling Gtk.Color_Selection.Set_Current_Color will also set this
    --  color the first time it is called.
-   --  "color": a Gdk.Color.Gdk_Color to set the previous color with.
+   --  "color": a Gdk.Color.Gdk_Color to set the previous color with
+
+   procedure Get_Previous_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA);
+   procedure Set_Previous_Rgba
+      (Colorsel : access Gtk_Color_Selection_Record;
+       Rgba     : out GdkRGBA);
+   --  Sets the 'previous' color to be Rgba. This function should be called
+   --  with some hesitations, as it might seem confusing to have that color
+   --  change. Calling Gtk.Color_Selection.Set_Current_Rgba will also set this
+   --  color the first time it is called.
+   --  Since: gtk+ 3.0
+   --  "rgba": a GdkRGBA to set the previous color with
 
    function Is_Adjusting
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
-   --  Gets the current state of the Colorsel. if the selection has stopped.
-
-   procedure Set_Update_Policy
-      (Colorsel : access Gtk_Color_Selection_Record;
-       Policy   : Gtk.Enums.Gtk_Update_Type);
+   --  Gets the current state of the Colorsel. a color around, and False if
+   --  the selection has stopped
 
    ----------------------
    -- GtkAda additions --
@@ -187,10 +187,11 @@ package Gtk.Color_Selection is
       (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  Installs a global function to be called whenever the user tries to
    --  modify the palette in a color selection. This function should save the
-   --  new palette contents, and update the GtkSettings property
-   --  "gtk-color-palette" so all GtkColorSelection widgets will be modified.
+   --  new palette contents, and update the
+   --  Gtk.Settings.Gtk_Settings::gtk-color-palette GtkSettings property so all
+   --  GtkColorSelection widgets will be modified.
    --  Since: gtk+ 2.2
-   --  "func": a function to call when the custom palette needs saving.
+   --  "func": a function to call when the custom palette needs saving
 
    ---------------------
    -- Interfaces_Impl --
@@ -248,6 +249,11 @@ package Gtk.Color_Selection is
    --  Type: Gdk.Color
    --  Flags: read-write
    --
+   --  Name: Current_Rgba_Property
+   --  Type: Gdk.RGBA
+   --  Flags: read-write
+   --  The current RGBA color.
+   --
    --  Name: Has_Opacity_Control_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -258,6 +264,7 @@ package Gtk.Color_Selection is
 
    Current_Alpha_Property : constant Glib.Properties.Property_Uint;
    Current_Color_Property : constant Glib.Properties.Property_Boxed;
+   Current_Rgba_Property : constant Glib.Properties.Property_Boxed;
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean;
    Has_Palette_Property : constant Glib.Properties.Property_Boolean;
 
@@ -268,6 +275,8 @@ package Gtk.Color_Selection is
    --
    --  "color-changed"
    --     procedure Handler (Self : access Gtk_Color_Selection_Record'Class);
+   --  This signal is emitted when the color changes in the
+   --  Gtk.Color_Selection.Gtk_Color_Selection according to its update policy.
 
    Signal_Color_Changed : constant Glib.Signal_Name := "color-changed";
 
@@ -276,6 +285,8 @@ private
      Glib.Properties.Build ("current-alpha");
    Current_Color_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("current-color");
+   Current_Rgba_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("current-rgba");
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-opacity-control");
    Has_Palette_Property : constant Glib.Properties.Property_Boolean :=

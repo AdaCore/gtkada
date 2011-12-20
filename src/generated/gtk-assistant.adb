@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -45,7 +39,7 @@ package body Gtk.Assistant is
        Data      : System.Address;
        Destroy   : System.Address);
    pragma Import (C, C_Gtk_Assistant_Set_Forward_Page_Func, "gtk_assistant_set_forward_page_func");
-   --  Sets the page forwarding function to be Page_Func, this function will
+   --  Sets the page forwarding function to be Page_Func. This function will
    --  be used to determine what will be the next page when the user presses
    --  the forward button. Setting Page_Func to null will make the assistant to
    --  use the default forward function, which just goes to the next visible
@@ -291,6 +285,17 @@ package body Gtk.Assistant is
       return Internal (Get_Object (Assistant), Get_Object (Page), Position);
    end Insert_Page;
 
+   ---------------
+   -- Next_Page --
+   ---------------
+
+   procedure Next_Page (Assistant : access Gtk_Assistant_Record) is
+      procedure Internal (Assistant : System.Address);
+      pragma Import (C, Internal, "gtk_assistant_next_page");
+   begin
+      Internal (Get_Object (Assistant));
+   end Next_Page;
+
    ------------------
    -- Prepend_Page --
    ------------------
@@ -307,6 +312,17 @@ package body Gtk.Assistant is
       return Internal (Get_Object (Assistant), Get_Object (Page));
    end Prepend_Page;
 
+   -------------------
+   -- Previous_Page --
+   -------------------
+
+   procedure Previous_Page (Assistant : access Gtk_Assistant_Record) is
+      procedure Internal (Assistant : System.Address);
+      pragma Import (C, Internal, "gtk_assistant_previous_page");
+   begin
+      Internal (Get_Object (Assistant));
+   end Previous_Page;
+
    --------------------------
    -- Remove_Action_Widget --
    --------------------------
@@ -322,6 +338,20 @@ package body Gtk.Assistant is
    begin
       Internal (Get_Object (Assistant), Get_Object (Child));
    end Remove_Action_Widget;
+
+   -----------------
+   -- Remove_Page --
+   -----------------
+
+   procedure Remove_Page
+      (Assistant : access Gtk_Assistant_Record;
+       Page_Num  : Gint)
+   is
+      procedure Internal (Assistant : System.Address; Page_Num : Gint);
+      pragma Import (C, Internal, "gtk_assistant_remove_page");
+   begin
+      Internal (Get_Object (Assistant), Page_Num);
+   end Remove_Page;
 
    ----------------------
    -- Set_Current_Page --

@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Label is a light widget associated with some text you want to
@@ -206,7 +200,9 @@ package Gtk.Label is
    --  Gets the Pango.Layout.Pango_Layout used to display the label. The
    --  layout is useful to e.g. convert text positions to pixel positions, in
    --  combination with Gtk.Label.Get_Layout_Offsets. The returned layout is
-   --  owned by the label so need not be freed by the caller.
+   --  owned by the Label so need not be freed by the caller. The Label is free
+   --  to recreate its layout at any time, so it should be considered
+   --  read-only.
 
    procedure Get_Layout_Offsets
       (Label : access Gtk_Label_Record;
@@ -352,10 +348,6 @@ package Gtk.Label is
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired width, in characters.
 
-   function Parse_Uline
-      (Label  : access Gtk_Label_Record;
-       String : UTF8_String) return Guint;
-
    procedure Select_Region
       (Label        : access Gtk_Label_Record;
        Start_Offset : Gint := -1;
@@ -401,6 +393,7 @@ package Gtk.Label is
    --  An empty string disables the underlines.
    --  example: If the text is FooBarBaz and the Pattern is "___ ___" then
    --  both "Foo" and "Baz" will be underlined, but not "Bar".
+   --  "pattern": The pattern as described above.
 
    procedure Set_Text_With_Mnemonic
       (Label : access Gtk_Label_Record;
@@ -460,10 +453,11 @@ package Gtk.Label is
    --  Type: Gint
    --  Flags: read-write
    --  The desired maximum width of the label, in characters. If this property
-   --  is set to -1, the width will be calculated automatically, otherwise the
-   --  label will request space for no more than the requested number of
-   --  characters. If the Gtk.Label.Gtk_Label:width-chars property is set to a
-   --  positive value, then the "max-width-chars" property is ignored.
+   --  is set to -1, the width will be calculated automatically. See the
+   --  section on <link linkend="label-text-layout">text layout</link> for
+   --  details of how Gtk.Label.Gtk_Label:width-chars and
+   --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
+   --  and wrapped labels.
    --
    --  Name: Mnemonic_Keyval_Property
    --  Type: Guint
@@ -513,10 +507,10 @@ package Gtk.Label is
    --  Type: Gint
    --  Flags: read-write
    --  The desired width of the label, in characters. If this property is set
-   --  to -1, the width will be calculated automatically, otherwise the label
-   --  will request either 3 characters or the property value, whichever is
-   --  greater. If the "width-chars" property is set to a positive value, then
-   --  the Gtk.Label.Gtk_Label:max-width-chars property is ignored.
+   --  to -1, the width will be calculated automatically. See the section on
+   --  <link linkend="label-text-layout">text layout</link> for details of how
+   --  Gtk.Label.Gtk_Label:width-chars and Gtk.Label.Gtk_Label:max-width-chars
+   --  determine the width of ellipsized and wrapped labels.
    --
    --  Name: Wrap_Property
    --  Type: Boolean

@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Ada_05;
 --  <description>
@@ -45,6 +39,7 @@ with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
+with Gtk.Cellarea;      use Gtk.Cellarea;
 with Gtk.Tree_Model;    use Gtk.Tree_Model;
 
 package Gtk.Cell_Layout is
@@ -56,6 +51,12 @@ package Gtk.Cell_Layout is
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  A function which should set the value of Cell_Layout's cell renderer(s)
+   --  as appropriate.
+   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  "cell": the cell renderer whose value is to be set
+   --  "tree_model": the model
+   --  "iter": a GtkTreeIter indicating the row to set the value for
 
    ------------------
    -- Constructors --
@@ -74,14 +75,13 @@ package Gtk.Cell_Layout is
        Attribute   : UTF8_String;
        Column      : Gint);
    --  Adds an attribute mapping to the list in Cell_Layout. The Column is the
-   --  column of the model to get a value from, and the Attribute is the
-   --  parameter on Cell to be set from the value. So for example if column 2
-   --  of the model contains strings, you could have the "text" attribute of a
+   --  column of the model to get a value from, and the example if column 2 of
+   --  the model contains strings, you could have the "text" attribute of a
    --  Gtk.Cellrenderertext.Gtk_Cellrenderertext get its values from column 2.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "attribute": An attribute on the renderer.
-   --  "column": The column position on the model to get the attribute from.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  "attribute": an attribute on the renderer
+   --  "column": the column position on the model to get the attribute from
 
    procedure Clear (Cell_Layout : Gtk_Cell_Layout);
    pragma Import (C, Clear, "gtk_cell_layout_clear");
@@ -96,15 +96,22 @@ package Gtk.Cell_Layout is
    --  Clears all existing attributes previously set with
    --  gtk_cell_layout_set_attributes.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer to clear the attribute
-   --  mapping on.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to clear the attribute
+   --  mapping on
+
+   function Get_Area
+      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cellarea.Gtk_Cellarea;
+   --  Returns the underlying Gtk.Cellarea.Gtk_Cellarea which might be
+   --  Cell_Layout if called on a Gtk.Cellarea.Gtk_Cellarea or might be null if
+   --  no Gtk.Cellarea.Gtk_Cellarea is used by Cell_Layout.
+   --  Since: gtk+ 3.0
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
        return Glib.Object.Object_Simple_List.GList;
-   --  Returns the cell renderers which have been added to Cell_Layout.
-   --  renderers has been newly allocated and should be freed with g_list_free
-   --  when no longer needed.
+   --  Returns the cell renderers which have been added to Cell_Layout. a list
+   --  of cell renderers. The list, but not the renderers has been newly
+   --  allocated and should be freed with g_list_free when no longer needed.
    --  Since: gtk+ 2.12
 
    procedure Pack_End
@@ -115,9 +122,9 @@ package Gtk.Cell_Layout is
    --  divided evenly between cells for which Expand is True. Note that reusing
    --  the same cell renderer is not supported.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "expand": True if Cell is to be given extra space allocated to
-   --  Cell_Layout.
+   --  Cell_Layout
 
    procedure Pack_Start
       (Cell_Layout : Gtk_Cell_Layout;
@@ -128,9 +135,9 @@ package Gtk.Cell_Layout is
    --  is divided evenly between cells for which Expand is True. Note that
    --  reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "expand": True if Cell is to be given extra space allocated to
-   --  Cell_Layout.
+   --  Cell_Layout
 
    procedure Reorder
       (Cell_Layout : Gtk_Cell_Layout;
@@ -139,8 +146,8 @@ package Gtk.Cell_Layout is
    --  Re-inserts Cell at Position. Note that Cell has already to be packed
    --  into Cell_Layout for this to function properly.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer to reorder.
-   --  "position": New position to insert Cell at.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to reorder
+   --  "position": new position to insert Cell at
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
@@ -149,10 +156,10 @@ package Gtk.Cell_Layout is
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
    --  function is used instead of the standard attributes mapping for setting
    --  the column value, and should set the value of Cell_Layout's cell
-   --  renderer(s) as appropriate. Func may be null to remove and older one.
+   --  renderer(s) as appropriate.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -165,6 +172,13 @@ package Gtk.Cell_Layout is
          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
+      --  A function which should set the value of Cell_Layout's cell renderer(s)
+      --  as appropriate.
+      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  "cell": the cell renderer whose value is to be set
+      --  "tree_model": the model
+      --  "iter": a GtkTreeIter indicating the row to set the value for
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -174,12 +188,11 @@ package Gtk.Cell_Layout is
       --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
       --  function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
-      --  cell renderer(s) as appropriate. Func may be null to remove and older
-      --  one.
+      --  cell renderer(s) as appropriate.
       --  Since: gtk+ 2.4
-      --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-      --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-      --  "func_data": The user data for Func.
+      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+      --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 

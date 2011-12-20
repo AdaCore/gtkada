@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -57,17 +51,6 @@ package body Gtk.Fixed is
    begin
       Set_Object (Fixed, Internal);
    end Initialize;
-
-   --------------------
-   -- Get_Has_Window --
-   --------------------
-
-   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean is
-      function Internal (Fixed : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_fixed_get_has_window");
-   begin
-      return Boolean'Val (Internal (Get_Object (Fixed)));
-   end Get_Has_Window;
 
    ----------
    -- Move --
@@ -108,19 +91,5 @@ package body Gtk.Fixed is
    begin
       Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Put;
-
-   --------------------
-   -- Set_Has_Window --
-   --------------------
-
-   procedure Set_Has_Window
-      (Fixed      : access Gtk_Fixed_Record;
-       Has_Window : Boolean := False)
-   is
-      procedure Internal (Fixed : System.Address; Has_Window : Integer);
-      pragma Import (C, Internal, "gtk_fixed_set_has_window");
-   begin
-      Internal (Get_Object (Fixed), Boolean'Pos (Has_Window));
-   end Set_Has_Window;
 
 end Gtk.Fixed;

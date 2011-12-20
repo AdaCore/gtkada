@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -140,12 +134,12 @@ package body Gtk.Entry_Completion is
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
    --  function is used instead of the standard attributes mapping for setting
    --  the column value, and should set the value of Cell_Layout's cell
-   --  renderer(s) as appropriate. Func may be null to remove and older one.
+   --  renderer(s) as appropriate.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-   --  "func_data": The user data for Func.
-   --  "destroy": The destroy notification for Func_Data.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func_data": user data for Func
+   --  "destroy": destroy notify for Func_Data
 
    procedure C_Gtk_Entry_Completion_Set_Match_Func
       (Completion  : System.Address;
@@ -157,10 +151,9 @@ package body Gtk.Entry_Completion is
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-   --  use.
-   --  "func_data": The user data for Func.
-   --  "func_notify": Destroy notifier for Func_Data.
+   --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to use
+   --  "func_data": user data for Func
+   --  "func_notify": destroy notify for Func_Data.
 
    procedure Internal_Cell_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -169,6 +162,11 @@ package body Gtk.Entry_Completion is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Cell_Data_Func);
+   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  "cell": the cell renderer whose value is to be set
+   --  "tree_model": the model
+   --  "iter": a GtkTreeIter indicating the row to set the value for
+   --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
    -----------------------------
    -- Internal_Cell_Data_Func --
@@ -194,6 +192,10 @@ package body Gtk.Entry_Completion is
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
+   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
+   --  "key": the string to match, normalized and case-folded
+   --  "iter": a GtkTreeIter indicating the row to match
+   --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
    ----------------------------------------------
    -- Internal_Gtk_Entry_Completion_Match_Func --
@@ -225,6 +227,19 @@ package body Gtk.Entry_Completion is
       Gtk.Entry_Completion.Initialize (Completion);
    end Gtk_New;
 
+   -----------------------
+   -- Gtk_New_With_Area --
+   -----------------------
+
+   procedure Gtk_New_With_Area
+      (Completion : out Gtk_Entry_Completion;
+       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class)
+   is
+   begin
+      Completion := new Gtk_Entry_Completion_Record;
+      Gtk.Entry_Completion.Initialize_With_Area (Completion, Area);
+   end Gtk_New_With_Area;
+
    ----------------
    -- Initialize --
    ----------------
@@ -237,6 +252,20 @@ package body Gtk.Entry_Completion is
    begin
       Set_Object (Completion, Internal);
    end Initialize;
+
+   --------------------------
+   -- Initialize_With_Area --
+   --------------------------
+
+   procedure Initialize_With_Area
+      (Completion : access Gtk_Entry_Completion_Record'Class;
+       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class)
+   is
+      function Internal (Area : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_entry_completion_new_with_area");
+   begin
+      Set_Object (Completion, Internal (Get_Object (Area)));
+   end Initialize_With_Area;
 
    --------------
    -- Complete --
@@ -475,6 +504,13 @@ package body Gtk.Entry_Completion is
           Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
+      --  A function which should set the value of Cell_Layout's cell
+      --  renderer(s) as appropriate.
+      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  "cell": the cell renderer whose value is to be set
+      --  "tree_model": the model
+      --  "iter": a GtkTreeIter indicating the row to set the value for
+      --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --
@@ -564,6 +600,17 @@ package body Gtk.Entry_Completion is
           Key        : UTF8_String;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Boolean;
+      --  A function which decides whether the row indicated by Iter matches a
+      --  given Key, and should be displayed as a possible completion for Key.
+      --  Note that Key is normalized and case-folded (see g_utf8_normalize and
+      --  g_utf8_casefold). If this is not appropriate, match functions have
+      --  access to the unmodified key via <literal>gtk_entry_get_text
+      --  (GTK_ENTRY (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+      --  for Key
+      --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
+      --  "key": the string to match, normalized and case-folded
+      --  "iter": a GtkTreeIter indicating the row to match
+      --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       -----------------
       -- Internal_Cb --
@@ -736,6 +783,21 @@ package body Gtk.Entry_Completion is
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell));
    end Clear_Attributes;
+
+   --------------
+   -- Get_Area --
+   --------------
+
+   function Get_Area
+      (Cell_Layout : access Gtk_Entry_Completion_Record)
+       return Gtk.Cellarea.Gtk_Cellarea
+   is
+      function Internal (Cell_Layout : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_cell_layout_get_area");
+      Stub_Gtk_Cellarea : Gtk.Cellarea.Gtk_Cellarea_Record;
+   begin
+      return Gtk.Cellarea.Gtk_Cellarea (Get_User_Data (Internal (Get_Object (Cell_Layout)), Stub_Gtk_Cellarea));
+   end Get_Area;
 
    ---------------
    -- Get_Cells --

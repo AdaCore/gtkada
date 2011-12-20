@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A box is a container that can have multiple children, organized either
@@ -81,6 +75,19 @@ package Gtk.Box is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Box         : out Gtk_Box;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint);
+   procedure Initialize
+      (Box         : access Gtk_Box_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint);
+   --  Creates a new Gtk.Box.Gtk_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box's orientation.
+   --  "spacing": the number of pixels to place by default between children.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_box_get_type");
 
@@ -92,7 +99,10 @@ package Gtk.Box is
       (Box         : access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Hbox.
+   --  Creates a new Gtk.Box.Gtk_Hbox. wich is a very quick and easy change.
+   --  But the recommendation is to switch to Gtk.Grid.Gtk_Grid, since
+   --  Gtk.Box.Gtk_Box is going to go away eventually. See <xref
+   --  linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -108,7 +118,10 @@ package Gtk.Box is
       (Box         : access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Vbox.
+   --  Creates a new Gtk.Box.Gtk_Vbox. wich is a very quick and easy change.
+   --  But the recommendation is to switch to Gtk.Grid.Gtk_Grid, since
+   --  Gtk.Box.Gtk_Box is going to go away eventually. See <xref
+   --  linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -151,25 +164,12 @@ package Gtk.Box is
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
    --  effect if Expand is set to False. A child is always allocated the full
-   --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
-   --  This option affects the other dimension
+   --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
+   --  Gtk.Box.Gtk_Box. This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
    --  reference ends of Box, then Padding pixels are also put between
-
-   procedure Pack_End_Defaults
-      (Box    : access Gtk_Box_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Pack_End_Defaults);
-   --  Adds Widget to Box, packed with reference to the end of Box. The child
-   --  is packed after any other child packed with reference to the start of
-   --  Box. Parameters for how to pack the child Widget,
-   --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
-   --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
-   --  0, respectively.
-   --  Deprecated since 2.14, Use Gtk.Box.Pack_End
-   --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
    procedure Pack_Start
       (In_Box  : access Gtk_Box_Record;
@@ -182,28 +182,17 @@ package Gtk.Box is
    --  Box.
    --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
    --  "expand": True if the new child is to be given extra space allocated to
+   --  Box. The extra space will be divided evenly between all children that
+   --  use this option
    --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
    --  effect if Expand is set to False. A child is always allocated the full
-   --  height of a Gtk.Box.Gtk_Hbox and the full width of a Gtk.Box.Gtk_Vbox.
-   --  This option affects the other dimension
+   --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
+   --  Gtk.Box.Gtk_Box. This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
    --  reference ends of Box, then Padding pixels are also put between
-
-   procedure Pack_Start_Defaults
-      (Box    : access Gtk_Box_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Pack_Start_Defaults);
-   --  Adds Widget to Box, packed with reference to the start of Box. The
-   --  child is packed after any other child packed with reference to the start
-   --  of Box. Parameters for how to pack the child Widget,
-   --  Gtk.Box.Gtk_Box:expand, Gtk.Box.Gtk_Box:fill and
-   --  Gtk.Box.Gtk_Box:padding, are given their default values, True, True, and
-   --  0, respectively.
-   --  Deprecated since 2.14, Use Gtk.Box.Pack_Start
-   --  "widget": the Gtk.Widget.Gtk_Widget to be added to Box
 
    procedure Query_Child_Packing
       (Box       : access Gtk_Box_Record;

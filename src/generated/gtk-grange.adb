@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -204,19 +198,6 @@ package body Gtk.GRange is
       return Boolean'Val (Internal (Get_Object (The_Range)));
    end Get_Slider_Size_Fixed;
 
-   -----------------------
-   -- Get_Update_Policy --
-   -----------------------
-
-   function Get_Update_Policy
-      (The_Range : access Gtk_Range_Record) return Gtk.Enums.Gtk_Update_Type
-   is
-      function Internal (The_Range : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_range_get_update_policy");
-   begin
-      return Gtk.Enums.Gtk_Update_Type'Val (Internal (Get_Object (The_Range)));
-   end Get_Update_Policy;
-
    -----------------------------------
    -- Get_Upper_Stepper_Sensitivity --
    -----------------------------------
@@ -338,12 +319,12 @@ package body Gtk.GRange is
 
    procedure Set_Min_Slider_Size
       (The_Range : access Gtk_Range_Record;
-       Min_Size  : Boolean)
+       Min_Size  : Gint)
    is
-      procedure Internal (The_Range : System.Address; Min_Size : Integer);
+      procedure Internal (The_Range : System.Address; Min_Size : Gint);
       pragma Import (C, Internal, "gtk_range_set_min_slider_size");
    begin
-      Internal (Get_Object (The_Range), Boolean'Pos (Min_Size));
+      Internal (Get_Object (The_Range), Min_Size);
    end Set_Min_Slider_Size;
 
    ---------------
@@ -423,20 +404,6 @@ package body Gtk.GRange is
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Size_Fixed));
    end Set_Slider_Size_Fixed;
-
-   -----------------------
-   -- Set_Update_Policy --
-   -----------------------
-
-   procedure Set_Update_Policy
-      (The_Range : access Gtk_Range_Record;
-       Policy    : Gtk.Enums.Gtk_Update_Type)
-   is
-      procedure Internal (The_Range : System.Address; Policy : Integer);
-      pragma Import (C, Internal, "gtk_range_set_update_policy");
-   begin
-      Internal (Get_Object (The_Range), Gtk.Enums.Gtk_Update_Type'Pos (Policy));
-   end Set_Update_Policy;
 
    -----------------------------------
    -- Set_Upper_Stepper_Sensitivity --

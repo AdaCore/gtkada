@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Table is a container that can contain any number of children. Each
@@ -73,6 +67,10 @@ package Gtk.Table is
    --  Columns columns, which all have the same width if Homogeneous is True.
    --  If Homogeneous is False, the width will be calculated with the children
    --  contained in the table. Same behavior for the rows.
+   --  "rows": The number of rows the new table should have.
+   --  "columns": The number of columns the new table should have.
+   --  "homogeneous": If set to True, all table cells are resized to the size
+   --  of the cell containing the largest widget.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_table_get_type");
@@ -100,6 +98,21 @@ package Gtk.Table is
    --  resized (whether the child can shrink or expand). See the description in
    --  Gtk.Box for more information on the possible values. Xpadding and
    --  Ypadding are the amount of space left around the child.
+   --  "child": The widget to add.
+   --  "left_attach": the column number to attach the left side of a child
+   --  widget to.
+   --  "right_attach": the column number to attach the right side of a child
+   --  widget to.
+   --  "top_attach": the row number to attach the top of a child widget to.
+   --  "bottom_attach": the row number to attach the bottom of a child widget
+   --  to.
+   --  "xoptions": Used to specify the properties of the child widget when the
+   --  table is resized.
+   --  "yoptions": The same as xoptions, except this field determines
+   --  behaviour of vertical resizing.
+   --  "xpadding": An integer value specifying the padding on the left and
+   --  right of the widget being added to the table.
+   --  "ypadding": The amount of padding above and below the child widget.
 
    procedure Attach_Defaults
       (Table         : access Gtk_Table_Record;
@@ -112,6 +125,14 @@ package Gtk.Table is
    --  put around the child, and the options are set to Expand and Fill. This
    --  call is similar to Attach with default values and is only provided for
    --  compatibility.
+   --  "widget": The child widget to add.
+   --  "left_attach": The column number to attach the left side of the child
+   --  widget to.
+   --  "right_attach": The column number to attach the right side of the child
+   --  widget to.
+   --  "top_attach": The row number to attach the top of the child widget to.
+   --  "bottom_attach": The row number to attach the bottom of the child
+   --  widget to.
 
    function Get_Col_Spacing
       (Table  : access Gtk_Table_Record;
@@ -121,6 +142,8 @@ package Gtk.Table is
        Column  : Guint;
        Spacing : Guint);
    --  Set the spacing in pixels between Column and the next one.
+   --  "column": the column whose spacing should be changed.
+   --  "spacing": number of pixels that the spacing should take up.
 
    function Get_Default_Col_Spacing
       (Table : access Gtk_Table_Record) return Guint;
@@ -139,6 +162,8 @@ package Gtk.Table is
    --  Indicate the homogeneous status of the table. If Homogeneous is True,
    --  the rows and columns of the table will all be allocated the same width
    --  or height.
+   --  "homogeneous": Set to True to ensure all table cells are the same size.
+   --  Set to False if this is not your desired behaviour.
 
    function Get_Row_Spacing
       (Table : access Gtk_Table_Record;
@@ -147,12 +172,15 @@ package Gtk.Table is
       (Table   : access Gtk_Table_Record;
        Row     : Guint;
        Spacing : Guint);
+   --  Changes the space between a given table row and the subsequent row.
+   --  "row": row number whose spacing will be changed.
+   --  "spacing": number of pixels that the spacing should take up.
 
    procedure Get_Size
       (Table   : access Gtk_Table_Record;
        Rows    : out Guint;
        Columns : out Guint);
-   --  Returns the number of rows and columns in the table.
+   --  Gets the number of rows and columns in the table.
    --  Since: gtk+ 2.22
    --  "rows": return location for the number of rows, or null
    --  "columns": return location for the number of columns, or null
@@ -161,14 +189,24 @@ package Gtk.Table is
       (Table   : access Gtk_Table_Record;
        Rows    : Guint;
        Columns : Guint);
+   --  If you need to change a table's size <emphasis>after</emphasis> it has
+   --  been created, this function allows you to do so.
+   --  "rows": The new number of rows.
+   --  "columns": The new number of columns.
 
    procedure Set_Col_Spacings
       (Table   : access Gtk_Table_Record;
        Spacing : Guint);
+   --  Sets the space between every column in Table equal to Spacing.
+   --  "spacing": the number of pixels of space to place between every column
+   --  in the table.
 
    procedure Set_Row_Spacings
       (Table   : access Gtk_Table_Record;
        Spacing : Guint);
+   --  Sets the space between every row in Table equal to Spacing.
+   --  "spacing": the number of pixels of space to place between every row in
+   --  the table.
 
    ----------------
    -- Interfaces --

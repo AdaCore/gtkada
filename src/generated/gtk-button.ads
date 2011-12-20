@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This package implements a general button widget. This button can be
@@ -78,6 +72,9 @@ package Gtk.Button is
    procedure Initialize
       (Button : access Gtk_Button_Record'Class;
        Label  : UTF8_String := "");
+   --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
+   --  containing the given text.
+   --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
 
    procedure Gtk_New_With_Mnemonic
       (Button : out Gtk_Button;
@@ -101,8 +98,15 @@ package Gtk.Button is
    -------------
 
    procedure Clicked (Button : access Gtk_Button_Record);
+   --  Emits a Gtk.Button.Gtk_Button::clicked signal to the given
+   --  Gtk.Button.Gtk_Button.
 
    procedure Enter (Button : access Gtk_Button_Record);
+   pragma Obsolescent (Enter);
+   --  Emits a Gtk.Button.Gtk_Button::enter signal to the given
+   --  Gtk.Button.Gtk_Button.
+   --  Deprecated since 2.20, Use the
+   --  Gtk.Widget.Gtk_Widget::enter-notify-event signal.
 
    procedure Get_Alignment
       (Button : access Gtk_Button_Record;
@@ -113,7 +117,7 @@ package Gtk.Button is
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Sets the alignment of the child. This property has no effect unless the
-   --  child is a Gtk.Misc.Gtk_Misc or a GtkAligment.
+   --  child is a Gtk.Misc.Gtk_Misc or a Gtk.Alignment.Gtk_Alignment.
    --  Since: gtk+ 2.4
    --  "xalign": the horizontal position of the child, 0.0 is left aligned,
    --  1.0 is right aligned
@@ -174,6 +178,11 @@ package Gtk.Button is
    procedure Set_Relief
       (Button   : access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style);
+   --  Sets the relief style of the edges of the given Gtk.Button.Gtk_Button
+   --  widget. Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF,
+   --  GTK_RELIEF_NONE. The default style is, as one can guess,
+   --  GTK_RELIEF_NORMAL. <!-- FIXME: put pictures of each style -->
+   --  "newstyle": The GtkReliefStyle as described above.
 
    function Get_Use_Stock (Button : access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Stock
@@ -193,10 +202,25 @@ package Gtk.Button is
    --  "use_underline": True if underlines in the text indicate mnemonics
 
    procedure Leave (Button : access Gtk_Button_Record);
+   pragma Obsolescent (Leave);
+   --  Emits a Gtk.Button.Gtk_Button::leave signal to the given
+   --  Gtk.Button.Gtk_Button.
+   --  Deprecated since 2.20, Use the
+   --  Gtk.Widget.Gtk_Widget::leave-notify-event signal.
 
    procedure Pressed (Button : access Gtk_Button_Record);
+   pragma Obsolescent (Pressed);
+   --  Emits a Gtk.Button.Gtk_Button::pressed signal to the given
+   --  Gtk.Button.Gtk_Button.
+   --  Deprecated since 2.20, Use the
+   --  Gtk.Widget.Gtk_Widget::button-press-event signal.
 
    procedure Released (Button : access Gtk_Button_Record);
+   pragma Obsolescent (Released);
+   --  Emits a Gtk.Button.Gtk_Button::released signal to the given
+   --  Gtk.Button.Gtk_Button.
+   --  Deprecated since 2.20, Use the
+   --  Gtk.Widget.Gtk_Widget::button-release-event signal.
 
    ---------------------
    -- Interfaces_Impl --
@@ -266,6 +290,7 @@ package Gtk.Button is
    --  Name: Image_Property
    --  Type: Gtk.Widget.Gtk_Widget
    --  Flags: read-write
+   --  The child widget to appear next to the button text.
    --
    --  Name: Image_Position_Property
    --  Type: Gtk.Enums.Gtk_Position_Type
@@ -292,14 +317,14 @@ package Gtk.Button is
    --  Type: Gfloat
    --  Flags: read-write
    --  If the child of the button is a Gtk.Misc.Gtk_Misc or
-   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control it's
+   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control its
    --  horizontal alignment. 0.0 is left aligned, 1.0 is right aligned.
    --
    --  Name: Yalign_Property
    --  Type: Gfloat
    --  Flags: read-write
    --  If the child of the button is a Gtk.Misc.Gtk_Misc or
-   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control it's
+   --  Gtk.Alignment.Gtk_Alignment, this property can be used to control its
    --  vertical alignment. 0.0 is top aligned, 1.0 is bottom aligned.
 
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;

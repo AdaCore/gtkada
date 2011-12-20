@@ -1,33 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk_About_Dialog offers a simple way to display information about a
 --  program like its logo, name, copyright, website and license. It is also
@@ -65,15 +58,6 @@ package Gtk.About_Dialog is
 
    type Gtk_About_Dialog_Record is new Gtk_Dialog_Record with null record;
    type Gtk_About_Dialog is access all Gtk_About_Dialog_Record'Class;
-
-   type Activate_Link_Func is access procedure
-     (About : access Gtk_About_Dialog_Record'Class;
-      Link  : UTF8_String);
-   --  The type of a function which is called when a URL or email link is
-   --  activated.
-   --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-   --  activated
-   --  "link_": the URL or email address to which the activated link points
 
    ------------------
    -- Constructors --
@@ -154,6 +138,17 @@ package Gtk.About_Dialog is
    --  Since: gtk+ 2.6
    --  "license": the license information or null
 
+   function Get_License_Type
+      (About : access Gtk_About_Dialog_Record) return GtkLicense;
+   procedure Set_License_Type
+      (About        : access Gtk_About_Dialog_Record;
+       License_Type : GtkLicense);
+   --  Sets the license of the application showing the About dialog from a
+   --  list of known licenses. This function overrides the license set using
+   --  Gtk.About_Dialog.Set_License.
+   --  Since: gtk+ 3.0
+   --  "license_type": the type of license
+
    function Get_Logo
       (About : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    procedure Set_Logo
@@ -175,19 +170,6 @@ package Gtk.About_Dialog is
    --  be used.
    --  Since: gtk+ 2.6
    --  "icon_name": an icon name, or null
-
-   function Get_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String;
-   pragma Obsolescent (Get_Name);
-   procedure Set_Name
-      (About : access Gtk_About_Dialog_Record;
-       Name  : UTF8_String);
-   pragma Obsolescent (Set_Name);
-   --  Sets the name to display in the about dialog. If this is not set, it
-   --  defaults to g_get_application_name.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 2.12, Use Gtk.About_Dialog.Set_Program_Name instead.
-   --  "name": the program name
 
    function Get_Program_Name
       (About : access Gtk_About_Dialog_Record) return UTF8_String;
@@ -232,8 +214,7 @@ package Gtk.About_Dialog is
    procedure Set_Website
       (About   : access Gtk_About_Dialog_Record;
        Website : UTF8_String);
-   --  Sets the URL to use for the website link. Note that that the hook
-   --  functions need to be set up before calling this function.
+   --  Sets the URL to use for the website link.
    --  Since: gtk+ 2.6
    --  "website": a URL string starting with "http://"
 
@@ -242,8 +223,7 @@ package Gtk.About_Dialog is
    procedure Set_Website_Label
       (About         : access Gtk_About_Dialog_Record;
        Website_Label : UTF8_String);
-   --  Sets the label to be used for the website link. It defaults to the
-   --  website URL.
+   --  Sets the label to be used for the website link.
    --  Since: gtk+ 2.6
    --  "website_label": the label used for the website link
 
@@ -255,93 +235,6 @@ package Gtk.About_Dialog is
    --  Sets whether the license text in About is automatically wrapped.
    --  Since: gtk+ 2.8
    --  "wrap_license": whether to wrap the license
-
-   procedure Set_Email_Hook (Func : Activate_Link_Func);
-   pragma Obsolescent (Set_Email_Hook);
-   --  Installs a global function to be called whenever the user activates an
-   --  email link in an about dialog. Since 2.18 there exists a default
-   --  function which uses gtk_show_uri(). To deactivate it, you can pass null
-   --  for Func.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the
-   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-   --  "func": a function to call when an email link is activated.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Email_Hook_User_Data is
-
-      type Activate_Link_Func is access procedure
-        (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-         Link  : UTF8_String;
-         Data  : User_Data_Type);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered with
-      --  Gtk.About_Dialog.Set_Email_Hook or gtk_about_dialog_set_url_hook
-
-      procedure Set_Email_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type);
-      pragma Obsolescent (Set_Email_Hook);
-      --  Installs a global function to be called whenever the user activates
-      --  an email link in an about dialog. Since 2.18 there exists a default
-      --  function which uses gtk_show_uri(). To deactivate it, you can pass
-      --  null for Func.
-      --  Since: gtk+ 2.6
-      --  Deprecated since 2.24, Use the
-      --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-      --  "func": a function to call when an email link is activated.
-      --  "data": data to pass to Func
-
-   end Set_Email_Hook_User_Data;
-
-   procedure Set_Url_Hook (Func : Activate_Link_Func);
-   pragma Obsolescent (Set_Url_Hook);
-   --  Installs a global function to be called whenever the user activates a
-   --  URL link in an about dialog. Since 2.18 there exists a default function
-   --  which uses gtk_show_uri(). To deactivate it, you can pass null for Func.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 2.24, Use the
-   --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-   --  "func": a function to call when a URL link is activated.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Url_Hook_User_Data is
-
-      type Activate_Link_Func is access procedure
-        (About : access Gtk.About_Dialog.Gtk_About_Dialog_Record'Class;
-         Link  : UTF8_String;
-         Data  : User_Data_Type);
-      --  The type of a function which is called when a URL or email link is
-      --  activated.
-      --  "about": the Gtk.About_Dialog.Gtk_About_Dialog in which the link was
-      --  activated
-      --  "link_": the URL or email address to which the activated link points
-      --  "data": user data that was passed when the function was registered with
-      --  Gtk.About_Dialog.Set_Email_Hook or Gtk.About_Dialog.Set_Url_Hook
-
-      procedure Set_Url_Hook
-         (Func : Activate_Link_Func;
-          Data : User_Data_Type);
-      pragma Obsolescent (Set_Url_Hook);
-      --  Installs a global function to be called whenever the user activates
-      --  a URL link in an about dialog. Since 2.18 there exists a default
-      --  function which uses gtk_show_uri(). To deactivate it, you can pass
-      --  null for Func.
-      --  Since: gtk+ 2.6
-      --  Deprecated since 2.24, Use the
-      --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal
-      --  "func": a function to call when a URL link is activated.
-      --  "data": data to pass to Func
-
-   end Set_Url_Hook_User_Data;
 
    ----------------
    -- Interfaces --
@@ -386,13 +279,30 @@ package Gtk.About_Dialog is
    --  a secondary dialog, therefore it is fine to use a long multi-paragraph
    --  text. Note that the text is only wrapped in the text view if the
    --  "wrap-license" property is set to True; otherwise the text itself must
-   --  contain the intended linebreaks.
+   --  contain the intended linebreaks. When setting this property to a
+   --  non-null value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
+   --  property is set to %GTK_LICENSE_CUSTOM as a side effect.
+   --
+   --  Name: License_Type_Property
+   --  Type: License
+   --  Flags: read-write
+   --  The license of the program, as a value of the %GtkLicense enumeration.
+   --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
+   --  standard disclaimer and link the user to the appropriate online resource
+   --  for the license text. If %GTK_LICENSE_UNKNOWN is used, the link used
+   --  will be the same specified in the
+   --  Gtk.About_Dialog.Gtk_About_Dialog:website property. If
+   --  %GTK_LICENSE_CUSTOM is used, the current contents of the
+   --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used. For any
+   --  other GtkLicense value, the contents of the
+   --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
+   --  property as a side effect.
    --
    --  Name: Logo_Property
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
-   --  gtk_window_get_default_icon_list.
+   --  Gtk.Window.Get_Default_Icon_List.
    --
    --  Name: Logo_Icon_Name_Property
    --  Type: UTF8_String
@@ -427,9 +337,7 @@ package Gtk.About_Dialog is
    --  Name: Website_Label_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   --  The label for the link to the website of the program. If this is not
-   --  set, it defaults to the URL specified in the
-   --  Gtk.About_Dialog.Gtk_About_Dialog:website property.
+   --  The label for the link to the website of the program.
    --
    --  Name: Wrap_License_Property
    --  Type: Boolean
@@ -439,6 +347,7 @@ package Gtk.About_Dialog is
    Comments_Property : constant Glib.Properties.Property_String;
    Copyright_Property : constant Glib.Properties.Property_String;
    License_Property : constant Glib.Properties.Property_String;
+   License_Type_Property : constant Glib.Properties.Property_Boxed;
    Logo_Property : constant Glib.Properties.Property_Object;
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String;
    Program_Name_Property : constant Glib.Properties.Property_String;
@@ -472,6 +381,8 @@ private
      Glib.Properties.Build ("copyright");
    License_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("license");
+   License_Type_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("license-type");
    Logo_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("logo");
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String :=

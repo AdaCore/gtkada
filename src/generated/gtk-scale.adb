@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -37,6 +31,20 @@ package body Gtk.Scale is
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Scale_Record);
    pragma Unreferenced (Type_Conversion);
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Scale       : out Gtk_Scale;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+   begin
+      Scale := new Gtk_Scale_Record;
+      Gtk.Scale.Initialize (Scale, Orientation, Adjustment);
+   end Gtk_New;
 
    --------------------
    -- Gtk_New_Hscale --
@@ -93,6 +101,39 @@ package body Gtk.Scale is
       Scale := new Gtk_Vscale_Record;
       Gtk.Scale.Initialize_Vscale (Scale, Min, Max, Step);
    end Gtk_New_Vscale;
+
+   ------------------------
+   -- Gtk_New_With_Range --
+   ------------------------
+
+   procedure Gtk_New_With_Range
+      (Scale       : out Gtk_Scale;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Min         : Gdouble;
+       Max         : Gdouble;
+       Step        : Gdouble)
+   is
+   begin
+      Scale := new Gtk_Scale_Record;
+      Gtk.Scale.Initialize_With_Range (Scale, Orientation, Min, Max, Step);
+   end Gtk_New_With_Range;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Scale       : access Gtk_Scale_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      function Internal
+         (Orientation : Integer;
+          Adjustment  : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scale_new");
+   begin
+      Set_Object (Scale, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Get_Object (Adjustment)));
+   end Initialize;
 
    -----------------------
    -- Initialize_Hscale --
@@ -159,6 +200,27 @@ package body Gtk.Scale is
    begin
       Set_Object (Scale, Internal (Min, Max, Step));
    end Initialize_Vscale;
+
+   ---------------------------
+   -- Initialize_With_Range --
+   ---------------------------
+
+   procedure Initialize_With_Range
+      (Scale       : access Gtk_Scale_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation;
+       Min         : Gdouble;
+       Max         : Gdouble;
+       Step        : Gdouble)
+   is
+      function Internal
+         (Orientation : Integer;
+          Min         : Gdouble;
+          Max         : Gdouble;
+          Step        : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_scale_new_with_range");
+   begin
+      Set_Object (Scale, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Min, Max, Step));
+   end Initialize_With_Range;
 
    --------------
    -- Add_Mark --

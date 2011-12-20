@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
@@ -100,7 +94,7 @@ package body Gtk.Image is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String) is
+   procedure Gtk_New (Image : out Gtk_Image; Filename : filename) is
    begin
       Image := new Gtk_Image_Record;
       Gtk.Image.Initialize (Image, Filename);
@@ -125,40 +119,12 @@ package body Gtk.Image is
    -------------
 
    procedure Gtk_New
-      (Image : out Gtk_Image;
-       Val   : Gdk.Image.Gdk_Image;
-       Mask  : Gdk.Bitmap.Gdk_Bitmap)
-   is
-   begin
-      Image := new Gtk_Image_Record;
-      Gtk.Image.Initialize (Image, Val, Mask);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New
       (Image  : out Gtk_Image;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
    begin
       Image := new Gtk_Image_Record;
       Gtk.Image.Initialize (Image, Pixbuf);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New
-      (Image  : out Gtk_Image;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap)
-   is
-   begin
-      Image := new Gtk_Image_Record;
-      Gtk.Image.Initialize (Image, Pixmap, Mask);
    end Gtk_New;
 
    -------------
@@ -235,17 +201,12 @@ package body Gtk.Image is
 
    procedure Initialize
       (Image    : access Gtk_Image_Record'Class;
-       Filename : UTF8_String)
+       Filename : filename)
    is
-      function Internal
-         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
+      function Internal (Filename : filename) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Filename);
-      Free (Tmp_Filename);
-      Set_Object (Image, Tmp_Return);
+      Set_Object (Image, Internal (Filename));
    end Initialize;
 
    ----------------
@@ -270,23 +231,6 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image : access Gtk_Image_Record'Class;
-       Val   : Gdk.Image.Gdk_Image;
-       Mask  : Gdk.Bitmap.Gdk_Bitmap)
-   is
-      function Internal
-         (Val  : Gdk.Image.Gdk_Image;
-          Mask : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
-      pragma Import (C, Internal, "gtk_image_new_from_image");
-   begin
-      Set_Object (Image, Internal (Val, Mask));
-   end Initialize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
       (Image  : access Gtk_Image_Record'Class;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
@@ -294,23 +238,6 @@ package body Gtk.Image is
       pragma Import (C, Internal, "gtk_image_new_from_pixbuf");
    begin
       Set_Object (Image, Internal (Get_Object (Pixbuf)));
-   end Initialize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-      (Image  : access Gtk_Image_Record'Class;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap)
-   is
-      function Internal
-         (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
-      pragma Import (C, Internal, "gtk_image_new_from_pixmap");
-   begin
-      Set_Object (Image, Internal (Pixmap, Mask));
    end Initialize;
 
    ----------------
@@ -438,24 +365,6 @@ package body Gtk.Image is
    -- Get --
    ---------
 
-   procedure Get
-      (Image     : access Gtk_Image_Record;
-       Gdk_Image : out Gdk.Image.Gdk_Image;
-       Mask      : out Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-         (Image     : System.Address;
-          Gdk_Image : out Gdk.Image.Gdk_Image;
-          Mask      : out Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_image_get_image");
-   begin
-      Internal (Get_Object (Image), Gdk_Image, Mask);
-   end Get;
-
-   ---------
-   -- Get --
-   ---------
-
    function Get
       (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf
    is
@@ -464,24 +373,6 @@ package body Gtk.Image is
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Image)), Stub_Gdk_Pixbuf));
-   end Get;
-
-   ---------
-   -- Get --
-   ---------
-
-   procedure Get
-      (Image  : access Gtk_Image_Record;
-       Pixmap : out Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : out Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-         (Image  : System.Address;
-          Pixmap : out Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : out Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_image_get_pixmap");
-   begin
-      Internal (Get_Object (Image), Pixmap, Mask);
    end Get;
 
    --------------------
@@ -528,15 +419,11 @@ package body Gtk.Image is
    -- Set --
    ---------
 
-   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String) is
-      procedure Internal
-         (Image    : System.Address;
-          Filename : Interfaces.C.Strings.chars_ptr);
+   procedure Set (Image : access Gtk_Image_Record; Filename : filename) is
+      procedure Internal (Image : System.Address; Filename : filename);
       pragma Import (C, Internal, "gtk_image_set_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
    begin
-      Internal (Get_Object (Image), Tmp_Filename);
-      Free (Tmp_Filename);
+      Internal (Get_Object (Image), Filename);
    end Set;
 
    ---------
@@ -580,24 +467,6 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image     : access Gtk_Image_Record;
-       Gdk_Image : Gdk.Image.Gdk_Image;
-       Mask      : Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-         (Image     : System.Address;
-          Gdk_Image : Gdk.Image.Gdk_Image;
-          Mask      : Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_image_set_from_image");
-   begin
-      Internal (Get_Object (Image), Gdk_Image, Mask);
-   end Set;
-
-   ---------
-   -- Set --
-   ---------
-
-   procedure Set
       (Image  : access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
@@ -605,24 +474,6 @@ package body Gtk.Image is
       pragma Import (C, Internal, "gtk_image_set_from_pixbuf");
    begin
       Internal (Get_Object (Image), Get_Object (Pixbuf));
-   end Set;
-
-   ---------
-   -- Set --
-   ---------
-
-   procedure Set
-      (Image  : access Gtk_Image_Record;
-       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-         (Image  : System.Address;
-          Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_image_set_from_pixmap");
-   begin
-      Internal (Get_Object (Image), Pixmap, Mask);
    end Set;
 
    ---------

@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Hbutton_Box is a specific Gtk_Button_Box that organizes its children
@@ -56,31 +50,10 @@ package Gtk.Hbutton_Box is
 
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
    procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
+   --  Creates a new horizontal button box.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_hbutton_box_get_type");
-
-   ---------------
-   -- Functions --
-   ---------------
-
-   function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
-   pragma Obsolescent (Get_Layout_Default);
-   procedure Set_Layout_Default (Layout : Gtk.Enums.Gtk_Button_Box_Style);
-   pragma Obsolescent (Set_Layout_Default);
-   --  Set the the default layout to use for all the hbutton_boxes in your
-   --  application that don't have a specific value set by
-   --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge
-   --  Deprecated
-
-   function Get_Spacing_Default return Gint;
-   pragma Obsolescent (Get_Spacing_Default);
-   procedure Set_Spacing_Default (Spacing : Gint);
-   pragma Obsolescent (Set_Spacing_Default);
-   --  Set the default spacing (space between two adjacent children). This is
-   --  done for all the Hbutton_Boxes in your application. This can be
-   --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.
-   --  Deprecated
 
    ---------------------
    -- Interfaces_Impl --

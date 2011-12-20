@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Ada_05;
 --  <description>
@@ -63,6 +57,7 @@ with Glib.Types;           use Glib.Types;
 with Gtk.Buildable;        use Gtk.Buildable;
 with Gtk.Cell_Layout;      use Gtk.Cell_Layout;
 with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
+with Gtk.Cellarea;         use Gtk.Cellarea;
 with Gtk.Tree_Model;       use Gtk.Tree_Model;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -83,12 +78,27 @@ package Gtk.Entry_Completion is
      (Completion : access Gtk_Entry_Completion_Record'Class;
       Key        : UTF8_String;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   --  A function which decides whether the row indicated by Iter matches a
+   --  given Key, and should be displayed as a possible completion for Key.
+   --  Note that Key is normalized and case-folded (see g_utf8_normalize and
+   --  g_utf8_casefold). If this is not appropriate, match functions have
+   --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
+   --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>. for Key
+   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
+   --  "key": the string to match, normalized and case-folded
+   --  "iter": a GtkTreeIter indicating the row to match
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  A function which should set the value of Cell_Layout's cell renderer(s)
+   --  as appropriate.
+   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  "cell": the cell renderer whose value is to be set
+   --  "tree_model": the model
+   --  "iter": a GtkTreeIter indicating the row to set the value for
 
    ------------------
    -- Constructors --
@@ -99,6 +109,18 @@ package Gtk.Entry_Completion is
       (Completion : access Gtk_Entry_Completion_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
    --  Since: gtk+ 2.4
+
+   procedure Gtk_New_With_Area
+      (Completion : out Gtk_Entry_Completion;
+       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class);
+   procedure Initialize_With_Area
+      (Completion : access Gtk_Entry_Completion_Record'Class;
+       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class);
+   --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
+   --  the specified Area to layout cells in the underlying
+   --  Gtk.Treeviewcolumn.Gtk_Treeviewcolumn for the drop-down menu.
+   --  Since: gtk+ 3.0
+   --  "area": the Gtk.Cellarea.Gtk_Cellarea used to layout cells
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_entry_completion_get_type");
@@ -118,7 +140,7 @@ package Gtk.Entry_Completion is
        Index      : Gint);
    --  Deletes the action at Index_ from Completion's action list.
    --  Since: gtk+ 2.4
-   --  "index_": The index of the item to Delete.
+   --  "index_": the index of the item to delete
 
    function Get_Completion_Prefix
       (Completion : access Gtk_Entry_Completion_Record) return UTF8_String;
@@ -157,12 +179,11 @@ package Gtk.Entry_Completion is
    procedure Set_Minimum_Key_Length
       (Completion : access Gtk_Entry_Completion_Record;
        Length     : Gint);
-   --  Requires the length of the search key for Completion to be at least
-   --  length. This is useful for long lists, where completing using a small
-   --  key takes a lot of time and will come up with meaningless results anyway
+   --  Requires the length of the search key for Completion to be at least key
+   --  takes a lot of time and will come up with meaningless results anyway
    --  (ie, a too large dataset).
    --  Since: gtk+ 2.4
-   --  "length": The minimum length of the key in order to start completing.
+   --  "length": the minimum length of the key in order to start completing
 
    function Get_Model
       (Completion : access Gtk_Entry_Completion_Record)
@@ -174,7 +195,7 @@ package Gtk.Entry_Completion is
    --  Completion already has a model set, it will remove it before setting the
    --  new model. If model is null, then it will unset the model.
    --  Since: gtk+ 2.4
-   --  "model": The Gtk.Tree_Model.Gtk_Tree_Model.
+   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Popup_Completion
       (Completion : access Gtk_Entry_Completion_Record) return Boolean;
@@ -219,10 +240,10 @@ package Gtk.Entry_Completion is
    --  and to get those strings from Column in the model of Completion. This
    --  functions creates and adds a Gtk.Cellrenderertext.Gtk_Cellrenderertext
    --  for the selected column. If you need to set the text column, but don't
-   --  want the cell renderer, use g_object_set to set the ::text_column
-   --  property directly.
+   --  want the cell renderer, use g_object_set to set the
+   --  Gtk.Entry_Completion.Gtk_Entry_Completion:text-column property directly.
    --  Since: gtk+ 2.4
-   --  "column": The column in the model of Completion to get strings from.
+   --  "column": the column in the model of Completion to get strings from
 
    procedure Insert_Action_Markup
       (Completion : access Gtk_Entry_Completion_Record;
@@ -231,8 +252,8 @@ package Gtk.Entry_Completion is
    --  Inserts an action in Completion's action item list at position Index_
    --  with markup Markup.
    --  Since: gtk+ 2.4
-   --  "index_": The index of the item to insert.
-   --  "markup": Markup of the item to insert.
+   --  "index_": the index of the item to insert
+   --  "markup": markup of the item to insert
 
    procedure Insert_Action_Text
       (Completion : access Gtk_Entry_Completion_Record;
@@ -242,8 +263,8 @@ package Gtk.Entry_Completion is
    --  with text Text. If you want the action item to have markup, use
    --  Gtk.Entry_Completion.Insert_Action_Markup.
    --  Since: gtk+ 2.4
-   --  "index_": The index of the item to insert.
-   --  "text": Text of the item to insert.
+   --  "index_": the index of the item to insert
+   --  "text": text of the item to insert
 
    procedure Insert_Prefix (Completion : access Gtk_Entry_Completion_Record);
    --  Requests a prefix insertion.
@@ -256,8 +277,7 @@ package Gtk.Entry_Completion is
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-   --  use.
+   --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to use
 
    generic
       type User_Data_Type (<>) is private;
@@ -269,6 +289,16 @@ package Gtk.Entry_Completion is
          Key        : UTF8_String;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          User_Data  : User_Data_Type) return Boolean;
+      --  A function which decides whether the row indicated by Iter matches a
+      --  given Key, and should be displayed as a possible completion for Key.
+      --  Note that Key is normalized and case-folded (see g_utf8_normalize and
+      --  g_utf8_casefold). If this is not appropriate, match functions have
+      --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
+      --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>. for Key
+      --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
+      --  "key": the string to match, normalized and case-folded
+      --  "iter": a GtkTreeIter indicating the row to match
+      --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
          (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
@@ -278,9 +308,9 @@ package Gtk.Entry_Completion is
       --  function is used to determine if a row should or should not be in the
       --  completion list.
       --  Since: gtk+ 2.4
-      --  "func": The Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-      --  use.
-      --  "func_data": The user data for Func.
+      --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
+      --  use
+      --  "func_data": user data for Func
 
    end Set_Match_Func_User_Data;
 
@@ -291,10 +321,10 @@ package Gtk.Entry_Completion is
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
    --  function is used instead of the standard attributes mapping for setting
    --  the column value, and should set the value of Cell_Layout's cell
-   --  renderer(s) as appropriate. Func may be null to remove and older one.
+   --  renderer(s) as appropriate.
    --  Since: gtk+ 2.4
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-   --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -307,6 +337,13 @@ package Gtk.Entry_Completion is
          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
+      --  A function which should set the value of Cell_Layout's cell renderer(s)
+      --  as appropriate.
+      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  "cell": the cell renderer whose value is to be set
+      --  "tree_model": the model
+      --  "iter": a GtkTreeIter indicating the row to set the value for
+      --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
@@ -316,12 +353,11 @@ package Gtk.Entry_Completion is
       --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
       --  function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
-      --  cell renderer(s) as appropriate. Func may be null to remove and older
-      --  one.
+      --  cell renderer(s) as appropriate.
       --  Since: gtk+ 2.4
-      --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer.
-      --  "func": The Gtk.Cell_Layout.Cell_Data_Func to use.
-      --  "func_data": The user data for Func.
+      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+      --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 
@@ -366,6 +402,10 @@ package Gtk.Entry_Completion is
       (Cell_Layout : access Gtk_Entry_Completion_Record;
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       ;
+
+   function Get_Area
+      (Cell_Layout : access Gtk_Entry_Completion_Record)
+       return Gtk.Cellarea.Gtk_Cellarea;
 
    function Get_Cells
       (Cell_Layout : access Gtk_Entry_Completion_Record)
@@ -423,6 +463,14 @@ package Gtk.Entry_Completion is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
    --
+   --  Name: Cell_Area_Property
+   --  Type: Gtk.Cellarea.Gtk_Cellarea
+   --  Flags: read-write
+   --  The Gtk.Cellarea.Gtk_Cellarea used to layout cell renderers in the
+   --  treeview column. If no area is specified when creating the entry
+   --  completion with Gtk.Entry_Completion.Gtk_New_With_Area a horizontally
+   --  oriented Gtk.Cellareabox.Gtk_Cellareabox will be used.
+   --
    --  Name: Inline_Completion_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -470,6 +518,7 @@ package Gtk.Entry_Completion is
    --  The column of the model containing the strings. Note that the strings
    --  must be UTF-8.
 
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    Inline_Completion_Property : constant Glib.Properties.Property_Boolean;
    Inline_Selection_Property : constant Glib.Properties.Property_Boolean;
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
@@ -498,9 +547,10 @@ package Gtk.Entry_Completion is
    --        Iter  : TreeIter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a GtkTreeIter positioned at the selected match
-   --  Gets emitted when a match from the cursor is on a match of the list.The
-   --  default behaviour is to replace the contents of the entry with the
-   --  contents of the text column in the row pointed to by Iter.
+   --  Gets emitted when a match from the cursor is on a match of the list.
+   --  The default behaviour is to replace the contents of the entry with the
+   --  contents of the text column in the row pointed to by Iter. Note that
+   --  Model is the model that was passed to Gtk.Entry_Completion.Set_Model.
    --  Returns True if the signal has been handled
    --
    --  "insert-prefix"
@@ -525,7 +575,8 @@ package Gtk.Entry_Completion is
    --    --  "iter": a GtkTreeIter positioned at the selected match
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
-   --  the text column in the row pointed to by Iter.
+   --  the text column in the row pointed to by Iter. Note that Model is the
+   --  model that was passed to Gtk.Entry_Completion.Set_Model.
    --  Returns True if the signal has been handled
 
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
@@ -534,6 +585,8 @@ package Gtk.Entry_Completion is
    Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
 
 private
+   Cell_Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("cell-area");
    Inline_Completion_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inline-completion");
    Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=
