@@ -108,18 +108,6 @@
      {
        /* experimental tab-drawing code from mozilla */
        RECT rect;
---- gdk/win32/gdkevents-win32.c.orig	2011-05-25 12:25:29.000000000 +0200
-+++ gdk/win32/gdkevents-win32.c	2011-05-25 12:26:52.000000000 +0200
-@@ -679,6 +679,9 @@ build_key_event_state (GdkEvent *event,
- 	event->key.state |= GDK_CONTROL_MASK;
-       if (key_state[VK_MENU] & 0x80)
- 	event->key.state |= GDK_MOD1_MASK;
-+
-+      if ((key_state[VK_CONTROL] & 0x80) && (key_state[VK_MENU] & 0x80))
-+        event->key.group = 1;
-     }
- }
- 
 --- gdk/win32/gdkdisplay-win32.c.old	2011-07-22 12:06:42.618000000 +0200
 +++ gdk/win32/gdkdisplay-win32.c	2011-07-22 12:07:29.311000000 +0200
 @@ -386,7 +386,7 @@ inner_clipboard_window_procedure (HWND  
