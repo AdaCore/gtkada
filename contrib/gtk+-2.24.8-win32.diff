@@ -1,3 +1,12 @@
+2012-01-06	Nicolas Setton	<setton@adacore.com>
+
+	* gtkimcontextsimple.c (gtk_im_context_simple_filter_keypress): Do not
+	discard key events with state CTRL + ALT, as some keyboards do use this
+	key combination for legitimate character input.
+	* gdkevents-win32.c(build_key_event_state): Detect CTRL + ALT as an
+	equivalent group to ALT_GR.
+	For K517-001.
+
 2011-11-30	Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkpixmap-win32.c (_gdk_pixmap_new): Add fallback code
@@ -15,15 +24,6 @@
 
 	* gdk/win32/gdkdisplay-win32.c (inner_clipboard_window_procedure): Fix
 	build with --disable-debug
-
-2011-05-25	Nicolas Setton  <setton@adacore.com>
-
-	* gtkimcontextsimple.c (gtk_im_context_simple_filter_keypress): Do not
-	discard key events with state CTRL + ALT, as some keyboards do use this
-	key combination for legitimate character input.
-	* gdkevents-win32.c(build_key_event_state): Detect CTRL + ALT as an
-	equivalent group to ALT_GR.
-	For K517-001.
 
 2011-04-10      Arnaud Charlet  <charlet@adacore.com>
 
@@ -158,3 +158,28 @@
      case 24:
      case 32:
        format = CAIRO_FORMAT_RGB24;
+--- gtk/gtkimcontextsimple.c.orig	2012-01-06 16:45:26.000000000 +0100
++++ gtk/gtkimcontextsimple.c	2012-01-06 16:46:25.000000000 +0100
+@@ -877,7 +877,7 @@ gtk_im_context_simple_filter_keypress (G
+ 	    event->keyval == GDK_ISO_Enter ||
+ 	    event->keyval == GDK_KP_Enter)))
+ 	{
+-	  return FALSE;
++	  return no_sequence_matches (context_simple, n_compose, event);
+ 	}
+     }
+   
+*** gdk/win32/gdkevents-win32.c.orig	2012-01-06 16:46:38.000000000 +0100
+--- gdk/win32/gdkevents-win32.c	2012-01-06 16:47:13.000000000 +0100
+***************
+*** 671,676 ****
+--- 671,679 ----
+  	event->key.state |= GDK_CONTROL_MASK;
+        if (key_state[VK_MENU] & 0x80)
+  	event->key.state |= GDK_MOD1_MASK;
++ 
++       if ((key_state[VK_CONTROL] & 0x80) && (key_state[VK_MENU] & 0x80))
++         event->key.group = 1;
+      }
+  }
+  
