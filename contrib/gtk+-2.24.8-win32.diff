@@ -1,3 +1,9 @@
+2012-01-12	Arnaud Charlet  <charlet@adacore.com>
+
+	* modules/engines/ms-windows/msw_style.c (draw_themed_tab_button): Fix
+	memory leak.
+	For L109-030
+
 2012-01-06	Nicolas Setton	<setton@adacore.com>
 
 	* gtkimcontextsimple.c (gtk_im_context_simple_filter_keypress): Do not
@@ -11,7 +17,7 @@
 
 	* gdk/win32/gdkpixmap-win32.c (_gdk_pixmap_new): Add fallback code
 	for 15/16bits depth display.
-	Backport of Gtk+ trunk, see
+	For KB10-052. Backport of Gtk+ trunk, see
 	https://bugzilla.gnome.org/show_bug.cgi?id=665013
 
 2011-07-26	Nicolas Setton  <setton@adacore.com>
@@ -305,3 +311,13 @@
       }
   }
   
+--- modules/engines/ms-windows/msw_style.c.old	2012-01-12 16:36:02.085000000 +0100
++++ modules/engines/ms-windows/msw_style.c	2012-01-12 16:36:03.161000000 +0100
+@@ -2631,6 +2631,7 @@ draw_themed_tab_button (GtkStyle *style,
+   gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
+   cairo_paint (cr);
+   cairo_destroy (cr);
++  g_object_unref (pixmap);
+ 
+   return TRUE;
+ }
