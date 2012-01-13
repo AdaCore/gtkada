@@ -22,7 +22,7 @@ knowledge, it requires *less* type casting than with in C.  Its efficiency is
 about the same as the C library through the use of inline subprograms.
 
 GtkAda comes with a complete integration to the graphical interface builder
-`Glad`. This makes it even easier to develop interfaces, since you just have to
+`Glade`. This makes it even easier to develop interfaces, since you just have to
 click to create a description of the window and all the dialogs. Ada code can
 simply import that description to bring the windows to life.
 
