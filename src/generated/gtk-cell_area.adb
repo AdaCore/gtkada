@@ -60,6 +60,42 @@ package body Gtk.Cell_Area is
       return Gtk.Cell_Area.Gtk_Cell_Area (Get_User_Data (Internal (Cell_Layout), Stub_Gtk_Cell_Area));
    end Get_Area;
 
+   --------------------------
+   -- Get_Cell_At_Position --
+   --------------------------
+
+   procedure Get_Cell_At_Position
+     (Self       : access Gtk_Cell_Area_Record;
+      Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+      Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+      X          : Gint;
+      Y          : Gint;
+      Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+      Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer)
+   is
+      function Internal
+        (Self           : System.Address;
+         Context        : System.Address;
+         Widget         : System.Address;
+         Cell_Area      : Gdk.Rectangle.Gdk_Rectangle;
+         X              : Gint;
+         Y              : Gint;
+         Acc_Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
+      return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_get_cell_at_position");
+      Acc_Alloc_Area         : aliased Gdk.Rectangle.Gdk_Rectangle;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Tmp_Return             : System.Address;
+   begin
+      Tmp_Return := Internal
+        (Get_Object (Self), Get_Object (Context), Get_Object (Widget),
+         Cell_Area, X, Y, Acc_Alloc_Area'Access);
+      Alloc_Area := Acc_Alloc_Area;
+      Renderer := Gtk.Cell_Renderer.Gtk_Cell_Renderer
+        (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
+   end Get_Cell_At_Position;
+
    function To_GtkCellCallback is new Ada.Unchecked_Conversion
      (System.Address, GtkCellCallback);
 
@@ -616,39 +652,6 @@ package body Gtk.Cell_Area is
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Get_Object (Renderer), Cell_Area, Allocation);
    end Get_Cell_Allocation;
-
-   --------------------------
-   -- Get_Cell_At_Position --
-   --------------------------
-
-   function Get_Cell_At_Position
-      (Self       : access Gtk_Cell_Area_Record;
-       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
-       X          : Gint;
-       Y          : Gint;
-       Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
-       return Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   is
-      function Internal
-         (Self           : System.Address;
-          Context        : System.Address;
-          Widget         : System.Address;
-          Cell_Area      : Gdk.Rectangle.Gdk_Rectangle;
-          X              : Gint;
-          Y              : Gint;
-          Acc_Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
-          return System.Address;
-      pragma Import (C, Internal, "gtk_cell_area_get_cell_at_position");
-      Acc_Alloc_Area         : aliased Gdk.Rectangle.Gdk_Rectangle;
-      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Tmp_Return             : System.Address;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, X, Y, Acc_Alloc_Area'Access);
-      Alloc_Area := Acc_Alloc_Area;
-      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
-   end Get_Cell_At_Position;
 
    -----------------------------
    -- Get_Current_Path_String --

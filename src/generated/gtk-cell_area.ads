@@ -378,28 +378,6 @@ package Gtk.Cell_Area is
    --  "cell_area": the whole allocated area for Area in Widget for this row
    --  "allocation": where to store the allocation for Renderer
 
-   function Get_Cell_At_Position
-      (Self       : access Gtk_Cell_Area_Record;
-       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
-       X          : Gint;
-       Y          : Gint;
-       Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
-       return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
-   --  Gets the Gtk.Cell_Renderer.Gtk_Cell_Renderer at X and Y coordinates
-   --  inside Area and optionally returns the full cell allocation for it
-   --  inside Cell_Area.
-   --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to hold
-   --  sizes for Area.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
-   --  "cell_area": the whole allocated area for Area in Widget for this row
-   --  "x": the x position
-   --  "y": the y position
-   --  "alloc_area": where to store the inner allocated area of the returned
-   --  cell renderer, or null.
-
    function Get_Current_Path_String
       (Self : access Gtk_Cell_Area_Record) return UTF8_String;
    --  Gets the current GtkTreePath string for the currently applied
@@ -749,6 +727,29 @@ package Gtk.Cell_Area is
    --  Cell_Layout if called on a Gtk.Cell_Area.Gtk_Cell_Area or might be null
    --  if no Gtk.Cell_Area.Gtk_Cell_Area is used by Cell_Layout.
    --  Since: gtk+ 3.0
+
+   procedure Get_Cell_At_Position
+     (Self       : access Gtk_Cell_Area_Record;
+      Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+      Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+      X          : Gint;
+      Y          : Gint;
+      Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+      Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer);
+   --  Gets the Gtk.Cell_Renderer.Gtk_Cell_Renderer at X and Y coordinates
+   --  inside Area and optionally returns the full cell allocation for it
+   --  inside Cell_Area.
+   --  Since: gtk+ 3.0
+   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to hold
+   --  sizes for Area.
+   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
+   --  "cell_area": the whole allocated area for Area in Widget for this row
+   --  "x": the x position
+   --  "y": the y position
+   --  "alloc_area": where to store the inner allocated area of the returned
+   --  cell renderer, or null.
+   --  "renderer": the rendered that was found.
 
    ---------------------
    -- Interfaces_Impl --
