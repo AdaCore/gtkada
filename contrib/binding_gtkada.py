@@ -62,6 +62,7 @@ Where the package node is defined as follows:
             type="..."     <!-- optional, override Ada type -->
             ctype="..."    <!-- Override C type (to better qualify it) -->
             default="..."  <!-- optional, the default value for the param-->
+            direction=".." <!-- optional, "in", "out" or "inout" -->
             empty_maps_to_null="False"  <!--  If true, an empty string is
                            mapped to a null pointer in C, rather than an empty
                            C string -->
@@ -285,6 +286,11 @@ class GtkAdaParameter(object):
     def get_default(self):
         if self.node is not None:
             return self.node.get("default", None)
+        return None
+
+    def get_direction(self):
+        if self.node is not None:
+            return self.node.get("direction", None)
         return None
 
     def ada_name(self):
