@@ -1594,10 +1594,11 @@ package body Gtk.Widget is
 
    function Region_Intersect
      (Widget : access Gtk_Widget_Record;
-      Region : Gdk_Region) return Gdk_Region
+      Region : Cairo.Region.Cairo_Region) return Cairo.Region.Cairo_Region
    is
       function Internal
-        (Widget : System.Address; Region : Gdk_Region) return Gdk_Region;
+        (Widget : System.Address;
+         Region : Cairo.Region.Cairo_Region) return Cairo.Region.Cairo_Region;
       pragma Import (C, Internal, "gtk_widget_region_intersect");
    begin
       return Internal (Get_Object (Widget), Region);
@@ -2035,20 +2036,6 @@ package body Gtk.Widget is
 
       Internal (Get_Object (Widget), H, V);
    end Set_Scroll_Adjustments;
-
-   -----------------------------------
-   -- Set_Scroll_Adjustments_Signal --
-   -----------------------------------
-
-   procedure Set_Scroll_Adjustments_Signal
-     (Widget : GObject_Class; Signal : String)
-   is
-      procedure Internal (Widget : GObject_Class; Signal : String);
-      pragma Import (C, Internal, "ada_widget_set_scroll_adjustments_signal");
-
-   begin
-      Internal (Widget, Signal & ASCII.NUL);
-   end Set_Scroll_Adjustments_Signal;
 
    -------------------
    -- Set_Sensitive --
