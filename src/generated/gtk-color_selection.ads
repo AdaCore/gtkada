@@ -84,11 +84,11 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    procedure Set_Current_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : in out Gdk.Color.Gdk_Color);
+       Color    : Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color.
    --  The first time this is called, it will also set the original color to be
    --  Color too.
-   --  "color": a Gdk.Color.Gdk_Color to set the current color with
+   --  "color": a GdkColor to set the current color with
 
    procedure Get_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
@@ -133,13 +133,13 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    procedure Set_Previous_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : in out Gdk.Color.Gdk_Color);
+       Color    : Gdk.Color.Gdk_Color);
    --  Sets the 'previous' color to be Color.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that color change. Calling
    --  Gtk.Color_Selection.Set_Current_Color will also set this color the first
    --  time it is called.
-   --  "color": a Gdk.Color.Gdk_Color to set the previous color with
+   --  "color": a GdkColor to set the previous color with
 
    procedure Get_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;

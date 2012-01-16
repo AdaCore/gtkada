@@ -261,11 +261,11 @@ package body Gtk.Color_Selection is
 
    procedure Set_Current_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : in out Gdk.Color.Gdk_Color)
+       Color    : Gdk.Color.Gdk_Color)
    is
       procedure Internal
          (Colorsel : System.Address;
-          Color    : in out Gdk.Color.Gdk_Color);
+          Color    : Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_color_selection_set_current_color");
    begin
       Internal (Get_Object (Colorsel), Color);
@@ -335,11 +335,11 @@ package body Gtk.Color_Selection is
 
    procedure Set_Previous_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : in out Gdk.Color.Gdk_Color)
+       Color    : Gdk.Color.Gdk_Color)
    is
       procedure Internal
          (Colorsel : System.Address;
-          Color    : in out Gdk.Color.Gdk_Color);
+          Color    : Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_color_selection_set_previous_color");
    begin
       Internal (Get_Object (Colorsel), Color);
