@@ -47,7 +47,7 @@ with Glib.Properties; use Glib.Properties;
 
 package Gtk.Adjustment is
 
-   type Gtk_Adjustment_Record is new GInitiallyUnowned_Record with null record;
+   type Gtk_Adjustment_Record is new GObject_Record with null record;
    type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 
    ------------------

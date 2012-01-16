@@ -120,7 +120,7 @@ naming.girname_to_ctype = {
     "Gdk.Bitmap":          "GdkBitmap*",
     "GObject.Object":      "GObject*",
     "GObject.Closure":     "GClosure*",
-    "GObject.InitiallyUnowned": "GInitiallyUnowned"
+    "GObject.InitiallyUnowned": "GObject*"  # An alias
 }
 
 naming.exceptions = {
