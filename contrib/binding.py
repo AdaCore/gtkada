@@ -967,7 +967,12 @@ See Glib.Properties for more information on properties)""")
                 if p.get("writable", "1") != "0":
                     flags.append("write")
 
-                tp = _get_type(p, pkg=self.pkg)
+                # Do not provide a "pkg=self.pkg" parameter, since we do
+                # not want to generate a with for the actual property type
+                # (for instance a Gtk_Cell_Area), just for the actual type
+                # (Property_Object).
+
+                tp = _get_type(p)
                 ptype = tp.as_property()
                 if ptype:
                     pkg = ptype[:ptype.rfind(".")]
