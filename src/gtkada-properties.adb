@@ -379,8 +379,10 @@ package body Gtkada.Properties is
    procedure Color_Modified
      (Value  : in out GValue;
       Editor : access Gtk_Widget_Record'Class) is
+      Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Value (Value, Val => Get_Color (Gtk_Color_Button (Editor)));
+      Get_Color (Gtk_Color_Button (Editor), Color);
+      Set_Value (Value, Val => Color);
    end Color_Modified;
 
    ------------------
