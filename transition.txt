@@ -118,6 +118,15 @@ Gtk.Layout
 
 Get_Width and Get_Height have been removed, use Get_Size instead.
 
+Gtk.Link_Button
+===============
+
+All widget parameter names have been normalized to "Self".
+
+The Set_Uri_Hook function has been eliminated, and along with it the
+Uri_Func type and the Generic_Uri_Hook package.  Register a callback
+for the button's "clicked" signal instead.
+
 Gtk.Notebook
 ============
 

@@ -2302,4 +2302,8 @@ dialog.
     <parameter name="self" ada="Button"/>
   </package>
 
+  <package id="Gtk.Link_Button">
+    <doc group="Buttons and Toggles">
+    </doc>
+  </package>
 </GIR>
