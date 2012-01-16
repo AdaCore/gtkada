@@ -1,3 +1,6 @@
+Consider using patch from https://bugs.freedesktop.org/show_bug.cgi?id=42821
+win32: Reset clip in _cairo_win32_surface_release_dest_image
+
 	* src/cairo.c: define ffs the corresponding gcc builtin.
 	* configure: Work around ^M handling on cygwin with igncr
 
