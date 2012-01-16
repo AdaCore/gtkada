@@ -91,9 +91,9 @@ package Gtk.Size_Group is
    --  requisition of the widget will be determined as the maximum of its
    --  requisition and the requisition of the other widgets in the size group.
    --  Whether this applies horizontally, vertically, or in both directions
-   --  depends on the mode of the size group. See Gtk.Size_Group.Set_Mode. When
-   --  the widget is destroyed or no longer referenced elsewhere, it will be
-   --  removed from the size group.
+   --  depends on the mode of the size group. See Gtk.Size_Group.Set_Mode.
+   --  When the widget is destroyed or no longer referenced elsewhere, it will
+   --  be removed from the size group.
    --  "widget": the Gtk.Widget.Gtk_Widget to add
 
    function Get_Ignore_Hidden
@@ -122,8 +122,8 @@ package Gtk.Size_Group is
    function Get_Widgets
       (Size_Group : access Gtk_Size_Group_Record)
        return Gtk.Widget.Widget_SList.GSList;
-   --  Returns the list of widgets associated with Size_Group. widgets. The
-   --  list is owned by GTK+ and should not be modified.
+   --  Returns the list of widgets associated with Size_Group.
+   --  widgets. The list is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.10
 
    procedure Remove_Widget

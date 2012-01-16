@@ -74,10 +74,12 @@ package Gtk.Cell_Layout is
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint);
-   --  Adds an attribute mapping to the list in Cell_Layout. The Column is the
-   --  column of the model to get a value from, and the example if column 2 of
-   --  the model contains strings, you could have the "text" attribute of a
-   --  Gtk.Cellrenderertext.Gtk_Cellrenderertext get its values from column 2.
+   --  Adds an attribute mapping to the list in Cell_Layout.
+   --  The Column is the column of the model to get a value from, and the
+   --  Attribute is the parameter on Cell to be set from the value. So for
+   --  example if column 2 of the model contains strings, you could have the
+   --  "text" attribute of a Gtk.Cellrenderertext.Gtk_Cellrenderertext get its
+   --  values from column 2.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "attribute": an attribute on the renderer
@@ -109,8 +111,8 @@ package Gtk.Cell_Layout is
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
        return Glib.Object.Object_Simple_List.GList;
-   --  Returns the cell renderers which have been added to Cell_Layout. a list
-   --  of cell renderers. The list, but not the renderers has been newly
+   --  Returns the cell renderers which have been added to Cell_Layout.
+   --  a list of cell renderers. The list, but not the renderers has been newly
    --  allocated and should be freed with g_list_free when no longer needed.
    --  Since: gtk+ 2.12
 
@@ -119,8 +121,9 @@ package Gtk.Cell_Layout is
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
    --  Adds the Cell to the end of Cell_Layout. If Expand is False, then the
-   --  divided evenly between cells for which Expand is True. Note that reusing
-   --  the same cell renderer is not supported.
+   --  Cell is allocated no more space than it needs. Any unused space is
+   --  divided evenly between cells for which Expand is True.
+   --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "expand": True if Cell is to be given extra space allocated to
@@ -132,8 +135,8 @@ package Gtk.Cell_Layout is
        Expand      : Boolean);
    --  Packs the Cell into the beginning of Cell_Layout. If Expand is False,
    --  then the Cell is allocated no more space than it needs. Any unused space
-   --  is divided evenly between cells for which Expand is True. Note that
-   --  reusing the same cell renderer is not supported.
+   --  is divided evenly between cells for which Expand is True.
+   --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "expand": True if Cell is to be given extra space allocated to
@@ -143,8 +146,9 @@ package Gtk.Cell_Layout is
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
-   --  Re-inserts Cell at Position. Note that Cell has already to be packed
-   --  into Cell_Layout for this to function properly.
+   --  Re-inserts Cell at Position.
+   --  Note that Cell has already to be packed into Cell_Layout for this to
+   --  function properly.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to reorder
    --  "position": new position to insert Cell at
@@ -153,10 +157,11 @@ package Gtk.Cell_Layout is
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Cell_Data_Func);
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-   --  function is used instead of the standard attributes mapping for setting
-   --  the column value, and should set the value of Cell_Layout's cell
+   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+   --  This function is used instead of the standard attributes mapping for
+   --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
@@ -185,10 +190,11 @@ package Gtk.Cell_Layout is
           Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);
-      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-      --  function is used instead of the standard attributes mapping for
+      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+      --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
+      --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
       --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null

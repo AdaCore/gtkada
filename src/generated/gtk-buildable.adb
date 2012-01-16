@@ -105,14 +105,14 @@ package body Gtk.Buildable is
        Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
-       Data    : System.Address)
+       Data    : out System.Address)
    is
       procedure Internal
          (Self    : Gtk_Buildable;
           Builder : System.Address;
           Child   : System.Address;
           Tagname : Interfaces.C.Strings.chars_ptr;
-          Data    : System.Address);
+          Data    : out System.Address);
       pragma Import (C, Internal, "gtk_buildable_custom_tag_end");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin

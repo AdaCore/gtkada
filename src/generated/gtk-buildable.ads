@@ -98,7 +98,7 @@ package Gtk.Buildable is
        Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
-       Data    : System.Address);
+       Data    : out System.Address);
    --  This is called at the end of each custom element handled by the
    --  buildable.
    --  Since: gtk+ 2.12

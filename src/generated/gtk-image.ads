@@ -81,27 +81,28 @@ package Gtk.Image is
    --  Creates a Gtk.Image.Gtk_Image displaying the given animation. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the animation; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
-   --  add its own reference rather than adopting yours. Note that the
-   --  animation frames are shown using a timeout with G_PRIORITY_DEFAULT. When
-   --  using animations to indicate busyness, keep in mind that the animation
-   --  will only be shown if the main loop is not busy with something that has
-   --  a higher priority.
+   --  add its own reference rather than adopting yours.
+   --  Note that the animation frames are shown using a timeout with
+   --  G_PRIORITY_DEFAULT. When using animations to indicate busyness, keep in
+   --  mind that the animation will only be shown if the main loop is not busy
+   --  with something that has a higher priority.
    --  "animation": an animation
 
-   procedure Gtk_New (Image : out Gtk_Image; Filename : filename);
+   procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String);
    procedure Initialize
       (Image    : access Gtk_Image_Record'Class;
-       Filename : filename);
+       Filename : UTF8_String);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
    --  will display a "broken image" icon. This function never returns null, it
-   --  always returns a valid Gtk.Image.Gtk_Image widget. If the file contains
-   --  an animation, the image will contain an animation. If you need to detect
-   --  failures to load the file, use Gdk.Pixbuf.Gdk_New_From_File to load the
-   --  file yourself, then create the Gtk.Image.Gtk_Image from the pixbuf. (Or
-   --  for animations, use Gdk.Pixbuf.Gdk_New_From_File). The storage type
-   --  (gtk_image_get_storage_type) of the returned image is not defined, it
-   --  will be whatever is appropriate for displaying the file.
+   --  always returns a valid Gtk.Image.Gtk_Image widget.
+   --  If the file contains an animation, the image will contain an animation.
+   --  If you need to detect failures to load the file, use
+   --  Gdk.Pixbuf.Gdk_New_From_File to load the file yourself, then create the
+   --  Gtk.Image.Gtk_Image from the pixbuf. (Or for animations, use
+   --  Gdk.Pixbuf.Gdk_New_From_File).
+   --  The storage type (gtk_image_get_storage_type) of the returned image is
+   --  not defined, it will be whatever is appropriate for displaying the file.
    --  "filename": a filename
 
    procedure Gtk_New_From_Gicon
@@ -150,8 +151,8 @@ package Gtk.Image is
    --  Gtk.Iconfactory.Gtk_Iconfactory, put your icon sets in the icon factory,
    --  add the icon factory to the list of default factories with
    --  Gtk.Icon_Factory.Add_Default, and then use Gtk.Image.Gtk_New. This will
-   --  allow themes to override the icon you ship with your application. The
-   --  Gtk.Image.Gtk_Image does not assume a reference to the icon set; you
+   --  allow themes to override the icon you ship with your application.
+   --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
    --  "icon_set": a GtkIconSet
@@ -166,10 +167,10 @@ package Gtk.Image is
    --  Creates a new Gtk.Image.Gtk_Image displaying Pixbuf. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the pixbuf; you still
    --  need to unref it if you own references. Gtk.Image.Gtk_Image will add its
-   --  own reference rather than adopting yours. Note that this function just
-   --  creates an Gtk.Image.Gtk_Image from the pixbuf. The Gtk.Image.Gtk_Image
-   --  created will not react to state changes. Should you want that, you
-   --  should use Gtk.Image.Gtk_New.
+   --  own reference rather than adopting yours.
+   --  Note that this function just creates an Gtk.Image.Gtk_Image from the
+   --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
+   --  Should you want that, you should use Gtk.Image.Gtk_New.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Gtk_New
@@ -216,7 +217,8 @@ package Gtk.Image is
    --  Gtk.Image.Gtk_Image. The storage type of the image must be
    --  %GTK_IMAGE_EMPTY or %GTK_IMAGE_PIXBUF (see Gtk.Image.Get_Storage_Type).
    --  The caller of this function does not own a reference to the returned
-   --  pixbuf. the image is empty
+   --  pixbuf.
+   --  the image is empty
 
    function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint;
    procedure Set_Pixel_Size
@@ -237,7 +239,7 @@ package Gtk.Image is
    procedure Set
       (Image     : access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
-   procedure Set (Image : access Gtk_Image_Record; Filename : filename);
+   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String);
    procedure Set
       (Image : access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;

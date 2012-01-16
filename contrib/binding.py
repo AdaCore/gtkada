@@ -182,7 +182,6 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
     return None
 
 
-
 class SubprogramProfile(object):
     """A class that groups info on the parameters of a function and
        its return type.

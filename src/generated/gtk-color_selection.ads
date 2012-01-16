@@ -74,8 +74,9 @@ package Gtk.Color_Selection is
    procedure Set_Current_Alpha
       (Colorsel : access Gtk_Color_Selection_Record;
        Alpha    : guint16);
-   --  Sets the current opacity to be Alpha. The first time this is called, it
-   --  will also set the original opacity to be Alpha too.
+   --  Sets the current opacity to be Alpha.
+   --  The first time this is called, it will also set the original opacity to
+   --  be Alpha too.
    --  "alpha": an integer between 0 and 65535
 
    procedure Get_Current_Color
@@ -84,8 +85,9 @@ package Gtk.Color_Selection is
    procedure Set_Current_Color
       (Colorsel : access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color);
-   --  Sets the current color to be Color. The first time this is called, it
-   --  will also set the original color to be Color too.
+   --  Sets the current color to be Color.
+   --  The first time this is called, it will also set the original color to be
+   --  Color too.
    --  "color": a Gdk.Color.Gdk_Color to set the current color with
 
    procedure Get_Current_Rgba
@@ -94,8 +96,9 @@ package Gtk.Color_Selection is
    procedure Set_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
        Rgba     : out GdkRGBA);
-   --  Sets the current color to be Rgba. The first time this is called, it
-   --  will also set the original color to be Rgba too.
+   --  Sets the current color to be Rgba.
+   --  The first time this is called, it will also set the original color to be
+   --  Rgba too.
    --  Since: gtk+ 3.0
    --  "rgba": A GdkRGBA to set the current color with
 
@@ -120,9 +123,9 @@ package Gtk.Color_Selection is
    procedure Set_Previous_Alpha
       (Colorsel : access Gtk_Color_Selection_Record;
        Alpha    : guint16);
-   --  Sets the 'previous' alpha to be Alpha. This function should be called
-   --  with some hesitations, as it might seem confusing to have that alpha
-   --  change.
+   --  Sets the 'previous' alpha to be Alpha.
+   --  This function should be called with some hesitations, as it might seem
+   --  confusing to have that alpha change.
    --  "alpha": an integer between 0 and 65535
 
    procedure Get_Previous_Color
@@ -131,10 +134,11 @@ package Gtk.Color_Selection is
    procedure Set_Previous_Color
       (Colorsel : access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color);
-   --  Sets the 'previous' color to be Color. This function should be called
-   --  with some hesitations, as it might seem confusing to have that color
-   --  change. Calling Gtk.Color_Selection.Set_Current_Color will also set this
-   --  color the first time it is called.
+   --  Sets the 'previous' color to be Color.
+   --  This function should be called with some hesitations, as it might seem
+   --  confusing to have that color change. Calling
+   --  Gtk.Color_Selection.Set_Current_Color will also set this color the first
+   --  time it is called.
    --  "color": a Gdk.Color.Gdk_Color to set the previous color with
 
    procedure Get_Previous_Rgba
@@ -143,17 +147,18 @@ package Gtk.Color_Selection is
    procedure Set_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
        Rgba     : out GdkRGBA);
-   --  Sets the 'previous' color to be Rgba. This function should be called
-   --  with some hesitations, as it might seem confusing to have that color
-   --  change. Calling Gtk.Color_Selection.Set_Current_Rgba will also set this
-   --  color the first time it is called.
+   --  Sets the 'previous' color to be Rgba.
+   --  This function should be called with some hesitations, as it might seem
+   --  confusing to have that color change. Calling
+   --  Gtk.Color_Selection.Set_Current_Rgba will also set this color the first
+   --  time it is called.
    --  Since: gtk+ 3.0
    --  "rgba": a GdkRGBA to set the previous color with
 
    function Is_Adjusting
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
-   --  Gets the current state of the Colorsel. a color around, and False if
-   --  the selection has stopped
+   --  Gets the current state of the Colorsel.
+   --  a color around, and False if the selection has stopped
 
    ----------------------
    -- GtkAda additions --
@@ -186,8 +191,8 @@ package Gtk.Color_Selection is
    procedure Set_Change_Palette_With_Screen_Hook
       (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  Installs a global function to be called whenever the user tries to
-   --  modify the palette in a color selection. This function should save the
-   --  new palette contents, and update the
+   --  modify the palette in a color selection.
+   --  This function should save the new palette contents, and update the
    --  Gtk.Settings.Gtk_Settings::gtk-color-palette GtkSettings property so all
    --  GtkColorSelection widgets will be modified.
    --  Since: gtk+ 2.2

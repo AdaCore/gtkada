@@ -92,8 +92,8 @@ package Gtk.Expander is
    procedure Set_Label
       (Expander : access Gtk_Expander_Record;
        Label    : UTF8_String);
-   --  Sets the text of the label of the expander to Label. This will also
-   --  clear any previously set labels.
+   --  Sets the text of the label of the expander to Label.
+   --  This will also clear any previously set labels.
    --  Since: gtk+ 2.4
    --  "label": a string
 

@@ -75,7 +75,8 @@ package Gtk.Event_Box is
    --  child, as opposed to below it. If the window is above, all events inside
    --  the event box will go to the event box. If the window is below, events
    --  in windows of child widgets will first got to that widget, and then to
-   --  its parents. The default is to keep the window below the child.
+   --  its parents.
+   --  The default is to keep the window below the child.
    --  Since: gtk+ 2.4
    --  "above_child": True if the event box window is above its child
 
@@ -85,17 +86,20 @@ package Gtk.Event_Box is
       (Event_Box      : access Gtk_Event_Box_Record;
        Visible_Window : Boolean);
    --  Set whether the event box uses a visible or invisible child window. The
-   --  default is to use visible windows. In an invisible window event box, the
-   --  window that the event box creates is a %GDK_INPUT_ONLY window, which
-   --  means that it is invisible and only serves to receive events. A visible
-   --  window event box creates a visible (%GDK_INPUT_OUTPUT) window that acts
-   --  as the parent window for all the widgets contained in the event box. You
-   --  should generally make your event box invisible if you just want to trap
-   --  events. Creating a visible window may cause artifacts that are visible
-   --  to the user, especially if the user is using a theme with gradients or
-   --  pixmaps. The main reason to create a non input-only event box is if you
-   --  want to set the background to a different color or draw on it.
-   --  Note: There is one unexpected issue for an invisible event box that has
+   --  default is to use visible windows.
+   --  In an invisible window event box, the window that the event box creates
+   --  is a %GDK_INPUT_ONLY window, which means that it is invisible and only
+   --  serves to receive events.
+   --  A visible window event box creates a visible (%GDK_INPUT_OUTPUT) window
+   --  that acts as the parent window for all the widgets contained in the
+   --  event box.
+   --  You should generally make your event box invisible if you just want to
+   --  trap events. Creating a visible window may cause artifacts that are
+   --  visible to the user, especially if the user is using a theme with
+   --  gradients or pixmaps.
+   --  The main reason to create a non input-only event box is if you want to
+   --  set the background to a different color or draw on it.
+   --   Note: There is one unexpected issue for an invisible event box that has
    --  its window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since
    --  the input-only window is not an ancestor window of any windows that
    --  descendent widgets of the event box create, events on these windows

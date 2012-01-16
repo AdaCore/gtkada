@@ -86,10 +86,10 @@ package Gtk.Scale is
    --  Creates a new scale widget with the given orientation that lets the
    --  user input a number between Min and Max (including Min and Max) with the
    --  increment Step. Step must be nonzero; it's the distance the slider moves
-   --  when using the arrow keys to adjust the scale value. Note that the way
-   --  in which the precision is derived works best if Step is a power of ten.
-   --  If the resulting precision is not suitable for your needs, use
-   --  Gtk.Scale.Set_Digits to correct it.
+   --  when using the arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  Since: gtk+ 3.0
    --  "orientation": the scale's orientation.
    --  "min": minimum value
@@ -118,10 +118,10 @@ package Gtk.Scale is
    --  Creates a new horizontal scale widget that lets the user input a number
    --  between Min and Max (including Min and Max) with the increment Step.
    --  Step must be nonzero; it's the distance the slider moves when using the
-   --  arrow keys to adjust the scale value. Note that the way in which the
-   --  precision is derived works best if Step is a power of ten. If the
-   --  resulting precision is not suitable for your needs, use
-   --  Gtk.Scale.Set_Digits to correct it.
+   --  arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts
@@ -148,10 +148,10 @@ package Gtk.Scale is
    --  Creates a new vertical scale widget that lets the user input a number
    --  between Min and Max (including Min and Max) with the increment Step.
    --  Step must be nonzero; it's the distance the slider moves when using the
-   --  arrow keys to adjust the scale value. Note that the way in which the
-   --  precision is derived works best if Step is a power of ten. If the
-   --  resulting precision is not suitable for your needs, use
-   --  Gtk.Scale.Set_Digits to correct it.
+   --  arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts
@@ -168,11 +168,12 @@ package Gtk.Scale is
        Value    : Gdouble;
        Position : Gtk.Enums.Gtk_Position_Type;
        Markup   : UTF8_String);
-   --  Adds a mark at Value. A mark is indicated visually by drawing a tick
-   --  mark next to the scale, and GTK+ makes it easy for the user to position
-   --  the scale exactly at the marks value. If Markup is not null, text is
-   --  shown next to the tick mark. To remove marks from a scale, use
-   --  Gtk.Scale.Clear_Marks.
+   --  Adds a mark at Value.
+   --  A mark is indicated visually by drawing a tick mark next to the scale,
+   --  and GTK+ makes it easy for the user to position the scale exactly at the
+   --  marks value.
+   --  If Markup is not null, text is shown next to the tick mark.
+   --  To remove marks from a scale, use Gtk.Scale.Clear_Marks.
    --  Since: gtk+ 2.16
    --  "value": the value at which the mark is placed, must be between the
    --  lower and upper limits of the scales' adjustment
@@ -209,8 +210,8 @@ package Gtk.Scale is
       (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
-   --  the caller. or null if the Gtk.Scale.Gtk_Scale:draw-value property is
-   --  False.
+   --  the caller.
+   --  or null if the Gtk.Scale.Gtk_Scale:draw-value property is False.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets
@@ -220,9 +221,9 @@ package Gtk.Scale is
    --  Obtains the coordinates where the scale will draw the
    --  Pango.Layout.Pango_Layout representing the text in the scale. Remember
    --  when using the Pango.Layout.Pango_Layout function you need to convert to
-   --  and from pixels using PANGO_PIXELS or PANGO_SCALE. If the
-   --  Gtk.Scale.Gtk_Scale:draw-value property is False, the return values are
-   --  undefined.
+   --  and from pixels using PANGO_PIXELS or PANGO_SCALE.
+   --  If the Gtk.Scale.Gtk_Scale:draw-value property is False, the return
+   --  values are undefined.
    --  Since: gtk+ 2.4
    --  "x": location to store X offset of layout, or null
    --  "y": location to store Y offset of layout, or null
@@ -314,6 +315,7 @@ package Gtk.Scale is
    --    --  "value": the value to format
    --  Signal which allows you to change how the scale value is displayed.
    --  Connect a signal handler which returns an allocated string representing
+   --  Value. That string will then be used to display the scale's value.
    --  Here's an example signal handler which displays a value 1.0 as with
    --  "--&gt;1.0&lt;--". |[ static gchar* format_value_callback (GtkScale
    --  *scale, gdouble value) { return g_strdup_printf

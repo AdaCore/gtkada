@@ -117,10 +117,10 @@ package Gtk.Adjustment is
        Step_Increment : Gdouble;
        Page_Increment : Gdouble;
        Page_Size      : Gdouble);
-   --  Sets all properties of the adjustment at once. Use this function to
-   --  avoid multiple emissions of the "changed" signal. See
-   --  Gtk.Adjustment.Set_Lower for an alternative way of compressing multiple
-   --  emissions of "changed" into one.
+   --  Sets all properties of the adjustment at once.
+   --  Use this function to avoid multiple emissions of the "changed" signal.
+   --  See Gtk.Adjustment.Set_Lower for an alternative way of compressing
+   --  multiple emissions of "changed" into one.
    --  Since: gtk+ 2.14
    --  "value": the new value
    --  "lower": the new minimum value
@@ -134,16 +134,17 @@ package Gtk.Adjustment is
    procedure Set_Lower
       (Adjustment : access Gtk_Adjustment_Record;
        Lower      : Gdouble);
-   --  Sets the minimum value of the adjustment. When setting multiple
-   --  adjustment properties via their individual setters, multiple "changed"
-   --  signals will be emitted. However, since the emission of the "changed"
-   --  signal is tied to the emission of the "GObject::notify" signals of the
-   --  changed properties, it's possible to compress the "changed" signals into
-   --  one by calling g_object_freeze_notify and g_object_thaw_notify around
-   --  the calls to the individual setters. Alternatively, using a single
-   --  g_object_set for all the properties to change, or using
-   --  Gtk.Adjustment.Configure has the same effect of compressing "changed"
-   --  emissions.
+   --  Sets the minimum value of the adjustment.
+   --  When setting multiple adjustment properties via their individual
+   --  setters, multiple "changed" signals will be emitted. However, since the
+   --  emission of the "changed" signal is tied to the emission of the
+   --  "GObject::notify" signals of the changed properties, it's possible to
+   --  compress the "changed" signals into one by calling
+   --  g_object_freeze_notify and g_object_thaw_notify around the calls to the
+   --  individual setters.
+   --  Alternatively, using a single g_object_set for all the properties to
+   --  change, or using Gtk.Adjustment.Configure has the same effect of
+   --  compressing "changed" emissions.
    --  Since: gtk+ 2.14
    --  "lower": the new minimum value
 
@@ -157,9 +158,9 @@ package Gtk.Adjustment is
    procedure Set_Page_Increment
       (Adjustment     : access Gtk_Adjustment_Record;
        Page_Increment : Gdouble);
-   --  Sets the page increment of the adjustment. See Gtk.Adjustment.Set_Lower
-   --  about how to compress multiple emissions of the "changed" signal when
-   --  setting multiple adjustment properties.
+   --  Sets the page increment of the adjustment.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
+   --  the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_increment": the new page increment
 
@@ -168,9 +169,9 @@ package Gtk.Adjustment is
    procedure Set_Page_Size
       (Adjustment : access Gtk_Adjustment_Record;
        Page_Size  : Gdouble);
-   --  Sets the page size of the adjustment. See Gtk.Adjustment.Set_Lower
-   --  about how to compress multiple emissions of the "changed" signal when
-   --  setting multiple adjustment properties.
+   --  Sets the page size of the adjustment.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
+   --  the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_size": the new page size
 
@@ -179,9 +180,9 @@ package Gtk.Adjustment is
    procedure Set_Step_Increment
       (Adjustment     : access Gtk_Adjustment_Record;
        Step_Increment : Gdouble);
-   --  Sets the step increment of the adjustment. See Gtk.Adjustment.Set_Lower
-   --  about how to compress multiple emissions of the "changed" signal when
-   --  setting multiple adjustment properties.
+   --  Sets the step increment of the adjustment.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
+   --  the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "step_increment": the new step increment
 
@@ -190,11 +191,11 @@ package Gtk.Adjustment is
    procedure Set_Upper
       (Adjustment : access Gtk_Adjustment_Record;
        Upper      : Gdouble);
-   --  Sets the maximum value of the adjustment. Note that values will be
-   --  restricted by <literal>upper - page-size</literal> if the page-size
-   --  property is nonzero. See Gtk.Adjustment.Set_Lower about how to compress
-   --  multiple emissions of the "changed" signal when setting multiple
-   --  adjustment properties.
+   --  Sets the maximum value of the adjustment.
+   --  Note that values will be restricted by <literal>upper -
+   --  page-size</literal> if the page-size property is nonzero.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
+   --  the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "upper": the new maximum value
 
@@ -205,9 +206,10 @@ package Gtk.Adjustment is
        Value      : Gdouble);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment value. The value is clamped to
    --  lie between Gtk.Adjustment.Gtk_Adjustment.lower and
-   --  Gtk.Adjustment.Gtk_Adjustment.upper. Note that for adjustments which are
-   --  used in a Gtk.Scrollbar.Gtk_Scrollbar, the effective range of allowed
-   --  values goes from Gtk.Adjustment.Gtk_Adjustment.lower to
+   --  Gtk.Adjustment.Gtk_Adjustment.upper.
+   --  Note that for adjustments which are used in a
+   --  Gtk.Scrollbar.Gtk_Scrollbar, the effective range of allowed values goes
+   --  from Gtk.Adjustment.Gtk_Adjustment.lower to
    --  Gtk.Adjustment.Gtk_Adjustment.upper -
    --  Gtk.Adjustment.Gtk_Adjustment.page_size.
    --  "value": the new value.

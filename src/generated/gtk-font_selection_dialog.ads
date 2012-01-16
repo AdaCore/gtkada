@@ -66,7 +66,8 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Cancel_Button);
-   --  Gets the 'Cancel' button. for the 'Cancel' button.
+   --  Gets the 'Cancel' button.
+   --  for the 'Cancel' button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
 
@@ -78,6 +79,7 @@ package Gtk.Font_Selection_Dialog is
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
+   --  Fontname specified, False otherwise.
    --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
@@ -94,7 +96,8 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Ok_Button);
-   --  Gets the 'OK' button. for the 'OK' button.
+   --  Gets the 'OK' button.
+   --  for the 'OK' button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
 

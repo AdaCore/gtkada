@@ -136,13 +136,15 @@ package Gtk.Radio_Button is
       (Radio_Button : access Gtk_Radio_Button_Record;
        Group_Source : access Gtk_Radio_Button_Record'Class);
    --  Joins a Gtk.Radio_Button.Gtk_Radio_Button object to the group of
-   --  another Gtk.Radio_Button.Gtk_Radio_Button object Use this in language
-   --  bindings instead of the Gtk.Radio_Button.Get_Group and
-   --  Gtk.Radio_Button.Set_Group methods A common way to set up a group of
-   --  radio buttons is the following: |[ GtkRadioButton *radio_button;
-   --  GtkRadioButton *last_button; while (/&ast; more buttons to add &ast;/) {
-   --  radio_button = gtk_radio_button_new (...); gtk_radio_button_join_group
-   --  (radio_button, last_button); last_button = radio_button; } ]|
+   --  another Gtk.Radio_Button.Gtk_Radio_Button object
+   --  Use this in language bindings instead of the Gtk.Radio_Button.Get_Group
+   --  and Gtk.Radio_Button.Set_Group methods
+   --  A common way to set up a group of radio buttons is the following: |[
+   --  GtkRadioButton *radio_button; GtkRadioButton *last_button;
+   --  while (/&ast; more buttons to add &ast;/) { radio_button =
+   --  gtk_radio_button_new (...);
+   --  gtk_radio_button_join_group (radio_button, last_button); last_button =
+   --  radio_button; } ]|
    --  Since: gtk+ 3.0
    --  "group_source": a radio button object whos group we are joining, or
    --  null to remove the radio button from its group

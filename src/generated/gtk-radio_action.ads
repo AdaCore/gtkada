@@ -112,11 +112,13 @@ package Gtk.Radio_Action is
       (Action       : access Gtk_Radio_Action_Record;
        Group_Source : access Gtk_Radio_Action_Record'Class);
    --  Joins a radio action object to the group of another radio action
-   --  object. Use this in language bindings instead of the
-   --  Gtk.Radio_Action.Get_Group and Gtk.Radio_Action.Set_Group methods A
-   --  common way to set up a group of radio actions is the following: |[
-   --  GtkRadioAction *action; GtkRadioAction *last_action; while (/&ast; more
-   --  actions to add &ast;/) { action = gtk_radio_action_new (...);
+   --  object.
+   --  Use this in language bindings instead of the Gtk.Radio_Action.Get_Group
+   --  and Gtk.Radio_Action.Set_Group methods
+   --  A common way to set up a group of radio actions is the following: |[
+   --  GtkRadioAction *action; GtkRadioAction *last_action;
+   --  while (/&ast; more actions to add &ast;/) { action =
+   --  gtk_radio_action_new (...);
    --  gtk_radio_action_join_group (action, last_action); last_action = action;
    --  } ]|
    --  Since: gtk+ 3.0

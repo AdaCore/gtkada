@@ -94,7 +94,7 @@ package body Gtk.Image is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Image : out Gtk_Image; Filename : filename) is
+   procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String) is
    begin
       Image := new Gtk_Image_Record;
       Gtk.Image.Initialize (Image, Filename);
@@ -201,12 +201,17 @@ package body Gtk.Image is
 
    procedure Initialize
       (Image    : access Gtk_Image_Record'Class;
-       Filename : filename)
+       Filename : UTF8_String)
    is
-      function Internal (Filename : filename) return System.Address;
+      function Internal
+         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_file");
+      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Return   : System.Address;
    begin
-      Set_Object (Image, Internal (Filename));
+      Tmp_Return := Internal (Tmp_Filename);
+      Free (Tmp_Filename);
+      Set_Object (Image, Tmp_Return);
    end Initialize;
 
    ----------------
@@ -419,11 +424,15 @@ package body Gtk.Image is
    -- Set --
    ---------
 
-   procedure Set (Image : access Gtk_Image_Record; Filename : filename) is
-      procedure Internal (Image : System.Address; Filename : filename);
+   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String) is
+      procedure Internal
+         (Image    : System.Address;
+          Filename : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_image_set_from_file");
+      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
    begin
-      Internal (Get_Object (Image), Filename);
+      Internal (Get_Object (Image), Tmp_Filename);
+      Free (Tmp_Filename);
    end Set;
 
    ---------

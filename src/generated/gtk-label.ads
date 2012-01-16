@@ -107,17 +107,18 @@ package Gtk.Label is
    procedure Initialize_With_Mnemonic
       (Label : access Gtk_Label_Record'Class;
        Str   : UTF8_String);
-   --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str. If
-   --  characters in Str are preceded by an underscore, they are underlined. If
-   --  you need a literal underscore character in a label, use '__' (two
+   --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
+   --  If characters in Str are preceded by an underscore, they are underlined.
+   --  If you need a literal underscore character in a label, use '__' (two
    --  underscores). The first underlined character represents a keyboard
    --  accelerator called a mnemonic. The mnemonic key can be used to activate
    --  another widget, chosen automatically, or explicitly using
-   --  Gtk.Label.Set_Mnemonic_Widget. If Gtk.Label.Set_Mnemonic_Widget is not
-   --  called, then the first activatable ancestor of the Gtk.Label.Gtk_Label
-   --  will be chosen as the mnemonic widget. For instance, if the label is
-   --  inside a button or menu item, the button or menu item will automatically
-   --  become the mnemonic widget and be activated by the mnemonic.
+   --  Gtk.Label.Set_Mnemonic_Widget.
+   --  If Gtk.Label.Set_Mnemonic_Widget is not called, then the first
+   --  activatable ancestor of the Gtk.Label.Gtk_Label will be chosen as the
+   --  mnemonic widget. For instance, if the label is inside a button or menu
+   --  item, the button or menu item will automatically become the mnemonic
+   --  widget and be activated by the mnemonic.
    --  "str": The text of the label, with an underscore in front of the
    --  mnemonic character
 
@@ -146,7 +147,7 @@ package Gtk.Label is
        Attrs : out Pango.Attributes.Pango_Attr_List);
    --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
    --  applied to the label text.
-   --  Note: The attributes set with this function will be applied and merged
+   --   Note: The attributes set with this function will be applied and merged
    --  with any other attributes previously effected by way of the
    --  Gtk.Label.Gtk_Label:use-underline or Gtk.Label.Gtk_Label:use-markup
    --  properties. While it is not recommended to mix markup strings with
@@ -158,10 +159,11 @@ package Gtk.Label is
       (Label : access Gtk_Label_Record) return UTF8_String;
    --  Returns the URI for the currently active link in the label. The active
    --  link is the one under the mouse pointer or, in a selectable label, the
-   --  link in which the text cursor is currently positioned. This function is
-   --  intended for use in a Gtk.Label.Gtk_Label::activate-link handler or for
-   --  use in a Gtk.Widget.Gtk_Widget::query-tooltip handler. not be freed or
-   --  modified.
+   --  link in which the text cursor is currently positioned.
+   --  This function is intended for use in a
+   --  Gtk.Label.Gtk_Label::activate-link handler or for use in a
+   --  Gtk.Widget.Gtk_Widget::query-tooltip handler.
+   --  not be freed or modified.
    --  Since: gtk+ 2.18
 
    function Get_Ellipsize
@@ -170,7 +172,8 @@ package Gtk.Label is
    procedure Set_Ellipsize
       (Label : access Gtk_Label_Record;
        Mode  : Pango.Layout.Pango_Ellipsize_Mode);
-   --  if there is not enough space to render the entire string.
+   --  Sets the mode used to ellipsize (add an ellipsis: "...") to the text if
+   --  there is not enough space to render the entire string.
    --  Since: gtk+ 2.6
    --  "mode": a Pango.Layout.Pango_Ellipsize_Mode
 
@@ -271,11 +274,11 @@ package Gtk.Label is
    --  Gtk.Button.Gtk_Button or a Gtk.Notebook.Gtk_Notebook tab) it is
    --  automatically associated with the correct widget, but sometimes (i.e.
    --  when the target is a Gtk.GEntry.Gtk_Entry next to the label) you need to
-   --  set it explicitly using this function. The target widget will be
-   --  accelerated by emitting the GtkWidget::mnemonic-activate signal on it.
-   --  The default handler for this signal will activate the widget if there
-   --  are no mnemonic collisions and toggle focus between the colliding
-   --  widgets otherwise.
+   --  set it explicitly using this function.
+   --  The target widget will be accelerated by emitting the
+   --  GtkWidget::mnemonic-activate signal on it. The default handler for this
+   --  signal will activate the widget if there are no mnemonic collisions and
+   --  toggle focus between the colliding widgets otherwise.
    --  "widget": the target Gtk.Widget.Gtk_Widget
 
    function Get_Selectable (Label : access Gtk_Label_Record) return Boolean;
@@ -308,8 +311,8 @@ package Gtk.Label is
    function Get_Text (Label : access Gtk_Label_Record) return UTF8_String;
    procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String);
    --  Sets the text within the Gtk.Label.Gtk_Label widget. It overwrites any
-   --  text that was there before. This will also clear any previously set
-   --  mnemonic accelerators.
+   --  text that was there before.
+   --  This will also clear any previously set mnemonic accelerators.
    --  "str": The text you want to set
 
    function Get_Track_Visited_Links
@@ -354,7 +357,8 @@ package Gtk.Label is
        End_Offset   : Gint := -1);
    --  Selects a range of characters in the label, if the label is selectable.
    --  See Gtk.Label.Set_Selectable. If the label is not selectable, this
-   --  function has no effect. If Start_Offset or
+   --  function has no effect. If Start_Offset or End_Offset are -1, then the
+   --  end of the label will be substituted.
    --  "start_offset": start offset (in characters not bytes)
    --  "end_offset": end offset (in characters not bytes)
 
@@ -364,7 +368,8 @@ package Gtk.Label is
    --  the label's text and attribute list based on the parse results. If the
    --  Str is external data, you may need to escape it with
    --  g_markup_escape_text or g_markup_printf_escaped<!-- -->: |[ char
-   --  *markup; markup = g_markup_printf_escaped ("&lt;span
+   --  *markup;
+   --  markup = g_markup_printf_escaped ("&lt;span
    --  style=\"italic\"&gt;&percnt;s&lt;/span&gt;", str); gtk_label_set_markup
    --  (GTK_LABEL (label), markup); g_free (markup); ]|
    --  "str": a markup string (see <link linkend="PangoMarkupFormat">Pango
@@ -453,9 +458,9 @@ package Gtk.Label is
    --  Type: Gint
    --  Flags: read-write
    --  The desired maximum width of the label, in characters. If this property
-   --  is set to -1, the width will be calculated automatically. See the
-   --  section on <link linkend="label-text-layout">text layout</link> for
-   --  details of how Gtk.Label.Gtk_Label:width-chars and
+   --  is set to -1, the width will be calculated automatically.
+   --  See the section on <link linkend="label-text-layout">text layout</link>
+   --  for details of how Gtk.Label.Gtk_Label:width-chars and
    --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
    --  and wrapped labels.
    --
@@ -507,10 +512,11 @@ package Gtk.Label is
    --  Type: Gint
    --  Flags: read-write
    --  The desired width of the label, in characters. If this property is set
-   --  to -1, the width will be calculated automatically. See the section on
-   --  <link linkend="label-text-layout">text layout</link> for details of how
-   --  Gtk.Label.Gtk_Label:width-chars and Gtk.Label.Gtk_Label:max-width-chars
-   --  determine the width of ellipsized and wrapped labels.
+   --  to -1, the width will be calculated automatically.
+   --  See the section on <link linkend="label-text-layout">text layout</link>
+   --  for details of how Gtk.Label.Gtk_Label:width-chars and
+   --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
+   --  and wrapped labels.
    --
    --  Name: Wrap_Property
    --  Type: Boolean
@@ -541,10 +547,10 @@ package Gtk.Label is
    --  "activate-current-link"
    --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user activates a link in the label. Applications
-   --  may also emit the signal with g_signal_emit_by_name if they need to
-   --  control activation of URIs programmatically. The default bindings for
-   --  this signal are all forms of the Enter key.
+   --  gets emitted when the user activates a link in the label.
+   --  Applications may also emit the signal with g_signal_emit_by_name if they
+   --  need to control activation of URIs programmatically.
+   --  The default bindings for this signal are all forms of the Enter key.
    --
    --  "activate-link"
    --     function Handler
@@ -560,8 +566,8 @@ package Gtk.Label is
    --     procedure Handler (Self : access Gtk_Label_Record'Class);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to copy the selection to the clipboard. The default binding for this
-   --  signal is Ctrl-c.
+   --  to copy the selection to the clipboard.
+   --  The default binding for this signal is Ctrl-c.
    --
    --  "move-cursor"
    --     procedure Handler
@@ -578,13 +584,14 @@ package Gtk.Label is
    --  in Entry, this signal causes the viewport to be moved instead.
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
-   --  programmatically. The default bindings for this signal come in two
-   --  variants, the variant with the Shift modifier extends the selection, the
-   --  variant without the Shift modifer does not. There are too many key
-   --  combinations to list them all here. <itemizedlist> <listitem>Arrow keys
-   --  move by individual characters/lines</listitem> <listitem>Ctrl-arrow key
-   --  combinations move by words/paragraphs</listitem> <listitem>Home/End keys
-   --  move to the ends of the buffer</listitem> </itemizedlist>
+   --  programmatically.
+   --  The default bindings for this signal come in two variants, the variant
+   --  with the Shift modifier extends the selection, the variant without the
+   --  Shift modifer does not. There are too many key combinations to list them
+   --  all here. <itemizedlist> <listitem>Arrow keys move by individual
+   --  characters/lines</listitem> <listitem>Ctrl-arrow key combinations move
+   --  by words/paragraphs</listitem> <listitem>Home/End keys move to the ends
+   --  of the buffer</listitem> </itemizedlist>
    --
    --  "populate-popup"
    --     procedure Handler

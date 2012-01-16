@@ -114,9 +114,9 @@ package Gtk.Dialog is
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
-   --  Creates a new dialog box. Widgets should not be packed into this
-   --  Gtk.Window.Gtk_Window directly, but into the Vbox and Action_Area, as
-   --  described above.
+   --  Creates a new dialog box.
+   --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
+   --  but into the Vbox and Action_Area, as described above.
 
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
@@ -180,8 +180,8 @@ package Gtk.Dialog is
       (Dialog : access Gtk_Dialog_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type;
-   --  Gets the response id of a widget in the action area of a dialog. if
-   --  Widget doesn't have a response id set.
+   --  Gets the response id of a widget in the action area of a dialog.
+   --  if Widget doesn't have a response id set.
    --  Since: gtk+ 2.8
    --  "widget": a widget in the action area of Dialog
 
@@ -190,6 +190,7 @@ package Gtk.Dialog is
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
+   --  Response_Id, or null.
    --  Since: gtk+ 2.20
    --  "response_id": the response ID used by the Dialog widget
 
@@ -207,10 +208,11 @@ package Gtk.Dialog is
    --  Gtk.Dialog.Gtk_Dialog::response signal, or is destroyed. If the dialog
    --  is destroyed during the call to Gtk.Dialog.Run, Gtk.Dialog.Run returns
    --  GTK_RESPONSE_NONE. Otherwise, it returns the response ID from the
-   --  ::response signal emission. Before entering the recursive main loop,
-   --  Gtk.Dialog.Run calls Gtk.Widget.Show on the dialog for you. Note that
-   --  you still need to show any children of the dialog yourself. During
-   --  Gtk.Dialog.Run, the default behavior of
+   --  ::response signal emission.
+   --  Before entering the recursive main loop, Gtk.Dialog.Run calls
+   --  Gtk.Widget.Show on the dialog for you. Note that you still need to show
+   --  any children of the dialog yourself.
+   --  During Gtk.Dialog.Run, the default behavior of
    --  Gtk.Widget.Gtk_Widget::delete-event is disabled; if the dialog receives
    --  ::delete_event, it will not be destroyed as windows usually are, and
    --  Gtk.Dialog.Run will return GTK_RESPONSE_DELETE_EVENT. Also, during
@@ -218,17 +220,19 @@ package Gtk.Dialog is
    --  return at any time by calling Gtk.Dialog.Response to emit the ::response
    --  signal. Destroying the dialog during Gtk.Dialog.Run is a very bad idea,
    --  because your post-run code won't know whether the dialog was destroyed
-   --  or not. After Gtk.Dialog.Run returns, you are responsible for hiding or
-   --  destroying the dialog if you wish to do so. Typical usage of this
-   --  function might be: |[ gint result = gtk_dialog_run (GTK_DIALOG
-   --  (dialog)); switch (result) { case GTK_RESPONSE_ACCEPT:
+   --  or not.
+   --  After Gtk.Dialog.Run returns, you are responsible for hiding or
+   --  destroying the dialog if you wish to do so.
+   --  Typical usage of this function might be: |[ gint result = gtk_dialog_run
+   --  (GTK_DIALOG (dialog)); switch (result) { case GTK_RESPONSE_ACCEPT:
    --  do_application_specific_something (); break; default:
    --  do_nothing_since_dialog_was_cancelled (); break; } gtk_widget_destroy
-   --  (dialog); ]| Note that even though the recursive main loop gives the
-   --  effect of a modal dialog (it prevents the user from interacting with
-   --  other windows in the same window group while the dialog is run),
-   --  callbacks such as timeouts, IO channel watches, DND drops, etc,
-   --  <emphasis>will</emphasis> be triggered during a Gtk.Dialog.Run call.
+   --  (dialog); ]|
+   --  Note that even though the recursive main loop gives the effect of a
+   --  modal dialog (it prevents the user from interacting with other windows
+   --  in the same window group while the dialog is run), callbacks such as
+   --  timeouts, IO channel watches, DND drops, etc, <emphasis>will</emphasis>
+   --  be triggered during a Gtk.Dialog.Run call.
 
    procedure Set_Default_Response
       (Dialog      : access Gtk_Dialog_Record;
@@ -308,7 +312,8 @@ package Gtk.Dialog is
    --     procedure Handler (Self : access Gtk_Dialog_Record'Class);
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted when the user uses a keybinding to
-   --  close the dialog. The default binding for this signal is the Escape key.
+   --  close the dialog.
+   --  The default binding for this signal is the Escape key.
    --
    --  "response"
    --     procedure Handler

@@ -64,8 +64,9 @@ package Gtk.Button is
        Stock_Id : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
    --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
-   --  and GTK_STOCK_APPLY. If Stock_Id is unknown, then it will be treated as
-   --  a mnemonic label (as for Gtk.Button.Gtk_New_With_Mnemonic).
+   --  and GTK_STOCK_APPLY.
+   --  If Stock_Id is unknown, then it will be treated as a mnemonic label (as
+   --  for Gtk.Button.Gtk_New_With_Mnemonic).
    --  "stock_id": the name of the stock item
 
    procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
@@ -169,8 +170,8 @@ package Gtk.Button is
       (Button : access Gtk_Button_Record;
        Label  : UTF8_String);
    --  Sets the text of the label of the button to Str. This text is also used
-   --  to select the stock item if Gtk.Button.Set_Use_Stock is used. This will
-   --  also clear any previously set labels.
+   --  to select the stock item if Gtk.Button.Set_Use_Stock is used.
+   --  This will also clear any previously set labels.
    --  "label": a string
 
    function Get_Relief
@@ -181,7 +182,8 @@ package Gtk.Button is
    --  Sets the relief style of the edges of the given Gtk.Button.Gtk_Button
    --  widget. Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF,
    --  GTK_RELIEF_NONE. The default style is, as one can guess,
-   --  GTK_RELIEF_NORMAL. <!-- FIXME: put pictures of each style -->
+   --  GTK_RELIEF_NORMAL.
+   --  <!-- FIXME: put pictures of each style -->
    --  "newstyle": The GtkReliefStyle as described above.
 
    function Get_Use_Stock (Button : access Gtk_Button_Record) return Boolean;

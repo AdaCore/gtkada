@@ -76,19 +76,19 @@ package Gtk.GRange is
    procedure Set_Fill_Level
       (The_Range  : access Gtk_Range_Record;
        Fill_Level : Gdouble);
-   --  Set the new position of the fill level indicator. The "fill level" is
-   --  probably best described by its most prominent use case, which is an
-   --  indicator for the amount of pre-buffering in a streaming media player.
-   --  In that use case, the value of the range would indicate the current play
-   --  position, and the fill level would be the position up to which the
-   --  file/stream has been downloaded. This amount of prebuffering can be
-   --  displayed on the range's trough and is themeable separately from the
-   --  trough. To enable fill level display, use
-   --  Gtk.GRange.Set_Show_Fill_Level. The range defaults to not showing the
-   --  fill level. Additionally, it's possible to restrict the range's slider
-   --  position to values which are smaller than the fill level. This is
-   --  controller by Gtk.GRange.Set_Restrict_To_Fill_Level and is by default
-   --  enabled.
+   --  Set the new position of the fill level indicator.
+   --  The "fill level" is probably best described by its most prominent use
+   --  case, which is an indicator for the amount of pre-buffering in a
+   --  streaming media player. In that use case, the value of the range would
+   --  indicate the current play position, and the fill level would be the
+   --  position up to which the file/stream has been downloaded.
+   --  This amount of prebuffering can be displayed on the range's trough and
+   --  is themeable separately from the trough. To enable fill level display,
+   --  use Gtk.GRange.Set_Show_Fill_Level. The range defaults to not showing
+   --  the fill level.
+   --  Additionally, it's possible to restrict the range's slider position to
+   --  values which are smaller than the fill level. This is controller by
+   --  Gtk.GRange.Set_Restrict_To_Fill_Level and is by default enabled.
    --  Since: gtk+ 2.12
    --  "fill_level": the new position of the fill level indicator
 
@@ -98,8 +98,8 @@ package Gtk.GRange is
       (The_Range : access Gtk_Range_Record;
        Flippable : Boolean);
    --  If a range is flippable, it will switch its direction if it is
-   --  horizontal and its direction is %GTK_TEXT_DIR_RTL. See
-   --  Gtk.Widget.Get_Direction.
+   --  horizontal and its direction is %GTK_TEXT_DIR_RTL.
+   --  See Gtk.Widget.Get_Direction.
    --  Since: gtk+ 2.18
    --  "flippable": True to make the range flippable
 
@@ -129,8 +129,8 @@ package Gtk.GRange is
    procedure Set_Min_Slider_Size
       (The_Range : access Gtk_Range_Record;
        Min_Size  : Gint);
-   --  Sets the minimum size of the range's slider. This function is useful
-   --  mainly for Gtk.GRange.Gtk_Range subclasses.
+   --  Sets the minimum size of the range's slider.
+   --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "min_size": The slider's minimum size
 
@@ -138,8 +138,8 @@ package Gtk.GRange is
       (The_Range  : access Gtk_Range_Record;
        Range_Rect : out Gdk.Rectangle.Gdk_Rectangle);
    --  This function returns the area that contains the range's trough and its
-   --  steppers, in widget->window coordinates. This function is useful mainly
-   --  for Gtk.GRange.Gtk_Range subclasses.
+   --  steppers, in widget->window coordinates.
+   --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "range_rect": return location for the range rectangle
 
@@ -181,8 +181,8 @@ package Gtk.GRange is
        Slider_Start : out Gint;
        Slider_End   : out Gint);
    --  This function returns sliders range along the long dimension, in
-   --  widget->window coordinates. This function is useful mainly for
-   --  Gtk.GRange.Gtk_Range subclasses.
+   --  widget->window coordinates.
+   --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "slider_start": return location for the slider's start, or null
    --  "slider_end": return location for the slider's end, or null
@@ -193,8 +193,8 @@ package Gtk.GRange is
       (The_Range  : access Gtk_Range_Record;
        Size_Fixed : Boolean);
    --  Sets whether the range's slider has a fixed size, or a size that
-   --  depends on its adjustment's page size. This function is useful mainly
-   --  for Gtk.GRange.Gtk_Range subclasses.
+   --  depends on its adjustment's page size.
+   --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
    --  "size_fixed": True to make the slider size constant
 
@@ -363,12 +363,12 @@ package Gtk.GRange is
    --  the type of scroll event that occurred and the resultant new value. The
    --  application can handle the event itself and return True to prevent
    --  further processing. Or, by returning False, it can pass the event to
-   --  other handlers until the default GTK+ handler is reached. The value
-   --  parameter is unrounded. An application that overrides the
+   --  other handlers until the default GTK+ handler is reached.
+   --  The value parameter is unrounded. An application that overrides the
    --  GtkRange::change-value signal is responsible for clamping the value to
    --  the desired number of decimal digits; the default GTK+ handler clamps
-   --  the value based on Gtk.GRange.Gtk_Range:round-digits. It is not possible
-   --  to use delayed update policies in an overridden
+   --  the value based on Gtk.GRange.Gtk_Range:round-digits.
+   --  It is not possible to use delayed update policies in an overridden
    --  Gtk.GRange.Gtk_Range::change-value handler.
    --  Returns True to prevent other handlers from being invoked for the
    --  signal, False to propagate the signal further

@@ -73,6 +73,7 @@ package Gtk.Layout is
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
    --  adjustment you'd like the layout to use for scrolling, pass null for
+   --  Hadjustment and Vadjustment.
    --  "hadjustment": horizontal scroll adjustment, or null
    --  "vadjustment": vertical scroll adjustment, or null
 
@@ -123,8 +124,8 @@ package Gtk.Layout is
       (Layout     : access Gtk_Layout_Record;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    pragma Obsolescent (Set_Vadjustment);
-   --  Sets the vertical scroll adjustment for the layout. See
-   --  Gtk.Scrolledwindow.Gtk_Scrolledwindow, Gtk.Scrollbar.Gtk_Scrollbar,
+   --  Sets the vertical scroll adjustment for the layout.
+   --  See Gtk.Scrolledwindow.Gtk_Scrolledwindow, Gtk.Scrollbar.Gtk_Scrollbar,
    --  Gtk.Adjustment.Gtk_Adjustment for details.
    --  Deprecated since 3.0, Use gtk_scrollable_set_vadjustment
    --  "adjustment": new scroll adjustment

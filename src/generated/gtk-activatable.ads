@@ -53,15 +53,16 @@ package Gtk.Activatable is
       (Self   : Gtk_Activatable;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
    --  This is a utility function for Gtk.Activatable.Gtk_Activatable
-   --  implementors. When implementing Gtk.Activatable.Gtk_Activatable you must
-   --  call this when handling changes of the
+   --  implementors.
+   --  When implementing Gtk.Activatable.Gtk_Activatable you must call this
+   --  when handling changes of the
    --  Gtk.Activatable.Gtk_Activatable:related-action, and you must also use
-   --  this to break references in GObject->dispose. This function adds a
-   --  reference to the currently set related action for you, it also makes
-   --  sure the Gtk.Activatable.Gtk_Activatable->update method is called when
-   --  the related Gtk.Action.Gtk_Action properties change and registers to the
-   --  action's proxy list.
-   --  Note: Be careful to call this before setting the local copy of the
+   --  this to break references in GObject->dispose.
+   --  This function adds a reference to the currently set related action for
+   --  you, it also makes sure the Gtk.Activatable.Gtk_Activatable->update
+   --  method is called when the related Gtk.Action.Gtk_Action properties
+   --  change and registers to the action's proxy list.
+   --   Note: Be careful to call this before setting the local copy of the
    --  Gtk.Action.Gtk_Action property, since this function uses
    --  Gtk.Activatable.Get_Action to retrieve the previous action
    --  Since: gtk+ 2.16
@@ -73,7 +74,7 @@ package Gtk.Activatable is
       (Self   : Gtk_Activatable;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
    --  Sets the related action on the Activatable object.
-   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:related-action property and call
    --  Gtk.Toggle_Button.Do_Set_Related_Action when it changes.
    --  Since: gtk+ 2.16
@@ -86,7 +87,7 @@ package Gtk.Activatable is
        Use_Appearance : Boolean);
    --  Sets whether this activatable should reset its layout and appearance
    --  when setting the related action or when the action changes appearance
-   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance property and call
    --  Gtk.Toggle_Button.Sync_Action_Properties to update Activatable if
    --  needed.
@@ -114,7 +115,7 @@ package Gtk.Activatable is
    --  Flags: read-write
    --  The action that this activatable will activate and receive updates from
    --  for various states and possibly appearance.
-   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  this property and call Gtk.Activatable.Do_Set_Related_Action when it
    --  changes.
    --
@@ -122,11 +123,11 @@ package Gtk.Activatable is
    --  Type: Boolean
    --  Flags: read-write
    --  Whether this activatable should reset its layout and appearance when
-   --  setting the related action or when the action changes appearance. See
-   --  the Gtk.Action.Gtk_Action documentation directly to find which
+   --  setting the related action or when the action changes appearance.
+   --  See the Gtk.Action.Gtk_Action documentation directly to find which
    --  properties should be ignored by the Gtk.Activatable.Gtk_Activatable when
    --  this property is False.
-   --  Note: Gtk.Activatable.Gtk_Activatable implementors need to handle this
+   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle this
    --  property and call Gtk.Activatable.Sync_Action_Properties on the
    --  activatable widget when it changes.
 

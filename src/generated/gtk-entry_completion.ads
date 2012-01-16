@@ -83,7 +83,8 @@ package Gtk.Entry_Completion is
    --  Note that Key is normalized and case-folded (see g_utf8_normalize and
    --  g_utf8_casefold). If this is not appropriate, match functions have
    --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
-   --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>. for Key
+   --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+   --  for Key
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
    --  "iter": a GtkTreeIter indicating the row to match
@@ -179,8 +180,9 @@ package Gtk.Entry_Completion is
    procedure Set_Minimum_Key_Length
       (Completion : access Gtk_Entry_Completion_Record;
        Length     : Gint);
-   --  Requires the length of the search key for Completion to be at least key
-   --  takes a lot of time and will come up with meaningless results anyway
+   --  Requires the length of the search key for Completion to be at least
+   --  Length. This is useful for long lists, where completing using a small
+   --  key takes a lot of time and will come up with meaningless results anyway
    --  (ie, a too large dataset).
    --  Since: gtk+ 2.4
    --  "length": the minimum length of the key in order to start completing
@@ -235,12 +237,14 @@ package Gtk.Entry_Completion is
    procedure Set_Text_Column
       (Completion : access Gtk_Entry_Completion_Record;
        Column     : Gint);
+   --  Convenience function for setting up the most used case of this code: a
    --  completion list with just strings. This function will set up Completion
    --  to have a list displaying all (and just) strings in the completion list,
-   --  and to get those strings from Column in the model of Completion. This
-   --  functions creates and adds a Gtk.Cellrenderertext.Gtk_Cellrenderertext
-   --  for the selected column. If you need to set the text column, but don't
-   --  want the cell renderer, use g_object_set to set the
+   --  and to get those strings from Column in the model of Completion.
+   --  This functions creates and adds a
+   --  Gtk.Cellrenderertext.Gtk_Cellrenderertext for the selected column. If
+   --  you need to set the text column, but don't want the cell renderer, use
+   --  g_object_set to set the
    --  Gtk.Entry_Completion.Gtk_Entry_Completion:text-column property directly.
    --  Since: gtk+ 2.4
    --  "column": the column in the model of Completion to get strings from
@@ -294,7 +298,8 @@ package Gtk.Entry_Completion is
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
       --  g_utf8_casefold). If this is not appropriate, match functions have
       --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
-      --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>. for Key
+      --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+      --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
       --  "iter": a GtkTreeIter indicating the row to match
@@ -318,10 +323,11 @@ package Gtk.Entry_Completion is
       (Cell_Layout : access Gtk_Entry_Completion_Record;
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Gtk.Cell_Layout.Cell_Data_Func);
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-   --  function is used instead of the standard attributes mapping for setting
-   --  the column value, and should set the value of Cell_Layout's cell
+   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+   --  This function is used instead of the standard attributes mapping for
+   --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
@@ -350,10 +356,11 @@ package Gtk.Entry_Completion is
           Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);
-      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-      --  function is used instead of the standard attributes mapping for
+      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+      --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
+      --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
       --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
@@ -467,9 +474,10 @@ package Gtk.Entry_Completion is
    --  Type: Gtk.Cellarea.Gtk_Cellarea
    --  Flags: read-write
    --  The Gtk.Cellarea.Gtk_Cellarea used to layout cell renderers in the
-   --  treeview column. If no area is specified when creating the entry
-   --  completion with Gtk.Entry_Completion.Gtk_New_With_Area a horizontally
-   --  oriented Gtk.Cellareabox.Gtk_Cellareabox will be used.
+   --  treeview column.
+   --  If no area is specified when creating the entry completion with
+   --  Gtk.Entry_Completion.Gtk_New_With_Area a horizontally oriented
+   --  Gtk.Cellareabox.Gtk_Cellareabox will be used.
    --
    --  Name: Inline_Completion_Property
    --  Type: Boolean
@@ -549,8 +557,9 @@ package Gtk.Entry_Completion is
    --    --  "iter": a GtkTreeIter positioned at the selected match
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
-   --  contents of the text column in the row pointed to by Iter. Note that
-   --  Model is the model that was passed to Gtk.Entry_Completion.Set_Model.
+   --  contents of the text column in the row pointed to by Iter.
+   --  Note that Model is the model that was passed to
+   --  Gtk.Entry_Completion.Set_Model.
    --  Returns True if the signal has been handled
    --
    --  "insert-prefix"
@@ -560,10 +569,11 @@ package Gtk.Entry_Completion is
    --    --  "prefix": the common prefix of all possible completions
    --  Gets emitted when the inline autocompletion is triggered. The default
    --  behaviour is to make the entry display the whole prefix and select the
-   --  newly inserted part. Applications may connect to this signal in order to
-   --  insert only a smaller part of the Prefix into the entry - e.g. the entry
-   --  used in the Gtk.File_Chooser.Gtk_File_Chooser inserts only the part of
-   --  the prefix up to the next '/'.
+   --  newly inserted part.
+   --  Applications may connect to this signal in order to insert only a
+   --  smaller part of the Prefix into the entry - e.g. the entry used in the
+   --  Gtk.File_Chooser.Gtk_File_Chooser inserts only the part of the prefix up
+   --  to the next '/'.
    --  Returns True if the signal has been handled
    --
    --  "match-selected"
@@ -575,8 +585,9 @@ package Gtk.Entry_Completion is
    --    --  "iter": a GtkTreeIter positioned at the selected match
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
-   --  the text column in the row pointed to by Iter. Note that Model is the
-   --  model that was passed to Gtk.Entry_Completion.Set_Model.
+   --  the text column in the row pointed to by Iter.
+   --  Note that Model is the model that was passed to
+   --  Gtk.Entry_Completion.Set_Model.
    --  Returns True if the signal has been handled
 
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";

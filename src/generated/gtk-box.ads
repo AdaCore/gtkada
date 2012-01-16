@@ -99,10 +99,10 @@ package Gtk.Box is
       (Box         : access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Hbox. wich is a very quick and easy change.
-   --  But the recommendation is to switch to Gtk.Grid.Gtk_Grid, since
-   --  Gtk.Box.Gtk_Box is going to go away eventually. See <xref
-   --  linkend="gtk-migrating-GtkGrid"/>.
+   --  Creates a new Gtk.Box.Gtk_Hbox.
+   --   wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -118,10 +118,10 @@ package Gtk.Box is
       (Box         : access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Vbox. wich is a very quick and easy change.
-   --  But the recommendation is to switch to Gtk.Grid.Gtk_Grid, since
-   --  Gtk.Box.Gtk_Box is going to go away eventually. See <xref
-   --  linkend="gtk-migrating-GtkGrid"/>.
+   --  Creates a new Gtk.Box.Gtk_Vbox.
+   --   wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -169,7 +169,8 @@ package Gtk.Box is
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
-   --  reference ends of Box, then Padding pixels are also put between
+   --  reference ends of Box, then Padding pixels are also put between Child
+   --  and the reference edge of Box
 
    procedure Pack_Start
       (In_Box  : access Gtk_Box_Record;
@@ -192,7 +193,8 @@ package Gtk.Box is
    --  "padding": extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
-   --  reference ends of Box, then Padding pixels are also put between
+   --  reference ends of Box, then Padding pixels are also put between Child
+   --  and the reference edge of Box
 
    procedure Query_Child_Packing
       (Box       : access Gtk_Box_Record;

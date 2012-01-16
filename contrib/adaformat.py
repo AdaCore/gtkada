@@ -443,7 +443,7 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8":
             t = UTF8_List()
-        elif name == "utf8":
+        elif name == "utf8" or cname == "gchar*":
             t = UTF8(empty_maps_to_null=empty_maps_to_null)
         elif cname:
             # Check whether the C type, including trailing "*", maps

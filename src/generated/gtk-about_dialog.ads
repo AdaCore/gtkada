@@ -144,7 +144,8 @@ package Gtk.About_Dialog is
       (About        : access Gtk_About_Dialog_Record;
        License_Type : GtkLicense);
    --  Sets the license of the application showing the About dialog from a
-   --  list of known licenses. This function overrides the license set using
+   --  list of known licenses.
+   --  This function overrides the license set using
    --  Gtk.About_Dialog.Set_License.
    --  Since: gtk+ 3.0
    --  "license_type": the type of license
@@ -187,10 +188,10 @@ package Gtk.About_Dialog is
       (About              : access Gtk_About_Dialog_Record;
        Translator_Credits : UTF8_String);
    --  Sets the translator credits string which is displayed in the
-   --  translators tab of the secondary credits dialog. The intended use for
-   --  this string is to display the translator of the language which is
-   --  currently used in the user interface. Using gettext, a simple way to
-   --  achieve that is to mark the string for translation: |[
+   --  translators tab of the secondary credits dialog.
+   --  The intended use for this string is to display the translator of the
+   --  language which is currently used in the user interface. Using gettext, a
+   --  simple way to achieve that is to mark the string for translation: |[
    --  gtk_about_dialog_set_translator_credits (about,
    --  _("translator-credits")); ]| It is a good idea to use the customary
    --  msgid "translator-credits" for this purpose, since translators will
@@ -289,12 +290,12 @@ package Gtk.About_Dialog is
    --  The license of the program, as a value of the %GtkLicense enumeration.
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
    --  standard disclaimer and link the user to the appropriate online resource
-   --  for the license text. If %GTK_LICENSE_UNKNOWN is used, the link used
-   --  will be the same specified in the
-   --  Gtk.About_Dialog.Gtk_About_Dialog:website property. If
-   --  %GTK_LICENSE_CUSTOM is used, the current contents of the
-   --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used. For any
-   --  other GtkLicense value, the contents of the
+   --  for the license text.
+   --  If %GTK_LICENSE_UNKNOWN is used, the link used will be the same
+   --  specified in the Gtk.About_Dialog.Gtk_About_Dialog:website property.
+   --  If %GTK_LICENSE_CUSTOM is used, the current contents of the
+   --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used.
+   --  For any other GtkLicense value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
    --  property as a side effect.
    --

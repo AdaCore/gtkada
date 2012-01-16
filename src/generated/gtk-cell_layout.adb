@@ -38,10 +38,11 @@ package body Gtk.Cell_Layout is
        Func_Data   : System.Address;
        Destroy     : System.Address);
    pragma Import (C, C_Gtk_Cell_Layout_Set_Cell_Data_Func, "gtk_cell_layout_set_cell_data_func");
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout. This
-   --  function is used instead of the standard attributes mapping for setting
-   --  the column value, and should set the value of Cell_Layout's cell
+   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+   --  This function is used instead of the standard attributes mapping for
+   --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null

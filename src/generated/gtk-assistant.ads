@@ -92,11 +92,11 @@ package Gtk.Assistant is
 
    procedure Commit (Assistant : access Gtk_Assistant_Record);
    --  Erases the visited page history so the back button is not shown on the
-   --  current page, and removes the cancel button from subsequent pages. Use
-   --  this when the information provided up to the current page is hereafter
-   --  deemed permanent and cannot be modified or undone. For example, showing
-   --  a progress page to track a long-running, unreversible operation after
-   --  the user has clicked apply on a confirmation page.
+   --  current page, and removes the cancel button from subsequent pages.
+   --  Use this when the information provided up to the current page is
+   --  hereafter deemed permanent and cannot be modified or undone. For
+   --  example, showing a progress page to track a long-running, unreversible
+   --  operation after the user has clicked apply on a confirmation page.
    --  Since: gtk+ 2.22
 
    function Get_Current_Page
@@ -104,9 +104,9 @@ package Gtk.Assistant is
    procedure Set_Current_Page
       (Assistant : access Gtk_Assistant_Record;
        Page_Num  : Gint);
-   --  Switches the page to Page_Num. Note that this will only be necessary in
-   --  custom buttons, as the Assistant flow can be set with
-   --  Gtk.Assistant.Set_Forward_Page_Func.
+   --  Switches the page to Page_Num.
+   --  Note that this will only be necessary in custom buttons, as the
+   --  Assistant flow can be set with Gtk.Assistant.Set_Forward_Page_Func.
    --  Since: gtk+ 2.10
    --  "page_num": index of the page to switch to, starting from 0. If
    --  negative, the last page will be used. If greater than the number of
@@ -120,8 +120,8 @@ package Gtk.Assistant is
    function Get_Nth_Page
       (Assistant : access Gtk_Assistant_Record;
        Page_Num  : Gint) return Gtk.Widget.Gtk_Widget;
-   --  Returns the child widget contained in page number Page_Num. if Page_Num
-   --  is out of bounds
+   --  Returns the child widget contained in page number Page_Num.
+   --  if Page_Num is out of bounds
    --  Since: gtk+ 2.10
    --  "page_num": the index of a page in the Assistant, or -1 to get the last
    --  page
@@ -133,8 +133,9 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Complete  : Boolean);
-   --  Sets whether Page contents are complete. This will make Assistant
-   --  update the buttons state to be able to continue the task.
+   --  Sets whether Page contents are complete.
+   --  This will make Assistant update the buttons state to be able to continue
+   --  the task.
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "complete": the completeness status of the page
@@ -149,8 +150,8 @@ package Gtk.Assistant is
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Set_Page_Header_Image);
-   --  Sets a header image for Page. add your header decoration to the page
-   --  content instead.
+   --  Sets a header image for Page.
+   --   add your header decoration to the page content instead.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown;
    --  "page": a page of Assistant
@@ -166,8 +167,10 @@ package Gtk.Assistant is
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Set_Page_Side_Image);
-   --  Sets a side image for Page. This image used to be displayed in the side
-   --  area of the assistant when Page is the current page. shown anymore.
+   --  Sets a side image for Page.
+   --  This image used to be displayed in the side area of the assistant when
+   --  Page is the current page.
+   --   shown anymore.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not
    --  "page": a page of Assistant
@@ -181,8 +184,9 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        Title     : UTF8_String);
-   --  Sets a title for Page. The title is displayed in the header area of the
-   --  assistant when Page is the current page.
+   --  Sets a title for Page.
+   --  The title is displayed in the header area of the assistant when Page is
+   --  the current page.
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "title": the new title for Page
@@ -195,8 +199,8 @@ package Gtk.Assistant is
       (Assistant : access Gtk_Assistant_Record;
        Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
        The_Type  : Gtk_Assistant_Page_Type);
-   --  Sets the page type for Page. The page type determines the page behavior
-   --  in the Assistant.
+   --  Sets the page type for Page.
+   --  The page type determines the page behavior in the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "type": the new type for Page
@@ -212,9 +216,11 @@ package Gtk.Assistant is
    --  -1 to append the page to the Assistant
 
    procedure Next_Page (Assistant : access Gtk_Assistant_Record);
-   --  Navigate to the next page. It is a programming error to call this
-   --  function when there is no next page. This function is for use when
-   --  creating pages of the GTK_ASSISTANT_PAGE_CUSTOM type.
+   --  Navigate to the next page.
+   --  It is a programming error to call this function when there is no next
+   --  page.
+   --  This function is for use when creating pages of the
+   --  GTK_ASSISTANT_PAGE_CUSTOM type.
    --  Since: gtk+ 3.0
 
    function Prepend_Page
@@ -225,9 +231,11 @@ package Gtk.Assistant is
    --  "page": a Gtk.Widget.Gtk_Widget
 
    procedure Previous_Page (Assistant : access Gtk_Assistant_Record);
-   --  Navigate to the previous visited page. It is a programming error to
-   --  call this function when no previous page is available. This function is
-   --  for use when creating pages of the GTK_ASSISTANT_PAGE_CUSTOM type.
+   --  Navigate to the previous visited page.
+   --  It is a programming error to call this function when no previous page is
+   --  available.
+   --  This function is for use when creating pages of the
+   --  GTK_ASSISTANT_PAGE_CUSTOM type.
    --  Since: gtk+ 3.0
 
    procedure Remove_Action_Widget
@@ -248,11 +256,11 @@ package Gtk.Assistant is
    procedure Set_Forward_Page_Func
       (Assistant : access Gtk_Assistant_Record;
        Page_Func : Gtk_Assistant_Page_Func);
-   --  Sets the page forwarding function to be Page_Func. This function will
-   --  be used to determine what will be the next page when the user presses
-   --  the forward button. Setting Page_Func to null will make the assistant to
-   --  use the default forward function, which just goes to the next visible
-   --  page.
+   --  Sets the page forwarding function to be Page_Func.
+   --  This function will be used to determine what will be the next page when
+   --  the user presses the forward button. Setting Page_Func to null will make
+   --  the assistant to use the default forward function, which just goes to
+   --  the next visible page.
    --  Since: gtk+ 2.10
    --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to use
    --  the default one
@@ -275,11 +283,11 @@ package Gtk.Assistant is
          (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type);
-      --  Sets the page forwarding function to be Page_Func. This function
-      --  will be used to determine what will be the next page when the user
-      --  presses the forward button. Setting Page_Func to null will make the
-      --  assistant to use the default forward function, which just goes to the
-      --  next visible page.
+      --  Sets the page forwarding function to be Page_Func.
+      --  This function will be used to determine what will be the next page
+      --  when the user presses the forward button. Setting Page_Func to null
+      --  will make the assistant to use the default forward function, which
+      --  just goes to the next visible page.
       --  Since: gtk+ 2.10
       --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to
       --  use the default one
@@ -288,12 +296,13 @@ package Gtk.Assistant is
    end Set_Forward_Page_Func_User_Data;
 
    procedure Update_Buttons_State (Assistant : access Gtk_Assistant_Record);
-   --  Forces Assistant to recompute the buttons state. GTK+ automatically
-   --  takes care of this in most situations, e.g. when the user goes to a
-   --  different page, or when the visibility or completeness of a page
-   --  changes. One situation where it can be necessary to call this function
-   --  is when changing a value on the current page affects the future page
-   --  flow of the assistant.
+   --  Forces Assistant to recompute the buttons state.
+   --  GTK+ automatically takes care of this in most situations, e.g. when the
+   --  user goes to a different page, or when the visibility or completeness of
+   --  a page changes.
+   --  One situation where it can be necessary to call this function is when
+   --  changing a value on the current page affects the future page flow of the
+   --  assistant.
    --  Since: gtk+ 2.10
 
    ----------------
@@ -321,10 +330,11 @@ package Gtk.Assistant is
    --
    --  "apply"
    --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
-   --  The ::apply signal is emitted when the apply button is clicked. The
-   --  default behavior of the Gtk.Assistant.Gtk_Assistant is to switch to the
-   --  page after the current page, unless the current page is the last one. A
-   --  handler for the ::apply signal should carry out the actions for which
+   --  The ::apply signal is emitted when the apply button is clicked.
+   --  The default behavior of the Gtk.Assistant.Gtk_Assistant is to switch to
+   --  the page after the current page, unless the current page is the last
+   --  one.
+   --  A handler for the ::apply signal should carry out the actions for which
    --  the wizard has collected data. If the action takes a long time to
    --  complete, you might consider putting a page of type
    --  %GTK_ASSISTANT_PAGE_PROGRESS after the confirmation page and handle this
@@ -347,9 +357,9 @@ package Gtk.Assistant is
    --        Page : Gtk.Widget.Gtk_Widget);
    --    --  "page": the current page
    --  The ::prepare signal is emitted when a new page is set as the
-   --  assistant's current page, before making the new page visible. A handler
-   --  for this signal can do any preparations which are necessary before
-   --  showing Page.
+   --  assistant's current page, before making the new page visible.
+   --  A handler for this signal can do any preparations which are necessary
+   --  before showing Page.
 
    Signal_Apply : constant Glib.Signal_Name := "apply";
    Signal_Cancel : constant Glib.Signal_Name := "cancel";

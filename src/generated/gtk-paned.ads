@@ -264,7 +264,8 @@ package Gtk.Paned is
    --  The ::accept-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle when moving it using key
-   --  bindings. The default binding for this signal is Return or Space.
+   --  bindings.
+   --  The default binding for this signal is Return or Space.
    --
    --  "cancel-position"
    --     function Handler
@@ -282,8 +283,8 @@ package Gtk.Paned is
    --    --  "reversed": whether cycling backward or forward
    --  The ::cycle-child-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle the focus between the children of the paned. The default
-   --  binding is f6.
+   --  to cycle the focus between the children of the paned.
+   --  The default binding is f6.
    --
    --  "cycle-handle-focus"
    --     function Handler
@@ -293,8 +294,8 @@ package Gtk.Paned is
    --  The ::cycle-handle-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle whether the paned should grab focus to allow the user to change
-   --  position of the handle by using key bindings. The default binding for
-   --  this signal is f8.
+   --  position of the handle by using key bindings.
+   --  The default binding for this signal is f8.
    --
    --  "move-handle"
    --     function Handler
@@ -311,7 +312,8 @@ package Gtk.Paned is
    --  The ::toggle-handle-focus is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle and then move focus to the
-   --  next widget in the focus chain. The default binding is Tab.
+   --  next widget in the focus chain.
+   --  The default binding is Tab.
 
    Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
    Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";

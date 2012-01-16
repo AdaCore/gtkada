@@ -115,8 +115,9 @@ package Gtk.Toggle_Button is
       (Toggle_Button  : access Gtk_Toggle_Button_Record;
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
-   --  You can call this function on a checkbutton or a radiobutton with This
-   --  function only affects instances of classes like
+   --  You can call this function on a checkbutton or a radiobutton with
+   --  Draw_Indicator = False to make the button look like a normal button
+   --  This function only affects instances of classes like
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
    --  Gtk.Toggle_Button.Gtk_Toggle_Button itself.

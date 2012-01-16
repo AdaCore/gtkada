@@ -45,7 +45,8 @@ package body Gtk.Calendar is
    --  Gtk.Calendar.Gtk_Calendar:show-details is set. A tooltip containing with
    --  full detail information is provided, if the entire text should not fit
    --  into the details area, or if Gtk.Calendar.Gtk_Calendar:show-details is
-   --  not set. The size of the details area can be restricted by setting the
+   --  not set.
+   --  The size of the details area can be restricted by setting the
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
    --  Since: gtk+ 2.14
@@ -264,7 +265,8 @@ package body Gtk.Calendar is
       --  This kind of functions provide Pango markup with detail information
       --  for the specified day. Examples for such details are holidays or
       --  appointments. The function returns null when no information is
-      --  available. for the specified day, or null.
+      --  available.
+      --   for the specified day, or null.
       --  Since: gtk+ 2.14
       --  "calendar": a Gtk.Calendar.Gtk_Calendar.
       --  "year": the year for which details are needed.

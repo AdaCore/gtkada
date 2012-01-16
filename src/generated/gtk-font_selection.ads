@@ -96,10 +96,12 @@ package Gtk.Font_Selection is
       (Fontsel  : access Gtk_Font_Selection_Record;
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
-   --  Sets the currently-selected font. Note that the Fontsel needs to know
-   --  the screen in which it will appear for this to work; this can be
-   --  guaranteed by simply making sure that the such font exists or if the
-   --  Fontsel doesn't belong to a particular screen yet.
+   --  Sets the currently-selected font.
+   --  Note that the Fontsel needs to know the screen in which it will appear
+   --  for this to work; this can be guaranteed by simply making sure that the
+   --  Fontsel is inserted in a toplevel window before you call this function.
+   --  such font exists or if the Fontsel doesn't belong to a particular screen
+   --  yet.
    --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
@@ -127,7 +129,8 @@ package Gtk.Font_Selection is
    function Get_Size
       (Fontsel : access Gtk_Font_Selection_Record) return Gint;
    pragma Obsolescent (Get_Size);
-   --  The selected font size. or -1 if no font size is selected.
+   --  The selected font size.
+   --  or -1 if no font size is selected.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
 
