@@ -82,7 +82,7 @@ package Gtk.Viewport is
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    pragma Obsolescent (Set_Hadjustment);
    --  Sets the horizontal adjustment of the viewport.
-   --  Deprecated since 3.0, Use gtk_scrollable_set_hadjustment
+   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Hadjustment
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
    function Get_Shadow_Type
@@ -103,13 +103,45 @@ package Gtk.Viewport is
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    pragma Obsolescent (Set_Vadjustment);
    --  Sets the vertical adjustment of the viewport.
-   --  Deprecated since 3.0, Use gtk_scrollable_set_vadjustment
+   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Vadjustment
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
    function Get_View_Window
       (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
+
+   ---------------------
+   -- Interfaces_Impl --
+   ---------------------
+
+   function Get_Hadjustment
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+   procedure Set_Hadjustment
+      (Self        : access Gtk_Viewport_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Hscroll_Policy
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+   procedure Set_Hscroll_Policy
+      (Self   : access Gtk_Viewport_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
+   function Get_Vadjustment
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+   procedure Set_Vadjustment
+      (Self        : access Gtk_Viewport_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Vscroll_Policy
+      (Self : access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+   procedure Set_Vscroll_Policy
+      (Self   : access Gtk_Viewport_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------
    -- Interfaces --

@@ -53,6 +53,7 @@ package Gtk.Assistant is
       --  Definition of various page types.  See Get_Page_Type/Set_Page_Type
       --  for more info.
 
+
       type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
       --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
       --  the next page given a current one. It's called both for computing the
@@ -270,8 +271,7 @@ package Gtk.Assistant is
       with procedure Destroy (Data : in out User_Data_Type) is null;
    package Set_Forward_Page_Func_User_Data is
 
-      type Gtk_Assistant_Page_Func is access function (Current_Page : Gint;
-         Data : User_Data_Type) return Gint;
+      type Gtk_Assistant_Page_Func is access function (Current_Page : Gint; Data : User_Data_Type) return Gint;
       --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
       --  the next page given a current one. It's called both for computing the
       --  next page when the user presses the "forward" button and for handling

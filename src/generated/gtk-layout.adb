@@ -214,4 +214,120 @@ package body Gtk.Layout is
       Internal (Get_Object (Layout), Get_Object (Adjustment));
    end Set_Vadjustment;
 
+   ---------------------
+   -- Get_Hadjustment --
+   ---------------------
+
+   function Get_Hadjustment
+      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Hadjustment;
+
+   ------------------------
+   -- Get_Hscroll_Policy --
+   ------------------------
+
+   function Get_Hscroll_Policy
+      (Self : access Gtk_Layout_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_scrollable_get_hscroll_policy");
+   begin
+      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Get_Object (Self)));
+   end Get_Hscroll_Policy;
+
+   ---------------------
+   -- Get_Vadjustment --
+   ---------------------
+
+   function Get_Vadjustment
+      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Vadjustment;
+
+   ------------------------
+   -- Get_Vscroll_Policy --
+   ------------------------
+
+   function Get_Vscroll_Policy
+      (Self : access Gtk_Layout_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_scrollable_get_vscroll_policy");
+   begin
+      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Get_Object (Self)));
+   end Get_Vscroll_Policy;
+
+   ---------------------
+   -- Set_Hadjustment --
+   ---------------------
+
+   procedure Set_Hadjustment
+      (Self        : access Gtk_Layout_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Hadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
+   begin
+      Internal (Get_Object (Self), Get_Object (Hadjustment));
+   end Set_Hadjustment;
+
+   ------------------------
+   -- Set_Hscroll_Policy --
+   ------------------------
+
+   procedure Set_Hscroll_Policy
+      (Self   : access Gtk_Layout_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal (Self : System.Address; Policy : Integer);
+      pragma Import (C, Internal, "gtk_scrollable_set_hscroll_policy");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
+   end Set_Hscroll_Policy;
+
+   ---------------------
+   -- Set_Vadjustment --
+   ---------------------
+
+   procedure Set_Vadjustment
+      (Self        : access Gtk_Layout_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Vadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
+   begin
+      Internal (Get_Object (Self), Get_Object (Vadjustment));
+   end Set_Vadjustment;
+
+   ------------------------
+   -- Set_Vscroll_Policy --
+   ------------------------
+
+   procedure Set_Vscroll_Policy
+      (Self   : access Gtk_Layout_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal (Self : System.Address; Policy : Integer);
+      pragma Import (C, Internal, "gtk_scrollable_set_vscroll_policy");
+   begin
+      Internal (Get_Object (Self), Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
+   end Set_Vscroll_Policy;
+
 end Gtk.Layout;

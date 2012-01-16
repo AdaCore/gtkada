@@ -39,7 +39,6 @@ with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
-with Gtk.Cellarea;      use Gtk.Cellarea;
 with Gtk.Tree_Model;    use Gtk.Tree_Model;
 
 package Gtk.Cell_Layout is
@@ -100,13 +99,6 @@ package Gtk.Cell_Layout is
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to clear the attribute
    --  mapping on
-
-   function Get_Area
-      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cellarea.Gtk_Cellarea;
-   --  Returns the underlying Gtk.Cellarea.Gtk_Cellarea which might be
-   --  Cell_Layout if called on a Gtk.Cellarea.Gtk_Cellarea or might be null if
-   --  no Gtk.Cellarea.Gtk_Cellarea is used by Cell_Layout.
-   --  Since: gtk+ 3.0
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)

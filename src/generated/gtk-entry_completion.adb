@@ -234,7 +234,7 @@ package body Gtk.Entry_Completion is
 
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
-       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class)
+       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
    is
    begin
       Completion := new Gtk_Entry_Completion_Record;
@@ -260,7 +260,7 @@ package body Gtk.Entry_Completion is
 
    procedure Initialize_With_Area
       (Completion : access Gtk_Entry_Completion_Record'Class;
-       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class)
+       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
    is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new_with_area");
@@ -784,21 +784,6 @@ package body Gtk.Entry_Completion is
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell));
    end Clear_Attributes;
-
-   --------------
-   -- Get_Area --
-   --------------
-
-   function Get_Area
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
-       return Gtk.Cellarea.Gtk_Cellarea
-   is
-      function Internal (Cell_Layout : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_cell_layout_get_area");
-      Stub_Gtk_Cellarea : Gtk.Cellarea.Gtk_Cellarea_Record;
-   begin
-      return Gtk.Cellarea.Gtk_Cellarea (Get_User_Data (Internal (Get_Object (Cell_Layout)), Stub_Gtk_Cellarea));
-   end Get_Area;
 
    ---------------
    -- Get_Cells --

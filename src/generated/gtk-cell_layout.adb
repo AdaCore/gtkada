@@ -119,21 +119,6 @@ package body Gtk.Cell_Layout is
       Internal (Cell_Layout, Get_Object (Cell));
    end Clear_Attributes;
 
-   --------------
-   -- Get_Area --
-   --------------
-
-   function Get_Area
-      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cellarea.Gtk_Cellarea
-   is
-      function Internal
-         (Cell_Layout : Gtk_Cell_Layout) return System.Address;
-      pragma Import (C, Internal, "gtk_cell_layout_get_area");
-      Stub_Gtk_Cellarea : Gtk.Cellarea.Gtk_Cellarea_Record;
-   begin
-      return Gtk.Cellarea.Gtk_Cellarea (Get_User_Data (Internal (Cell_Layout), Stub_Gtk_Cellarea));
-   end Get_Area;
-
    ---------------
    -- Get_Cells --
    ---------------

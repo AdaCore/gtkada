@@ -34,12 +34,12 @@
 --  Labels may contain mnemonics. Mnemonics are underlined characters in the
 --  label, used for keyboard navigation. Mnemonics are created by providing
 --  string with an underscore before the mnemonic character, such as "_File",
---  to the functions gtk_new_with_mnemonic or set_text_with_mnemonic().
+--  to the functions gtk_new_with_mnemonic or set_text_with_mnemonic.
 --
 --  Mnemonics automatically activate any activatable widget the label is
 --  inside, such as a Gtk_Button; if the label is not inside the mnemonic's
 --  target widget, you have to tell the label about the target using
---  set_mnemonic_widget(). For instance: declare Button : Gtk_Button; Label :
+--  set_mnemonic_widget. For instance: declare Button : Gtk_Button; Label :
 --  Gtk_Label; begin Gtk_New (Button); Gtk_New_With_Mnemonic (Label, "_File");
 --  Add (Button, Label); end; However, there exists a convenience function in
 --  Gtk.Button to create such a button already.
@@ -54,13 +54,13 @@
 --  &gt; and &amp;
 --
 --  Markup strings are just a convenient way to set the Pango_Attr_List on
---  label; Set_Attributes() may be a simpler way to set attributes in some
---  cases. Be careful though; Pango_Attr_List tends to cause
---  internationalization problems, unless you're applying attributes to the
---  entire string (i.e. unless you set the range of each attribute to [0,
---  G_MAXINT)). The reason is that specifying the start_index and end_index for
---  a Pango_Attribute requires knowledge of the exact string being displayed,
---  so translations will cause problems.
+--  label; Set_Attributes may be a simpler way to set attributes in some cases.
+--  Be careful though; Pango_Attr_List tends to cause internationalization
+--  problems, unless you're applying attributes to the entire string (i.e.
+--  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
+--  that specifying the start_index and end_index for a Pango_Attribute
+--  requires knowledge of the exact string being displayed, so translations
+--  will cause problems.
 --
 --  == Selectable labels ==
 --
@@ -144,7 +144,7 @@ package Gtk.Label is
        return Pango.Attributes.Pango_Attr_List;
    procedure Set_Attributes
       (Label : access Gtk_Label_Record;
-       Attrs : out Pango.Attributes.Pango_Attr_List);
+       Attrs : in out Pango.Attributes.Pango_Attr_List);
    --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
    --  applied to the label text.
    --   Note: The attributes set with this function will be applied and merged

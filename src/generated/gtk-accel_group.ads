@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  An accel group represents a group of keyboard accelerators, generally
 --  attached to a toplevel window. Accelerators are different from mnemonics.
@@ -32,7 +33,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;             use Gdk;
 with Gdk.Types;       use Gdk.Types;
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
@@ -48,12 +48,14 @@ package Gtk.Accel_Group is
    Accel_Locked  : constant Gtk_Accel_Flags := 2 ** 1;
    Accel_Mask    : constant Gtk_Accel_Flags := 16#07#;
 
+
    type Gtk_Accel_Key is record
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Flags      : Gtk_Accel_Flags;
    end record;
    pragma Convention (C, Gtk_Accel_Key);
+
 
    type Gtk_Accel_Group_Activate is access function
      (Accel_Group   : access Gtk_Accel_Group_Record'Class;
@@ -70,13 +72,11 @@ package Gtk.Accel_Group is
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
 
+
    type Gtk_Accel_Group_Find_Func is access function
-     (Key           : access Gtk_Accel_Key;
-      Closure       : C_Gtk_Accel_Group_Activate;
-      Data          : System.Address) return Boolean;
-   pragma Convention (C, Gtk_Accel_Group_Find_Func);
-   --  When a match is found, must return True.
-   --  Must not modify Key
+     (Key     : Gtk_Accel_Key;
+      Closure : System.Address) return Boolean;
+   --  Since: gtk+ 2.2
 
    ------------------
    -- Constructors --
@@ -166,13 +166,34 @@ package Gtk.Accel_Group is
 
    function Find
       (Accel_Group : access Gtk_Accel_Group_Record;
-       Find_Func   : Gtk_Accel_Group_Find_Func;
-       Data        : System.Address) return Gtk_Accel_Key;
+       Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns True and returns its Gtk_Accel_Key.
+   --  returns True and returns its GtkAccelKey.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
-   --  "data": data to pass to Find_Func
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Find_User_Data is
+
+      type Gtk_Accel_Group_Find_Func is access function
+        (Key     : Gtk_Accel_Key;
+         Closure : System.Address;
+         Data    : User_Data_Type) return Boolean;
+      --  Since: gtk+ 2.2
+
+      function Find
+         (Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+          Find_Func   : Gtk_Accel_Group_Find_Func;
+          Data        : User_Data_Type) return Gtk_Accel_Key;
+      --  Finds the first entry in an accelerator group for which Find_Func
+      --  returns True and returns its GtkAccelKey.
+      --  Find_Func. The key is owned by GTK+ and must not be freed.
+      --  "find_func": a function to filter the entries of Accel_Group with
+      --  "data": data to pass to Find_Func
+
+   end Find_User_Data;
 
    function Get_Is_Locked
       (Accel_Group : access Gtk_Accel_Group_Record) return Boolean;

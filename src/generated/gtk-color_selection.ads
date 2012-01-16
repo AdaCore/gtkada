@@ -38,7 +38,6 @@
 --  <testgtk>create_color_selection.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;             use Gdk;
 with Gdk.Color;       use Gdk.Color;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
@@ -84,7 +83,7 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    procedure Set_Current_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdk.Color.Gdk_Color);
+       Color    : in out Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color.
    --  The first time this is called, it will also set the original color to be
    --  Color too.
@@ -95,7 +94,7 @@ package Gtk.Color_Selection is
        Rgba     : out GdkRGBA);
    procedure Set_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : out GdkRGBA);
+       Rgba     : in out GdkRGBA);
    --  Sets the current color to be Rgba.
    --  The first time this is called, it will also set the original color to be
    --  Rgba too.
@@ -133,7 +132,7 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    procedure Set_Previous_Color
       (Colorsel : access Gtk_Color_Selection_Record;
-       Color    : out Gdk.Color.Gdk_Color);
+       Color    : in out Gdk.Color.Gdk_Color);
    --  Sets the 'previous' color to be Color.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that color change. Calling
@@ -146,7 +145,7 @@ package Gtk.Color_Selection is
        Rgba     : out GdkRGBA);
    procedure Set_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : out GdkRGBA);
+       Rgba     : in out GdkRGBA);
    --  Sets the 'previous' color to be Rgba.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that color change. Calling

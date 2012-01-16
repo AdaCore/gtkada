@@ -72,6 +72,7 @@ package Gtk.Calendar is
    Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
    --  Start the calendar week on Monday, instead of the default Sunday.
 
+
    type Gtk_Calendar_Detail_Func is access function
      (Calendar : access Gtk_Calendar_Record'Class;
       Year     : Guint;

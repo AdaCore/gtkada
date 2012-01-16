@@ -55,9 +55,9 @@ with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Cell_Area;        use Gtk.Cell_Area;
 with Gtk.Cell_Layout;      use Gtk.Cell_Layout;
 with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
-with Gtk.Cellarea;         use Gtk.Cellarea;
 with Gtk.Tree_Model;       use Gtk.Tree_Model;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -73,6 +73,7 @@ package Gtk.Entry_Completion is
       Iter          : Gtk.Tree_Model.Gtk_Tree_Iter;
       Data          : System.Address) return Boolean;
    pragma Convention (C, C_Gtk_Entry_Completion_Match_Func);
+
 
    type Gtk_Entry_Completion_Match_Func is access function
      (Completion : access Gtk_Entry_Completion_Record'Class;
@@ -113,15 +114,15 @@ package Gtk.Entry_Completion is
 
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
-       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class);
+       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area
       (Completion : access Gtk_Entry_Completion_Record'Class;
-       Area       : access Gtk.Cellarea.Gtk_Cellarea_Record'Class);
+       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
    --  the specified Area to layout cells in the underlying
    --  Gtk.Treeviewcolumn.Gtk_Treeviewcolumn for the drop-down menu.
    --  Since: gtk+ 3.0
-   --  "area": the Gtk.Cellarea.Gtk_Cellarea used to layout cells
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_entry_completion_get_type");
@@ -410,10 +411,6 @@ package Gtk.Entry_Completion is
        Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       ;
 
-   function Get_Area
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
-       return Gtk.Cellarea.Gtk_Cellarea;
-
    function Get_Cells
       (Cell_Layout : access Gtk_Entry_Completion_Record)
        return Glib.Object.Object_Simple_List.GList;
@@ -471,9 +468,9 @@ package Gtk.Entry_Completion is
    --  Glib.Properties for more information on properties)
    --
    --  Name: Cell_Area_Property
-   --  Type: Gtk.Cellarea.Gtk_Cellarea
+   --  Type: Gtk.Cell_Area.Gtk_Cell_Area
    --  Flags: read-write
-   --  The Gtk.Cellarea.Gtk_Cellarea used to layout cell renderers in the
+   --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers in the
    --  treeview column.
    --  If no area is specified when creating the entry completion with
    --  Gtk.Entry_Completion.Gtk_New_With_Area a horizontally oriented

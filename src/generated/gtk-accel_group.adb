@@ -23,10 +23,45 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Accel_Group is
+
+   function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Accel_Group_Find_Func);
+
+   function C_Gtk_Accel_Group_Find
+      (Accel_Group : System.Address;
+       Find_Func   : System.Address;
+       Data        : System.Address) return Gtk_Accel_Key;
+   pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
+   --  Finds the first entry in an accelerator group for which Find_Func
+   --  returns True and returns its GtkAccelKey.
+   --  Find_Func. The key is owned by GTK+ and must not be freed.
+   --  "find_func": a function to filter the entries of Accel_Group with
+   --  "data": data to pass to Find_Func
+
+   function Internal_Gtk_Accel_Group_Find_Func
+      (Key     : Gtk_Accel_Key;
+       Closure : System.Address;
+       Data    : System.Address) return Integer;
+   pragma Convention (C, Internal_Gtk_Accel_Group_Find_Func);
+
+   ----------------------------------------
+   -- Internal_Gtk_Accel_Group_Find_Func --
+   ----------------------------------------
+
+   function Internal_Gtk_Accel_Group_Find_Func
+      (Key     : Gtk_Accel_Key;
+       Closure : System.Address;
+       Data    : System.Address) return Integer
+   is
+      Func : constant Gtk_Accel_Group_Find_Func := To_Gtk_Accel_Group_Find_Func (Data);
+   begin
+      return Boolean'Pos (Func (Key, Closure));
+   end Internal_Gtk_Accel_Group_Find_Func;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Accel_Group_Record);
@@ -157,17 +192,53 @@ package body Gtk.Accel_Group is
 
    function Find
       (Accel_Group : access Gtk_Accel_Group_Record;
-       Find_Func   : Gtk_Accel_Group_Find_Func;
-       Data        : System.Address) return Gtk_Accel_Key
+       Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key
    is
-      function Internal
-         (Accel_Group : System.Address;
-          Find_Func   : System.Address;
-          Data        : System.Address) return Gtk_Accel_Key;
-      pragma Import (C, Internal, "gtk_accel_group_find");
    begin
-      return Internal (Get_Object (Accel_Group), Find_Func'Address, Data);
+      return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Gtk_Accel_Group_Find_Func'Address, Find_Func'Address);
    end Find;
+
+   package body Find_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+      function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Accel_Group_Find_Func);
+
+      ----------
+      -- Find --
+      ----------
+
+      function Find
+         (Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+          Find_Func   : Gtk_Accel_Group_Find_Func;
+          Data        : User_Data_Type) return Gtk_Accel_Key
+      is
+      begin
+         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (Find_Func'Address, Data));
+      end Find;
+
+      function Internal_Cb
+         (Key     : Gtk_Accel_Key;
+          Closure : System.Address;
+          Data    : System.Address) return Boolean;
+      --  Since: gtk+ 2.2
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      function Internal_Cb
+         (Key     : Gtk_Accel_Key;
+          Closure : System.Address;
+          Data    : System.Address) return Boolean
+      is
+         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+      begin
+         return To_Gtk_Accel_Group_Find_Func (D.Func) (Key, Closure, D.Data.all);
+      end Internal_Cb;
+
+   end Find_User_Data;
 
    -------------------
    -- Get_Is_Locked --

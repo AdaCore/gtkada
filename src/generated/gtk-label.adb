@@ -412,11 +412,11 @@ package body Gtk.Label is
 
    procedure Set_Attributes
       (Label : access Gtk_Label_Record;
-       Attrs : out Pango.Attributes.Pango_Attr_List)
+       Attrs : in out Pango.Attributes.Pango_Attr_List)
    is
       procedure Internal
          (Label : System.Address;
-          Attrs : out Pango.Attributes.Pango_Attr_List);
+          Attrs : in out Pango.Attributes.Pango_Attr_List);
       pragma Import (C, Internal, "gtk_label_set_attributes");
    begin
       Internal (Get_Object (Label), Attrs);

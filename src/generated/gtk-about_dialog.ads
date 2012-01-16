@@ -33,7 +33,7 @@
 --  supports this by offering global hooks, which are called when the user
 --  clicks on a link or email address, see Set_Email_Hook and Set_Url_Hook.
 --  Email addresses in the authors, documenters and artists properties are
---  recognized by looking for <user@host>, URLs are recognized by looking for
+--  recognized by looking for <userHost>, URLs are recognized by looking for
 --  http://url, with url extending to the next space, tab or line break.
 --
 --  To make constructing a Gtk_About_Dialog as convenient as possible, you can
