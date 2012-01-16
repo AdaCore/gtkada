@@ -216,6 +216,14 @@ package Gtk.Enums is
       Scroll_Horizontal_Ends);
    --  The behavior of scrollbars for editors
 
+   type Gtk_Scrollable_Policy is
+      (Scroll_Minimum,
+       Scroll_Natural);
+   --  Defines the policy to be used in a scrollable widget when updating
+   --  the scrolled window adjustments in a given orientation.
+   --    Minimum: Scrollable adjustments are based on the minimum size
+   --    Natural: Scrollable adjustments are based on the natural size
+
    type Gtk_Orientation is (Orientation_Horizontal, Orientation_Vertical);
    --  Orientation of widgets. Most widgets have no such notion, but for
    --  instance toolbars can display different kind of information depending
@@ -560,6 +568,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
    package Curve_Type_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Curve_Type);
+   package Scrollable_Policy_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Scrollable_Policy);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -585,6 +595,8 @@ package Gtk.Enums is
    type Property_Gtk_Selection_Mode is new Selection_Mode_Properties.Property;
    type Property_Gtk_Sensitivity_Type is new Sensitivity_Properties.Property;
    type Property_Gtk_Curve_Type    is new Curve_Type_Properties.Property;
+   type Property_Gtk_Scrollable_Policy is
+      new Scrollable_Policy_Properties.Property;
 
    -----------------
    -- Obsolescent --
