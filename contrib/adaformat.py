@@ -1273,6 +1273,7 @@ class Package(object):
 
             if self.doc:
                 for d in self.doc:
+                    d = cleanup_doc(d)
                     if d.startswith("%PRE%"):
                         d = d[5:]
                         lines = ["\n-- " + l for l in d.split("\n")]
