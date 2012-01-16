@@ -8,6 +8,12 @@ package, and a cast to the interface type (with "-" and "+"). Instead,
 each package now contains the list of subprograms inherited from the
 various interfaces.
 
+Gdk.Event
+=========
+
+Get_Region now returns a Cairo_Region: use Cairo.Region for manipulating
+the result.
+
 Gdk.Font
 ========
 
@@ -19,6 +25,11 @@ Gdk.GC
 ======
 
 This package has been removed: Cairo packages should be used for drawing.
+
+Gdk.Region
+==========
+
+This package has been removed and replaced with Cairo_Region.
 
 Gdk.RGB
 =======
