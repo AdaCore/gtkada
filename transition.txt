@@ -1,5 +1,13 @@
 This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
 
+General
+=======
+
+Gtk+ interfaces no longer require an explicit "with" of the interface
+package, and a cast to the interface type (with "-" and "+"). Instead,
+each package now contains the list of subprograms inherited from the
+various interfaces.
+
 Gdk.Font
 ========
 

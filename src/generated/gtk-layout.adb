@@ -76,21 +76,6 @@ package body Gtk.Layout is
       return Internal (Get_Object (Layout));
    end Get_Bin_Window;
 
-   ---------------------
-   -- Get_Hadjustment --
-   ---------------------
-
-   function Get_Hadjustment
-      (Layout : access Gtk_Layout_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Layout : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_layout_get_hadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub_Gtk_Adjustment));
-   end Get_Hadjustment;
-
    --------------
    -- Get_Size --
    --------------
@@ -108,21 +93,6 @@ package body Gtk.Layout is
    begin
       Internal (Get_Object (Layout), Width, Height);
    end Get_Size;
-
-   ---------------------
-   -- Get_Vadjustment --
-   ---------------------
-
-   function Get_Vadjustment
-      (Layout : access Gtk_Layout_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Layout : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_layout_get_vadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Layout)), Stub_Gtk_Adjustment));
-   end Get_Vadjustment;
 
    ----------
    -- Move --
@@ -164,22 +134,6 @@ package body Gtk.Layout is
       Internal (Get_Object (Layout), Get_Object (Child_Widget), X, Y);
    end Put;
 
-   ---------------------
-   -- Set_Hadjustment --
-   ---------------------
-
-   procedure Set_Hadjustment
-      (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
-      procedure Internal
-         (Layout     : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_layout_set_hadjustment");
-   begin
-      Internal (Get_Object (Layout), Get_Object (Adjustment));
-   end Set_Hadjustment;
-
    --------------
    -- Set_Size --
    --------------
@@ -197,22 +151,6 @@ package body Gtk.Layout is
    begin
       Internal (Get_Object (Layout), Width, Height);
    end Set_Size;
-
-   ---------------------
-   -- Set_Vadjustment --
-   ---------------------
-
-   procedure Set_Vadjustment
-      (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
-      procedure Internal
-         (Layout     : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_layout_set_vadjustment");
-   begin
-      Internal (Get_Object (Layout), Get_Object (Adjustment));
-   end Set_Vadjustment;
 
    ---------------------
    -- Get_Hadjustment --

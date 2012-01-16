@@ -90,21 +90,6 @@ package Gtk.Layout is
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
 
-   function Get_Hadjustment
-      (Layout : access Gtk_Layout_Record)
-       return Gtk.Adjustment.Gtk_Adjustment;
-   pragma Obsolescent (Get_Hadjustment);
-   procedure Set_Hadjustment
-      (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   pragma Obsolescent (Set_Hadjustment);
-   --  Return the adjustment that indicate the horizontal visual area of the
-   --  layout. You generally do not have to modify the value of this adjustment
-   --  yourself, since this is done automatically when the layout has been put
-   --  in a Gtk_Scrolled_Window.
-   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Hadjustment
-   --  "adjustment": new scroll adjustment
-
    procedure Get_Size
       (Layout : access Gtk_Layout_Record;
        Width  : out Guint;
@@ -116,20 +101,6 @@ package Gtk.Layout is
    --  Sets the size of the scrollable area of the layout.
    --  "width": width of entire scrollable area
    --  "height": height of entire scrollable area
-
-   function Get_Vadjustment
-      (Layout : access Gtk_Layout_Record)
-       return Gtk.Adjustment.Gtk_Adjustment;
-   pragma Obsolescent (Get_Vadjustment);
-   procedure Set_Vadjustment
-      (Layout     : access Gtk_Layout_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   pragma Obsolescent (Set_Vadjustment);
-   --  Sets the vertical scroll adjustment for the layout.
-   --  See Gtk.Scrolledwindow.Gtk_Scrolledwindow, Gtk.Scrollbar.Gtk_Scrollbar,
-   --  Gtk.Adjustment.Gtk_Adjustment for details.
-   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Vadjustment
-   --  "adjustment": new scroll adjustment
 
    procedure Move
       (Layout       : access Gtk_Layout_Record;

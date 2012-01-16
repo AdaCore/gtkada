@@ -73,18 +73,6 @@ package Gtk.Viewport is
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
 
-   function Get_Hadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment;
-   pragma Obsolescent (Get_Hadjustment);
-   procedure Set_Hadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   pragma Obsolescent (Set_Hadjustment);
-   --  Sets the horizontal adjustment of the viewport.
-   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Hadjustment
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
-
    function Get_Shadow_Type
       (Viewport : access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
@@ -93,18 +81,6 @@ package Gtk.Viewport is
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type of the viewport.
    --  "type": the new shadow type.
-
-   function Get_Vadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment;
-   pragma Obsolescent (Get_Vadjustment);
-   procedure Set_Vadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   pragma Obsolescent (Set_Vadjustment);
-   --  Sets the vertical adjustment of the viewport.
-   --  Deprecated since 3.0, Use Gtk.Viewport.Set_Vadjustment
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment.
 
    function Get_View_Window
       (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;

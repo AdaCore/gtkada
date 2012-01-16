@@ -694,6 +694,12 @@ automatically uses a Gtk_Viewport when necessary.
          <parameter name="hadjustment" default="null"/>
          <parameter name="vadjustment" default="null"/>
       </method>
+
+      <!-- These are now inherited from the Scrollable interface -->
+      <method id="gtk_viewport_get_hadjustment" bind="false"/>
+      <method id="gtk_viewport_get_vadjustment" bind="false"/>
+      <method id="gtk_viewport_set_hadjustment" bind="false"/>
+      <method id="gtk_viewport_set_vadjustment" bind="false"/>
    </package>
 
    <!-- #######################################################
@@ -833,6 +839,10 @@ This widget can not be instantiated directly.
       <method id="gtkada_GtkProgress_get_activity_mode" bind="true"/>
    </package>
 
+   <!-- #################################################################
+        Gtk.Layout
+        ################################################################ -->
+
    <package id="Gtk.Layout">
       <doc group="Layout containers" testgtk="create_layout.adb"
            screenshot="gtk-layout">
@@ -862,9 +872,12 @@ and make sure you specify a size big enough for the layout.
       <method id="gtk_layout_put">
          <doc>The child will be displayed on the screen only if at least part of it intersects the visible area of the layout. The layout does not resize itself to automatically show the widget. You also need to call Set_Size, if the size you initially defined is smaller than (X, Y), or the child will never be visible even if the layout is scrolled.</doc>
       </method>
-      <method id="gtk_layout_set_hadjustment">
-         <doc>Return the adjustment that indicate the horizontal visual area of the layout. You generally do not have to modify the value of this adjustment yourself, since this is done automatically when the layout has been put in a Gtk_Scrolled_Window.</doc>
-      </method>
+
+      <!-- These are now inherited from the Scrollable interface -->
+      <method id="gtk_layout_get_hadjustment" bind="false"/>
+      <method id="gtk_layout_get_vadjustment" bind="false"/>
+      <method id="gtk_layout_set_hadjustment" bind="false"/>
+      <method id="gtk_layout_set_vadjustment" bind="false"/>
    </package>
 
    <package id="Gtk.GRange">
@@ -969,6 +982,21 @@ use the function gtk_show_about_dialog which constructs and shows a dialog
 and keeps it around so that it can be shown again.
      </doc>
      <parameter name="self" ada="About"/>
+
+     <extra>
+       <type ctype="GtkLicense" ada="Gtk_License">
+         type Gtk_License is (
+         License_Unknown,
+         License_Custom,         
+         License_GPL_2_0,
+         License_GPL_3_0,        
+         License_LGPL_2_1,
+         License_LGPL_3_0,         
+         License_BSD,
+         License_MIT_X11,         
+         License_Artistic);
+       </type>
+     </extra>
   </package>
 
   <package id="Gtk.GEntry">

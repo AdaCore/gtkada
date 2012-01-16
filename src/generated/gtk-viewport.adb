@@ -77,21 +77,6 @@ package body Gtk.Viewport is
    end Get_Bin_Window;
 
    ---------------------
-   -- Get_Hadjustment --
-   ---------------------
-
-   function Get_Hadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Viewport : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub_Gtk_Adjustment));
-   end Get_Hadjustment;
-
-   ---------------------
    -- Get_Shadow_Type --
    ---------------------
 
@@ -104,21 +89,6 @@ package body Gtk.Viewport is
    begin
       return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Viewport)));
    end Get_Shadow_Type;
-
-   ---------------------
-   -- Get_Vadjustment --
-   ---------------------
-
-   function Get_Vadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Viewport : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub_Gtk_Adjustment));
-   end Get_Vadjustment;
 
    ---------------------
    -- Get_View_Window --
@@ -135,22 +105,6 @@ package body Gtk.Viewport is
    end Get_View_Window;
 
    ---------------------
-   -- Set_Hadjustment --
-   ---------------------
-
-   procedure Set_Hadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
-      procedure Internal
-         (Viewport   : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
-   begin
-      Internal (Get_Object (Viewport), Get_Object (Adjustment));
-   end Set_Hadjustment;
-
-   ---------------------
    -- Set_Shadow_Type --
    ---------------------
 
@@ -163,22 +117,6 @@ package body Gtk.Viewport is
    begin
       Internal (Get_Object (Viewport), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
-
-   ---------------------
-   -- Set_Vadjustment --
-   ---------------------
-
-   procedure Set_Vadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
-      procedure Internal
-         (Viewport   : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
-   begin
-      Internal (Get_Object (Viewport), Get_Object (Adjustment));
-   end Set_Vadjustment;
 
    ---------------------
    -- Get_Hadjustment --

@@ -59,6 +59,17 @@ package Gtk.About_Dialog is
    type Gtk_About_Dialog_Record is new Gtk_Dialog_Record with null record;
    type Gtk_About_Dialog is access all Gtk_About_Dialog_Record'Class;
 
+   type Gtk_License is (
+      License_Unknown,
+      License_Custom,
+      License_GPL_2_0,
+      License_GPL_3_0,
+      License_LGPL_2_1,
+      License_LGPL_3_0,
+      License_BSD,
+      License_MIT_X11,
+      License_Artistic);
+
    ------------------
    -- Constructors --
    ------------------
@@ -139,10 +150,10 @@ package Gtk.About_Dialog is
    --  "license": the license information or null
 
    function Get_License_Type
-      (About : access Gtk_About_Dialog_Record) return GtkLicense;
+      (About : access Gtk_About_Dialog_Record) return Gtk_License;
    procedure Set_License_Type
       (About        : access Gtk_About_Dialog_Record;
-       License_Type : GtkLicense);
+       License_Type : Gtk_License);
    --  Sets the license of the application showing the About dialog from a
    --  list of known licenses.
    --  This function overrides the license set using
@@ -285,7 +296,7 @@ package Gtk.About_Dialog is
    --  property is set to %GTK_LICENSE_CUSTOM as a side effect.
    --
    --  Name: License_Type_Property
-   --  Type: License
+   --  Type: Gtk_License
    --  Flags: read-write
    --  The license of the program, as a value of the %GtkLicense enumeration.
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
@@ -295,7 +306,7 @@ package Gtk.About_Dialog is
    --  specified in the Gtk.About_Dialog.Gtk_About_Dialog:website property.
    --  If %GTK_LICENSE_CUSTOM is used, the current contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used.
-   --  For any other GtkLicense value, the contents of the
+   --  For any other Gtk_License value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
    --  property as a side effect.
    --

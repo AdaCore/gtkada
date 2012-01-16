@@ -25,8 +25,6 @@
 with Ada.Strings;       use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
-with Gdk.Pixmap;        use Gdk.Pixmap;
-with Gdk.Color;         use Gdk.Color;
 with Gdk.Event;         use Gdk.Event;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gdk.Window;        use Gdk.Window;

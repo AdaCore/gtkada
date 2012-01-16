@@ -147,9 +147,9 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_License_Type
-      (About : access Gtk_About_Dialog_Record) return GtkLicense
+      (About : access Gtk_About_Dialog_Record) return Gtk_License
    is
-      function Internal (About : System.Address) return GtkLicense;
+      function Internal (About : System.Address) return Gtk_License;
       pragma Import (C, Internal, "gtk_about_dialog_get_license_type");
    begin
       return Internal (Get_Object (About));
@@ -380,9 +380,11 @@ package body Gtk.About_Dialog is
 
    procedure Set_License_Type
       (About        : access Gtk_About_Dialog_Record;
-       License_Type : GtkLicense)
+       License_Type : Gtk_License)
    is
-      procedure Internal (About : System.Address; License_Type : GtkLicense);
+      procedure Internal
+         (About        : System.Address;
+          License_Type : Gtk_License);
       pragma Import (C, Internal, "gtk_about_dialog_set_license_type");
    begin
       Internal (Get_Object (About), License_Type);
