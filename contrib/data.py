@@ -158,6 +158,8 @@ naming.type_exceptions = {
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
 
+    "cairo_t":  DirectBinding("Cairo.Cairo_Context"),
+
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
@@ -188,6 +190,7 @@ naming.type_exceptions = {
     "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
     "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
     "GtkCurveType":       Enum("Gtk.Enums.Gtk_Curve_Type"),
+    "GtkDirectionType":   Enum("Gtk.Enums.Gtk_Direction_Type"),
     "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
     "GtkMetricType":      Enum("Gtk.Enums.Gtk_Metric_Type",
                                "Gtk.Enums.Property_Metric_Type"),
@@ -199,6 +202,7 @@ naming.type_exceptions = {
     "GtkScrollablePolicy": Enum("Gtk.Enums.Gtk_Scrollable_Policy"),
     "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
     "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
+    "GtkSizeRequestMode": Enum("Gtk.Enums.Gtk_Size_Request_Mode"),
     "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
     "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
 
@@ -218,6 +222,8 @@ naming.type_exceptions = {
         GObject("Gtk.Cell_Area_Context.Gtk_Cell_Area_Context"),
     "GtkCellRenderer":
         GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
+    "GtkCellRendererState":
+        DirectBinding("Gtk.Cell_Renderer.Gtk_Cell_Renderer_State"),
     "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
     "GtkColorSelection":
         GObject("Gtk.Color_Selection.Gtk_Color_Selection"),
@@ -279,7 +285,7 @@ naming.type_exceptions = {
     "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
-    "GdkRectangle":       Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+    "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
 }
