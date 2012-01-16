@@ -39,6 +39,8 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Alignment",
            "Assistant",
            "Calendar",
+           "CellArea",
+           "CellAreaContext",
            "CheckButton",
            # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
                           # Also needs support for interfaces
@@ -202,6 +204,9 @@ naming.type_exceptions = {
     "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
     "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
     "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
+    "GtkCellArea":     GObject("Gtk.Cell_Area.Gtk_Cell_Area"),
+    "GtkCellAreaContext":
+        GObject("Gtk.Cell_Area_Context.Gtk_Cell_Area_Context"),
     "GtkCellRenderer":
         GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
     "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),

@@ -49,6 +49,60 @@ the various spacings that can be set for a button:
       </method>
    </package>
 
+   <!-- ###################################################
+        Gtk.Cell_Area
+        ###################################################-->
+
+   <package id="Gtk.Cell_Area">
+      <doc group="Layout Containers">
+      </doc>
+      <parameter name="self" ada="Area"/>
+      <extra>
+        <spec>
+   function Get_Area
+      (Context : access Gtk_Cell_Area_Context_Record)
+       return Gtk.Cell_Area.Gtk_Cell_Area;
+   --  Fetches the Gtk.Cell_Area.Gtk_Cell_Area this Context was created by.
+   --  This is generally unneeded by layouting widgets- however it is important
+   --  for the context implementation itself to fetch information about the
+   --  area it is being used for.
+   --  For instance at GtkCellAreaContextClass.allocate time its important to
+   --  know details about any cell spacing that the Gtk.Cell_Area.Gtk_Cell_Area
+   --  is configured with in order to compute a proper allocation.
+   --  Since: gtk+ 3.0
+        </spec>
+        <body>
+   --------------
+   -- Get_Area --
+   --------------
+
+   function Get_Area
+      (Context : access Gtk_Cell_Area_Context_Record)
+       return Gtk.Cell_Area.Gtk_Cell_Area
+   is
+      function Internal (Context : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_context_get_area");
+      Stub_Gtk_Cell_Area : Gtk.Cell_Area.Gtk_Cell_Area_Record;
+   begin
+      return Gtk.Cell_Area.Gtk_Cell_Area
+        (Get_User_Data (Internal (Get_Object (Context)), Stub_Gtk_Cell_Area));
+   end Get_Area;
+        </body>
+      </extra>
+   </package>
+
+
+   <!-- ###################################################
+        Gtk.Cell_Area_Context
+        ###################################################-->
+
+   <package id="Gtk.Cell_Area_Context">
+      <doc group="Layout Containers">
+      </doc>
+      <method id="gtk_cell_area_context_get_area" bind="False"/>
+      <parameter name="self" ada="Context"/>
+   </package>
+
    <!-- ################################################
         Gtk.Color_Selection
         ################################################-->
