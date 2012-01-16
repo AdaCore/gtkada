@@ -68,9 +68,6 @@ the various spacings that can be set for a button:
          <parameter name="cell_area" direction="access" />
          <parameter name="allocation" direction="access" />
       </method>
-      <method id="gtk_cell_area_foreach" bind="False"/><!-- ??? waiting for foreach implementation -->
-      <method id="gtk_cell_area_foreach_alloc" bind="False"/><!-- ??? likewise -->
-
       <method id="gtk_cell_area_get_focus_siblings" return="ObjectList"/>
 
       <extra>
