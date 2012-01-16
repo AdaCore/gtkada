@@ -981,8 +981,7 @@ package body Gtkada.MDI is
       else
          declare
             C : MDI_Child;
-            Pixmap : Gdk_Pixmap;
-            Mask   : Gdk.Gdk_Bitmap;
+            Pixbuf : Gdk_Pixbuf;
             Scaled : Gdk_Pixbuf;
          begin
             C := MDI_Child (Get_Data (D.Current_Child));
@@ -991,11 +990,8 @@ package body Gtkada.MDI is
             Set_Child_Visible (D.Icon, C.Icon /= null);
             if C.Icon /= null then
                Scaled := Scale_Simple (C.Icon, 32, 32);
-               Render_Pixmap_And_Mask (Scaled, Pixmap, Mask, 128);
+               Gtk.Image.Set (D.Icon, Scaled);
                Unref (Scaled);
-               Set (D.Icon, Pixmap, Mask);
-               Gdk.Drawable.Unref (Pixmap);
-               Gdk.Drawable.Unref (Mask);
             end if;
          end;
       end if;
@@ -2712,8 +2708,6 @@ package body Gtkada.MDI is
    procedure Update_Menu_Item (Child : access MDI_Child_Record'Class) is
       Label  : Gtk_Accel_Label;
       Pixmap : Gtk_Image;
-      Pix    : Gdk_Pixmap;
-      Mask   : Gdk_Bitmap;
       Box    : Gtk_Box;
    begin
       if Child.Menu_Item /= null then
@@ -2724,11 +2718,8 @@ package body Gtkada.MDI is
          Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
 
          if Child.Icon /= null then
-            Render_Pixmap_And_Mask (Child.Icon, Pix, Mask, 128);
-            Gtk_New (Pixmap, Pix, Mask);
+            Gtk_New (Pixmap, Child.Icon);
             Pack_Start (Box, Pixmap, Expand => False);
-            Gdk.Drawable.Unref (Pix);
-            Gdk.Drawable.Unref (Mask);
          end if;
 
          Gtk_New (Label, Child.Short_Title.all);
@@ -3445,7 +3436,7 @@ package body Gtkada.MDI is
             end;
 
             Win  := Gtk_Window (Diag);
-            Cont := Gtk_Container (Get_Vbox (Diag));
+            Cont := Gtk_Container (Get_Content_Area (Diag));
          else
             Gtk_New (Win);
             Cont := Gtk_Container (Win);
@@ -3734,8 +3725,6 @@ package body Gtkada.MDI is
       Note   : constant Gtk_Notebook := Get_Notebook (Child);
       Event  : Gtk_Event_Box;
       Box    : Gtk_Box;
-      Pix    : Gdk_Pixmap;
-      Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Image;
       Close  : Close_Button.Gtkada_MDI_Close_Button;
       Fixed  : Gtk_Fixed;
@@ -3758,11 +3747,7 @@ package body Gtkada.MDI is
          Gtk_New_Hbox (Box, Homogeneous => False);
 
          if Child.Icon /= null then
-            Render_Pixmap_And_Mask_For_Colormap
-              (Child.Icon, Get_Default_Colormap, Pix, Mask, 128);
-            Gtk_New (Pixmap, Pix, Mask);
-            Gdk.Drawable.Unref (Pix);
-            Gdk.Drawable.Unref (Mask);
+            Gtk_New (Pixmap, Child.Icon);
             Pack_Start (Box, Pixmap, Expand => False);
          elsif (Child.Flags and Destroy_Button) /= 0 then
             --  No pixmap but we will display a close button, let's add an
@@ -4727,11 +4712,11 @@ package body Gtkada.MDI is
          Set_Default_Response (Dialog, Gtk_Response_OK);
 
          Gtk_New (Label, "Enter name of new perspective:");
-         Pack_Start (Get_Vbox (Dialog), Label, Expand => False);
+         Pack_Start (Get_Content_Area (Dialog), Label, Expand => False);
 
          Gtk_New (Ent);
          Set_Activates_Default (Ent, True);
-         Pack_Start (Get_Vbox (Dialog), Ent, Expand => False);
+         Pack_Start (Get_Content_Area (Dialog), Ent, Expand => False);
 
          Show_All (Dialog);
 
