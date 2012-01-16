@@ -611,8 +611,6 @@ class GIRClass(object):
 
         user_data = profile.callback_user_data()
         destroy   = profile.find_param(destroy_data_params)
-        print "MANU ", destroy, " user_data=", user_data, \
-            profile.user_data_param, profile.callback_user_data(), cname
 
         # The gtk C function, will all parameters.
         # This will be used to generate the "Internal" nested subprogram.
@@ -683,8 +681,6 @@ class GIRClass(object):
 
         section = self.pkg.section("Methods")
 
-        print "MANU cb.name=", cb.name, " user_data=", user_data
-
         nouser_profile = copy.deepcopy(profile)
         nouser_profile.remove_param(destroy_data_params + [user_data])
         values = {destroy: "System.Null_Address",
@@ -725,7 +721,6 @@ class GIRClass(object):
         sect2.add_code(
             "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
-        print "MANU callback_support %s %s" % (adaname, user_data2)
         values = {user_data2.lower(): "D.Data.all"}
         user_cb = cb_profile2.subprogram(name="To_%s (D.Func)" % funcname)
         internal_cb = cb_profile.subprogram(

@@ -1681,7 +1681,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
    Accel_Locked  : constant Gtk_Accel_Flags := 2 ** 1;
    Accel_Mask    : constant Gtk_Accel_Flags := 16#07#;
         </type>
-        <type ctype="GtkAccelKey" ada="Gtk_Accel_Key">
+        <type ctype="GtkAccelKey*" ada="Gtk_Accel_Key">
    type Gtk_Accel_Key is record
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
@@ -1704,15 +1704,6 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
    pragma Convention (C, C_Gtk_Accel_Group_Activate);
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
-        </type>
-        <type ctype="GtkAccelGroupFindFunc" ada="Gtk_Accel_Group_Find_Func">
-   type Gtk_Accel_Group_Find_Func is access function
-      (Key           : access Gtk_Accel_Key;
-       Closure       : C_Gtk_Accel_Group_Activate;
-       Data          : System.Address) return Boolean;
-   pragma Convention (C, Gtk_Accel_Group_Find_Func);
-   --  When a match is found, must return True.
-   --  Must not modify Key
         </type>
      </extra>
   </package>
