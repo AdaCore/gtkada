@@ -56,7 +56,23 @@ the various spacings that can be set for a button:
    <package id="Gtk.Cell_Area">
       <doc group="Layout Containers">
       </doc>
-      <parameter name="self" ada="Area"/>
+      <method id="gtk_cell_area_cell_get_valist" bind="False"/><!-- va_list -->
+      <method id="gtk_cell_area_cell_set_valist" bind="False"/><!-- va_list -->
+      <method id="gtk_cell_area_add_with_properties" bind="False"/><!-- varargs-->
+      <method id="gtk_cell_area_cell_get" bind="False"/><!-- varargs-->
+      <method id="gtk_cell_area_cell_set" bind="False"/><!-- varargs-->
+      <method id="gtk_cell_area_get_cell_at_position">
+         <parameter name="alloc_area" direction="access" />
+      </method>
+      <method id="gtk_cell_area_get_cell_allocation">
+         <parameter name="cell_area" direction="access" />
+         <parameter name="allocation" direction="access" />
+      </method>
+      <method id="gtk_cell_area_foreach" bind="False"/><!-- ??? waiting for foreach implementation -->
+      <method id="gtk_cell_area_foreach_alloc" bind="False"/><!-- ??? likewise -->
+
+      <method id="gtk_cell_area_get_focus_siblings" return="ObjectList"/>
+
       <extra>
         <spec>
    function Get_Area
@@ -69,6 +85,13 @@ the various spacings that can be set for a button:
    --  For instance at GtkCellAreaContextClass.allocate time its important to
    --  know details about any cell spacing that the Gtk.Cell_Area.Gtk_Cell_Area
    --  is configured with in order to compute a proper allocation.
+   --  Since: gtk+ 3.0
+
+   function Get_Area
+      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cell_Area.Gtk_Cell_Area;
+   --  Returns the underlying Gtk.Cell_Area.Gtk_Cell_Area which might be
+   --  Cell_Layout if called on a Gtk.Cell_Area.Gtk_Cell_Area or might be null
+   --  if no Gtk.Cell_Area.Gtk_Cell_Area is used by Cell_Layout.
    --  Since: gtk+ 3.0
         </spec>
         <body>
@@ -87,6 +110,21 @@ the various spacings that can be set for a button:
       return Gtk.Cell_Area.Gtk_Cell_Area
         (Get_User_Data (Internal (Get_Object (Context)), Stub_Gtk_Cell_Area));
    end Get_Area;
+
+   --------------
+   -- Get_Area --
+   --------------
+
+   function Get_Area
+      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cell_Area.Gtk_Cell_Area
+   is
+      function Internal
+         (Cell_Layout : Gtk_Cell_Layout) return System.Address;
+      pragma Import (C, Internal, "gtk_cell_layout_get_area");
+      Stub_Gtk_Cell_Area : Gtk.Cell_Area.Gtk_Cell_Area_Record;
+   begin
+      return Gtk.Cell_Area.Gtk_Cell_Area (Get_User_Data (Internal (Cell_Layout), Stub_Gtk_Cell_Area));
+   end Get_Area;
         </body>
       </extra>
    </package>
@@ -100,7 +138,7 @@ the various spacings that can be set for a button:
       <doc group="Layout Containers">
       </doc>
       <method id="gtk_cell_area_context_get_area" bind="False"/>
-      <parameter name="self" ada="Context"/>
+      <!-- in Gtk.Cell_Area -->
    </package>
 
    <!-- ################################################
@@ -1919,6 +1957,9 @@ Gtk_Cell_Layout is an interface to be implemented by all objects which want to p
 The rendering of the widget is done through various Gtk_Cell_Renderer, and by reading data from a Gtk_Tree_Model.
      </doc>
      <parameter name="self" ada="Cell_Layout"/>
+     <method id="gtk_cell_layout_get_area" bind="False"/>
+     <!-- in Gtk.Cell_Area -->
+
      <method id="gtk_cell_layout_set_attributes" bind="False"/>
      <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
      <!--<method id="gtk_cell_layout_set_cell_data_func" bind="False"/>-->
@@ -2120,7 +2161,7 @@ To implement this interface you should override the #GtkScrollable:hadjustment
 and #GtkScrollable:vadjustment properties.
 
 All scrollable widgets should do the following.
-  
+
   * When a parent widget sets the scrollable child widget's adjustments, the
     widget should populate the adjustments'lower, upper, step-increment,
     page-increment and page-size properties, and connect to the value-changed
