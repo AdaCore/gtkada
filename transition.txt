@@ -150,6 +150,23 @@ Gtk.Progress
 
 This widget has been removed without any replacement.
 
+Gtk.Progress_Bar
+================
+
+This widget is now derived from Gtk.Widget directly, rather than from
+Gtk.Progress (which has been removed).
+
+The enumeration type Gtk_Progress_Bar_Orientation has been removed,
+and this widget now implements the Gtk_Orientable interface.  To fully
+achieve the same functionality as the GtkAda 2.x Get_Orientation/
+Set_Orientation subprograms, it is now necessary to call
+Get_Orientation/Set_Orientation along with Get_Inverted/Set_Inverted.
+
+Procedure Set_Pulse_Step's "Step" parameter has been renamed to "Formal."
+
+Set_Ellipsize and Get_Ellipsize parameter names have been normalized
+from "Pbar" to "Progress_Bar".
+
 Gtk.Ruler
 =========
 

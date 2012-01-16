@@ -30,9 +30,9 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
 with Glib.Main;           use Glib.Main;
+--  ??? replace Option_Menu with, what, Combo_Box?
 with Gtk.Option_Menu;     use Gtk.Option_Menu;
 with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
-with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Table;           use Gtk.Table;
 with Gtk.Widget;          use Gtk.Widget;
@@ -45,8 +45,8 @@ package body Create_Progress is
 
    package Time_Cb  is new Glib.Main.Generic_Sources (Gtk_Progress_Bar);
 
-   Items1 : constant Chars_Ptr_Array :=
-     "Left-Right" + "Right-Left" + "Bottom-Top" + "Top-Bottom";
+   Items1 : constant Chars_Ptr_Array := "Horizontal" + "Vertical";
+   Items2 : constant Chars_Ptr_Array := "Not Inverted" + "Inverted";
 
    type ProgressData is record
       Pbar            : Gtk_Progress_Bar;
@@ -58,6 +58,8 @@ package body Create_Progress is
       Label           : Gtk_Label;
       Omenu1          : Gtk_Option_Menu;
       Omenu1_Group    : Widget_SList.GSlist;
+      Omenu2          : Gtk_Option_Menu;
+      Omenu2_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
       Timer           : G_Source_Id;
    end record;
@@ -83,16 +85,15 @@ package body Create_Progress is
    function Progress_Timeout (Pbar : Gtk_Progress_Bar) return Boolean is
       pragma Warnings (Off, Pbar);
       New_Val : Gdouble;
-      Adj     : constant Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
-
    begin
-      New_Val := Get_Value (Adj) + 5.0;
+      New_Val := Get_Fraction (Pdata.Pbar);
 
-      if New_Val > Get_Upper (Adj) then
-         New_Val := Get_Lower (Adj);
+      New_Val := New_Val + 0.05;
+      if New_Val > 1.0 then
+         New_Val := 0.0;
       end if;
 
-      Set_Value (Adj, New_Val);
+      Set_Fraction (Pdata.Pbar, New_Val);
 
       return True;
    end Progress_Timeout;
@@ -111,16 +112,30 @@ package body Create_Progress is
       --  destroyed elsewhere. No need to do that here.
    end Destroy_Progress;
 
+   ----------------------
+   -- Toggle_Inversion --
+   ----------------------
+
+   procedure Toggle_Inversion (Widget : access Gtk_Widget_Record'Class) is
+      pragma Warnings (Off, Widget);
+      Is_Inverted : constant Boolean := Get_Inverted (Pdata.Pbar);
+   begin
+      Set_Inverted (Pdata.Pbar, not Is_Inverted);
+   end Toggle_Inversion;
+
    ------------------------
    -- Toggle_Orientation --
    ------------------------
 
    procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
-      I : constant Natural := Selected_Button (Pdata.Omenu1_Group);
+      Orientation : constant Gtk_Orientation := Get_Orientation (Pdata.Pbar);
    begin
-      Set_Orientation (Pdata.Pbar,
-                       Gtk_Progress_Bar_Orientation'Val (3 - I));
+      if Orientation = Gtk_Orientation'Last then
+         Set_Orientation (Pdata.Pbar, Gtk_Orientation'First);
+      else
+         Set_Orientation (Pdata.Pbar, Gtk_Orientation'Succ (Orientation));
+      end if;
    end Toggle_Orientation;
 
    ----------------------
@@ -130,25 +145,12 @@ package body Create_Progress is
    procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Show_Text (Progress  => Pdata.Pbar,
-                     Show_Text => Get_Active (Widget));
+      Set_Show_Text (Progress_Bar => Pdata.Pbar,
+                     Show_Text    => Get_Active (Widget));
       Set_Sensitive (Pdata.Gentry, Get_Active (Widget));
       Set_Sensitive (Pdata.X_Align_Spin, Get_Active (Widget));
       Set_Sensitive (Pdata.Y_Align_Spin, Get_Active (Widget));
    end Toggle_Show_Text;
-
-   ------------------
-   -- Adjust_Align --
-   ------------------
-
-   procedure Adjust_Align (Adj : access Gtk_Adjustment_Record'Class) is
-      pragma Warnings (Off, Adj);
-   begin
-      Set_Text_Alignment
-        (Pdata.Pbar,
-         Gfloat (Get_Value (Pdata.X_Align_Spin)),
-         Gfloat (Get_Value (Pdata.Y_Align_Spin)));
-   end Adjust_Align;
 
    --------------------------
    -- Toggle_Activity_Mode --
@@ -158,7 +160,15 @@ package body Create_Progress is
      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Activity_Mode (Pdata.Pbar, Get_Active (Widget));
+      if Get_Active (Widget) then
+         --  Calling Pulse will cause the progress bar to enter activity
+         --  mode.
+         Pulse (Pdata.Pbar);
+      else
+         --  Calling Set_Fraction should cause the progress bar to enter
+         --  normal "fill in" mode.
+         Set_Fraction (Pdata.Pbar, 0.0);
+      end if;
       Set_Sensitive (Pdata.Step_Spin, Get_Active (Widget));
       Set_Sensitive (Pdata.Act_Blocks_Spin, Get_Active (Widget));
    end Toggle_Activity_Mode;
@@ -170,7 +180,8 @@ package body Create_Progress is
    procedure Entry_Changed (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
    begin
-      Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
+      --  ??? will text with control characters display as expected?
+      Set_Text (Pdata.Pbar, Get_Text (Pdata.Gentry));
    end Entry_Changed;
 
    ---------
@@ -215,8 +226,8 @@ package body Create_Progress is
       Pack_Start (Vbox2, Align, False, False, 5);
 
       Gtk_New (Pdata.Pbar);
-      Configure (Pdata.Pbar, 1.0, 1.0, 300.0);
-      Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
+      --  ??? will text with control characters display as expected?
+      Set_Text (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
       Add (Align, Pdata.Pbar);
 
       Pdata.Timer := Time_Cb.Timeout_Add
@@ -250,6 +261,8 @@ package body Create_Progress is
                Homogeneous => False);
       Pack_Start (Vbox2, Tab, False, True, 0);
 
+      --  Orientation
+
       Gtk_New (Label, "Orientation :");
       Attach (Tab, Label, 0, 1, 0, 1, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
@@ -263,16 +276,35 @@ package body Create_Progress is
               Enums.Expand or Enums.Fill, 5, 5);
       Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
 
-      Gtk_New (Check, "Show Text");
-      Check_Handler.Connect
-        (Check, "clicked",
-         Check_Handler.To_Marshaller (Toggle_Show_Text'Access));
-      Attach (Tab, Check, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
+      --  Inversion
+
+      Gtk_New (Label, "Inversion :");
+      Attach (Tab, Label, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
+      Set_Alignment (Label, 0.0, 0.5);
+
+      Build_Option_Menu (Pdata.Omenu2, Pdata.Omenu2_Group,
+                         Items2, 0, Toggle_Inversion'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
+      Pack_Start (Hbox, Pdata.Omenu2, True, True, 0);
+
+      --  Show Text
+
+      Gtk_New (Check, "Show Text");
+      Check_Handler.Connect
+        (Check, "clicked",
+         Check_Handler.To_Marshaller (Toggle_Show_Text'Access));
+      Attach (Tab, Check, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+
+      --  Format
 
       Gtk_New (Label, "Format : ");
       Pack_Start (Hbox, Label, False, True, 0);
@@ -287,48 +319,7 @@ package body Create_Progress is
       Set_USize (Pdata.Gentry, 100, -1);
       Set_Sensitive (Pdata.Gentry, False);
 
-      Gtk_New (Label, "Text align :");
-      Attach (Tab, Label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-      Set_Alignment (Label, 0.0, 0.5);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New (Label, "x :");
-      Pack_Start (Hbox, Label, False, True, 5);
-
-      Gtk_New (Adj,
-               Value          => 0.5,
-               Lower          => 0.0,
-               Upper          => 1.0,
-               Step_Increment => 0.1,
-               Page_Increment => 0.1,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.X_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-      Pack_Start (Hbox, Pdata.X_Align_Spin, False, True, 0);
-      Set_Sensitive (Pdata.X_Align_Spin, False);
-      Adj_Handler.Connect
-        (Adj, "value_changed",
-         Adj_Handler.To_Marshaller (Adjust_Align'Access));
-
-      Gtk_New (Label, "y :");
-      Pack_Start (Hbox, Label, False, True, 5);
-
-      Gtk_New (Adj,
-               Value          => 0.5,
-               Lower          => 0.0,
-               Upper          => 1.0,
-               Step_Increment => 0.1,
-               Page_Increment => 0.1,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Y_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-      Pack_Start (Hbox, Pdata.Y_Align_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Y_Align_Spin, False);
-      Adj_Handler.Connect
-        (Adj, "value_changed",
-         Adj_Handler.To_Marshaller (Adjust_Align'Access));
+      --  Block Count
 
       Gtk_New (Label, "Block count :");
       Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
@@ -350,6 +341,8 @@ package body Create_Progress is
       Pack_Start (Hbox, Pdata.Block_Spin, False, True, 0);
       Set_Sensitive (Pdata.Block_Spin, False);
 
+      --  Activity Mode
+
       Gtk_New (Check, "Activity mode");
       Check_Handler.Connect
         (Check, "clicked",
@@ -360,6 +353,8 @@ package body Create_Progress is
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 5, 6, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
+
+      --  Step Size
 
       Gtk_New (Label, "Step size :");
       Pack_Start (Hbox, Label, False, True, 0);
@@ -378,6 +373,8 @@ package body Create_Progress is
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
+
+      --  Blocks
 
       Gtk_New (Label, "Blocks :");
       Pack_Start (Hbox, Label, False, True, 0);
@@ -398,4 +395,3 @@ package body Create_Progress is
    end Run;
 
 end Create_Progress;
-
