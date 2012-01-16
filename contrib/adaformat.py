@@ -548,7 +548,7 @@ def box(name, indent="   "):
             + indent + "-" * (len(name) + 6)
 
 
-def indent_code(code, indent=3):
+def indent_code(code, indent=3, addnewlines=True):
     """Return code properly indented and split on several lines.
        These are heuristics only, not perfect.
     """
@@ -556,12 +556,13 @@ def indent_code(code, indent=3):
     if not body:
         return ""
 
-    # Add newlines where needed, but preserve existing blank lines
-    body = re.sub(";(?!\s*\n)", ";\n", body)
-    body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
-    body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
-    body = re.sub("declare", "\ndeclare", body)
-    body = re.sub("\n\s*\n+", "\n\n", body)
+    if addnewlines:
+        # Add newlines where needed, but preserve existing blank lines
+        body = re.sub(";(?!\s*\n)", ";\n", body)
+        body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
+        body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
+        body = re.sub("declare", "\ndeclare", body)
+        body = re.sub("\n\s*\n+", "\n\n", body)
 
     parent_count = 0
     result = ""
@@ -1149,7 +1150,8 @@ class Section(object):
                 result.append("")
 
             if self.spec_code:
-                result.append(indent_code(self.spec_code, indent=len(indent)))
+                result.append(indent_code(self.spec_code, indent=len(indent),
+                                          addnewlines=False))
 
             for group in self._group_subprograms():
                 for s in group:

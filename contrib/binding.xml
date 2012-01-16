@@ -63,7 +63,7 @@ the various spacings that can be set for a button:
       (Context : access Gtk_Cell_Area_Context_Record)
        return Gtk.Cell_Area.Gtk_Cell_Area;
    --  Fetches the Gtk.Cell_Area.Gtk_Cell_Area this Context was created by.
-   --  This is generally unneeded by layouting widgets- however it is important
+   --  This is generally unneeded by layouting widgets; however it is important
    --  for the context implementation itself to fetch information about the
    --  area it is being used for.
    --  For instance at GtkCellAreaContextClass.allocate time its important to
