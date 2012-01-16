@@ -1,7 +1,8 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       ----                     Copyright (C) 1998-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1055,6 +1056,22 @@ package Gtk.Widget is
    --  the functions found in the Gdk hierarchy.
    --  These functions are rarely used except when you implement your own own
    --  widget types. Predefined widgets takes care of that automatically.
+
+   procedure Set_Has_Window
+      (Widget     : access Gtk_Widget_Record;
+       Has_Window : Boolean);
+   --  Specifies whether Widget has a Gtk_Window of its own. Note that
+   --  all realized widgets have a non-null "window" pointer, but for many of
+   --  them it's actually the Gtk_Window of one of its parent widgets. Widgets
+   --  that do not create a window for themselves in reaction to "realize" must
+   --  announce this by calling this function with Has_Window = False.
+   --
+   --  This function should only be called by widget implementations,
+   --  and they should call it in their Initialize function.
+
+   function Get_Has_Window (Widget : access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget has a Gtk_Window of its own.
+   --  See Set_Has_Window.
 
    procedure Shape_Combine_Mask
      (Widget     : access Gtk_Widget_Record;

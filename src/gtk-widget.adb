@@ -1,7 +1,8 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       ----                     Copyright (C) 1998-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -2537,4 +2538,30 @@ package body Gtk.Widget is
       Unref_Internal (Ptr);
    end Destroy;
 
+   --------------------
+   -- Get_Has_Window --
+   --------------------
+
+   function Get_Has_Window
+     (Widget : access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Fixed : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_widget_get_has_window");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Get_Has_Window;
+
+   --------------------
+   -- Set_Has_Window --
+   --------------------
+
+   procedure Set_Has_Window
+      (Widget     : access Gtk_Widget_Record;
+       Has_Window : Boolean)
+   is
+      procedure Internal (Widget : System.Address; Has_Window : Integer);
+      pragma Import (C, Internal, "gtk_widget_set_has_window");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Has_Window));
+   end Set_Has_Window;
 end Gtk.Widget;

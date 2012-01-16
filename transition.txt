@@ -78,6 +78,11 @@ This package has been replaced by Gtk.File_Chooser.
 You may also use Gtkada.File_Selection for a simple interface to the
 Gtk.File_Chooser.
 
+Gtk.Fixed
+=========
+
+Subprograms Set_Has_Windows and Get_Has_Windows are now in Gtk.Widget.
+
 Gtk.HRuler
 ==========
 
@@ -112,7 +117,7 @@ The following subprograms and declarations are now in Gtk.Widget:
 
     Flags
     Unset_Flags
- 
+
     Floating
     In_Destruction_Is_Set
 
@@ -147,7 +152,7 @@ Gtk.Tooltips
 
 The package Gtk.Tooltips has been removed, in favor of Gtk.Tooltip.
 
-For creating simple tooltips on all GtkAda widgets, the easiest is to use 
+For creating simple tooltips on all GtkAda widgets, the easiest is to use
 Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup.
 
 Gtk.VRuler
