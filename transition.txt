@@ -15,6 +15,11 @@ Metrics subprograms Get_Ascent and Get_Descent have been removed:
 instead, use the corresponding functions in Pango.Font to get font
 metrics.
 
+Gdk.GC
+======
+
+This package has been removed: Cairo packages should be used for drawing.
+
 Gdk.RGB
 =======
 
@@ -191,6 +196,12 @@ Gtk.Ruler
 =========
 
 This widget has been removed without any replacement.
+
+Gtk.Style
+=========
+
+All functions based on Gdk.GC have been removed: use the function based
+on Gdk.Color instead.
 
 Gtk.Text
 ========

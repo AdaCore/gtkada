@@ -42,7 +42,6 @@ with Glib.Object;
 with Glib.Values;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Font;         use Gdk.Font;
-with Gdk.GC;
 with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Types;
@@ -137,34 +136,6 @@ package Gtk.Style is
       State_Type : Gtk_State_Type) return Gdk_Color renames Get_Background;
    --  Set or get the background color that this style uses in the given state
 
-   procedure Set_Background_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   procedure Set_Background
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk_GC) renames Set_Background_GC;
-   procedure Set_Bg
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Background_GC;
-   procedure Set_Bg_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Background_GC;
-   function Get_Background_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   function Get_Bg
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Background_GC;
-   function Get_Background
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Background_GC;
-   function Get_Bg_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Background_GC;
    --  Set or get the graphic context that the style is using for the
    --  background
 
@@ -184,36 +155,6 @@ package Gtk.Style is
       State_Type : Gtk_State_Type) return Gdk_Color renames Get_Foreground;
    --  Set or get the foreground color that the style is using
 
-   procedure Set_Foreground_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   procedure Set_Fg_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
-   procedure Set_Foreground
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
-   procedure Set_Fg
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
-   function Get_Foreground_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   function Get_Foreground
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Foreground_GC;
-   function Get_Fg
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Foreground_GC;
-   function Get_Fg_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Foreground_GC;
-   --  Set or get the graphic context used by this style for the foreground
-
    procedure Set_Light
      (Style      : Gtk_Style;
       State_Type : Enums.Gtk_State_Type;
@@ -221,20 +162,6 @@ package Gtk.Style is
    function Get_Light
      (Style      : Gtk_Style;
       State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
-   procedure Set_Light_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   function Get_Light_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   procedure Set_Light
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Light_GC;
-   function Get_Light
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Light_GC;
    --  Set or get the lighter color or graphic context that this style is
    --  using. This color is used to draw the shadows around rectangles for
    --  instance
@@ -243,23 +170,9 @@ package Gtk.Style is
      (Style      : Gtk_Style;
       State_Type : Gtk_State_Type;
       Color      : Gdk.Color.Gdk_Color);
-   procedure Set_Dark_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   procedure Set_Dark
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Dark_GC;
    function Get_Dark
      (Style      : Gtk_Style;
       State_Type : Gtk_State_Type) return Gdk.Color.Gdk_Color;
-   function Get_Dark_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   function Get_Dark
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Dark_GC;
    --  Set or get the darker color or graphic context that this style is using.
    --  This color is used to draw the shadows around rectangles for instance.
 
@@ -277,34 +190,6 @@ package Gtk.Style is
    function Get_Mid
      (Style      : Gtk_Style;
       State_Type : Gtk_State_Type) return Gdk_Color renames Get_Middle;
-   procedure Set_Middle_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   function Get_Middle_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC;
-   procedure Set_Middle
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk_GC) renames Set_Middle_GC;
-   function Get_Middle
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Middle_GC;
-   procedure Set_Mid_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk_GC) renames Set_Middle_GC;
-   function Get_Mid_GC
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Middle_GC;
-   procedure Set_Mid
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Middle_GC;
-   function Get_Mid
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Middle_GC;
    --  Set or get the middle color. This color should be between the light and
    --  dark colors set above.
 
@@ -315,20 +200,6 @@ package Gtk.Style is
    function Get_Text
      (Style      : Gtk_Style;
       State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
-   procedure Set_Text_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   function Get_Text_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   procedure Set_Text
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Text_GC;
-   function Get_Text
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Text_GC;
    --  Set or get the color to use when drawing text.
 
    procedure Set_Base
@@ -338,43 +209,17 @@ package Gtk.Style is
    function Get_Base
      (Style      : Gtk_Style;
       State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
-   procedure Set_Base_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC);
-   function Get_Base_GC
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
-   procedure Set_Base
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      GC         : Gdk.GC.Gdk_GC) renames Set_Base_GC;
-   function Get_Base
-     (Style      : Gtk_Style;
-      State_Type : Gtk_State_Type) return Gdk_GC renames Get_Base_GC;
    --  Set or get the base color
 
    procedure Set_Black
      (Style : Gtk_Style;
       Color : Gdk.Color.Gdk_Color);
    function Get_Black (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
-   procedure Set_Black_GC (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC);
-   function Get_Black_GC (Style : Gtk_Style) return Gdk.GC.Gdk_GC;
-   procedure Set_Black
-     (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC) renames Set_Black_GC;
-   function Get_Black
-     (Style : Gtk_Style) return Gdk.GC.Gdk_GC renames Get_Black_GC;
    --  Set or get the "black" color. It isn't necessarily black, although most
    --  themes will want to use black here.
 
    procedure Set_White (Style : Gtk_Style; Color : Gdk.Color.Gdk_Color);
    function Get_White (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
-   procedure Set_White_GC (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC);
-   function Get_White_GC (Style : Gtk_Style) return Gdk.GC.Gdk_GC;
-   procedure Set_White
-     (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC) renames Set_White_GC;
-   function Get_White
-     (Style : Gtk_Style) return Gdk.GC.Gdk_GC renames Get_White_GC;
    --  Set or get the "white" color. It isn't necessarily white, although most
    --  themes will want to use white here.
 
