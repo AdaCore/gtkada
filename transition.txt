@@ -140,6 +140,11 @@ The following subprograms and declarations are now in Gtk.Widget:
 The subprogram Gtk.Object.Sink has been removed: use Glib.Object.Ref_Sink
  instead.
 
+Gtk.Old_Editable
+================
+
+This obsolescent API has been removed, use Gtk.Editable where relevant.
+
 Gtk.Pixmap
 ==========
 
