@@ -59,7 +59,6 @@ with Gdk;                     use Gdk;
 with Gdk.Cairo;               use Gdk.Cairo;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Cursor;              use Gdk.Cursor;
-with Gdk.Drawable;            use Gdk.Drawable;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
@@ -981,7 +980,6 @@ package body Gtkada.MDI is
       else
          declare
             C : MDI_Child;
-            Pixbuf : Gdk_Pixbuf;
             Scaled : Gdk_Pixbuf;
          begin
             C := MDI_Child (Get_Data (D.Current_Child));
