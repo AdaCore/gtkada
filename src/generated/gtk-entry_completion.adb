@@ -169,6 +169,17 @@ package body Gtk.Entry_Completion is
    --  "iter": a GtkTreeIter indicating the row to set the value for
    --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
+   function Internal_Gtk_Entry_Completion_Match_Func
+      (Completion : System.Address;
+       Key        : Interfaces.C.Strings.chars_ptr;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+       User_Data  : System.Address) return Integer;
+   pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
+   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
+   --  "key": the string to match, normalized and case-folded
+   --  "iter": a GtkTreeIter indicating the row to match
+   --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
+
    -----------------------------
    -- Internal_Cell_Data_Func --
    -----------------------------
@@ -186,17 +197,6 @@ package body Gtk.Entry_Completion is
    begin
       Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
-
-   function Internal_Gtk_Entry_Completion_Match_Func
-      (Completion : System.Address;
-       Key        : Interfaces.C.Strings.chars_ptr;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data  : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
-   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
-   --  "key": the string to match, normalized and case-folded
-   --  "iter": a GtkTreeIter indicating the row to match
-   --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
    ----------------------------------------------
    -- Internal_Gtk_Entry_Completion_Match_Func --

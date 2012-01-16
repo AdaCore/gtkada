@@ -167,6 +167,26 @@ package body Gtk.Cell_Area is
    --  "iter": a GtkTreeIter indicating the row to set the value for
    --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
+   function Internal_Gtk_Cell_Alloc_Callback
+      (Renderer        : System.Address;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
+       Data            : System.Address) return Integer;
+   pragma Convention (C, Internal_Gtk_Cell_Alloc_Callback);
+   --  "renderer": the cell renderer to operate on
+   --  "cell_area": the area allocated to Renderer inside the rectangle
+   --  provided to Gtk.Cell_Area.Foreach_Alloc.
+   --  "cell_background": the background area for Renderer inside the
+   --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
+   --  "data": user-supplied data
+
+   function Internal_Gtk_Cell_Callback
+      (Renderer : System.Address;
+       Data     : System.Address) return Integer;
+   pragma Convention (C, Internal_Gtk_Cell_Callback);
+   --  "renderer": the cell renderer to operate on
+   --  "data": user-supplied data
+
    -----------------------------
    -- Internal_Cell_Data_Func --
    -----------------------------
@@ -185,19 +205,6 @@ package body Gtk.Cell_Area is
       Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
 
-   function Internal_Gtk_Cell_Alloc_Callback
-      (Renderer        : System.Address;
-       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-       Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-       Data            : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtk_Cell_Alloc_Callback);
-   --  "renderer": the cell renderer to operate on
-   --  "cell_area": the area allocated to Renderer inside the rectangle
-   --  provided to Gtk.Cell_Area.Foreach_Alloc.
-   --  "cell_background": the background area for Renderer inside the
-   --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
-   --  "data": user-supplied data
-
    --------------------------------------
    -- Internal_Gtk_Cell_Alloc_Callback --
    --------------------------------------
@@ -213,13 +220,6 @@ package body Gtk.Cell_Area is
    begin
       return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), Cell_Area, Cell_Background));
    end Internal_Gtk_Cell_Alloc_Callback;
-
-   function Internal_Gtk_Cell_Callback
-      (Renderer : System.Address;
-       Data     : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtk_Cell_Callback);
-   --  "renderer": the cell renderer to operate on
-   --  "data": user-supplied data
 
    --------------------------------
    -- Internal_Gtk_Cell_Callback --
@@ -536,6 +536,21 @@ package body Gtk.Cell_Area is
       function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Alloc_Callback);
 
+      function Internal_Cb
+         (Renderer        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+          Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
+          Data            : System.Address) return Boolean;
+      --  The type of the callback functions used for iterating over the cell
+      --  renderers and their allocated areas inside a
+      --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
+      --  "renderer": the cell renderer to operate on
+      --  "cell_area": the area allocated to Renderer inside the rectangle
+      --  provided to Gtk.Cell_Area.Foreach_Alloc.
+      --  "cell_background": the background area for Renderer inside the
+      --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
+      --  "data": user-supplied data
+
       -------------------
       -- Foreach_Alloc --
       -------------------
@@ -552,21 +567,6 @@ package body Gtk.Cell_Area is
       begin
          C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
       end Foreach_Alloc;
-
-      function Internal_Cb
-         (Renderer        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-          Data            : System.Address) return Boolean;
-      --  The type of the callback functions used for iterating over the cell
-      --  renderers and their allocated areas inside a
-      --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
-      --  "renderer": the cell renderer to operate on
-      --  "cell_area": the area allocated to Renderer inside the rectangle
-      --  provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "cell_background": the background area for Renderer inside the
-      --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "data": user-supplied data
 
       -----------------
       -- Internal_Cb --
@@ -592,6 +592,15 @@ package body Gtk.Cell_Area is
       function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Callback);
 
+      function Internal_Cb
+         (Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Data     : System.Address) return Boolean;
+      --  The type of the callback functions used for iterating over the cell
+      --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see
+      --  Gtk.Cell_Area.Foreach.
+      --  "renderer": the cell renderer to operate on
+      --  "data": user-supplied data
+
       -------------
       -- Foreach --
       -------------
@@ -604,15 +613,6 @@ package body Gtk.Cell_Area is
       begin
          C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
       end Foreach;
-
-      function Internal_Cb
-         (Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Data     : System.Address) return Boolean;
-      --  The type of the callback functions used for iterating over the cell
-      --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see
-      --  Gtk.Cell_Area.Foreach.
-      --  "renderer": the cell renderer to operate on
-      --  "data": user-supplied data
 
       -----------------
       -- Internal_Cb --

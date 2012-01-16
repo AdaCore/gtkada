@@ -205,6 +205,12 @@ package body Gtk.Accel_Group is
       function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Accel_Group_Find_Func);
 
+      function Internal_Cb
+         (Key     : Gtk_Accel_Key;
+          Closure : System.Address;
+          Data    : System.Address) return Boolean;
+      --  Since: gtk+ 2.2
+
       ----------
       -- Find --
       ----------
@@ -217,12 +223,6 @@ package body Gtk.Accel_Group is
       begin
          return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (Find_Func'Address, Data));
       end Find;
-
-      function Internal_Cb
-         (Key     : Gtk_Accel_Key;
-          Closure : System.Address;
-          Data    : System.Address) return Boolean;
-      --  Since: gtk+ 2.2
 
       -----------------
       -- Internal_Cb --

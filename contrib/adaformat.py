@@ -1173,6 +1173,9 @@ class Section(object):
             result.append(indent_code(self.body_code, indent=len(indent)))
 
         self.__subprograms.sort(lambda x, y: cmp(x[1].name, y[1].name))
+
+        # First output for the subprograms only defined in the body
+
         for in_spec, s in self.__subprograms:
             if not in_spec:
                 if isinstance(s, Subprogram):
@@ -1182,6 +1185,9 @@ class Section(object):
 
                 result.append("")
 
+        # Then output all the bodiesx
+
+        for in_spec, s in self.__subprograms:
             if isinstance(s, Subprogram):
                 b = s.body(pkg=pkg, indent=indent)
             else:
