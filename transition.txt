@@ -101,6 +101,12 @@ Gtk.Gamma_Curve
 
 This widget has been removed without any replacement.
 
+Gtk.Image
+=========
+
+The subprograms working with Gdk_Pixmap have been removed, use the
+variants working on Gdk_Pixbuf instead.
+
 Gtk.Layout
 ==========
 
