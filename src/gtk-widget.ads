@@ -55,7 +55,6 @@ with Gdk.Color;
 with Gdk.Event;
 with Gdk.Bitmap;
 with Gdk.Rectangle;
-with Gdk.Region;
 with Gdk.Pixbuf;
 with Gdk.Pixmap;
 with Gdk.Types;
@@ -66,6 +65,8 @@ with Gtk.Accel_Group;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Style;
+
+with Cairo.Region;
 
 package Gtk.Widget is
    type Gtk_Widget_Record is new Glib.Object.GObject_Record with private;
@@ -997,8 +998,8 @@ package Gtk.Widget is
 
    function Region_Intersect
      (Widget : access Gtk_Widget_Record;
-      Region : Gdk.Region.Gdk_Region)
-      return Gdk.Region.Gdk_Region;
+      Region : Cairo.Region.Cairo_Region)
+      return Cairo.Region.Cairo_Region;
    --  Region must be in the same coordinate system as the widget's allocation,
    --  ie relative to the widget's window, or to the parent's window for
    --  No_Window widgets.
@@ -1212,20 +1213,6 @@ package Gtk.Widget is
    --  The functions below are not needed unless you are writting your own
    --  widgets, and should be reserved for advanced customization of the
    --  standard widgets.
-
-   procedure Set_Scroll_Adjustments_Signal
-     (Widget : Glib.Object.GObject_Class; Signal : String);
-   --  Modify the signal to be sent when the adjustments are modified.
-   --  This is only useful when you are rewritting your own widget that can be
-   --  embedded directly in a Gtk_Scrolled_Window, without any Gtk_Viewport.
-   --
-   --  Signal is the name of the signal that will be emitted when Widget is
-   --  put inside a Gtk_Scrolled_Window.
-   --
-   --  Note that the handlers for this signal must take two arguments in
-   --  addition to the widget (the horizontal and vertical adjustments to be
-   --  used). See Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adjustment for
-   --  more information on this signal.
 
    type Size_Allocate_Handler is access procedure
      (Widget : System.Address; Allocation : Gtk_Allocation);
