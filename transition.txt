@@ -60,6 +60,11 @@ Gtk.Curve
 This widget has been removed, with no direct replacement.  Use drawing
 functionality from Cairo instead.
 
+Gtk.Dialog
+==========
+
+Subprogram Get_Vbox was replaced with Get_Content_Area.
+
 Gtk.File_Chooser_Dialog
 =======================
 
@@ -115,6 +120,11 @@ The following subprograms and declarations are now in Gtk.Widget:
 
 The subprogram Gtk.Object.Sink has been removed: use Glib.Object.Ref_Sink
  instead.
+
+Gtk.Pixmap
+==========
+
+This widget has been removed and is generally replaced with a Gtk.Image.
 
 Gtk.Progress
 ============

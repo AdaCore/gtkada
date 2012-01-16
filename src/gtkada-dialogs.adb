@@ -1,7 +1,8 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       ----                     Copyright (C) 2000-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,15 +28,14 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
 with Gdk.Event;         use Gdk.Event;
+with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gdk.Window;        use Gdk.Window;
 
 with Glib;              use Glib;
 
 with Gtk.Box;           use Gtk.Box;
+with Gtk.Image;         use Gtk.Image;
 with Gtk.Label;         use Gtk.Label;
-pragma Warnings (Off);  --  Gtk.Pixmap is obsolescent
-with Gtk.Pixmap;        use Gtk.Pixmap;
-pragma Warnings (On);
 with Gtk.Widget;        use Gtk.Widget;
 
 with Gtkada.Intl;       use Gtkada.Intl;
@@ -217,9 +217,8 @@ package body Gtkada.Dialogs is
       Dialog      : Gtk_Dialog;
       Label       : Gtk_Label;
       Box         : Gtk_Box;
-      Pix         : Gtk_Pixmap;
-      Pixmap      : Gdk_Pixmap;
-      Mask        : Gdk_Pixmap;
+      Img         : Gtk_Image;
+      Pixmap      : Gdk_Pixbuf;
 
       use Gdk;
    begin
@@ -236,33 +235,25 @@ package body Gtkada.Dialogs is
 
       case Dialog_Type is
          when Warning =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Warning_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Warning_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Warning");
             end if;
 
          when Error =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Error_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Error_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Error");
             end if;
 
          when Information =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Information_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Information_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Information");
             end if;
 
          when Confirmation =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Confirmation_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Confirmation_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Confirmation");
             end if;
@@ -272,11 +263,11 @@ package body Gtkada.Dialogs is
       end case;
 
       Gtk_New_Hbox (Box);
-      Pack_Start (Get_Vbox (Dialog), Box, Padding => 10);
+      Pack_Start (Get_Content_Area (Dialog), Box, Padding => 10);
 
       if Pixmap /= null then
-         Gtk_New (Pix, Pixmap, Mask);
-         Pack_Start (Box, Pix, Padding => 10);
+         Gtk_New (Img, Pixmap);
+         Pack_Start (Box, Img, Padding => 10);
       end if;
 
       Gtk_New (Label, Msg);
