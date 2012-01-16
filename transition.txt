@@ -177,6 +177,12 @@ Gtk.Ruler
 
 This widget has been removed without any replacement.
 
+Gtk.Text
+========
+
+This obsolescent API has been removed: use a Gtk.Text_View/Gtk.Text_Buffer
+instead.
+
 Gtk.Text_View
 =============
 
