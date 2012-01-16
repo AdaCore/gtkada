@@ -51,14 +51,14 @@ package Gtk.Cell_Area is
    type Gtk_Cell_Area_Record is new GObject_Record with null record;
    type Gtk_Cell_Area is access all Gtk_Cell_Area_Record'Class;
 
-   type GtkCellCallback is access function
+   type Gtk_Cell_Callback is access function
      (Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
    return Boolean;
    --  The type of the callback functions used for iterating over the cell
    --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach.
    --  "renderer": the cell renderer to operate on
 
-   type GtkCellAllocCallback is access function
+   type Gtk_Cell_Alloc_Callback is access function
      (Renderer        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Background : Gdk.Rectangle.Gdk_Rectangle) return Boolean;
@@ -270,17 +270,17 @@ package Gtk.Cell_Area is
 
    procedure Foreach
       (Self     : access Gtk_Cell_Area_Record;
-       Callback : GtkCellCallback);
+       Callback : Gtk_Cell_Callback);
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the GtkCellCallback to call
+   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
       with procedure Destroy (Data : in out User_Data_Type) is null;
    package Foreach_User_Data is
 
-      type GtkCellCallback is access function
+      type Gtk_Cell_Callback is access function
         (Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Data     : User_Data_Type) return Boolean;
       --  The type of the callback functions used for iterating over the cell
@@ -290,12 +290,12 @@ package Gtk.Cell_Area is
 
       procedure Foreach
          (Self          : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-          Callback      : GtkCellCallback;
+          Callback      : Gtk_Cell_Callback;
           Callback_Data : User_Data_Type);
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in
       --  Area.
       --  Since: gtk+ 3.0
-      --  "callback": the GtkCellCallback to call
+      --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
       --  "callback_data": user provided data pointer
 
    end Foreach_User_Data;
@@ -306,7 +306,7 @@ package Gtk.Cell_Area is
        Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-       Callback        : GtkCellAllocCallback);
+       Callback        : Gtk_Cell_Alloc_Callback);
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
    --  with the allocated rectangle inside Cell_Area.
    --  Since: gtk+ 3.0
@@ -316,14 +316,14 @@ package Gtk.Cell_Area is
    --  "cell_area": the Widget relative coordinates and size for Area
    --  "background_area": the Widget relative coordinates of the background
    --  area
-   --  "callback": the GtkCellAllocCallback to call
+   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
       with procedure Destroy (Data : in out User_Data_Type) is null;
    package Foreach_Alloc_User_Data is
 
-      type GtkCellAllocCallback is access function
+      type Gtk_Cell_Alloc_Callback is access function
         (Renderer        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
          Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
@@ -344,7 +344,7 @@ package Gtk.Cell_Area is
           Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Callback        : GtkCellAllocCallback;
+          Callback        : Gtk_Cell_Alloc_Callback;
           Callback_Data   : User_Data_Type);
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
       --  with the allocated rectangle inside Cell_Area.
@@ -355,7 +355,7 @@ package Gtk.Cell_Area is
       --  "cell_area": the Widget relative coordinates and size for Area
       --  "background_area": the Widget relative coordinates of the background
       --  area
-      --  "callback": the GtkCellAllocCallback to call
+      --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
       --  "callback_data": user provided data pointer
 
    end Foreach_Alloc_User_Data;

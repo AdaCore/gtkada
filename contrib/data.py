@@ -221,6 +221,8 @@ naming.type_exceptions = {
     "GtkCellArea":     GObject("Gtk.Cell_Area.Gtk_Cell_Area"),
     "GtkCellAreaContext":
         GObject("Gtk.Cell_Area_Context.Gtk_Cell_Area_Context"),
+    "GtkCellAllocCallback": Proxy("Gtk.Cell_Area.Gtk_Cell_Alloc_Callback"),
+    "GtkCellCallback": Proxy("Gtk.Cell_Area.Gtk_Cell_Callback"),
     "GtkCellRenderer":
         GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
     "GtkCellRendererState":

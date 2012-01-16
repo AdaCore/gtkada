@@ -620,10 +620,19 @@ class GIRClass(object):
         local_vars = []
         call = []
         gtk_func_profile = copy.deepcopy(profile)
+
+        callback = profile.callback_param_info()
+        if callback is not None:
+            gtk_func_profile.replace_param(callback.name, "System.Address")
         gtk_func_profile.replace_param(destroy, "System.Address")
         gtk_func = gtk_func_profile.subprogram(
             name="C_%s" % cname).import_c(cname)
         gtk_func.set_param_lang("c")
+
+        # This function is shared both by the version without user_data and by
+        # the generic package, so we need to put it directly in the package,
+        # not a nested subprogram.
+
         self.pkg.section("").add(gtk_func, in_spec=False)
 
         # Compute the profile of the callback (will all its arguments)
@@ -686,7 +695,7 @@ class GIRClass(object):
         nouser_profile = copy.deepcopy(profile)
         nouser_profile.remove_param(destroy_data_params + [user_data])
         values = {destroy: "System.Null_Address",
-                  cb.name.lower(): "Internal_%s" % funcname,
+                  cb.name.lower(): "Internal_%s'Address" % funcname,
                   user_data.lower(): "%s'Address" % cb.name}
         subp = nouser_profile.subprogram(
             name=adaname, local_vars=local_vars,
@@ -734,7 +743,7 @@ class GIRClass(object):
         sect2.add(internal_cb, in_spec=False)
 
         values = {destroy: "Users.Free_Data'Address",
-                  cb.name.lower(): internal_cb.name,
+                  cb.name.lower(): "%s'Address" % internal_cb.name,
                   user_data.lower(): "Users.Build (%s'Address, %s)" % (
                       cb.name, user_data)}
 

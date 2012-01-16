@@ -96,23 +96,23 @@ package body Gtk.Cell_Area is
         (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
    end Get_Cell_At_Position;
 
-   function To_GtkCellCallback is new Ada.Unchecked_Conversion
-     (System.Address, GtkCellCallback);
+   function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Callback);
 
-   function To_GtkCellAllocCallback is new Ada.Unchecked_Conversion
-     (System.Address, GtkCellAllocCallback);
+   function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Alloc_Callback);
 
    function To_Cell_Data_Func is new Ada.Unchecked_Conversion
      (System.Address, Cell_Data_Func);
 
    procedure C_Gtk_Cell_Area_Foreach
       (Self          : System.Address;
-       Callback      : GtkCellCallback;
+       Callback      : System.Address;
        Callback_Data : System.Address);
    pragma Import (C, C_Gtk_Cell_Area_Foreach, "gtk_cell_area_foreach");
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the GtkCellCallback to call
+   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
    --  "callback_data": user provided data pointer
 
    procedure C_Gtk_Cell_Area_Foreach_Alloc
@@ -121,7 +121,7 @@ package body Gtk.Cell_Area is
        Widget          : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-       Callback        : GtkCellAllocCallback;
+       Callback        : System.Address;
        Callback_Data   : System.Address);
    pragma Import (C, C_Gtk_Cell_Area_Foreach_Alloc, "gtk_cell_area_foreach_alloc");
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
@@ -133,7 +133,7 @@ package body Gtk.Cell_Area is
    --  "cell_area": the Widget relative coordinates and size for Area
    --  "background_area": the Widget relative coordinates of the background
    --  area
-   --  "callback": the GtkCellAllocCallback to call
+   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
    --  "callback_data": user provided data pointer
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
@@ -185,12 +185,12 @@ package body Gtk.Cell_Area is
       Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
 
-   function Internal_Gtkcellalloccallback
+   function Internal_Gtk_Cell_Alloc_Callback
       (Renderer        : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
        Data            : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtkcellalloccallback);
+   pragma Convention (C, Internal_Gtk_Cell_Alloc_Callback);
    --  "renderer": the cell renderer to operate on
    --  "cell_area": the area allocated to Renderer inside the rectangle
    --  provided to Gtk.Cell_Area.Foreach_Alloc.
@@ -198,42 +198,42 @@ package body Gtk.Cell_Area is
    --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
    --  "data": user-supplied data
 
-   -----------------------------------
-   -- Internal_Gtkcellalloccallback --
-   -----------------------------------
+   --------------------------------------
+   -- Internal_Gtk_Cell_Alloc_Callback --
+   --------------------------------------
 
-   function Internal_Gtkcellalloccallback
+   function Internal_Gtk_Cell_Alloc_Callback
       (Renderer        : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
        Data            : System.Address) return Integer
    is
-      Func                   : constant GtkCellAllocCallback := To_GtkCellAllocCallback (Data);
+      Func                   : constant Gtk_Cell_Alloc_Callback := To_Gtk_Cell_Alloc_Callback (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
       return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), Cell_Area, Cell_Background));
-   end Internal_Gtkcellalloccallback;
+   end Internal_Gtk_Cell_Alloc_Callback;
 
-   function Internal_Gtkcellcallback
+   function Internal_Gtk_Cell_Callback
       (Renderer : System.Address;
        Data     : System.Address) return Integer;
-   pragma Convention (C, Internal_Gtkcellcallback);
+   pragma Convention (C, Internal_Gtk_Cell_Callback);
    --  "renderer": the cell renderer to operate on
    --  "data": user-supplied data
 
-   ------------------------------
-   -- Internal_Gtkcellcallback --
-   ------------------------------
+   --------------------------------
+   -- Internal_Gtk_Cell_Callback --
+   --------------------------------
 
-   function Internal_Gtkcellcallback
+   function Internal_Gtk_Cell_Callback
       (Renderer : System.Address;
        Data     : System.Address) return Integer
    is
-      Func                   : constant GtkCellCallback := To_GtkCellCallback (Data);
+      Func                   : constant Gtk_Cell_Callback := To_Gtk_Cell_Callback (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
       return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer))));
-   end Internal_Gtkcellcallback;
+   end Internal_Gtk_Cell_Callback;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Cell_Area_Record);
@@ -507,10 +507,10 @@ package body Gtk.Cell_Area is
 
    procedure Foreach
       (Self     : access Gtk_Cell_Area_Record;
-       Callback : GtkCellCallback)
+       Callback : Gtk_Cell_Callback)
    is
    begin
-      C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_GtkCellCallback, Callback'Address);
+      C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Gtk_Cell_Callback'Address, Callback'Address);
    end Foreach;
 
    -------------------
@@ -523,18 +523,18 @@ package body Gtk.Cell_Area is
        Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-       Callback        : GtkCellAllocCallback)
+       Callback        : Gtk_Cell_Alloc_Callback)
    is
    begin
-      C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_GtkCellAllocCallback, Callback'Address);
+      C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Gtk_Cell_Alloc_Callback'Address, Callback'Address);
    end Foreach_Alloc;
 
    package body Foreach_Alloc_User_Data is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
-      function To_GtkCellAllocCallback is new Ada.Unchecked_Conversion
-        (System.Address, GtkCellAllocCallback);
+      function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Cell_Alloc_Callback);
 
       -------------------
       -- Foreach_Alloc --
@@ -546,11 +546,11 @@ package body Gtk.Cell_Area is
           Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Callback        : GtkCellAllocCallback;
+          Callback        : Gtk_Cell_Alloc_Callback;
           Callback_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
       end Foreach_Alloc;
 
       function Internal_Cb
@@ -580,7 +580,7 @@ package body Gtk.Cell_Area is
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return To_Gtkcellalloccallback (D.Func) (Renderer, Cell_Area, Cell_Background, D.Data.all);
+         return To_Gtk_Cell_Alloc_Callback (D.Func) (Renderer, Cell_Area, Cell_Background, D.Data.all);
       end Internal_Cb;
 
    end Foreach_Alloc_User_Data;
@@ -589,8 +589,8 @@ package body Gtk.Cell_Area is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
-      function To_GtkCellCallback is new Ada.Unchecked_Conversion
-        (System.Address, GtkCellCallback);
+      function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Cell_Callback);
 
       -------------
       -- Foreach --
@@ -598,11 +598,11 @@ package body Gtk.Cell_Area is
 
       procedure Foreach
          (Self          : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-          Callback      : GtkCellCallback;
+          Callback      : Gtk_Cell_Callback;
           Callback_Data : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
       end Foreach;
 
       function Internal_Cb
@@ -624,7 +624,7 @@ package body Gtk.Cell_Area is
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return To_Gtkcellcallback (D.Func) (Renderer, D.Data.all);
+         return To_Gtk_Cell_Callback (D.Func) (Renderer, D.Data.all);
       end Internal_Cb;
 
    end Foreach_User_Data;
