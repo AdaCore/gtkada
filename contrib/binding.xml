@@ -61,15 +61,13 @@ the various spacings that can be set for a button:
       <method id="gtk_cell_area_add_with_properties" bind="False"/><!-- varargs-->
       <method id="gtk_cell_area_cell_get" bind="False"/><!-- varargs-->
       <method id="gtk_cell_area_cell_set" bind="False"/><!-- varargs-->
-      <method id="gtk_cell_area_get_cell_at_position">
-         <parameter name="alloc_area" direction="access" />
-      </method>
       <method id="gtk_cell_area_get_cell_allocation">
          <parameter name="cell_area" direction="access" />
          <parameter name="allocation" direction="access" />
       </method>
       <method id="gtk_cell_area_get_focus_siblings" return="ObjectList"/>
-
+      <method id="gtk_cell_area_get_cell_at_position" bind="False"/>
+      <!-- bound manually below -->
       <extra>
         <spec>
    function Get_Area
@@ -90,6 +88,29 @@ the various spacings that can be set for a button:
    --  Cell_Layout if called on a Gtk.Cell_Area.Gtk_Cell_Area or might be null
    --  if no Gtk.Cell_Area.Gtk_Cell_Area is used by Cell_Layout.
    --  Since: gtk+ 3.0
+
+   procedure Get_Cell_At_Position
+      (Self       : access Gtk_Cell_Area_Record;
+       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Gint;
+       Y          : Gint;
+       Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+       Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer);
+   --  Gets the Gtk.Cell_Renderer.Gtk_Cell_Renderer at X and Y coordinates
+   --  inside Area and optionally returns the full cell allocation for it
+   --  inside Cell_Area.
+   --  Since: gtk+ 3.0
+   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to hold
+   --  sizes for Area.
+   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
+   --  "cell_area": the whole allocated area for Area in Widget for this row
+   --  "x": the x position
+   --  "y": the y position
+   --  "alloc_area": where to store the inner allocated area of the returned
+   --  cell renderer, or null.
+   --  "renderer": the rendered that was found.
         </spec>
         <body>
    --------------
@@ -122,6 +143,42 @@ the various spacings that can be set for a button:
    begin
       return Gtk.Cell_Area.Gtk_Cell_Area (Get_User_Data (Internal (Cell_Layout), Stub_Gtk_Cell_Area));
    end Get_Area;
+
+   --------------------------
+   -- Get_Cell_At_Position --
+   --------------------------
+
+   procedure Get_Cell_At_Position
+      (Self       : access Gtk_Cell_Area_Record;
+       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Gint;
+       Y          : Gint;
+       Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+       Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer)
+   is
+      function Internal
+         (Self           : System.Address;
+          Context        : System.Address;
+          Widget         : System.Address;
+          Cell_Area      : Gdk.Rectangle.Gdk_Rectangle;
+          X              : Gint;
+          Y              : Gint;
+          Acc_Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_get_cell_at_position");
+      Acc_Alloc_Area         : aliased Gdk.Rectangle.Gdk_Rectangle;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Tmp_Return             : System.Address;
+   begin
+      Tmp_Return := Internal
+        (Get_Object (Self), Get_Object (Context), Get_Object (Widget),
+         Cell_Area, X, Y, Acc_Alloc_Area'Access);
+      Alloc_Area := Acc_Alloc_Area;
+      Renderer := Gtk.Cell_Renderer.Gtk_Cell_Renderer
+        (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
+   end Get_Cell_At_Position;
         </body>
       </extra>
    </package>
@@ -987,13 +1044,13 @@ and keeps it around so that it can be shown again.
        <type ctype="GtkLicense" ada="Gtk_License">
          type Gtk_License is (
          License_Unknown,
-         License_Custom,         
+         License_Custom,
          License_GPL_2_0,
-         License_GPL_3_0,        
+         License_GPL_3_0,
          License_LGPL_2_1,
-         License_LGPL_3_0,         
+         License_LGPL_3_0,
          License_BSD,
-         License_MIT_X11,         
+         License_MIT_X11,
          License_Artistic);
        </type>
      </extra>
