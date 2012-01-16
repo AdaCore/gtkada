@@ -395,10 +395,12 @@ class SubprogramProfile(object):
                 self.user_data_param = int(p.get("closure")) - 1
                 self.destroy_param = int(p.get("destroy", "-1")) - 1
 
-            direction = p.get("direction", gtkparam.get_direction())
+            direction = gtkparam.get_direction() or p.get("direction", "in")
 
             if direction == "out":
                 mode = "out"
+            elif direction == "access":
+                mode = "access"
             elif type.is_ptr:
                 mode = "in out"
             else:
