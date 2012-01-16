@@ -66,6 +66,14 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "Table"
           )
 
+# Handling of functions with user data
+
+user_data_params = ["Data", "Func_Data", "User_Data", "D"]
+destroy_data_params = ["destroy", "func_notify"]
+# List of possible names for user data parameters, for functions that take
+# callbacks as parameters
+# ??? Should use info from gir, see callback_user_data()
+
 
 naming.cname_to_adaname = {
     # Maps c methods to Ada subprograms.

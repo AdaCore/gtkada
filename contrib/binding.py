@@ -18,7 +18,7 @@
 from xml.etree.cElementTree import parse, QName, tostring
 from adaformat import *
 from binding_gtkada import GtkAda
-from data import interfaces, binding
+from data import interfaces, binding, user_data_params, destroy_data_params
 
 # For parsing command line options
 from optparse import OptionParser
@@ -236,14 +236,16 @@ class SubprogramProfile(object):
         return self.params[self.callback_param]
 
     def callback_destroy(self):
-        if self.destroy_param == -1:
+        if self.destroy_param < 0:
             return None
         return self.params[self.destroy_param]
 
     def callback_user_data(self):
+        """Returns the name of the "user_data" parameter"""
+
         if self.user_data_param == -1:
             return None
-        return self.params[self.user_data_param]
+        return self.params[self.user_data_param + 1].name
 
     def has_varargs(self):
         return self.params is None
@@ -296,13 +298,16 @@ class SubprogramProfile(object):
         self.params.insert(pos, param)
         if self.callback_param != -1 and self.callback_param >= pos:
             self.callback_param += 1
-        if self.user_data_param != -1 and self.user_data_param >= pos:
+        if self.user_data_param >= 0 and self.user_data_param >= pos:
             self.user_data_param += 1
-        if self.destroy_param != -1 and self.destroy_param >= pos:
+        if self.destroy_param >= 0 and self.destroy_param >= pos:
             self.destroy_param += 1
 
     def replace_param(self, name, type):
         """Overrides the type of a parameter"""
+        if name is None:
+            return
+
         for idx, p in enumerate(self.params):
             if p.name.lower() == name.lower():
                 self.params[idx].set_type(type)
@@ -313,11 +318,12 @@ class SubprogramProfile(object):
         assert(isinstance(names, list))
 
         for n in names:
-            n = n.lower()
-            for p in self.params:
-                if p.name.lower() == n:
-                    self.params.remove(p)
-                    break
+            if n is not None:
+                n = n.lower()
+                for p in self.params:
+                    if p.name.lower() == n:
+                        self.params.remove(p)
+                        break
 
     def find_param(self, names):
         """Return the first name for which there is a parameter"""
@@ -384,10 +390,10 @@ class SubprogramProfile(object):
             if type is None:
                 return None
 
-            if p.get("scope", "") == "notified":
+            if p.get("scope", "") in ("notified", "call"):  # "async" ?
                 self.callback_param = len(result)
                 self.user_data_param = int(p.get("closure")) - 1
-                self.destroy_param = int(p.get("destroy")) - 1
+                self.destroy_param = int(p.get("destroy", "-1")) - 1
 
             direction = p.get("direction", gtkparam.get_direction())
 
@@ -603,8 +609,10 @@ class GIRClass(object):
         if "." in funcname:
             funcname = funcname[funcname.rfind(".") + 1:]
 
-        user_data = profile.find_param(user_data_params)
+        user_data = profile.callback_user_data()
         destroy   = profile.find_param(destroy_data_params)
+        print "MANU ", destroy, " user_data=", user_data, \
+            profile.user_data_param, profile.callback_user_data(), cname
 
         # The gtk C function, will all parameters.
         # This will be used to generate the "Internal" nested subprogram.
@@ -675,6 +683,8 @@ class GIRClass(object):
 
         section = self.pkg.section("Methods")
 
+        print "MANU cb.name=", cb.name, " user_data=", user_data
+
         nouser_profile = copy.deepcopy(profile)
         nouser_profile.remove_param(destroy_data_params + [user_data])
         values = {destroy: "System.Null_Address",
@@ -715,6 +725,7 @@ class GIRClass(object):
         sect2.add_code(
             "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
+        print "MANU callback_support %s %s" % (adaname, user_data2)
         values = {user_data2.lower(): "D.Data.all"}
         user_cb = cb_profile2.subprogram(name="To_%s (D.Func)" % funcname)
         internal_cb = cb_profile.subprogram(

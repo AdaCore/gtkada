@@ -1338,10 +1338,3 @@ class Package(object):
         result.append(body)
         result.append(indent + "end %s;" % self.name)
         return "\n".join(result)
-
-
-user_data_params = ["Data", "Func_Data", "User_Data", "D"]
-destroy_data_params = ["destroy", "func_notify"]
-# List of possible names for user data parameters, for functions that take
-# callbacks as parameters
-# ??? Should use info from gir, see callback_user_data()
