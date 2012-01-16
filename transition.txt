@@ -112,6 +112,11 @@ Gtk.Gamma_Curve
 
 This widget has been removed without any replacement.
 
+Gtk.GC
+======
+
+This package has been removed: Cairo packages should be used for drawing.
+
 Gtk.Image
 =========
 
