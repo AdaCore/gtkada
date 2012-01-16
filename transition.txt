@@ -34,6 +34,12 @@ Gtk.Clist
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
+Gtk.Color_Button
+================
+
+The function Get_Color returning Gdk.Color.Gdk_Color is now a procedure
+with an out parameter.
+
 Gtk.Color_Selection
 ===================
 

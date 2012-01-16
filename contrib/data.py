@@ -42,6 +42,7 @@ binding = ("AboutDialog", "Arrow", "AspectFrame",
            "CellArea",
            "CellAreaContext",
            "CheckButton",
+           "ColorButton",
            # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
                           # Also needs support for interfaces
            "ColorSelection",
@@ -228,6 +229,7 @@ naming.type_exceptions = {
     "GtkCellRendererState":
         DirectBinding("Gtk.Cell_Renderer.Gtk_Cell_Renderer_State"),
     "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
+    "GtkColorButton":  GObject("Gtk.Color_Button.Gtk_Color_Button"),
     "GtkColorSelection":
         GObject("Gtk.Color_Selection.Gtk_Color_Selection"),
     "GtkColorSelectionDialog":
@@ -281,7 +283,7 @@ naming.type_exceptions = {
     "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
     "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
-    "GdkColor":           DirectBinding("Gdk.Color.Gdk_Color"),
+    "GdkColor*":          DirectBinding("Gdk.Color.Gdk_Color"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),

@@ -2292,4 +2292,14 @@ the bar, and the step size used in activity mode can be set.
      <parameter name="self" ada="Progress_Bar"/>
   </package>
 
+  <package id="Gtk.Color_Button">
+    <doc group="Buttons and Toggles">
+The #GtkColorButton is a button which displays the currently selected
+color and which allows the user to open a color selection dialog to
+change the color.  It may be used for selecting a color in a preference
+dialog.
+    </doc>
+    <parameter name="self" ada="Button"/>
+  </package>
+
 </GIR>
