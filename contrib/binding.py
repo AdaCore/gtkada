@@ -392,7 +392,7 @@ class SubprogramProfile(object):
             if p.get("direction", "in") == "out":
                 mode = "out"
             elif type.is_ptr:
-                mode = "out"
+                mode = "in out"
             else:
                 mode = "in"
 
