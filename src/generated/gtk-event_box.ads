@@ -21,18 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  This widget is a container that catches events for its child when its
---  child does not have its own window (like a Gtk_Scrolled_Window or a
---  Gtk_Label for instance). Some widgets in GtkAda do not have their own
---  window, and thus can not directly get events from the server. The
---  Gtk_Event_Box widget can be used to force its child to receive events
---  anyway.
---
---  For instance, this widget is used internally in a Gtk_Combo_Box so that
---  the application can change the cursor when the mouse is in the popup
---  window. In that case, it contains a frame, that itself contains the
---  scrolled window of the popup.
+--  <description
+--  The Gtk.Event_Box.Gtk_Event_Box widget is a subclass of Gtk.Bin.Gtk_Bin
+--  which also has its own window. It is useful since it allows you to catch
+--  events for widgets which do not have their own window.
 --
 --  </description>
 --  <group>Layout Containers</group>

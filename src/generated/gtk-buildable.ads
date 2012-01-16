@@ -21,16 +21,22 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  Gtk_Buildable allows objects to extend and customize their deserialization
---  from Gtk_Builder UI descriptions. The interface includes methods for
---  setting names and properties of objects, parsing custom tags and
---  constructing child objects.
+--  <description
+--  GtkBuildable allows objects to extend and customize thier deserialization
+--  from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>. The
+--  interface includes methods for setting names and properties of objects,
+--  parsing custom tags and constructing child objects.
 --
---  The Gtk_Buildable interface is implemented by all widgets and many of the
+--  The GtkBuildable interface is implemented by all widgets and many of the
 --  non-widget objects that are provided by GTK+. The main user of this
---  interface is Gtk_Builder. There should be very little need for applications
---  to call any gtk_buildable_... functions.
+--  interface is Gtk.Builder.Gtk_Builder. There should be very little need for
+--  applications to call any <function>gtk_buildable_...</function> functions.
+--
+--  Note:
+--
+--  An object only needs to implement this interface if it needs to extend the
+--  Gtk.Builder.Gtk_Builder format or run any extra routines at deserialization
+--  time
 --
 --  </description>
 

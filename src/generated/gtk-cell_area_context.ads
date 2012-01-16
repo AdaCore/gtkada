@@ -21,8 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
--- 
+--  <description
+--  The Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object is created by a
+--  given Gtk.Cell_Area.Gtk_Cell_Area implementation via its
+--  GtkCellAreaClass.create_context virtual method and is used to store cell
+--  sizes and alignments for a series of Gtk.Tree_Model.Gtk_Tree_Model rows
+--  that are requested and rendered in the same context.
+--
+--  Gtk.Cell_Layout.Gtk_Cell_Layout widgets can create any number of contexts
+--  in which to request and render groups of data rows. However its important
+--  that the same context which was used to request sizes for a given
+--  Gtk.Tree_Model.Gtk_Tree_Model row also be used for the same row when
+--  calling other Gtk.Cell_Area.Gtk_Cell_Area APIs such as Gtk.Cell_Area.Render
+--  and Gtk.Cell_Area.Event.
 --
 --  </description>
 --  <group>Layout Containers</group>

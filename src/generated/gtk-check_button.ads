@@ -21,9 +21,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget,
---  (usually a Gtk_Label).
+--  <description
+--  A Gtk.Check_Button.Gtk_Check_Button places a discrete
+--  Gtk.Toggle_Button.Gtk_Toggle_Button next to a widget, (usually a
+--  Gtk.Label.Gtk_Label). See the section on
+--  Gtk.Toggle_Button.Gtk_Toggle_Button widgets for more information about
+--  toggle/check buttons.
+--
+--  The important signal ( Gtk.Toggle_Button.Gtk_Toggle_Button::toggled ) is
+--  also inherited from Gtk.Toggle_Button.Gtk_Toggle_Button.
 --
 --  </description>
 --  <screenshot>gtk-check_button</screenshot>

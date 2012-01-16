@@ -10,16 +10,7 @@
         ################################################-->
 
    <package id="Gtk.Aspect_Frame">
-      <doc testgtk="create_frame.adb"
-           group="Layout Containers">
-A Gtk_Aspect_Frame is the same type of widget as a frame, but it
-constrains its child to a specific aspect ratio between its width
-and its height.
-
-This ratio can either be given explicitly by the user, or chosen from the
-widget's initial size request (might be different from the one if was
-actually given).
-      </doc>
+     <doc testgtk="create_frame.adb" group="Layout Containers"/>
      <parameter name="self" ada="Aspect_Frame"/>
      <method id="gtk_aspect_frame_new">
        <parameter name="label" default='""' empty_maps_to_null="True" />
@@ -31,17 +22,8 @@ actually given).
         ###################################################-->
 
    <package id="Gtk.Button">
-      <doc screenshot="gtk-button"
-           group="Buttons and Toggles"
-           testgtk="create_buttons.adb">
-This package implements a general button widget. This button can
-be clicked on by the user to start any action.
-This button does not have multiple states, it can just be temporarily
-pressed while the mouse is on it, but does not keep its pressed state.
-
-The gtk+ sources provide the following drawing that explains the role of
-the various spacings that can be set for a button:
-      </doc>
+      <doc screenshot="gtk-button" group="Buttons and Toggles"
+           testgtk="create_buttons.adb"/>
       <parameter name="self" ada="Button"/>
       <method id="gtk_button_new" bind="False"/>
       <method id="gtk_button_new_with_label" ada="Gtk_New" >
@@ -54,8 +36,7 @@ the various spacings that can be set for a button:
         ###################################################-->
 
    <package id="Gtk.Cell_Area">
-      <doc group="Layout Containers">
-      </doc>
+      <doc group="Layout Containers"/>
       <method id="gtk_cell_area_cell_get_valist" bind="False"/><!-- va_list -->
       <method id="gtk_cell_area_cell_set_valist" bind="False"/><!-- va_list -->
       <method id="gtk_cell_area_add_with_properties" bind="False"/><!-- varargs-->
@@ -189,8 +170,7 @@ the various spacings that can be set for a button:
         ###################################################-->
 
    <package id="Gtk.Cell_Area_Context">
-      <doc group="Layout Containers">
-      </doc>
+      <doc group="Layout Containers"/>
       <method id="gtk_cell_area_context_get_area" bind="False"/>
       <!-- in Gtk.Cell_Area -->
    </package>
@@ -330,19 +310,7 @@ dialog for file selection.
         ################################################-->
 
    <package id="Gtk.Event_Box">
-      <doc group="Layout Containers">
-This widget is a container that catches events for its child when its
-child does not have its own window (like a Gtk_Scrolled_Window or a
-Gtk_Label for instance).
-Some widgets in GtkAda do not have their own window, and thus can not
-directly get events from the server. The Gtk_Event_Box widget can be
-used to force its child to receive events anyway.
-
-For instance, this widget is used internally in a Gtk_Combo_Box so that
-the application can change the cursor when the mouse is in the popup
-window. In that case, it contains a frame, that itself contains the
-scrolled window of the popup.
-      </doc>
+     <doc group="Layout Containers"/>
      <parameter name="self" ada="Event_Box"/>
      <method id="gtk_event_box_new">
          <doc>
@@ -614,26 +582,6 @@ This is equivalent to using Pack2 with its default parameters.
    <package id="Gtk.Box">
       <doc screenshot="gtk-box" testgtk="create_box.adb"
            group="Layout containers">
-A box is a container that can have multiple children, organized either
-horizontally or vertically. Two subtypes are provided, Gtk_Hbox and
-Gtk_Vbox, to conform to the C API. In Ada, you do not need to
-distinguish between the two, but note that the Gtk_Box type is conceptually
-an abstract type: there is no way to create a "Gtk_Box", only ways to
-create either an horizontal box, or a vertical box.
-
-Children can be added to one of two positions in the box, either at the
-beginning (ie left or top) or at the end (ie right or bottom). Each of
-these positions can contain multiple widgets.
-
-Every time a child is added to the start, it is placed to the right
-(resp. the bottom) of the previous widget added to the start.
-
-Every time a child is added to the end, it is placed to the left (resp.
-the top) of the previous widget added to the end.
-
-There are a number of parameters to specify the behavior of the box when
-it is resized, and how the children should be reorganized and/or resized.
-
 See the testgtk example in the GtkAda distribution to see concrete examples
 on how all the parameters for the boxes work.
       </doc>
@@ -719,20 +667,7 @@ finds on audio systems to select the volume for instance.
         ########################################################-->
 
    <package id="Gtk.Arrow">
-      <doc screenshot="gtk-arrow" testgtk="create_arrow.adb">
-Gtk_Arrow should be used to draw simple arrows that need to point in one
-of the four cardinal directions (up, down, left, or right). The style of
-the arrow can be one of shadow in, shadow out, etched in, or etched out.
-Note that these directions and style types may be ammended in versions of
-Gtk to come.
-
-Gtk_Arrow will fill any space alloted to it, but since it is inherited from
-Gtk_Misc, it can be padded and/or aligned, to fill exactly the space you
-desire.
-
-Arrows are created with a call to Gtk_New. The direction or style of an
-arrow can be changed after creation by using Set.
-      </doc>
+      <doc screenshot="gtk-arrow" testgtk="create_arrow.adb"/>
       <parameter name="self" ada="Arrow"/>
    </package>
 
@@ -879,10 +814,7 @@ If Xpad or Ypad is negative, they will be changed to 0.
    </package>
 
    <package id="Gtk.Bin">
-      <doc group="Abstract base classes">
-Base class for containers that have only one child.
-This widget can not be instantiated directly.
-      </doc>
+      <doc group="Abstract base classes"/>
       <parameter name="self" ada="Bin"/>
    </package>
 
@@ -1019,25 +951,7 @@ accessible labels.
    </package>
 
    <package id="Gtk.About_Dialog">
-      <doc group="Windows" testgtk="create_about.adb">
-The Gtk_About_Dialog offers a simple way to display information about a
-program like its logo, name, copyright, website and license. It is also
-possible to give credits to the authors, documenters, translators and
-artists who have worked on the program. An about dialog is typically opened
-when the user selects the About option from the Help menu. All parts of the
-dialog are optional.
-
-About dialog often contain links and email addresses. Gtk_About_Dialog
-supports this by offering global hooks, which are called when the user
-clicks on a link or email address, see Set_Email_Hook and Set_Url_Hook.
-Email addresses in the authors, documenters and artists properties are
-recognized by looking for &lt;user@host&gt;, URLs are recognized by looking for
-http://url, with url extending to the next space, tab or line break.
-
-To make constructing a Gtk_About_Dialog as convenient as possible, you can
-use the function gtk_show_about_dialog which constructs and shows a dialog
-and keeps it around so that it can be shown again.
-     </doc>
+      <doc group="Windows" testgtk="create_about.adb"/>
      <parameter name="self" ada="About"/>
 
      <extra>
@@ -1132,15 +1046,8 @@ respectively.
 
   <package id="Gtk.Dialog">
      <doc group="Windows" testgtk="create_dialog.adb"
-          screenshot="gtk-dialog">Dialog boxes are a convenient way to prompt the user for a small amount of input, eg. to display a message, ask a question, or anything else that does not require extensive effort on the user's part.
-
-Gtkada treats a dialog as a window split horizontally. The top section is a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should be packed. The second area is known as the action_area. This is generally used for packing buttons into the dialog which may perform functions such as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
-
-If 'dialog' is a newly created dialog, the two primary areas of the window can be accessed using Get_Vbox and Get_Action_Area as can be seen from the example, below.
-
-A 'modal' dialog (that is, one which freezes the rest of the application from user input), can be created by calling Set_Modal on the dialog.
-
-See Gtkada.Dialogs for a higher level dialog interface.
+          screenshot="gtk-dialog">
+          See Gtkada.Dialogs for a higher level dialog interface.
      </doc>
      <parameter name="self" ada="Dialog" />
      <parameter name="response_id" type="Gtk_Response_Type"/>
@@ -1363,20 +1270,12 @@ The Gtk_Curve widget has 3 modes of operation: spline, linear and free.  In spli
   </package>
 
   <package id="Gtk.Expander">
-     <doc group="Layout containers" screenshot="gtk-expanded">A container that can hide its child.</doc>
+     <doc group="Layout containers" screenshot="gtk-expanded"/>
      <parameter name="self" ada="Expander"/>
   </package>
 
   <package id="Gtk.Drawing_Area">
      <doc group="Drawing" testgtk="libart_demo.adb">
-This widget provides an empty canvas on which the application can draw anything.
-
-Note that this widget is simply an empty space, and that you need to connect it to events to make it useful. For instance, you might want to do one of the following :
-
-* Connect it to "expose_event": The handlers are called every time the widget needs to be redrawn. You can then draw anything you want on the canvas, after getting its associated window with a call to Gtk.Widget.Get_Window. Note that the event mask is automatically set up to accept expose_events.
-
-* Connect it to "button_press_event" and "button_release_event" events, when you want it to react to user input. Note that you need to set up the event mask with a call to Gtk.Widget.Set_Events.
-
 See also the Double_Buffer widget provided in the GtkAda examples for an advanced example that demonstrates how to use double buffering, to avoid flickering in your drawings.</doc>
      <parameter name="self" ada="Drawing_Area"/>
      <method id="gtk_drawing_area_size" obsolescent="True">
@@ -1385,10 +1284,7 @@ See also the Double_Buffer widget provided in the GtkAda examples for an advance
   </package>
 
   <package id="Gtk.Adjustment">
-     <doc group="Scrolling">This object represents an adjustable bounded value. It is used in many other widgets that have such internal values, like Gtk_Scrollbar, Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is done through their associated adjustments.
-
-The modification of the value is left to the user, who should call Value_Changed or Changed to emit the relevant signals.
-
+     <doc group="Scrolling">
 The meaning of the most important fields can be explained on the following figure (imagine this is a scrollbar):
 
 [-------|=================|-------------------]
@@ -1505,17 +1401,7 @@ The pixels in a Gtk_Image may be manipulated by the application after creation, 
 
   <package id="Gtk.Calendar">
      <doc group="Selectors" testgtk="create_calendar.adb"
-          screenshot="gtk-calendar">
-Gtk_Calendar is a widget that displays a calendar, one month at a time. It can be created with Gtk_New.
-
-The month and year currently displayed can be altered with Select_Month. The exact day can be selected from the displayed month using Select_Day.
-
-The way in which the calendar itself is displayed can be altered using Display_Options.
-
-The selected date can be retrieved from a Gtk_Calendar using Get_Date.
-
-If performing many 'mark' operations, the calendar can be frozen to prevent flicker, using Freeze, and 'thawed' again using Thaw.
-     </doc>
+          screenshot="gtk-calendar"/>
      <parameter name="self" ada="Calendar"/>
      <method id="gtk_calendar_freeze" obsolescent="True"/>
      <method id="gtk_calendar_thaw" obsolescent="True"/>
@@ -1576,13 +1462,7 @@ Note that size groups only affect the amount of space requested, not the size th
   </package>
 
   <package id="Gtk.Alignment">
-     <doc testgtk="create_alignment.adb" screenshot="gtk-alignment">
-A Gtk_Alignment controls the size and alignment of its single child inside the area allocated to the alignment widget.
-
-The scale/size settings indicate how much the child will expand to fill the container. The values should be in the range 0.0 (no expansion) to 1.0 (full expansion). Note that the scale only indicates the minimal size for the child, it does not force an absolute size.
-
-The alignment settings indicate where in the alignment widget the child should be located. The values are in the range 0.0 (top or left) to 1.0 (bottom or right). These settings are irrelevant if the child is fully expanded.
-     </doc>
+     <doc testgtk="create_alignment.adb" screenshot="gtk-alignment"/>
      <parameter name="self" ada="Alignment"/>
      <method id="gtkada_GtkAlignment_get_xalign" bind="True"/>
      <method id="gtkada_GtkAlignment_get_xscale" bind="True"/>
@@ -1718,10 +1598,7 @@ In addition to the model-view API, Gtk_Combo_Box offers a simple API which is su
 
   <package id="Gtk.Check_Button">
      <doc screenshot="gtk-check_button" group="Buttons and Toggles"
-          testgtk="create_check_buttons.adb">
-A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget, (usually a Gtk_Label).
-     </doc>
-
+        testgtk="create_check_buttons.adb"/>
      <parameter name="self" ada="Check_Button"/>
      <method id="gtk_check_button_new" bind="False"/>
      <method id="gtk_check_button_new_with_label" ada="Gtk_New" >
@@ -1752,8 +1629,6 @@ You should consider using a Gtk_Check_Button instead, since it looks nicer and p
   </package>
 
   <package id="Gtk.Accel_Group">
-     <doc>An accel group represents a group of keyboard accelerators, generally attached to a toplevel window. Accelerators are different from mnemonics. Accelerators are shortcuts for activating a menu item. They appear alongside the menu item they are a shortcut for. Mnemonics are shortcuts for GUI elements, such as buttons. They appear as underline characters. Menu items can have both.
-     </doc>
      <parameter name="self" ada="Accel_Group"/>
      <method id="gtk_accel_group_new">
         <doc>Creates a new Gtk.Accel_Group.Gtk_Accel_Group.
@@ -1957,12 +1832,8 @@ Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. I
   </package>
 
   <package id="Gtk.Cell_Editable">
-     <doc group="Trees and Lists">The Gtk_Cell_Editable interface must be implemented for widgets to be usable when editing the contents of a Gtk_Tree_View cell</doc>
+     <doc group="Trees and Lists"/>
      <parameter name="self" ada="Cell_Editable"/>
-  </package>
-
-  <package id="Gtk.Activatable">
-     <doc>Activatable widgets can be connected to a Gtk_Action and reflects the state of its action. A Gtk_Activatable can also provide feedback through its action, as they are responsible for activating their related actions.</doc>
   </package>
 
   <package id="Gtk.Orientable">
@@ -1970,9 +1841,6 @@ Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. I
   </package>
 
   <package id="Gtk.Buildable">
-     <doc>Gtk_Buildable allows objects to extend and customize their deserialization from Gtk_Builder UI descriptions. The interface includes methods for setting names and properties of objects, parsing custom tags and constructing child objects.
-
-The Gtk_Buildable interface is implemented by all widgets and many of the non-widget objects that are provided by GTK+. The main user of this interface is Gtk_Builder. There should be very little need for applications to call any gtk_buildable_... functions.</doc>
      <method id="gtk_buildable_custom_tag_start" bind="False"/>
   </package>
 
@@ -2033,11 +1901,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
   </package>
 
   <package id="Gtk.Cell_Layout">
-     <doc group="Trees and Lists" testgtk="create_cell_view.adb">
-Gtk_Cell_Layout is an interface to be implemented by all objects which want to provide a Gtk_Tree_View_Column like API for packing cells, setting attributes and data funcs.
-
-The rendering of the widget is done through various Gtk_Cell_Renderer, and by reading data from a Gtk_Tree_Model.
-     </doc>
+     <doc group="Trees and Lists" testgtk="create_cell_view.adb"/>
      <parameter name="self" ada="Cell_Layout"/>
      <method id="gtk_cell_layout_get_area" bind="False"/>
      <!-- in Gtk.Cell_Area -->
@@ -2048,11 +1912,7 @@ The rendering of the widget is done through various Gtk_Cell_Renderer, and by re
   </package>
 
   <package id="Gtk.Assistant">
-     <doc group="Windows" testgtk="create_assistant.adb">
-A Gtk_Assistant is a widget used to represent a generally complex
-operation split into several steps, guiding the user through its
-pages and controlling the page flow to collect the necessary data.
-     </doc>
+     <doc group="Windows" testgtk="create_assistant.adb"/>
      <parameter name="self" ada="Assistant"/>
      <extra>
          <type ctype="GtkAssistantPageType" ada="Gtk_Assistant_Page_Type">
@@ -2080,30 +1940,7 @@ use Gtk.Spinner.Stop.
   </package>
 
   <package id="Gtk.Entry_Completion">
-     <doc group="Numeric/Text Data Entry">
-This widget provides completion functionality for Gtk.Gentry.Gtk_Entry.
-
-"Completion functionality" means that when the user modifies the text in
-the entry, GtkEntryCompletion checks which rows in the model match the
-current content of the entry, and displays a list of matches. By default,
-the matching is done by comparing the entry text case-insensitively against
-the text column of the model (see Set_Text_Column), but this can be
-overridden with a custom match function (see Set_Match_Func).
-
-When the user selects a completion, the content of the entry is updated. By
-default, the content of the entry is replaced by the text column of the
-model, but this can be overridden by connecting to the ::match-selected
-signal and updating the entry in the signal handler. Note that you should
-return TRUE from the signal handler to suppress the default behaviour.
-
-To add completion functionality to an entry, use Gtk.Entry.Set_Completion.
-
-In addition to regular completion matches, which will be inserted into the
-entry when they are selected, GtkEntryCompletion also allows to display
-"actions" in the popup window. Their appearance is similar to menuitems, to
-differentiate them clearly from completion strings. When an action is
-selected, the ::action-activated signal is emitted.
-     </doc>
+     <doc group="Numeric/Text Data Entry"/>
      <parameter name="self" ada="Completion"/>
      <extra>
         <with_spec pkg="Interfaces.C.Strings" />

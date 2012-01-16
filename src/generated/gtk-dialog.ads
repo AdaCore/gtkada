@@ -21,24 +21,122 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
+--  <description
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
---  input, eg. to display a message, ask a question, or anything else that does
---  not require extensive effort on the user's part.
+--  input, e.g. to display a message, ask a question, or anything else that
+--  does not require extensive effort on the user's part.
 --
---  Gtkada treats a dialog as a window split horizontally. The top section is
---  a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should
---  be packed. The second area is known as the action_area. This is generally
---  used for packing buttons into the dialog which may perform functions such
---  as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
+--  GTK+ treats a dialog as a window split vertically. The top section is a
+--  Gtk.Box.Gtk_Vbox, and is where widgets such as a Gtk.Label.Gtk_Label or a
+--  Gtk.GEntry.Gtk_Entry should be packed. The bottom area is known as the
+--  <structfield>action_area</structfield>. This is generally used for packing
+--  buttons into the dialog which may perform functions such as cancel, ok, or
+--  apply.
+--
+--  Gtk.Dialog.Gtk_Dialog boxes are created with a call to Gtk.Dialog.Gtk_New
+--  or gtk_dialog_new_with_buttons. gtk_dialog_new_with_buttons is recommended;
+--  it allows you to set the dialog title, some convenient flags, and add
+--  simple buttons.
 --
 --  If 'dialog' is a newly created dialog, the two primary areas of the window
---  can be accessed using Get_Vbox and Get_Action_Area as can be seen from the
---  example, below.
+--  can be accessed through Gtk.Dialog.Get_Content_Area and
+--  Gtk.Dialog.Get_Action_Area, as can be seen from the example below.
 --
 --  A 'modal' dialog (that is, one which freezes the rest of the application
---  from user input), can be created by calling Set_Modal on the dialog.
+--  from user input), can be created by calling gtk_window_set_modal on the
+--  dialog. Use the GTK_WINDOW macro to cast the widget returned from
+--  Gtk.Dialog.Gtk_New into a Gtk.Window.Gtk_Window. When using
+--  gtk_dialog_new_with_buttons you can also pass the GTK_DIALOG_MODAL flag to
+--  make a dialog modal.
 --
+--  If you add buttons to Gtk.Dialog.Gtk_Dialog using
+--  gtk_dialog_new_with_buttons, Gtk.Dialog.Add_Button, gtk_dialog_add_buttons,
+--  or Gtk.Dialog.Add_Action_Widget, clicking the button will emit a signal
+--  called Gtk.Dialog.Gtk_Dialog::response with a response ID that you
+--  specified. GTK+ will never assign a meaning to positive response IDs; these
+--  are entirely user-defined. But for convenience, you can use the response
+--  IDs in the Gtk_Response_Type enumeration (these all have values less than
+--  zero). If a dialog receives a delete event, the
+--  Gtk.Dialog.Gtk_Dialog::response signal will be emitted with a response ID
+--  of GTK_RESPONSE_DELETE_EVENT.
+--
+--  If you want to block waiting for a dialog to return before returning
+--  control flow to your code, you can call Gtk.Dialog.Run. This function
+--  enters a recursive main loop and waits for the user to respond to the
+--  dialog, returning the response ID corresponding to the button the user
+--  clicked.
+--
+--  For the simple dialog in the following example, in reality you'd probably
+--  use Gtk.Messagedialog.Gtk_Messagedialog to save yourself some effort. But
+--  you'd need to create the dialog contents manually if you had more than a
+--  simple message in the dialog.
+--
+--  == Simple GtkDialog usage ==
+--
+
+--     /&ast; Function to open a dialog box displaying the message provided. &ast;/
+--     void
+--     quick_message (gchar *message)
+--     {
+--        GtkWidget *dialog, *label, *content_area;
+--        /&ast; Create the widgets &ast;/
+--        dialog = gtk_dialog_new_with_buttons ("Message",
+--           main_application_window,
+--           GTK_DIALOG_DESTROY_WITH_PARENT,
+--           GTK_STOCK_OK,
+--           GTK_RESPONSE_NONE,
+--           NULL);
+--        content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+--        label = gtk_label_new (message);
+--        /&ast; Ensure that the dialog box is destroyed when the user responds &ast;/
+--        g_signal_connect_swapped (dialog,
+--           "response",
+--           G_CALLBACK (gtk_widget_destroy),
+--           dialog);
+--        /&ast; Add the label, and show everything we've added to the dialog &ast;/
+--        gtk_container_add (GTK_CONTAINER (content_area), label);
+--        gtk_widget_show_all (dialog);
+--     }
+--
+--  == GtkDialog as GtkBuildable ==
+--
+--  The GtkDialog implementation of the Gtk.Buildable.Gtk_Buildable interface
+--  exposes the Vbox and Action_Area as internal children with the names "vbox"
+--  and "action_area".
+--
+--  GtkDialog supports a custom &lt;action-widgets&gt; element, which can
+--  contain multiple &lt;action-widget&gt; elements. The "response" attribute
+--  specifies a numeric response, and the content of the element is the id of
+--  widget (which should be a child of the dialogs Action_Area).
+--
+--  == A <structname>GtkDialog</structname> UI definition fragment. ==
+--
+
+--     <object class="GtkDialog" id="dialog1">
+--     <child internal-child="vbox">"
+--     <object class="GtkVBox" id="vbox">
+--     <child internal-child="action_area">
+--     <object class="GtkHButtonBox" id="button_box">
+--     <child>
+--     <object class="GtkButton" id="button_cancel"/>
+--     </child>
+--     <child>
+--     <object class="GtkButton" id="button_ok"/>
+--     </child>
+--     </object>
+--     </child>
+--     </object>
+--     </child>
+--     <action-widgets>
+--     <action-widget response="3">button_ok</action-widget>
+--     <action-widget response="-5">button_cancel</action-widget>
+--     </action-widgets>
+--     </object>
+--
+--
+--
+--  </description>
+--  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
 --
 --  </description>

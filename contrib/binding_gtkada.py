@@ -121,26 +121,31 @@ class GtkAdaPackage(object):
 
     def __init__(self, node):
         self.node = node
+        self.doc = []
 
     def get_doc(self):
         """Return the overridden doc for for the package, as a list of
            string. Each string is a paragraph
         """
         if self.node is None:
-            return ""
+            return []
 
         docnode = self.node.find("doc")
         if docnode is None:
-            return ""
+            return []
 
         text = docnode.text or ""
-        doc = ["<description>\n"]
+        doc = []
 
-        for paragraph in text.split("\n\n"):
-            doc.append(paragraph)
-            doc.append("")
+        if text:
+            descr = []
+            for paragraph in text.split("\n\n"):
+                descr.append(paragraph)
+                descr.append("")
 
-        doc.append("</description>")
+            doc = ["<description>\n"]
+            doc.extend(descr)
+            doc.append("</description>")
 
         n = docnode.get("screenshot")
         if n is not None:

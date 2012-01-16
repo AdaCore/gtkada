@@ -21,9 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  Base class for containers that have only one child. This widget can not be
---  instantiated directly.
+--  <description
+--  The Gtk.Bin.Gtk_Bin widget is a container with just one child. It is not
+--  very useful itself, but it is useful for deriving subclasses, since it
+--  provides common code needed for handling a single child widget.
+--
+--  Many GTK+ widgets are subclasses of Gtk.Bin.Gtk_Bin, including
+--  Gtk.Window.Gtk_Window, Gtk.Button.Gtk_Button, Gtk.Frame.Gtk_Frame,
+--  Gtk.Handlebox.Gtk_Handlebox or Gtk.Scrolledwindow.Gtk_Scrolledwindow.
 --
 --  </description>
 --  <group>Abstract base classes</group>

@@ -21,27 +21,55 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description
+--  The GtkBox widget organizes child widgets into a rectangular area.
+--
+--  The rectangular area of a GtkBox is organized into either a single row or
+--  a single column of child widgets depending upon the orientation. Thus, all
+--  children of a GtkBox are allocated one dimension in common, which is the
+--  height of a row, or the width of a column.
+--
+--  GtkBox uses a notion of *packing*. Packing refers to adding widgets with
+--  reference to a particular position in a Gtk.Container.Gtk_Container. For a
+--  GtkBox, there are two reference positions: the *start* and the *end* of the
+--  box. For a vertical Gtk.Box.Gtk_Box, the start is defined as the top of the
+--  box and the end is defined as the bottom. For a horizontal Gtk.Box.Gtk_Box
+--  the start is defined as the left side and the end is defined as the right
+--  side.
+--
+--  Use repeated calls to Gtk.Box.Pack_Start to pack widgets into a GtkBox
+--  from start to end. Use Gtk.Box.Pack_End to add widgets from end to start.
+--  You may intersperse these calls and add widgets from both ends of the same
+--  GtkBox.
+--
+--  Because GtkBox is a Gtk.Container.Gtk_Container, you may also use
+--  Gtk.Container.Add to insert widgets into the box, and they will be packed
+--  with the default values for Gtk.Box.Gtk_Box:expand and
+--  Gtk.Box.Gtk_Box:fill. Use gtk_container_remove to remove widgets from the
+--  GtkBox.
+--
+--  Use Gtk.Box.Set_Homogeneous to specify whether or not all children of the
+--  GtkBox are forced to get the same amount of space.
+--
+--  Use Gtk.Box.Set_Spacing to determine how much space will be minimally
+--  placed between all children in the GtkBox. Note that spacing is added
+--  *between* the children, while padding added by Gtk.Box.Pack_Start or
+--  Gtk.Box.Pack_End is added *on either side* of the widget it belongs to.
+--
+--  Use Gtk.Box.Reorder_Child to move a GtkBox child to a different place in
+--  the box.
+--
+--  Use Gtk.Box.Set_Child_Packing to reset the Gtk.Box.Gtk_Box:expand,
+--  Gtk.Box.Gtk_Box:fill and Gtk.Box.Gtk_Box:padding child properties. Use
+--  Gtk.Box.Query_Child_Packing to query these fields.
+--
+--  Note:
+--
+--  Note that a single-row or single-column Gtk.Grid.Gtk_Grid provides exactly
+--  the same functionality as Gtk.Box.Gtk_Box.
+--
+--  </description>
 --  <description>
---  A box is a container that can have multiple children, organized either
---  horizontally or vertically. Two subtypes are provided, Gtk_Hbox and
---  Gtk_Vbox, to conform to the C API. In Ada, you do not need to distinguish
---  between the two, but note that the Gtk_Box type is conceptually an abstract
---  type: there is no way to create a "Gtk_Box", only ways to create either an
---  horizontal box, or a vertical box.
---
---  Children can be added to one of two positions in the box, either at the
---  beginning (ie left or top) or at the end (ie right or bottom). Each of
---  these positions can contain multiple widgets.
---
---  Every time a child is added to the start, it is placed to the right (resp.
---  the bottom) of the previous widget added to the start.
---
---  Every time a child is added to the end, it is placed to the left (resp.
---  the top) of the previous widget added to the end.
---
---  There are a number of parameters to specify the behavior of the box when
---  it is resized, and how the children should be reorganized and/or resized.
---
 --  See the testgtk example in the GtkAda distribution to see concrete
 --  examples on how all the parameters for the boxes work.
 --

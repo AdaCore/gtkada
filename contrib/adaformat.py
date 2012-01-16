@@ -579,7 +579,8 @@ def indent_code(code, indent=3, addnewlines=True):
         if l.startswith("end") \
            or l.startswith("elsif")  \
            or l.startswith("else")  \
-           or l.startswith("begin"):
+           or l.startswith("begin") \
+           or l.startswith("}"):   # for C
             indent -= 3
 
         old_parent = parent_count
@@ -611,6 +612,7 @@ def indent_code(code, indent=3, addnewlines=True):
            or l.endswith("loop") \
            or(l.endswith("else") and not l.endswith("or else"))\
            or l.endswith("begin") \
+           or l.endswith("{") \
            or l.endswith("record") \
            or l.endswith("is") \
            or l.endswith("declare"):
@@ -1282,7 +1284,7 @@ class Package(object):
                     d = cleanup_doc(d)
                     if d.startswith("%PRE%"):
                         d = d[5:]
-                        lines = ["\n-- " + l for l in d.split("\n")]
+                        lines = ["\n--  " + l for l in d.split("\n")]
                         result.append("".join(lines))
                     elif d:
                         result.append("-- " + fill_text(d, "--  ", 79))

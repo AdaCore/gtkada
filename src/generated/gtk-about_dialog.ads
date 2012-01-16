@@ -21,24 +21,40 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  The Gtk_About_Dialog offers a simple way to display information about a
+--  <description
+--  The GtkAboutDialog offers a simple way to display information about a
 --  program like its logo, name, copyright, website and license. It is also
 --  possible to give credits to the authors, documenters, translators and
 --  artists who have worked on the program. An about dialog is typically opened
---  when the user selects the About option from the Help menu. All parts of the
---  dialog are optional.
+--  when the user selects the 'About' option from the 'Help' menu. All parts of
+--  the dialog are optional.
 --
---  About dialog often contain links and email addresses. Gtk_About_Dialog
---  supports this by offering global hooks, which are called when the user
---  clicks on a link or email address, see Set_Email_Hook and Set_Url_Hook.
---  Email addresses in the authors, documenters and artists properties are
---  recognized by looking for <userHost>, URLs are recognized by looking for
---  http://url, with url extending to the next space, tab or line break.
+--  About dialog often contain links and email addresses. GtkAboutDialog
+--  displays these as clickable links. By default, it calls gtk_show_uri() when
+--  a user clicks one. The behaviour can be overridden with the
+--  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal.
 --
---  To make constructing a Gtk_About_Dialog as convenient as possible, you can
+--  To make constructing a GtkAboutDialog as convenient as possible, you can
 --  use the function gtk_show_about_dialog which constructs and shows a dialog
 --  and keeps it around so that it can be shown again.
+--
+--  Note that GTK+ sets a default title of '_("About %s")' on the dialog
+--  window (where %s is replaced by the name of the application, but in order
+--  to ensure proper translation of the title, applications should set the
+--  title property explicitly when constructing a GtkAboutDialog, as shown in
+--  the following example:
+--
+
+--     gtk_show_about_dialog (NULL,
+--        "program-name", "ExampleCode",
+--        "logo", example_logo,
+--        "title" _("About ExampleCode"),
+--        NULL);
+--
+--  It is also possible to show a Gtk.About_Dialog.Gtk_About_Dialog like any
+--  other Gtk.Dialog.Gtk_Dialog, e.g. using Gtk.Dialog.Run. In this case, you
+--  might need to know that the 'Close' button returns the GTK_RESPONSE_CANCEL
+--  response id.
 --
 --  </description>
 --  <group>Windows</group>

@@ -22,29 +22,51 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description>
---  This widget provides completion functionality for Gtk.Gentry.Gtk_Entry.
+--  <description
+--  Gtk.Entry_Completion.Gtk_Entry_Completion is an auxiliary object to be
+--  used in conjunction with Gtk.GEntry.Gtk_Entry to provide the completion
+--  functionality. It implements the Gtk.Cell_Layout.Gtk_Cell_Layout interface,
+--  to allow the user to add extra cells to the Gtk.Treeview.Gtk_Treeview with
+--  completion matches.
 --
 --  "Completion functionality" means that when the user modifies the text in
---  the entry, GtkEntryCompletion checks which rows in the model match the
---  current content of the entry, and displays a list of matches. By default,
---  the matching is done by comparing the entry text case-insensitively against
---  the text column of the model (see Set_Text_Column), but this can be
---  overridden with a custom match function (see Set_Match_Func).
+--  the entry, Gtk.Entry_Completion.Gtk_Entry_Completion checks which rows in
+--  the model match the current content of the entry, and displays a list of
+--  matches. By default, the matching is done by comparing the entry text
+--  case-insensitively against the text column of the model (see
+--  Gtk.Entry_Completion.Set_Text_Column), but this can be overridden with a
+--  custom match function (see Gtk.Entry_Completion.Set_Match_Func).
 --
 --  When the user selects a completion, the content of the entry is updated.
 --  By default, the content of the entry is replaced by the text column of the
---  model, but this can be overridden by connecting to the ::match-selected
---  signal and updating the entry in the signal handler. Note that you should
---  return TRUE from the signal handler to suppress the default behaviour.
+--  model, but this can be overridden by connecting to the
+--  Gtk.Entry_Completion.Gtk_Entry_Completion::match-selected signal and
+--  updating the entry in the signal handler. Note that you should return True
+--  from the signal handler to suppress the default behaviour.
 --
---  To add completion functionality to an entry, use Gtk.Entry.Set_Completion.
+--  To add completion functionality to an entry, use gtk_entry_set_completion.
 --
 --  In addition to regular completion matches, which will be inserted into the
---  entry when they are selected, GtkEntryCompletion also allows to display
---  "actions" in the popup window. Their appearance is similar to menuitems, to
---  differentiate them clearly from completion strings. When an action is
---  selected, the ::action-activated signal is emitted.
+--  entry when they are selected, Gtk.Entry_Completion.Gtk_Entry_Completion
+--  also allows to display "actions" in the popup window. Their appearance is
+--  similar to menuitems, to differentiate them clearly from completion
+--  strings. When an action is selected, the
+--  Gtk.Entry_Completion.Gtk_Entry_Completion::action-activated signal is
+--  emitted.
+--
+--  GtkEntryCompletion uses a Gtk.Treemodelfilter.Gtk_Treemodelfilter model to
+--  represent the subset of the entire model that is currently matching. While
+--  the GtkEntryCompletion signals
+--  Gtk.Entry_Completion.Gtk_Entry_Completion::match-selected and
+--  Gtk.Entry_Completion.Gtk_Entry_Completion::cursor-on-match take the
+--  original model and an iter pointing to that model as arguments, other
+--  callbacks and signals (such as GtkCellLayoutDataFuncs or
+--  Gtk.Cell_Area.Gtk_Cell_Area::apply-attributes) will generally take the
+--  filter model as argument. As long as you are only calling
+--  gtk_tree_model_get, this will make no difference to you. If for some
+--  reason, you need the original model, use gtk_tree_model_filter_get_model.
+--  Don't forget to use gtk_tree_model_filter_convert_iter_to_child_iter to
+--  obtain a matching iter.
 --
 --  </description>
 --  <group>Numeric/Text Data Entry</group>

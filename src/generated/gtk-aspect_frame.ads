@@ -21,14 +21,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  A Gtk_Aspect_Frame is the same type of widget as a frame, but it
---  constrains its child to a specific aspect ratio between its width and its
---  height.
---
---  This ratio can either be given explicitly by the user, or chosen from the
---  widget's initial size request (might be different from the one if was
---  actually given).
+--  <description
+--  The Gtk.Aspect_Frame.Gtk_Aspect_Frame is useful when you want pack a
+--  widget so that it can resize but always retains the same aspect ratio. For
+--  instance, one might be drawing a small preview of a larger image.
+--  Gtk.Aspect_Frame.Gtk_Aspect_Frame derives from Gtk.Frame.Gtk_Frame, so it
+--  can draw a label and a frame around the child. The frame will be
+--  "shrink-wrapped" to the size of the child.
 --
 --  </description>
 --  <group>Layout Containers</group>

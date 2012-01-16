@@ -15,7 +15,7 @@
 #     SOLVE: we could point to the corresponding Set_* and Get_* subprograms,
 #            or simply ignore the missing doc
 
-from xml.etree.cElementTree import parse, QName, tostring
+from xml.etree.cElementTree import parse, QName, tostring, fromstring
 from adaformat import *
 from binding_gtkada import GtkAda
 from data import interfaces, binding, user_data_params, destroy_data_params
@@ -104,13 +104,55 @@ class GIR(object):
         """A debug form of element"""
         return tostring(element)
 
-    def get_package(self, name):
+    def get_package(self, name, doc=""):
         """Return a handle to an Ada package"""
         if not name.lower() in self.packages:
-            self.packages[name.lower()] = Package(
+            pkg = self.packages[name.lower()] = Package(
                 name=name,
                 doc=gtkada.get_pkg(name).get_doc())
-        return self.packages[name.lower()]
+        else:
+            pkg = self.packages[name.lower()]
+
+        if doc:
+            # get_package might have been called before we had the XML node
+            # from the Gir file, and therefore no doc for the package. We can
+            # now override it, unless it came from binding.xml
+
+            doc = doc.replace("<emphasis>", "*").replace("</emphasis>", "*")
+            doc = doc.replace("<literal>", "'").replace("</literal>", "'")
+            doc = doc.replace("<firstterm>", "'").replace("</firstterm>", "'")
+            doc = doc.replace("<para>", "\n\n").replace("</para>", "")
+            doc = doc.replace("<![CDATA[", "").replace("]]>", "")
+
+            doc = re.sub("<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
+            doc = re.sub("<refsect2 id=.*?>", "", doc).replace("<refsect2>", "")
+            doc = re.sub("</refsect2>", "", doc)
+            doc = doc.replace("<example>", "").replace("</example>", "")
+            doc = doc.replace("<informalexample>", "")
+            doc = doc.replace("</informalexample>", "")
+            doc = doc.replace("<itemizedlist>", "").replace("</itemizedlist>", "")
+            doc = doc.replace("<listitem>", "   *").replace("</listitem>", "")
+            doc = doc.replace("&percnt;", "%")
+
+            doc = doc.replace("<programlisting>", "\n\n%PRE%<programlisting>")
+            doc = re.sub("<programlisting>(.*?)</programlisting>",
+                         lambda m: re.sub(
+                              "\n\n+", "\n", indent_code(m.group(1), addnewlines=False)),
+                         doc,
+                         flags=re.DOTALL or re.MULTILINE)
+
+            doc = re.sub("\n\n\n+", "\n\n", doc)
+            
+            result = []
+            for paragraph in doc.split("\n\n"):
+                result.append(paragraph)
+                result.append("")
+
+            pkg.doc = ["<description"] + \
+                result + \
+                ["</description>"] + pkg.doc
+
+        return pkg
 
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
@@ -1182,6 +1224,8 @@ See Glib.Properties for more information on properties)""")
         if extra:
             self.node.extend(extra)
 
+        girdoc = self.node.findtext(ndoc)
+
         into = self.gtkpkg.into()
         if into:
             # Make sure we have already generated the other package, so that
@@ -1189,6 +1233,11 @@ See Glib.Properties for more information on properties)""")
             klass = gir.classes[into]
             klass.generate(gir)
             into = klass.name  # from now on, we want the Ada name
+
+            # Do not integrate the documentation from the other package, it
+            # is likely useless anyway
+
+            girdoc = ""
 
             # Override the type exception. For instance, from now on we
             # want to use "Gtk.Box.Gtk_HBox" rather than "Gtk.HBox.Gtk_HBox"
@@ -1199,7 +1248,7 @@ See Glib.Properties for more information on properties)""")
                 cname=self.ctype,
                 type=GObject(typename))
 
-        self.pkg = gir.get_package(into or self.name)
+        self.pkg = gir.get_package(into or self.name, doc=girdoc)
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)

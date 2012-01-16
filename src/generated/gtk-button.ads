@@ -21,14 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  This package implements a general button widget. This button can be
---  clicked on by the user to start any action. This button does not have
---  multiple states, it can just be temporarily pressed while the mouse is on
---  it, but does not keep its pressed state.
+--  <description
+--  The Gtk.Button.Gtk_Button widget is generally used to attach a function to
+--  that is called when the button is pressed. The various signals and how to
+--  use them are outlined below.
 --
---  The gtk+ sources provide the following drawing that explains the role of
---  the various spacings that can be set for a button:
+--  The Gtk.Button.Gtk_Button widget can hold any valid child widget. That is
+--  it can hold most any other standard Gtk.Widget.Gtk_Widget. The most
+--  commonly used child is the Gtk.Label.Gtk_Label.
 --
 --  </description>
 --  <screenshot>gtk-button</screenshot>

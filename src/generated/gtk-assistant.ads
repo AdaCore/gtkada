@@ -22,10 +22,32 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description>
---  A Gtk_Assistant is a widget used to represent a generally complex
---  operation split into several steps, guiding the user through its pages and
---  controlling the page flow to collect the necessary data.
+--  <description
+--  A Gtk.Assistant.Gtk_Assistant is a widget used to represent a generally
+--  complex operation splitted in several steps, guiding the user through its
+--  pages and controlling the page flow to collect the necessary data.
+--
+--  The design of GtkAssistant is that it controls what buttons to show and to
+--  make sensitive, based on what it knows about the page sequence and the
+--  <link linkend="GtkAssistantPageType">type</link> of each page, in addition
+--  to state information like the page <link
+--  linkend="gtk-assistant-set-page-complete">completion</link> and <link
+--  linkend="gtk-assistant-commit">committed</link> status.
+--
+--  If you have a case that doesn't quite fit in GtkAssistants way of handling
+--  buttons, you can use the GTK_ASSISTANT_PAGE_CUSTOM page type and handle
+--  buttons yourself.
+--
+--  == GtkAssistant as GtkBuildable ==
+--
+--  The GtkAssistant implementation of the GtkBuildable interface exposes the
+--  Action_Area as internal children with the name "action_area".
+--
+--  To add pages to an assistant in GtkBuilder, simply add it as a
+--  &lt;child&gt; to the GtkAssistant object, and set its child properties as
+--  necessary.
+--
+--
 --
 --  </description>
 --  <group>Windows</group>

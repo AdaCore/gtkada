@@ -21,15 +21,27 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description
+--  The Gtk.Adjustment.Gtk_Adjustment object represents a value which has an
+--  associated lower and upper bound, together with step and page increments,
+--  and a page size. It is used within several GTK+ widgets, including
+--  Gtk.Spinbutton.Gtk_Spinbutton, Gtk.Viewport.Gtk_Viewport, and
+--  Gtk.GRange.Gtk_Range (which is a base class for
+--  Gtk.Hscrollbar.Gtk_Hscrollbar, Gtk.Vscrollbar.Gtk_Vscrollbar,
+--  Gtk.Scale.Gtk_Hscale, and Gtk.Scale.Gtk_Vscale).
+--
+--  The Gtk.Adjustment.Gtk_Adjustment object does not update the value itself.
+--  Instead it is left up to the owner of the Gtk.Adjustment.Gtk_Adjustment to
+--  control the value.
+--
+--  The owner of the Gtk.Adjustment.Gtk_Adjustment typically calls the
+--  Gtk.Adjustment.Value_Changed and Gtk.Adjustment.Changed functions after
+--  changing the value and its bounds. This results in the emission of the
+--  Gtk.Adjustment.Gtk_Adjustment::value_changed or
+--  Gtk.Adjustment.Gtk_Adjustment::changed signal respectively.
+--
+--  </description>
 --  <description>
---  This object represents an adjustable bounded value. It is used in many
---  other widgets that have such internal values, like Gtk_Scrollbar,
---  Gtk_Spin_Button, Gtk_Range, ... Modifying the value of these widgets is
---  done through their associated adjustments.
---
---  The modification of the value is left to the user, who should call
---  Value_Changed or Changed to emit the relevant signals.
---
 --  The meaning of the most important fields can be explained on the following
 --  figure (imagine this is a scrollbar):
 --

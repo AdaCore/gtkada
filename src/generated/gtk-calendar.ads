@@ -22,20 +22,27 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description>
---  Gtk_Calendar is a widget that displays a calendar, one month at a time. It
---  can be created with Gtk_New.
+--  <description
+--  Gtk.Calendar.Gtk_Calendar is a widget that displays a Gregorian calendar,
+--  one month at a time. It can be created with Gtk.Calendar.Gtk_New.
 --
---  The month and year currently displayed can be altered with Select_Month.
---  The exact day can be selected from the displayed month using Select_Day.
+--  The month and year currently displayed can be altered with
+--  Gtk.Calendar.Select_Month. The exact day can be selected from the displayed
+--  month using Gtk.Calendar.Select_Day.
+--
+--  To place a visual marker on a particular day, use Gtk.Calendar.Mark_Day
+--  and to remove the marker, Gtk.Calendar.Unmark_Day. Alternative, all marks
+--  can be cleared with Gtk.Calendar.Clear_Marks.
 --
 --  The way in which the calendar itself is displayed can be altered using
---  Display_Options.
+--  Gtk.Calendar.Set_Display_Options.
 --
---  The selected date can be retrieved from a Gtk_Calendar using Get_Date.
+--  The selected date can be retrieved from a Gtk.Calendar.Gtk_Calendar using
+--  Gtk.Calendar.Get_Date.
 --
---  If performing many 'mark' operations, the calendar can be frozen to
---  prevent flicker, using Freeze, and 'thawed' again using Thaw.
+--  Users should be aware that, although the Gregorian calendar is the legal
+--  calendar in most countries, it was adopted progressively between 1582 and
+--  1929. Display before these dates is likely to be historically incorrect.
 --
 --  </description>
 --  <screenshot>gtk-calendar</screenshot>

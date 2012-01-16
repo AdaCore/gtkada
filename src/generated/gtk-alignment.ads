@@ -21,19 +21,28 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  A Gtk_Alignment controls the size and alignment of its single child inside
---  the area allocated to the alignment widget.
+--  <description
+--  The Gtk.Alignment.Gtk_Alignment widget controls the alignment and size of
+--  its child widget. It has four settings: xscale, yscale, xalign, and yalign.
 --
---  The scale/size settings indicate how much the child will expand to fill
---  the container. The values should be in the range 0.0 (no expansion) to 1.0
---  (full expansion). Note that the scale only indicates the minimal size for
---  the child, it does not force an absolute size.
+--  The scale settings are used to specify how much the child widget should
+--  expand to fill the space allocated to the Gtk.Alignment.Gtk_Alignment. The
+--  values can range from 0 (meaning the child doesn't expand at all) to 1
+--  (meaning the child expands to fill all of the available space).
 --
---  The alignment settings indicate where in the alignment widget the child
---  should be located. The values are in the range 0.0 (top or left) to 1.0
---  (bottom or right). These settings are irrelevant if the child is fully
---  expanded.
+--  The align settings are used to place the child widget within the available
+--  area. The values range from 0 (top or left) to 1 (bottom or right). Of
+--  course, if the scale settings are both set to 1, the alignment settings
+--  have no effect.
+--
+--  Note:
+--
+--  Note that the desired effect can in most cases be achieved by using the
+--  Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
+--  Gtk.Widget.Gtk_Widget:margin properties on the child widget, so
+--  Gtk.Alignment.Gtk_Alignment should not be used in new code.
+--
+--
 --
 --  </description>
 --  <screenshot>gtk-alignment</screenshot>
