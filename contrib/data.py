@@ -288,6 +288,7 @@ naming.type_exceptions = {
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
     "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+    "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
 }

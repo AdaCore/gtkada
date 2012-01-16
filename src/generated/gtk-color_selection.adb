@@ -147,9 +147,11 @@ package body Gtk.Color_Selection is
 
    procedure Get_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : out GdkRGBA)
+       Rgba     : out Gdk.RGBA.Gdk_RGBA)
    is
-      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      procedure Internal
+         (Colorsel : System.Address;
+          Rgba     : out Gdk.RGBA.Gdk_RGBA);
       pragma Import (C, Internal, "gtk_color_selection_get_current_rgba");
    begin
       Internal (Get_Object (Colorsel), Rgba);
@@ -216,9 +218,11 @@ package body Gtk.Color_Selection is
 
    procedure Get_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : out GdkRGBA)
+       Rgba     : out Gdk.RGBA.Gdk_RGBA)
    is
-      procedure Internal (Colorsel : System.Address; Rgba : out GdkRGBA);
+      procedure Internal
+         (Colorsel : System.Address;
+          Rgba     : out Gdk.RGBA.Gdk_RGBA);
       pragma Import (C, Internal, "gtk_color_selection_get_previous_rgba");
    begin
       Internal (Get_Object (Colorsel), Rgba);
@@ -273,9 +277,11 @@ package body Gtk.Color_Selection is
 
    procedure Set_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : in out GdkRGBA)
+       Rgba     : Gdk.RGBA.Gdk_RGBA)
    is
-      procedure Internal (Colorsel : System.Address; Rgba : in out GdkRGBA);
+      procedure Internal
+         (Colorsel : System.Address;
+          Rgba     : Gdk.RGBA.Gdk_RGBA);
       pragma Import (C, Internal, "gtk_color_selection_set_current_rgba");
    begin
       Internal (Get_Object (Colorsel), Rgba);
@@ -345,9 +351,11 @@ package body Gtk.Color_Selection is
 
    procedure Set_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
-       Rgba     : in out GdkRGBA)
+       Rgba     : Gdk.RGBA.Gdk_RGBA)
    is
-      procedure Internal (Colorsel : System.Address; Rgba : in out GdkRGBA);
+      procedure Internal
+         (Colorsel : System.Address;
+          Rgba     : Gdk.RGBA.Gdk_RGBA);
       pragma Import (C, Internal, "gtk_color_selection_set_previous_rgba");
    begin
       Internal (Get_Object (Colorsel), Rgba);
