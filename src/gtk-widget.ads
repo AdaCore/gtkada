@@ -56,7 +56,6 @@ with Gdk.Event;
 with Gdk.Bitmap;
 with Gdk.Rectangle;
 with Gdk.Pixbuf;
-with Gdk.Pixmap;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window;
@@ -1110,39 +1109,6 @@ package Gtk.Widget is
    --  behavior.
    --
    --  Null is returned if Stock_Id wasn't known.
-
-   function Get_Snapshot
-     (Widget    : access Gtk_Widget_Record;
-      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle_Access)
-      return Gdk.Pixmap.Gdk_Pixmap;
-   --  Create a Gdk_Pixmap of the contents of the widget and its children.
-   --
-   --  Works even if the widget is obscured. The depth and visual of the
-   --  resulting pixmap is dependent on the widget being snapshot and likely
-   --  differs from those of a target widget displaying the pixmap.
-   --  The function Gdk.Pixbuf.Get_From_Drawable can be used to convert
-   --  the pixmap to a visual independant representation.
-   --
-   --  The snapshot area used by this function is the Widget's allocation plus
-   --  any extra space occupied by additional windows belonging to this widget
-   --  (such as the arrows of a spin button).  Thus, the resulting snapshot
-   --  pixmap is possibly larger than the allocation.
-   --
-   --  If Clip_Rect is non-null, the resulting pixmap is shrunken to
-   --  match the specified clip_rect. The (x,y) coordinates of Clip_Rect are
-   --  interpreted widget relative. If width or height of Clip_Rect are 0 or
-   --  negative, the width or height of the resulting pixmap will be shrunken
-   --  by the respective amount.
-   --
-   --  For instance using a Clip_Rect'(+5, +5, -10, -10) will chop off 5 pixels
-   --  at each side of the snapshot pixmap.
-   --
-   --  If non-null, Clip_Rect will contain the exact widget-relative snapshot
-   --  coordinates upon return. A Clip_Rect of (-1, -1, 0, 0) can be used to
-   --  preserve the auto-grown snapshot area and use Clip_Rect as a pure output
-   --  parameter.
-   --
-   --  The returned pixmap can be null, if the resulting Clip_Area was empty.
 
    --------------
    -- Tooltips --
