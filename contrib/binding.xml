@@ -1096,20 +1096,8 @@ lower    value        value + page_size       upper
      <method id="gtk_image_set_from_gicon"     ada="Set"/>
      <method id="gtk_image_set_from_file"      ada="Set"/>
      <method id="gtk_image_get_icon_name"      ada="Get" bind="False"/>
+     <enum ctype="GtkImageType"/>
      <extra>
-        <type ctype="GtkImageType" ada="Gtk_Image_Type">
-   type Gtk_Image_Type is
-     (Image_Empty,
-      Image_Pixmap,
-      Image_Image,
-      Image_Pixbuf,
-      Image_Stock,
-      Image_Icon_Set,
-      Image_Animation,
-      Image_Icon_Name,
-      Image_Gicon);
-   pragma Convention (C, Gtk_Image_Type);
-        </type>
         <with_spec pkg="GNAT.Strings"/>
         <spec>
    function Get
@@ -1625,18 +1613,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
   <package id="Gtk.Assistant">
      <doc group="Windows" testgtk="create_assistant.adb"/>
      <parameter name="self" ada="Assistant"/>
-     <extra>
-         <type ctype="GtkAssistantPageType" ada="Gtk_Assistant_Page_Type">
-type Gtk_Assistant_Page_Type is
-   (Gtk_Assistant_Page_Content,
-    Gtk_Assistant_Page_Intro,
-    Gtk_Assistant_Page_Confirm,
-    Gtk_Assistant_Page_Summary,
-    Gtk_Assistant_Page_Progress);
---  Definition of various page types.  See Get_Page_Type/Set_Page_Type
---  for more info.
-         </type>
-      </extra>
+     <enum ctype="GtkAssistantPageType" />
   </package>
 
   <package id="Gtk.Spinner">

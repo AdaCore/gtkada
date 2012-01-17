@@ -99,34 +99,43 @@
 --  <group>Display widgets</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;     use GNAT.Strings;
-with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Glib;             use Glib;
-with Glib.G_Icon;      use Glib.G_Icon;
-with Glib.Properties;  use Glib.Properties;
-with Glib.Types;       use Glib.Types;
-with Gtk.Buildable;    use Gtk.Buildable;
-with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Icon_Factory; use Gtk.Icon_Factory;
-with Gtk.Misc;         use Gtk.Misc;
-with Gtk.Widget;       use Gtk.Widget;
+with GNAT.Strings;            use GNAT.Strings;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Glib;                    use Glib;
+with Glib.G_Icon;             use Glib.G_Icon;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Icon_Factory;        use Gtk.Icon_Factory;
+with Gtk.Misc;                use Gtk.Misc;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Image is
 
    type Gtk_Image_Record is new Gtk_Misc_Record with null record;
    type Gtk_Image is access all Gtk_Image_Record'Class;
 
-   type Gtk_Image_Type is
-        (Image_Empty,
-         Image_Pixmap,
-         Image_Image,
-         Image_Pixbuf,
-         Image_Stock,
-         Image_Icon_Set,
-         Image_Animation,
-         Image_Icon_Name,
-         Image_Gicon);
-      pragma Convention (C, Gtk_Image_Type);
+   type Gtk_Image_Type is (
+      Image_Empty,
+      Image_Pixbuf,
+      Image_Stock,
+      Image_Icon_Set,
+      Image_Animation,
+      Image_Icon_Name,
+      Image_Gicon);
+   pragma Convention (C, Gtk_Image_Type);
+   --  Describes the image data representation used by a Gtk.Image.Gtk_Image. If
+   --  you want to get the image from the widget, you can only get the
+   --  currently-stored representation. e.g. if the gtk_image_get_storage_type
+   --  returns GTK_IMAGE_PIXBUF, then you can call gtk_image_get_pixbuf but not
+   --  gtk_image_get_stock. For empty images, you can request any storage type
+   --  (call any of the "get" functions), but they will all return null values.
+
+   package Gtk_Image_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Image_Type);
+   type Property_Gtk_Image_Type is new Gtk_Image_Type_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -279,9 +288,9 @@ package Gtk.Image is
       (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
    --  Gtk.Image.Gtk_Image. The storage type of the image must be
-   --  GTK_IMAGE_EMPTY or GTK_IMAGE_PIXBUF (see Gtk.Image.Get_Storage_Type).
-   --  The caller of this function does not own a reference to the returned
-   --  pixbuf.
+   --  Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
+   --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
+   --  reference to the returned pixbuf.
    --  the image is empty
 
    function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint;
@@ -298,7 +307,7 @@ package Gtk.Image is
       (Image : access Gtk_Image_Record) return Gtk_Image_Type;
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
-   --  return value will be GTK_IMAGE_EMPTY.
+   --  return value will be Gtk.Image.Image_Empty.
 
    procedure Set
       (Image     : access Gtk_Image_Record;
@@ -407,7 +416,7 @@ package Gtk.Image is
    --  Flags: read-write
    --  The "pixel-size" property can be used to specify a fixed size
    --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
-   --  GTK_IMAGE_ICON_NAME.
+   --  Gtk.Image.Image_Icon_Name.
    --
    --  Name: Stock_Property
    --  Type: UTF8_String
@@ -422,7 +431,7 @@ package Gtk.Image is
    --  Flags: read-write
    --  Whether the icon displayed in the GtkImage will use standard icon names
    --  fallback. The value of this property is only relevant for images of type
-   --  GTK_IMAGE_ICON_NAME and GTK_IMAGE_GICON.
+   --  Gtk.Image.Image_Icon_Name and Gtk.Image.Image_Gicon.
 
    File_Property : constant Glib.Properties.Property_String;
    Gicon_Property : constant Glib.Properties.Property_Boxed;
@@ -433,7 +442,7 @@ package Gtk.Image is
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed;
    Pixel_Size_Property : constant Glib.Properties.Property_Int;
    Stock_Property : constant Glib.Properties.Property_String;
-   Storage_Type_Property : constant Glib.Properties.Property_Boxed;
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
 
 private
@@ -455,8 +464,8 @@ private
      Glib.Properties.Build ("pixel-size");
    Stock_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("stock");
-   Storage_Type_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("storage-type");
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
+     Gtk.Image.Build ("storage-type");
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-fallback");
 end Gtk.Image;

@@ -92,6 +92,12 @@ Gtk.Aspect_Frame
 Direct accessors Get_Xalign, Get_Yalign and Get_Ratio have been removed:
 instead, use the corresponding properties.
 
+Gtk.Assistant
+=============
+
+The values in Gtk_Assistant_Page_Type were renamed for consistency,
+removing their Gtk_ prefix.
+
 Gtk.Clist
 =========
 
