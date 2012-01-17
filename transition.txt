@@ -364,8 +364,12 @@ instead.
 Gtk.Toolbar
 ===========
 
+All Gtk_Toolbar widget parameter names have been normalized to "Toolbar".
+
 Subprograms Append_*, Prepend_* and Insert_* have been removed: use Insert
 instead.
+
+Subprograms Get_Tooltips/Set_Tooltips have been removed.
 
 Gtk.Tooltips
 ============

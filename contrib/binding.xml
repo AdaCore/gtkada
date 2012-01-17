@@ -1808,4 +1808,19 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <parameter name="self" ada="Button"/>
   </package>
 
+  <package id="Gtk.Toolbar">
+     <parameter name="self" ada="Toolbar"/>
+     <method id="gtk_toolbar_get_icon_size" return="Gtk.Enums.Gtk_Icon_Size"/>
+     <method id="gtk_toolbar_set_icon_size">
+        <parameter name="icon_size" type="Gtk.Enums.Gtk_Icon_Size"/>
+     </method>
+     <method id="gtk_toolbar_set_show_arrow">
+        <parameter name="show_arrow" default="True"/>
+     </method>
+
+     <method id="gtk_tool_shell_get_orientation" bind="False"/>
+     <method id="gtk_tool_shell_get_icon_size" bind="False"/>
+     <method id="gtk_tool_shell_get_relief_style" bind="False"/>
+     <method id="gtk_tool_shell_get_style" bind="False"/>
+  </package>
 </GIR>
