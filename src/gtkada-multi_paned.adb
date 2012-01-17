@@ -29,16 +29,13 @@ with System;               use System;
 with System.Address_Image;
 
 with Gdk.Cursor;           use Gdk, Gdk.Cursor;
-with Gdk.Drawable;         use Gdk.Drawable;
 with Gdk.Event;            use Gdk.Event;
-with Gdk.GC;               use Gdk.GC;
 with Gdk.Main;             use Gdk.Main;
 with Gdk.Rectangle;        use Gdk.Rectangle;
 with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
 with Glib.Object;          use Glib.Object;
-with Glib.Types;           use Glib.Types;
 
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
@@ -48,6 +45,9 @@ with Gtk.Style;            use Gtk.Style;
 with Gtk.Widget;           use Gtk.Widget;
 
 with Gtkada.Handlers;      use Gtkada.Handlers;
+
+with Cairo; use Cairo;
+with Gdk.Cairo; use Gdk.Cairo;
 
 package body Gtkada.Multi_Paned is
 
@@ -559,10 +559,6 @@ package body Gtkada.Multi_Paned is
       --  "destroy" handler of the ancestor of Gtkada_Multi_Paned (ie GtkFixed)
 
       Free (Split.Children, Recursive => True);
-
-      if Split.GC /= null then
-         Unref (Split.GC);
-      end if;
    end Destroy_Paned;
 
    ------------------
@@ -775,15 +771,23 @@ package body Gtkada.Multi_Paned is
    ----------------------
 
    procedure Draw_Resize_Line
-     (Split : access Gtkada_Multi_Paned_Record'Class) is
+     (Split : access Gtkada_Multi_Paned_Record'Class)
+   is
+      Cr : Cairo_Context;
    begin
       if not Split.Opaque_Resizing then
-         Draw_Line
-           (Get_Window (Split),
-            Split.GC, Split.Selected_Pos.X,
-            Split.Selected_Pos.Y,
-            Split.Selected_Pos.X + Split.Selected_Pos.Width,
-            Split.Selected_Pos.Y + Split.Selected_Pos.Height);
+         --  ??? Transition to Gtk3: We used to draw in Xor mode.
+         --  We probably need to adapt to this and draw in reaction to expose.
+         Cr := Create (Get_Window (Split));
+         New_Path (Cr);
+         Move_To (Cr,
+                  Gdouble (Split.Selected_Pos.X),
+                  Gdouble (Split.Selected_Pos.Y));
+         Rel_Line_To (Cr,
+                      Gdouble (Split.Selected_Pos.Width),
+                      Gdouble (Split.Selected_Pos.Height));
+         Stroke (Cr);
+         Destroy (Cr);
       end if;
    end Draw_Resize_Line;
 
@@ -1193,9 +1197,11 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      return Default_Expose_Event_Handler
-        (Glib.Object.GObject_Class (Class_Ref (Parent (Get_Type (Split)))))
-          (Get_Object (Split), Event);
+      return True;
+      --  ??? Removed in the transition to Gtk3
+--        return Default_Expose_Event_Handler
+--          (Glib.Object.GObject_Class (Class_Ref (Parent (Get_Type (Split)))))
+--            (Get_Object (Split), Event);
    end Expose_Paned;
 
    ------------------------
@@ -1205,15 +1211,11 @@ package body Gtkada.Multi_Paned is
    procedure Realize_Paned
      (Paned : access Gtk_Widget_Record'Class)
    is
-      Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+      pragma Unreferenced (Paned);
    begin
       if Traces then
          Put_Line ("REALIZE_PANED");
       end if;
-      Gdk_New       (Split.GC, Get_Window (Split));
-      Set_Function  (Split.GC, Invert);
-      Set_Exposures (Split.GC, False);
-      Set_Subwindow (Split.GC, Include_Inferiors);
    end Realize_Paned;
 
    -----------------------
