@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gtk.Enums;
 with Gtk.File_Chooser;   use Gtk.File_Chooser;
 with Gtk.Window;         use Gtk.Window;
 
@@ -40,7 +41,7 @@ package body Gtk.File_Chooser_Dialog is
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
       Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.File_Chooser.File_Chooser_Action)
+      Action            : Gtk.Enums.Gtk_File_Chooser_Action)
    is
    begin
       Dialog := new Gtk_File_Chooser_Dialog_Record;
@@ -55,12 +56,12 @@ package body Gtk.File_Chooser_Dialog is
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
       Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.File_Chooser.File_Chooser_Action)
+      Action            : Gtk.Enums.Gtk_File_Chooser_Action)
    is
       function Internal
         (Title             : String;
          Parent            : System.Address;
-         Action            : File_Chooser_Action)
+         Action            : Gtk.Enums.Gtk_File_Chooser_Action)
          return System.Address;
       pragma Import (C, Internal, "ada_gtk_file_chooser_dialog_new");
 

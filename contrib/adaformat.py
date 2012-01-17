@@ -471,7 +471,7 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8":
             t = UTF8_List()
-        elif name == "utf8" or cname == "gchar*":
+        elif name == "utf8" or cname == "gchar*" or cname == "char*":
             t = UTF8(empty_maps_to_null=empty_maps_to_null)
         elif cname:
             # Check whether the C type, including trailing "*", maps
@@ -581,7 +581,7 @@ def format_doc(doc, indent, separate_paragraphs=True):
     prev = ""
 
     for d in doc:
-        
+
         # Separate paragraphs with an empty line, unless it is a markup
         # or we are at the end
         if separate_paragraphs:
@@ -601,7 +601,7 @@ def format_doc(doc, indent, separate_paragraphs=True):
 
     if result and separate_paragraphs and result[0] == "\n":
         result = result[1:]
-    
+
     return result
 
 

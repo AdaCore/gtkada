@@ -27,6 +27,7 @@
 --  <group>Selectors</group>
 --  <screenshot>file-button.png</screenshot>
 
+with Gtk.Enums;
 with Gtk.File_Chooser;     use Gtk.File_Chooser;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
@@ -75,7 +76,7 @@ package body Gtk.File_Chooser_Button is
    procedure Gtk_New
      (Button : out Gtk_File_Chooser_Button;
       Title  : String;
-      Action : Gtk.File_Chooser.File_Chooser_Action) is
+      Action : Gtk.Enums.Gtk_File_Chooser_Action) is
    begin
       Button := new Gtk_File_Chooser_Button_Record;
       Initialize (Button, Title, Action);
@@ -88,7 +89,7 @@ package body Gtk.File_Chooser_Button is
    procedure Gtk_New_With_Backend
      (Button  : out Gtk_File_Chooser_Button;
       Title   : String;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String) is
    begin
       Button := new Gtk_File_Chooser_Button_Record;
@@ -114,10 +115,12 @@ package body Gtk.File_Chooser_Button is
    procedure Initialize
      (Button : access Gtk_File_Chooser_Button_Record'Class;
       Title  : String;
-      Action : Gtk.File_Chooser.File_Chooser_Action)
+      Action : Gtk.Enums.Gtk_File_Chooser_Action)
    is
       function Internal
-        (Title : String; Action : File_Chooser_Action) return System.Address;
+        (Title  : String;
+         Action : Gtk.Enums.Gtk_File_Chooser_Action)
+        return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_button_new");
    begin
       Set_Object (Button, Internal (Title & ASCII.NUL, Action));
@@ -130,12 +133,12 @@ package body Gtk.File_Chooser_Button is
    procedure Initialize_With_Backend
      (Button  : access Gtk_File_Chooser_Button_Record'Class;
       Title   : String;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String)
    is
       function Internal
         (Title   : String;
-         Action  : File_Chooser_Action;
+         Action  : Gtk.Enums.Gtk_File_Chooser_Action;
          Backend : String) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_button_new_with_backend");
    begin

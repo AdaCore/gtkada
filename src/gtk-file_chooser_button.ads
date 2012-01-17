@@ -44,6 +44,7 @@
 with Glib.Properties;
 with Glib.Types;
 with Gtk.Box;
+with Gtk.Enums;
 with Gtk.File_Chooser;
 with Gtk.File_Chooser_Dialog; use Gtk.File_Chooser_Dialog;
 
@@ -60,24 +61,24 @@ package Gtk.File_Chooser_Button is
    procedure Gtk_New
      (Button : out Gtk_File_Chooser_Button;
       Title  : String;
-      Action : Gtk.File_Chooser.File_Chooser_Action);
+      Action : Gtk.Enums.Gtk_File_Chooser_Action);
    procedure Initialize
      (Button : access Gtk_File_Chooser_Button_Record'Class;
       Title  : String;
-      Action : Gtk.File_Chooser.File_Chooser_Action);
+      Action : Gtk.Enums.Gtk_File_Chooser_Action);
    --  Creates a new file-selecting button widget.
    --  Title is the title of the browse dialog
 
    procedure Gtk_New_With_Backend
      (Button  : out Gtk_File_Chooser_Button;
       Title   : String;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String);
    pragma Obsolescent; --  Gtk_New_With_Backend
    procedure Initialize_With_Backend
      (Button  : access Gtk_File_Chooser_Button_Record'Class;
       Title   : String;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String);
    --  Creates a new file-selecting button widget using Backend. See also
    --  Gtk.File_System.

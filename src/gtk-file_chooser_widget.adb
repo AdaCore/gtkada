@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gtk.Enums;
 with Gtk.File_Chooser;  use Gtk.File_Chooser;
 
 with Glib.Type_Conversion_Hooks;
@@ -37,7 +38,7 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Gtk_New
      (Widget : out Gtk_File_Chooser_Widget;
-      Action : Gtk.File_Chooser.File_Chooser_Action) is
+      Action : Gtk.Enums.Gtk_File_Chooser_Action) is
    begin
       Widget := new Gtk_File_Chooser_Widget_Record;
       Initialize (Widget, Action);
@@ -49,9 +50,11 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Initialize
      (Widget : access Gtk_File_Chooser_Widget_Record'Class;
-      Action : Gtk.File_Chooser.File_Chooser_Action)
+      Action : Gtk.Enums.Gtk_File_Chooser_Action)
    is
-      function Internal (Action : File_Chooser_Action) return System.Address;
+      function Internal
+        (Action : Gtk.Enums.Gtk_File_Chooser_Action)
+        return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new");
    begin
       Set_Object (Widget, Internal (Action));
@@ -63,7 +66,7 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Gtk_New_With_Backend
      (Widget  : out Gtk_File_Chooser_Widget;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String) is
    begin
       Widget := new Gtk_File_Chooser_Widget_Record;
@@ -76,11 +79,12 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Initialize_With_Backend
      (Widget  : access Gtk_File_Chooser_Widget_Record'Class;
-      Action  : Gtk.File_Chooser.File_Chooser_Action;
+      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
       Backend : String)
    is
       function Internal
-        (Action : File_Chooser_Action; Backend : String) return System.Address;
+        (Action : Gtk.Enums.Gtk_File_Chooser_Action;
+         Backend : String) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new_with_backend");
    begin
       Set_Object (Widget, Internal (Action, Backend & ASCII.NUL));

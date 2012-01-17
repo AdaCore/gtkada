@@ -141,6 +141,55 @@ package Gtk.Enums is
       Expander_Expanded);
    --  Expander styles, as seen in trees
 
+   type Gtk_File_Chooser_Action is
+     (Action_Open,
+      Action_Save,
+      Action_Select_Folder,
+      Action_Create_Folder);
+   --  Describes whether a Gtk_File_Chooser is being used to open existing
+   --  files or to save to a possibly new file.
+   --    Action_Open:          Will only let the user select existing file
+   --    Action_Save:          Select existing file or enter new filename
+   --    Action_Select_Folder: Only pick an existing folder
+   --    Action_Create_Folder: Select existing folder or enter new name
+
+   type Gtk_File_Chooser_Confirmation is
+     (Confirmation_Confirm,
+      Confirmation_Accept_Filename,
+      Confirmation_Select_Again);
+   --  Used as a return value of handlers for the confirm-overwrite signal of a
+   --  Gtk_File_Chooser. This value determines whether the file chooser will
+   --  present the stock confirmation dialog, accept the user's choice of a
+   --  filename, or let the user choose another filename.
+   --    Confirmation_Confirm:         Ask confirmation about overwriting
+   --                                  existing file
+   --    Confirmation_Accept_Filename: Accept the user's choice
+   --    Confirmation_Select_Again:    Let the user select another file
+
+   type Gtk_File_Chooser_Error is
+     (Error_Non_Existent,
+      Error_Bad_Filename,
+      Error_Already_Exists,
+      Error_Incomplete_Hostname);
+   --  Identify the various errors that can occur while calling
+   --  Gtk_File_Chooser functions
+
+   type Gtk_File_Filter_Flags is mod 2 ** 32;
+   --  These flags indicate what parts of a Gtk_File_Filter_Info record
+   --  are filled or need to be filled.
+
+   Gtk_File_Filter_Filename     : constant Gtk_File_Filter_Flags := 2 ** 0;
+   -- the filename of the file being tested
+
+   Gtk_File_Filter_URI          : constant Gtk_File_Filter_Flags := 2 ** 1;
+   --  the URI for the file being tested
+
+   Gtk_File_Filter_Display_Name : constant Gtk_File_Filter_Flags := 2 ** 2;
+   --  the string that will be used to display the file in the file chooser
+
+   Gtk_File_Filter_MIME_Type    : constant Gtk_File_Filter_Flags := 2 ** 3;
+   --  the MIME type of the file 
+
    type Gtk_Icon_Size is new Gint;
    Icon_Size_Invalid       : constant Gtk_Icon_Size := 0;
    Icon_Size_Menu          : constant Gtk_Icon_Size := 1;
@@ -576,6 +625,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Curve_Type);
    package Scrollable_Policy_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Scrollable_Policy);
+   package File_Chooser_Action_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_File_Chooser_Action);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -603,6 +654,8 @@ package Gtk.Enums is
    type Property_Gtk_Curve_Type    is new Curve_Type_Properties.Property;
    type Property_Gtk_Scrollable_Policy is
       new Scrollable_Policy_Properties.Property;
+   type Property_Gtk_File_Chooser_Action is
+      new File_Chooser_Action_Properties.Property;
 
    -----------------
    -- Obsolescent --

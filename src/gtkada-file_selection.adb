@@ -88,7 +88,7 @@ package body Gtkada.File_Selection is
    is
       Dialog : Gtkada_File_Selection;
       Button : Gtk_Button;
-      Action : File_Chooser_Action;
+      Action : Gtk_File_Chooser_Action;
       Dummy  : Boolean;
       pragma Unreferenced (Dummy);
    begin

@@ -1824,4 +1824,81 @@ type Gtk_Assistant_Page_Type is
   <package id="Gtk.Link_Button">
      <doc group="Buttons and Toggles"/>
   </package>
+
+  <package id="Gtk.File_Filter">
+     <doc group=""/>
+     <extra>
+        <with_spec pkg="Interfaces.C.Strings" />
+        <with_spec pkg="Glib.Glist" />
+        <with_spec pkg="Glib.GSlist" />
+        <with_spec pkg="Gtk.Enums" />
+        <spec>
+   function Convert (Self : Gtk_File_Filter) return System.Address;
+   function Convert (Self : System.Address) return Gtk_File_Filter;
+
+   package File_Filter_List is new Glib.Glist.Generic_List (Gtk_File_Filter);
+   package File_Filter_SList is new Glib.GSlist.Generic_SList (Gtk_File_Filter);
+        </spec>
+        <body>
+   function Convert (Self : Gtk_File_Filter) return System.Address is
+   begin
+      return Get_Object (Self);
+   end Convert;
+
+   function Convert (Self : System.Address) return Gtk_File_Filter is
+      Stub : Gtk_File_Filter_Record;
+   begin
+      return Gtk_File_Filter (Get_User_Data (Self, Stub));
+   end Convert;
+        </body>
+        <type ctype="GtkFileFilterInfo*" ada="Gtk_File_Filter_Info">
+   type Gtk_File_Filter_Info is record
+      Contains     : Gtk.Enums.Gtk_File_Filter_Flags;
+
+      Filename     : Interfaces.C.Strings.chars_ptr;
+      URI          : Interfaces.C.Strings.chars_ptr;
+      Display_Name : Interfaces.C.Strings.chars_ptr;
+      Mime_Type    : Interfaces.C.Strings.chars_ptr;
+   end record;
+   --  A Gtk_File_Filter_Info is used to pass information about the
+   --  tested file to Filter.
+   --
+   --  Fields:
+   --     Contains     : Flags indicating which of the following fields
+   --                    need are filled
+   --     Filename     : the filename of the file being tested
+   --     URI          : the URI for the file being tested
+   --     Display_Name : the string that will be used to display the
+   --                    file in the file chooser
+   --     Mime_Type    : the mime type of the file
+   --
+        </type>
+     </extra>
+  </package>
+
+  <package id="Gtk.File_Chooser">
+     <!-- we won't bind any of these internal functions which pass GFile
+          types -->
+     <method id="gtk_file_chooser_get_file" bind="False"/>
+     <method id="gtk_file_chooser_get_files" bind="False"/>
+     <method id="gtk_file_chooser_get_current_folder_file" bind="False"/>
+     <method id="gtk_file_chooser_get_preview_file" bind="False"/>
+     <method id="gtk_file_chooser_select_file" bind="False"/>
+     <method id="gtk_file_chooser_set_current_folder_file" bind="False"/>
+     <method id="gtk_file_chooser_set_file" bind="False"/>
+     <method id="gtk_file_chooser_unselect_file" bind="False"/>
+
+     <method id="gtk_file_chooser_get_filenames"
+             return="StringList"/>
+     <method id="gtk_file_chooser_get_uris"
+             return="StringList"/>
+     <method id="gtk_file_chooser_list_shortcut_folder_uris"
+             return="StringList"/>
+     <method id="gtk_file_chooser_list_shortcut_folders"
+             return="StringList"/>
+
+     <method id="gtk_file_chooser_list_filters"
+             return="FileFilterSList"/>
+  </package>
+
 </GIR>
