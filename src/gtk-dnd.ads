@@ -79,11 +79,9 @@
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>
 
-with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Dnd;        use Gdk.Dnd;
 with Gdk.Event;
-with Gdk.Pixmap;
 with Gdk.Pixbuf;
 with Gdk.Types;
 with Gdk.Window;
@@ -265,8 +263,7 @@ package Gtk.Dnd is
    procedure Source_Set_Icon
      (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap);
+      Pixbuf   : Gdk.Pixbuf.Gdk_Pixbuf);
    procedure Source_Set_Icon_Pixbuf
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
@@ -366,18 +363,6 @@ package Gtk.Dnd is
    --  coordinates of the hot point (that will be just under the mouse) within
    --  Widget.
 
-   procedure Set_Icon_Pixmap
-     (Context  : Drag_Context;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
-   --  Sets a given pixmap as the icon for a given drag. GtkAda retains a
-   --  reference count for the arguments, and will release them when they are
-   --  no longer needed.
-   --  (Hot_X, Hot_Y) is the coordinates of the hotspot within Pixmap.
-
    procedure Set_Icon_Default (Context : Drag_Context);
    --  Set the icon for a particular drag to the default icon.
    --  This must be called with a context for the source side of a drag.
@@ -416,28 +401,6 @@ package Gtk.Dnd is
    --  size of the icon depends on the icon theme (the icon is
    --  loaded at the symbolic size GTK_ICON_SIZE_DND), thus
    --  Hot_X and Hot_Y have to be used with care.
-
-   -----------------
-   -- Obsolescent --
-   -----------------
-   --  All subprograms below are now obsolescent in gtk+. They might be removed
-   --  from future versions of gtk+ (and therefore GtkAda).
-   --  To find out whether your code uses any of these, we recommend compiling
-   --  with the -gnatwj switch
-   --  <doc_ignore>
-
-   procedure Set_Default_Icon
-     (Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
-   pragma Obsolescent; --  Set_Default_Icon
-   --  Change the default drag icon. GtkAda retains a reference count for the
-   --  arguments, and will release them when they are no longer needed.
-   --  This procedure is deprecated.
-
-   --  </doc_ignore>
 
    -------------
    -- Signals --
@@ -568,7 +531,5 @@ private
    Dest_Default_Drop      : constant Dest_Defaults := 2 ** 2;
    Dest_Default_All       : constant Dest_Defaults := 7;
 
-   pragma Import (C, Set_Icon_Pixmap, "gtk_drag_set_icon_pixmap");
    pragma Import (C, Set_Icon_Default, "gtk_drag_set_icon_default");
-   pragma Import (C, Set_Default_Icon, "gtk_drag_set_default_icon");
 end Gtk.Dnd;
