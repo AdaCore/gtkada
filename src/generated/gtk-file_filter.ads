@@ -36,8 +36,8 @@ pragma Ada_05;
 --  mime type, so you can e.g. filter for image/&ast;.
 --
 --  Normally, filters are used by adding them to a
---  Gtk.File_Chooser.Gtk_File_Chooser, see Gtk.File_Chooser.Add_Filter, but it
---  is also possible to manually use a filter on a file with
+--  Gtk.File_Chooser.Gtk_File_Chooser, see Gtk.File_Chooser_Button.Add_Filter,
+--  but it is also possible to manually use a filter on a file with
 --  Gtk.File_Filter.Filter.
 --
 --  == GtkFileFilter as GtkBuildable ==
