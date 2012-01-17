@@ -26,19 +26,6 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 package body Gtk.Status_Icon is
 
    ------------------
-   -- Get_Blinking --
-   ------------------
-
-   function Get_Blinking
-     (Status_Icon : access Gtk_Status_Icon_Record) return Boolean
-   is
-      function Internal (Status_Icon : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_status_icon_get_blinking");
-   begin
-      return Boolean'Val (Internal (Get_Object (Status_Icon)));
-   end Get_Blinking;
-
-   ------------------
    -- Get_Geometry --
    ------------------
 
@@ -422,22 +409,6 @@ package body Gtk.Status_Icon is
    begin
       Set_Object (Widget, Internal (Stock_Id & ASCII.NUL));
    end Initialize_From_Stock;
-
-   ------------------
-   -- Set_Blinking --
-   ------------------
-
-   procedure Set_Blinking
-     (Status_Icon : access Gtk_Status_Icon_Record;
-      Blinking    : Boolean)
-   is
-      procedure Internal
-        (Status_Icon : System.Address;
-         Blinking    : Gboolean);
-      pragma Import (C, Internal, "gtk_status_icon_set_blinking");
-   begin
-      Internal (Get_Object (Status_Icon), Boolean'Pos (Blinking));
-   end Set_Blinking;
 
    -------------------
    -- Set_From_File --

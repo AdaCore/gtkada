@@ -282,16 +282,6 @@ package Gtk.Status_Icon is
    --  the information is not reliable unless the status icon
    --  is embedded in a notification area, see Is_Embedded.
 
-   function Get_Blinking
-     (Status_Icon : access Gtk_Status_Icon_Record) return Boolean;
-   procedure Set_Blinking
-     (Status_Icon : access Gtk_Status_Icon_Record;
-      Blinking    : Boolean);
-   --  Makes the status icon start or stop blinking.
-   --  Note that blinking user interface elements may be problematic
-   --  for some users, and thus may be turned off, in which case
-   --  this setting has no effect.
-
    function Get_Screen
      (Status_Icon : access Gtk_Status_Icon_Record)
       return Gdk.Screen.Gdk_Screen;
