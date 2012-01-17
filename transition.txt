@@ -8,6 +8,12 @@ package, and a cast to the interface type (with "-" and "+"). Instead,
 each package now contains the list of subprograms inherited from the
 various interfaces.
 
+Gdk.Cursor
+==========
+
+The Gdk_New function working on Gdk_Pixmap has been removed. Use
+ Gdk.Pixbuf.Gdk_New_From_Pixbuf to create a cursor from a pixbuf.
+
 Gdk.Event
 =========
 
@@ -31,6 +37,14 @@ Gdk.GC
 
 This package has been removed: Cairo packages should be used for drawing.
 
+Gdk.Pixbuf
+==========
+
+Render_Threshold_Alpha, Render_To_Drawable, Render_To_Drawable_Alpha,
+Render_Pixmap_And_Mask, Render_Pixmap_And_Mask_For_Colormap have been removed.
+
+Use APIs provided by Gdk.Cairo to draw a pixbuf on a Gdk_Drawable.
+
 Gdk.Region
 ==========
 
@@ -43,6 +57,15 @@ This package is deprecated in Gtk3. Use Pixmaps/Cairo for drawing, and
 use Gdk.Pixbuf for offscreen image manipulation and rendering to drawables.
 
 Instead of Gdk.Rgb.Get_Cmap, use Gtk.Widget.Get_Default_Colormap.
+
+Gdk.Window_Attr
+===============
+
+Parameter "Colormap" has been removed from procedure Gdk_New. This parameter
+ is no longer needed.
+
+Set_Colormap and Get_Colormap should no longer be needed and have been removed
+as well.
 
 Gtk.Aspect_Frame
 ================
@@ -99,6 +122,14 @@ Gtk.Dialog
 ==========
 
 Subprogram Get_Vbox was replaced with Get_Content_Area.
+
+Gtk.Dnd
+=======
+
+Source_Set_Icon now works with a Gdk_Pixbuf.
+Set_Icon_Pixmap has been removed: use Set_Icon_Pixbuf instead.
+Obsolete Set_Default_Icon working on Gdk.Pixmap has been removed without a
+ replacement.
 
 Gtk.File_Chooser_Dialog
 =======================
@@ -226,14 +257,20 @@ This widget has been removed without any replacement.
 Gtk.Style
 =========
 
-All functions based on Gdk.GC have been removed: use the function based
-on Gdk.Color instead.
+All functions based on Gdk.GC or Gdk.Pixmap have been removed.
+Use functions in Gtk.Style_Context instead.
 
 Gtk.Text
 ========
 
 This obsolescent API has been removed: use a Gtk.Text_View/Gtk.Text_Buffer
 instead.
+
+Gtk.Text_Attributes
+===================
+
+Set_Fg_Stipple, Get_Fg_Stipple, Set_Bg_Stipple, Get_Bg_Stipple have been
+removed without a replacement.
 
 Gtk.Text_View
 =============
@@ -249,11 +286,20 @@ The package Gtk.Tooltips has been removed, in favor of Gtk.Tooltip.
 For creating simple tooltips on all GtkAda widgets, the easiest is to use
 Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup.
 
+Gtk.Tree_View
+=============
+
+Procedure Create_Row_Drag_Icon now returns a Cairo_Surface.
+
 Gtk.VRuler
 ==========
 
 This widget has been removed without any replacement.
 
+Gtk.Widget
+==========
+
+Function Get_Snapshot has been removed without a replacement.
 
 Gnome.App_Bar
 =============
