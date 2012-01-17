@@ -164,25 +164,6 @@ package body Gdk.Main is
       Internal (Time);
    end Pointer_Ungrab;
 
-   ----------------
-   -- Set_Locale --
-   ----------------
-
-   function Set_Locale return String is
-      function Internal return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gdk_set_locale");
-
-   begin
-      return C.Strings.Value (Internal);
-   end Set_Locale;
-
-   procedure Set_Locale is
-      procedure Internal;
-      pragma Import (C, Internal, "gdk_set_locale");
-   begin
-      Internal;
-   end Set_Locale;
-
    ------------------
    -- Set_Use_Xshm --
    ------------------

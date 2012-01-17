@@ -50,13 +50,6 @@ package Gdk.Main is
    --  Allocated structures are freed and the program exits cleanly.
    --  This function is deprecated.
 
-   function Set_Locale return String;
-   --  Initialize handling of internationalization of strings.
-   --  See Gtkada.Intl for more details.
-
-   procedure Set_Locale;
-   --  Drops the string returned by the Set_Locale function;
-
    procedure Set_Use_Xshm (Use_Xshm : Boolean := True);
    --  Set whether shared memory (when supported by the graphic server) should
    --  be used.

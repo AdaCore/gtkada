@@ -55,6 +55,11 @@ Gdk.Image
 
 This package has been removed: use a Gdk.Pixbuf instead.
 
+Gdk.Main
+========
+
+Set_Locale functions are no longer needed and have been removed.
+
 Gdk.Pixbuf
 ==========
 
