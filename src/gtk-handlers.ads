@@ -170,7 +170,6 @@ with Glib.Object;
 with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
-with Gtk.Notebook;
 with Gtk.Tree_Model;
 with Gtk.Widget;
 
@@ -321,8 +320,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -344,11 +341,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -379,12 +371,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
    private
       --  <doc_ignore>
@@ -539,8 +525,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -562,11 +546,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -597,12 +576,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
    private
       --  <doc_ignore>
@@ -754,8 +727,6 @@ package Gtk.Handlers is
       package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
       package Event_Marshaller renames Internal_Cb.Event_Marshaller;
       package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
-      package Notebook_Page_Marshaller
-        renames Internal_Cb.Notebook_Page_Marshaller;
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -775,10 +746,6 @@ package Gtk.Handlers is
          renames Internal_Cb.To_Marshaller;
       function To_Marshaller
         (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
-         return Internal_Cb.Marshallers.Marshaller
-         renames Internal_Cb.To_Marshaller;
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
          return Internal_Cb.Marshallers.Marshaller
          renames Internal_Cb.To_Marshaller;
 
@@ -809,12 +776,6 @@ package Gtk.Handlers is
       function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
-         return Return_Type renames Internal_Cb.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Internal_Cb.Emit_By_Name;
 
    end User_Return_Callback_With_Setup;
@@ -914,8 +875,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
       package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
       package Tree_Iter_Tree_Path_Marshaller is
@@ -947,11 +906,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Tree_Path_Marshaller.Handler)
@@ -995,12 +949,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Notebook_Page_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
@@ -1163,8 +1111,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
       package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
       package Tree_Iter_Tree_Path_Marshaller is
@@ -1196,11 +1142,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Tree_Path_Marshaller.Handler)
@@ -1244,12 +1185,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Notebook_Page_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
@@ -1413,8 +1348,6 @@ package Gtk.Handlers is
       package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
       package Event_Marshaller renames Internal_Cb.Event_Marshaller;
       package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
-      package Notebook_Page_Marshaller
-        renames Internal_Cb.Notebook_Page_Marshaller;
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -1434,10 +1367,6 @@ package Gtk.Handlers is
          renames Internal_Cb.To_Marshaller;
       function To_Marshaller
         (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
-         return Internal_Cb.Marshallers.Marshaller
-         renames Internal_Cb.To_Marshaller;
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
          return Internal_Cb.Marshallers.Marshaller
          renames Internal_Cb.To_Marshaller;
 
@@ -1467,12 +1396,6 @@ package Gtk.Handlers is
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name) renames Internal_Cb.Emit_By_Name;
-
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Internal_Cb.Emit_By_Name;
 
    end User_Callback_With_Setup;
 
