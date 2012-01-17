@@ -126,6 +126,11 @@ Gtk.Combo
 
 This widget has been removed: use a Gtk.Combo_Box instead.
 
+Gtk.Combo_Box_Entry
+===================
+
+This widget has been removed: use a Gtk.Combo_Box instead.
+
 Gtk.Ctree
 =========
 
