@@ -103,20 +103,6 @@ package Gtk.Text_Attributes is
      (Appearance : Gtk_Text_Attributes) return Gdk.Color.Gdk_Color;
    --  The background color for the text
 
-   procedure Set_Fg_Stipple
-     (Appearance : Gtk_Text_Appearance;
-      Stipple    : Gdk.Gdk_Bitmap);
-   function Get_Fg_Stipple
-     (Appearance : Gtk_Text_Attributes) return Gdk.Gdk_Bitmap;
-   --  The pattern used in the foreground
-
-   procedure Set_Bg_Stipple
-     (Appearance : Gtk_Text_Appearance;
-      Stipple    : Gdk.Gdk_Bitmap);
-   function Get_Bg_Stipple
-     (Appearance : Gtk_Text_Attributes) return Gdk.Gdk_Bitmap;
-   --  The pattern used in the background
-
    ----------------
    -- Attributes --
    ----------------
@@ -269,10 +255,6 @@ private
    pragma Import (C, Get_Fg_Color, "ada_text_appearance_get_fg_color");
    pragma Import (C, Set_Bg_Color, "ada_text_appearance_set_bg_color");
    pragma Import (C, Get_Bg_Color, "ada_text_appearance_get_bg_color");
-   pragma Import (C, Set_Fg_Stipple, "ada_text_appearance_set_fg_stipple");
-   pragma Import (C, Get_Fg_Stipple, "ada_text_appearance_get_fg_stipple");
-   pragma Import (C, Set_Bg_Stipple, "ada_text_appearance_set_bg_stipple");
-   pragma Import (C, Get_Bg_Stipple, "ada_text_appearance_get_bg_stipple");
 
    pragma Import (C, Set_Left_Margin, "ada_text_attribute_set_left_margin");
    pragma Import (C, Get_Left_Margin, "ada_text_attribute_get_left_margin");
