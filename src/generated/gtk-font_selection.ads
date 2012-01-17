@@ -75,19 +75,19 @@ package Gtk.Font_Selection is
       (Fontsel : access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Face_List);
-   --  This returns the Gtk.Treeview.Gtk_Treeview which lists all styles
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View which lists all styles
    --  available for the selected font. For example, 'Regular', 'Bold', etc.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Family_List
       (Fontsel : access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Family_List);
-   --  This returns the Gtk.Treeview.Gtk_Treeview that lists font families,
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View that lists font families,
    --  for example, 'Sans', 'Serif', etc.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Font_Name
       (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
@@ -102,7 +102,7 @@ package Gtk.Font_Selection is
    --  Fontsel is inserted in a toplevel window before you call this function.
    --  such font exists or if the Fontsel doesn't belong to a particular screen
    --  yet.
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Preview_Entry
@@ -112,7 +112,7 @@ package Gtk.Font_Selection is
    --  This returns the Gtk.GEntry.Gtk_Entry used to display the font as a
    --  preview.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Preview_Text
       (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
@@ -123,7 +123,7 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "text": the text to display in the preview area
 
    function Get_Size
@@ -132,7 +132,7 @@ package Gtk.Font_Selection is
    --  The selected font size.
    --  or -1 if no font size is selected.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_Entry
       (Fontsel : access Gtk_Font_Selection_Record)
@@ -142,7 +142,7 @@ package Gtk.Font_Selection is
    --  the font number manually instead of selecting it from the list of font
    --  sizes.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_List
       (Fontsel : access Gtk_Font_Selection_Record)
@@ -150,7 +150,7 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Get_Size_List);
    --  This returns the Gtk_Treee_View used to list font sizes.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

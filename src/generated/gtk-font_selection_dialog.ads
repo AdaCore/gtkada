@@ -69,7 +69,8 @@ package Gtk.Font_Selection_Dialog is
    --  Gets the 'Cancel' button.
    --  for the 'Cancel' button.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Font_Name
       (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
@@ -80,7 +81,8 @@ package Gtk.Font_Selection_Dialog is
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
    --  Fontname specified, False otherwise.
-   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Font_Selection
@@ -90,7 +92,8 @@ package Gtk.Font_Selection_Dialog is
    --  Retrieves the Gtk.Font_Selection.Gtk_Font_Selection widget embedded in
    --  the dialog.
    --  Since: gtk+ 2.22
-   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Ok_Button
       (Dialog : access Gtk_Font_Selection_Dialog_Record)
@@ -99,7 +102,8 @@ package Gtk.Font_Selection_Dialog is
    --  Gets the 'OK' button.
    --  for the 'OK' button.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Preview_Text
       (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
@@ -109,7 +113,8 @@ package Gtk.Font_Selection_Dialog is
        Text   : UTF8_String);
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area.
-   --  Deprecated since 3.2, Use Gtk.Fontchooserdialog.Gtk_Fontchooserdialog
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
    --  "text": the text to display in the preview area
 
    ----------------

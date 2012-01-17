@@ -28,7 +28,7 @@
 --
 --  Many GTK+ widgets are subclasses of Gtk.Bin.Gtk_Bin, including
 --  Gtk.Window.Gtk_Window, Gtk.Button.Gtk_Button, Gtk.Frame.Gtk_Frame,
---  Gtk.Handlebox.Gtk_Handlebox or Gtk.Scrolledwindow.Gtk_Scrolledwindow.
+--  Gtk.Handle_Box.Gtk_Handle_Box or Gtk.Scrolled_Window.Gtk_Scrolled_Window.
 --
 --  </description>
 --  <group>Abstract base classes</group>

@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk.Toolshell.Gtk_Toolshell interface allows container widgets to
+--  The Gtk.Tool_Shell.Gtk_Tool_Shell interface allows container widgets to
 --  provide additional information when embedding Gtk.Tool_Item.Gtk_Tool_Item
 --  widgets.
 --
@@ -35,9 +35,9 @@ with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Size_Group; use Gtk.Size_Group;
 with Pango.Layout;   use Pango.Layout;
 
-package Gtk.Toolshell is
+package Gtk.Tool_Shell is
 
-   type Gtk_Toolshell is new Glib.Types.GType_Interface;
+   type Gtk_Tool_Shell is new Glib.Types.GType_Interface;
 
    ------------------
    -- Constructors --
@@ -51,40 +51,40 @@ package Gtk.Toolshell is
    -------------
 
    function Get_Ellipsize_Mode
-      (Self : Gtk_Toolshell) return Pango.Layout.Pango_Ellipsize_Mode;
+      (Self : Gtk_Tool_Shell) return Pango.Layout.Pango_Ellipsize_Mode;
    --  Retrieves the current ellipsize mode for the tool shell. Tool items
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_ellipsize_mode instead.
    --  Since: gtk+ 2.20
 
    function Get_Icon_Size
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Icon_Size;
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
    --  Retrieves the icon size for the tool shell. Tool items must not call
    --  this function directly, but rely on gtk_tool_item_get_icon_size instead.
    --  Since: gtk+ 2.14
 
    function Get_Orientation
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Orientation;
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
    --  Retrieves the current orientation for the tool shell. Tool items must
    --  not call this function directly, but rely on
    --  gtk_tool_item_get_orientation instead.
    --  Since: gtk+ 2.14
 
    function Get_Relief_Style
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Relief_Style;
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
    --  Returns the relief style of buttons on Shell. Tool items must not call
    --  this function directly, but rely on gtk_tool_item_get_relief_style
    --  instead.
    --  Since: gtk+ 2.14
 
-   function Get_Style (Self : Gtk_Toolshell) return Gtk_Toolbar_Style;
+   function Get_Style (Self : Gtk_Tool_Shell) return Gtk_Toolbar_Style;
    pragma Import (C, Get_Style, "gtk_tool_shell_get_style");
    --  Retrieves whether the tool shell has text, icons, or both. Tool items
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_toolbar_style instead.
    --  Since: gtk+ 2.14
 
-   function Get_Text_Alignment (Self : Gtk_Toolshell) return Gfloat;
+   function Get_Text_Alignment (Self : Gtk_Tool_Shell) return Gfloat;
    pragma Import (C, Get_Text_Alignment, "gtk_tool_shell_get_text_alignment");
    --  Retrieves the current text alignment for the tool shell. Tool items
    --  must not call this function directly, but rely on
@@ -92,20 +92,20 @@ package Gtk.Toolshell is
    --  Since: gtk+ 2.20
 
    function Get_Text_Orientation
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Orientation;
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
    --  Retrieves the current text orientation for the tool shell. Tool items
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_text_orientation instead.
    --  Since: gtk+ 2.20
 
    function Get_Text_Size_Group
-      (Self : Gtk_Toolshell) return Gtk.Size_Group.Gtk_Size_Group;
+      (Self : Gtk_Tool_Shell) return Gtk.Size_Group.Gtk_Size_Group;
    --  Retrieves the current text size group for the tool shell. Tool items
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_text_size_group instead.
    --  Since: gtk+ 2.20
 
-   procedure Rebuild_Menu (Self : Gtk_Toolshell);
+   procedure Rebuild_Menu (Self : Gtk_Tool_Shell);
    pragma Import (C, Rebuild_Menu, "gtk_tool_shell_rebuild_menu");
    --  Calling this function signals the tool shell that the overflow menu
    --  item for tool items have changed. If there is an overflow menu and if it
@@ -114,4 +114,4 @@ package Gtk.Toolshell is
    --  gtk_tool_item_rebuild_menu instead.
    --  Since: gtk+ 2.14
 
-end Gtk.Toolshell;
+end Gtk.Tool_Shell;

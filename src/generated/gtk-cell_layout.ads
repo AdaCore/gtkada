@@ -24,8 +24,9 @@
 pragma Ada_05;
 --  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
---  objects which want to provide a Gtk.Treeviewcolumn.Gtk_Treeviewcolumn-like
---  API for packing cells, setting attributes and data funcs.
+--  objects which want to provide a
+--  Gtk.Tree_View_Column.Gtk_Tree_View_Column-like API for packing cells,
+--  setting attributes and data funcs.
 --
 --  One of the notable features provided by implementations of GtkCellLayout
 --  are *attributes*. Attributes let you set the properties in flexible ways.
@@ -40,11 +41,11 @@ pragma Ada_05;
 --  == GtkCellLayouts as GtkBuildable ==
 --
 --  Implementations of GtkCellLayout which also implement the GtkBuildable
---  interface (Gtk.Cellview.Gtk_Cellview, Gtk.Iconview.Gtk_Iconview,
+--  interface (Gtk.Cell_View.Gtk_Cell_View, Gtk.Icon_View.Gtk_Icon_View,
 --  Gtk.Combo_Box.Gtk_Combo_Box, Gtk_Combo_Box_Entry,
 --  Gtk.Entry_Completion.Gtk_Entry_Completion,
---  Gtk.Treeviewcolumn.Gtk_Treeviewcolumn) accept GtkCellRenderer objects as
---  <child> elements in UI definitions. They support a custom <attributes>
+--  Gtk.Tree_View_Column.Gtk_Tree_View_Column) accept GtkCellRenderer objects
+--  as <child> elements in UI definitions. They support a custom <attributes>
 --  element for their children, which can contain multiple <attribute>
 --  elements. Each <attribute> element has a name attribute which specifies a
 --  property of the cell renderer; the content of the element is the attribute
@@ -83,7 +84,7 @@ pragma Ada_05;
 --  == Subclassing GtkCellLayout implementations ==
 --
 --  When subclassing a widget that implements Gtk.Cell_Layout.Gtk_Cell_Layout
---  like Gtk.Iconview.Gtk_Iconview or Gtk.Combo_Box.Gtk_Combo_Box, there are
+--  like Gtk.Icon_View.Gtk_Icon_View or Gtk.Combo_Box.Gtk_Combo_Box, there are
 --  some considerations related to the fact that these widgets internally use a
 --  Gtk.Cell_Area.Gtk_Cell_Area. The cell area is exposed as a construct-only
 --  property by these widgets. This means that it is possible to e.g. do
@@ -170,8 +171,8 @@ package Gtk.Cell_Layout is
    --  The Column is the column of the model to get a value from, and the
    --  Attribute is the parameter on Cell to be set from the value. So for
    --  example if column 2 of the model contains strings, you could have the
-   --  "text" attribute of a Gtk.Cellrenderertext.Gtk_Cellrenderertext get its
-   --  values from column 2.
+   --  "text" attribute of a Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text get
+   --  its values from column 2.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  "attribute": an attribute on the renderer

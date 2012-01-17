@@ -67,7 +67,7 @@
 --  clicked.
 --
 --  For the simple dialog in the following example, in reality you'd probably
---  use Gtk.Messagedialog.Gtk_Messagedialog to save yourself some effort. But
+--  use Gtk.Message_Dialog.Gtk_Message_Dialog to save yourself some effort. But
 --  you'd need to create the dialog contents manually if you had more than a
 --  simple message in the dialog.
 --

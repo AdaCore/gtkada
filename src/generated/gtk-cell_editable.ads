@@ -24,7 +24,7 @@
 --  <description>
 --  The Gtk.Cell_Editable.Gtk_Cell_Editable interface must be implemented for
 --  widgets to be usable when editing the contents of a
---  Gtk.Treeview.Gtk_Treeview cell.
+--  Gtk.Tree_View.Gtk_Tree_View cell.
 --
 --  </description>
 --  <group>Trees and Lists</group>

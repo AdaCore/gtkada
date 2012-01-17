@@ -44,9 +44,9 @@ pragma Ada_05;
 --
 --  When requesting the size of a cell area one needs to calculate the size
 --  for a handful of rows, and this will be done differently by different
---  layouting widgets. For instance a Gtk.Treeviewcolumn.Gtk_Treeviewcolumn
+--  layouting widgets. For instance a Gtk.Tree_View_Column.Gtk_Tree_View_Column
 --  always lines up the areas from top to bottom while a
---  Gtk.Iconview.Gtk_Iconview on the other hand might enforce that all areas
+--  Gtk.Icon_View.Gtk_Icon_View on the other hand might enforce that all areas
 --  received the same width and wrap the areas around, requesting height for
 --  more cell areas when allocated less width.
 --
@@ -304,11 +304,11 @@ pragma Ada_05;
 --  Gtk.Container.Gtk_Container introduces <link
 --  linkend="child-properties">child properties</link> for Gtk_Widgets. This
 --  provides some general interfaces for defining the relationship cell areas
---  have with their cells. For instance in a Gtk.Cellareabox.Gtk_Cellareabox a
---  cell might "expand" and receive extra space when the area is allocated more
---  than its full natural request, or a cell might be configured to "align"
---  with adjacent rows which were requested and rendered with the same
---  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
+--  have with their cells. For instance in a
+--  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box a cell might "expand" and receive extra
+--  space when the area is allocated more than its full natural request, or a
+--  cell might be configured to "align" with adjacent rows which were requested
+--  and rendered with the same Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
 --
 --  Use gtk_cell_area_class_install_cell_property to install cell properties
 --  for a cell area class and gtk_cell_area_class_find_cell_property or
@@ -514,10 +514,10 @@ package Gtk.Cell_Area is
    --  This is sometimes needed for cases where rows need to share alignments
    --  in one orientation but may be separately grouped in the opposing
    --  orientation.
-   --  For instance, Gtk.Iconview.Gtk_Iconview creates all icons (rows) to have
-   --  the same width and the cells theirin to have the same horizontal
+   --  For instance, Gtk.Icon_View.Gtk_Icon_View creates all icons (rows) to
+   --  have the same width and the cells theirin to have the same horizontal
    --  alignments. However each row of icons may have a separate collective
-   --  height. Gtk.Iconview.Gtk_Iconview uses this to request the heights of
+   --  height. Gtk.Icon_View.Gtk_Icon_View uses this to request the heights of
    --  each row based on a context which was already used to request all the
    --  row widths that are to be displayed.
    --  Since: gtk+ 3.0

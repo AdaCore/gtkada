@@ -25,7 +25,7 @@
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button is a widget that lets
 --  the user select a file. It implements the Gtk.File_Chooser.Gtk_File_Chooser
 --  interface. Visually, it is a file name with a button to bring up a
---  Gtk.Filechooserdialog.Gtk_Filechooserdialog. The user can then use that
+--  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. The user can then use that
 --  dialog to change the file associated with that button. This widget does not
 --  support setting the Gtk.File_Chooser.Gtk_File_Chooser:select-multiple
 --  property to True.
@@ -380,7 +380,7 @@ package Gtk.File_Chooser_Button is
    --  Name: Title_Property
    --  Type: UTF8_String
    --  Flags: read-write
-   --  Title to put on the Gtk.Filechooserdialog.Gtk_Filechooserdialog
+   --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
    --  associated with the button.
    --
    --  Name: Width_Chars_Property

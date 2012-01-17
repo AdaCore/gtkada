@@ -221,8 +221,8 @@ package Gtk.Image is
    --  Creates a Gtk.Image.Gtk_Image displaying an icon set. Sample stock
    --  sizes are GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_SMALL_TOOLBAR. Instead of
    --  using this function, usually it's better to create a
-   --  Gtk.Iconfactory.Gtk_Iconfactory, put your icon sets in the icon factory,
-   --  add the icon factory to the list of default factories with
+   --  Gtk.Icon_Factory.Gtk_Icon_Factory, put your icon sets in the icon
+   --  factory, add the icon factory to the list of default factories with
    --  Gtk.Icon_Factory.Add_Default, and then use Gtk.Image.Gtk_New. This will
    --  allow themes to override the icon you ship with your application.
    --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set; you

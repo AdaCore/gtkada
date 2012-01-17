@@ -70,8 +70,8 @@ package Gtk.Cell_Area_Context is
    --  vertically or horizontally and share either the same width or the same
    --  height. Sometimes they are allocated in both horizontal and vertical
    --  orientations producing a homogeneous effect of the rows. This is
-   --  generally the case for Gtk.Treeview.Gtk_Treeview when
-   --  Gtk.Treeview.Gtk_Treeview:fixed-height-mode is enabled.
+   --  generally the case for Gtk.Tree_View.Gtk_Tree_View when
+   --  Gtk.Tree_View.Gtk_Tree_View:fixed-height-mode is enabled.
    --  Since 3.0
    --  "width": the allocated width for all Gtk.Tree_Model.Gtk_Tree_Model rows
    --  rendered with Context, or -1.

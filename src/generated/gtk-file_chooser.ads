@@ -24,8 +24,8 @@
 --  <description>
 --  Gtk.File_Chooser.Gtk_File_Chooser is an interface that can be implemented
 --  by file selection widgets. In GTK+, the main objects that implement this
---  interface are Gtk.Filechooserwidget.Gtk_Filechooserwidget,
---  Gtk.Filechooserdialog.Gtk_Filechooserdialog, and
+--  interface are Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget,
+--  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog, and
 --  Gtk.File_Chooser_Button.Gtk_File_Chooser_Button. You do not need to write
 --  an object that implements the Gtk.File_Chooser.Gtk_File_Chooser interface
 --  unless you are trying to adapt an existing file selector to expose a
@@ -912,8 +912,8 @@ package Gtk.File_Chooser is
    --  chooser. This can happen by double-clicking on a file in the file list,
    --  or by pressing <keycap>Enter</keycap>.
    --  Normally you do not need to connect to this signal. It is used
-   --  internally by Gtk.Filechooserdialog.Gtk_Filechooserdialog to know when
-   --  to activate the default button in the dialog.
+   --  internally by Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to know
+   --  when to activate the default button in the dialog.
    --  See also: Gtk.File_Chooser.Get_Filename, Gtk.File_Chooser.Get_Filenames,
    --  Gtk.File_Chooser.Get_Uri, Gtk.File_Chooser.Get_Uris.
    --

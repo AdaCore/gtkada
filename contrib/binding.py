@@ -696,7 +696,7 @@ class GIRClass(object):
             gtk_func_profile.replace_param(callback.name, "System.Address")
         gtk_func_profile.replace_param(destroy, "System.Address")
         gtk_func = gtk_func_profile.subprogram(
-            name="C_%s" % cname).import_c(cname)
+            name=naming.case("C_%s" % cname)).import_c(cname)
         gtk_func.set_param_lang("c")
 
         # This function is shared both by the version without user_data and by

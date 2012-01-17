@@ -30,7 +30,8 @@ interfaces = ("Activatable",
 # List of widgets to bind.
 # Contains C type names
 
-binding = ("GtkAboutDialog",
+binding = ("GdkScreen",
+           "GtkAboutDialog",
            "GtkAccelGroup",
            "GtkAdjustment",
            "GtkAlignment",

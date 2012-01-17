@@ -368,7 +368,7 @@ package Gtk.Accel_Group is
    --    --  "accel_closure": the GClosure of the accelerator
    --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
    --  added to or removed from the accel group.
-   --  Widgets like Gtk.Accellabel.Gtk_Accellabel which display an associated
+   --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an associated
    --  accelerator should connect to this signal, and rebuild their visual
    --  representation if the Accel_Closure is theirs.
 

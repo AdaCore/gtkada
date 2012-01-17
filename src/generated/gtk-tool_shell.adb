@@ -24,16 +24,16 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 
-package body Gtk.Toolshell is
+package body Gtk.Tool_Shell is
 
    ------------------------
    -- Get_Ellipsize_Mode --
    ------------------------
 
    function Get_Ellipsize_Mode
-      (Self : Gtk_Toolshell) return Pango.Layout.Pango_Ellipsize_Mode
+      (Self : Gtk_Tool_Shell) return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Self : Gtk_Toolshell) return Integer;
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
       pragma Import (C, Internal, "gtk_tool_shell_get_ellipsize_mode");
    begin
       return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Self));
@@ -44,9 +44,9 @@ package body Gtk.Toolshell is
    -------------------
 
    function Get_Icon_Size
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Icon_Size
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size
    is
-      function Internal (Self : Gtk_Toolshell) return Integer;
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
       pragma Import (C, Internal, "gtk_tool_shell_get_icon_size");
    begin
       return Gtk.Enums.Gtk_Icon_Size'Val (Internal (Self));
@@ -57,9 +57,9 @@ package body Gtk.Toolshell is
    ---------------------
 
    function Get_Orientation
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Orientation
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : Gtk_Toolshell) return Integer;
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
       pragma Import (C, Internal, "gtk_tool_shell_get_orientation");
    begin
       return Gtk.Enums.Gtk_Orientation'Val (Internal (Self));
@@ -70,9 +70,9 @@ package body Gtk.Toolshell is
    ----------------------
 
    function Get_Relief_Style
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Relief_Style
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style
    is
-      function Internal (Self : Gtk_Toolshell) return Integer;
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
       pragma Import (C, Internal, "gtk_tool_shell_get_relief_style");
    begin
       return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Self));
@@ -83,9 +83,9 @@ package body Gtk.Toolshell is
    --------------------------
 
    function Get_Text_Orientation
-      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Orientation
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : Gtk_Toolshell) return Integer;
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
       pragma Import (C, Internal, "gtk_tool_shell_get_text_orientation");
    begin
       return Gtk.Enums.Gtk_Orientation'Val (Internal (Self));
@@ -96,13 +96,13 @@ package body Gtk.Toolshell is
    -------------------------
 
    function Get_Text_Size_Group
-      (Self : Gtk_Toolshell) return Gtk.Size_Group.Gtk_Size_Group
+      (Self : Gtk_Tool_Shell) return Gtk.Size_Group.Gtk_Size_Group
    is
-      function Internal (Self : Gtk_Toolshell) return System.Address;
+      function Internal (Self : Gtk_Tool_Shell) return System.Address;
       pragma Import (C, Internal, "gtk_tool_shell_get_text_size_group");
       Stub_Gtk_Size_Group : Gtk.Size_Group.Gtk_Size_Group_Record;
    begin
       return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Self), Stub_Gtk_Size_Group));
    end Get_Text_Size_Group;
 
-end Gtk.Toolshell;
+end Gtk.Tool_Shell;

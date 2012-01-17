@@ -28,7 +28,7 @@
 --  Gtk.Tool_Item.Gtk_Tool_Item. To add a Gtk.Tool_Item.Gtk_Tool_Item to the a
 --  toolbar, use Gtk.Toolbar.Insert. To remove an item from the toolbar use
 --  gtk_container_remove. To add a button to the toolbar, add an instance of
---  Gtk.Toolbutton.Gtk_Toolbutton.
+--  Gtk.Tool_Button.Gtk_Tool_Button.
 --
 --  Toolbar items can be visually grouped by adding instances of
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item to the toolbar. If the
@@ -51,7 +51,7 @@ with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Size_Group;  use Gtk.Size_Group;
 with Gtk.Tool_Item;   use Gtk.Tool_Item;
-with Gtk.Toolshell;   use Gtk.Toolshell;
+with Gtk.Tool_Shell;  use Gtk.Tool_Shell;
 with Gtk.Widget;      use Gtk.Widget;
 with Pango.Layout;    use Pango.Layout;
 
@@ -244,13 +244,13 @@ package Gtk.Toolbar is
    renames Implements_Orientable.To_Object;
 
    package Implements_ToolShell is new Glib.Types.Implements
-     (Gtk.Toolshell.Gtk_Toolshell, Gtk_Toolbar_Record, Gtk_Toolbar);
+     (Gtk.Tool_Shell.Gtk_Tool_Shell, Gtk_Toolbar_Record, Gtk_Toolbar);
    function "+"
      (Widget : access Gtk_Toolbar_Record'Class)
-   return Gtk.Toolshell.Gtk_Toolshell
+   return Gtk.Tool_Shell.Gtk_Tool_Shell
    renames Implements_ToolShell.To_Interface;
    function "-"
-     (Interf : Gtk.Toolshell.Gtk_Toolshell)
+     (Interf : Gtk.Tool_Shell.Gtk_Tool_Shell)
    return Gtk_Toolbar
    renames Implements_ToolShell.To_Object;
 

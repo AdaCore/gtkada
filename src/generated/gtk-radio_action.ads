@@ -23,7 +23,7 @@
 
 --  <description>
 --  A Gtk.Radio_Action.Gtk_Radio_Action is similar to
---  Gtk.Radiomenuitem.Gtk_Radiomenuitem. A number of radio actions can be
+--  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item. A number of radio actions can be
 --  linked together so that only one may be active at any one time.
 --
 --  </description>
@@ -62,8 +62,8 @@ package Gtk.Radio_Action is
        Stock_Id : UTF8_String := "";
        Value    : Gint);
    --  Creates a new Gtk.Radio_Action.Gtk_Radio_Action object. To add the
-   --  action to a Gtk.Actiongroup.Gtk_Actiongroup and set the accelerator for
-   --  the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.4
    --  "name": A unique name for the action
    --  "label": The label displayed in menu items and on buttons, or null

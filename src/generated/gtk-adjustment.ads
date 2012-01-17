@@ -25,7 +25,7 @@
 --  The Gtk.Adjustment.Gtk_Adjustment object represents a value which has an
 --  associated lower and upper bound, together with step and page increments,
 --  and a page size. It is used within several GTK+ widgets, including
---  Gtk.Spinbutton.Gtk_Spinbutton, Gtk.Viewport.Gtk_Viewport, and
+--  Gtk.Spin_Button.Gtk_Spin_Button, Gtk.Viewport.Gtk_Viewport, and
 --  Gtk.GRange.Gtk_Range (which is a base class for
 --  Gtk.Hscrollbar.Gtk_Hscrollbar, Gtk.Vscrollbar.Gtk_Vscrollbar,
 --  Gtk.Scale.Gtk_Hscale, and Gtk.Scale.Gtk_Vscale).
@@ -253,7 +253,7 @@ package Gtk.Adjustment is
    --  Flags: read-write
    --  The page size of the adjustment. Note that the page-size is irrelevant
    --  and should be set to zero if the adjustment is used for a simple scalar
-   --  value, e.g. in a Gtk.Spinbutton.Gtk_Spinbutton.
+   --  value, e.g. in a Gtk.Spin_Button.Gtk_Spin_Button.
    --
    --  Name: Step_Increment_Property
    --  Type: Gdouble

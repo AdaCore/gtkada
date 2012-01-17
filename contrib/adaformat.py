@@ -427,7 +427,7 @@ class AdaNaming(object):
         """Return the proper casing to use for 'name', taking keywords
            into account. This is for packages.
         """
-        name = name.replace("-", "_").title()
+        name = self.__camel_case_to_ada(name.replace("-", "_")).title()
         if name.endswith("_"):
             name = name[:-1]
 
@@ -449,9 +449,6 @@ class AdaNaming(object):
                     and not prev.isupper() \
                     and r.isupper():
                 result += "_%s" % r
-
-            elif r == "_":
-                result += r
             else:
                 result += r
 
@@ -832,7 +829,7 @@ class Subprogram(object):
            pragma Unreferenced are also added automatically.
         """
         assert(returns is None or isinstance(returns, CType))
-        self.name = naming.case(name)
+        self.name = name
         self.plist = plist
         self.returns = returns
         self.local = local_vars

@@ -28,8 +28,8 @@
 --  Gtk.Table.Gtk_Table, Gtk.Box.Gtk_Box, and so on.
 --
 --  If a widget has native scrolling abilities, such as
---  Gtk.Textview.Gtk_Textview, Gtk.Treeview.Gtk_Treeview or Gtk_Iconview, it
---  can be added to a Gtk.Scrolledwindow.Gtk_Scrolledwindow with
+--  Gtk.Text_View.Gtk_Text_View, Gtk.Tree_View.Gtk_Tree_View or Gtk_Iconview,
+--  it can be added to a Gtk.Scrolled_Window.Gtk_Scrolled_Window with
 --  Gtk.Container.Add. If a widget does not, you must first add the widget to a
 --  Gtk.Viewport.Gtk_Viewport, then add the viewport to the scrolled window.
 --  The convenience function gtk_scrolled_window_add_with_viewport does exactly

@@ -26,8 +26,8 @@ pragma Ada_05;
 --  Gtk.Entry_Completion.Gtk_Entry_Completion is an auxiliary object to be
 --  used in conjunction with Gtk.GEntry.Gtk_Entry to provide the completion
 --  functionality. It implements the Gtk.Cell_Layout.Gtk_Cell_Layout interface,
---  to allow the user to add extra cells to the Gtk.Treeview.Gtk_Treeview with
---  completion matches.
+--  to allow the user to add extra cells to the Gtk.Tree_View.Gtk_Tree_View
+--  with completion matches.
 --
 --  "Completion functionality" means that when the user modifies the text in
 --  the entry, Gtk.Entry_Completion.Gtk_Entry_Completion checks which rows in
@@ -54,9 +54,9 @@ pragma Ada_05;
 --  Gtk.Entry_Completion.Gtk_Entry_Completion::action-activated signal is
 --  emitted.
 --
---  GtkEntryCompletion uses a Gtk.Treemodelfilter.Gtk_Treemodelfilter model to
---  represent the subset of the entire model that is currently matching. While
---  the GtkEntryCompletion signals
+--  GtkEntryCompletion uses a Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
+--  model to represent the subset of the entire model that is currently
+--  matching. While the GtkEntryCompletion signals
 --  Gtk.Entry_Completion.Gtk_Entry_Completion::match-selected and
 --  Gtk.Entry_Completion.Gtk_Entry_Completion::cursor-on-match take the
 --  original model and an iter pointing to that model as arguments, other
@@ -142,7 +142,7 @@ package Gtk.Entry_Completion is
        Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
    --  the specified Area to layout cells in the underlying
-   --  Gtk.Treeviewcolumn.Gtk_Treeviewcolumn for the drop-down menu.
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
    --  Since: gtk+ 3.0
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
 
@@ -265,9 +265,9 @@ package Gtk.Entry_Completion is
    --  to have a list displaying all (and just) strings in the completion list,
    --  and to get those strings from Column in the model of Completion.
    --  This functions creates and adds a
-   --  Gtk.Cellrenderertext.Gtk_Cellrenderertext for the selected column. If
-   --  you need to set the text column, but don't want the cell renderer, use
-   --  g_object_set to set the
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text for the selected column.
+   --  If you need to set the text column, but don't want the cell renderer,
+   --  use g_object_set to set the
    --  Gtk.Entry_Completion.Gtk_Entry_Completion:text-column property directly.
    --  Since: gtk+ 2.4
    --  "column": the column in the model of Completion to get strings from
@@ -496,7 +496,7 @@ package Gtk.Entry_Completion is
    --  treeview column.
    --  If no area is specified when creating the entry completion with
    --  Gtk.Entry_Completion.Gtk_New_With_Area a horizontally oriented
-   --  Gtk.Cellareabox.Gtk_Cellareabox will be used.
+   --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
    --
    --  Name: Inline_Completion_Property
    --  Type: Boolean
