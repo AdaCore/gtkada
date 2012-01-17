@@ -155,6 +155,11 @@ Gtk.Combo
 
 This widget has been removed: use a Gtk.Combo_Box instead.
 
+Gtk.Combo_Box
+=============
+
+The "text only" variant has been moved to the new package Gtk.Combo_Box_Text.
+
 Gtk.Combo_Box_Entry
 ===================
 
