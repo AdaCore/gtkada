@@ -248,3 +248,9 @@ Gtk.VRuler
 ==========
 
 This widget has been removed without any replacement.
+
+
+Gnome.App_Bar
+=============
+
+Subprogram Appbar_Get_Progress has been removed without replacement.

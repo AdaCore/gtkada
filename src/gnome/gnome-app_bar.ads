@@ -25,10 +25,6 @@ with Glib; use Glib;
 with Gtk;
 with Gtk.Box;
 
-pragma Warnings (Off); --  Gtk.Progress is obsolete
-with Gtk.Progress;
-pragma Warnings (On);
-
 package Gnome.App_Bar is
 
    type Gnome_App_Bar_Record is new Gtk.Box.Gtk_Hbox_Record with private;
@@ -54,11 +50,6 @@ package Gnome.App_Bar is
    procedure Appbar_Clear_Prompt (Appbar : access Gnome_App_Bar_Record);
 
    procedure Appbar_Clear_Stack (Appbar : access Gnome_App_Bar_Record);
-
-   pragma Warnings (Off); --  Gtk.Progress is obsolescent
-   function Appbar_Get_Progress (Appbar : access Gnome_App_Bar_Record)
-                                 return Gtk.Progress.Gtk_Progress;
-   pragma Warnings (On);
 
    function Appbar_Get_Response (Appbar : access Gnome_App_Bar_Record)
                                  return String;
