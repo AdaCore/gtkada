@@ -42,7 +42,6 @@ with Glib.Object;
 with Glib.Values;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Font;         use Gdk.Font;
-with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
@@ -233,15 +232,6 @@ package Gtk.Style is
    function Get_Font (Style : Gtk_Style) return Gdk.Font.Gdk_Font;
    pragma Obsolescent ("Use Get_Font_Description");  --  Get_Font
    --  </doc_ignore>
-
-   procedure Set_Bg_Pixmap
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type;
-      Pixmap     : Gdk.Pixmap.Gdk_Pixmap);
-   function Get_Bg_Pixmap
-     (Style      : Gtk_Style;
-      State_Type : Enums.Gtk_State_Type) return Gdk.Pixmap.Gdk_Pixmap;
-   --  Set or get the pixmap to use for background
 
    function X_Thickness (Style : Gtk_Style) return Gint;
    --  Width of the vertical scrollbars and ranges when Style is applied.
