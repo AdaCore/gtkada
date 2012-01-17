@@ -61,7 +61,7 @@ package body Gtk.Extra.Combo_Button is
 
    procedure Hide_Popdown_Window (Combo : access Gtk_Combo_Button_Record)
    is
-      procedure Internal (Combo : in System.Address);
+      procedure Internal (Combo : System.Address);
       pragma Import (C, Internal, "gtk_combo_button_hide_popdown_window");
    begin
       Internal (Get_Object (Combo));

@@ -53,12 +53,12 @@ package body Gtk.Extra.Color_Combo is
    ----------------
 
    procedure Find_Color (Color_Combo : access Gtk_Color_Combo_Record;
-                         Color       : in Gdk.Color.Gdk_Color;
+                         Color       : Gdk.Color.Gdk_Color;
                          Row         : out Gint;
                          Col         : out Gint)
    is
-      procedure Internal (Color_Combo : in System.Address;
-                          Color       : in System.Address;
+      procedure Internal (Color_Combo : System.Address;
+                          Color       : System.Address;
                           Row         : out Gint;
                           Col         : out Gint);
       pragma Import (C, Internal, "gtk_color_combo_find_color");
@@ -118,9 +118,9 @@ package body Gtk.Extra.Color_Combo is
       Ncols  : Gint;
       Values : Gdk.Color.Gdk_Color_Array)
    is
-      function Internal (Nrows  : in Gint;
-                         Ncols  : in Gint;
-                         Values : in System.Address)
+      function Internal (Nrows  : Gint;
+                         Ncols  : Gint;
+                         Values : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_color_combo_new_with_values");
    begin

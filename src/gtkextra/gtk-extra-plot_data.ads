@@ -37,7 +37,6 @@
 --  <testgtk>create_plot_realtime.adb</testgtk>
 
 with Gdk.Color;
-with Gdk.GC;
 with Glib;
 with Gtk.Widget;
 with Gtkada.Types;
@@ -435,51 +434,6 @@ package Gtk.Extra.Plot_Data is
    function Get_Connector (Data : access Gtk_Plot_Data_Record)
       return Plot_Connector;
    --  Return the connector style used for the data set.
-
-   procedure Set_Line_Attributes
-     (Data       : access Gtk_Plot_Data_Record;
-      Style      : Plot_Line_Style;
-      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
-      Join_Style : Gdk.GC.Gdk_Join_Style;
-      Width      : Gfloat;
-      Color      : Gdk.Color.Gdk_Color);
-   --  Set the line style used for the connectors.
-
-   procedure Get_Line_Attributes
-     (Data       : access Gtk_Plot_Data_Record;
-      Style      : out Plot_Line_Style;
-      Cap_Style  : out Gdk.GC.Gdk_Cap_Style;
-      Join_Style : out Gdk.GC.Gdk_Join_Style;
-      Width      : out Gfloat;
-      Color      : out Gdk.Color.Gdk_Color);
-   --  Return the line attributes used for the connectors.
-
-   procedure Set_X_Attributes
-     (Data       : access Gtk_Plot_Data_Record;
-      Style      : Plot_Line_Style;
-      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
-      Join_Style : Gdk.GC.Gdk_Join_Style;
-      Width      : Gfloat;
-      Color      : Gdk.Color.Gdk_Color);
-   --  Set the style of the lines used to connect the symbols to the X axis.
-
-   procedure Set_Y_Attributes
-     (Data       : access Gtk_Plot_Data_Record;
-      Style      : Plot_Line_Style;
-      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
-      Join_Style : Gdk.GC.Gdk_Join_Style;
-      Width      : Gfloat;
-      Color      : Gdk.Color.Gdk_Color);
-   --  Set the style of the lines used to connect the symbols to the Y axis.
-
-   procedure Set_Z_Attributes
-     (Data       : access Gtk_Plot_Data_Record;
-      Style      : Plot_Line_Style;
-      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
-      Join_Style : Gdk.GC.Gdk_Join_Style;
-      Width      : Gfloat;
-      Color      : Gdk.Color.Gdk_Color);
-   --  Set the style of the lines used to connect the symbols to the Z axis.
 
    procedure Show_Xerrbars (Data : access Gtk_Plot_Data_Record);
    procedure Show_Yerrbars (Data : access Gtk_Plot_Data_Record);

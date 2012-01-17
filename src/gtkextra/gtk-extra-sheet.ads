@@ -37,7 +37,6 @@ with Gtk.Enums;       use Gtk.Enums;
 with Gtk.GEntry;
 with Gdk.Rectangle;
 with Gdk.Color;
-with Gdk.GC;
 with Pango.Font;
 with Gtk.Widget;
 
@@ -621,14 +620,6 @@ package Gtk.Extra.Sheet is
                                 The_Range : in Gtk_Sheet_Range;
                                 Visible   : in Boolean);
    --  Set whether the cells in the range are visible.
-
-   procedure Range_Set_Border
-     (Sheet      : access Gtk_Sheet_Record;
-      The_Range  : Gtk_Sheet_Range;
-      Mask       : Gtk_Sheet_Border;
-      Width      : Guint;
-      Line_Style : Gdk.GC.Gdk_Line_Style);
-   --  Set the style of the border for the cells in the range.
 
    procedure Range_Set_Border_Color
      (Sheet     : access Gtk_Sheet_Record;

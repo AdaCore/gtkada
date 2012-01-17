@@ -45,12 +45,12 @@ package Gtk.Extra.Item_Entry is
    --  in gtk+extra. Both names are kept for backward compatibility.
 
    procedure Gtk_New (Widget : out Gtk_IEntry;
-                      Max    : in Guint16 := 0);
+                      Max    : Guint16 := 0);
    --  Create a new entry item.
    --  By default, the maximal length depends only on the size of the widget.
 
    procedure Initialize (Widget : access Gtk_IEntry_Record'Class;
-                         Max    : in Guint16);
+                         Max    : Guint16);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
