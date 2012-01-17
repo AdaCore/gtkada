@@ -77,6 +77,16 @@ use Gdk.Pixbuf for offscreen image manipulation and rendering to drawables.
 
 Instead of Gdk.Rgb.Get_Cmap, use Gtk.Widget.Get_Default_Colormap.
 
+Gdk.Window
+==========
+
+Copy_Area and Set_Back_Pixmap have been removed: use Gdk_Drawable and
+Gdk.Cairo functions instead.
+
+Get_Desk_Relative_Origin: this function has been removed without a replacement.
+
+Get_Toplevels has been removed, use Gtk.Window.List_Toplevels instead.
+
 Gdk.Window_Attr
 ===============
 
@@ -226,6 +236,12 @@ The Set_Uri_Hook function has been eliminated, and along with it the
 Uri_Func type and the Generic_Uri_Hook package.  Register a callback
 for the button's "clicked" signal instead.
 
+Gtk.Menu_Tool_Button
+====================
+
+Set_Arrow_Tooltip has been removed, use Set_Arrow_Tooltip_Markup or
+Set_Arrow_Tooltip_Text instead.
+
 Gtk.Main
 ========
 
@@ -304,11 +320,20 @@ Gtk.Ruler
 
 This widget has been removed without any replacement.
 
+Gtk.Status_Icon
+===============
+
+Get_Blinking and Set_Blinking have been removed, it is no longer possible to
+make the status icon blink.
+
 Gtk.Style
 =========
 
 All functions based on Gdk.GC or Gdk.Pixmap have been removed.
 Use functions in Gtk.Style_Context instead.
+
+A number of drawing functions have been removed: use the Paint_* functions
+instead.
 
 Gtk.Text
 ========
@@ -327,6 +352,12 @@ Gtk.Text_View
 
 The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
 versions of Gtk+ and have been removed.
+
+Gtk.Tool_Item
+=============
+
+Set_Tooltip has been removed: use Set_Tooltip_Text and Set_Tooltip_Markup
+instead.
 
 Gtk.Toolbar
 ===========
@@ -370,8 +401,10 @@ Shape_Combine_Mask, Input_Shape_Combine_Mask and Reset_Shapes have been removed
 without replacements.
 
 Set_Uposition has been removed: use the properties of the containing widget
-to fix the position of contained widgets. The functions in Gtk.Window should
-be used for top-level widgets.
+to fix the position of contained widgets. The functions in Gtk.Window, for
+instance Gtk.Window.Move, should be used for top-level widgets.
+
+Set_USize has been removed: use Set_Size_Request instead.
 
 Queue_Clear and Queue_Clear_Area have been removed, call Queue_Draw and
 Queue_Draw_Area instead.
