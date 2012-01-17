@@ -191,7 +191,8 @@ naming.type_exceptions = {
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
 
-    "cairo_t":  DirectBinding("Cairo.Cairo_Context"),
+    "cairo_t":               DirectBinding("Cairo.Cairo_Context"),
+    "cairo_font_options_t":  DirectBinding("Cairo.Cairo_Font_Options"),
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
@@ -332,7 +333,7 @@ naming.type_exceptions = {
 
     "GdkColor*":          DirectBinding("Gdk.Color.Gdk_Color"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
-    "GdkWindow":          Proxy("Gdk.Window.Gdk_Window"),
+    "GdkWindow*":         Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
     "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
     "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
