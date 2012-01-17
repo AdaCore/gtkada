@@ -34,7 +34,6 @@ with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Enums;
 with Gtk.Menu_Item;
-with Gtk.Tooltips;
 
 package Gtk.Tool_Item is
 
@@ -125,14 +124,6 @@ package Gtk.Tool_Item is
    --  overflow menu item for Tool_Item has changed. If the
    --  overflow menu is visible when this function it called,
    --  the menu will be rebuilt.
-
-   procedure Set_Tooltip
-     (Tool_Item   : access Gtk_Tool_Item_Record;
-      Tooltips    : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
-      Tip_Text    : String;
-      Tip_Private : String := "");
-   --  Sets the tooltips object to be used for Tool item, the text to be
-   --  displayed as tooltip on the item and the private text to be used
 
    procedure Set_Tooltip_Markup
      (Tool_Item : access Gtk_Tool_Item_Record;

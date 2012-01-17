@@ -23,7 +23,6 @@
 
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Menu_Item;    use Gtk.Menu_Item;
-with Gtk.Tooltips;     use Gtk.Tooltips;
 
 with Glib.Type_Conversion_Hooks;
 
@@ -334,27 +333,6 @@ package body Gtk.Tool_Item is
       Internal (Get_Object (Tool_Item), Menu_Item_Id & ASCII.NUL,
                 Get_Object (Menu_Item));
    end Set_Proxy_Menu_Item;
-
-   -----------------
-   -- Set_Tooltip --
-   -----------------
-
-   procedure Set_Tooltip
-     (Tool_Item   : access Gtk_Tool_Item_Record;
-      Tooltips    : access Gtk_Tooltips_Record'Class;
-      Tip_Text    : String;
-      Tip_Private : String := "")
-   is
-      procedure Internal
-        (Tool_Item   : System.Address;
-         Tooltips    : System.Address;
-         Tip_Text    : String;
-         Tip_Private : String);
-      pragma Import (C, Internal, "gtk_tool_item_set_tooltip");
-   begin
-      Internal (Get_Object (Tool_Item), Get_Object (Tooltips),
-                Tip_Text & ASCII.NUL, Tip_Private & ASCII.NUL);
-   end Set_Tooltip;
 
    ------------------------
    -- Set_Tooltip_Markup --
