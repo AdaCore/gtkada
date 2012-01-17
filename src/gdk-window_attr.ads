@@ -24,7 +24,6 @@
 
 --  <group>Gdk, the low-level API</group>
 
-with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Visual;
@@ -54,7 +53,6 @@ package Gdk.Window_Attr is
       Wclass            : Gdk.Window.Gdk_Window_Class :=
         Gdk.Window.Input_Output;
       Visual            : Gdk.Visual.Gdk_Visual := null;
-      Colormap          : Gdk.Color.Gdk_Colormap := null;
       Window_Type       : Gdk.Window.Gdk_Window_Type :=
         Gdk.Window.Window_Root;
       Cursor            : Gdk.Cursor.Gdk_Cursor := null;
@@ -118,13 +116,6 @@ package Gdk.Window_Attr is
    function Get_Visual
      (Window_Attr : Gdk_Window_Attr) return Gdk.Visual.Gdk_Visual;
 
-   procedure Set_Colormap
-     (Window_Attr : Gdk_Window_Attr;
-      Colormap    : Gdk.Color.Gdk_Colormap);
-
-   function Get_Colormap
-     (Window_Attr : Gdk_Window_Attr) return Gdk.Color.Gdk_Colormap;
-
    procedure Set_Window_Type
      (Window_Attr : Gdk_Window_Attr;
       Window_Type : Gdk.Window.Gdk_Window_Type);
@@ -161,7 +152,6 @@ package Gdk.Window_Attr is
 
 private
    Null_Window_Attr : constant Gdk_Window_Attr := null;
-   pragma Import (C, Get_Colormap, "ada_gdk_window_attr_get_colormap");
    pragma Import (C, Get_Cursor, "ada_gdk_window_attr_get_cursor");
    pragma Import (C, Get_Event_Mask, "ada_gdk_window_attr_get_event_mask");
    pragma Import (C, Get_Height, "ada_gdk_window_attr_get_height");
@@ -171,7 +161,6 @@ private
    pragma Import (C, Get_Window_Type, "ada_gdk_window_attr_get_window_type");
    pragma Import (C, Get_X, "ada_gdk_window_attr_get_x");
    pragma Import (C, Get_Y, "ada_gdk_window_attr_get_y");
-   pragma Import (C, Set_Colormap, "ada_gdk_window_attr_set_colormap");
    pragma Import (C, Set_Cursor, "ada_gdk_window_attr_set_cursor");
    pragma Import (C, Set_Event_Mask, "ada_gdk_window_attr_set_event_mask");
    pragma Import (C, Set_Height, "ada_gdk_window_attr_set_height");
