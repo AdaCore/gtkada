@@ -50,6 +50,11 @@ Gdk.GC
 
 This package has been removed: Cairo packages should be used for drawing.
 
+Gdk.Image
+=========
+
+This package has been removed: use a Gdk.Pixbuf instead.
+
 Gdk.Pixbuf
 ==========
 
