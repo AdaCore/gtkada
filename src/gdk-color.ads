@@ -48,7 +48,6 @@
 with Glib; use Glib;
 with Glib.Object;
 with Glib.Values;
-with Gdk.Visual;
 
 package Gdk.Color is
 
@@ -114,15 +113,6 @@ package Gdk.Color is
    -- Creating and Destroying colors --
    ------------------------------------
 
-   procedure Gdk_New
-     (Colormap     : out Gdk_Colormap;
-      Visual       : Gdk.Visual.Gdk_Visual;
-      Private_Cmap : Boolean);
-   --  Create a new colormap for the visual.
-   --  If Private_Cmap is true, then the
-   --  colormap won't be modifiable outside this scope. This might result in
-   --  some strange colors on the display...
-
    procedure Ref (Colormap : Gdk_Colormap);
    --  Increment the ref-count for the color.
 
@@ -130,53 +120,6 @@ package Gdk.Color is
    --  Unref is the only way to destroy a colormap once you no longer need it.
    --  Note that because gtk+ uses reference counts, the colormap will not
    --  be actually destroyed while at least one object is using it.
-
-   procedure Change
-     (Colormap : Gdk_Colormap; Ncolors : Gint);
-   --  Change the first Ncolors defined in Colormap.
-
-   procedure Alloc_Colors
-     (Colormap   : Gdk_Colormap;
-      Colors     : in out Gdk_Color_Array;
-      Writeable  : Boolean := False;
-      Best_Match : Boolean := True;
-      Success    : out Boolean_Array;
-      Result     : out Gint);
-   --  Allocate a set of colors.
-   --  The parameters are the same as for Alloc_Color
-   --  Result is the number of colors not successfully allocated.
-   --
-   --  The size of the Boolean_Array is equal to the length of the
-   --  Colors_Array. Usage of an array of a different size will
-   --  probably lead to a Constraint_Error.
-
-   procedure Alloc_Color
-     (Colormap   : Gdk_Colormap;
-      Color      : in out Gdk_Color;
-      Writeable  : Boolean := False;
-      Best_Match : Boolean := True;
-      Success    : out Boolean);
-   --  Allocate a new color.
-   --  The fields RGB should have been set before calling this function.
-   --  If Writeable is True, the color will be allocated read/write, that can
-   --  be changed at any time. Not all visuals support this. On modern systems
-   --  this usage has become less useful than before, since redrawing the
-   --  screen with a new color is about as fast.
-   --  If Best_Match is True, and the exact color can not be allocated, GtkAda
-   --  will find the closest possible match, and modify the fields Red, Green
-   --  and Blue of Color.
-   --  Note that the allocation has more chances to succeed if Writeable is
-   --  False and Best_Match is True.
-   --  When you no longer use a color, you should call Free.
-
-   procedure Free_Colors (Colormap : Gdk_Colormap; Colors : Gdk_Color_Array);
-   --  Free Colors, assuming they are allocated in Colormap.
-
-   procedure Get_Visual
-     (Colormap : Gdk_Colormap;
-      Visual   : out Gdk.Visual.Gdk_Visual);
-   --  Get the visual associated with a colormap.
-   --  The main information you can get from there is the depth of the display.
 
    procedure Copy (Source : Gdk_Color; Destination : out Gdk_Color);
    --  Copy the Source color to Destination.
@@ -203,59 +146,6 @@ package Gdk.Color is
    --  True if the Red, Green and Blue components of both colors are equal.
 
    --  <doc_ignore>
-   --------------------------
-   -- Deprecated functions --
-   --------------------------
-
-   procedure Store (Colormap : Gdk_Colormap; Colors : Gdk_Color_Array);
-   --  Store the Colors in the Colormap.
-
-   procedure Alloc
-     (Colormap   : Gdk_Colormap;
-      Contiguous : Boolean;
-      Planes     : Gulong_Array;
-      Pixels     : Gulong_Array;
-      Succeeded  : out Boolean);
-   --  Allocate some Read/Write color cells.
-   --  Color cells' values can be changed
-   --  dynamically. The pixels allocated are returned in Pixels.
-   --  See XAllocColorCells(3) on Unix systems.
-   --  The Planes parameter can be used to nondestructively overlay one
-   --  set of graphics over another. See the X11 manual for more info.
-   --  Note that this is a low-level function which you should rarely
-   --  have to use.
-
-   procedure Free
-     (Colormap : Gdk_Colormap;
-      Pixels   : Gulong_Array;
-      Planes   : Gulong);
-   --  Free some colors in the colormap.
-   --  See XFreeColors(3) on Unix systems.
-
-   function White (Colormap : Gdk_Colormap) return Gdk_Color;
-   --  Return the default white color for the colormap.
-   --  If this color was not found or could not be allocated, Wrong_Color is
-   --  raised.
-
-   function Black (Colormap : Gdk_Colormap) return Gdk_Color;
-   --  Return the default black colors for the colormap.
-   --  If this color is not found or could not be allocated, Wrong_Color is
-   --  raised.
-
-   procedure Alloc
-     (Colormap  : Gdk_Colormap;
-      Color     : in out Gdk_Color);
-   --  Same function as Alloc_Colors above, but for a single color.
-   --  The color is allocated non-writeable, and the best-match is taken.
-   --  Raises Wrong_Color if the color could not be allocated
-
-   procedure Change
-     (Colormap  : Gdk_Colormap;
-      Color     : in out Gdk_Color;
-      Succeeded : out Boolean);
-   --  Change the Read/Write colormap cell corresponding to Color.
-   --  The new value is the one contained in the Red, Green and Blue
-   --  fields of Color.
 
    function To_String (Color : Gdk_Color) return String;
    --  Return the RGB values of Color under the form "#RRGGBB".
