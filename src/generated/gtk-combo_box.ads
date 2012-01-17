@@ -557,7 +557,7 @@ package Gtk.Combo_Box is
    --  combo box.
    --  If no area is specified when creating the combo box with
    --  Gtk.Combo_Box.Gtk_New_With_Area a horizontally oriented
-   --  Gtk.Cellareabox.Gtk_Cellareabox will be used.
+   --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
    --
    --  Name: Column_Span_Column_Property
    --  Type: Gint
