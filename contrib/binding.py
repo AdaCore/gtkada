@@ -113,13 +113,14 @@ class GIR(object):
         return None
 
     def _create_class(self, rootNode, node, is_interface):
-        n = node.get("name")
+        n = node.get(ctype_qname)
+        n = naming.case(n)
+        pkg = n.replace("_", ".", 1)
 
         if is_interface:
-            t = Interface(
-                "Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)})
+            t = Interface("%s.%s" % (pkg, n))
         else:
-            t = GObject("Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)})
+            t = GObject("%s.%s" % (pkg, n))
 
         naming.add_type_exception(cname=node.get(ctype_qname), type=t)
         naming.add_girname(girname=n, ctype=node.get(ctype_qname))
