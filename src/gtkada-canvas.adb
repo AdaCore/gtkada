@@ -500,8 +500,10 @@ package body Gtkada.Canvas is
       Initialize_Class_Record
         (Canvas, Signals, Class_Record,
          "GtkAdaCanvas", Signal_Parameters);
-      Set_Scroll_Adjustments_Signal
-        (Class_Record, "set_scroll_adjustments");
+
+      --  ??? Removed in the transition to Gtk3. Should this be replaced?
+      --      Set_Scroll_Adjustments_Signal
+      --        (Class_Record, "set_scroll_adjustments");
 
       Return_Callback.Connect
         (Canvas, "expose_event",
