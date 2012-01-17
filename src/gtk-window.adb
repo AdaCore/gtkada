@@ -493,29 +493,6 @@ package body Gtk.Window is
       end if;
    end Set_Focus;
 
-   --------------------------
-   -- Set_Frame_Dimensions --
-   --------------------------
-
-   procedure Set_Frame_Dimensions
-     (Window : access Gtk_Window_Record;
-      Left   : Gint;
-      Top    : Gint;
-      Right  : Gint;
-      Bottom : Gint)
-   is
-      procedure Internal
-        (Window  : System.Address;
-         Left   : Gint;
-         Top    : Gint;
-         Right  : Gint;
-         Bottom : Gint);
-      pragma Import (C, Internal, "gtk_window_set_frame_dimensions");
-
-   begin
-      Internal (Get_Object (Window), Left, Top, Right, Bottom);
-   end Set_Frame_Dimensions;
-
    ------------------------
    -- Set_Geometry_Hints --
    ------------------------
@@ -543,34 +520,6 @@ package body Gtk.Window is
 
       Internal (Get_Object (Window), Wid, Geom, Geom_Mask);
    end Set_Geometry_Hints;
-
-   -----------------
-   -- Set_Gravity --
-   -----------------
-
-   procedure Set_Gravity
-     (Window  : access Gtk_Window_Record;
-      Gravity : Gdk.Window.Gdk_Gravity)
-   is
-      procedure Internal
-        (Window : System.Address; Gravity : Gdk.Window.Gdk_Gravity);
-      pragma Import (C, Internal, "gtk_window_set_gravity");
-
-   begin
-      Internal (Get_Object (Window), Gravity);
-   end Set_Gravity;
-
-   -------------------
-   -- Set_Has_Frame --
-   -------------------
-
-   procedure Set_Has_Frame (Window : access Gtk_Window_Record) is
-      procedure Internal (Window : System.Address);
-      pragma Import (C, Internal, "gtk_window_set_has_frame");
-
-   begin
-      Internal (Get_Object (Window));
-   end Set_Has_Frame;
 
    ---------------
    -- Set_Modal --
@@ -602,28 +551,6 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Opacity);
    end Set_Opacity;
-
-   ----------------
-   -- Set_Policy --
-   ----------------
-
-   procedure Set_Policy
-     (Window       : access Gtk_Window_Record;
-      Allow_Shrink : Boolean;
-      Allow_Grow   : Boolean;
-      Auto_Shrink  : Boolean)
-   is
-      procedure Internal
-        (Window       : System.Address;
-         Allow_Shrink : Gint;
-         Allow_Grow   : Gint;
-         Auto_Shrink  : Gint);
-      pragma Import (C, Internal, "gtk_window_set_policy");
-
-   begin
-      Internal (Get_Object (Window), To_Gint (Allow_Shrink),
-                To_Gint (Allow_Grow), To_Gint (Auto_Shrink));
-   end Set_Policy;
 
    ------------------
    -- Set_Position --
@@ -1391,44 +1318,6 @@ package body Gtk.Window is
    begin
       return Boolean'Val (Internal (Get_Object (Window)));
    end Get_Focus_On_Map;
-
-   --------------------------
-   -- Get_Frame_Dimensions --
-   --------------------------
-
-   procedure Get_Frame_Dimensions
-     (Window : access Gtk_Window_Record;
-      Left   : out Gint;
-      Top    : out Gint;
-      Right  : out Gint;
-      Bottom : out Gint)
-   is
-      procedure Internal
-        (Window : System.Address;
-         Left   : out Gint;
-         Top    : out Gint;
-         Right  : out Gint;
-         Bottom : out Gint);
-      pragma Import (C, Internal, "gtk_window_get_frame_dimensions");
-   begin
-      Internal (Get_Object (Window), Left, Top, Right, Bottom);
-   end Get_Frame_Dimensions;
-
-   -------------------
-   -- Get_Has_Frame --
-   -------------------
-
-   function Get_Has_Frame
-     (Window : access Gtk_Window_Record)
-      return Boolean
-   is
-      function Internal
-        (Window : System.Address)
-         return Gboolean;
-      pragma Import (C, Internal, "gtk_window_get_has_frame");
-   begin
-      return Boolean'Val (Internal (Get_Object (Window)));
-   end Get_Has_Frame;
 
    --------------
    -- Get_Icon --
