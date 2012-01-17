@@ -32,8 +32,6 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 
-with Glib.Object;
-
 with Gdk.Event;
 with Gdk.Types;
 with Gtk.Widget;
@@ -117,28 +115,6 @@ package Gtk.Main is
    --  Type of function that can be called when the main loop exits.
    --  It should return False if it should not be called again when another
    --  main loop exits.
-
-   --  <doc_ignore>
-   generic
-      type Data_Type (<>) is private;
-   package Quit is
-      type Quit_Function is access function (Data : Data_Type) return Boolean;
-
-      function Quit_Add
-        (Main_Level : Guint;
-         Func       : Quit_Function;
-         Data       : Data_Type) return Quit_Handler_Id;
-
-   private
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
-   end Quit;
-   --  !!Warning!!: This package needs to be instantiated at library level
-   --  since it calls some internal functions as callback.
-   --  </doc_ignore>
 
    -------------------
    -- The main loop --
@@ -341,20 +317,6 @@ package Gtk.Main is
    Priority_Default_Idle : constant Idle_Priority := 200;
    Priority_Low_Idle     : constant Idle_Priority := 300;
 
-   type Idle_Callback is access function return Boolean;
-   --  pragma Obsolescent (Entity => Idle_Callback);
-   --  Function that can be called automatically whenever GtkAda is not
-   --  processing events.
-   --  It should return True if the function should be called again as soon
-   --  as possible, False if it should be unregistered.
-
-   function Idle_Add
-     (Cb       : Idle_Callback;
-      Priority : Idle_Priority := Priority_Default_Idle)
-      return Idle_Handler_Id;
-   pragma Obsolescent (Idle_Add, "Use Glib.Main.Idle_Add");  --  Idle_Add_Full
-   --  Register an idle callback with no user data.
-
    generic
       type Data_Type (<>) is private;
    package Idle is
@@ -384,88 +346,11 @@ package Gtk.Main is
    pragma Obsolescent (Idle_Remove, "Use Glib.Main.Idle_Remove");
    --  Remove an idle callback, when its Id is known.
 
-   type Timeout_Handler_Id is new Guint;
-   --  pragma Obsolescent (Entity => Timeout_Handle_Id);
-   --  Id for Timeout handlers.
-
-   type Timeout_Callback is access function return Boolean;
-   --  pragma Obsolescent (Entity => Timeout_Callback);
-   --  Function that can be called automatically at precise time intervals.
-   --  It should return True if the function should be called again as soon
-   --  as possible, False if it should be unregistered.
-
-   function Timeout_Add
-     (Interval : Guint32;
-      Func : Timeout_Callback) return Timeout_Handler_Id;
-   pragma Obsolescent (Timeout_Add, "Use Glib.Main.Timeout_Add");
-   --  Add a new timeout. Func will be called after Interval milliseconds.
-   --  The function will be called as long as it returns True.
-
-   generic
-      type Data_Type (<>) is private;
-   package Timeout is
-      type Callback is access function (D : Data_Type) return Boolean;
-      type Destroy_Callback is access procedure (D : in out Data_Type);
-
-      function Add
-        (Interval : Guint32;
-         Func     : Callback;
-         D        : Data_Type;
-         Destroy  : Destroy_Callback := null) return Timeout_Handler_Id;
-      pragma Obsolescent (Add, "Use Glib.Main.Timeout");
-      --  Adds a new timeout. Func will be called after Interval milliseconds.
-
-   private
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
-   end Timeout;
-
-   procedure Timeout_Remove (Id : Timeout_Handler_Id);
-   pragma Obsolescent (Timeout_Remove, "Use Glib.Main.Timeout_Remove");
-   --  Unregister a timeout function.
-
-   function Set_Locale return String;
-   pragma Obsolescent (Set_Locale);
-   --  Read and parse the local settings, such as time format, ...
-   --  Return the name of the local settings, which can also be set with
-   --  the environment variable LOCALE
-
-   procedure Set_Locale;
-   pragma Obsolescent (Set_Locale);
-   --  Read and parse the local settings, such as time format, ...
-
    procedure Init_Add (Func : Init_Function; Data : System.Address);
    pragma Obsolescent (Init_Add);
    --  Register a function to be called just before starting a main loop.
    --  This function is called only once, even if a new main loop is started
    --  recursively.
-
-   function Quit_Add
-     (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id;
-   pragma Obsolescent (Quit_Add);
-   --  Register a new function to be called when the current main loop exits.
-   --  The function will be called once when the current main loop exists.
-   --  If it returns False, it will then be deleted from the list of
-   --  quit functions, and won't be called again next time a main loop is
-   --  exited.
-   --  The function will only be called when exiting a main loop at level
-   --  Main_Level. If Main_Level is 0, the function will be called for the
-   --  current main_loop.
-
-   function Quit_Add_Destroy
-     (Main_Level : Guint;
-      Object     : access Glib.Object.GObject_Record'Class)
-      return Quit_Handler_Id;
-   pragma Obsolescent (Quit_Add_Destroy);
-   --  Ensure that Object is destroyed when exiting the main loop at Main_Level
-   --  (or the current main loop level is 0).
-
-   procedure Quit_Remove (Id : Quit_Handler_Id);
-   pragma Obsolescent (Quit_Remove);
-   --  Remove a Quit Handler, that has been previously set by Quit_Add.
 
    --  </doc_ignore>
 
@@ -475,9 +360,7 @@ private
    pragma Import (C, Main_Quit, "gtk_main_quit");
    pragma Import (C, Main, "gtk_main");
    pragma Import (C, Idle_Remove, "gtk_idle_remove");
-   pragma Import (C, Timeout_Remove, "gtk_timeout_remove");
    pragma Import (C, Init_Add, "gtk_init_add");
-   pragma Import (C, Quit_Remove, "gtk_quit_remove");
    pragma Import (C, Get_Current_Event, "gtk_get_current_event");
    pragma Import (C, Disable_Setlocale, "gtk_disable_setlocale");
    pragma Import (C, Get_Current_Event_Time, "gtk_get_current_event_time");
