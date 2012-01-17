@@ -797,20 +797,7 @@ is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
    <package id="Gtk.About_Dialog">
       <doc group="Windows" testgtk="create_about.adb"/>
       <parameter name="self" ada="About"/>
-      <extra>
-         <type ctype="GtkLicense" ada="Gtk_License">
-         type Gtk_License is (
-         License_Unknown,
-         License_Custom,
-         License_GPL_2_0,
-         License_GPL_3_0,
-         License_LGPL_2_1,
-         License_LGPL_3_0,
-         License_BSD,
-         License_MIT_X11,
-         License_Artistic);
-         </type>
-      </extra>
+      <enum ctype="GtkLicense"/>
   </package>
 
   <package id="Gtk.GEntry">
@@ -1210,7 +1197,7 @@ lower    value        value + page_size       upper
         <parameter name="mode" default="Both"/>
      </method>
      <method id="gtk_size_group_get_widgets" return="WidgetSList"/>
-     <enum ctype="GtkSizeGroupMode"/>
+     <enum ctype="GtkSizeGroupMode" ada="Size_Group_Mode"/>
   </package>
 
   <package id="Gtk.Alignment">

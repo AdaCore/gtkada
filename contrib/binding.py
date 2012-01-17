@@ -1298,11 +1298,13 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             
             for member in node.findall(nmember):
                 cname = member.get(cidentifier)
-                m = naming.adamethod_name(cname)
+                m = naming.adamethod_name(cname, warning_if_not_found=False)
 
                 if cname == m:
-                    # No special case ? Attempt a simple rule
-                    m = cname.replace("GTK_", "")
+                    # No special case ? Attempt a simple rule (remove leading
+                    # Gtk prefix, and capitalize the value)
+                    m = cname.replace("GTK_", "").title()
+
                 elif "." in m:
                     m = m[m.rfind(".") + 1:]
 

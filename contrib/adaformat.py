@@ -222,7 +222,6 @@ class Enum(CType):
         # Compute the Ada name automatically if needed.
         if not ada:
             ada = naming.type(name="", cname=ctype).ada
-            ada = ada.replace("Gtk_", "")
         
         full_name = "%s.%s" % (pkg, ada)
         t = Enum(full_name, "%s.Property_%s" % (pkg, ada))
@@ -414,12 +413,12 @@ class AdaNaming(object):
         """Return the C type corresponding to a GIR name"""
         return self.girname_to_ctype.get(girname, "Gtk%s" % girname)
 
-    def adamethod_name(self, cname):
+    def adamethod_name(self, cname, warning_if_not_found=True):
         """Return the ada name corresponding to the C method's name"""
         try:
             return self.cname_to_adaname[cname]
         except KeyError:
-            if cname.lower().startswith("gtk_"):
+            if warning_if_not_found and cname.lower().startswith("gtk_"):
                 print "Name quoted in doc has no Ada binding: %s" % cname
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname

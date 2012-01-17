@@ -77,7 +77,9 @@ Where the package node is defined as follows:
 
        <!-- The following statement indicates that the binding for the
             enumeration should be added in the current package.
-            This automatically generates the naming exceptions.
+            This automatically generates the naming exceptions for the type
+            and its values, but you can override the mapping by adding entries
+            in data.py (cname_to_adaname)
        -->           
        <enum ctype="..."
              ada="..."/>   <!-- optional Ada name (no package info needed) -->

@@ -60,14 +60,15 @@
 --  <testgtk>create_about.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;    use GNAT.Strings;
-with Gdk.Pixbuf;      use Gdk.Pixbuf;
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Dialog;      use Gtk.Dialog;
-with Gtk.Widget;      use Gtk.Widget;
+with GNAT.Strings;            use GNAT.Strings;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Dialog;              use Gtk.Dialog;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.About_Dialog is
 
@@ -77,13 +78,20 @@ package Gtk.About_Dialog is
    type Gtk_License is (
       License_Unknown,
       License_Custom,
-      License_GPL_2_0,
-      License_GPL_3_0,
-      License_LGPL_2_1,
-      License_LGPL_3_0,
-      License_BSD,
-      License_MIT_X11,
+      License_Gpl_2_0,
+      License_Gpl_3_0,
+      License_Lgpl_2_1,
+      License_Lgpl_3_0,
+      License_Bsd,
+      License_Mit_X11,
       License_Artistic);
+   pragma Convention (C, Gtk_License);
+   --  The type of license for an application.
+   --  This enumeration can be expanded at later date.
+
+   package Gtk_License_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_License);
+   type Property_Gtk_License is new Gtk_License_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -308,7 +316,7 @@ package Gtk.About_Dialog is
    --  "wrap-license" property is set to True; otherwise the text itself must
    --  contain the intended linebreaks. When setting this property to a
    --  non-null value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
-   --  property is set to GTK_LICENSE_CUSTOM as a side effect.
+   --  property is set to Gtk.About_Dialog.License_Custom as a side effect.
    --
    --  Name: License_Type_Property
    --  Type: Gtk_License
@@ -317,11 +325,12 @@ package Gtk.About_Dialog is
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
    --  standard disclaimer and link the user to the appropriate online resource
    --  for the license text.
-   --  If GTK_LICENSE_UNKNOWN is used, the link used will be the same specified
-   --  in the Gtk.About_Dialog.Gtk_About_Dialog:website property.
-   --  If GTK_LICENSE_CUSTOM is used, the current contents of the
+   --  If Gtk.About_Dialog.License_Unknown is used, the link used will be the
+   --  same specified in the Gtk.About_Dialog.Gtk_About_Dialog:website
+   --  property.
+   --  If Gtk.About_Dialog.License_Custom is used, the current contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used.
-   --  For any other Gtk_License value, the contents of the
+   --  For any other Gtk.About_Dialog.Gtk_License value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
    --  property as a side effect.
    --
@@ -374,7 +383,7 @@ package Gtk.About_Dialog is
    Comments_Property : constant Glib.Properties.Property_String;
    Copyright_Property : constant Glib.Properties.Property_String;
    License_Property : constant Glib.Properties.Property_String;
-   License_Type_Property : constant Glib.Properties.Property_Boxed;
+   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License;
    Logo_Property : constant Glib.Properties.Property_Object;
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String;
    Program_Name_Property : constant Glib.Properties.Property_String;
@@ -408,8 +417,8 @@ private
      Glib.Properties.Build ("copyright");
    License_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("license");
-   License_Type_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("license-type");
+   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License :=
+     Gtk.About_Dialog.Build ("license-type");
    Logo_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("logo");
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String :=
