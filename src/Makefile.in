@@ -1,6 +1,6 @@
 all: dirs libs tools
 
-# Whether to build GtkExtra
+# Whether to build GtkExtra and OpenGL. Position these to "yes" to enable.
 GTKEXTRA_SUPPORT=no
 GL_SUPPORT=no
 
