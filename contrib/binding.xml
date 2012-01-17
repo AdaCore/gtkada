@@ -1852,4 +1852,9 @@ type Gtk_Assistant_Page_Type is
              return="ObjectSList"/>
   </package>
 
+  <package id="Gtk.File_Chooser_Button">
+     <doc group="Buttons and Toggles"/>
+     <parameter name="self" ada="Button"/>
+  </package>
+
 </GIR>

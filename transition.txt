@@ -150,6 +150,12 @@ Set_Icon_Pixmap has been removed: use Set_Icon_Pixbuf instead.
 Obsolete Set_Default_Icon working on Gdk.Pixmap has been removed without a
  replacement.
 
+Gtk.File_Chooser_Button
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
+
 Gtk.File_Chooser_Dialog
 =======================
 

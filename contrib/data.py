@@ -51,6 +51,7 @@ binding = ("AboutDialog",
            "EntryCompletion",
            "EventBox",
            "Expander",
+           "FileChooserButton",
            "FileFilter",
            "Fixed",
            "FontSelection",
@@ -280,6 +281,8 @@ naming.type_exceptions = {
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
     "GtkEntryCompletion": GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
     "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
+    "GtkFileChooserButton":
+       GObject("Gtk.File_Chooser_Button.Gtk_File_Chooser_Button"),
     "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),
     "GtkFontSelection": GObject("Gtk.Font_Selection.Gtk_Font_Selection"),
     "GtkFontSelectionDialog":
