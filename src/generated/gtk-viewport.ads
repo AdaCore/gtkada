@@ -99,9 +99,9 @@ package Gtk.Viewport is
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Hadjustment
       (Self : access Gtk_Viewport_Record)

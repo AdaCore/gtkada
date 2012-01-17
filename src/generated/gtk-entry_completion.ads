@@ -416,9 +416,9 @@ package Gtk.Entry_Completion is
       --  completion list.
    end Match_Functions;
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Add_Attribute
       (Cell_Layout : access Gtk_Entry_Completion_Record;

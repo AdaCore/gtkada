@@ -199,9 +199,9 @@ package Gtk.Radio_Button is
    --  "group_source": a radio button object whos group we are joining, or
    --  null to remove the radio button from its group
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Radio_Button_Record;

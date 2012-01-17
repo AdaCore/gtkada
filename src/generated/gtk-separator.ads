@@ -83,9 +83,9 @@ package Gtk.Separator is
    function Vseparator_Get_Type return Glib.GType;
    pragma Import (C, Vseparator_Get_Type, "gtk_vseparator_get_type");
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Separator_Record) return Gtk.Enums.Gtk_Orientation;

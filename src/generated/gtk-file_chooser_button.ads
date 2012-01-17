@@ -142,9 +142,9 @@ package Gtk.File_Chooser_Button is
    --  Since: gtk+ 2.6
    --  "n_chars": the new width, in characters.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Add_Filter
       (Chooser : access Gtk_File_Chooser_Button_Record;

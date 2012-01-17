@@ -55,9 +55,9 @@ package Gtk.Vbutton_Box is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_vbutton_box_get_type");
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Vbutton_Box_Record)

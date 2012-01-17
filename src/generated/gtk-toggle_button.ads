@@ -166,9 +166,9 @@ package Gtk.Toggle_Button is
    --  Gtk.Toggle_Button.Gtk_Toggle_Button. There is no good reason for an
    --  application ever to call this function.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Toggle_Button_Record;

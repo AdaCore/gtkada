@@ -224,9 +224,9 @@ package Gtk.Button is
    --  Deprecated since 2.20, Use the
    --  Gtk.Widget.Gtk_Widget::button-release-event signal.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Button_Record;

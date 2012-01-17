@@ -152,9 +152,9 @@ package Gtk.Font_Selection is
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Font_Selection_Record)

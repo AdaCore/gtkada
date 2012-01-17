@@ -155,9 +155,9 @@ package Gtk.Status_Bar is
    --  Since: gtk+ 2.22
    --  "context": a context identifier
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Status_Bar_Record) return Gtk.Enums.Gtk_Orientation;

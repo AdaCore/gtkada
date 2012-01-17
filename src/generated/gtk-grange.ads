@@ -245,9 +245,9 @@ package Gtk.GRange is
    --  "min": minimum range value
    --  "max": maximum range value
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Range_Record) return Gtk.Enums.Gtk_Orientation;

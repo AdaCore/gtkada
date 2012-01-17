@@ -1047,9 +1047,9 @@ package Gtk.Cell_Area is
    --  cell renderer, or null.
    --  "renderer": the rendered that was found.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Add_Attribute
       (Cell_Layout : access Gtk_Cell_Area_Record;

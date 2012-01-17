@@ -136,9 +136,9 @@ package Gtk.Color_Button is
    --  "use_alpha": True if color button should use alpha channel, False if
    --  not
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Color_Button_Record;

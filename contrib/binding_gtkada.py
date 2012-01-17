@@ -33,6 +33,14 @@ Where the package node is defined as follows:
            ctype="..."     <!-- Override C type (to better qualify it) -->
        />
 
+       <!-- The following tag can be used to override various properties from
+            the GIR file.
+
+            It is also possible to indicate that a method should not be bound
+            (or that a method inherited from an interface should not be
+            repeated in the binding, by setting the "bind" attribute to False.
+       -->
+
        <method             <!-- repeated as needed -->
            id="..."        <!-- mandatory, name of the C method -->
                            <!-- fields are not bound by default, but are

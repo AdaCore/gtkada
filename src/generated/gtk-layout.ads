@@ -140,9 +140,9 @@ package Gtk.Layout is
    --  "x": X position of child widget
    --  "y": Y position of child widget
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Hadjustment
       (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;

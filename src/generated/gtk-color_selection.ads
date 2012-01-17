@@ -198,9 +198,9 @@ package Gtk.Color_Selection is
    --  Since: gtk+ 2.2
    --  "func": a function to call when the custom palette needs saving
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Color_Selection_Record)

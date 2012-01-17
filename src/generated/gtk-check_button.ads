@@ -80,9 +80,9 @@ package Gtk.Check_Button is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_check_button_get_type");
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Check_Button_Record;

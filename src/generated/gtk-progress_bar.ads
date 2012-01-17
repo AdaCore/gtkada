@@ -158,9 +158,9 @@ package Gtk.Progress_Bar is
    --  move by a little bit (the amount of movement per pulse is determined by
    --  Gtk.Progress_Bar.Set_Pulse_Step).
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Progress_Bar_Record)

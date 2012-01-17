@@ -253,9 +253,9 @@ package Gtk.Scale is
    --  Sets the position in which the current value is displayed.
    --  "pos": the position in which the current value is displayed
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Orientation;

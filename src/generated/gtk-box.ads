@@ -268,9 +268,9 @@ package Gtk.Box is
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Box_Record) return Gtk.Enums.Gtk_Orientation;

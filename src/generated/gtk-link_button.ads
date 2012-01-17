@@ -109,9 +109,9 @@ package Gtk.Link_Button is
    --  Since: gtk+ 2.14
    --  "visited": the new 'visited' state
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Link_Button_Record;

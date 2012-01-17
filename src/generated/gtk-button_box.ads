@@ -112,9 +112,9 @@ package Gtk.Button_Box is
    --  Changes the way buttons are arranged in their container.
    --  "layout_style": the new layout style
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Button_Box_Record) return Gtk.Enums.Gtk_Orientation;

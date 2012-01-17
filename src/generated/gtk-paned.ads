@@ -192,9 +192,9 @@ package Gtk.Paned is
    --  "resize": should this child expand when the paned widget is resized.
    --  "shrink": can this child be made smaller than its requisition.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    function Get_Orientation
       (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation;

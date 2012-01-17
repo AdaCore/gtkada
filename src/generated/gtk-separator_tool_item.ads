@@ -79,9 +79,9 @@ package Gtk.Separator_Tool_Item is
    --  Since: gtk+ 2.4
    --  "draw": whether Item is drawn as a vertical line
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
 
    procedure Do_Set_Related_Action
       (Self   : access Gtk_Separator_Tool_Item_Record;
