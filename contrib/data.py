@@ -4,6 +4,8 @@
 
 from adaformat import *
 
+# List of interfaces to bind. These are processed before the widgets themselves.
+
 interfaces = ("Activatable",
               #"AppChooser",
               "Buildable",
@@ -24,64 +26,85 @@ interfaces = ("Activatable",
               #"TreeSortable"
              )
 
+# List of widgets to bind.
 # Contains "GIR names"
-binding = ("AboutDialog", "Arrow", "AspectFrame",
-           "Bin", "Box", "Button", "ButtonBox",
-           "EventBox",
-           "Frame", "Range", "HBox", "HButtonBox", "HPaned", "HScale",
-           "Label", "Layout",
-           "Misc", "Paned", "Scale",
-           "VBox", "VButtonBox", "Viewport", "VPaned",
-           "VScale", "VolumeButton",
-           # "Entry",   # partially done only
+
+binding = ("AboutDialog", 
            "AccelGroup",
            "Adjustment",
            "Alignment",
+           "AspectFrame",
            "Assistant",
+           "Bin",
+           "Box",
+           "Button",
+           "ButtonBox",
            "Calendar",
            "CellArea",
            "CellAreaContext",
            "CheckButton",
            "ColorButton",
-           # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
-                          # Also needs support for interfaces
            "ColorSelection",
            "ColorSelectionDialog",
            "Dialog",
            "DrawingArea",
            "EntryCompletion",
+           "EventBox",
            "Expander",
            "Fixed",
            "FontSelection",
            "FontSelectionDialog",
+           "Frame", 
+           "HBox",
+           "HButtonBox",
+           "HPaned",
+           "HScale",
+           "HSeparator",
            "Image",
+           "Label",
+           "Layout",
            "LinkButton",
+           "Misc",
+           "Paned",
            "ProgressBar",
            "RadioAction",
            "RadioButton",
-           "Separator", "VSeparator", "HSeparator",
+           "Range",
+           "Scale",
+           "Separator",
            "SeparatorMenuItem",
            "SeparatorToolItem",
            "SizeGroup",
            "Spinner",
            "Statusbar",
+           "Table",
            "ToggleButton",
-           "Table"
+           "VBox",
+           "VButtonBox",
+           "VPaned",
+           "VScale",
+           "VSeparator", 
+           "Viewport",
+           "VolumeButton",
+           # "ComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
+                         # Also needs support for interfaces
+           # "Entry",   # partially done only
+           "Arrow",
           )
 
-# Handling of functions with user data
+# Handling of functions with user data. The names below are the likely names
+# for callback functions that accept user_data. The GIR file doesn't point to
+# these specific parameters.
 
 user_data_params = ["Data", "Func_Data", "User_Data", "D"]
 destroy_data_params = ["destroy", "func_notify"]
-# List of possible names for user data parameters, for functions that take
-# callbacks as parameters
-# ??? Should use info from gir, see callback_user_data()
 
+# Maps c methods to Ada subprograms or enumerations
+# All methods that are generated automatically will be added
+# as they are processed.
+# For enumerations, these are used to replace %name in the doc.
 
 naming.cname_to_adaname = {
-    # Maps c methods to Ada subprograms.
-    # All methods that are generated automatically will be added
-    # as they are processed.
     "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
     "gtk_widget_add_events":        "Gtk.Widget.Add_Event",
     "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
@@ -103,6 +126,10 @@ naming.cname_to_adaname = {
     "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
     "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
+    "GTK_SIZE_GROUP_VERTICAL":      "Gtk.Size_Group.Vertical",
+    "GTK_SIZE_GROUP_HORIZONTAL":    "Gtk.Size_Group.Horizontal",
+    "GTK_SIZE_GROUP_BOTH":          "Gtk.Size_Group.Both",
+
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
 
@@ -115,12 +142,13 @@ naming.cname_to_adaname = {
     "gtk_container_add": "Gtk.Container.Add"
 }
 
+# Maps GIR's "name" to a "c:type". This isn't needed for the
+# classes themselves, since this is automatically read from the
+# GIR file.
+# Mostly used for properties. The values must correspond to
+# entries in self.type_exceptions.
+
 naming.girname_to_ctype = {
-    # Maps GIR's "name" to a "c:type". This isn't needed for the
-    # classes themselves, since this is automatically read from the
-    # GIR file.
-    # Mostly used for properties. The values must correspond to
-    # entries in self.type_exceptions.
     "GdkPixbuf.Pixbuf":    "GdkPixbuf",
     "Pango.EllipsizeMode": "PangoEllipsizeMode",
     "Pango.WrapMode":      "PangoWrapMode",
@@ -136,8 +164,9 @@ naming.girname_to_ctype = {
     "GObject.InitiallyUnowned": "GObject*"  # An alias
 }
 
+# Naming exceptions. In particular maps Ada keywords.
+
 naming.exceptions = {
-    # Naming exceptions. In particular maps Ada keywords.
     "Entry": "GEntry",
     "Type":  "The_Type",
     "Range": "GRange",
@@ -150,10 +179,11 @@ naming.exceptions = {
     "Reverse": "Gtk_Reverse",
 }
 
+# Maps C types to type descriptions.
+# All standard widgets will be added automatically. Only special
+# namings are needed here
+
 naming.type_exceptions = {
-    # Maps C types to type descriptions.
-    # All standard widgets will be added automatically. Only special
-    # namings are needed here
     "gboolean":          Enum("Boolean",
                               "Glib.Properties.Property_Boolean"),
     "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),

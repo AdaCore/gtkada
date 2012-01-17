@@ -28,9 +28,8 @@
 --  There's a convenience function to do this, Gtk.Image.Gtk_New, used as
 --  follows:
 --
-
---     GtkWidget *image;
---     image = gtk_image_new_from_file ("myfile.png");
+--    GtkWidget *image;
+--    image = gtk_image_new_from_file ("myfile.png");
 --
 --  If the file isn't loaded successfully, the image will contain a "broken
 --  image" icon similar to that used in many web browsers. If you want to
@@ -53,36 +52,34 @@
 --
 --  <title>Handling button press events on a
 --  <structname>GtkImage</structname>.</title>
---
-
---     static gboolean
---     button_press_callback (GtkWidget      *event_box,
---        GdkEventButton *event,
---        gpointer        data)
---     {
---        g_print ("Event box clicked at coordinates %f,%f\n",
---           event->x, event->y);
---        /<!---->* Returning TRUE means we handled the event, so the signal
---        * emission should be stopped (don't call any further
---           * callbacks that may be connected). Return FALSE
---        * to continue invoking callbacks.
---        *<!---->/
---        return TRUE;
---     }
---     static GtkWidget*
---     create_image (void)
---     {
---        GtkWidget *image;
---        GtkWidget *event_box;
---        image = gtk_image_new_from_file ("myfile.png");
---        event_box = gtk_event_box_new (<!-- -->);
---           gtk_container_add (GTK_CONTAINER (event_box), image);
---              g_signal_connect (G_OBJECT (event_box),
---              "button_press_event",
---              G_CALLBACK (button_press_callback),
---              image);
---           return image;
---        }
+--    static gboolean
+--    button_press_callback (GtkWidget      *event_box,
+--       GdkEventButton *event,
+--       gpointer        data)
+--    {
+--       g_print ("Event box clicked at coordinates %f,%f\n",
+--          event->x, event->y);
+--       /<!---->* Returning TRUE means we handled the event, so the signal
+--       * emission should be stopped (don't call any further
+--          * callbacks that may be connected). Return FALSE
+--       * to continue invoking callbacks.
+--       *<!---->/
+--       return TRUE;
+--    }
+--    static GtkWidget*
+--    create_image (void)
+--    {
+--       GtkWidget *image;
+--       GtkWidget *event_box;
+--       image = gtk_image_new_from_file ("myfile.png");
+--       event_box = gtk_event_box_new (<!-- -->);
+--          gtk_container_add (GTK_CONTAINER (event_box), image);
+--             g_signal_connect (G_OBJECT (event_box),
+--             "button_press_event",
+--             G_CALLBACK (button_press_callback),
+--             image);
+--          return image;
+--       }
 --
 --  When handling events on the event box, keep in mind that coordinates in
 --  the image may be different from event box coordinates due to the alignment
@@ -282,7 +279,7 @@ package Gtk.Image is
       (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
    --  Gtk.Image.Gtk_Image. The storage type of the image must be
-   --  %GTK_IMAGE_EMPTY or %GTK_IMAGE_PIXBUF (see Gtk.Image.Get_Storage_Type).
+   --  GTK_IMAGE_EMPTY or GTK_IMAGE_PIXBUF (see Gtk.Image.Get_Storage_Type).
    --  The caller of this function does not own a reference to the returned
    --  pixbuf.
    --  the image is empty
@@ -301,7 +298,7 @@ package Gtk.Image is
       (Image : access Gtk_Image_Record) return Gtk_Image_Type;
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
-   --  return value will be %GTK_IMAGE_EMPTY.
+   --  return value will be GTK_IMAGE_EMPTY.
 
    procedure Set
       (Image     : access Gtk_Image_Record;
@@ -410,7 +407,7 @@ package Gtk.Image is
    --  Flags: read-write
    --  The "pixel-size" property can be used to specify a fixed size
    --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
-   --  %GTK_IMAGE_ICON_NAME.
+   --  GTK_IMAGE_ICON_NAME.
    --
    --  Name: Stock_Property
    --  Type: UTF8_String
@@ -425,7 +422,7 @@ package Gtk.Image is
    --  Flags: read-write
    --  Whether the icon displayed in the GtkImage will use standard icon names
    --  fallback. The value of this property is only relevant for images of type
-   --  %GTK_IMAGE_ICON_NAME and %GTK_IMAGE_GICON.
+   --  GTK_IMAGE_ICON_NAME and GTK_IMAGE_GICON.
 
    File_Property : constant Glib.Properties.Property_String;
    Gicon_Property : constant Glib.Properties.Property_Boxed;

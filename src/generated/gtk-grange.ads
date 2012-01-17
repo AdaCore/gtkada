@@ -103,7 +103,7 @@ package Gtk.GRange is
       (The_Range : access Gtk_Range_Record;
        Flippable : Boolean);
    --  If a range is flippable, it will switch its direction if it is
-   --  horizontal and its direction is %GTK_TEXT_DIR_RTL.
+   --  horizontal and its direction is GTK_TEXT_DIR_RTL.
    --  See Gtk.Widget.Get_Direction.
    --  Since: gtk+ 2.18
    --  "flippable": True to make the range flippable

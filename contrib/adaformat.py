@@ -401,8 +401,8 @@ class AdaNaming(object):
         try:
             return self.cname_to_adaname[cname]
         except KeyError:
-            if cname.startswith("gtk_"):
-                print "Function quoted in doc has no Ada binding: %s" % cname
+            if cname.lower().startswith("gtk_"):
+                print "Name quoted in doc has no Ada binding: %s" % cname
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
@@ -518,6 +518,7 @@ def fill_text(text, prefix, length, firstLineLength=0):
         result.append(line)
     return ("\n" + prefix).join(result)
 
+
 def cleanup_doc(doc):
     """Replaces C features in the doc with appropriate Ada equivalents"""
 
@@ -539,7 +540,41 @@ def cleanup_doc(doc):
     params = re.compile("@([\w_]+)")
     doc = params.sub(lambda x: x.group(1).title(), doc)
 
+    enums = re.compile("%([A-Z][\w_]+)")
+    doc = enums.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
+
     return doc
+
+
+def format_doc(doc, indent, separate_paragraphs=True):
+    """Transform the doc from a list of strings to a single string"""
+
+    result = ""
+    prev = ""
+
+    for d in doc:
+        
+        # Separate paragraphs with an empty line, unless it is a markup
+        # or we are at the end
+        if separate_paragraphs:
+            if prev != "" and not prev.lstrip().startswith("<"):
+                result += "\n" + indent + "--"
+
+        if d:
+            if d.lstrip().startswith("%PRE%"):
+                result += "".join("\n" + indent + "-- " + l
+                                  for l in d[5:].split("\n"))
+            else:
+                d = cleanup_doc(d)
+                result += "\n" + indent + "-- "
+                result += fill_text(d, indent + "--  ", 79)
+
+            prev = d
+
+    if result and separate_paragraphs and result[0] == "\n":
+        result = result[1:]
+    
+    return result
 
 
 def box(name, indent="   "):
@@ -843,10 +878,10 @@ class Subprogram(object):
         """Return the spec of the subprogram"""
 
         if self.showdoc and show_doc:
-            doc = [cleanup_doc(d) for d in self.doc]
+            doc = [d for d in self.doc]
             if self._deprecated[0]:
-                doc += [cleanup_doc(self._deprecated[1])]
-            doc += [cleanup_doc(p.doc) for p in self.plist]
+                doc += [self._deprecated[1]]
+            doc += [p.doc for p in self.plist]
         else:
             doc = []
 
@@ -863,17 +898,7 @@ class Subprogram(object):
             result += "\n" + indent \
                 + "pragma Convention (%s, %s);" % (self.convention, self.name)
 
-        for d in doc:
-            if d:
-                if d.startswith("%PRE%"):
-                    d = d[5:]
-                    lines = ["\n" + indent + "-- " + l for l in d.split("\n")]
-                    result += "".join(lines)
-                else:
-                    result += "\n" + indent + "-- "
-                    result += fill_text(d, indent + "--  ", 79)
-
-        return result
+        return result + format_doc(doc, indent=indent, separate_paragraphs=False)
 
     def _find_unreferenced(self, local_vars="", indent="   "):
         """List the pragma Unreferenced statements that are needed for this
@@ -1280,16 +1305,7 @@ class Package(object):
                 result.append(self.language_version)
 
             if self.doc:
-                for d in self.doc:
-                    d = cleanup_doc(d)
-                    if d.startswith("%PRE%"):
-                        d = d[5:]
-                        lines = ["\n--  " + l for l in d.split("\n")]
-                        result.append("".join(lines))
-                    elif d:
-                        result.append("-- " + fill_text(d, "--  ", 79))
-                    else:
-                        result.append("--")
+                result.append(format_doc(self.doc, indent=""))
 
             result.append("")
             result.append('pragma Warnings (Off, "*is already use-visible*");')

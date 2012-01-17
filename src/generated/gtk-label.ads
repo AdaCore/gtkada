@@ -29,20 +29,18 @@
 --  == GtkLabel as GtkBuildable ==
 --
 --  The GtkLabel implementation of the GtkBuildable interface supports a
---  custom &lt;attributes&gt; element, which supports any number of
---  &lt;attribute&gt; elements. the &lt;attribute&gt; element has attributes
---  named name, value, start and end and allows you to specify PangoAttribute
---  values for this label.
+--  custom <attributes> element, which supports any number of <attribute>
+--  elements. the <attribute> element has attributes named name, value, start
+--  and end and allows you to specify PangoAttribute values for this label.
 --
 --  == A UI definition fragment specifying Pango attributes ==
 --
-
---     <object class="GtkLabel">
---     <attributes>
---     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
---     <attribute name="background" value="red" start="5" end="10"/>"
---     </attributes>
---     </object>
+--    <object class="GtkLabel">
+--    <attributes>
+--    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+--    <attribute name="background" value="red" start="5" end="10"/>"
+--    </attributes>
+--    </object>
 --
 --  The start and end attributes specify the range of characters to which the
 --  Pango attribute applies. If start and end are not specified, the attribute
@@ -64,28 +62,25 @@
 --  Gtk.Label.Set_Mnemonic_Widget. Here's a simple example where the label is
 --  inside a button:
 --
-
---     // Pressing Alt+H will activate this button
---     button = gtk_button_new (<!-- -->);
---        label = gtk_label_new_with_mnemonic ("_Hello");
---        gtk_container_add (GTK_CONTAINER (button), label);
+--    // Pressing Alt+H will activate this button
+--    button = gtk_button_new (<!-- -->);
+--       label = gtk_label_new_with_mnemonic ("_Hello");
+--       gtk_container_add (GTK_CONTAINER (button), label);
 --
 --  There's a convenience function to create buttons with a mnemonic label
 --  already inside:
 --
-
---     // Pressing Alt+H will activate this button
---     button = gtk_button_new_with_mnemonic ("_Hello");
+--    // Pressing Alt+H will activate this button
+--    button = gtk_button_new_with_mnemonic ("_Hello");
 --
 --  To create a mnemonic for a widget alongside the label, such as a
 --  Gtk.GEntry.Gtk_Entry, you have to point the label at the entry with
 --  Gtk.Label.Set_Mnemonic_Widget:
 --
-
---     // Pressing Alt+H will focus the entry
---     entry = gtk_entry_new (<!-- -->);
---        label = gtk_label_new_with_mnemonic ("_Hello");
---        gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+--    // Pressing Alt+H will focus the entry
+--    entry = gtk_entry_new (<!-- -->);
+--       label = gtk_label_new_with_mnemonic ("_Hello");
+--       gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 --
 --  == Markup (styled text) ==
 --
@@ -94,16 +89,15 @@
 --  linkend="PangoMarkupFormat">markup format</link>. Here's how to create a
 --  label with a small font:
 --
-
---     label = gtk_label_new (NULL);
---     gtk_label_set_markup (GTK_LABEL (label), "<small>Small text</small>");
+--    label = gtk_label_new (NULL);
+--    gtk_label_set_markup (GTK_LABEL (label), "<small>Small text</small>");
 --
 --  (See <link linkend="PangoMarkupFormat">complete documentation</link> of
 --  available tags in the Pango manual.)
 --
 --  The markup passed to Gtk.Label.Set_Markup must be valid; for example,
---  literal &lt;, &gt; and &amp; characters must be escaped as \&lt;, \gt;, and
---  \&amp;. If you pass text obtained from the user, file, or a network to
+--  literal <, > and &amp; characters must be escaped as \<, \gt;, and \&amp;.
+--  If you pass text obtained from the user, file, or a network to
 --  Gtk.Label.Set_Markup, you'll want to escape it with g_markup_escape_text or
 --  g_markup_printf_escaped.
 --
@@ -112,10 +106,10 @@
 --  be a simpler way to set attributes in some cases. Be careful though;
 --  Pango.Attributes.Pango_Attr_List tends to cause internationalization
 --  problems, unless you're applying attributes to the entire string (i.e.
---  unless you set the range of each attribute to [0, %G_MAXINT)). The reason
---  is that specifying the start_index and end_index for a PangoAttribute
---  requires knowledge of the exact string being displayed, so translations
---  will cause problems.
+--  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
+--  that specifying the start_index and end_index for a PangoAttribute requires
+--  knowledge of the exact string being displayed, so translations will cause
+--  problems.
 --
 --  == Selectable labels ==
 --
@@ -162,13 +156,11 @@
 --  title attribute is displayed as a tooltip on the link. An example looks
 --  like this:
 --
-
---     gtk_label_set_markup (label, "Go to the <a href="http://www.gtk.org" title="&lt;i&gt;Our&lt;/i&gt; website">GTK+ website</a> for more...");
+--    gtk_label_set_markup (label, "Go to the <a href="http://www.gtk.org" title="<i>Our</i> website">GTK+ website</a> for more...");
 --
 --  It is possible to implement custom handling for links and their tooltips
 --  with the Gtk.Label.Gtk_Label::activate-link signal and the
 --  Gtk.Label.Get_Current_Uri function.
---
 --
 --
 --  </description>
@@ -286,7 +278,7 @@ package Gtk.Label is
       (Label : access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification);
    --  Sets the alignment of the lines in the text of the label relative to
-   --  each other. %GTK_JUSTIFY_LEFT is the default value when the widget is
+   --  each other. GTK_JUSTIFY_LEFT is the default value when the widget is
    --  first created with Gtk.Label.Gtk_New. If you instead want to set the
    --  alignment of the label as a whole, use Gtk.Misc.Set_Alignment instead.
    --  Gtk.Label.Set_Justify has no effect on labels containing only a single
@@ -344,7 +336,7 @@ package Gtk.Label is
       (Label     : access Gtk_Label_Record;
        Wrap_Mode : Pango.Layout.Pango_Wrap_Mode);
    --  If line wrapping is on (see Gtk.Label.Set_Line_Wrap) this controls how
-   --  the line wrapping is done. The default is %PANGO_WRAP_WORD which means
+   --  the line wrapping is done. The default is PANGO_WRAP_WORD which means
    --  wrap on word boundaries.
    --  Since: gtk+ 2.10
    --  "wrap_mode": the line wrapping mode

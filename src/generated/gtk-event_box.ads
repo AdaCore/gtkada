@@ -80,9 +80,9 @@ package Gtk.Event_Box is
    --  Set whether the event box uses a visible or invisible child window. The
    --  default is to use visible windows.
    --  In an invisible window event box, the window that the event box creates
-   --  is a %GDK_INPUT_ONLY window, which means that it is invisible and only
+   --  is a GDK_INPUT_ONLY window, which means that it is invisible and only
    --  serves to receive events.
-   --  A visible window event box creates a visible (%GDK_INPUT_OUTPUT) window
+   --  A visible window event box creates a visible (GDK_INPUT_OUTPUT) window
    --  that acts as the parent window for all the widgets contained in the
    --  event box.
    --  You should generally make your event box invisible if you just want to

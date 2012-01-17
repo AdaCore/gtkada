@@ -44,11 +44,11 @@ package Gtk.Separator is
    type Gtk_Separator_Record is new Gtk_Widget_Record with null record;
    type Gtk_Separator is access all Gtk_Separator_Record'Class;
 
-   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
-   subtype Gtk_Vseparator is Gtk_Separator;
-
    subtype Gtk_Hseparator_Record is Gtk_Separator_Record;
    subtype Gtk_Hseparator is Gtk_Separator;
+
+   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
+   subtype Gtk_Vseparator is Gtk_Separator;
 
    ------------------
    -- Constructors --
@@ -67,14 +67,6 @@ package Gtk.Separator is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_get_type");
 
-   procedure Gtk_New_Vseparator (Separator : out Gtk_Vseparator);
-   procedure Initialize_Vseparator
-      (Separator : access Gtk_Vseparator_Record'Class);
-   --  Creates a new Gtk.Separator.Gtk_Vseparator.
-
-   function Vseparator_Get_Type return Glib.GType;
-   pragma Import (C, Vseparator_Get_Type, "gtk_vseparator_get_type");
-
    procedure Gtk_New_Hseparator (Separator : out Gtk_Hseparator);
    procedure Initialize_Hseparator
       (Separator : access Gtk_Hseparator_Record'Class);
@@ -82,6 +74,14 @@ package Gtk.Separator is
 
    function Hseparator_Get_Type return Glib.GType;
    pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
+
+   procedure Gtk_New_Vseparator (Separator : out Gtk_Vseparator);
+   procedure Initialize_Vseparator
+      (Separator : access Gtk_Vseparator_Record'Class);
+   --  Creates a new Gtk.Separator.Gtk_Vseparator.
+
+   function Vseparator_Get_Type return Glib.GType;
+   pragma Import (C, Vseparator_Get_Type, "gtk_vseparator_get_type");
 
    ---------------------
    -- Interfaces_Impl --

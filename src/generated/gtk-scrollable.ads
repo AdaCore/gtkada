@@ -62,7 +62,6 @@
 --  should scroll its contents.
 --
 --
---
 --  </description>
 --  <group>Interfaces</group>
 

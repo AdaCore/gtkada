@@ -55,25 +55,24 @@
 --
 --  == How to create a group of two radio buttons. ==
 --
-
---     void create_radio_buttons (void) {
---        GtkWidget *window, *radio1, *radio2, *box, *entry;
---        window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---        box = gtk_box_new (GTK_ORIENTATION_VERTICAL, TRUE, 2);
---        /&ast; Create a radio button with a GtkEntry widget &ast;/
---        radio1 = gtk_radio_button_new (NULL);
---        entry = gtk_entry_new (<!-- -->);
---           gtk_container_add (GTK_CONTAINER (radio1), entry);
---           /&ast; Create a radio button with a label &ast;/
---              radio2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
---              "I'm the second radio button.");
---           /&ast; Pack them into a box, then show all the widgets &ast;/
---           gtk_box_pack_start (GTK_BOX (box), radio1, TRUE, TRUE, 2);
---           gtk_box_pack_start (GTK_BOX (box), radio2, TRUE, TRUE, 2);
---           gtk_container_add (GTK_CONTAINER (window), box);
---           gtk_widget_show_all (window);
---           return;
---        }
+--    void create_radio_buttons (void) {
+--       GtkWidget *window, *radio1, *radio2, *box, *entry;
+--       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, TRUE, 2);
+--       /&ast; Create a radio button with a GtkEntry widget &ast;/
+--       radio1 = gtk_radio_button_new (NULL);
+--       entry = gtk_entry_new (<!-- -->);
+--          gtk_container_add (GTK_CONTAINER (radio1), entry);
+--          /&ast; Create a radio button with a label &ast;/
+--             radio2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
+--             "I'm the second radio button.");
+--          /&ast; Pack them into a box, then show all the widgets &ast;/
+--          gtk_box_pack_start (GTK_BOX (box), radio1, TRUE, TRUE, 2);
+--          gtk_box_pack_start (GTK_BOX (box), radio2, TRUE, TRUE, 2);
+--          gtk_container_add (GTK_CONTAINER (window), box);
+--          gtk_widget_show_all (window);
+--          return;
+--       }
 --
 --  When an unselected button in the group is clicked the clicked button
 --  receives the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal, as does

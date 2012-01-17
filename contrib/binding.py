@@ -134,6 +134,7 @@ class GIR(object):
             doc = doc.replace("<orderedlist>", "").replace("</orderedlist>", "")
             doc = doc.replace("<listitem>", "   *").replace("</listitem>", "")
             doc = doc.replace("&percnt;", "%")
+            doc = doc.replace("&lt;", "<").replace("&gt;", ">")
 
             doc = doc.replace("<programlisting>", "\n\n%PRE%<programlisting>")
             doc = re.sub("<programlisting>(.*?)</programlisting>",
@@ -147,7 +148,6 @@ class GIR(object):
             result = []
             for paragraph in doc.split("\n\n"):
                 result.append(paragraph)
-                result.append("")
 
             pkg.doc = ["<description>"] + \
                 result + \

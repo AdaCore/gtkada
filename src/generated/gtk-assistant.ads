@@ -43,10 +43,8 @@ pragma Ada_05;
 --  The GtkAssistant implementation of the GtkBuildable interface exposes the
 --  Action_Area as internal children with the name "action_area".
 --
---  To add pages to an assistant in GtkBuilder, simply add it as a
---  &lt;child&gt; to the GtkAssistant object, and set its child properties as
---  necessary.
---
+--  To add pages to an assistant in GtkBuilder, simply add it as a <child> to
+--  the GtkAssistant object, and set its child properties as necessary.
 --
 --
 --  </description>
@@ -359,7 +357,7 @@ package Gtk.Assistant is
    --  A handler for the ::apply signal should carry out the actions for which
    --  the wizard has collected data. If the action takes a long time to
    --  complete, you might consider putting a page of type
-   --  %GTK_ASSISTANT_PAGE_PROGRESS after the confirmation page and handle this
+   --  GTK_ASSISTANT_PAGE_PROGRESS after the confirmation page and handle this
    --  operation within the Gtk.Assistant.Gtk_Assistant::prepare signal of the
    --  progress page.
    --
@@ -371,7 +369,7 @@ package Gtk.Assistant is
    --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
    --  The ::close signal is emitted either when the close button of a summary
    --  page is clicked, or when the apply button in the last page in the flow
-   --  (of type %GTK_ASSISTANT_PAGE_CONFIRM) is clicked.
+   --  (of type GTK_ASSISTANT_PAGE_CONFIRM) is clicked.
    --
    --  "prepare"
    --     procedure Handler

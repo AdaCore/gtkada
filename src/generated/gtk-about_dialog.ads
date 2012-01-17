@@ -44,12 +44,11 @@
 --  title property explicitly when constructing a GtkAboutDialog, as shown in
 --  the following example:
 --
-
---     gtk_show_about_dialog (NULL,
---        "program-name", "ExampleCode",
---        "logo", example_logo,
---        "title" _("About ExampleCode"),
---        NULL);
+--    gtk_show_about_dialog (NULL,
+--       "program-name", "ExampleCode",
+--       "logo", example_logo,
+--       "title" _("About ExampleCode"),
+--       NULL);
 --
 --  It is also possible to show a Gtk.About_Dialog.Gtk_About_Dialog like any
 --  other Gtk.Dialog.Gtk_Dialog, e.g. using Gtk.Dialog.Run. In this case, you
@@ -309,18 +308,18 @@ package Gtk.About_Dialog is
    --  "wrap-license" property is set to True; otherwise the text itself must
    --  contain the intended linebreaks. When setting this property to a
    --  non-null value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
-   --  property is set to %GTK_LICENSE_CUSTOM as a side effect.
+   --  property is set to GTK_LICENSE_CUSTOM as a side effect.
    --
    --  Name: License_Type_Property
    --  Type: Gtk_License
    --  Flags: read-write
-   --  The license of the program, as a value of the %GtkLicense enumeration.
+   --  The license of the program, as a value of the GtkLicense enumeration.
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
    --  standard disclaimer and link the user to the appropriate online resource
    --  for the license text.
-   --  If %GTK_LICENSE_UNKNOWN is used, the link used will be the same
-   --  specified in the Gtk.About_Dialog.Gtk_About_Dialog:website property.
-   --  If %GTK_LICENSE_CUSTOM is used, the current contents of the
+   --  If GTK_LICENSE_UNKNOWN is used, the link used will be the same specified
+   --  in the Gtk.About_Dialog.Gtk_About_Dialog:website property.
+   --  If GTK_LICENSE_CUSTOM is used, the current contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used.
    --  For any other Gtk_License value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this

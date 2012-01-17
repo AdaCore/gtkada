@@ -42,8 +42,7 @@
 --  Gtk.Widget.Gtk_Widget:margin properties on the child widget, so
 --  Gtk.Alignment.Gtk_Alignment should not be used in new code.
 --
---
---
+-- 
 --  </description>
 --  <screenshot>gtk-alignment</screenshot>
 --  <testgtk>create_alignment.adb</testgtk>

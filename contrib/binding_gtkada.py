@@ -141,7 +141,6 @@ class GtkAdaPackage(object):
             descr = []
             for paragraph in text.split("\n\n"):
                 descr.append(paragraph)
-                descr.append("")
 
             doc = ["<description>\n"]
             doc.extend(descr)

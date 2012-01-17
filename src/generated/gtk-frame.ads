@@ -31,21 +31,19 @@
 --
 --  The GtkFrame implementation of the GtkBuildable interface supports placing
 --  a child in the label position by specifying "label" as the "type" attribute
---  of a &lt;child&gt; element. A normal content child can be specified without
---  specifying a &lt;child&gt; type attribute.
+--  of a <child> element. A normal content child can be specified without
+--  specifying a <child> type attribute.
 --
 --  == A UI definition fragment with GtkFrame ==
 --
-
---     <object class="GtkFrame">
---     <child type="label">
---     <object class="GtkLabel" id="frame-label"/>
---     </child>
---     <child>
---     <object class="GtkEntry" id="frame-content"/>
---     </child>
---     </object>
---
+--    <object class="GtkFrame">
+--    <child type="label">
+--    <object class="GtkLabel" id="frame-label"/>
+--    </child>
+--    <child>
+--    <object class="GtkEntry" id="frame-content"/>
+--    </child>
+--    </object>
 --
 --
 --  </description>

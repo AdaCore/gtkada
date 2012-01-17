@@ -37,12 +37,11 @@
 --
 --  == GtkScale as GtkBuildable ==
 --
---  GtkScale supports a custom &lt;marks&gt; element, which can contain
---  multiple &lt;mark&gt; elements. The "value" and "position" attributes have
---  the same meaning as Gtk.Scale.Add_Mark parameters of the same name. If the
---  element is not empty, its content is taken as the markup to show at the
---  mark. It can be translated with the usual "translatable and "context"
---  attributes.
+--  GtkScale supports a custom <marks> element, which can contain multiple
+--  <mark> elements. The "value" and "position" attributes have the same
+--  meaning as Gtk.Scale.Add_Mark parameters of the same name. If the element
+--  is not empty, its content is taken as the markup to show at the mark. It
+--  can be translated with the usual "translatable and "context" attributes.
 --
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
@@ -196,8 +195,8 @@ package Gtk.Scale is
    --  "value": the value at which the mark is placed, must be between the
    --  lower and upper limits of the scales' adjustment
    --  "position": where to draw the mark. For a horizontal scale, GTK_POS_TOP
-   --  and %GTK_POS_LEFT are drawn above the scale, anything else below. For a
-   --  vertical scale, GTK_POS_LEFT and %GTK_POS_TOP are drawn to the left of
+   --  and GTK_POS_LEFT are drawn above the scale, anything else below. For a
+   --  vertical scale, GTK_POS_LEFT and GTK_POS_TOP are drawn to the left of
    --  the scale, anything else to the right.
    --  "markup": Text to be shown at the mark, using <link
    --  linkend="PangoMarkupFormat">Pango markup</link>, or null

@@ -44,7 +44,6 @@
 --  <programlisting id="expander-callback-example"> expander =
 --  gtk_expander_new_with_mnemonic ("_More Options"); g_signal_connect
 --  (expander, "notify::expanded", G_CALLBACK (expander_callback), NULL);
---
 --  ...
 --
 --  static void expander_callback (GObject *object, GParamSpec *param_spec,
@@ -59,21 +58,19 @@
 --
 --  The GtkExpander implementation of the GtkBuildable interface supports
 --  placing a child in the label position by specifying "label" as the "type"
---  attribute of a &lt;child&gt; element. A normal content child can be
---  specified without specifying a &lt;child&gt; type attribute.
+--  attribute of a <child> element. A normal content child can be specified
+--  without specifying a <child> type attribute.
 --
 --  == A UI definition fragment with GtkExpander ==
 --
-
---     <object class="GtkExpander">
---     <child type="label">
---     <object class="GtkLabel" id="expander-label"/>
---     </child>
---     <child>
---     <object class="GtkEntry" id="expander-content"/>
---     </child>
---     </object>
---
+--    <object class="GtkExpander">
+--    <child type="label">
+--    <object class="GtkLabel" id="expander-label"/>
+--    </child>
+--    <child>
+--    <object class="GtkEntry" id="expander-content"/>
+--    </child>
+--    </object>
 --
 --
 --  </description>

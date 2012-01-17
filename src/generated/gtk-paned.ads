@@ -35,7 +35,7 @@
 --  handle that the user can drag to adjust the division. It does not draw any
 --  relief around the children or around the separator. (The space in which the
 --  separator is called the gutter.) Often, it is useful to put each child
---  inside a Gtk.Frame.Gtk_Frame with the shadow type set to %GTK_SHADOW_IN so
+--  inside a Gtk.Frame.Gtk_Frame with the shadow type set to GTK_SHADOW_IN so
 --  that the gutter appears as a ridge. No separator is drawn if one of the
 --  children is missing.
 --
@@ -52,18 +52,16 @@
 --
 --  == Creating a paned widget with minimum sizes. ==
 --
-
---     GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
---     GtkWidget *frame1 = gtk_frame_new (NULL);
---     GtkWidget *frame2 = gtk_frame_new (NULL);
---     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
---     gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
---     gtk_widget_set_size_request (hpaned, 200, -1);
---     gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
---     gtk_widget_set_size_request (frame1, 50, -1);
---     gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
---     gtk_widget_set_size_request (frame2, 50, -1);
---
+--    GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+--    GtkWidget *frame1 = gtk_frame_new (NULL);
+--    GtkWidget *frame2 = gtk_frame_new (NULL);
+--    gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+--    gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
+--    gtk_widget_set_size_request (hpaned, 200, -1);
+--    gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
+--    gtk_widget_set_size_request (frame1, 50, -1);
+--    gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
+--    gtk_widget_set_size_request (frame2, 50, -1);
 --
 --
 --  </description>

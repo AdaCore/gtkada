@@ -56,30 +56,29 @@
 --
 --  == Simple GtkDrawingArea usage ==
 --
-
---     gboolean
---     draw_callback (GtkWidget *widget, cairo_t *cr, gpointer data)
---     {
---        guint width, height;
---        GdkRGBA color;
---        width = gtk_widget_get_allocated_width (widget);
---        height = gtk_widget_get_allocated_height (widget);
---        cairo_arc (cr,
---           width / 2.0, height / 2.0,
---           MIN (width, height) / 2.0,
---           0, 2 * G_PI);
---        gtk_style_context_get_color (gtk_widget_get_style_context (widget),
---           0,
---           &amp;color);
---        gdk_cairo_set_source_rgba (cr, &amp;color);
---        cairo_fill (cr);
---        return FALSE;
---     }
---     [...]
---     GtkWidget &ast;drawing_area = gtk_drawing_area_new (<!-- -->);
---        gtk_widget_set_size_request (drawing_area, 100, 100);
---           g_signal_connect (G_OBJECT (drawing_area), "draw",
---           G_CALLBACK (draw_callback), NULL);
+--    gboolean
+--    draw_callback (GtkWidget *widget, cairo_t *cr, gpointer data)
+--    {
+--       guint width, height;
+--       GdkRGBA color;
+--       width = gtk_widget_get_allocated_width (widget);
+--       height = gtk_widget_get_allocated_height (widget);
+--       cairo_arc (cr,
+--          width / 2.0, height / 2.0,
+--          MIN (width, height) / 2.0,
+--          0, 2 * G_PI);
+--       gtk_style_context_get_color (gtk_widget_get_style_context (widget),
+--          0,
+--          &amp;color);
+--       gdk_cairo_set_source_rgba (cr, &amp;color);
+--       cairo_fill (cr);
+--       return FALSE;
+--    }
+--    [...]
+--    GtkWidget &ast;drawing_area = gtk_drawing_area_new (<!-- -->);
+--       gtk_widget_set_size_request (drawing_area, 100, 100);
+--          g_signal_connect (G_OBJECT (drawing_area), "draw",
+--          G_CALLBACK (draw_callback), NULL);
 --
 --  Draw signals are normally delivered when a drawing area first comes
 --  onscreen, or when it's covered by another window and then uncovered. You

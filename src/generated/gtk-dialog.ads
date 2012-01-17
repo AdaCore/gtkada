@@ -73,30 +73,29 @@
 --
 --  == Simple GtkDialog usage ==
 --
-
---     /&ast; Function to open a dialog box displaying the message provided. &ast;/
---     void
---     quick_message (gchar *message)
---     {
---        GtkWidget *dialog, *label, *content_area;
---        /&ast; Create the widgets &ast;/
---        dialog = gtk_dialog_new_with_buttons ("Message",
---           main_application_window,
---           GTK_DIALOG_DESTROY_WITH_PARENT,
---           GTK_STOCK_OK,
---           GTK_RESPONSE_NONE,
---           NULL);
---        content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
---        label = gtk_label_new (message);
---        /&ast; Ensure that the dialog box is destroyed when the user responds &ast;/
---        g_signal_connect_swapped (dialog,
---           "response",
---           G_CALLBACK (gtk_widget_destroy),
---           dialog);
---        /&ast; Add the label, and show everything we've added to the dialog &ast;/
---        gtk_container_add (GTK_CONTAINER (content_area), label);
---        gtk_widget_show_all (dialog);
---     }
+--    /&ast; Function to open a dialog box displaying the message provided. &ast;/
+--    void
+--    quick_message (gchar *message)
+--    {
+--       GtkWidget *dialog, *label, *content_area;
+--       /&ast; Create the widgets &ast;/
+--       dialog = gtk_dialog_new_with_buttons ("Message",
+--          main_application_window,
+--          GTK_DIALOG_DESTROY_WITH_PARENT,
+--          GTK_STOCK_OK,
+--          GTK_RESPONSE_NONE,
+--          NULL);
+--       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+--       label = gtk_label_new (message);
+--       /&ast; Ensure that the dialog box is destroyed when the user responds &ast;/
+--       g_signal_connect_swapped (dialog,
+--          "response",
+--          G_CALLBACK (gtk_widget_destroy),
+--          dialog);
+--       /&ast; Add the label, and show everything we've added to the dialog &ast;/
+--       gtk_container_add (GTK_CONTAINER (content_area), label);
+--       gtk_widget_show_all (dialog);
+--    }
 --
 --  == GtkDialog as GtkBuildable ==
 --
@@ -104,35 +103,33 @@
 --  exposes the Vbox and Action_Area as internal children with the names "vbox"
 --  and "action_area".
 --
---  GtkDialog supports a custom &lt;action-widgets&gt; element, which can
---  contain multiple &lt;action-widget&gt; elements. The "response" attribute
---  specifies a numeric response, and the content of the element is the id of
---  widget (which should be a child of the dialogs Action_Area).
+--  GtkDialog supports a custom <action-widgets> element, which can contain
+--  multiple <action-widget> elements. The "response" attribute specifies a
+--  numeric response, and the content of the element is the id of widget (which
+--  should be a child of the dialogs Action_Area).
 --
 --  == A <structname>GtkDialog</structname> UI definition fragment. ==
 --
-
---     <object class="GtkDialog" id="dialog1">
---     <child internal-child="vbox">"
---     <object class="GtkVBox" id="vbox">
---     <child internal-child="action_area">
---     <object class="GtkHButtonBox" id="button_box">
---     <child>
---     <object class="GtkButton" id="button_cancel"/>
---     </child>
---     <child>
---     <object class="GtkButton" id="button_ok"/>
---     </child>
---     </object>
---     </child>
---     </object>
---     </child>
---     <action-widgets>
---     <action-widget response="3">button_ok</action-widget>
---     <action-widget response="-5">button_cancel</action-widget>
---     </action-widgets>
---     </object>
---
+--    <object class="GtkDialog" id="dialog1">
+--    <child internal-child="vbox">"
+--    <object class="GtkVBox" id="vbox">
+--    <child internal-child="action_area">
+--    <object class="GtkHButtonBox" id="button_box">
+--    <child>
+--    <object class="GtkButton" id="button_cancel"/>
+--    </child>
+--    <child>
+--    <object class="GtkButton" id="button_ok"/>
+--    </child>
+--    </object>
+--    </child>
+--    </object>
+--    </child>
+--    <action-widgets>
+--    <action-widget response="3">button_ok</action-widget>
+--    <action-widget response="-5">button_cancel</action-widget>
+--    </action-widgets>
+--    </object>
 --
 --
 --  </description>

@@ -73,18 +73,17 @@ pragma Ada_05;
 --
 --  == Requesting the width of a handful of GtkTreeModel rows ==
 --
-
---     GtkTreeIter iter;
---     gint        minimum_width;
---     gint        natural_width;
---     valid = gtk_tree_model_get_iter_first (model, &iter);
---     while (valid)
---     {
---        gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---        gtk_cell_area_get_preferred_width (area, context, widget, NULL, NULL);
---        valid = gtk_tree_model_iter_next (model, &iter);
---     }
---     gtk_cell_area_context_get_preferred_width (context, &minimum_width, &natural_width);
+--    GtkTreeIter iter;
+--    gint        minimum_width;
+--    gint        natural_width;
+--    valid = gtk_tree_model_get_iter_first (model, &iter);
+--    while (valid)
+--    {
+--       gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--       gtk_cell_area_get_preferred_width (area, context, widget, NULL, NULL);
+--       valid = gtk_tree_model_iter_next (model, &iter);
+--    }
+--    gtk_cell_area_context_get_preferred_width (context, &minimum_width, &natural_width);
 --
 --  Note that in this example it's not important to observe the returned
 --  minimum and natural width of the area for each row unless the
@@ -107,17 +106,16 @@ pragma Ada_05;
 --
 --  == A typical get_preferred_width implementation ==
 --
-
---     static void
---     foo_get_preferred_width (GtkWidget       *widget,
---        gint            *minimum_size,
---        gint            *natural_size)
---     {
---        Foo        *foo  = FOO (widget);
---        FooPrivate *priv = foo->priv;
---        foo_ensure_at_least_one_handfull_of_rows_have_been_requested (foo);
---        gtk_cell_area_context_get_preferred_width (priv->context, minimum_size, natural_size);
---     }
+--    static void
+--    foo_get_preferred_width (GtkWidget       *widget,
+--       gint            *minimum_size,
+--       gint            *natural_size)
+--    {
+--       Foo        *foo  = FOO (widget);
+--       FooPrivate *priv = foo->priv;
+--       foo_ensure_at_least_one_handfull_of_rows_have_been_requested (foo);
+--       gtk_cell_area_context_get_preferred_width (priv->context, minimum_size, natural_size);
+--    }
 --
 --  In the above example the Foo widget has to make sure that some row sizes
 --  have been calculated (the amount of rows that Foo judged was appropriate to
@@ -138,24 +136,23 @@ pragma Ada_05;
 --
 --  == Requesting the height for width of a handful of GtkTreeModel rows ==
 --
-
---     GtkTreeIter iter;
---     gint        minimum_height;
---     gint        natural_height;
---     gint        full_minimum_height = 0;
---     gint        full_natural_height = 0;
---     valid = gtk_tree_model_get_iter_first (model, &iter);
---     while (valid)
---     {
---        gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---        gtk_cell_area_get_preferred_height_for_width (area, context, widget,
---           width, &minimum_height, &natural_height);
---        if (width_is_for_allocation)
---        cache_row_height (&iter, minimum_height, natural_height);
---        full_minimum_height += minimum_height;
---        full_natural_height += natural_height;
---        valid = gtk_tree_model_iter_next (model, &iter);
---     }
+--    GtkTreeIter iter;
+--    gint        minimum_height;
+--    gint        natural_height;
+--    gint        full_minimum_height = 0;
+--    gint        full_natural_height = 0;
+--    valid = gtk_tree_model_get_iter_first (model, &iter);
+--    while (valid)
+--    {
+--       gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--       gtk_cell_area_get_preferred_height_for_width (area, context, widget,
+--          width, &minimum_height, &natural_height);
+--       if (width_is_for_allocation)
+--       cache_row_height (&iter, minimum_height, natural_height);
+--       full_minimum_height += minimum_height;
+--       full_natural_height += natural_height;
+--       valid = gtk_tree_model_iter_next (model, &iter);
+--    }
 --
 --  Note that in the above example we would need to cache the heights returned
 --  for each row so that we would know what sizes to render the areas for each
@@ -187,24 +184,23 @@ pragma Ada_05;
 --
 --  == Requesting the width of a handful of GtkTreeModel rows ==
 --
-
---     GtkAllocation allocation;
---     GdkRectangle  cell_area = { 0, };
---     GtkTreeIter   iter;
---     gint          minimum_width;
---     gint          natural_width;
---     gtk_widget_get_allocation (widget, &allocation);
---     cell_area.width = allocation.width;
---     valid = gtk_tree_model_get_iter_first (model, &iter);
---     while (valid)
---     {
---        cell_area.height = get_cached_height_for_row (&iter);
---        gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---        gtk_cell_area_render (area, context, widget, cr,
---           &cell_area, &cell_area, state_flags, FALSE);
---        cell_area.y += cell_area.height;
---        valid = gtk_tree_model_iter_next (model, &iter);
---     }
+--    GtkAllocation allocation;
+--    GdkRectangle  cell_area = { 0, };
+--    GtkTreeIter   iter;
+--    gint          minimum_width;
+--    gint          natural_width;
+--    gtk_widget_get_allocation (widget, &allocation);
+--    cell_area.width = allocation.width;
+--    valid = gtk_tree_model_get_iter_first (model, &iter);
+--    while (valid)
+--    {
+--       cell_area.height = get_cached_height_for_row (&iter);
+--       gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--       gtk_cell_area_render (area, context, widget, cr,
+--          &cell_area, &cell_area, state_flags, FALSE);
+--       cell_area.y += cell_area.height;
+--       valid = gtk_tree_model_iter_next (model, &iter);
+--    }
 --
 --  Note that the cached height in this example really depends on how the
 --  layouting widget works. The layouting widget might decide to give every row
@@ -230,7 +226,7 @@ pragma Ada_05;
 --  The Gtk.Cell_Area.Gtk_Cell_Area drives keyboard focus from cell to cell in
 --  a way similar to Gtk.Widget.Gtk_Widget. For layouting widgets that support
 --  giving focus to cells it's important to remember to pass
---  %GTK_CELL_RENDERER_FOCUSED to the area functions for the row that has focus
+--  GTK_CELL_RENDERER_FOCUSED to the area functions for the row that has focus
 --  and to tell the area to paint the focus at render time.
 --
 --  Layouting widgets that accept focus on cells should implement the
@@ -246,58 +242,57 @@ pragma Ada_05;
 --
 --  == Implementing keyboard focus navigation ==
 --
-
---     static gboolean
---     foo_focus (GtkWidget       *widget,
---        GtkDirectionType direction)
---     {
---        Foo        *foo  = FOO (widget);
---        FooPrivate *priv = foo->priv;
---        gint        focus_row;
---        gboolean    have_focus = FALSE;
---        focus_row = priv->focus_row;
---        if (!gtk_widget_has_focus (widget))
---        gtk_widget_grab_focus (widget);
---        valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, priv->focus_row);
---        while (valid)
---        {
---           gtk_cell_area_apply_attributes (priv->area, priv->model, &iter, FALSE, FALSE);
---           if (gtk_cell_area_focus (priv->area, direction))
---           {
---              priv->focus_row = focus_row;
---              have_focus = TRUE;
---              break;
---           }
---        else
---           {
---              if (direction == GTK_DIR_RIGHT ||
---                 direction == GTK_DIR_LEFT)
---              break;
---           else if (direction == GTK_DIR_UP ||
---              direction == GTK_DIR_TAB_BACKWARD)
---           {
---              if (focus_row == 0)
---              break;
---           else
---              {
---                 focus_row--;
---                 valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, focus_row);
---              }
---           }
---        else
---           {
---              if (focus_row == last_row)
---              break;
---           else
---              {
---                 focus_row++;
---                 valid = gtk_tree_model_iter_next (priv->model, &iter);
---              }
---           }
---        }
---     }
---     return have_focus;
---  }
+--    static gboolean
+--    foo_focus (GtkWidget       *widget,
+--       GtkDirectionType direction)
+--    {
+--       Foo        *foo  = FOO (widget);
+--       FooPrivate *priv = foo->priv;
+--       gint        focus_row;
+--       gboolean    have_focus = FALSE;
+--       focus_row = priv->focus_row;
+--       if (!gtk_widget_has_focus (widget))
+--       gtk_widget_grab_focus (widget);
+--       valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, priv->focus_row);
+--       while (valid)
+--       {
+--          gtk_cell_area_apply_attributes (priv->area, priv->model, &iter, FALSE, FALSE);
+--          if (gtk_cell_area_focus (priv->area, direction))
+--          {
+--             priv->focus_row = focus_row;
+--             have_focus = TRUE;
+--             break;
+--          }
+--       else
+--          {
+--             if (direction == GTK_DIR_RIGHT ||
+--                direction == GTK_DIR_LEFT)
+--             break;
+--          else if (direction == GTK_DIR_UP ||
+--             direction == GTK_DIR_TAB_BACKWARD)
+--          {
+--             if (focus_row == 0)
+--             break;
+--          else
+--             {
+--                focus_row--;
+--                valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, focus_row);
+--             }
+--          }
+--       else
+--          {
+--             if (focus_row == last_row)
+--             break;
+--          else
+--             {
+--                focus_row++;
+--                valid = gtk_tree_model_iter_next (priv->model, &iter);
+--             }
+--          }
+--       }
+--    }
+--    return have_focus;
+-- }
 --
 --  Note that the layouting widget is responsible for matching the
 --  GtkDirectionType values to the way it lays out its cells.
@@ -323,7 +318,6 @@ pragma Ada_05;
 --  gtk_cell_area_cell_set or gtk_cell_area_cell_set_valist. To obtain the
 --  value of a cell property, use Gtk.Cell_Area.Cell_Get_Property,
 --  gtk_cell_area_cell_get or gtk_cell_area_cell_get_valist.
---
 --
 --
 --  </description>
@@ -414,7 +408,7 @@ package Gtk.Cell_Area is
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State flags for Area
    --  for this row of data.
    --  "edit_only": if True then only cell renderers that are
-   --  %GTK_CELL_RENDERER_MODE_EDITABLE will be activated.
+   --  GTK_CELL_RENDERER_MODE_EDITABLE will be activated.
 
    function Activate_Cell
       (Self      : access Gtk_Cell_Area_Record;
