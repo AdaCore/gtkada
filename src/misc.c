@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -640,35 +640,9 @@ ada_initialize_class_record
 }
 
 void
-ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
+ada_widget_set_realize (GtkWidget *widget, void (* realize) (GtkWidget *))
 {
   GTK_WIDGET_GET_CLASS (widget)->realize = realize;
-}
-
-void
-ada_style_set_draw_expander
-  (GtkStyle *style,
-   void (* draw_expander) (GtkStyle		*style,
-			   GdkWindow		*window,
-			   GtkStateType		state_type,
-			   GdkRectangle		*area,
-			   GtkWidget		*widget,
-			   const gchar		*detail,
-			   gint			x,
-			   gint			y,
-			   GtkExpanderStyle	expander_style))
-{
-  GTK_STYLE_CLASS (G_OBJECT_GET_CLASS (style))->draw_expander = draw_expander;
-}
-
-void
-ada_widget_set_scroll_adjustments_signal (gpointer klass, char* name)
-{
-  if (GTK_IS_WIDGET_CLASS (klass))
-    {
-      guint id = g_signal_lookup (name, G_TYPE_FROM_CLASS (klass));
-      GTK_WIDGET_CLASS (klass)->set_scroll_adjustments_signal = id;
-    }
 }
 
 void
@@ -677,11 +651,6 @@ ada_gtk_widget_set_default_size_allocate_handler
 				    GtkAllocation    *allocation))
 {
   GTK_WIDGET_CLASS (klass)->size_allocate = handler;
-}
-
-gpointer
-ada_gtk_default_expose_event_handler (gpointer klass) {
-  return GTK_WIDGET_CLASS (klass)->expose_event;
 }
 
 /*****************************************************
@@ -826,102 +795,6 @@ ada_gdk_cursor_new (gint cursor_type)
   return gdk_cursor_new (cursor_type);
 }
 
-
-/**********************************************************
- **  Graphic contexts
- **********************************************************/
-
-GdkGCValues*
-ada_gdk_gc_new_values ()
-{
-  return (GdkGCValues*) g_new (GdkGCValues, 1);;
-}
-
-void
-ada_gdk_gc_free_values (GdkGCValues* values)
-{
-  g_free (values);
-}
-
-void
-ada_gdk_gc_set_background (GdkGCValues* values,
-			   GdkColor     color)
-{
-  values->background = color;
-}
-
-void
-ada_gdk_gc_set_foreground (GdkGCValues* values,
-			   GdkColor     color)
-{
-  values->foreground = color;
-}
-
-void
-ada_gdk_gc_set_clip_origin (GdkGCValues* values,
-			    gint x,
-			    gint y)
-{
-  values->clip_x_origin = x;
-  values->clip_y_origin = y;
-}
-
-void
-ada_gdk_gc_set_exposures (GdkGCValues* values,
-			  gint exposures)
-{
-  values->graphics_exposures = exposures;
-}
-
-void
-ada_gdk_gc_set_fill (GdkGCValues* values,
-		     GdkFill      fill)
-{
-  values->fill = fill;
-}
-
-void
-ada_gdk_gc_set_font (GdkGCValues* values,
-		     GdkFont*     font)
-{
-  values->font = font;
-}
-
-void
-ada_gdk_gc_set_function (GdkGCValues* values,
-			 GdkFunction  function)
-{
-  values->function = function;
-}
-
-void
-ada_gdk_gc_set_line_attributes (GdkGCValues* values,
-				gint         line_width,
-				GdkLineStyle line_style,
-				GdkCapStyle  cap_style,
-				GdkJoinStyle join_style)
-{
-  values->line_width = line_width;
-  values->line_style = line_style;
-  values->cap_style  = cap_style;
-  values->join_style = join_style;
-}
-
-void
-ada_gdk_gc_set_subwindow (GdkGCValues*      values,
-			  GdkSubwindowMode  subwindow_mode)
-{
-  values->subwindow_mode = subwindow_mode;
-}
-
-void
-ada_gdk_gc_set_ts_origin (GdkGCValues* values,
-			  gint         x,
-			  gint         y)
-{
-  values->ts_x_origin = x;
-  values->ts_y_origin = y;
-}
 
 /**********************************************************
  **  Support for events
@@ -1257,7 +1130,7 @@ ada_gdk_event_get_area (GdkEvent *event, GdkRectangle *area)
     }
 }
 
-GdkRegion*
+cairo_region_t*
 ada_gdk_event_get_region (GdkEvent *event)
 {
   if (event->type == GDK_EXPOSE)
@@ -1423,25 +1296,16 @@ ada_gdk_event_get_property (GdkEvent * event)
   return NULL;
 }
 
-guint32
+GdkWindow*
 ada_gdk_event_get_requestor (GdkEvent * event)
-{
-  if (!event)
-    return ada_gdk_invalid_guint32_value;
-
-  if (event->type == GDK_SELECTION_NOTIFY)
-    return event->selection.requestor;
-  return ada_gdk_invalid_guint32_value;
-}
-
-GdkAtom
-ada_gdk_event_get_message_type (GdkEvent * event)
 {
   if (!event)
     return NULL;
 
-  if (event->type == GDK_CLIENT_EVENT)
-    return event->client.message_type;
+  if (event->type == GDK_SELECTION_NOTIFY ||
+      event->type == GDK_SELECTION_CLEAR  ||
+      event->type == GDK_SELECTION_REQUEST)
+    return event->selection.requestor;
   return NULL;
 }
 
@@ -1458,30 +1322,6 @@ ada_gdk_event_create (gint type, GdkWindow* win)
     g_object_ref (win);
 
   return event;
-}
-
-short *
-ada_gdk_event_client_get_s (GdkEventClient * event)
-{
-  return event->data.s;
-}
-
-char *
-ada_gdk_event_client_get_b (GdkEventClient * event)
-{
-  return event->data.b;
-}
-
-long *
-ada_gdk_event_client_get_l (GdkEventClient * event)
-{
-  return event->data.l;
-}
-
-gushort
-ada_gdk_event_client_get_data_format (GdkEventClient * event)
-{
-  return event->data_format;
 }
 
 GdkEventType
@@ -1988,22 +1828,11 @@ ada_gdk_event_set_property (GdkEvent * event, GdkAtom property)
 }
 
 gint
-ada_gdk_event_set_requestor (GdkEvent * event, guint32 requestor)
+ada_gdk_event_set_requestor (GdkEvent * event, GdkWindow * requestor)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
       event->selection.requestor = requestor;
-      return 1;
-    }
-  return 0;
-}
-
-gint
-ada_gdk_event_set_message_type (GdkEvent * event, GdkAtom type)
-{
-  if (event->type == GDK_CLIENT_EVENT)
-    {
-      event->client.message_type = type;
       return 1;
     }
   return 0;
@@ -2135,128 +1964,6 @@ GdkColor*
 ada_style_get_white (GtkStyle* style)
 {
   return &style->white;
-}
-
-void
-ada_style_set_fg_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->fg_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_fg_gc (GtkStyle * style, gint state)
-{
-  return style->fg_gc [state];
-}
-
-void
-ada_style_set_bg_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->bg_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_bg_gc (GtkStyle * style, gint state)
-{
-  return style->bg_gc [state];
-}
-
-void
-ada_style_set_light_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->light_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_light_gc (GtkStyle * style, gint state)
-{
-  return style->light_gc [state];
-}
-
-void
-ada_style_set_dark_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->dark_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_dark_gc (GtkStyle * style, gint state)
-{
-  return style->dark_gc[state];
-}
-
-void
-ada_style_set_mid_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->mid_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_mid_gc (GtkStyle * style, gint state)
-{
-  return style->mid_gc [state];
-}
-
-void
-ada_style_set_text_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->text_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_text_gc (GtkStyle * style, gint state)
-{
-  return style->text_gc [state];
-}
-
-void
-ada_style_set_base_gc (GtkStyle* style, gint state, GdkGC* gc)
-{
-  style->base_gc[state] = gc;
-}
-
-GdkGC*
-ada_style_get_base_gc (GtkStyle * style, gint state)
-{
-  return style->base_gc [state];
-}
-
-void
-ada_style_set_black_gc (GtkStyle* style, GdkGC* gc)
-{
-  style->black_gc = gc;
-}
-
-GdkGC*
-ada_style_get_black_gc (GtkStyle * style)
-{
-  return style->black_gc;
-}
-
-
-void
-ada_style_set_white_gc (GtkStyle* style, GdkGC* gc)
-{
-  style->white_gc = gc;
-}
-
-GdkGC*
-ada_style_get_white_gc (GtkStyle * style)
-{
-  return style->white_gc;
-}
-
-
-void
-ada_style_set_bg_pixmap (GtkStyle* style, gint state, GdkPixmap *pix)
-{
-  style->bg_pixmap[state] = pix;
-}
-
-GdkPixmap*
-ada_style_get_bg_pixmap (GtkStyle* style, gint state)
-{
-  return style->bg_pixmap[state];
 }
 
 gint
@@ -2533,24 +2240,6 @@ void ada_text_appearance_set_bg_color
   app->bg_color = color;
 }
 
-GdkBitmap*
-ada_text_appearance_get_fg_stipple (GtkTextAppearance* app) {
-  return app->fg_stipple;
-}
-void ada_text_appearance_set_fg_stipple
-  (GtkTextAppearance* app, GdkBitmap* bitmap) {
-  app->fg_stipple = bitmap;
-}
-
-GdkBitmap*
-ada_text_appearance_get_bg_stipple (GtkTextAppearance* app) {
-  return app->bg_stipple;
-}
-void ada_text_appearance_set_bg_stipple
-  (GtkTextAppearance* app, GdkBitmap* bitmap) {
-  app->bg_stipple = bitmap;
-}
-
 /******************************************
  ** Functions for Text_Iter
  ******************************************/
@@ -2673,7 +2362,6 @@ ada_gdk_window_attr_new (void)
     {
       result->title = NULL;
       result->visual = NULL;
-      result->colormap = NULL;
       result->cursor = NULL;
       result->wmclass_name = NULL;
       result->wmclass_class = NULL;
@@ -2801,14 +2489,14 @@ ada_gdk_window_attr_get_height (GdkWindowAttr *window_attr)
 
 void
 ada_gdk_window_attr_set_wclass (GdkWindowAttr *window_attr,
-				GdkWindowClass wclass)
+				GdkWindowWindowClass wclass)
 {
   g_return_if_fail (window_attr != NULL);
 
   window_attr->wclass = wclass;
 }
 
-GdkWindowClass
+GdkWindowWindowClass
 ada_gdk_window_attr_get_wclass (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, GDK_INPUT_OUTPUT);
@@ -2831,23 +2519,6 @@ ada_gdk_window_attr_get_visual (GdkWindowAttr *window_attr)
   g_return_val_if_fail (window_attr != NULL, NULL);
 
   return window_attr->visual;
-}
-
-void
-ada_gdk_window_attr_set_colormap (GdkWindowAttr *window_attr,
-				  GdkColormap *colormap)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->colormap = colormap;
-}
-
-GdkColormap*
-ada_gdk_window_attr_get_colormap (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->colormap;
 }
 
 void
