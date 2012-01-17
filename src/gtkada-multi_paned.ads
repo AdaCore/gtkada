@@ -31,7 +31,6 @@
 
 with Glib;       use Glib;
 with Gdk.Cursor;
-with Gdk.GC;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
@@ -267,7 +266,6 @@ private
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
       Frozen      : Boolean := False;
       Children    : Child_Description_Access;
-      GC          : Gdk.GC.Gdk_GC;
 
       Initial_Pos  : Gint;
       Selected     : Child_Description_Access;
