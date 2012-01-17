@@ -85,12 +85,12 @@ class GIR(object):
             k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
             for cl in root.findall(k):
                 self.interfaces[cl.get("name")] = self._create_class(
-                    cl, is_interface=True)
+                    root, cl, is_interface=True)
 
             k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
             for cl in root.findall(k):
                 self.classes[cl.get(ctype_qname)] = self._create_class(
-                    cl, is_interface=False)
+                    root, cl, is_interface=False)
 
             k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
             for cl in root.findall(k):
@@ -102,7 +102,17 @@ class GIR(object):
 
             self.globals.add(root)
 
-    def _create_class(self, node, is_interface):
+    def _get_class_node(self, rootNode, girname):
+        """Find the <class> node in the same XML document as node that matches
+           [girname].
+        """
+        k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
+        for cl in rootNode.findall(k):
+            if cl.get("name") == girname:
+                return cl
+        return None
+
+    def _create_class(self, rootNode, node, is_interface):
         n = node.get("name")
 
         if is_interface:
@@ -113,7 +123,7 @@ class GIR(object):
 
         naming.add_type_exception(cname=node.get(ctype_qname), type=t)
         naming.add_girname(girname=n, ctype=node.get(ctype_qname))
-        return GIRClass(self, node, is_interface)
+        return GIRClass(self, rootNode, node, is_interface)
 
     def debug(self, element):
         """A debug form of element"""
@@ -500,9 +510,10 @@ class SubprogramProfile(object):
 class GIRClass(object):
     """Represents a gtk class"""
 
-    def __init__(self, gir, node, is_interface):
+    def __init__(self, gir, rootNode, node, is_interface):
         self.gir = gir
         self.node = node
+        self.rootNode = rootNode
         self.ctype = self.node.get(ctype_qname)
         self._subst = dict()  # for substitution in string templates
         self._private = ""
@@ -1279,10 +1290,16 @@ See Glib.Properties for more information on properties)""")
         self._subst["typename"] = typename[typename.rfind(".") + 1:]
         self._subst["cname"] = self.ctype
 
-        #parent_ctype = naming.ctype_from_girname(self.node.get("parent"))
-        #parent = naming.full_type(parent_ctype).ada
+        # The parent is unfortunately specified as a GIR name. But that creates
+        # ambiguities when loading both Gtk and Gdk, which for instance both
+        # define "Window". So we first look in the same file as the current
+        # Class.
 
-        parent = naming.type(self.node.get("parent")).ada
+        parent = gir._get_class_node(
+            self.rootNode, girname=self.node.get("parent"))
+        parent = naming.type(
+            name=self.node.get("parent"),  # GIRName
+            cname=parent and parent.get(ctype_qname)).ada
 
         if parent and parent.rfind(".") != -1:
             self._subst["parent_pkg"] = parent[:parent.rfind(".")]

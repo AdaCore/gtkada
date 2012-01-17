@@ -212,12 +212,10 @@ package body Gtk.Toolbar is
       (Toolbar   : access Gtk_Toolbar_Record;
        Icon_Size : Gtk.Enums.Gtk_Icon_Size)
    is
-      procedure Internal
-         (Toolbar   : System.Address;
-          Icon_Size : Gtk.Enums.Gtk_Icon_Size);
+      procedure Internal (Toolbar : System.Address; Icon_Size : Integer);
       pragma Import (C, Internal, "gtk_toolbar_set_icon_size");
    begin
-      Internal (Get_Object (Toolbar), Icon_Size);
+      Internal (Get_Object (Toolbar), Gtk.Enums.Gtk_Icon_Size'Pos (Icon_Size));
    end Set_Icon_Size;
 
    --------------------

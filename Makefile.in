@@ -44,6 +44,7 @@ generate: force
 	${RM} src/generated/*.ad?
 	python contrib/binding.py \
 		--gir-file=contrib/Gtk-3.0.gir \
+		--gir-file=contrib/Gdk-3.0.gir \
 		--xml-file=contrib/binding.xml \
 		--ada-output=src/generated/tmp.ada \
 		--c-output=src/misc_generated.c
