@@ -38,12 +38,12 @@
 --  <group>Menus and Toolbars</group>
 
 with Glib.Properties;
-with Gtk.Item;
+with Gtk.Bin;
 with Gtk.Widget;
 
 package Gtk.Menu_Item is
 
-   type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
+   type Gtk_Menu_Item_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
    Null_Submenu : constant Widget.Gtk_Widget;
@@ -278,7 +278,7 @@ package Gtk.Menu_Item is
    Width_Chars_Property   : constant Glib.Properties.Property_Int;
 
 private
-   type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
+   type Gtk_Menu_Item_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
    Accel_Path_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("accel-path");
