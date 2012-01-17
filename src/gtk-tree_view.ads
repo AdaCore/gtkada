@@ -29,9 +29,9 @@
 --  <testgtk>create_tree_view.adb</testgtk>
 --  <screenshot>gtk-tree_view</screenshot>
 
+with Cairo;
 with Glib.Properties;
 with Gdk.Dnd;
-with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
@@ -868,7 +868,7 @@ package Gtk.Tree_View is
    function Create_Row_Drag_Icon
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path)
-      return Gdk.Pixmap.Gdk_Pixmap;
+      return Cairo.Cairo_Surface;
    --  Creates a Gdk_Pixmap representation of the row at path. This image is
    --  used for a drag icon.
    --  The returned pixmap must be freed by the user
