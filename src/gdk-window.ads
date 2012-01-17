@@ -330,18 +330,6 @@ package Gdk.Window is
       Height : Gint);
    --  Same as Clear_Area, but generates an expose event.
 
-   procedure Copy_Area
-     (Window        : Gdk_Window;
-      Gc            : Gdk.Gdk_GC;
-      X             : Gint;
-      Y             : Gint;
-      Source_Window : Gdk_Window;
-      Source_X      : Gint;
-      Source_Y      : Gint;
-      Width         : Gint;
-      Height        : Gint);
-   --  Obsolete. Use Gdk.Drawable.Draw_Drawable instead.
-
    function Create_Similar_Surface
      (Window  : Gdk_Window;
       Content : Cairo.Cairo_Content;
@@ -465,11 +453,6 @@ package Gdk.Window is
    procedure Set_Background
      (Window : Gdk_Window; Color : Gdk.Color.Gdk_Color);
 
-   procedure Set_Back_Pixmap
-     (Window          : Gdk_Window;
-      Pixmap          : Gdk.Gdk_Pixmap;
-      Parent_Relative : Boolean);
-
    procedure Set_Cursor
      (Window : Gdk_Window; Cursor : Gdk.Cursor.Gdk_Cursor);
    --  Note: the window must be realized first, ie have an associated X11/Win32
@@ -498,12 +481,6 @@ package Gdk.Window is
    --  Obtains the position of a window in root window coordinates. (Compare
    --  with Get_Position and Get_Geometry which return the position of a window
    --  relative to its parent window)
-
-   procedure Get_Desk_Relative_Origin
-     (Window  : Gdk_Window;
-      X       : out Gint;
-      Y       : out Gint;
-      Success : out Boolean);
 
    procedure Get_Root_Origin
      (Window : Gdk_Window;
@@ -583,10 +560,6 @@ package Gdk.Window is
      (Window              : Gdk_Window;
       Rectangle           : Gdk.Rectangle.Gdk_Rectangle;
       Invalidate_Children : Boolean);
-
-   function Get_Toplevels return Gdk_Window_List.Glist;
-   --  The returned list must be freed by calling Gdk_Window_List.Free.
-   --  Consider using Gtk.Window.List_Toplevels instead.
 
    procedure Iconify (Window : Gdk_Window);
 
