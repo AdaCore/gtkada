@@ -370,6 +370,15 @@ be used for top-level widgets.
 Queue_Clear and Queue_Clear_Area have been removed, call Queue_Draw and
 Queue_Draw_Area instead.
 
+Gtk.Window
+==========
+
+Set_Has_Frame, Get_Has_Frame, Set_Frame_Dimensions, Get_Frame_Dimensions:
+these special-purpose subprograms have been removed without replacement.
+
+Get_Gravity, Set_Gravity: these have been removed, use the property
+Gravity_Property instead.
+
 Gnome.App_Bar
 =============
 
