@@ -1,5 +1,5 @@
 with "../shared";
-with "gtkextra/gtkextra";
+--  with "gtkextra/gtkextra";
 
 project GtkAda_Src is
    for Languages use ("C", "Ada");
