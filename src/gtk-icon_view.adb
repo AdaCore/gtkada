@@ -329,7 +329,7 @@ package body Gtk.Icon_View is
      (Icon_View : access Gtk_Icon_View_Record) return Gtk_Orientation
    is
       function Internal (Icon_View : System.Address) return Gtk_Orientation;
-      pragma Import (C, Internal, "gtk_icon_view_get_orientation");
+      pragma Import (C, Internal, "gtk_icon_view_get_item_orientation");
    begin
       return Internal (Get_Object (Icon_View));
    end Get_Orientation;
@@ -812,7 +812,7 @@ package body Gtk.Icon_View is
    is
       procedure Internal
         (Icon_View   : System.Address; Orientation : Gtk_Orientation);
-      pragma Import (C, Internal, "gtk_icon_view_set_orientation");
+      pragma Import (C, Internal, "gtk_icon_view_set_item_orientation");
    begin
       Internal (Get_Object (Icon_View), Orientation);
    end Set_Orientation;
