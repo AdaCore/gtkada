@@ -125,11 +125,11 @@ package body Gtk.Accel_Group is
          (Accel_Group : System.Address;
           Accel_Key   : Guint;
           Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
-          Accel_Flags : Gtk_Accel_Flags;
+          Accel_Flags : Integer;
           Closure     : C_Gtk_Accel_Group_Activate);
       pragma Import (C, Internal, "gtk_accel_group_connect");
    begin
-      Internal (Get_Object (Accel_Group), Accel_Key, Accel_Mods, Accel_Flags, Closure);
+      Internal (Get_Object (Accel_Group), Accel_Key, Accel_Mods, Gtk.Accel_Group.Gtk_Accel_Flags'Pos (Accel_Flags), Closure);
    end Connect;
 
    ---------------------

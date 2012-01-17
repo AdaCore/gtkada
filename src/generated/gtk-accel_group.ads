@@ -41,20 +41,28 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Types;       use Gdk.Types;
-with Glib;            use Glib;
-with Glib.Object;     use Glib.Object;
-with Glib.Properties; use Glib.Properties;
+with Gdk.Types;               use Gdk.Types;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
 
 package Gtk.Accel_Group is
 
    type Gtk_Accel_Group_Record is new GObject_Record with null record;
    type Gtk_Accel_Group is access all Gtk_Accel_Group_Record'Class;
 
-   type Gtk_Accel_Flags is new Guint;
-   Accel_Visible : constant Gtk_Accel_Flags := 2 ** 0;
-   Accel_Locked  : constant Gtk_Accel_Flags := 2 ** 1;
-   Accel_Mask    : constant Gtk_Accel_Flags := 16#07#;
+   type Gtk_Accel_Flags is mod 2 ** Integer'Size;
+
+
+   Accel_Visible : constant Gtk_Accel_Flags := 1;
+   Accel_Locked : constant Gtk_Accel_Flags := 2;
+   Accel_Mask : constant Gtk_Accel_Flags := 7;
+
+   package Gtk_Accel_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Accel_Flags);
+   type Property_Gtk_Accel_Flags is new Gtk_Accel_Flags_Properties.Property;
+
 
 
    type Gtk_Accel_Key is record

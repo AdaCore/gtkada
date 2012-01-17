@@ -1154,28 +1154,7 @@ lower    value        value + page_size       upper
      <doc group="Selectors" testgtk="create_calendar.adb"
           screenshot="gtk-calendar"/>
      <parameter name="self" ada="Calendar"/>
-     <extra>
-        <type ctype="GtkCalendarDisplayOptions"
-              ada="Gtk_Calendar_Display_Options">
-   type Gtk_Calendar_Display_Options is mod 2 ** 8;
-
-   Show_Heading : constant Gtk_Calendar_Display_Options := 2 ** 0;
-   --  Specify that the month and year should be displayed.
-
-   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2 ** 1;
-   --  Specify that three letter day descriptions should be present.
-
-   No_Month_Change : constant Gtk_Calendar_Display_Options := 2 ** 2;
-   --  Prevent the user from switching months with the calendar.
-
-   Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 2 ** 3;
-   --  Display each week numbers of the current year, down the left side of
-   --  the calendar.
-
-   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
-   --  Start the calendar week on Monday, instead of the default Sunday.
-        </type>
-     </extra>
+     <enum ctype="GtkCalendarDisplayOptions" prefix="GTK_CALENDAR_"/>
   </package>
 
   <package id="Gtk.Size_Group">
@@ -1185,7 +1164,7 @@ lower    value        value + page_size       upper
         <parameter name="mode" default="Both"/>
      </method>
      <method id="gtk_size_group_get_widgets" return="WidgetSList"/>
-     <enum ctype="GtkSizeGroupMode" ada="Size_Group_Mode"/>
+     <enum ctype="GtkSizeGroupMode" ada="Size_Group_Mode" prefix="GTK_SIZE_GROUP_"/>
   </package>
 
   <package id="Gtk.Alignment">
@@ -1384,13 +1363,8 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
                ada="Set_Default_Mod_Mask" />
      <function id="gtk_accelerator_get_default_mod_mask"
                return="GdkModifierType" ada="Get_Default_Mod_Mask"/>
+     <enum ctype="GtkAccelFlags" prefix="GTK_"/>
      <extra>
-        <type ctype="GtkAccelFlags" ada="Gtk_Accel_Flags">
-   type Gtk_Accel_Flags is new Guint;
-   Accel_Visible : constant Gtk_Accel_Flags := 2 ** 0;
-   Accel_Locked  : constant Gtk_Accel_Flags := 2 ** 1;
-   Accel_Mask    : constant Gtk_Accel_Flags := 16#07#;
-        </type>
         <type ctype="GtkAccelKey*" ada="Gtk_Accel_Key">
    type Gtk_Accel_Key is record
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
@@ -1773,13 +1747,13 @@ The following default key bindings are provided, but you can use a gtkrc file to
 
   <package id="Gtk.File_Filter">
      <doc group=""/>
+     <enum ctype="GtkFileFilterFlags"/>
      <extra>
         <with_spec pkg="Interfaces.C.Strings" />
         <with_spec pkg="Gtk.Enums" />
         <type ctype="GtkFileFilterInfo*" ada="Gtk_File_Filter_Info">
    type Gtk_File_Filter_Info is record
       Contains     : Gtk.Enums.Gtk_File_Filter_Flags;
-
       Filename     : Interfaces.C.Strings.chars_ptr;
       URI          : Interfaces.C.Strings.chars_ptr;
       Display_Name : Interfaces.C.Strings.chars_ptr;

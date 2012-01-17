@@ -54,6 +54,9 @@ nparams = QName(uri, "parameters").text
 nreturn = QName(uri, "return-value").text
 nfield = QName(uri, "field").text
 nmember = QName(uri, "member").text
+nenumeration = QName(uri, "enumeration").text
+nbitfield = QName(uri, "bitfield").text
+nvalue = QName(uri, "value").text
 nimplements = QName(uri, "implements").text
 
 class GIR(object):
@@ -88,6 +91,10 @@ class GIR(object):
                 cl, is_interface=False)
 
         k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
+        for cl in self.root.findall(k):
+            self.enums[cl.get(ctype)] = cl
+
+        k = "{%(uri)s}namespace/{%(uri)s}bitfield" % {"uri":uri}
         for cl in self.root.findall(k):
             self.enums[cl.get(ctype)] = cl
 
@@ -1200,6 +1207,60 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment('- "%(name)s"' % impl)
                 section.add_code(impl["code"])
 
+    def enumeration_binding(self, ctype, type, prefix):
+        """Return the Ada type definition for the <enumeration> ctype.
+           type is the corresponding instance of CType().
+           This function also handles <bitfield> types.
+           [prefix] is removed from the values to get the default Ada name,
+           which can be overridden in data.cname_to_adaname.
+        """
+        base = type.ada
+        if "." in base:
+            base = base[base.rfind(".") + 1:]
+
+        decl = "\ntype %s is " % base
+        node = gir.enums[ctype]
+
+        members = []
+        
+        for member in node.findall(nmember):
+            cname = member.get(cidentifier)
+            m = naming.adamethod_name(cname, warning_if_not_found=False)
+            
+            if cname == m:
+                # No special case ? Attempt a simple rule (remove leading
+                # Gtk prefix, and capitalize the value)
+                m = cname.replace(prefix, "").title()
+                
+            elif "." in m:
+                m = m[m.rfind(".") + 1:]
+                
+            # For proper substitution in docs
+            naming.add_cmethod(
+                cname=cname,
+                adaname="%s.%s" % (self.name, m))
+            
+            members.append((m, member.get("value")))
+
+        if node.tag == nenumeration:
+            decl += "(\n" + ",\n".join(m[0] for m in members) + ");\n"
+            decl += "pragma Convention (C, %s);\n" % base
+            decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n"
+
+        elif node.tag == nbitfield:
+            decl += "mod 2 ** Integer'Size;\n";
+            decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n\n"
+
+            for m, value in members:
+                decl += "%s : constant %s := %s;\n" % (m, base, value)
+
+        decl += "\npackage %s_Properties is\n" % base
+        decl += "   new Generic_Internal_Discrete_Property (%s);\n" % base
+        decl += "type Property_%s is new %s_Properties.Property;\n\n" % (
+            base, base)
+
+        self.pkg.add_with("Glib.Generic_Properties")
+        return decl
 
     def generate(self, gir):
         if self._generated:
@@ -1287,46 +1348,8 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
-        for ctype, enum in self.gtkpkg.enumerations():
-            base = enum.ada
-            if "." in base:
-                base = base[base.rfind(".") + 1:]
-
-            decl = "\ntype %s is (\n" % base
-            node = gir.enums[ctype]
-            members = []
-            
-            for member in node.findall(nmember):
-                cname = member.get(cidentifier)
-                m = naming.adamethod_name(cname, warning_if_not_found=False)
-
-                if cname == m:
-                    # No special case ? Attempt a simple rule (remove leading
-                    # Gtk prefix, and capitalize the value)
-                    m = cname.replace("GTK_", "").title()
-
-                elif "." in m:
-                    m = m[m.rfind(".") + 1:]
-
-                # For proper substitution in docs
-                naming.add_cmethod(
-                    cname=cname,
-                    adaname="%s.%s" % (self.name, m))
-
-                members.append(m)
-
-            decl += ",\n      ".join(members)
-            decl += ");\n"
-            decl += "pragma Convention (C, %s);\n" % base
-            decl += format_doc([node.findtext(ndoc, "")], indent="")
-            decl += "\n\n"
-            decl += "package %s_Properties is\n" % base
-            decl += "   new Generic_Internal_Discrete_Property (%s);\n" % base
-            decl += "type Property_%s is new %s_Properties.Property;\n\n" % (
-                base, base)
-
-            self.pkg.add_with("Glib.Generic_Properties")
-
+        for ctype, enum, prefix in self.gtkpkg.enumerations():
+            decl = self.enumeration_binding(ctype, enum, prefix)
             section.add_code(decl)
 
         if extra:

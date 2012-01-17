@@ -78,11 +78,16 @@ Where the package node is defined as follows:
        <!-- The following statement indicates that the binding for the
             enumeration should be added in the current package.
             This automatically generates the naming exceptions for the type
-            and its values, but you can override the mapping by adding entries
-            in data.py (cname_to_adaname)
+            and its values, but you can override the mapping by:
+              * adding entries in data.py (cname_to_adaname)
+                For instance:    "GTK_SIZE_GROUP_NONE": "None"
+              * or setting the prefix attribute, for instance
+                 prefix="GTK_SIZE_GROUP_"
        -->           
        <enum ctype="..."
-             ada="..."/>   <!-- optional Ada name (no package info needed) -->
+             ada="..."     <!-- optional Ada name (no package info needed) -->
+             prefix="GTK_" <!-- remove prefix from values to get Ada name -->
+       />
 
        <extra>
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
@@ -150,7 +155,8 @@ class GtkAdaPackage(object):
         if self.node:
             for enum in self.node.findall("enum"):
                 result.append((enum.get("ctype"),
-                               naming.type(name="", cname=enum.get("ctype"))))
+                               naming.type(name="", cname=enum.get("ctype")),
+                               enum.get("prefix", "GTK_")))
         return result
 
     def get_doc(self):

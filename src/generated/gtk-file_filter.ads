@@ -66,17 +66,33 @@ pragma Ada_05;
 --  <group></group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Types;           use Glib.Types;
-with Gtk.Buildable;        use Gtk.Buildable;
-with Gtk.Enums;            use Gtk.Enums;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Enums;               use Gtk.Enums;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package Gtk.File_Filter is
 
    type Gtk_File_Filter_Record is new GObject_Record with null record;
    type Gtk_File_Filter is access all Gtk_File_Filter_Record'Class;
+
+   type Gtk_File_Filter_Flags is mod 2 ** Integer'Size;
+   --  These flags indicate what parts of a Gtk_File_Filter_Info struct are
+   --  filled or need to be filled.
+
+   File_Filter_Filename : constant Gtk_File_Filter_Flags := 1;
+   File_Filter_Uri : constant Gtk_File_Filter_Flags := 2;
+   File_Filter_Display_Name : constant Gtk_File_Filter_Flags := 4;
+   File_Filter_Mime_Type : constant Gtk_File_Filter_Flags := 8;
+
+   package Gtk_File_Filter_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Filter_Flags);
+   type Property_Gtk_File_Filter_Flags is new Gtk_File_Filter_Flags_Properties.Property;
+
+
 
    type Gtk_File_Filter_Info is record
       Contains     : Gtk.Enums.Gtk_File_Filter_Flags;

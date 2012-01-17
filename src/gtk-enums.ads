@@ -174,22 +174,6 @@ package Gtk.Enums is
    --  Identify the various errors that can occur while calling
    --  Gtk_File_Chooser functions
 
-   type Gtk_File_Filter_Flags is mod 2 ** 32;
-   --  These flags indicate what parts of a Gtk_File_Filter_Info record
-   --  are filled or need to be filled.
-
-   Gtk_File_Filter_Filename     : constant Gtk_File_Filter_Flags := 2 ** 0;
-   --  the filename of the file being tested
-
-   Gtk_File_Filter_URI          : constant Gtk_File_Filter_Flags := 2 ** 1;
-   --  the URI for the file being tested
-
-   Gtk_File_Filter_Display_Name : constant Gtk_File_Filter_Flags := 2 ** 2;
-   --  the string that will be used to display the file in the file chooser
-
-   Gtk_File_Filter_MIME_Type    : constant Gtk_File_Filter_Flags := 2 ** 3;
-   --  the MIME type of the file
-
    type Gtk_Icon_Size is new Gint;
    Icon_Size_Invalid       : constant Gtk_Icon_Size := 0;
    Icon_Size_Menu          : constant Gtk_Icon_Size := 1;

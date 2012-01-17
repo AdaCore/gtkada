@@ -50,34 +50,32 @@ pragma Ada_05;
 --  <testgtk>create_calendar.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Widget;      use Gtk.Widget;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Calendar is
 
    type Gtk_Calendar_Record is new Gtk_Widget_Record with null record;
    type Gtk_Calendar is access all Gtk_Calendar_Record'Class;
 
-   type Gtk_Calendar_Display_Options is mod 2 ** 8;
+   type Gtk_Calendar_Display_Options is mod 2 ** Integer'Size;
+   --  These options can be used to influence the display and behaviour of a
+   --  Gtk.Calendar.Gtk_Calendar.
 
-   Show_Heading : constant Gtk_Calendar_Display_Options := 2 ** 0;
-   --  Specify that the month and year should be displayed.
+   Show_Heading : constant Gtk_Calendar_Display_Options := 1;
+   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2;
+   No_Month_Change : constant Gtk_Calendar_Display_Options := 4;
+   Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 8;
+   Show_Details : constant Gtk_Calendar_Display_Options := 32;
 
-   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2 ** 1;
-   --  Specify that three letter day descriptions should be present.
+   package Gtk_Calendar_Display_Options_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Calendar_Display_Options);
+   type Property_Gtk_Calendar_Display_Options is new Gtk_Calendar_Display_Options_Properties.Property;
 
-   No_Month_Change : constant Gtk_Calendar_Display_Options := 2 ** 2;
-   --  Prevent the user from switching months with the calendar.
-
-   Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 2 ** 3;
-   --  Display each week numbers of the current year, down the left side of
-   --  the calendar.
-
-   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
-   --  Start the calendar week on Monday, instead of the default Sunday.
 
 
    type Gtk_Calendar_Detail_Func is access function
