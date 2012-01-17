@@ -1810,9 +1810,6 @@ The following default key bindings are provided, but you can use a gtkrc file to
 
   <package id="Gtk.Toolbar">
      <parameter name="self" ada="Toolbar"/>
-     <method id="gtk_toolbar_set_icon_size">
-        <parameter name="icon_size" type="Gtk.Enums.Gtk_Icon_Size"/>
-     </method>
      <method id="gtk_toolbar_set_show_arrow">
         <parameter name="show_arrow" default="True"/>
      </method>
