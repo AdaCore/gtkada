@@ -41,9 +41,7 @@
 with Glib.Object;
 with Glib.Values;
 with Gdk.Color;        use Gdk.Color;
-with Gdk.Font;         use Gdk.Font;
 with Gdk.Rectangle;
-with Gdk.Types;
 with Gdk.Window;
 with Gtk.Enums;        use Gtk.Enums;
 with Pango.Font;
@@ -227,11 +225,6 @@ package Gtk.Style is
    function Get_Font_Description
      (Style : Gtk_Style) return Pango.Font.Pango_Font_Description;
    --  Set or get the font to use for this style
-
-   --  <doc_ignore>
-   function Get_Font (Style : Gtk_Style) return Gdk.Font.Gdk_Font;
-   pragma Obsolescent ("Use Get_Font_Description");  --  Get_Font
-   --  </doc_ignore>
 
    function X_Thickness (Style : Gtk_Style) return Gint;
    --  Width of the vertical scrollbars and ranges when Style is applied.
@@ -476,18 +469,6 @@ package Gtk.Style is
    --  Draws a radio button indicator in the given rectangle on Window with
    --  the given parameters.
 
-   procedure Paint_Polygon
-     (Style       : access Gtk_Style_Record;
-      Window      : Gdk_Window;
-      State_Type  : Gtk_State_Type;
-      Shadow_Type : Gtk_Shadow_Type;
-      Area        : Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area;
-      Widget      : access Glib.Object.GObject_Record'Class;
-      Detail      : String := "";
-      Points      : Gdk.Types.Gdk_Points_Array;
-      Fill        : Boolean);
-   --  Draws a polygon on Window with the given parameters.
-
    procedure Paint_Resize_Grip
      (Style      : access Gtk_Style_Record;
       Window     : Gdk_Window;
@@ -580,60 +561,6 @@ package Gtk.Style is
       X          : Gint);
    --  Draws a vertical line from (X, Y1) to (X, Y2) in Window
    --  using the given style and state.
-
-   -------------
-   -- Drawing --
-   -------------
-   --  All these procedures are obsolescent, and have been replaced by the
-   --  Paint_* versions below.
-   --  <doc_ignore>
-
-   procedure Draw_Polygon
-     (Style       : Gtk_Style;
-      Window      : Gdk.Window.Gdk_Window;
-      State_Type  : Enums.Gtk_State_Type;
-      Shadow_Type : Enums.Gtk_Shadow_Type;
-      Points      : Gdk.Types.Gdk_Points_Array;
-      Fill        : Boolean);
-   pragma Obsolescent ("Use Paint_Polygon");  --  Draw_Polygon
-   --  Draws a polygon in Window
-
-   procedure Draw_Arrow
-     (Style       : Gtk_Style;
-      Window      : Gdk.Window.Gdk_Window;
-      State_Type  : Enums.Gtk_State_Type;
-      Shadow_Type : Enums.Gtk_Shadow_Type;
-      Arrow_Type  : Enums.Gtk_Arrow_Type;
-      Fill        : Boolean;
-      X, Y        : Gint;
-      Width       : Gint;
-      Height      : Gint);
-   pragma Obsolescent ("Use Pain_Arrow");  --  Draw_Arrow
-   --  Draws an arrow in Window, within the given rectangle
-
-   procedure Draw_Shadow
-     (Style       : access Gtk_Style_Record;
-      Window      : Gdk_Window;
-      State_Type  : Gtk_State_Type;
-      Shadow_Type : Gtk_Shadow_Type;
-      X           : Gint;
-      Y           : Gint;
-      Width       : Gint;
-      Height      : Gint);
-   pragma Obsolescent;  --  Draw_Shadow
-   --  Draws a shadow around the given rectangle in @window
-   --  using the given style and state and shadow type.
-
-   procedure Draw_String
-     (Style       : Gtk_Style;
-      Window      : Gdk.Window.Gdk_Window;
-      State_Type  : Enums.Gtk_State_Type;
-      X, Y        : Gint;
-      Str         : UTF8_String);
-   pragma Obsolescent ("Use Paint_String");  --  Draw_String
-   --  Draws a text on Window
-
-   --  </doc_ignore>
 
    -------------
    -- Borders --
