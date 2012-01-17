@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Event_Box.Gtk_Event_Box widget is a subclass of Gtk.Bin.Gtk_Bin
 --  which also has its own window. It is useful since it allows you to catch

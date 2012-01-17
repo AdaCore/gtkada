@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  This widget provides a dialog for selecting a font. See also
 --  Gtk.Font_Selection.

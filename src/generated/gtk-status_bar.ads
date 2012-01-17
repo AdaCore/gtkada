@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  A Gtk.Status_Bar.Gtk_Status_Bar is usually placed along the bottom of an
 --  application's main Gtk.Window.Gtk_Window. It may provide a regular

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  A single radio button performs the same basic function as a
 --  Gtk.Check_Button.Gtk_Check_Button, as its position in the object hierarchy

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item is a separator used to
 --  group items within a menu. It displays a horizontal line with a shadow to

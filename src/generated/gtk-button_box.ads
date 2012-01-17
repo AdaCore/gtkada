@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
 --  contain buttons.

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Table.Gtk_Table functions allow the programmer to arrange widgets
 --  in rows and columns, making it easy to align many widgets next to each

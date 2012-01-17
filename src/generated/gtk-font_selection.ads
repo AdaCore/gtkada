@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  This widget provides a nice way for the user of your application to select
 --  fonts. It first searches on your system for the list of fonts available,

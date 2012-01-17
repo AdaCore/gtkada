@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  Gtk.Paned.Gtk_Paned has two panes, arranged either horizontally or
 --  vertically. The division between the two panes is adjustable by the user by

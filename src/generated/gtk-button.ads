@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Button.Gtk_Button widget is generally used to attach a function to
 --  that is called when the button is pressed. The various signals and how to

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its children
 --  vertically. The beginning of the box (when you add children with

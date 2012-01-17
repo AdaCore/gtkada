@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
 --  implementing scrollability for child widgets that lack their own scrolling

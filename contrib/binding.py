@@ -778,7 +778,6 @@ class GIRClass(object):
         # Now create a generic package that will provide access to
         # user_data
 
-        self.pkg.language_version = "pragma Ada_05;"
         self.pkg.add_with("Glib.Object", do_use=False, specs=False)
 
         pkg2 = Package(name="%s_User_Data" % adaname)
@@ -1341,6 +1340,7 @@ See Glib.Properties for more information on properties)""")
                 type=GObject(typename))
 
         self.pkg = gir.get_package(into or self.name, doc=girdoc)
+        self.pkg.language_version = "pragma Ada_05;"
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)

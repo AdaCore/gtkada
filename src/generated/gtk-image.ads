@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Image.Gtk_Image widget displays an image. Various kinds of object
 --  can be displayed as an image; most typically, you would load a

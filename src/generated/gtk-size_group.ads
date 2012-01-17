@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  Gtk.Size_Group.Gtk_Size_Group provides a mechanism for grouping a number
 --  of widgets together so they all request the same amount of space. This is

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The GtkAboutDialog offers a simple way to display information about a
 --  program like its logo, name, copyright, website and license. It is also

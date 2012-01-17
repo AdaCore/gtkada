@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The frame widget is a Bin that surrounds its child with a decorative frame
 --  and an optional label. If present, the label is drawn in a gap in the top

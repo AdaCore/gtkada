@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  A Gtk_Hbutton_Box is a specific Gtk_Button_Box that organizes its children
 --  horizontally. The beginning of the box (when you add children with

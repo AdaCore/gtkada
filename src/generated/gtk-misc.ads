@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  The Gtk.Misc.Gtk_Misc widget is an abstract widget which is not useful
 --  itself, but is used to derive subclasses which have alignment and padding

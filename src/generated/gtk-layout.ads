@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 --  <description>
 --  Gtk.Layout.Gtk_Layout is similar to Gtk.Drawing_Area.Gtk_Drawing_Area in
 --  that it's a "blank slate" and doesn't do anything but paint a blank
