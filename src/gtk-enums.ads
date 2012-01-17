@@ -522,6 +522,9 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Grid_Lines);
    pragma Convention (C, Gtk_Path_Type);
    pragma Convention (C, Gtk_Expander_Style);
+   pragma Convention (C, Gtk_File_Chooser_Action);
+   pragma Convention (C, Gtk_File_Chooser_Confirmation);
+   pragma Convention (C, Gtk_File_Chooser_Error);
    pragma Convention (C, Gtk_Text_Direction);
    pragma Convention (C, Gtk_Justification);
    pragma Convention (C, Gtk_Menu_Direction_Type);
