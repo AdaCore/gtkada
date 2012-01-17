@@ -179,7 +179,7 @@ package Gtk.Enums is
    --  are filled or need to be filled.
 
    Gtk_File_Filter_Filename     : constant Gtk_File_Filter_Flags := 2 ** 0;
-   -- the filename of the file being tested
+   --  the filename of the file being tested
 
    Gtk_File_Filter_URI          : constant Gtk_File_Filter_Flags := 2 ** 1;
    --  the URI for the file being tested
@@ -188,7 +188,7 @@ package Gtk.Enums is
    --  the string that will be used to display the file in the file chooser
 
    Gtk_File_Filter_MIME_Type    : constant Gtk_File_Filter_Flags := 2 ** 3;
-   --  the MIME type of the file 
+   --  the MIME type of the file
 
    type Gtk_Icon_Size is new Gint;
    Icon_Size_Invalid       : constant Gtk_Icon_Size := 0;

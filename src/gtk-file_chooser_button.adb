@@ -27,7 +27,6 @@
 --  <group>Selectors</group>
 --  <screenshot>file-button.png</screenshot>
 
-with Gtk.Enums;
 with Gtk.File_Chooser;     use Gtk.File_Chooser;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;

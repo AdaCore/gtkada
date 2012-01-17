@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Enums;
 with Gtk.File_Chooser;   use Gtk.File_Chooser;
 with Gtk.Window;         use Gtk.Window;
 

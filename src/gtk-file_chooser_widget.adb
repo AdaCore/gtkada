@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Enums;
 with Gtk.File_Chooser;  use Gtk.File_Chooser;
 
 with Glib.Type_Conversion_Hooks;
