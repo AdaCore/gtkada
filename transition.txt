@@ -20,6 +20,11 @@ Gdk.Cursor
 The Gdk_New function working on Gdk_Pixmap has been removed. Use
  Gdk.Pixbuf.Gdk_New_From_Pixbuf to create a cursor from a pixbuf.
 
+Gdk.Drawable
+============
+
+All Draw_* subprograms have been removed: use Cairo for low-level drawing.
+
 Gdk.Event
 =========
 
@@ -31,12 +36,14 @@ Set_Requestor/Get_Requestor now work on a Gdk_Window.
 The APIs to Get_Message_Type, Set_Message_Type, Get_Data, and Set_Data have
 been removed without replacement.
 
+Get_Graphics_Expose and Send_Client_Message have been removed with no
+replacement.
+
 Gdk.Font
 ========
 
-Metrics subprograms Get_Ascent and Get_Descent have been removed:
-instead, use the corresponding functions in Pango.Font to get font
-metrics.
+This package has been removed: use Pango.Font for fonts manipulation,
+Cairo.Font_Face and Cairo.Font_Options for text rendering.
 
 Gdk.GC
 ======
