@@ -523,9 +523,6 @@ package Gtk.Window is
    --  Sets or gets whether the user can resize a window.
    --  Windows are user resizable by default.
 
-   procedure Set_Gravity
-     (Window  : access Gtk_Window_Record;
-      Gravity : Gdk.Window.Gdk_Gravity);
    function Get_Gravity
      (Window : access Gtk_Window_Record) return Gdk.Window.Gdk_Gravity;
    --  Window gravity defines the "reference point" to be used when
@@ -545,26 +542,6 @@ package Gtk.Window is
    --  itself.
    --
    --  The default window gravity is Gravity_North_West.
-
-   procedure Set_Has_Frame (Window : access Gtk_Window_Record);
-   function Get_Has_Frame  (Window : access Gtk_Window_Record) return Boolean;
-   --  If this function is called on a window before it is realized
-   --  or showed it will have a "frame" window around widget-window.
-   --  Using the signal frame_event you can receive all events targeted at the
-   --  frame.
-   --
-   --  This function is used by the linux-fb port to implement managed
-   --  windows, but it could concievably be used by X-programs that
-   --  want to do their own window decorations.
-
-   procedure Set_Frame_Dimensions
-     (Window                   : access Gtk_Window_Record;
-      Left, Top, Right, Bottom : Gint);
-   procedure Get_Frame_Dimensions
-     (Window                   : access Gtk_Window_Record;
-      Left, Top, Right, Bottom : out Gint);
-   --  Change the size of the frame border.
-   --  This has only an effect for windows with frames (see Set_Has_Frame).
 
    procedure Fullscreen   (Window : access Gtk_Window_Record);
    procedure Unfullscreen (Window : access Gtk_Window_Record);
@@ -996,27 +973,6 @@ package Gtk.Window is
    function Get_Resizeable (Window : access Gtk_Window_Record) return Boolean
      renames Get_Resizable;
    --  pragma Obsolescent ("Use Gtk.Window.Get_Resizable instead");
-
-   procedure Set_Policy
-     (Window       : access Gtk_Window_Record;
-      Allow_Shrink : Boolean;
-      Allow_Grow   : Boolean;
-      Auto_Shrink  : Boolean);
-   pragma Obsolescent;  --  Set_Policy
-   --  Specify the behavior of the window with regards to size modifications.
-   --  Default values when the window is created are:
-   --    Allow_Shrink => False,
-   --    Allow_Grow   => True,
-   --    Auto_Shrink  => False.
-   --
-   --  If Allow_Shrink is False, then the minimum size of the window is
-   --  calculated once depending on its children, and the window can never be
-   --  smaller.
-   --  If Allow_Grow is False, then the maximum size of the window is
-   --  calculated once depending on its children, and the window can never be
-   --  bigger.
-   --  If Auto_Shrink if False, then the window is not shrinked when its
-   --  content changes.
 
    --  </doc_ignore>
 
