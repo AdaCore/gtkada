@@ -255,25 +255,6 @@ package body Gtk.Container is
       return Internal (Get_Object (Container));
    end Get_Resize_Mode;
 
-   ----------------------
-   -- Propagate_Expose --
-   ----------------------
-
-   procedure Propagate_Expose
-     (Container : access Gtk_Container_Record;
-      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Event     : Gdk.Event.Gdk_Event_Expose)
-   is
-      procedure Internal
-        (Container : System.Address;
-         Child     : System.Address;
-         Event     : Gdk.Event.Gdk_Event_Expose);
-      pragma Import (C, Internal, "gtk_container_propagate_expose");
-
-   begin
-      Internal (Get_Object (Container), Get_Object (Child), Event);
-   end Propagate_Expose;
-
    ------------
    -- Remove --
    ------------
