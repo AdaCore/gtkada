@@ -339,17 +339,63 @@ pragma Ada_05;
 --  <group></group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Object;     use Glib.Object;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Enums;       use Gtk.Enums;
-with Gtk.File_Filter; use Gtk.File_Filter;
-with Gtk.Widget;      use Gtk.Widget;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.File_Filter;         use Gtk.File_Filter;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.File_Chooser is
 
    type Gtk_File_Chooser is new Glib.Types.GType_Interface;
+
+   type Gtk_File_Chooser_Action is (
+      Action_Open,
+      Action_Save,
+      Action_Select_Folder,
+      Action_Create_Folder);
+   pragma Convention (C, Gtk_File_Chooser_Action);
+   --  Describes whether a Gtk.File_Chooser.Gtk_File_Chooser is being used to
+   --  open existing files or to save to a possibly new file.
+
+   package Gtk_File_Chooser_Action_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Action);
+   type Property_Gtk_File_Chooser_Action is new Gtk_File_Chooser_Action_Properties.Property;
+
+
+
+   type Gtk_File_Chooser_Confirmation is (
+      Confirmation_Confirm,
+      Confirmation_Accept_Filename,
+      Confirmation_Select_Again);
+   pragma Convention (C, Gtk_File_Chooser_Confirmation);
+   --  Used as a return value of handlers for the
+   --  Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal of a
+   --  Gtk.File_Chooser.Gtk_File_Chooser. This value determines whether the file
+   --  chooser will present the stock confirmation dialog, accept the user's
+   --  choice of a filename, or let the user choose another filename.
+
+   package Gtk_File_Chooser_Confirmation_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Confirmation);
+   type Property_Gtk_File_Chooser_Confirmation is new Gtk_File_Chooser_Confirmation_Properties.Property;
+
+
+
+   type Gtk_File_Chooser_Error is (
+      Error_Nonexistent,
+      Error_Bad_Filename,
+      Error_Already_Exists,
+      Error_Incomplete_Hostname);
+   pragma Convention (C, Gtk_File_Chooser_Error);
+   --  These identify the various errors that can occur while calling
+   --  Gtk.File_Chooser.Gtk_File_Chooser functions.
+
+   package Gtk_File_Chooser_Error_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Error);
+   type Property_Gtk_File_Chooser_Error is new Gtk_File_Chooser_Error_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -396,15 +442,15 @@ package Gtk.File_Chooser is
    --  "uri": URI of the folder to add
 
    function Get_Action
-      (Chooser : Gtk_File_Chooser) return Gtk.Enums.Gtk_File_Chooser_Action;
+      (Chooser : Gtk_File_Chooser) return Gtk_File_Chooser_Action;
    procedure Set_Action
       (Chooser : Gtk_File_Chooser;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action);
+       Action  : Gtk_File_Chooser_Action);
    --  Sets the type of operation that the chooser is performing; the user
    --  interface is adapted to suit the selected action. For example, an option
    --  to create a new folder might be shown if the action is
-   --  GTK_FILE_CHOOSER_ACTION_SAVE but not if the action is
-   --  GTK_FILE_CHOOSER_ACTION_OPEN.
+   --  Gtk.File_Chooser.Action_Save but not if the action is
+   --  Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.4
    --  "action": the action that the file selector is performing
 
@@ -413,7 +459,7 @@ package Gtk.File_Chooser is
       (Chooser        : Gtk_File_Chooser;
        Create_Folders : Boolean);
    --  Sets whether file choser will offer to create new folders. This is only
-   --  relevant if the action is not set to be GTK_FILE_CHOOSER_ACTION_OPEN.
+   --  relevant if the action is not set to be Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.18
    --  "create_folders": True if the New Folder button should be displayed
 
@@ -451,7 +497,7 @@ package Gtk.File_Chooser is
    procedure Set_Do_Overwrite_Confirmation
       (Chooser                   : Gtk_File_Chooser;
        Do_Overwrite_Confirmation : Boolean);
-   --  Sets whether a file chooser in GTK_FILE_CHOOSER_ACTION_SAVE mode will
+   --  Sets whether a file chooser in Gtk.File_Chooser.Action_Save mode will
    --  present a confirmation dialog if the user types a file name that already
    --  exists. This is False by default.
    --  Regardless of this setting, the Chooser will emit the
@@ -482,7 +528,7 @@ package Gtk.File_Chooser is
    --  Sets Filename as the current filename for the file chooser, by changing
    --  to the file's parent folder and actually selecting the file in list; all
    --  other files will be unselected. If the Chooser is in
-   --  GTK_FILE_CHOOSER_ACTION_SAVE mode, the file's base name will also appear
+   --  Gtk.File_Chooser.Action_Save mode, the file's base name will also appear
    --  in the dialog's file name entry.
    --  Note that the file must exist, or nothing will be done except for the
    --  directory change.
@@ -597,8 +643,8 @@ package Gtk.File_Chooser is
       (Chooser         : Gtk_File_Chooser;
        Select_Multiple : Boolean);
    --  Sets whether multiple files can be selected in the file selector. This
-   --  is only relevant if the action is set to be GTK_FILE_CHOOSER_ACTION_OPEN
-   --  or GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
+   --  is only relevant if the action is set to be Gtk.File_Chooser.Action_Open
+   --  or Gtk.File_Chooser.Action_Select_Folder.
    --  Since: gtk+ 2.4
    --  "select_multiple": True if multiple files can be selected.
 
@@ -617,7 +663,7 @@ package Gtk.File_Chooser is
        Uri     : UTF8_String) return Boolean;
    --  Sets the file referred to by Uri as the current file for the file
    --  chooser, by changing to the URI's parent folder and actually selecting
-   --  the URI in the list. If the Chooser is GTK_FILE_CHOOSER_ACTION_SAVE
+   --  the URI in the list. If the Chooser is Gtk.File_Chooser.Action_Save
    --  mode, the URI's base name will also appear in the dialog's file name
    --  entry.
    --  Note that the URI must exist, or nothing will be done except for the
@@ -783,19 +829,19 @@ package Gtk.File_Chooser is
    --  Glib.Properties for more information on properties)
    --
    --  Name: Action_Property
-   --  Type: Gtk.Enums.Gtk_File_Chooser_Action
+   --  Type: Gtk_File_Chooser_Action
    --  Flags: read-write
    --
    --  Name: Create_Folders_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  Whether a file chooser not in GTK_FILE_CHOOSER_ACTION_OPEN mode will
+   --  Whether a file chooser not in Gtk.File_Chooser.Action_Open mode will
    --  offer the user to create new folders.
    --
    --  Name: Do_Overwrite_Confirmation_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  Whether a file chooser in GTK_FILE_CHOOSER_ACTION_SAVE mode will
+   --  Whether a file chooser in Gtk.File_Chooser.Action_Save mode will
    --  present an overwrite confirmation dialog if the user selects a file name
    --  that already exists.
    --
@@ -831,7 +877,7 @@ package Gtk.File_Chooser is
    --  Type: Boolean
    --  Flags: read-write
 
-   Action_Property : constant Gtk.Enums.Property_Gtk_File_Chooser_Action;
+   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action;
    Create_Folders_Property : constant Glib.Properties.Property_Boolean;
    Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean;
    Extra_Widget_Property : constant Glib.Properties.Property_Object;
@@ -855,7 +901,7 @@ package Gtk.File_Chooser is
    --  This signal gets emitted whenever it is appropriate to present a
    --  confirmation dialog when the user has selected a file name that already
    --  exists. The signal only gets emitted when the file chooser is in
-   --  GTK_FILE_CHOOSER_ACTION_SAVE mode.
+   --  Gtk.File_Chooser.Action_Save mode.
    --  Most applications just need to turn on the
    --  Gtk.File_Chooser.Gtk_File_Chooser:do-overwrite-confirmation property (or
    --  call the Gtk.File_Chooser.Set_Do_Overwrite_Confirmation function), and
@@ -863,18 +909,18 @@ package Gtk.File_Chooser is
    --  which need to customize this behavior should do that, and also connect
    --  to the Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal.
    --  A signal handler for this signal must return a
-   --  Gtk_File_Chooser_Confirmation value, which indicates the action to take.
-   --  If the handler determines that the user wants to select a different
-   --  filename, it should return GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN.
-   --  If it determines that the user is satisfied with his choice of file
-   --  name, it should return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME. On
-   --  the other hand, if it determines that the stock confirmation dialog
-   --  should be used, it should return GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM.
-   --  The following example illustrates this. <example
-   --  id="gtkfilechooser-confirmation"> <title>Custom confirmation</title>
-   --  <programlisting> static GtkFileChooserConfirmation
-   --  confirm_overwrite_callback (GtkFileChooser *chooser, gpointer data) {
-   --  char *uri;
+   --  Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value, which indicates
+   --  the action to take. If the handler determines that the user wants to
+   --  select a different filename, it should return
+   --  Gtk.File_Chooser.Confirmation_Select_Again. If it determines that the
+   --  user is satisfied with his choice of file name, it should return
+   --  Gtk.File_Chooser.Confirmation_Accept_Filename. On the other hand, if it
+   --  determines that the stock confirmation dialog should be used, it should
+   --  return Gtk.File_Chooser.Confirmation_Confirm. The following example
+   --  illustrates this. <example id="gtkfilechooser-confirmation">
+   --  <title>Custom confirmation</title> <programlisting> static
+   --  GtkFileChooserConfirmation confirm_overwrite_callback (GtkFileChooser
+   --  *chooser, gpointer data) { char *uri;
    --  uri = gtk_file_chooser_get_uri (chooser);
    --  if (is_uri_read_only (uri)) { if (user_wants_to_replace_read_only_file
    --  (uri)) return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME; else return
@@ -890,7 +936,8 @@ package Gtk.File_Chooser is
    --  (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
    --  gtk_widget_destroy (chooser); </programlisting> </example>
    --  action to take after emitting the signal.
-   --  Returns a Gtk_File_Chooser_Confirmation value that indicates which
+   --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that
+   --  indicates which
    --
    --  "current-folder-changed"
    --     procedure Handler (Self : access Gtk_File_Chooser);
@@ -960,8 +1007,8 @@ package Gtk.File_Chooser is
    Signal_Update_Preview : constant Glib.Signal_Name := "update-preview";
 
 private
-   Action_Property : constant Gtk.Enums.Property_Gtk_File_Chooser_Action :=
-     Gtk.Enums.Build ("action");
+   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action :=
+     Gtk.File_Chooser.Build ("action");
    Create_Folders_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("create-folders");
    Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean :=

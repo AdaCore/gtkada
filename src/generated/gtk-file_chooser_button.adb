@@ -39,7 +39,7 @@ package body Gtk.File_Chooser_Button is
    procedure Gtk_New
       (Button : out Gtk_File_Chooser_Button;
        Title  : UTF8_String;
-       Action : Gtk.Enums.Gtk_File_Chooser_Action)
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
    begin
       Button := new Gtk_File_Chooser_Button_Record;
@@ -66,7 +66,7 @@ package body Gtk.File_Chooser_Button is
    procedure Initialize
       (Button : access Gtk_File_Chooser_Button_Record'Class;
        Title  : UTF8_String;
-       Action : Gtk.Enums.Gtk_File_Chooser_Action)
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
       function Internal
          (Title  : Interfaces.C.Strings.chars_ptr;
@@ -75,7 +75,7 @@ package body Gtk.File_Chooser_Button is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title, Gtk.Enums.Gtk_File_Chooser_Action'Pos (Action));
+      Tmp_Return := Internal (Tmp_Title, Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
       Free (Tmp_Title);
       Set_Object (Button, Tmp_Return);
    end Initialize;
@@ -240,12 +240,12 @@ package body Gtk.File_Chooser_Button is
 
    function Get_Action
       (Chooser : access Gtk_File_Chooser_Button_Record)
-       return Gtk.Enums.Gtk_File_Chooser_Action
+       return Gtk.File_Chooser.Gtk_File_Chooser_Action
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
    begin
-      return Gtk.Enums.Gtk_File_Chooser_Action'Val (Internal (Get_Object (Chooser)));
+      return Gtk.File_Chooser.Gtk_File_Chooser_Action'Val (Internal (Get_Object (Chooser)));
    end Get_Action;
 
    ------------------------
@@ -673,12 +673,12 @@ package body Gtk.File_Chooser_Button is
 
    procedure Set_Action
       (Chooser : access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action)
+       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
       procedure Internal (Chooser : System.Address; Action : Integer);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
    begin
-      Internal (Get_Object (Chooser), Gtk.Enums.Gtk_File_Chooser_Action'Pos (Action));
+      Internal (Get_Object (Chooser), Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
    end Set_Action;
 
    ------------------------

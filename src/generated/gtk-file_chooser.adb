@@ -88,12 +88,12 @@ package body Gtk.File_Chooser is
    ----------------
 
    function Get_Action
-      (Chooser : Gtk_File_Chooser) return Gtk.Enums.Gtk_File_Chooser_Action
+      (Chooser : Gtk_File_Chooser) return Gtk_File_Chooser_Action
    is
       function Internal (Chooser : Gtk_File_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
    begin
-      return Gtk.Enums.Gtk_File_Chooser_Action'Val (Internal (Chooser));
+      return Gtk.File_Chooser.Gtk_File_Chooser_Action'Val (Internal (Chooser));
    end Get_Action;
 
    ------------------------
@@ -476,12 +476,12 @@ package body Gtk.File_Chooser is
 
    procedure Set_Action
       (Chooser : Gtk_File_Chooser;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action)
+       Action  : Gtk_File_Chooser_Action)
    is
       procedure Internal (Chooser : Gtk_File_Chooser; Action : Integer);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
    begin
-      Internal (Chooser, Gtk.Enums.Gtk_File_Chooser_Action'Pos (Action));
+      Internal (Chooser, Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
    end Set_Action;
 
    ------------------------

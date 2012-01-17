@@ -42,8 +42,8 @@ pragma Ada_05;
 --    }
 --
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button supports the
---  Gtk.Enums.Gtk_File_Chooser_Action<!-- -->s GTK_FILE_CHOOSER_ACTION_OPEN and
---  GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
+--  Gtk.File_Chooser.Gtk_File_Chooser_Action<!-- -->s
+--  Gtk.File_Chooser.Action_Open and Gtk.File_Chooser.Action_Select_Folder.
 --
 --  <important> The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button will
 --  ellipsize the label, and thus will thus request little horizontal space. To
@@ -78,11 +78,11 @@ package Gtk.File_Chooser_Button is
    procedure Gtk_New
       (Button : out Gtk_File_Chooser_Button;
        Title  : UTF8_String;
-       Action : Gtk.Enums.Gtk_File_Chooser_Action);
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
       (Button : access Gtk_File_Chooser_Button_Record'Class;
        Title  : UTF8_String;
-       Action : Gtk.Enums.Gtk_File_Chooser_Action);
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new file-selecting button widget.
    --  Since: gtk+ 2.6
    --  "title": the title of the browse dialog.
@@ -161,10 +161,10 @@ package Gtk.File_Chooser_Button is
 
    function Get_Action
       (Chooser : access Gtk_File_Chooser_Button_Record)
-       return Gtk.Enums.Gtk_File_Chooser_Action;
+       return Gtk.File_Chooser.Gtk_File_Chooser_Action;
    procedure Set_Action
       (Chooser : access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action);
+       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
 
    function Get_Create_Folders
       (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean;

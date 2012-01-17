@@ -44,7 +44,8 @@ pragma Ada_05;
 --  updating the entry in the signal handler. Note that you should return True
 --  from the signal handler to suppress the default behaviour.
 --
---  To add completion functionality to an entry, use gtk_entry_set_completion.
+--  To add completion functionality to an entry, use
+--  Gtk.GEntry.Set_Completion.
 --
 --  In addition to regular completion matches, which will be inserted into the
 --  entry when they are selected, Gtk.Entry_Completion.Gtk_Entry_Completion
