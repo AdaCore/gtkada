@@ -27,38 +27,6 @@ with Gtk.Widget;  use Gtk.Widget;
 
 package body Gdk.Window is
 
-   ---------------
-   -- Copy_Area --
-   ---------------
-
-   procedure Copy_Area
-     (Window        : Gdk_Window;
-      Gc            : Gdk.Gdk_GC;
-      X             : Gint;
-      Y             : Gint;
-      Source_Window : Gdk_Window;
-      Source_X      : Gint;
-      Source_Y      : Gint;
-      Width         : Gint;
-      Height        : Gint)
-   is
-      procedure Internal
-        (Drawable        : Gdk_Drawable;
-         Gc              : Gdk.Gdk_GC;
-         Source_Drawable : Gdk_Drawable;
-         Source_X        : Gint;
-         Source_Y        : Gint;
-         X               : Gint;
-         Y               : Gint;
-         Width           : Gint;
-         Height          : Gint);
-      pragma Import (C, Internal, "gdk_draw_drawable");
-
-   begin
-      Internal
-        (Window, Gc, Source_Window, Source_X, Source_Y, X, Y, Width, Height);
-   end Copy_Area;
-
    -------------
    -- Destroy --
    -------------
@@ -129,32 +97,6 @@ package body Gdk.Window is
       end if;
    end Get_Decorations;
 
-   ------------------------------
-   -- Get_Desk_Relative_Origin --
-   ------------------------------
-
-   procedure Get_Desk_Relative_Origin
-     (Window  : Gdk_Window;
-      X       : out Gint;
-      Y       : out Gint;
-      Success : out Boolean)
-   is
-      function Internal
-        (Window : Gdk_Window; X, Y : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gdk_window_get_deskrelative_origin");
-
-      Result : Gboolean;
-      X_Out, Y_Out : aliased Gint;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
-
-   begin
-      Result := Internal (Window, X_Out'Address, Y_Out'Address);
-      X := X_Out;
-      Y := Y_Out;
-      Success := Result /= 0;
-   end Get_Desk_Relative_Origin;
-
    ----------------
    -- Get_Origin --
    ----------------
@@ -210,20 +152,6 @@ package body Gdk.Window is
       Mask := Mask_Out;
    end Get_Pointer;
 
-   -------------------
-   -- Get_Toplevels --
-   -------------------
-
-   function Get_Toplevels return Gdk_Window_List.Glist is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gdk_window_get_toplevels");
-      Result : Gdk_Window_List.Glist;
-
-   begin
-      Gdk_Window_List.Set_Object (Result, Internal);
-      return Result;
-   end Get_Toplevels;
-
    ----------------
    -- Is_Viewable --
    -----------------
@@ -277,23 +205,6 @@ package body Gdk.Window is
    begin
       Internal (Window, Boolean'Pos (Update_Children));
    end Process_Updates;
-
-   ---------------------
-   -- Set_Back_Pixmap --
-   ---------------------
-
-   procedure Set_Back_Pixmap
-     (Window          : Gdk_Window;
-      Pixmap          : Gdk.Gdk_Pixmap;
-      Parent_Relative : Boolean)
-   is
-      procedure Internal
-        (Window : Gdk_Window; Pixmap : Gdk.Gdk_Pixmap; Relative : Gint);
-      pragma Import (C, Internal, "gdk_window_set_back_pixmap");
-
-   begin
-      Internal (Window, Pixmap, Boolean'Pos (Parent_Relative));
-   end Set_Back_Pixmap;
 
    --------------------
    -- Set_Background --
