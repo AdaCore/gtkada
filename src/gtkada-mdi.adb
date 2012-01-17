@@ -836,13 +836,8 @@ package body Gtkada.MDI is
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
       MDI.Background_Color := Parse (Default_MDI_Background_Color);
-      Alloc (Get_Default_Colormap, MDI.Background_Color);
-
       MDI.Title_Bar_Color := Parse (Default_Title_Bar_Color);
-      Alloc (Get_Default_Colormap, MDI.Title_Bar_Color);
-
       MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
-      Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
 
       MDI.Default_Title_Color := Get_Bg (Get_Default_Style, State_Normal);
 
@@ -1654,13 +1649,11 @@ package body Gtkada.MDI is
       if not Has_Title_Bar (Child) then
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
-         Set_USize (Child.Title_Box, -1, 0);
          Set_Size_Request (Child.Title_Box, -1, 0);
 
       else
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
-         Set_USize (Child.Title_Box, -1, -1);
          Set_Size_Request (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
       end if;
    end Set_Child_Title_Bar;
@@ -3467,7 +3460,7 @@ package body Gtkada.MDI is
          if Position_At_Mouse then
             Set_Position (Win, Win_Pos_Mouse);
          else
-            Set_UPosition (Win, X, Y);
+            Move (Win, X, Y);
             Set_Position (Win, Win_Pos_None);
          end if;
 
@@ -3751,7 +3744,7 @@ package body Gtkada.MDI is
             --  No pixmap but we will display a close button, let's add an
             --  empty space to center the label.
             Gtk.Fixed.Gtk_New (Fixed);
-            Set_USize (Fixed, 12, 1);
+            Set_Size_Request (Fixed, 12, 1);
             Pack_Start (Box, Fixed, Expand => False, Padding => 2);
          end if;
 
