@@ -33,7 +33,6 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Abstract base classes</group>
 
-with Gdk.Event;
 with Glib.Properties;
 with Glib.Values;
 with Gtk.Adjustment;
@@ -91,24 +90,6 @@ package Gtk.Container is
       return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all the children of the container.
    --  The caller must free the returned list.
-
-   procedure Propagate_Expose
-     (Container : access Gtk_Container_Record;
-      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Event     : Gdk.Event.Gdk_Event_Expose);
-   --  When a container receives an expose event, it must send synthetic
-   --  expose events to all children that don't have their own Gdk_Window.
-   --  This function provides a convenient way of doing this. A container,
-   --  when it receives an expose event, Propagate_Expose
-   --  once for each child, passing in the event the container received.
-   --
-   --  Propagate_Expose takes care of deciding whether
-   --  an expose event needs to be sent to the child, intersecting
-   --  the event's area with the child area, and sending the event.
-   --
-   --  In most cases, a container can simply either simply inherit the
-   --  expose implementation from Gtk_Container, or, do some drawing
-   --  and then chain to the expose implementation from Gtk_Container.
 
    -----------
    -- Focus --
