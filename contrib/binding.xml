@@ -6,6 +6,154 @@
      xmlns:c="http://www.gtk.org/introspection/c/1.0">
 
    <!-- ################################################
+        Gdk.Screen
+        ################################################-->
+
+   <package id="Gdk.Screen">
+     <doc  group="Gdk, the low-level API"/>
+     <parameter name="self" ada="Screen"/>
+     <method id="gdk_screen_get_setting" bind="False" />
+     <method id="gdk_screen_get_toplevel_windows" return="WindowList" />
+     <method id="gdk_screen_get_window_stack" return="WindowList" />
+     <method id="gdk_screen_list_visuals" return="WindowList" />
+     <extra>
+       <with_spec pkg="Gdk.Types" />
+       <spec>
+   -------------
+   -- Display --
+   -------------
+   --  These subprograms should really be in gdk-display.ads to match what is
+   --  done for gtk+ itself, but that would create dependency circularities.
+   --  Ada 2005 has support for these, but we want GtkAda to build with Ada95
+   --  compilers.
+
+   function Get_Screen
+     (Display    : access Gdk.Display.Gdk_Display_Record'Class;
+      Screen_Num : Glib.Gint)
+      return Gdk_Screen;
+   --  Returns a screen object for one of the screens of the display.
+
+   function Get_Default_Screen
+     (Display : access Gdk.Display.Gdk_Display_Record'Class) return Gdk_Screen;
+   --  Get the default Gdk_Screen for display.
+
+   procedure Get_Pointer
+     (Display : access Gdk.Display.Gdk_Display_Record'Class;
+      Screen  : out Gdk_Screen;
+      X       : out Glib.Gint;
+      Y       : out Glib.Gint;
+      Mask    : out Gdk.Types.Gdk_Modifier_Type);
+   --  Gets the current location of the pointer and the current modifier
+   --  mask for a given display.
+   --  (X, Y) are coordinates relative to the root window on the display
+
+   procedure Warp_Pointer
+     (Display : access Gdk.Display.Gdk_Display_Record'Class;
+      Screen  : access Gdk_Screen_Record;
+      X       : Glib.Gint;
+      Y       : Glib.Gint);
+   --  Warps the pointer of display to the point x,y on the screen screen,
+   --  unless the pointer is confined to a window by a grab, in which case it
+   --  will be moved as far as allowed by the grab. Warping the pointer creates
+   --  events as if the user had moved the mouse instantaneously to the
+   --  destination.
+   --
+   --  Note that the pointer should normally be under the control of the user.
+   --  This function was added to cover some rare use cases like keyboard
+   --  navigation support for the color picker in the GtkColorSelectionDialog.
+       </spec>
+       <body>
+   ----------------
+   -- Get_Screen --
+   ----------------
+
+   function Get_Screen
+     (Display    : access Gdk_Display_Record'Class;
+      Screen_Num : Gint)
+      return Gdk_Screen
+   is
+      function Internal
+        (Display    : System.Address;
+         Screen_Num : Gint)
+         return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_screen");
+      --  External binding: gdk_display_get_screen
+      Stub : Gdk_Screen_Record;
+   begin
+      return Gdk_Screen
+        (Get_User_Data
+          (Internal (Get_Object (Display), Screen_Num), Stub));
+   end Get_Screen;
+
+   ------------------------
+   -- Get_Default_Screen --
+   ------------------------
+
+   function Get_Default_Screen
+     (Display : access Gdk_Display_Record'Class)
+      return Gdk_Screen
+   is
+      function Internal
+        (Display : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_default_screen");
+      --  External binding: gdk_display_get_default_screen
+      Stub : Gdk_Screen_Record;
+   begin
+      return Gdk_Screen
+        (Get_User_Data
+          (Internal (Get_Object (Display)), Stub));
+   end Get_Default_Screen;
+
+   -----------------
+   -- Get_Pointer --
+   -----------------
+
+   procedure Get_Pointer
+     (Display : access Gdk_Display_Record'Class;
+      Screen  : out Gdk_Screen;
+      X       : out Gint;
+      Y       : out Gint;
+      Mask    : out Gdk_Modifier_Type)
+   is
+      procedure Internal
+        (Display : System.Address;
+         Screen  : out System.Address;
+         X       : out Gint;
+         Y       : out Gint;
+         Mask    : out Gdk_Modifier_Type);
+      pragma Import (C, Internal, "gdk_display_get_pointer");
+      --  External binding: gdk_display_get_pointer
+
+      S    : System.Address;
+      Stub : Gdk_Screen_Record;
+
+   begin
+      Internal (Get_Object (Display), S, X, Y, Mask);
+      Screen := Gdk_Screen (Get_User_Data (S, Stub));
+   end Get_Pointer;
+
+   ------------------
+   -- Warp_Pointer --
+   ------------------
+
+   procedure Warp_Pointer
+     (Display : access Gdk.Display.Gdk_Display_Record'Class;
+      Screen  : access Gdk_Screen_Record;
+      X       : Glib.Gint;
+      Y       : Glib.Gint)
+   is
+      procedure Internal (D, S : System.Address; X, Y : Gint);
+      pragma Import (C, Internal, "gdk_display_warp_pointer");
+      --  External binding: gdk_display_warp_pointer
+   begin
+      Internal (Get_Object (Display), Get_Object (Screen), X, Y);
+   end Warp_Pointer;
+       </body>
+     </extra>
+   </package>
+
+   <!-- ################################################
         Gtk.Aspect_Frame
         ################################################-->
 
