@@ -308,6 +308,12 @@ Gtk.Text_View
 The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
 versions of Gtk+ and have been removed.
 
+Gtk.Toolbar
+===========
+
+Subprograms Append_*, Prepend_* and Insert_* have been removed: use Insert
+instead.
+
 Gtk.Tooltips
 ============
 
