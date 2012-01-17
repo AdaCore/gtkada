@@ -220,6 +220,14 @@ The Set_Uri_Hook function has been eliminated, and along with it the
 Uri_Func type and the Generic_Uri_Hook package.  Register a callback
 for the button's "clicked" signal instead.
 
+Gtk.Main
+========
+
+The Quit package has been removed without replacement.
+
+The Idle and Timeout handling been removed: use equivalent functions in
+package Glib.Main instead.
+
 Gtk.Notebook
 ============
 
@@ -342,6 +350,25 @@ Gtk.Widget
 ==========
 
 Function Get_Snapshot has been removed without a replacement.
+
+Hide_All has been removed: use Hide instead.
+
+Set_Extension_Events and End_Extension_Events are no longer needed and have
+been removed.
+
+Set_Colormap and Get_Colormap are no longer needed and have been removed.
+
+Set_Scroll_Adjustments has been removed without a replacement.
+
+Shape_Combine_Mask, Input_Shape_Combine_Mask and Reset_Shapes have been removed
+without replacements.
+
+Set_Uposition has been removed: use the properties of the containing widget
+to fix the position of contained widgets. The functions in Gtk.Window should
+be used for top-level widgets.
+
+Queue_Clear and Queue_Clear_Area have been removed, call Queue_Draw and
+Queue_Draw_Area instead.
 
 Gnome.App_Bar
 =============
