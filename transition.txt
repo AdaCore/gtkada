@@ -45,6 +45,12 @@ Render_Pixmap_And_Mask, Render_Pixmap_And_Mask_For_Colormap have been removed.
 
 Use APIs provided by Gdk.Cairo to draw a pixbuf on a Gdk_Drawable.
 
+Gdk.Pixmap
+==========
+
+This package has been removed: Cairo packages should be used for drawing, and
+Gdk.Pixbuf for representing image data in memory.
+
 Gdk.Region
 ==========
 
