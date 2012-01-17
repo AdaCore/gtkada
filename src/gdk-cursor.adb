@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with System;
-
 package body Gdk.Cursor is
 
    -------------
@@ -39,34 +37,6 @@ package body Gdk.Cursor is
 
    begin
       Widget := Internal (Cursor_Type);
-   end Gdk_New;
-
-   procedure Gdk_New
-     (Widget : out Gdk_Cursor;
-      Source : Gdk.Gdk_Pixmap;
-      Mask   : Gdk.Gdk_Pixmap;
-      Fg     : Gdk.Color.Gdk_Color;
-      Bg     : Gdk.Color.Gdk_Color;
-      X      : Glib.Gint;
-      Y      : in Glib.Gint)
-   is
-      function Internal
-        (Source : Gdk.Gdk_Pixmap;
-         Mask   : Gdk.Gdk_Pixmap;
-         Fg     : System.Address;
-         Bg     : System.Address;
-         X      : Glib.Gint;
-         Y      : Glib.Gint) return Gdk_Cursor;
-      pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
-
-      Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;
-      Col_Bg : aliased Gdk.Color.Gdk_Color := Bg;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
-
-   begin
-      Widget := Internal
-        (Source, Mask, Col_Fg'Address,  Col_Bg'Address, X, Y);
    end Gdk_New;
 
    procedure Gdk_New
