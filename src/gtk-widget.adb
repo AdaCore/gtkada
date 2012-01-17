@@ -593,21 +593,6 @@ package body Gtk.Widget is
       return Req;
    end Get_Child_Requisition;
 
-   ------------------
-   -- Get_Colormap --
-   ------------------
-
-   function Get_Colormap
-     (Widget : access Gtk_Widget_Record) return Gdk.Color.Gdk_Colormap
-   is
-      function Internal
-        (Widget : System.Address) return Gdk.Color.Gdk_Colormap;
-      pragma Import (C, Internal, "gtk_widget_get_colormap");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Colormap;
-
    ------------------------
    -- Get_Composite_Name --
    ------------------------
@@ -662,21 +647,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Events;
-
-   --------------------------
-   -- Get_Extension_Events --
-   --------------------------
-
-   function Get_Extension_Events
-     (Widget : access Gtk_Widget_Record) return Gdk.Types.Gdk_Extension_Mode
-   is
-      function Internal
-        (Widget : System.Address) return Gdk.Types.Gdk_Extension_Mode;
-      pragma Import (C, Internal, "gtk_widget_get_extension_events");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Extension_Events;
 
    ---------------------
    -- Get_Has_Tooltip --
@@ -1051,17 +1021,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Hide;
 
-   --------------
-   -- Hide_All --
-   --------------
-
-   procedure Hide_All (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_hide_all");
-   begin
-      Internal (Get_Object (Widget));
-   end Hide_All;
-
    --------------------
    -- Hide_On_Delete --
    --------------------
@@ -1075,26 +1034,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget)) /= 0;
    end Hide_On_Delete;
-
-   ------------------------------
-   -- Input_Shape_Combine_Mask --
-   ------------------------------
-
-   procedure Input_Shape_Combine_Mask
-     (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-      Offset_X   : Gint;
-      Offset_Y   : Gint)
-   is
-      procedure Internal
-        (Widget     : System.Address;
-         Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-         Offset_X   : Gint;
-         Offset_Y   : Gint);
-      pragma Import (C, Internal, "gtk_widget_input_shape_combine_mask");
-   begin
-      Internal (Get_Object (Widget), Shape_Mask, Offset_X, Offset_Y);
-   end Input_Shape_Combine_Mask;
 
    ---------------
    -- Intersect --
@@ -1445,41 +1384,6 @@ package body Gtk.Widget is
       end;
    end Path_Reversed;
 
-   -----------------
-   -- Queue_Clear --
-   -----------------
-
-   procedure Queue_Clear (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_queue_clear");
-
-   begin
-      Internal (Get_Object (Widget));
-   end Queue_Clear;
-
-   ----------------------
-   -- Queue_Clear_Area --
-   ----------------------
-
-   procedure Queue_Clear_Area
-     (Widget : access Gtk_Widget_Record;
-      X      : Gint;
-      Y      : Gint;
-      Width  : Gint;
-      Height : Gint)
-   is
-      procedure Internal
-        (Widget : System.Address;
-         X      : Gint;
-         Y      : Gint;
-         Width  : Gint;
-         Height : Gint);
-      pragma Import (C, Internal, "gtk_widget_queue_clear_area");
-
-   begin
-      Internal (Get_Object (Widget), X, Y, Width, Height);
-   end Queue_Clear_Area;
-
    ----------------
    -- Queue_Draw --
    ----------------
@@ -1681,17 +1585,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Reset_Rc_Styles;
 
-   ------------------
-   -- Reset_Shapes --
-   ------------------
-
-   procedure Reset_Shapes (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_reset_shapes");
-   begin
-      Internal (Get_Object (Widget));
-   end Reset_Shapes;
-
    ---------------------------
    -- Restore_Default_Style --
    ---------------------------
@@ -1782,21 +1675,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Boolean'Pos (Is_Visible));
    end Set_Child_Visible;
 
-   ------------------
-   -- Set_Colormap --
-   ------------------
-
-   procedure Set_Colormap
-     (Widget : access Gtk_Widget_Record;
-      Cmap   : Gdk.Gdk_Colormap)
-   is
-      procedure Internal (Widget : System.Address; Cmap : Gdk.Gdk_Colormap);
-      pragma Import (C, Internal, "gtk_widget_set_colormap");
-
-   begin
-      Internal (Get_Object (Widget), Cmap);
-   end Set_Colormap;
-
    ------------------------
    -- Set_Composite_Name --
    ------------------------
@@ -1854,22 +1732,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Events);
    end Set_Events;
-
-   --------------------------
-   -- Set_Extension_Events --
-   --------------------------
-
-   procedure Set_Extension_Events
-     (Widget : access Gtk_Widget_Record;
-      Mode   : Gdk.Types.Gdk_Extension_Mode)
-   is
-      procedure Internal
-        (Widget : System.Address; Mode : Gdk.Types.Gdk_Extension_Mode);
-      pragma Import (C, Internal, "gtk_widget_set_extension_events");
-
-   begin
-      Internal (Get_Object (Widget), Mode);
-   end Set_Extension_Events;
 
    ---------------------
    -- Set_Has_Tooltip --
@@ -1986,38 +1848,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Redraw_On_Allocate));
    end Set_Redraw_On_Allocate;
-
-   ----------------------------
-   -- Set_Scroll_Adjustments --
-   ----------------------------
-
-   procedure Set_Scroll_Adjustments
-     (Widget : access Gtk_Widget_Record;
-      Hadj   : Gtk.Adjustment.Gtk_Adjustment;
-      Vadj   : Gtk.Adjustment.Gtk_Adjustment)
-   is
-      procedure Internal
-        (Widget : System.Address;
-         Hadj   : System.Address;
-         Vadj   : System.Address);
-      pragma Import (C, Internal, "gtk_widget_set_scroll_adjustments");
-
-      use type Gtk.Adjustment.Gtk_Adjustment;
-
-      H : System.Address := System.Null_Address;
-      V : System.Address := System.Null_Address;
-
-   begin
-      if Hadj /= null then
-         H := Get_Object (Hadj);
-      end if;
-
-      if Vadj /= null then
-         V := Get_Object (Vadj);
-      end if;
-
-      Internal (Get_Object (Widget), H, V);
-   end Set_Scroll_Adjustments;
 
    -------------------
    -- Set_Sensitive --
@@ -2136,33 +1966,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Get_Object (Custom_Window));
    end Set_Tooltip_Window;
 
-   -------------------
-   -- Set_UPosition --
-   -------------------
-
-   procedure Set_UPosition (Widget : access Gtk_Widget_Record; X, Y : Gint) is
-      procedure Internal (Widget : System.Address; X, Y : Gint);
-      pragma Import (C, Internal, "gtk_widget_set_uposition");
-
-   begin
-      Internal (Get_Object (Widget), X, Y);
-   end Set_UPosition;
-
-   ---------------
-   -- Set_USize --
-   ---------------
-
-   procedure Set_USize
-     (Widget        : access Gtk_Widget_Record;
-      Width, Height : Gint)
-   is
-      procedure Internal (Widget : System.Address; Width, Height : Gint);
-      pragma Import (C, Internal, "gtk_widget_set_usize");
-
-   begin
-      Internal (Get_Object (Widget), Width, Height);
-   end Set_USize;
-
    ----------------
    -- Set_Window --
    ----------------
@@ -2178,27 +1981,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Window);
    end Set_Window;
-
-   ------------------------
-   -- Shape_Combine_Mask --
-   ------------------------
-
-   procedure Shape_Combine_Mask
-     (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-      Offset_X   : Gint;
-      Offset_Y   : Gint)
-   is
-      procedure Internal
-        (Widget     : System.Address;
-         Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-         Offset_X   : Gint;
-         Offset_Y   : Gint);
-      pragma Import (C, Internal, "gtk_widget_shape_combine_mask");
-
-   begin
-      Internal (Get_Object (Widget), Shape_Mask, Offset_X, Offset_Y);
-   end Shape_Combine_Mask;
 
    ----------
    -- Show --
