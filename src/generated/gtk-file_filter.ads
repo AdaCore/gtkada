@@ -95,8 +95,7 @@ package Gtk.File_Filter is
 
 
    type Gtk_File_Filter_Info is record
-      Contains     : Gtk.Enums.Gtk_File_Filter_Flags;
-
+      Contains     : Gtk_File_Filter_Flags;
       Filename     : Interfaces.C.Strings.chars_ptr;
       URI          : Interfaces.C.Strings.chars_ptr;
       Display_Name : Interfaces.C.Strings.chars_ptr;
@@ -145,7 +144,7 @@ package Gtk.File_Filter is
 
    procedure Add_Custom
       (Self   : access Gtk_File_Filter_Record;
-       Needed : Gtk.Enums.Gtk_File_Filter_Flags;
+       Needed : Gtk_File_Filter_Flags;
        Func   : Gtk_File_Filter_Func;
        Notify : Glib.G_Destroy_Notify_Address);
    --  Adds rule to a filter that allows files based on a custom callback
@@ -176,7 +175,7 @@ package Gtk.File_Filter is
 
       procedure Add_Custom
          (Self   : access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
-          Needed : Gtk.Enums.Gtk_File_Filter_Flags;
+          Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
           Data   : User_Data_Type;
           Notify : Glib.G_Destroy_Notify_Address);
@@ -239,8 +238,7 @@ package Gtk.File_Filter is
    --  existing name.
 
    function Get_Needed
-      (Self : access Gtk_File_Filter_Record)
-       return Gtk.Enums.Gtk_File_Filter_Flags;
+      (Self : access Gtk_File_Filter_Record) return Gtk_File_Filter_Flags;
    --  Gets the fields that need to be filled in for the structure passed to
    --  Gtk.File_Filter.Filter
    --  This function will not typically be used by applications; it is intended

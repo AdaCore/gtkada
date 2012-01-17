@@ -103,12 +103,12 @@ package body Gtk.File_Filter is
 
    procedure Add_Custom
       (Self   : access Gtk_File_Filter_Record;
-       Needed : Gtk.Enums.Gtk_File_Filter_Flags;
+       Needed : Gtk_File_Filter_Flags;
        Func   : Gtk_File_Filter_Func;
        Notify : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.Enums.Gtk_File_Filter_Flags'Pos (Needed), Internal_Gtk_File_Filter_Func'Address, Func'Address, Notify);
+      C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.File_Filter.Gtk_File_Filter_Flags'Pos (Needed), Internal_Gtk_File_Filter_Func'Address, Func'Address, Notify);
    end Add_Custom;
 
    package body Add_Custom_User_Data is
@@ -133,13 +133,13 @@ package body Gtk.File_Filter is
 
       procedure Add_Custom
          (Self   : access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
-          Needed : Gtk.Enums.Gtk_File_Filter_Flags;
+          Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
           Data   : User_Data_Type;
           Notify : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.Enums.Gtk_File_Filter_Flags'Pos (Needed), Internal_Cb'Address, Users.Build (Func'Address, Data), Notify);
+         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.File_Filter.Gtk_File_Filter_Flags'Pos (Needed), Internal_Cb'Address, Users.Build (Func'Address, Data), Notify);
       end Add_Custom;
 
       -----------------
@@ -239,13 +239,12 @@ package body Gtk.File_Filter is
    ----------------
 
    function Get_Needed
-      (Self : access Gtk_File_Filter_Record)
-       return Gtk.Enums.Gtk_File_Filter_Flags
+      (Self : access Gtk_File_Filter_Record) return Gtk_File_Filter_Flags
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_filter_get_needed");
    begin
-      return Gtk.Enums.Gtk_File_Filter_Flags'Val (Internal (Get_Object (Self)));
+      return Gtk.File_Filter.Gtk_File_Filter_Flags'Val (Internal (Get_Object (Self)));
    end Get_Needed;
 
    --------------

@@ -1753,7 +1753,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
         <with_spec pkg="Gtk.Enums" />
         <type ctype="GtkFileFilterInfo*" ada="Gtk_File_Filter_Info">
    type Gtk_File_Filter_Info is record
-      Contains     : Gtk.Enums.Gtk_File_Filter_Flags;
+      Contains     : Gtk_File_Filter_Flags;
       Filename     : Interfaces.C.Strings.chars_ptr;
       URI          : Interfaces.C.Strings.chars_ptr;
       Display_Name : Interfaces.C.Strings.chars_ptr;
