@@ -37,7 +37,6 @@
 
 with Glib.Types;
 with Gtk.Dialog;
-with Gtk.Enums;
 with Gtk.File_Chooser;
 with Gtk.Window;
 
@@ -55,12 +54,12 @@ package Gtk.File_Chooser_Dialog is
      (Dialog            : out Gtk_File_Chooser_Dialog;
       Title             : String;
       Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.Enums.Gtk_File_Chooser_Action);
+      Action            : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
      (Dialog            : access Gtk_File_Chooser_Dialog_Record'Class;
       Title             : String;
       Parent            : Gtk.Window.Gtk_Window;
-      Action            : Gtk.Enums.Gtk_File_Chooser_Action);
+      Action            : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new file chooser dialog
 
    ----------------

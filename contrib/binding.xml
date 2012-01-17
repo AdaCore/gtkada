@@ -934,6 +934,19 @@ on the screen, so that the cursor position is visible at all times.
 See Gtk_Text_View for a multiple-line text editing widget.
      </doc>
      <parameter name="self" ada="The_Entry"/>
+     <enum ctype="GtkEntryIconPosition" prefix=""/>
+
+     <method id="gtk_entry_set_invisible_char">
+        <parameter name="ch" ada="Char"/>
+     </method>
+     <method id="gtk_entry_set_has_frame">
+        <parameter name="setting" default="True"/>
+     </method>
+     <method id="gtk_entry_set_width_chars">
+        <parameter name="n_chars" ada="Width"/>
+     </method>
+     <!-- ??? inclusion of below method is pending on L117-038 -->
+     <method id="gtk_editable_get_selection_bounds" bind="False"/>
   </package>
 
   <package id="Gtk.Dialog">
@@ -1861,6 +1874,9 @@ The following default key bindings are provided, but you can use a gtkrc file to
   <package id="Gtk.File_Chooser">
      <doc group=""/>
      <parameter name="self" ada="Chooser"/>
+     <enum ctype="GtkFileChooserAction" prefix="GTK_FILE_CHOOSER_"/>
+     <enum ctype="GtkFileChooserConfirmation" prefix="GTK_FILE_CHOOSER_"/>
+     <enum ctype="GtkFileChooserError" prefix="GTK_FILE_CHOOSER_"/>
 
      <!-- we won't bind any of these internal functions which pass GFile
           types -->
@@ -1903,5 +1919,10 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <method id="gtk_tool_shell_get_icon_size" bind="False"/>
      <method id="gtk_tool_shell_get_relief_style" bind="False"/>
      <method id="gtk_tool_shell_get_style" bind="False"/>
+  </package>
+
+  <package id="Gtk.Editable">
+     <!-- ??? inclusion of below method is pending on L117-038 -->
+     <method id="gtk_editable_get_selection_bounds" bind="False"/>
   </package>
 </GIR>

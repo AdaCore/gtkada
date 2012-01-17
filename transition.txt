@@ -228,6 +228,12 @@ Gtk.GC
 
 This package has been removed: Cairo packages should be used for drawing.
 
+Gtk.GEntry
+==========
+
+The names for Gtk_Entry_Record parameters have been normalized across
+the board to "The_Entry".
+
 Gtk.HRuler
 ==========
 

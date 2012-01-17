@@ -37,7 +37,7 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Gtk_New
      (Widget : out Gtk_File_Chooser_Widget;
-      Action : Gtk.Enums.Gtk_File_Chooser_Action) is
+      Action : Gtk.File_Chooser.Gtk_File_Chooser_Action) is
    begin
       Widget := new Gtk_File_Chooser_Widget_Record;
       Initialize (Widget, Action);
@@ -49,10 +49,10 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Initialize
      (Widget : access Gtk_File_Chooser_Widget_Record'Class;
-      Action : Gtk.Enums.Gtk_File_Chooser_Action)
+      Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
       function Internal
-        (Action : Gtk.Enums.Gtk_File_Chooser_Action)
+        (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
         return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new");
    begin
@@ -65,7 +65,7 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Gtk_New_With_Backend
      (Widget  : out Gtk_File_Chooser_Widget;
-      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
+      Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action;
       Backend : String) is
    begin
       Widget := new Gtk_File_Chooser_Widget_Record;
@@ -78,11 +78,11 @@ package body Gtk.File_Chooser_Widget is
 
    procedure Initialize_With_Backend
      (Widget  : access Gtk_File_Chooser_Widget_Record'Class;
-      Action  : Gtk.Enums.Gtk_File_Chooser_Action;
+      Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action;
       Backend : String)
    is
       function Internal
-        (Action : Gtk.Enums.Gtk_File_Chooser_Action;
+        (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action;
          Backend : String) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new_with_backend");
    begin
