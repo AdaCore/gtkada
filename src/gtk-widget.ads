@@ -53,7 +53,6 @@ with Pango.Layout;
 
 with Gdk.Color;
 with Gdk.Event;
-with Gdk.Bitmap;
 with Gdk.Rectangle;
 with Gdk.Pixbuf;
 with Gdk.Types;
@@ -61,7 +60,6 @@ with Gdk.Visual;
 with Gdk.Window;
 
 with Gtk.Accel_Group;
-with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Style;
 
@@ -183,14 +181,6 @@ package Gtk.Widget is
    procedure Show_All (Widget : access Gtk_Widget_Record);
    --  Show Widget and all its children recursively.
    --  See also Set_Child_Visible below
-
-   procedure Hide_All (Widget : access Gtk_Widget_Record);
-   --  Hide Widget and all its children.
-   --  Note that if you simply want to delete Widget from the screen, you can
-   --  simply call the Hide subprogram on it. This procedure Hide_All should
-   --  only be used if you want to unschedule a widget to be displayed later,
-   --  not to remove an actual widget from the screen.
-   --  See also Set_Child_Visible below.
 
    procedure Set_No_Show_All
      (Widget : access Gtk_Widget_Record; No_Show_All : Boolean);
@@ -595,15 +585,6 @@ package Gtk.Widget is
       Events : Gdk.Event.Gdk_Event_Mask);
    --  Add some events to the current event mask of the widget.
 
-   procedure Set_Extension_Events
-     (Widget : access Gtk_Widget_Record;
-      Mode   : Gdk.Types.Gdk_Extension_Mode);
-   function Get_Extension_Events
-     (Widget : access Gtk_Widget_Record) return Gdk.Types.Gdk_Extension_Mode;
-   --  Set the extension event mask for the widget.
-   --  This is used to activate some special input modes for other devices than
-   --  keyboard and mouse.
-
    function Default_Motion_Notify_Event
      (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event) return Gint;
@@ -664,17 +645,6 @@ package Gtk.Widget is
    --------------------------
    -- Colors and colormaps --
    --------------------------
-
-   procedure Set_Colormap
-     (Widget : access Gtk_Widget_Record;
-      Cmap   : Gdk.Color.Gdk_Colormap);
-   function Get_Colormap
-     (Widget : access Gtk_Widget_Record) return Gdk.Color.Gdk_Colormap;
-   --  Modify the colormap of the widget.
-   --  The widget must not have been realized when you set the colormap.
-   --  The colormap is generally the same one for all widget, but might be
-   --  different if for instance Gtk_Drawing_Area needs to display some
-   --  different colors on a screen that only has a limited amount of colors.
 
    function Get_Visual
      (Widget : access Gtk_Widget_Record) return Gdk.Visual.Gdk_Visual;
@@ -978,16 +948,6 @@ package Gtk.Widget is
    -- Misc functions --
    --------------------
 
-   procedure Set_Scroll_Adjustments
-     (Widget : access Gtk_Widget_Record;
-      Hadj   : Gtk.Adjustment.Gtk_Adjustment;
-      Vadj   : Gtk.Adjustment.Gtk_Adjustment);
-   --  Emit the "set_scroll_adjustments" signal.
-   --  The exact signal emitted depends on the widget type (see
-   --  Glib.Object.Initialize_Class_Record).
-   --  The handler creates the adjustments if null is passed as argument, and
-   --  makes sure both adjustments are in the correct range.
-
    function Intersect
      (Widget       : access Gtk_Widget_Record;
       Area         : Gdk.Rectangle.Gdk_Rectangle;
@@ -1072,29 +1032,6 @@ package Gtk.Widget is
    function Get_Has_Window (Widget : access Gtk_Widget_Record) return Boolean;
    --  Determines whether Widget has a Gtk_Window of its own.
    --  See Set_Has_Window.
-
-   procedure Shape_Combine_Mask
-     (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-      Offset_X   : Gint;
-      Offset_Y   : Gint);
-   --  Modify the shape of the window that contains the widget.
-   --  This allows for transparent windows, and requires the Xext library to be
-   --  available on your system. If this library is not available, your program
-   --  will still work.
-   --  See the manual page for XShapeCombineMask(3x) for more information.
-
-   procedure Input_Shape_Combine_Mask
-     (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
-      Offset_X   : Gint;
-      Offset_Y   : Gint);
-   --  Sets an input shape for this widget's GDK window. This allows for
-   --  windows which react to mouse click in a nonrectangular region, see
-   --  Gdk.Window.Input_Shape_Combine_Mask for more information.
-
-   procedure Reset_Shapes (Widget : access Gtk_Widget_Record);
-   --  Recursively resets the shape on this widget and its descendants.
 
    function Render_Icon
      (Widget   : access Gtk_Widget_Record;
@@ -1440,43 +1377,6 @@ package Gtk.Widget is
    --  Emit a "draw" signal for a specific area of the widget.
    --  The visual aspect might be different whether the widget has the focus
    --  or not.
-
-   procedure Set_UPosition
-     (Widget : access Gtk_Widget_Record;
-      X, Y   : Gint);
-   pragma Obsolescent;  --  Set_Uposition
-   --  Modify the position of the widget.
-   --  This should be used only for toplevel widgets (windows and dialogs),
-   --  since other widgets' positions are handled by their parent.
-
-   procedure Set_USize
-     (Widget        : access Gtk_Widget_Record;
-      Width, Height : Gint);
-   pragma Obsolescent ("Use Set_Size_Request instead");  --  Set_Usize
-   --  Modify the size of the widget.
-   --  This sets an absolute size for the widget, no matter what its requested
-   --  size would be. For Gtk_Windows, you should consider using
-   --  Set_Default_Size instead, which sets a minimal size, but use the
-   --  widget's requested size if it is bigger.
-   --  If Width or Height is negative, they are ignored, and the widget's
-   --  default width is kept.
-
-   procedure Queue_Clear (Widget : access Gtk_Widget_Record);
-   pragma Obsolescent; --  Queue_Clear
-   --  Add a clear request to the event queue for the whole widget.
-   --  This is added to the same list as for Queue_Draw, and thus is coalesced
-   --  as much as possible with other drawing requests.
-
-   procedure Queue_Clear_Area
-     (Widget : access Gtk_Widget_Record;
-      X      : Gint;
-      Y      : Gint;
-      Width  : Gint;
-      Height : Gint);
-   pragma Obsolescent; --  Queue_Clear_Area
-   --  Add a clear request to the event queue for part of the widget.
-   --  This is added to the same list as for Queue_Draw, and thus is coalesced
-   --  as much as possible with other drawing requests.
 
    --  </doc_ignore>
 
