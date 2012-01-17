@@ -208,6 +208,8 @@ naming.type_exceptions = {
     "GValue":            Proxy("Glib.Values.GValue", ""),
 
     # Specific to this binding generator (referenced from binding.xml)
+    "WindowList":  List("Gdk.Window.Gdk_Window_List.GList"),
+    "VisualList":  List("Gdk.Visual.Gdk_Visual_List.GList"),
     "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
     "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
     "ObjectList":  List("Glib.Object.Object_Simple_List.GList"),
@@ -335,6 +337,7 @@ naming.type_exceptions = {
     "GdkDragAction":      Proxy("Gdk.Dnd.Drag_Action"),
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
+    "GdkVisual*":         Proxy("Gdk.Visual.Gdk_Visual"),
     "GdkWindow*":         Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
     "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
