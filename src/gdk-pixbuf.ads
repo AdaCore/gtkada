@@ -46,13 +46,10 @@ with System;
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
-with Gdk.Bitmap;
 with Gdk.Drawable;
 with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Display;
-with Gdk.GC;
-with Gdk.Pixmap;
 
 package Gdk.Pixbuf is
 
@@ -316,99 +313,6 @@ package Gdk.Pixbuf is
    ---------------
    -- Rendering --
    ---------------
-
-   procedure Render_Threshold_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha_Threshold : Alpha_Range);
-   --  Take the opacity values in a rectangular portion of a pixbuf and
-   --  thresholds them to produce a bi-level alpha mask that can be used as
-   --  a clipping mask for a drawable.
-   --  Bitmap is the bitmap where the bilevel mask will be painted to.
-   --  Alpha_Threshold are the opacity values below which a pixel will be
-   --  painted as zero. All other values will be painted as one.
-
-   procedure Render_To_Drawable
-     (Pixbuf   : Gdk_Pixbuf;
-      Drawable : Gdk.Drawable.Gdk_Drawable;
-      GC       : Gdk.GC.Gdk_GC;
-      Src_X    : Gint;
-      Src_Y    : Gint;
-      Dest_X   : Gint;
-      Dest_Y   : Gint;
-      Width    : Gint;
-      Height   : Gint;
-      Dither   : Gdk_Rgb_Dither := Dither_Normal;
-      X_Dither : Gint := 0;
-      Y_Dither : Gint := 0);
-   --  Render a rectangular portion of a pixbuf to a drawable while using the
-   --  specified GC. This is done using Gdk.RGB, so the specified drawable
-   --  must have the Gdk.RGB visual and colormap.  Note that this function
-   --  will ignore the opacity information for images with an alpha channel;
-   --  the GC must already have the clipping mask set if you want transparent
-   --  regions to show through.
-   --
-   --  For an explanation of dither offsets, see the Gdk.RGB documentation.  In
-   --  brief, the dither offset is important when re-rendering partial regions
-   --  of an image to a rendered version of the full image, or for when the
-   --  offsets to a base position change, as in scrolling.  The dither matrix
-   --  has to be shifted for consistent visual results.  If you do not have
-   --  any of these cases, the dither offsets can be both zero.
-
-   procedure Render_To_Drawable_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Drawable        : Gdk.Drawable.Gdk_Drawable;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha           : Alpha_Mode;
-      Alpha_Threshold : Alpha_Range;
-      Dither          : Gdk_Rgb_Dither := Dither_Normal;
-      X_Dither        : Gint := 0;
-      Y_Dither        : Gint := 0);
-   --  Render a rectangular portion of a pixbuf to a drawable.
-   --  This is done using Gdk.RGB, so the specified drawable must have the
-   --  Gdk_RGB visual and colormap. When used with Alpha_Bilevel, this function
-   --  has to create a bitmap out of the thresholded alpha channel of the
-   --  image and, it has to set this bitmap as the clipping mask for the GC
-   --  used for drawing.  This can be a significant performance penalty
-   --  depending on the size and the complexity of the alpha channel of the
-   --  image. If performance is crucial, consider handling the alpha channel
-   --  yourself (possibly by caching it in your application) and using
-   --  Render_To_Drawable or Gdk.RGB directly instead.
-   --
-   --  If the image does have opacity information and Alpha_Mode
-   --  is Alpha_Bilevel, specifies the threshold value for opacity values
-
-   procedure Render_Pixmap_And_Mask
-     (Pixbuf          : Gdk_Pixbuf;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range);
-   procedure Render_Pixmap_And_Mask_For_Colormap
-     (Pixbuf          : Gdk_Pixbuf;
-      Colormap        : Gdk.Color.Gdk_Colormap;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range);
-   --  Creates a pixmap and a mask bitmap which are returned in the Pixmap
-   --  and Mask arguments, respectively, and renders a pixbuf and its
-   --  corresponding tresholded alpha mask to them.  This is merely a
-   --  convenience function; applications that need to render pixbufs with
-   --  dither offsets or to given drawables should use Render_To_Drawable_Alpha
-   --  or Render_To_Drawable
-   --  The pixmap that is created uses Colormap.
-   --  This colormap must match the colormap of the window where the pixmap
-   --  will eventually be used or an error will result.
 
    function Get_From_Drawable
      (Dest   : Gdk_Pixbuf;
