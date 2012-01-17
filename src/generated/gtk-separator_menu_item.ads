@@ -22,9 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  This widget serves as separator between menu items. It is represented
---  graphically as a horizontal line between two items, and is used to group
---  items into meaningful groups.
+--  The Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item is a separator used to
+--  group items within a menu. It displays a horizontal line with a shadow to
+--  make it appear sunken into the interface.
 --
 --  </description>
 --  <group>Menus and Toolbars</group>

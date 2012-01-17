@@ -22,8 +22,18 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  This package defines a separator widget that can be inserted in a toolbar,
---  to create groups of widgets in the latter.
+--  A GtkSeparatorItem is a Gtk.Tool_Item.Gtk_Tool_Item that separates groups
+--  of other GtkToolItems. Depending on the theme, a
+--  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will often look like a
+--  vertical line on horizontally docked toolbars.
+--
+--  If the Gtk.Toolbar.Gtk_Toolbar child property "expand" is True and the
+--  property Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is False, a
+--  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will act as a "spring" that
+--  forces other items to the ends of the toolbar.
+--
+--  Use Gtk.Separator_Tool_Item.Gtk_New to create a new
+--  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item.
 --
 --  </description>
 --  <group>Menus and Toolbars</group>

@@ -22,6 +22,20 @@
 ------------------------------------------------------------------------------
 
 --  <description>
+--  Gtk.Layout.Gtk_Layout is similar to Gtk.Drawing_Area.Gtk_Drawing_Area in
+--  that it's a "blank slate" and doesn't do anything but paint a blank
+--  background by default. It's different in that it supports scrolling
+--  natively (you can add it to a Gtk.Scrolledwindow.Gtk_Scrolledwindow), and
+--  it can contain child widgets, since it's a Gtk.Container.Gtk_Container.
+--  However if you're just going to draw, a Gtk.Drawing_Area.Gtk_Drawing_Area
+--  is a better choice since it has lower overhead.
+--
+--  When handling expose events on a Gtk.Layout.Gtk_Layout, you must draw to
+--  GTK_LAYOUT (layout)->bin_window, rather than to GTK_WIDGET
+--  (layout)->window, as you would for a drawing area.
+--
+--  </description>
+--  <description>
 --  A Gtk_Layout is a widget that can have an almost infinite size, without
 --  occupying a lot of memory. Its children can be located anywhere within it,
 --  but will only appear on the screen if the visible area of the layout

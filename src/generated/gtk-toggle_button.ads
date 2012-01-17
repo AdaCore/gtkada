@@ -22,10 +22,48 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Toggle_Button is like a regular button, but can be in one of two
---  states, "active" or "inactive". Its visual aspect is modified when the
---  state is changed.
+--  A Gtk.Toggle_Button.Gtk_Toggle_Button is a Gtk.Button.Gtk_Button which
+--  will remain 'pressed-in' when clicked. Clicking again will cause the toggle
+--  button to return to its normal state.
 --
+--  A toggle button is created by calling either gtk_toggle_button_new or
+--  Gtk.Toggle_Button.Gtk_New. If using the former, it is advisable to pack a
+--  widget, (such as a Gtk.Label.Gtk_Label and/or a GtkPixmap), into the toggle
+--  button's container. (See Gtk.Button.Gtk_Button for more information).
+--
+--  The state of a Gtk.Toggle_Button.Gtk_Toggle_Button can be set specifically
+--  using Gtk.Toggle_Button.Set_Active, and retrieved using
+--  Gtk.Toggle_Button.Get_Active.
+--
+--  To simply switch the state of a toggle button, use
+--  Gtk.Toggle_Button.Toggled.
+--
+--  == Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets. ==
+--
+
+--     void make_toggles (void) {
+--        GtkWidget *dialog, *toggle1, *toggle2;
+--        dialog = gtk_dialog_new (<!-- -->);
+--           toggle1 = gtk_toggle_button_new_with_label ("Hi, i'm a toggle button.");
+--           // Makes this toggle button invisible
+--           gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle1), TRUE);
+--              g_signal_connect (toggle1, "toggled",
+--              G_CALLBACK (output_state), NULL);
+--              gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+--              toggle1, FALSE, FALSE, 2);
+--           toggle2 = gtk_toggle_button_new_with_label ("Hi, i'm another toggle button.");
+--           gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle2), FALSE);
+--              g_signal_connect (toggle2, "toggled",
+--              G_CALLBACK (output_state), NULL);
+--              gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+--              toggle2, FALSE, FALSE, 2);
+--           gtk_widget_show_all (dialog);
+--        }
+--
+--
+--
+--  </description>
+--  <description>
 --  You should consider using a Gtk_Check_Button instead, since it looks nicer
 --  and provides more visual clues that the button can be toggled.
 --

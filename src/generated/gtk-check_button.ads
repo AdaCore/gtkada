@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  A Gtk.Check_Button.Gtk_Check_Button places a discrete
 --  Gtk.Toggle_Button.Gtk_Toggle_Button next to a widget, (usually a
 --  Gtk.Label.Gtk_Label). See the section on

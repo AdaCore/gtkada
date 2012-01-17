@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  GtkArrow should be used to draw simple arrows that need to point in one of
 --  the four cardinal directions (up, down, left, or right). The style of the
 --  arrow can be one of shadow in, shadow out, etched in, or etched out. Note

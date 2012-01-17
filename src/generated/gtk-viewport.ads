@@ -22,9 +22,21 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  This widget is an adapter: it can contain any child, and will make it
---  scrollable. Its use is not necessary inside a Gtk_Scrolled_Window, which
---  automatically uses a Gtk_Viewport when necessary.
+--  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
+--  implementing scrollability for child widgets that lack their own scrolling
+--  capabilities. Use Gtk.Viewport.Gtk_Viewport to scroll child widgets such as
+--  Gtk.Table.Gtk_Table, Gtk.Box.Gtk_Box, and so on.
+--
+--  If a widget has native scrolling abilities, such as
+--  Gtk.Textview.Gtk_Textview, Gtk.Treeview.Gtk_Treeview or GtkIconview, it can
+--  be added to a Gtk.Scrolledwindow.Gtk_Scrolledwindow with Gtk.Container.Add.
+--  If a widget does not, you must first add the widget to a
+--  Gtk.Viewport.Gtk_Viewport, then add the viewport to the scrolled window.
+--  The convenience function gtk_scrolled_window_add_with_viewport does exactly
+--  this, so you can ignore the presence of the viewport.
+--
+--  The Gtk.Viewport.Gtk_Viewport will start scrolling content only if
+--  allocated less than the child widget's minimum size in a given orientation.
 --
 --  </description>
 --  <group>Scrolling</group>

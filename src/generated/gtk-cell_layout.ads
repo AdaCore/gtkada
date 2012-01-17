@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description
+--  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
 --  objects which want to provide a Gtk.Treeviewcolumn.Gtk_Treeviewcolumn-like
 --  API for packing cells, setting attributes and data funcs.

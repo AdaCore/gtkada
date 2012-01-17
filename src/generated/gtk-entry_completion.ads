@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description
+--  <description>
 --  Gtk.Entry_Completion.Gtk_Entry_Completion is an auxiliary object to be
 --  used in conjunction with Gtk.GEntry.Gtk_Entry to provide the completion
 --  functionality. It implements the Gtk.Cell_Layout.Gtk_Cell_Layout interface,

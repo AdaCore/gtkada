@@ -131,6 +131,7 @@ class GIR(object):
             doc = doc.replace("<informalexample>", "")
             doc = doc.replace("</informalexample>", "")
             doc = doc.replace("<itemizedlist>", "").replace("</itemizedlist>", "")
+            doc = doc.replace("<orderedlist>", "").replace("</orderedlist>", "")
             doc = doc.replace("<listitem>", "   *").replace("</listitem>", "")
             doc = doc.replace("&percnt;", "%")
 
@@ -148,7 +149,7 @@ class GIR(object):
                 result.append(paragraph)
                 result.append("")
 
-            pkg.doc = ["<description"] + \
+            pkg.doc = ["<description>"] + \
                 result + \
                 ["</description>"] + pkg.doc
 

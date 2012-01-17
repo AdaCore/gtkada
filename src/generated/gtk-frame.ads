@@ -22,9 +22,34 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Frame is a simple border than can be added to any widget or group of
---  widget to enhance its visual aspect. Optionally, a frame can have a title.
+--  The frame widget is a Bin that surrounds its child with a decorative frame
+--  and an optional label. If present, the label is drawn in a gap in the top
+--  side of the frame. The position of the label can be controlled with
+--  Gtk.Frame.Set_Label_Align.
 --
+--  == GtkFrame as GtkBuildable ==
+--
+--  The GtkFrame implementation of the GtkBuildable interface supports placing
+--  a child in the label position by specifying "label" as the "type" attribute
+--  of a &lt;child&gt; element. A normal content child can be specified without
+--  specifying a &lt;child&gt; type attribute.
+--
+--  == A UI definition fragment with GtkFrame ==
+--
+
+--     <object class="GtkFrame">
+--     <child type="label">
+--     <object class="GtkLabel" id="frame-label"/>
+--     </child>
+--     <child>
+--     <object class="GtkEntry" id="frame-content"/>
+--     </child>
+--     </object>
+--
+--
+--
+--  </description>
+--  <description>
 --  This is a very convenient widget to visually group related widgets (like
 --  groups of buttons for instance), possibly with a title to explain the
 --  purpose of this group.

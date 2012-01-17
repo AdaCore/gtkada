@@ -22,9 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Radio_Action is similar to Gtk_Radio_Menu_Item. A number of radio
---  actions can be linked together so that only one may be active at any one
---  time.
+--  A Gtk.Radio_Action.Gtk_Radio_Action is similar to
+--  Gtk.Radiomenuitem.Gtk_Radiomenuitem. A number of radio actions can be
+--  linked together so that only one may be active at any one time.
 --
 --  </description>
 --  <group>Action-based menus</group>

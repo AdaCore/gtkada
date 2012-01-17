@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  The GtkBox widget organizes child widgets into a rectangular area.
 --
 --  The rectangular area of a GtkBox is organized into either a single row or

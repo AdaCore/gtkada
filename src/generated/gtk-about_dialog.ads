@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  The GtkAboutDialog offers a simple way to display information about a
 --  program like its logo, name, copyright, website and license. It is also
 --  possible to give credits to the authors, documenters, translators and

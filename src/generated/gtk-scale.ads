@@ -22,9 +22,27 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A scale is a horizontal or vertical widget that a user can slide to choose
---  a value in a given range. This is a kind of cursor, similar to what one
---  finds on audio systems to select the volume for instance.
+--  A GtkScale is a slider control used to select a numeric value. To use it,
+--  you'll probably want to investigate the methods on its base class,
+--  Gtk.GRange.Gtk_Range, in addition to the methods for GtkScale itself. To
+--  set the value of a scale, you would normally use Gtk.GRange.Set_Value. To
+--  detect changes to the value, you would normally use the
+--  Gtk.GRange.Gtk_Range::value-changed signal.
+--
+--  Note that using the same upper and lower bounds for the
+--  Gtk.Scale.Gtk_Scale (through the Gtk.GRange.Gtk_Range methods) will hide
+--  the slider itself. This is useful for applications that want to show an
+--  undeterminate value on the scale, without changing the layout of the
+--  application (such as movie or music players).
+--
+--  == GtkScale as GtkBuildable ==
+--
+--  GtkScale supports a custom &lt;marks&gt; element, which can contain
+--  multiple &lt;mark&gt; elements. The "value" and "position" attributes have
+--  the same meaning as Gtk.Scale.Add_Mark parameters of the same name. If the
+--  element is not empty, its content is taken as the markup to show at the
+--  mark. It can be translated with the usual "translatable and "context"
+--  attributes.
 --
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>

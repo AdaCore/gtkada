@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  GtkBuildable allows objects to extend and customize thier deserialization
 --  from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>. The
 --  interface includes methods for setting names and properties of objects,

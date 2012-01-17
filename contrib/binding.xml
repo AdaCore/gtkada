@@ -371,10 +371,6 @@ See also Gtk.Font_Selection.
    <package id="Gtk.Frame">
       <doc screenshot="gtk-frame" testgtk="create_frame.adb"
            group="Ornaments">
-A Gtk_Frame is a simple border than can be added to any widget or
-group of widget to enhance its visual aspect.
-Optionally, a frame can have a title.
-
 This is a very convenient widget to visually group related widgets (like
 groups of buttons for instance), possibly with a title to explain the
 purpose of this group.
@@ -396,63 +392,7 @@ widgets.
 
    <package id="Gtk.Label">
       <doc screenshot="gtk-label" testgtk="create_label.adb"
-           group="Display widgets">
-A Gtk_Label is a light widget associated with some text you want
-to display on the screen. You can change the text dynamically if
-needed.
-
-The text can be on multiple lines if you separate each line with
-the ASCII.LF character. However, this is not the recommended way
-to display long texts (see the Gtk_Text widget instead).
-
-== Mnemonics ==
-
-Labels may contain mnemonics. Mnemonics are underlined characters in the
-label, used for keyboard navigation. Mnemonics are created by providing
-string with an underscore before the mnemonic character, such as "_File",
-to the functions gtk_new_with_mnemonic or set_text_with_mnemonic().
-
-Mnemonics automatically activate any activatable widget the label is
-inside, such as a Gtk_Button; if the label is not inside the mnemonic's
-target widget, you have to tell the label about the target using
-set_mnemonic_widget(). For instance:
-    declare
-       Button : Gtk_Button;
-       Label  : Gtk_Label;
-    begin
-       Gtk_New (Button);
-       Gtk_New_With_Mnemonic (Label, "_File");
-       Add (Button, Label);
-    end;
-However, there exists a convenience function in Gtk.Button to create such
-a button already.
-
-== Markup ==
-
-To make it easy to format text in a label (changing colors, fonts, etc.),
-label text can be provided in a simple markup format. Here's how to create
-a label with a small font:
-     Gtk_New (Label, "&lt;small&gt;hello&lt;/small&gt;");
-
-The markup must be valid, and &lt;&gt;&amp; characters must be escaped with
-&amp;lt; &amp;gt; and &amp;amp;
-
-Markup strings are just a convenient way to set the Pango_Attr_List on
-label; Set_Attributes() may be a simpler way to set attributes in some
-cases. Be careful though; Pango_Attr_List tends to cause
-internationalization problems, unless you're applying attributes to the
-entire string (i.e. unless you set the range of each attribute to [0,
-G_MAXINT)). The reason is that specifying the start_index and end_index for
-a Pango_Attribute requires knowledge of the exact string being displayed,
-so translations will cause problems.
-
-== Selectable labels ==
-
-Labels can be made selectable with Set_Selectable. Selectable
-labels allow the user to copy the label contents to the clipboard. Only
-should be made selectable.
-      </doc>
-
+           group="Display widgets"/>
       <parameter name="self" ada="Label"/>
       <method id="gtk_label_new">
          <parameter name="str" default='""'/>
@@ -486,37 +426,7 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
 
    <package id="Gtk.Paned">
       <doc screenshot="gtk-paned" testgtk="create_paned.adb"
-           group="Layout container">
-A Gtk_Paned is a container that organizes its two children either
-horizontally or vertically.
-The initial size allocated to the children depends on the size
-they request. However, the user has the possibility to interactively
-move a separation bar between the two to enlarge one of the children,
-while at the same time shrinking the second one.
-The bar can be moved by clicking with the mouse on a small cursor
-displayed in the bar, and then dragging the mouse.
-
-No additional decoration is provided around the children.
-
-Each child has two parameters, Resize and Shrink.
-
-If Shrink is True, then the widget can be made smaller than its
-requisition size by the user. Set this to False if you want to
-set a minimum size.
-
-if Resize is True, this means that the child accepts to be resized, and
-will not require any size. Thus, the size allocated to it will be
-the total size allocated to the container minus the size requested by
-the other child.
-If Resize is False, the child should ask for a specific size, which it
-will get. The other child will be resized accordingly.
-If both Child have the same value for Resize (either True or False), then
-the size allocated to each is a ratio between the size requested by both.
-
-When you use Set_Position with a parameter other than -1, or the user
-moves the handle to resize the widgets, the behavior of Resize is
-canceled.
-      </doc>
+           group="Layout container"/>
       <parameter name="self" ada="Paned"/>
       <method id="gtk_paned_pack1">
          <parameter name="self" ada="Paned"/>
@@ -636,11 +546,7 @@ on how all the parameters for the boxes work.
    </package>
 
    <package id="Gtk.Scale">
-      <doc group="Numeric/Text Data Entry" screenshot="gtk-scale.png">
-A scale is a horizontal or vertical widget that a user can slide to choose
-a value in a given range. This is a kind of cursor, similar to what one
-finds on audio systems to select the volume for instance.
-      </doc>
+      <doc group="Numeric/Text Data Entry" screenshot="gtk-scale.png"/>
       <parameter name="self" ada="Scale"/>
    </package>
    <package id="Gtk.Vscale" into="Scale">
@@ -676,11 +582,7 @@ finds on audio systems to select the volume for instance.
         #######################################################-->
 
    <package id="Gtk.Viewport">
-      <doc group="Scrolling">
-This widget is an adapter: it can contain any child, and will make it
-scrollable. Its use is not necessary inside a Gtk_Scrolled_Window, which
-automatically uses a Gtk_Viewport when necessary.
-      </doc>
+      <doc group="Scrolling"/>
       <parameter name="self" ada="Viewport"/>
       <method id="gtk_viewport_new">
          <parameter name="hadjustment" default="null"/>
@@ -787,11 +689,7 @@ automatically uses a Gtk_Viewport when necessary.
    </package>
 
    <package id="Gtk.Misc">
-      <doc group="Abstract base classes">
-This widget is a base class for all the widgets that require an
-alignment and padding.
-This widget can not be instantiated directly.
-      </doc>
+      <doc group="Abstract base classes"/>
       <parameter name="self" ada="Misc"/>
       <method id="gtk_misc_set_alignment">
          <doc>
@@ -870,7 +768,7 @@ and make sure you specify a size big enough for the layout.
    </package>
 
    <package id="Gtk.GRange">
-      <doc testgtk="create_range.adb" screenshot="gtk-range">This widget provides a low level graphical representation of a range of values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.</doc>
+      <doc testgtk="create_range.adb" screenshot="gtk-range"/>
       <parameter name="self" ada="The_Range"/>
    </package>
 
@@ -942,11 +840,6 @@ is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
    </package>
 
    <package id="Gtk.Volume_Button">
-      <doc>
-Gtk_Volume_Button is a subclass of Gtk_Scale_Button that has been tailored
-for use as a volume control widget with suitable icons, tooltips and
-accessible labels.
-      </doc>
       <parameter name="self" ada="Widget"/>
    </package>
 
@@ -1302,9 +1195,7 @@ lower    value        value + page_size       upper
   </package>
 
   <package id="Gtk.Image">
-     <doc group="Display widgets" screenshot="gtk-image">The Gtk_Image widget displays a graphical image. The image is typically created using Gdk.Image.Gdk_New.
-
-The pixels in a Gtk_Image may be manipulated by the application after creation, as Gtk_Image store the pixel data on the client side. If you wish to store the pixel data on the server side (thus not allowing manipulation of the data after creation) you should use Gtk_Pixmap.</doc>
+     <doc group="Display widgets" screenshot="gtk-image"/>
      <parameter name="self" ada="Image"/>
      <parameter name="image" ada="Val"/>
      <parameter name="size" type="Gtk.Enums.Gtk_Icon_Size"/>
@@ -1430,11 +1321,7 @@ The pixels in a Gtk_Image may be manipulated by the application after creation, 
   </package>
 
   <package id="Gtk.Size_Group">
-     <doc testgtk="create_size_groups.adb">
-Gtk_Size_Group provides a mechanism for grouping a number of widgets together so they all request the same amount of space. This is typically useful when you want a column of widgets to have the same size, but you can't use a Gtk_Table widget.
-
-Note that size groups only affect the amount of space requested, not the size that the widgets finally receive. If you want the widgets in a Gtk_Size_Group to actually be the same size, you need to pack them in such a way that they get the size they request and not more. For example, if you are packing your widgets into a table, you would not include the Fill flag.
-     </doc>
+     <doc testgtk="create_size_groups.adb"/>
      <parameter name="self" ada="Size_Group" />
      <method id="gtk_size_group_new">
         <parameter name="mode" default="Both"/>
@@ -1472,13 +1359,7 @@ Note that size groups only affect the amount of space requested, not the size th
 
   <package id="Gtk.Status_Bar">
      <doc group="Display widgets" testgtk="create_status.adb"
-          screenshot="gtk-status_bar">
-A status bar is a special widget in which you can display messages. This type of widget is generally found at the bottom of application windows, and is used to display help or error messages.
-
-This widget works as a stack of messages, ie all older messages are kept when a new one is inserted. It is of course possible to remove the most recent message from the stack. This stack behavior is especially useful when messages can be displayed from several places in your application. Thus, each one subprogram that needs to print a message can simply push it on the stack, and does not need to make sure that the user has had enough time to read the previous message (a timeout can be set to automatically remove the message after a specific delay)
-
-Each message is associated with a specific Context_Id. Each of this context can have a special name, and these context can be used to organize the messages into categories (for instance one for help messages and one for error messages). You can then selectively remove the most recent message of each category.
-     </doc>
+          screenshot="gtk-status_bar"/>
      <parameter name="self" ada="Statusbar"/>
      <parameter name="context" type="Context_Id"/>
      <parameter name="context_id" ada="context" type="Context_Id"/>
@@ -1529,11 +1410,7 @@ Each message is associated with a specific Context_Id. Each of this context can 
   </package>
 
   <package id="Gtk.Table">
-     <doc group="Layout containers">
-A Gtk_Table is a container that can contain any number of children.  Each of them is attached to a specific row and a specific column in widget.
-
-Every row in the table must have the same height, and every column must have the same width if the table was said as Homogeneous. But you can also decide to have an heterogeneous table, where the width and height are set by the children contained in the table.  Check out the Gtk_Sheet widget for a different kind of table that can also contain text and images in a more efficient way.
-     </doc>
+     <doc group="Layout containers"/>
      <parameter name="self" ada="Table"/>
      <method id="gtk_table_new">
         <doc>Create a new table. The width allocated to the table is divided into Columns columns, which all have the same width if Homogeneous is True. If Homogeneous is False, the width will be calculated with the children contained in the table. Same behavior for the rows.</doc>
@@ -1610,8 +1487,6 @@ In addition to the model-view API, Gtk_Combo_Box offers a simple API which is su
   <package id="Gtk.Toggle_Button">
      <doc screenshot="gtk-toggle_button" group="Buttons and Toggles"
           testgtk="create_toggle_buttons.adb">
-A Gtk_Toggle_Button is like a regular button, but can be in one of two states, "active" or "inactive". Its visual aspect is modified when the state is changed.
-
 You should consider using a Gtk_Check_Button instead, since it looks nicer and provides more visual clues that the button can be toggled.
      </doc>
      <parameter name="self" ada="Toggle_Button"/>
@@ -1705,10 +1580,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
 
   <package id="Gtk.Radio_Button">
      <doc screenshot="gtk-radio_button" group="Buttons and Toggles"
-          testgtk="create_radio_button.adb">
-A Gtk_Radio_Button is a simple button that has two states, like a Gtk_Toggle_Button. However, Gtk_Radio_Buttons can be grouped together to get a special behavior: only one button in the group can be active at any given time. Thus, when the user selects one of the buttons from the group, the button that was previously selected is disabled.
-
-The radio buttons always belongs to a group, even if there is only one in this group.</doc>
+          testgtk="create_radio_button.adb"/>
      <parameter name="self" ada="Radio_Button"/>
      <parameter name="radio_group_member" ada="Group"/>
      <method id="gtk_radio_button_new" bind="False"/>
@@ -1736,7 +1608,7 @@ The radio buttons always belongs to a group, even if there is only one in this g
   </package>
 
   <package id="Gtk.Radio_Action">
-     <doc group="Action-based menus" see="Gtk_Action">A Gtk_Radio_Action is similar to Gtk_Radio_Menu_Item. A number of radio actions can be linked together so that only one may be active at any one time.</doc>
+     <doc group="Action-based menus" see="Gtk_Action"/>
      <parameter name="self" ada="Action"/>
      <method id="gtk_radio_action_new">
         <parameter name="label" default='""'/>
@@ -1759,11 +1631,7 @@ The radio buttons always belongs to a group, even if there is only one in this g
   </package>
 
   <package id="Gtk.Separator">
-     <doc group="Ornaments" screenshot="gtk-separator">
-A separator is a vertical or horizontal line that can be displayed between
-widgets, to provide visual grouping of the widgets into meaningful groups.
-It is for instance used in dialogs to isolate the actual contents of the
-dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
+      <doc group="Ornaments" screenshot="gtk-separator"/>
       <parameter name="self" ada="Separator"/>
   </package>
   <package id="Gtk.Vseparator" into="Separator">
@@ -1780,14 +1648,12 @@ dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)</doc>
   </package>
 
   <package id="Gtk.Separator_Menu_Item">
-     <doc group="Menus and Toolbars">
-This widget serves as separator between menu items. It is represented graphically as a horizontal line between two items, and is used to group items into meaningful groups.</doc>
+     <doc group="Menus and Toolbars"/>
      <parameter name="self" ada="Widget" />
   </package>
 
   <package id="Gtk.Separator_Tool_Item">
-     <doc group="Menus and Toolbars">
-This package defines a separator widget that can be inserted in a toolbar, to create groups of widgets in the latter.</doc>
+     <doc group="Menus and Toolbars"/>
      <parameter name="self" ada="Item" />
   </package>
 
@@ -1814,12 +1680,9 @@ This package defines a separator widget that can be inserted in a toolbar, to cr
   </package>
 
   <package id="Gtk.Fixed">
-     <doc group="Layout containers" testgtk="create_fixed.adb"
-          screenshot="gtk-fixed">
-The Gtk_Fixed widget is a container which can place child widgets at fixed positions and with fixed sizes, given in pixels.
-
-Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. Instead, you should consider using one of the other many containers available, that will allow you to handle resizing of your windows, as well as font size changes easily.</doc>
-     <parameter name="self" ada="Fixed" />
+      <doc group="Layout containers" testgtk="create_fixed.adb"
+           screenshot="gtk-fixed"/>
+      <parameter name="self" ada="Fixed" />
       <method id="gtk_fixed_put">
          <doc>Add Widget to a Fixed container at the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at.</doc>
       </method>
@@ -1834,10 +1697,6 @@ Note that it is usually bad practice to use the Gtk_Fixed container in GtkAda. I
   <package id="Gtk.Cell_Editable">
      <doc group="Trees and Lists"/>
      <parameter name="self" ada="Cell_Editable"/>
-  </package>
-
-  <package id="Gtk.Orientable">
-     <doc>The Gtk_Orientable interface is implemented by all widgets that can be oriented horizontally or vertically. Historically, such widgets have been realized as subclasses of a common base class (e.g Gtk_Box/Gtk_HBox/Gtk_VBox or Gtk_Scale/Gtk_HScale/Gtk_VScale). Gtk_Orientable is more flexible in that it allows the orientation to be changed at runtime, allowing the widgets to 'flip'.</doc>
   </package>
 
   <package id="Gtk.Buildable">
@@ -1929,14 +1788,8 @@ type Gtk_Assistant_Page_Type is
   </package>
 
   <package id="Gtk.Spinner">
-    <doc group="Ornaments">
-A Gtk_Spinner widget displays an icon-size spinning animation.
-It is often used as an alternative to a Gtk_Progress for
-displaying indefinite activity, instead of actual progress.
-To start the animation, use Gtk.Spinner.Start; to stop it
-use Gtk.Spinner.Stop.
-    </doc>
-    <parameter name="self" ada="Spinner"/>
+     <doc group="Ornaments"/>
+     <parameter name="self" ada="Spinner"/>
   </package>
 
   <package id="Gtk.Entry_Completion">
@@ -2070,77 +1923,22 @@ use Gtk.Spinner.Stop.
   </package>
 
   <package id="Gtk.Scrollable">
-     <doc group="Interfaces">
-An interface for scrollable widgets.
-
-#GtkScrollable is an interface that is implemented by widgets with native
-scrolling ability.
-
-To implement this interface you should override the #GtkScrollable:hadjustment
-and #GtkScrollable:vadjustment properties.
-
-All scrollable widgets should do the following.
-
-  * When a parent widget sets the scrollable child widget's adjustments, the
-    widget should populate the adjustments'lower, upper, step-increment,
-    page-increment and page-size properties, and connect to the value-changed
-    signal on the adjustment.
-
-  * Because its preferred size is the size for a fully expanded widget, the
-    scrollable widget must be able to cope with underallocations.  This means
-    that it must accept any value passed to its #GtkWidgetClass.size_allocate()
-    function.
-
-  * When the parent allocates space to the scrollable child widget, the widget
-    should update the adjustments' properties with new values.
-
-  * When any of the adjustments emits the #GtkAdjustment::value-changed signal,
-    the scrollable widget should scroll its contents.
-     </doc>
+     <doc group="Interfaces"/>
   </package>
 
   <package id="Gtk.Progress_Bar">
      <doc testgtk="create_progress.adb"
           screenshot="gtk-progress_bar"
-          group="Display widgets">
-The GtkProgressBar is typically used to display the progress of a long
-running operation.  It provides a visual clue that processing
-is underway.  The GtkProgressBar can be used in two different
-modes: percentage mode and activity mode.
-
-When an application can determine how much work needs to take place
-(e.g. read a fixed number of bytes from a file) and can monitor its
-progress, it can use the GtkProgressBar in percentage mode and the user
-sees a growing bar indicating the percentage of the work that has
-been completed.  In this mode, the application is required to call
-gtk_progress_bar_set_fraction() periodically to update the progress bar.
-
-When an application has no accurate way of knowing the amount of work
-to do, it can use the GtkProgressBar in activity mode, which shows
-activity by a block moving back and forth within the progress area. In
-this mode, the application is required to call gtk_progress_bar_pulse()
-periodically to update the progress bar.
-
-There is quite a bit of flexibility provided to control the appearance
-of the GtkProgressBar.  Functions are provided to control the
-orientation of the bar, optional text can be displayed along with
-the bar, and the step size used in activity mode can be set.
-     </doc>
+          group="Display widgets"/>
      <parameter name="self" ada="Progress_Bar"/>
   </package>
 
   <package id="Gtk.Color_Button">
-    <doc group="Buttons and Toggles">
-The #GtkColorButton is a button which displays the currently selected
-color and which allows the user to open a color selection dialog to
-change the color.  It may be used for selecting a color in a preference
-dialog.
-    </doc>
-    <parameter name="self" ada="Button"/>
+     <doc group="Buttons and Toggles"/>
+     <parameter name="self" ada="Button"/>
   </package>
 
   <package id="Gtk.Link_Button">
-    <doc group="Buttons and Toggles">
-    </doc>
+     <doc group="Buttons and Toggles"/>
   </package>
 </GIR>

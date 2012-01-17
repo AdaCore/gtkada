@@ -22,7 +22,21 @@
 ------------------------------------------------------------------------------
 
 --  <description>
--- 
+--  A GtkLinkButton is a Gtk.Button.Gtk_Button with a hyperlink, similar to
+--  the one used by web browsers, which triggers an action when clicked. It is
+--  useful to show quick links to resources.
+--
+--  A link button is created by calling either Gtk.Link_Button.Gtk_New or
+--  Gtk.Link_Button.Gtk_New_With_Label. If using the former, the URI you pass
+--  to the constructor is used as a label for the widget.
+--
+--  The URI bound to a GtkLinkButton can be set specifically using
+--  Gtk.Link_Button.Set_Uri, and retrieved using Gtk.Link_Button.Get_Uri.
+--
+--  By default, GtkLinkButton calls gtk_show_uri() when the button is clicked.
+--  This behaviour can be overridden by connecting to the
+--  Gtk.Link_Button.Gtk_Link_Button::activate-link signal and returning True
+--  from the signal handler.
 --
 --  </description>
 --  <group>Buttons and Toggles</group>

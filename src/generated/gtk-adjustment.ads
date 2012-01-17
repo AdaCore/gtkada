@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  The Gtk.Adjustment.Gtk_Adjustment object represents a value which has an
 --  associated lower and upper bound, together with step and page increments,
 --  and a page size. It is used within several GTK+ widgets, including

@@ -22,32 +22,49 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Paned is a container that organizes its two children either
---  horizontally or vertically. The initial size allocated to the children
---  depends on the size they request. However, the user has the possibility to
---  interactively move a separation bar between the two to enlarge one of the
---  children, while at the same time shrinking the second one. The bar can be
---  moved by clicking with the mouse on a small cursor displayed in the bar,
---  and then dragging the mouse.
+--  Gtk.Paned.Gtk_Paned has two panes, arranged either horizontally or
+--  vertically. The division between the two panes is adjustable by the user by
+--  dragging a handle.
 --
---  No additional decoration is provided around the children.
+--  Child widgets are added to the panes of the widget with Gtk.Paned.Pack1
+--  and Gtk.Paned.Pack2. The division between the two children is set by
+--  default from the size requests of the children, but it can be adjusted by
+--  the user.
 --
---  Each child has two parameters, Resize and Shrink.
+--  A paned widget draws a separator between the two child widgets and a small
+--  handle that the user can drag to adjust the division. It does not draw any
+--  relief around the children or around the separator. (The space in which the
+--  separator is called the gutter.) Often, it is useful to put each child
+--  inside a Gtk.Frame.Gtk_Frame with the shadow type set to %GTK_SHADOW_IN so
+--  that the gutter appears as a ridge. No separator is drawn if one of the
+--  children is missing.
 --
---  If Shrink is True, then the widget can be made smaller than its
---  requisition size by the user. Set this to False if you want to set a
---  minimum size.
+--  Each child has two options that can be set, Resize and Shrink. If Resize
+--  is true, then when the Gtk.Paned.Gtk_Paned is resized, that child will
+--  expand or shrink along with the paned widget. If Shrink is true, then that
+--  child can be made smaller than its requisition by the user. Setting Shrink
+--  to False allows the application to set a minimum size. If Resize is false
+--  for both children, then this is treated as if Resize is true for both
+--  children.
 --
---  if Resize is True, this means that the child accepts to be resized, and
---  will not require any size. Thus, the size allocated to it will be the total
---  size allocated to the container minus the size requested by the other
---  child. If Resize is False, the child should ask for a specific size, which
---  it will get. The other child will be resized accordingly. If both Child
---  have the same value for Resize (either True or False), then the size
---  allocated to each is a ratio between the size requested by both.
+--  The application can set the position of the slider as if it were set by
+--  the user, by calling Gtk.Paned.Set_Position.
 --
---  When you use Set_Position with a parameter other than -1, or the user
---  moves the handle to resize the widgets, the behavior of Resize is canceled.
+--  == Creating a paned widget with minimum sizes. ==
+--
+
+--     GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+--     GtkWidget *frame1 = gtk_frame_new (NULL);
+--     GtkWidget *frame2 = gtk_frame_new (NULL);
+--     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+--     gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
+--     gtk_widget_set_size_request (hpaned, 200, -1);
+--     gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
+--     gtk_widget_set_size_request (frame1, 50, -1);
+--     gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
+--     gtk_widget_set_size_request (frame2, 50, -1);
+--
+--
 --
 --  </description>
 --  <screenshot>gtk-paned</screenshot>

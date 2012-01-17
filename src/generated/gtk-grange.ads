@@ -22,8 +22,13 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  This widget provides a low level graphical representation of a range of
---  values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.
+--  Gtk.GRange.Gtk_Range is the common base class for widgets which visualize
+--  an adjustment, e.g Gtk.Scale.Gtk_Scale or Gtk.Scrollbar.Gtk_Scrollbar.
+--
+--  Apart from signals for monitoring the parameters of the adjustment,
+--  Gtk.GRange.Gtk_Range provides properties and methods for influencing the
+--  sensitivity of the "steppers". It also provides properties and methods for
+--  setting a "fill level" on range widgets. See Gtk.GRange.Set_Fill_Level.
 --
 --  </description>
 --  <screenshot>gtk-range</screenshot>

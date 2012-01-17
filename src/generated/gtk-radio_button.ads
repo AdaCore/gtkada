@@ -22,14 +22,65 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Radio_Button is a simple button that has two states, like a
---  Gtk_Toggle_Button. However, Gtk_Radio_Buttons can be grouped together to
---  get a special behavior: only one button in the group can be active at any
---  given time. Thus, when the user selects one of the buttons from the group,
---  the button that was previously selected is disabled.
+--  A single radio button performs the same basic function as a
+--  Gtk.Check_Button.Gtk_Check_Button, as its position in the object hierarchy
+--  reflects. It is only when multiple radio buttons are grouped together that
+--  they become a different user interface component in their own right.
 --
---  The radio buttons always belongs to a group, even if there is only one in
---  this group.
+--  Every radio button is a member of some group of radio buttons. When one is
+--  selected, all other radio buttons in the same group are deselected. A
+--  Gtk.Radio_Button.Gtk_Radio_Button is one way of giving the user a choice
+--  from many options.
+--
+--  Radio button widgets are created with gtk_radio_button_new, passing null
+--  as the argument if this is the first radio button in a group. In subsequent
+--  calls, the group you wish to add this button to should be passed as an
+--  argument. Optionally, Gtk.Radio_Button.Gtk_New can be used if you want a
+--  text label on the radio button.
+--
+--  Alternatively, when adding widgets to an existing group of radio buttons,
+--  use gtk_radio_button_new_from_widget with a
+--  Gtk.Radio_Button.Gtk_Radio_Button that already has a group assigned to it.
+--  The convenience function Gtk.Radio_Button.Gtk_New is also provided.
+--
+--  To retrieve the group a Gtk.Radio_Button.Gtk_Radio_Button is assigned to,
+--  use Gtk.Radio_Button.Get_Group.
+--
+--  To remove a Gtk.Radio_Button.Gtk_Radio_Button from one group and make it
+--  part of a new one, use Gtk.Radio_Button.Set_Group.
+--
+--  The group list does not need to be freed, as each
+--  Gtk.Radio_Button.Gtk_Radio_Button will remove itself and its list item when
+--  it is destroyed.
+--
+--  == How to create a group of two radio buttons. ==
+--
+
+--     void create_radio_buttons (void) {
+--        GtkWidget *window, *radio1, *radio2, *box, *entry;
+--        window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--        box = gtk_box_new (GTK_ORIENTATION_VERTICAL, TRUE, 2);
+--        /&ast; Create a radio button with a GtkEntry widget &ast;/
+--        radio1 = gtk_radio_button_new (NULL);
+--        entry = gtk_entry_new (<!-- -->);
+--           gtk_container_add (GTK_CONTAINER (radio1), entry);
+--           /&ast; Create a radio button with a label &ast;/
+--              radio2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
+--              "I'm the second radio button.");
+--           /&ast; Pack them into a box, then show all the widgets &ast;/
+--           gtk_box_pack_start (GTK_BOX (box), radio1, TRUE, TRUE, 2);
+--           gtk_box_pack_start (GTK_BOX (box), radio2, TRUE, TRUE, 2);
+--           gtk_container_add (GTK_CONTAINER (window), box);
+--           gtk_widget_show_all (window);
+--           return;
+--        }
+--
+--  When an unselected button in the group is clicked the clicked button
+--  receives the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal, as does
+--  the previously selected button. Inside the
+--  Gtk.Toggle_Button.Gtk_Toggle_Button::toggled handler,
+--  Gtk.Toggle_Button.Get_Active can be used to determine if the button has
+--  been selected or deselected.
 --
 --  </description>
 --  <screenshot>gtk-radio_button</screenshot>

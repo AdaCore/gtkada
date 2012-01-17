@@ -22,13 +22,80 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk_Image widget displays a graphical image. The image is typically
---  created using Gdk.Image.Gdk_New.
+--  The Gtk.Image.Gtk_Image widget displays an image. Various kinds of object
+--  can be displayed as an image; most typically, you would load a
+--  Gdk.Pixbuf.Gdk_Pixbuf ("pixel buffer") from a file, and then display that.
+--  There's a convenience function to do this, Gtk.Image.Gtk_New, used as
+--  follows:
 --
---  The pixels in a Gtk_Image may be manipulated by the application after
---  creation, as Gtk_Image store the pixel data on the client side. If you wish
---  to store the pixel data on the server side (thus not allowing manipulation
---  of the data after creation) you should use Gtk_Pixmap.
+
+--     GtkWidget *image;
+--     image = gtk_image_new_from_file ("myfile.png");
+--
+--  If the file isn't loaded successfully, the image will contain a "broken
+--  image" icon similar to that used in many web browsers. If you want to
+--  handle errors in loading the file yourself, for example by displaying an
+--  error message, then load the image with Gdk.Pixbuf.Gdk_New_From_File, then
+--  create the Gtk.Image.Gtk_Image with Gtk.Image.Gtk_New.
+--
+--  The image file may contain an animation, if so the Gtk.Image.Gtk_Image
+--  will display an animation (GdkPixbufAnimation) instead of a static image.
+--
+--  Gtk.Image.Gtk_Image is a subclass of Gtk.Misc.Gtk_Misc, which implies that
+--  you can align it (center, left, right) and add padding to it, using
+--  Gtk.Misc.Gtk_Misc methods.
+--
+--  Gtk.Image.Gtk_Image is a "no window" widget (has no Gdk.Window.Gdk_Window
+--  of its own), so by default does not receive events. If you want to receive
+--  events on the image, such as button clicks, place the image inside a
+--  Gtk.Event_Box.Gtk_Event_Box, then connect to the event signals on the event
+--  box.
+--
+--  <title>Handling button press events on a
+--  <structname>GtkImage</structname>.</title>
+--
+
+--     static gboolean
+--     button_press_callback (GtkWidget      *event_box,
+--        GdkEventButton *event,
+--        gpointer        data)
+--     {
+--        g_print ("Event box clicked at coordinates %f,%f\n",
+--           event->x, event->y);
+--        /<!---->* Returning TRUE means we handled the event, so the signal
+--        * emission should be stopped (don't call any further
+--           * callbacks that may be connected). Return FALSE
+--        * to continue invoking callbacks.
+--        *<!---->/
+--        return TRUE;
+--     }
+--     static GtkWidget*
+--     create_image (void)
+--     {
+--        GtkWidget *image;
+--        GtkWidget *event_box;
+--        image = gtk_image_new_from_file ("myfile.png");
+--        event_box = gtk_event_box_new (<!-- -->);
+--           gtk_container_add (GTK_CONTAINER (event_box), image);
+--              g_signal_connect (G_OBJECT (event_box),
+--              "button_press_event",
+--              G_CALLBACK (button_press_callback),
+--              image);
+--           return image;
+--        }
+--
+--  When handling events on the event box, keep in mind that coordinates in
+--  the image may be different from event box coordinates due to the alignment
+--  and padding settings on the image (see Gtk.Misc.Gtk_Misc). The simplest way
+--  to solve this is to set the alignment to 0.0 (left/top), and set the
+--  padding to zero. Then the origin of the image will be the same as the
+--  origin of the event box.
+--
+--  Sometimes an application will want to avoid depending on external data
+--  files, such as image files. GTK+ comes with a program to avoid this, called
+--  <application>gdk-pixbuf-csource</application>. This program allows you to
+--  convert an image into a C variable declaration, which can then be loaded
+--  into a Gdk.Pixbuf.Gdk_Pixbuf using gdk_pixbuf_new_from_inline.
 --
 --  </description>
 --  <screenshot>gtk-image</screenshot>

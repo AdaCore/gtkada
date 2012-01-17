@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
 --  input, e.g. to display a message, ask a question, or anything else that
 --  does not require extensive effort on the user's part.

@@ -22,10 +22,12 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Spinner widget displays an icon-size spinning animation. It is often
---  used as an alternative to a Gtk_Progress for displaying indefinite
---  activity, instead of actual progress. To start the animation, use
---  Gtk.Spinner.Start; to stop it use Gtk.Spinner.Stop.
+--  A GtkSpinner widget displays an icon-size spinning animation. It is often
+--  used as an alternative to a Gtk.Progress_Bar.Gtk_Progress_Bar for
+--  displaying indefinite activity, instead of actual progress.
+--
+--  To start the animation, use Gtk.Spinner.Start, to stop it use
+--  Gtk.Spinner.Stop.
 --
 --  </description>
 --  <group>Ornaments</group>

@@ -22,15 +22,30 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Table is a container that can contain any number of children. Each
---  of them is attached to a specific row and a specific column in widget.
+--  The Gtk.Table.Gtk_Table functions allow the programmer to arrange widgets
+--  in rows and columns, making it easy to align many widgets next to each
+--  other, horizontally and vertically.
 --
---  Every row in the table must have the same height, and every column must
---  have the same width if the table was said as Homogeneous. But you can also
---  decide to have an heterogeneous table, where the width and height are set
---  by the children contained in the table. Check out the Gtk_Sheet widget for
---  a different kind of table that can also contain text and images in a more
---  efficient way.
+--  Tables are created with a call to Gtk.Table.Gtk_New, the size of which can
+--  later be changed with Gtk.Table.Resize.
+--
+--  Widgets can be added to a table using Gtk.Table.Attach or the more
+--  convenient (but slightly less flexible) Gtk.Table.Attach_Defaults.
+--
+--  To alter the space next to a specific row, use Gtk.Table.Set_Row_Spacing,
+--  and for a column, Gtk.Table.Set_Col_Spacing. The gaps between *all* rows or
+--  columns can be changed by calling Gtk.Table.Set_Row_Spacings or
+--  Gtk.Table.Set_Col_Spacings respectively. Note that spacing is added
+--  *between* the children, while padding added by Gtk.Table.Attach is added
+--  *on either side* of the widget it belongs to.
+--
+--  Gtk.Table.Set_Homogeneous, can be used to set whether all cells in the
+--  table will resize themselves to the size of the largest widget in the
+--  table.
+--
+--  Note: Note that Gtk.Grid.Gtk_Grid provides the same capabilities as
+--  GtkTable for arranging widgets in a rectangular grid, and additionally
+--  supports height-for-width geometry management.
 --
 --  </description>
 --  <group>Layout containers</group>

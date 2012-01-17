@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 pragma Ada_05;
---  <description
+--  <description>
 --  A Gtk.Accel_Group.Gtk_Accel_Group represents a group of keyboard
 --  accelerators, typically attached to a toplevel Gtk.Window.Gtk_Window (with
 --  gtk_window_add_accel_group). Usually you won't need to create a

@@ -22,16 +22,76 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk_Size_Group provides a mechanism for grouping a number of widgets
---  together so they all request the same amount of space. This is typically
---  useful when you want a column of widgets to have the same size, but you
---  can't use a Gtk_Table widget.
+--  Gtk.Size_Group.Gtk_Size_Group provides a mechanism for grouping a number
+--  of widgets together so they all request the same amount of space. This is
+--  typically useful when you want a column of widgets to have the same size,
+--  but you can't use a Gtk.Table.Gtk_Table widget.
+--
+--  In detail, the size requested for each widget in a
+--  Gtk.Size_Group.Gtk_Size_Group is the maximum of the sizes that would have
+--  been requested for each widget in the size group if they were not in the
+--  size group. The mode of the size group (see Gtk.Size_Group.Set_Mode)
+--  determines whether this applies to the horizontal size, the vertical size,
+--  or both sizes.
 --
 --  Note that size groups only affect the amount of space requested, not the
 --  size that the widgets finally receive. If you want the widgets in a
---  Gtk_Size_Group to actually be the same size, you need to pack them in such
---  a way that they get the size they request and not more. For example, if you
---  are packing your widgets into a table, you would not include the Fill flag.
+--  Gtk.Size_Group.Gtk_Size_Group to actually be the same size, you need to
+--  pack them in such a way that they get the size they request and not more.
+--  For example, if you are packing your widgets into a table, you would not
+--  include the %GTK_FILL flag.
+--
+--  Gtk.Size_Group.Gtk_Size_Group objects are referenced by each widget in the
+--  size group, so once you have added all widgets to a
+--  Gtk.Size_Group.Gtk_Size_Group, you can drop the initial reference to the
+--  size group with g_object_unref. If the widgets in the size group are
+--  subsequently destroyed, then they will be removed from the size group and
+--  drop their references on the size group; when all widgets have been
+--  removed, the size group will be freed.
+--
+--  Widgets can be part of multiple size groups; GTK+ will compute the
+--  horizontal size of a widget from the horizontal requisition of all widgets
+--  that can be reached from the widget by a chain of size groups of type
+--  %GTK_SIZE_GROUP_HORIZONTAL or %GTK_SIZE_GROUP_BOTH, and the vertical size
+--  from the vertical requisition of all widgets that can be reached from the
+--  widget by a chain of size groups of type %GTK_SIZE_GROUP_VERTICAL or
+--  %GTK_SIZE_GROUP_BOTH.
+--
+--  Note that only non-contextual sizes of every widget are ever consulted by
+--  size groups (since size groups have no knowledge of what size a widget will
+--  be allocated in one dimension, it cannot derive how much height a widget
+--  will receive for a given width). When grouping widgets that trade height
+--  for width in mode %GTK_SIZE_GROUP_VERTICAL or %GTK_SIZE_GROUP_BOTH: the
+--  height for the minimum width will be the requested height for all widgets
+--  in the group. The same is of course true when horizontally grouping width
+--  for height widgets.
+--
+--  Widgets that trade height-for-width should set a reasonably large minimum
+--  width by way of Gtk.Label.Gtk_Label:width-chars for instance. Widgets with
+--  static sizes as well as widgets that grow (such as ellipsizing text) need
+--  no such considerations.
+--
+--  == GtkSizeGroup as GtkBuildable ==
+--
+--  Size groups can be specified in a UI definition by placing an
+--  &lt;object&gt; element with 'class="GtkSizeGroup"' somewhere in the UI
+--  definition. The widgets that belong to the size group are specified by a
+--  &lt;widgets&gt; element that may contain multiple &lt;widget&gt; elements,
+--  one for each member of the size group. The name attribute gives the id of
+--  the widget.
+--
+--  == A UI definition fragment with GtkSizeGroup ==
+--
+
+--     <object class="GtkSizeGroup">
+--     <property name="mode">GTK_SIZE_GROUP_HORIZONTAL</property>
+--     <widgets>
+--     <widget name="radio1"/>
+--     <widget name="radio2"/>
+--     </widgets>
+--     </object>
+--
+--
 --
 --  </description>
 --  <testgtk>create_size_groups.adb</testgtk>

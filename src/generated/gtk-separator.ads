@@ -22,10 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A separator is a vertical or horizontal line that can be displayed between
---  widgets, to provide visual grouping of the widgets into meaningful groups.
---  It is for instance used in dialogs to isolate the actual contents of the
---  dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)
+--  GtkSeparator is a horizontal or vertical separator widget, depending on
+--  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used
+--  to group the widgets within a window. It displays a line with a shadow to
+--  make it appear sunken into the interface.
 --
 --  </description>
 --  <screenshot>gtk-separator</screenshot>

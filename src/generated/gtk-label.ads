@@ -22,51 +22,154 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Label is a light widget associated with some text you want to
---  display on the screen. You can change the text dynamically if needed.
+--  The Gtk.Label.Gtk_Label widget displays a small amount of text. As the
+--  name implies, most labels are used to label another widget such as a
+--  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a GtkOptionMenu.
 --
---  The text can be on multiple lines if you separate each line with the
---  ASCII.LF character. However, this is not the recommended way to display
---  long texts (see the Gtk_Text widget instead).
+--  == GtkLabel as GtkBuildable ==
+--
+--  The GtkLabel implementation of the GtkBuildable interface supports a
+--  custom &lt;attributes&gt; element, which supports any number of
+--  &lt;attribute&gt; elements. the &lt;attribute&gt; element has attributes
+--  named name, value, start and end and allows you to specify PangoAttribute
+--  values for this label.
+--
+--  == A UI definition fragment specifying Pango attributes ==
+--
+
+--     <object class="GtkLabel">
+--     <attributes>
+--     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+--     <attribute name="background" value="red" start="5" end="10"/>"
+--     </attributes>
+--     </object>
+--
+--  The start and end attributes specify the range of characters to which the
+--  Pango attribute applies. If start and end are not specified, the attribute
+--  is applied to the whole text. Note that specifying ranges does not make
+--  much sense with translatable attributes. Use markup embedded in the
+--  translatable content instead.
 --
 --  == Mnemonics ==
 --
---  Labels may contain mnemonics. Mnemonics are underlined characters in the
---  label, used for keyboard navigation. Mnemonics are created by providing
---  string with an underscore before the mnemonic character, such as "_File",
---  to the functions gtk_new_with_mnemonic or set_text_with_mnemonic.
+--  Labels may contain 'mnemonics'. Mnemonics are underlined characters in the
+--  label, used for keyboard navigation. Mnemonics are created by providing a
+--  string with an underscore before the mnemonic character, such as '"_File"',
+--  to the functions Gtk.Label.Gtk_New_With_Mnemonic or
+--  Gtk.Label.Set_Text_With_Mnemonic.
 --
 --  Mnemonics automatically activate any activatable widget the label is
---  inside, such as a Gtk_Button; if the label is not inside the mnemonic's
---  target widget, you have to tell the label about the target using
---  set_mnemonic_widget. For instance: declare Button : Gtk_Button; Label :
---  Gtk_Label; begin Gtk_New (Button); Gtk_New_With_Mnemonic (Label, "_File");
---  Add (Button, Label); end; However, there exists a convenience function in
---  Gtk.Button to create such a button already.
+--  inside, such as a Gtk.Button.Gtk_Button; if the label is not inside the
+--  mnemonic's target widget, you have to tell the label about the target using
+--  Gtk.Label.Set_Mnemonic_Widget. Here's a simple example where the label is
+--  inside a button:
 --
---  == Markup ==
+
+--     // Pressing Alt+H will activate this button
+--     button = gtk_button_new (<!-- -->);
+--        label = gtk_label_new_with_mnemonic ("_Hello");
+--        gtk_container_add (GTK_CONTAINER (button), label);
+--
+--  There's a convenience function to create buttons with a mnemonic label
+--  already inside:
+--
+
+--     // Pressing Alt+H will activate this button
+--     button = gtk_button_new_with_mnemonic ("_Hello");
+--
+--  To create a mnemonic for a widget alongside the label, such as a
+--  Gtk.GEntry.Gtk_Entry, you have to point the label at the entry with
+--  Gtk.Label.Set_Mnemonic_Widget:
+--
+
+--     // Pressing Alt+H will focus the entry
+--     entry = gtk_entry_new (<!-- -->);
+--        label = gtk_label_new_with_mnemonic ("_Hello");
+--        gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+--
+--  == Markup (styled text) ==
 --
 --  To make it easy to format text in a label (changing colors, fonts, etc.),
---  label text can be provided in a simple markup format. Here's how to create
---  a label with a small font: Gtk_New (Label, "<small>hello</small>");
+--  label text can be provided in a simple <link
+--  linkend="PangoMarkupFormat">markup format</link>. Here's how to create a
+--  label with a small font:
 --
---  The markup must be valid, and <>& characters must be escaped with &lt;
---  &gt; and &amp;
+
+--     label = gtk_label_new (NULL);
+--     gtk_label_set_markup (GTK_LABEL (label), "<small>Small text</small>");
 --
---  Markup strings are just a convenient way to set the Pango_Attr_List on
---  label; Set_Attributes may be a simpler way to set attributes in some cases.
---  Be careful though; Pango_Attr_List tends to cause internationalization
+--  (See <link linkend="PangoMarkupFormat">complete documentation</link> of
+--  available tags in the Pango manual.)
+--
+--  The markup passed to Gtk.Label.Set_Markup must be valid; for example,
+--  literal &lt;, &gt; and &amp; characters must be escaped as \&lt;, \gt;, and
+--  \&amp;. If you pass text obtained from the user, file, or a network to
+--  Gtk.Label.Set_Markup, you'll want to escape it with g_markup_escape_text or
+--  g_markup_printf_escaped.
+--
+--  Markup strings are just a convenient way to set the
+--  Pango.Attributes.Pango_Attr_List on a label; Gtk.Label.Set_Attributes may
+--  be a simpler way to set attributes in some cases. Be careful though;
+--  Pango.Attributes.Pango_Attr_List tends to cause internationalization
 --  problems, unless you're applying attributes to the entire string (i.e.
---  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
---  that specifying the start_index and end_index for a Pango_Attribute
+--  unless you set the range of each attribute to [0, %G_MAXINT)). The reason
+--  is that specifying the start_index and end_index for a PangoAttribute
 --  requires knowledge of the exact string being displayed, so translations
 --  will cause problems.
 --
 --  == Selectable labels ==
 --
---  Labels can be made selectable with Set_Selectable. Selectable labels allow
---  the user to copy the label contents to the clipboard. Only should be made
---  selectable.
+--  Labels can be made selectable with Gtk.Label.Set_Selectable. Selectable
+--  labels allow the user to copy the label contents to the clipboard. Only
+--  labels that contain useful-to-copy information &mdash; such as error
+--  messages &mdash; should be made selectable.
+--
+--  == Text layout ==
+--
+--  A label can contain any number of paragraphs, but will have performance
+--  problems if it contains more than a small number. Paragraphs are separated
+--  by newlines or other paragraph separators understood by Pango.
+--
+--  Labels can automatically wrap text if you call Gtk.Label.Set_Line_Wrap.
+--
+--  Gtk.Label.Set_Justify sets how the lines in a label align with one
+--  another. If you want to set how the label as a whole aligns in its
+--  available space, see Gtk.Misc.Set_Alignment.
+--
+--  The Gtk.Label.Gtk_Label:width-chars and
+--  Gtk.Label.Gtk_Label:max-width-chars properties can be used to control the
+--  size allocation of ellipsized or wrapped labels. For ellipsizing labels, if
+--  either is specified (and less than the actual text size), it is used as the
+--  minimum width, and the actual text size is used as the natural width of the
+--  label. For wrapping labels, width-chars is used as the minimum width, if
+--  specified, and max-width-chars is used as the natural width. Even if
+--  max-width-chars specified, wrapping labels will be rewrapped to use all of
+--  the available width.
+--
+--  Note:
+--
+--  Note that the interpretation of Gtk.Label.Gtk_Label:width-chars and
+--  Gtk.Label.Gtk_Label:max-width-chars has changed a bit with the introduction
+--  of <link linkend="geometry-management">width-for-height geometry
+--  management.</link>
+--
+--  == Links ==
+--
+--  Since 2.18, GTK+ supports markup for clickable hyperlinks in addition to
+--  regular Pango markup. The markup for links is borrowed from HTML, using the
+--  <tag>a</tag> with href and title attributes. GTK+ renders links similar to
+--  the way they appear in web browsers, with colored, underlined text. The
+--  title attribute is displayed as a tooltip on the link. An example looks
+--  like this:
+--
+
+--     gtk_label_set_markup (label, "Go to the <a href="http://www.gtk.org" title="&lt;i&gt;Our&lt;/i&gt; website">GTK+ website</a> for more...");
+--
+--  It is possible to implement custom handling for links and their tooltips
+--  with the Gtk.Label.Gtk_Label::activate-link signal and the
+--  Gtk.Label.Get_Current_Uri function.
+--
+--
 --
 --  </description>
 --  <screenshot>gtk-label</screenshot>

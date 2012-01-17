@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description
+--  <description>
 --  A Gtk.Expander.Gtk_Expander allows the user to hide or show its child by
 --  clicking on an expander triangle similar to the triangles used in a
 --  Gtk.Treeview.Gtk_Treeview.

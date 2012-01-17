@@ -22,12 +22,15 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk_Orientable interface is implemented by all widgets that can be
---  oriented horizontally or vertically. Historically, such widgets have been
---  realized as subclasses of a common base class (e.g
---  Gtk_Box/Gtk_HBox/Gtk_VBox or Gtk_Scale/Gtk_HScale/Gtk_VScale).
---  Gtk_Orientable is more flexible in that it allows the orientation to be
---  changed at runtime, allowing the widgets to 'flip'.
+--  The Gtk.Orientable.Gtk_Orientable interface is implemented by all widgets
+--  that can be oriented horizontally or vertically. Historically, such widgets
+--  have been realized as subclasses of a common base class (e.g
+--  Gtk.Box.Gtk_Box/Gtk.Box.Gtk_Hbox/Gtk.Box.Gtk_Vbox or
+--  Gtk.Scale.Gtk_Scale/Gtk.Scale.Gtk_Hscale/Gtk.Scale.Gtk_Vscale).
+--  Gtk.Orientable.Gtk_Orientable is more flexible in that it allows the
+--  orientation to be changed at runtime, allowing the widgets to 'flip'.
+--
+--  Gtk.Orientable.Gtk_Orientable was introduced in GTK+ 2.16.
 --
 --  </description>
 
