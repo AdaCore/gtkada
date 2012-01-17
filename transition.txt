@@ -58,6 +58,8 @@ Render_Pixmap_And_Mask, Render_Pixmap_And_Mask_For_Colormap have been removed.
 
 Use APIs provided by Gdk.Cairo to draw a pixbuf on a Gdk_Drawable.
 
+Get_From_Drawable has been removed, use Get_From_Surface or Get_From_Window.
+
 Gdk.Pixmap
 ==========
 
