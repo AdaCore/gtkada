@@ -122,7 +122,7 @@ package Gtk.Status_Bar is
    procedure Pop
       (Statusbar : access Gtk_Status_Bar_Record;
        Context   : Context_Id);
-   --  Removes the first message in the GtkStatusBar's stack with the given
+   --  Removes the first message in the Gtk_Status_Bar's stack with the given
    --  context id.
    --  Note that this may not change the displayed message, if the message at
    --  the top of the stack has a different context id.

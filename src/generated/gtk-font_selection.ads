@@ -148,7 +148,7 @@ package Gtk.Font_Selection is
       (Fontsel : access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Size_List);
-   --  This returns the GtkTreeeView used to list font sizes.
+   --  This returns the Gtk_Treee_View used to list font sizes.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Fontchooser.Gtk_Fontchooser
 

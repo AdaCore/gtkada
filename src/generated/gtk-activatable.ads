@@ -240,7 +240,7 @@ package Gtk.Activatable is
    --  When implementing Gtk.Activatable.Gtk_Activatable you must call this
    --  when handling changes of the
    --  Gtk.Activatable.Gtk_Activatable:related-action, and you must also use
-   --  this to break references in GObject->dispose.
+   --  this to break references in Glib.Object.GObject->dispose.
    --  This function adds a reference to the currently set related action for
    --  you, it also makes sure the Gtk.Activatable.Gtk_Activatable->update
    --  method is called when the related Gtk.Action.Gtk_Action properties

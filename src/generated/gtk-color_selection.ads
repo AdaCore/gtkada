@@ -88,7 +88,7 @@ package Gtk.Color_Selection is
    --  Sets the current color to be Color.
    --  The first time this is called, it will also set the original color to be
    --  Color too.
-   --  "color": a GdkColor to set the current color with
+   --  "color": a Gdk_Color to set the current color with
 
    procedure Get_Current_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
@@ -100,7 +100,7 @@ package Gtk.Color_Selection is
    --  The first time this is called, it will also set the original color to be
    --  Rgba too.
    --  Since: gtk+ 3.0
-   --  "rgba": A GdkRGBA to set the current color with
+   --  "rgba": A Gdk_RGBA to set the current color with
 
    function Get_Has_Opacity_Control
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
@@ -139,7 +139,7 @@ package Gtk.Color_Selection is
    --  confusing to have that color change. Calling
    --  Gtk.Color_Selection.Set_Current_Color will also set this color the first
    --  time it is called.
-   --  "color": a GdkColor to set the previous color with
+   --  "color": a Gdk_Color to set the previous color with
 
    procedure Get_Previous_Rgba
       (Colorsel : access Gtk_Color_Selection_Record;
@@ -153,7 +153,7 @@ package Gtk.Color_Selection is
    --  Gtk.Color_Selection.Set_Current_Rgba will also set this color the first
    --  time it is called.
    --  Since: gtk+ 3.0
-   --  "rgba": a GdkRGBA to set the previous color with
+   --  "rgba": a Gdk_RGBA to set the previous color with
 
    function Is_Adjusting
       (Colorsel : access Gtk_Color_Selection_Record) return Boolean;

@@ -107,6 +107,7 @@ package Gtk.Size_Group is
    type Gtk_Size_Group_Record is new GObject_Record with null record;
    type Gtk_Size_Group is access all Gtk_Size_Group_Record'Class;
 
+
    type Size_Group_Mode is (None, Horizontal, Vertical, Both);
    pragma Convention (C, Size_Group_Mode);
    --  This type indicates how the size of all widgets in the group match:

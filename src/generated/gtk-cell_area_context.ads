@@ -24,7 +24,7 @@
 --  <description>
 --  The Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object is created by a
 --  given Gtk.Cell_Area.Gtk_Cell_Area implementation via its
---  GtkCellAreaClass.create_context virtual method and is used to store cell
+--  Gtk_Cell_Area_Class.create_context virtual method and is used to store cell
 --  sizes and alignments for a series of Gtk.Tree_Model.Gtk_Tree_Model rows
 --  that are requested and rendered in the same context.
 --

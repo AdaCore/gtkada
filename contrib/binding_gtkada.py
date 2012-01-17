@@ -81,6 +81,7 @@ Where the package node is defined as follows:
                            <!-- extra with clauses for spec -->
           <with_body pkg="..." use="true"/>
                            <!-- extra with clauses for body -->
+          <enum ctype="..."/>  <!--  Include binding for enumeration type -->
 
           <!-- Code will be put after generated subprograms-->
           <spec>...     <!-- optional, code to insert in spec -->

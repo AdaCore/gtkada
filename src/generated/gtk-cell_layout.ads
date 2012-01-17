@@ -41,7 +41,7 @@ pragma Ada_05;
 --
 --  Implementations of GtkCellLayout which also implement the GtkBuildable
 --  interface (Gtk.Cellview.Gtk_Cellview, Gtk.Iconview.Gtk_Iconview,
---  Gtk.Combo_Box.Gtk_Combo_Box, GtkComboBoxEntry,
+--  Gtk.Combo_Box.Gtk_Combo_Box, Gtk_Combo_Box_Entry,
 --  Gtk.Entry_Completion.Gtk_Entry_Completion,
 --  Gtk.Treeviewcolumn.Gtk_Treeviewcolumn) accept GtkCellRenderer objects as
 --  <child> elements in UI definitions. They support a custom <attributes>
@@ -148,7 +148,7 @@ package Gtk.Cell_Layout is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a GtkTreeIter indicating the row to set the value for
+   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
 
    ------------------
    -- Constructors --
@@ -267,7 +267,7 @@ package Gtk.Cell_Layout is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a GtkTreeIter indicating the row to set the value for
+      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func

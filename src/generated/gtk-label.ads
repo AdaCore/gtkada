@@ -24,14 +24,14 @@
 --  <description>
 --  The Gtk.Label.Gtk_Label widget displays a small amount of text. As the
 --  name implies, most labels are used to label another widget such as a
---  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a GtkOptionMenu.
+--  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a Gtk_Option_Menu.
 --
 --  == GtkLabel as GtkBuildable ==
 --
 --  The GtkLabel implementation of the GtkBuildable interface supports a
 --  custom <attributes> element, which supports any number of <attribute>
 --  elements. the <attribute> element has attributes named name, value, start
---  and end and allows you to specify PangoAttribute values for this label.
+--  and end and allows you to specify Pango_Attribute values for this label.
 --
 --  == A UI definition fragment specifying Pango attributes ==
 --
@@ -107,9 +107,9 @@
 --  Pango.Attributes.Pango_Attr_List tends to cause internationalization
 --  problems, unless you're applying attributes to the entire string (i.e.
 --  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
---  that specifying the start_index and end_index for a PangoAttribute requires
---  knowledge of the exact string being displayed, so translations will cause
---  problems.
+--  that specifying the start_index and end_index for a Pango_Attribute
+--  requires knowledge of the exact string being displayed, so translations
+--  will cause problems.
 --
 --  == Selectable labels ==
 --
@@ -354,7 +354,7 @@ package Gtk.Label is
       (Label : access Gtk_Label_Record) return Guint;
    --  If the label has been set so that it has an mnemonic key this function
    --  returns the keyval used for the mnemonic accelerator. If there is no
-   --  mnemonic set up it returns GDK_VoidSymbol.
+   --  mnemonic set up it returns GDK_Void_Symbol.
 
    function Get_Mnemonic_Widget
       (Label : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget;
@@ -667,10 +667,10 @@ package Gtk.Label is
    --  "move-cursor"
    --     procedure Handler
    --       (Self             : access Gtk_Label_Record'Class;
-   --        Step             : MovementStep;
+   --        Step             : Movement_Step;
    --        Count            : Gint;
    --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a GtkMovementStep
+   --    --  "step": the granularity of the move, as a Gtk_Movement_Step
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
    --  The ::move-cursor signal is a <link

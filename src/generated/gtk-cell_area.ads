@@ -25,7 +25,7 @@ pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Area.Gtk_Cell_Area is an abstract class for
 --  Gtk.Cell_Layout.Gtk_Cell_Layout widgets (also referred to as "layouting
---  widgets") to interface with an arbitrary number of GtkCellRenderers and
+--  widgets") to interface with an arbitrary number of Gtk_Cell_Renderers and
 --  interact with the user for a given Gtk.Tree_Model.Gtk_Tree_Model row.
 --
 --  The cell area handles events, focus navigation, drawing and size requests
@@ -97,7 +97,7 @@ pragma Ada_05;
 --  exceedingly large amount of rows. The Gtk.Cell_Layout.Gtk_Cell_Layout
 --  widget in that case would calculate the required width of the rows in an
 --  idle or timeout source (see g_timeout_add) and when the widget is requested
---  its actual width in GtkWidgetClass.get_preferred_width it can simply
+--  its actual width in Gtk_Widget_Class.get_preferred_width it can simply
 --  consult the width accumulated so far in the
 --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object.
 --
@@ -166,8 +166,8 @@ pragma Ada_05;
 --  rows and return that height synchronously. The reasoning here is that any
 --  layouting widget is at least capable of synchronously calculating enough
 --  height to fill the screen height (or scrolled window height) in response to
---  a single call to GtkWidgetClass.get_preferred_height_for_width. Returning a
---  perfect height for width that is larger than the screen area is
+--  a single call to Gtk_Widget_Class.get_preferred_height_for_width. Returning
+--  a perfect height for width that is larger than the screen area is
 --  inconsequential since after the layouting receives an allocation from a
 --  scrolled window it simply continues to drive the the scrollbar values while
 --  more and more height is required for the row heights that are calculated in
@@ -176,7 +176,7 @@ pragma Ada_05;
 --  == Rendering Areas ==
 --
 --  Once area sizes have been aquired at least for the rows in the visible
---  area of the layouting widget they can be rendered at GtkWidgetClass.draw
+--  area of the layouting widget they can be rendered at Gtk_Widget_Class.draw
 --  time.
 --
 --  A crude example of how to render all the rows at the root level runs as
@@ -230,14 +230,14 @@ pragma Ada_05;
 --  and to tell the area to paint the focus at render time.
 --
 --  Layouting widgets that accept focus on cells should implement the
---  GtkWidgetClass.focus virtual method. The layouting widget is always
+--  Gtk_Widget_Class.focus virtual method. The layouting widget is always
 --  responsible for knowing where Gtk.Tree_Model.Gtk_Tree_Model rows are
---  rendered inside the widget, so at GtkWidgetClass.focus time the layouting
+--  rendered inside the widget, so at Gtk_Widget_Class.focus time the layouting
 --  widget should use the Gtk.Cell_Area.Gtk_Cell_Area methods to navigate focus
 --  inside the area and then observe the GtkDirectionType to pass the focus to
 --  adjacent rows and areas.
 --
---  A basic example of how the GtkWidgetClass.focus virtual method should be
+--  A basic example of how the Gtk_Widget_Class.focus virtual method should be
 --  implemented:
 --
 --  == Implementing keyboard focus navigation ==
@@ -300,14 +300,15 @@ pragma Ada_05;
 --  == Cell Properties ==
 --
 --  The Gtk.Cell_Area.Gtk_Cell_Area introduces *cell properties* for
---  GtkCellRenderers in very much the same way that Gtk.Container.Gtk_Container
---  introduces <link linkend="child-properties">child properties</link> for
---  GtkWidgets. This provides some general interfaces for defining the
---  relationship cell areas have with their cells. For instance in a
---  Gtk.Cellareabox.Gtk_Cellareabox a cell might "expand" and receive extra
---  space when the area is allocated more than its full natural request, or a
---  cell might be configured to "align" with adjacent rows which were requested
---  and rendered with the same Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
+--  Gtk_Cell_Renderers in very much the same way that
+--  Gtk.Container.Gtk_Container introduces <link
+--  linkend="child-properties">child properties</link> for Gtk_Widgets. This
+--  provides some general interfaces for defining the relationship cell areas
+--  have with their cells. For instance in a Gtk.Cellareabox.Gtk_Cellareabox a
+--  cell might "expand" and receive extra space when the area is allocated more
+--  than its full natural request, or a cell might be configured to "align"
+--  with adjacent rows which were requested and rendered with the same
+--  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
 --
 --  Use gtk_cell_area_class_install_cell_property to install cell properties
 --  for a cell area class and gtk_cell_area_class_find_cell_property or
@@ -376,7 +377,7 @@ package Gtk.Cell_Area is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a GtkTreeIter indicating the row to set the value for
+   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
 
    ------------------
    -- Constructors --
@@ -424,8 +425,8 @@ package Gtk.Cell_Area is
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area to activate
-   --  "event": the GdkEvent for which cell activation should occur
-   --  "cell_area": the GdkRectangle in Widget relative coordinates of
+   --  "event": the Gdk_Event for which cell activation should occur
+   --  "cell_area": the Gdk_Rectangle in Widget relative coordinates of
    --  Renderer for the current row.
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Renderer
 
@@ -460,7 +461,7 @@ package Gtk.Cell_Area is
    --  the values from Tree_Model.
    --  Since: gtk+ 3.0
    --  "tree_model": the Gtk.Tree_Model.Gtk_Tree_Model to pull values from
-   --  "iter": the GtkTreeIter in Tree_Model to apply values for
+   --  "iter": the Gtk_Tree_Iter in Tree_Model to apply values for
    --  "is_expander": whether Iter has children
    --  "is_expanded": whether Iter is expanded in the view and children are
    --  visible
@@ -546,7 +547,7 @@ package Gtk.Cell_Area is
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
    --  of data.
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "event": the GdkEvent to handle
+   --  "event": the Gdk_Event to handle
    --  "cell_area": the Widget relative coordinates for Area
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in this
    --  row.
@@ -675,8 +676,8 @@ package Gtk.Cell_Area is
 
    function Get_Current_Path_String
       (Self : access Gtk_Cell_Area_Record) return UTF8_String;
-   --  Gets the current GtkTreePath string for the currently applied
-   --  GtkTreeIter, this is implicitly updated when
+   --  Gets the current Gtk_Tree_Path string for the currently applied
+   --  Gtk_Tree_Iter, this is implicitly updated when
    --  Gtk.Cell_Area.Apply_Attributes is called and can be used to interact
    --  with renderers from Gtk.Cell_Area.Gtk_Cell_Area subclasses.
    --  attributes applied to Area. This string belongs to the area and should
@@ -704,8 +705,8 @@ package Gtk.Cell_Area is
       (Self     : access Gtk_Cell_Area_Record;
        Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Explicitly sets the currently focused cell to Renderer.
-   --  This is generally called by implementations of GtkCellAreaClass.focus or
-   --  GtkCellAreaClass.event, however it can also be used to implement
+   --  This is generally called by implementations of Gtk_Cell_Area_Class.focus
+   --  or Gtk_Cell_Area_Class.event, however it can also be used to implement
    --  functions such as gtk_tree_view_set_cursor_on_cell.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to give focus to
@@ -980,7 +981,7 @@ package Gtk.Cell_Area is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a GtkTreeIter indicating the row to set the value for
+      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
       --  "data": user data passed to Gtk.Cell_Area.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
@@ -1144,14 +1145,14 @@ package Gtk.Cell_Area is
    --       (Self      : access Gtk_Cell_Area_Record'Class;
    --        Renderer  : Gtk.Cell_Renderer.Gtk_Cell_Renderer;
    --        Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-   --        Cell_Area : cairo.RectangleInt;
+   --        Cell_Area : cairo.Rectangle_Int;
    --        Path      : UTF8_String);
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started the
    --    --  edited
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
-   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative GdkRectangle
+   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative Gdk_Rectangle
    --    --  coordinates where Editable should be added
-   --    --  "path": the GtkTreePath string this edit was initiated for
+   --    --  "path": the Gtk_Tree_Path string this edit was initiated for
    --  Indicates that editing has started on Renderer and that Editable should
    --  be added to the owning cell-layouting widget at Cell_Area.
    --
@@ -1159,11 +1160,12 @@ package Gtk.Cell_Area is
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Area_Record'Class;
    --        Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter        : TreeIter;
+   --        Iter        : Tree_Iter;
    --        Is_Expander : Boolean;
    --        Is_Expanded : Boolean);
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes from
-   --    --  "iter": the GtkTreeIter indicating which row to apply the attributes of
+   --    --  "iter": the Gtk_Tree_Iter indicating which row to apply the attributes
+   --    --  of
    --    --  "is_expander": whether the view shows children for this row
    --    --  "is_expanded": whether the view is currently showing the children of
    --    --  this row
@@ -1175,7 +1177,7 @@ package Gtk.Cell_Area is
    --        Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer;
    --        Path     : UTF8_String);
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
-   --    --  "path": the current GtkTreePath string set for Area
+   --    --  "path": the current Gtk_Tree_Path string set for Area
    --  Indicates that focus changed on this Area. This signal is emitted
    --  either as a result of focus handling or event handling.
    --  It's possible that the signal is emitted even if the currently focused

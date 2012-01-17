@@ -22,8 +22,8 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A GtkSeparatorItem is a Gtk.Tool_Item.Gtk_Tool_Item that separates groups
---  of other GtkToolItems. Depending on the theme, a
+--  A Gtk_Separator_Item is a Gtk.Tool_Item.Gtk_Tool_Item that separates
+--  groups of other Gtk_Tool_Items. Depending on the theme, a
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will often look like a
 --  vertical line on horizontally docked toolbars.
 --

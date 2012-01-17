@@ -416,13 +416,41 @@ class AdaNaming(object):
 
         return self.exceptions.get(name, name)
 
+    def __camel_case_to_ada(self, name):
+        """Converts a name with CamelCase to Camel_Case"""
+        if not name:
+            return name
+
+        result = name[0]
+        prev = result
+        prev_is_underscore = False
+        prev_is_upper = True
+
+        for r in name[1:]:
+            if prev != "_" \
+                    and prev != "." \
+                    and not prev.isupper() \
+                    and r.isupper():
+                result += "_%s" % r
+
+            elif r == "_":
+                result += r
+            else:
+                result += r
+
+            prev = r
+
+        return result
+
     def __full_type_from_girname(self, girname):
         """Return the type description from a GIR name"""
         return self.type_exceptions.get(
             girname,  # First try GIR name as is in the table (gint, ...)
             self.type_exceptions.get(
                 self.ctype_from_girname(girname), # Else the C type
-                Proxy(girname)))  # Else return the GIR name itself
+
+                # Else return the GIR name itself
+                Proxy(self.__camel_case_to_ada(girname))))
 
     def type(self, name, cname=None, pkg=None, isArray=False,
              allow_access=True, empty_maps_to_null=False,

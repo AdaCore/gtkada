@@ -38,7 +38,7 @@ package body Gtk.Accel_Group is
        Data        : System.Address) return Gtk_Accel_Key;
    pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns True and returns its GtkAccelKey.
+   --  returns True and returns its Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
    --  "data": data to pass to Find_Func
@@ -94,14 +94,14 @@ package body Gtk.Accel_Group is
 
    function Activate
       (Accel_Group   : access Gtk_Accel_Group_Record;
-       Accel_Quark   : GQuark;
+       Accel_Quark   : Glib.GQuark;
        Acceleratable : access Glib.Object.GObject_Record'Class;
        Accel_Key     : Guint;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
       function Internal
          (Accel_Group   : System.Address;
-          Accel_Quark   : GQuark;
+          Accel_Quark   : Glib.GQuark;
           Acceleratable : System.Address;
           Accel_Key     : Guint;
           Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Integer;

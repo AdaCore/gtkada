@@ -28,8 +28,9 @@
 --
 --  A toggle button is created by calling either gtk_toggle_button_new or
 --  Gtk.Toggle_Button.Gtk_New. If using the former, it is advisable to pack a
---  widget, (such as a Gtk.Label.Gtk_Label and/or a GtkPixmap), into the toggle
---  button's container. (See Gtk.Button.Gtk_Button for more information).
+--  widget, (such as a Gtk.Label.Gtk_Label and/or a Gtk_Pixmap), into the
+--  toggle button's container. (See Gtk.Button.Gtk_Button for more
+--  information).
 --
 --  The state of a Gtk.Toggle_Button.Gtk_Toggle_Button can be set specifically
 --  using Gtk.Toggle_Button.Set_Active, and retrieved using

@@ -99,10 +99,9 @@ binding = ("AboutDialog",
 user_data_params = ["Data", "Func_Data", "User_Data", "D"]
 destroy_data_params = ["destroy", "func_notify"]
 
-# Maps c methods to Ada subprograms or enumerations
+# Maps c methods to Ada subprograms or enumeration (for docs).
 # All methods that are generated automatically will be added
 # as they are processed.
-# For enumerations, these are used to replace %name in the doc.
 
 naming.cname_to_adaname = {
     "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
@@ -216,6 +215,9 @@ naming.type_exceptions = {
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
     "GIcon*":        Proxy("Glib.G_Icon.G_Icon"),
+    "GQuark":        Proxy("Glib.GQuark"),
+    "GObject":       Proxy("Glib.Object.GObject"),
+    "GClosure":      Proxy("GClosure"),
 
     "CellLayoutDataFunc": Proxy("Gtk.Cell_Layout.Cell_Data_Func", ""),
 
@@ -325,6 +327,7 @@ naming.type_exceptions = {
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
     "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
     "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA"),
+    "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
 }

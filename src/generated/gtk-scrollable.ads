@@ -47,7 +47,7 @@
 --
 --  Because its preferred size is the size for a fully expanded widget, the
 --  scrollable widget must be able to cope with underallocations. This means
---  that it must accept any value passed to its GtkWidgetClass.size_allocate
+--  that it must accept any value passed to its Gtk_Widget_Class.size_allocate
 --  function.
 --
 --  *

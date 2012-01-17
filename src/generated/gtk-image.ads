@@ -38,7 +38,7 @@
 --  create the Gtk.Image.Gtk_Image with Gtk.Image.Gtk_New.
 --
 --  The image file may contain an animation, if so the Gtk.Image.Gtk_Image
---  will display an animation (GdkPixbufAnimation) instead of a static image.
+--  will display an animation (Gdk_Pixbuf_Animation) instead of a static image.
 --
 --  Gtk.Image.Gtk_Image is a subclass of Gtk.Misc.Gtk_Misc, which implies that
 --  you can align it (center, left, right) and add padding to it, using
@@ -219,7 +219,7 @@ package Gtk.Image is
    --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
-   --  "icon_set": a GtkIconSet
+   --  "icon_set": a Gtk_Icon_Set
    --  "size": a stock icon size
 
    procedure Gtk_New

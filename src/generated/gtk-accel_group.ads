@@ -104,7 +104,7 @@ package Gtk.Accel_Group is
 
    function Activate
       (Accel_Group   : access Gtk_Accel_Group_Record;
-       Accel_Quark   : GQuark;
+       Accel_Quark   : Glib.GQuark;
        Acceleratable : access Glib.Object.GObject_Record'Class;
        Accel_Key     : Guint;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
@@ -112,8 +112,8 @@ package Gtk.Accel_Group is
    --  Accel_Mods, and activates it.
    --  this keypress
    --  "accel_quark": the quark for the accelerator name
-   --  "acceleratable": the GObject, usually a Gtk.Window.Gtk_Window, on which
-   --  to activate the accelerator
+   --  "acceleratable": the Glib.Object.GObject, usually a
+   --  Gtk.Window.Gtk_Window, on which to activate the accelerator
    --  "accel_key": accelerator keyval from a key event
    --  "accel_mods": keyboard state mask from a key event
 
@@ -147,9 +147,9 @@ package Gtk.Accel_Group is
    --  Accel_Key and Accel_Mods from Gtk.Accel_Group.Accel_Groups_Activate
    --  match the key and modifiers for the path.
    --  The signature used for the Closure is that of GtkAccelGroupActivate.
-   --  Note that Accel_Path string will be stored in a GQuark. Therefore, if
-   --  you pass a static string, you can save some memory by interning it first
-   --  with g_intern_static_string.
+   --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
+   --  if you pass a static string, you can save some memory by interning it
+   --  first with g_intern_static_string.
    --  "accel_path": path used for determining key and modifiers
    --  "closure": closure to be executed upon accelerator activation
 
@@ -176,7 +176,7 @@ package Gtk.Accel_Group is
       (Accel_Group : access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns True and returns its GtkAccelKey.
+   --  returns True and returns its Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
 
@@ -196,7 +196,7 @@ package Gtk.Accel_Group is
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func
-      --  returns True and returns its GtkAccelKey.
+      --  returns True and returns its Gtk_Accel_Key.
       --  Find_Func. The key is owned by GTK+ and must not be freed.
       --  "find_func": a function to filter the entries of Accel_Group with
       --  "data": data to pass to Find_Func
@@ -247,8 +247,8 @@ package Gtk.Accel_Group is
    --  attached to Object that matches Accel_Key and Accel_Mods, and activates
    --  that accelerator.
    --  this keypress
-   --  "object": the GObject, usually a Gtk.Window.Gtk_Window, on which to
-   --  activate the accelerator
+   --  "object": the Glib.Object.GObject, usually a Gtk.Window.Gtk_Window, on
+   --  which to activate the accelerator
    --  "accel_key": accelerator keyval from a key event
    --  "accel_mods": keyboard state mask from a key event
 
@@ -257,7 +257,7 @@ package Gtk.Accel_Group is
        return Glib.Object.Object_List.GSList;
    --  Gets a list of all accel groups which are attached to Object.
    --  all accel groups which are attached to Object
-   --  "object": a GObject, usually a Gtk.Window.Gtk_Window
+   --  "object": a Glib.Object.GObject, usually a Gtk.Window.Gtk_Window
 
    function Accelerator_Valid
       (Keyval    : Gdk.Types.Gdk_Key_Type;
@@ -324,7 +324,7 @@ package Gtk.Accel_Group is
    --  Flags: read-write
    --
    --  Name: Modifier_Mask_Property
-   --  Type: Gdk.ModifierType
+   --  Type: Gdk.Types.Gdk_Modifier_Type
    --  Flags: read-write
 
    Is_Locked_Property : constant Glib.Properties.Property_Boolean;
@@ -340,7 +340,7 @@ package Gtk.Accel_Group is
    --       (Self          : access Gtk_Accel_Group_Record'Class;
    --        Acceleratable : Glib.Object.GObject;
    --        Keyval        : Guint;
-   --        Modifier      : Gdk.ModifierType) return Boolean;
+   --        Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --    --  "acceleratable": the object on which the accelerator was activated
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
@@ -353,13 +353,13 @@ package Gtk.Accel_Group is
    --     procedure Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
    --        Keyval        : Guint;
-   --        Modifier      : Gdk.ModifierType;
+   --        Modifier      : Gdk.Types.Gdk_Modifier_Type;
    --        Accel_Closure : System.Address);
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
    --    --  "accel_closure": the GClosure of the accelerator
-   --  The accel-changed signal is emitted when a GtkAccelGroupEntry is added
-   --  to or removed from the accel group.
+   --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
+   --  added to or removed from the accel group.
    --  Widgets like Gtk.Accellabel.Gtk_Accellabel which display an associated
    --  accelerator should connect to this signal, and rebuild their visual
    --  representation if the Accel_Closure is theirs.

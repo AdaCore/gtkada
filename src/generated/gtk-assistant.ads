@@ -34,9 +34,9 @@ pragma Ada_05;
 --  linkend="gtk-assistant-set-page-complete">completion</link> and <link
 --  linkend="gtk-assistant-commit">committed</link> status.
 --
---  If you have a case that doesn't quite fit in GtkAssistants way of handling
---  buttons, you can use the GTK_ASSISTANT_PAGE_CUSTOM page type and handle
---  buttons yourself.
+--  If you have a case that doesn't quite fit in Gtk_Assistants way of
+--  handling buttons, you can use the GTK_ASSISTANT_PAGE_CUSTOM page type and
+--  handle buttons yourself.
 --
 --  == GtkAssistant as GtkBuildable ==
 --
