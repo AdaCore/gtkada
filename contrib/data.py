@@ -48,6 +48,8 @@ binding = ("GtkAboutDialog",
            "GtkColorButton",
            "GtkColorSelection",
            "GtkColorSelectionDialog",
+           "GtkComboBox",
+           "GtkComboBoxText",
            "GtkDialog",
            "GtkDrawingArea",
            "GtkEntryCompletion",
@@ -69,6 +71,7 @@ binding = ("GtkAboutDialog",
            "GtkLayout",
            "GtkLinkButton",
            "GtkMisc",
+#           "GtkNotebook",  - in progress, pending L117-036
            "GtkPaned",
            "GtkProgressBar",
            "GtkRadioAction",
@@ -90,9 +93,7 @@ binding = ("GtkAboutDialog",
            "GtkVScale",
            "GtkVSeparator",
            "GtkViewport",
-           "GtkVolumeButton",
-           # "GtkComboBox",  # Needs .gir for gtk 2.24 for backward compatibility
-                         # Also needs support for interfaces
+           "GtkVolumeButton"
            # "GtkEntry",   # partially done only
           )
 
@@ -274,6 +275,7 @@ naming.type_exceptions = {
     "GtkColorSelectionDialog":
         GObject("Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog"),
     "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
+    "GtkComboBoxText":     GObject("Gtk.Combo_Box_Text.Gtk_Combo_Box_Text"),
     "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
     "GtkEntryCompletion": GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
@@ -287,6 +289,7 @@ naming.type_exceptions = {
     "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
     "GtkLinkButton":   GObject("Gtk.Link_Button.Gtk_Link_Button"),
     "GtkMenuItem":     GObject("Gtk.Menu_Item.Gtk_Menu_Item"),
+    "GtkNotebook":     GObject("Gtk.Notebook.Gtk_Notebook"),
     "GtkProgressBar":  GObject("Gtk.Progress_Bar.Gtk_Progress_Bar"),
     "GtkRadioAction":  GObject("Gtk.Radio_Action.Gtk_Radio_Action"),
     "GtkRadioButton":  GObject("Gtk.Radio_Button.Gtk_Radio_Button"),

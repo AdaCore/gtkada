@@ -306,6 +306,53 @@ dialog for file selection.
    </package>
 
    <!-- ################################################
+        Gtk.Combo_Box
+        ################################################-->
+
+   <package id="Gtk.Combo_Box">
+     <doc group="Numeric/Text Data Entry"/>
+     <parameter name="self" ada="Combo_Box"/>
+     <method id="gtk_combo_box_popup_for_device" bind="False" />
+     <method id="gtk_combo_box_get_popup_accessible" bind="False" />
+     <method id="gtk_combo_box_get_active_iter" bind="False"/> <!-- below-->
+     <extra>
+        <spec>
+   function Get_Active_Iter
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Iter;
+        </spec>
+        <body>
+   function Get_Active_Iter
+     (Combo_Box : access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
+   is
+      function Internal
+        (Combo_Box : System.Address;
+         Iter      : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_combo_box_get_active_iter");
+      Iter : aliased Gtk_Tree_Iter;
+      Tmp  : constant Gboolean := Internal
+        (Get_Object (Combo_Box), Iter'Address);
+   begin
+      if Tmp /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Get_Active_Iter;
+        </body>
+     </extra>
+   </package>
+
+   <!-- ################################################
+        Gtk.Combo_Box_Text
+        ################################################-->
+
+   <package id="Gtk.Combo_Box_Text">
+     <doc group="Numeric/Text Data Entry"/>
+   </package>
+
+   <!-- ################################################
         Gtk.EventBox
         ################################################-->
 
@@ -418,6 +465,83 @@ example: If the text is FooBarBaz and the Pattern is "___   ___"
 then both "Foo" and "Baz" will be underlined, but not "Bar".
          </doc>
       </method>
+   </package>
+
+   <!-- ###################################################
+        Gtk.Notebook
+        ###################################################-->
+
+   <package id="Gtk.Notebook">
+      <doc screenshot="gtk-notebook" group="Layout containers"
+           testgtk="create_notebook.adb"/>
+      <parameter name="self" ada="Notebook"/>
+      <method id="gtk_notebook_set_scrollable">
+         <parameter name="scrollable" default="True" />
+      </method>
+      <method id="gtk_notebook_set_tab_reorderable">
+         <parameter name="reorderable" default="True" />
+      </method>
+      <method id="gtk_notebook_set_current_page">
+         <parameter name="page_num" default="-1" />
+      </method>
+      <method id="gtk_notebook_set_show_border">
+         <parameter name="show_border" default="True" />
+      </method>
+      <method id="gtk_notebook_set_show_tabs">
+         <parameter name="show_tabs" default="True" />
+      </method>
+      <method id="gtk_notebook_set_tab_detachable">
+         <parameter name="detachable" default="True" />
+      </method>
+      <extra>
+        <spec>
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Prepend_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Convenience functions, same as above but discarding the return value.
+        </spec>
+        <body>
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, null);
+   end Append_Page;
+
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, Tab_Label);
+   end Append_Page;
+
+   procedure Prepend_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, Tab_Label);
+   end Prepend_Page;
+        </body>
+      </extra>
    </package>
 
    <!-- ################################################
@@ -1250,46 +1374,6 @@ lower    value        value + page_size       upper
      <method id="gtk_table_set_homogeneous">
         <doc>Indicate the homogeneous status of the table. If Homogeneous is True, the rows and columns of the table will all be allocated the same width or height.</doc>
      </method>
-  </package>
-
-  <package id="Gtk.Combo_Box">
-     <doc group="Trees and Lists" screenshot="gtk-combo_box"
-          see="Gtk.Combo_Box_Entry">
-A Gtk_Combo_Box is a widget that allows the user to choose from a list of valid choices. The Gtk_Combo_Box displays the selected choice. When activated, the Gtk_Combo_Box displays a popup which allows the user to make new choice. The style in which the selected value is displayed, and the style of the popup is determined by the current theme. It may be similar to a Gtk_Option_Menu, or similar to a Windows-style combo box.
-
-Unlike its predecessors Gtk.Combo.Gtk_Combo and Gtk.Option_Menu.Gtk_Option_Menu, the Gtk_Combo_Box uses the model-view pattern; the list of valid choices is specified in the form of a tree model, and the display of the choices can be adapted to the data in the model by using cell renderers, as you would in a tree view. This is possible since Gtk_Combo_Box implements the Gtk_Cell_Layout interface. The tree model holding the valid choices is not restricted to a flat list, it can be a real tree, and the popup will reflect the tree structure.
-
-In addition to the model-view API, Gtk_Combo_Box offers a simple API which is suitable for text-only combo boxes, and hides the complexity of managing the data in a model.
-     </doc>
-     <method id="gtk_combo_box_get_popup_accessible" bind="False"/>
-     <method id="gtk_combo_box_get_active_iter" bind="False"/> <!-- below-->
-     <extra>
-        <spec>
-   function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record)
-      return Gtk.Tree_Model.Gtk_Tree_Iter;
-        </spec>
-        <body>
-   function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
-   is
-      function Internal
-        (Combo_Box : System.Address;
-         Iter      : System.Address)
-         return Gboolean;
-      pragma Import (C, Internal, "gtk_combo_box_get_active_iter");
-      Iter : aliased Gtk_Tree_Iter;
-      Tmp  : constant Gboolean := Internal
-        (Get_Object (Combo_Box), Iter'Address);
-   begin
-      if Tmp /= 0 then
-         return Iter;
-      else
-         return Null_Iter;
-      end if;
-   end Get_Active_Iter;
-        </body>
-     </extra>
   </package>
 
   <package id="Gtk.Check_Button">
