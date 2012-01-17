@@ -1816,7 +1816,9 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <method id="gtk_toolbar_set_show_arrow">
         <parameter name="show_arrow" default="True"/>
      </method>
-
+     <method id="gtk_toolbar_insert">
+        <parameter name="pos" default="-1"/>
+     </method>
      <method id="gtk_tool_shell_get_orientation" bind="False"/>
      <method id="gtk_tool_shell_get_icon_size" bind="False"/>
      <method id="gtk_tool_shell_get_relief_style" bind="False"/>
