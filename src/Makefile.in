@@ -1,5 +1,9 @@
 all: dirs libs tools
 
+# Whether to build GtkExtra
+GTKEXTRA_SUPPORT=no
+GL_SUPPORT=no
+
 ## This line restricts to the Gtk3 API. Comment it out to compile with Gtk2.
 RESTRICT_FLAGS = \
  -DGTK_DISABLE_DEPRECATED -DGSEAL_ENABLE -DGTK_DISABLE_SINGLE_INCLUDES \
@@ -22,9 +26,24 @@ SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 endif
 ARCHIVENAME   = libgtkada.a
 
-c_objects = misc.o misc_extra.o misc_generated.o
-c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
+ifeq ($(GTKEXTRA_SUPPORT),yes)
+misc_extra = misc_extra.o
 c_extra_objects = ../gtkextra/obj/gtk*.o
+gtkextra_libs = gtkextra
+else
+misc_extra =
+c_extra_objects =
+gtkextra_libs =
+endif
+
+ifeq ($(GL_SUPPORT),yes)
+opengl_libs = opengl
+else
+opengl_libs =
+endif
+
+c_objects = misc.o ${misc_extra} misc_generated.o
+c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
 
 SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects} ${c_extra_objects}
 GTKADA_LIBS=
@@ -40,14 +59,14 @@ INSTALL_SCRIPT  = @INSTALL_SCRIPT@
 
 ## General and public targets
 
-libs: ada ${c_objects_dir} gtkextra
+libs: ada ${c_objects_dir} ${gtkextra_libs}
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
 ifeq ($(BUILD_STATIC),yes)
 libs: ${OBJ_DIR}/${ARCHIVENAME}
 endif
-libs: opengl gnome
+libs: ${opengl_libs} gnome
 
 opengl gtkextra gnome tools: force
 	$(MAKE) -C $@
