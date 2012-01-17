@@ -35,7 +35,6 @@
 with Glib.Properties;
 with Gtk.Menu;
 with Gtk.Tool_Button;
-with Gtk.Tooltips;
 with Gtk.Widget;
 
 package Gtk.Menu_Tool_Button is
@@ -74,18 +73,6 @@ package Gtk.Menu_Tool_Button is
      (Button : access Gtk_Menu_Tool_Button_Record)
       return Gtk.Menu.Gtk_Menu;
    --  Set or Get the menu that it displayed when the button is clicked on
-
-   procedure Set_Arrow_Tooltip
-     (Button      : access Gtk_Menu_Tool_Button_Record;
-      Tooltips    : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
-      Tip_Text    : String;
-      Tip_Private : String := "");
-   pragma Obsolescent; --  Set_Arrow_Tooltip
-   --  Set the tooltip set on the arrow button that will display the menu when
-   --  clicked on.
-   --
-   --  Set_Arrow_Tooltip has been deprecated since version 2.12 and should
-   --  not be used in newly-written code. Use Set_Arrow_Tooltip_Text instead.
 
    procedure Set_Arrow_Tooltip_Markup
      (Button : access Gtk_Menu_Tool_Button_Record;

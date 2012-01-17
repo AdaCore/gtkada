@@ -23,7 +23,6 @@
 
 with Gtkada.Bindings;      use Gtkada.Bindings;
 with Gtk.Menu;             use Gtk.Menu;
-with Gtk.Tooltips;         use Gtk.Tooltips;
 with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
@@ -116,27 +115,6 @@ package body Gtk.Menu_Tool_Button is
    begin
       Set_Object (Menu, Internal (Stock_Id & ASCII.NUL));
    end Initialize_From_Stock;
-
-   -----------------------
-   -- Set_Arrow_Tooltip --
-   -----------------------
-
-   procedure Set_Arrow_Tooltip
-     (Button      : access Gtk_Menu_Tool_Button_Record;
-      Tooltips    : access Gtk_Tooltips_Record'Class;
-      Tip_Text    : String;
-      Tip_Private : String := "")
-   is
-      procedure Internal
-        (Button      : System.Address;
-         Tooltips    : System.Address;
-         Tip_Text    : String;
-         Tip_Private : String);
-      pragma Import (C, Internal, "gtk_menu_tool_button_set_arrow_tooltip");
-   begin
-      Internal (Get_Object (Button), Get_Object (Tooltips),
-                Tip_Text & ASCII.NUL, Tip_Private & ASCII.NUL);
-   end Set_Arrow_Tooltip;
 
    ------------------------------
    -- Set_Arrow_Tooltip_Markup --
