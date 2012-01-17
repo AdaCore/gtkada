@@ -583,21 +583,6 @@ package Gdk.Event is
    --  Deep copy for an event. The C structure is itself duplicated.
    --  You need to deallocated it yourself with a call to Free below.
 
-   procedure Get_Graphics_Expose
-     (Event  : out Gdk_Event_Expose;
-      Window : Gdk.Gdk_Window);
-   --  Waits for a GraphicsExpose or NoExpose event
-   --  If it gets a GraphicsExpose event, it returns a pointer to it,
-   --  otherwise it returns an event for which Is_Created is False.
-   --
-   --  This function can be used to implement scrolling: you must call
-   --  Gdk.GC.Set_Exposures with True on the GC you are using for the
-   --  drawing, so that a events are generated for obscured areas and every
-   --  time a new part of the widget is drawn. However, there is a race
-   --  condition if multiple scrolls happen before you have finished
-   --  processing the first one. A workaround is to call Get_Graphics_Expose
-   --  after every scroll until it returns a null event.
-
    function Events_Pending return Boolean;
    --  Is there any event pending on the queue ?
 
@@ -619,11 +604,6 @@ package Gdk.Event is
 
    procedure Send_Client_Message_To_All (Event : Gdk_Event);
    --  Low level routine to send an Event to every window.
-
-   function Send_Client_Message
-     (Event : Gdk_Event;
-      Xid   : Guint32) return Boolean;
-   --  Low level routine to send an Event to a specified X window.
 
    procedure Allocate
      (Event      : out Gdk_Event;

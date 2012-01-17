@@ -643,21 +643,6 @@ package body Gdk.Event is
       return Req;
    end Get_Requestor;
 
-   -------------------------
-   -- Get_Graphics_Expose --
-   -------------------------
-
-   procedure Get_Graphics_Expose
-     (Event  : out Gdk_Event_Expose;
-      Window : Gdk.Window.Gdk_Window)
-   is
-      function Internal (Window : Gdk.Window.Gdk_Window) return Gdk_Event;
-      pragma Import (C, Internal, "gdk_event_get_graphics_expose");
-
-   begin
-      Event := Internal (Window);
-   end Get_Graphics_Expose;
-
    ---------------
    -- Deep_Copy --
    ---------------
@@ -727,21 +712,6 @@ package body Gdk.Event is
    begin
       return Boolean'Val (Internal);
    end Get_Show_Events;
-
-   -------------------------
-   -- Send_Client_Message --
-   -------------------------
-
-   function Send_Client_Message
-     (Event : Gdk_Event;
-      Xid   : Guint32) return Boolean
-   is
-      function Internal (Event : Gdk_Event; Xid : Guint32) return Gboolean;
-      pragma Import (C, Internal, "gdk_event_send_client_message");
-
-   begin
-      return Boolean'Val (Internal (Event, Xid));
-   end Send_Client_Message;
 
    --------------
    -- Allocate --
