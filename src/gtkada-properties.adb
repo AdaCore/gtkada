@@ -49,7 +49,6 @@ with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
 with Gtk.Spin_Button;          use Gtk.Spin_Button;
 with Gtk.Table;                use Gtk.Table;
 with Gtk.Toggle_Button;        use Gtk.Toggle_Button;
-with Gtk.Tooltips;             use Gtk.Tooltips;
 with Gtk.Widget;               use Gtk.Widget;
 with Gtk.Window;               use Gtk.Window;
 with Gtkada.Handlers;          use Gtkada.Handlers;
@@ -62,7 +61,6 @@ package body Gtkada.Properties is
 
    type Properties_Editor_Record is new Gtk_Window_Record with record
       Object      : GObject;
-      Tips        : Gtk_Tooltips;
       Table       : Gtk_Table; --  Properties;
       Child_Table : Gtk_Table; --  Child properties;
       Style_Table : Gtk_Table; --  Style properties
@@ -746,8 +744,6 @@ package body Gtkada.Properties is
       if Global_Editor = Ed then
          Global_Editor := null;
       end if;
-
-      Unref (Ed.Tips);
    end Editor_Delete;
 
    -------------------
@@ -806,10 +802,6 @@ package body Gtkada.Properties is
       Set_Default_Size (Editor, 400, 400);
 
       Object_Callback.Connect (Editor, "destroy", Editor_Delete'Access);
-
-      Gtk_New (Editor.Tips);
-      Ref (Editor.Tips);
-      Ref_Sink (Editor.Tips);
 
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Editor, Box);
@@ -884,7 +876,6 @@ package body Gtkada.Properties is
       Row : Guint;
       Label : Gtk_Label;
       Event : Gtk_Event_Box;
-      Success : Boolean;
       W       : Gtk_Widget;
       Can_Modify : Boolean;
    begin
@@ -895,8 +886,6 @@ package body Gtkada.Properties is
             if not Parent_Inserted then
                if Editor.Type_Color = Null_Color then
                   Editor.Type_Color := Parse ("red");
-                  Alloc_Color (Get_Default_Colormap, Editor.Type_Color,
-                               Success => Success);
                end if;
 
                Resize (Table, Row + 2, 2);
@@ -918,7 +907,7 @@ package body Gtkada.Properties is
             Gtk_New (Event);
             Attach (Table, Event, 0, 1, Row, Row + 1,
                     Xpadding => 10, Yoptions => 0);
-            Set_Tip (Editor.Tips, Event, Description (Properties (P)));
+            Set_Tooltip_Text (Event, Description (Properties (P)));
 
             Gtk_New (Label, Nick_Name (Properties (P)));
             Set_Alignment (Label, 0.0, 0.5);
