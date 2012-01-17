@@ -41,8 +41,8 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Values;
 with Gdk.Rectangle;
-with Gdk.Region;
 with Gdk.Types;
+with Cairo.Region;
 
 package Gdk.Event is
 
@@ -339,33 +339,6 @@ package Gdk.Event is
    --  Type: Drag_Enter, Drag_Leave, Drag_Motion, Drag_Status, Drop_Start,
    --  Drop_Finished
 
-   ----------------------------------------
-   -- Specific definition for the fields --
-   ----------------------------------------
-
-   type Gdk_Event_Client_Data_Format is
-     (Char_Array, Short_Array, Long_Array);
-   for Gdk_Event_Client_Data_Format use
-     (Char_Array  => 8, Short_Array => 16, Long_Array  => 32);
-   --  Values extracted from the XClientMessageEvent man page.
-
-   Number_Of_Characters : constant := 20;
-   Number_Of_Shorts     : constant := 10;
-   Number_Of_Longs      : constant := 5;
-
-   type Gdk_Event_Client_Data
-     (Format : Gdk_Event_Client_Data_Format) is
-   record
-      case Format is
-         when Char_Array =>
-            B : String (1 .. Number_Of_Characters);
-         when Short_Array =>
-            S : Gshort_Array (1 .. Number_Of_Shorts);
-         when Long_Array =>
-            L : Glong_Array (1 .. Number_Of_Longs);
-      end case;
-   end record;
-
    -----------------------------------
    -- Access to fields of the event --
    -----------------------------------
@@ -454,7 +427,7 @@ package Gdk.Event is
    --  The minimal area on which the event applies.
    --  For Expose_Events, this is the minimal area to redraw.
 
-   function Get_Region (Event : Gdk_Event) return Gdk.Region.Gdk_Region;
+   function Get_Region (Event : Gdk_Event) return Cairo.Region.Cairo_Region;
    --  Return the region to which the event applies.
    --  Do not free the returned value
 
@@ -501,13 +474,7 @@ package Gdk.Event is
    function Get_Property (Event : Gdk_Event) return Gdk.Types.Gdk_Atom;
    --  ???
 
-   function Get_Requestor (Event : Gdk_Event) return Guint32;
-   --  ???
-
-   function Get_Message_Type (Event : Gdk_Event) return Gdk.Types.Gdk_Atom;
-   --  ???
-
-   function Get_Data (Event : Gdk_Event) return Gdk_Event_Client_Data;
+   function Get_Requestor (Event : Gdk_Event) return Gdk.Gdk_Window;
    --  ???
 
    --------------------------------------
@@ -599,11 +566,8 @@ package Gdk.Event is
    procedure Set_Property (Event : Gdk_Event; Property : Gdk.Types.Gdk_Atom);
    --  Set the Property field of an event.
 
-   procedure Set_Requestor (Event : Gdk_Event; Requestor : Guint32);
+   procedure Set_Requestor (Event : Gdk_Event; Requestor : Gdk_Window);
    --  Set the Requestor field of an event.
-
-   procedure Set_Message_Type (Event : Gdk_Event; Typ : Gdk.Types.Gdk_Atom);
-   --  Set the Message_Type field of an event.
 
    procedure Set_String (Event : Gdk_Event; Str : String);
    --  Set the string associated with an event.

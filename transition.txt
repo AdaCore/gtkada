@@ -14,6 +14,11 @@ Gdk.Event
 Get_Region now returns a Cairo_Region: use Cairo.Region for manipulating
 the result.
 
+Set_Requestor/Get_Requestor now work on a Gdk_Window.
+
+The APIs to Get_Message_Type, Set_Message_Type, Get_Data, and Set_Data have
+been removed without replacement.
+
 Gdk.Font
 ========
 

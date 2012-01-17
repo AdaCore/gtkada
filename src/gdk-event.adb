@@ -27,7 +27,6 @@ with Gdk.Window;    use Gdk.Window;
 with Gdk.Types;     use Gdk.Types;
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Interfaces.C;
-with Interfaces.C.Pointers;
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
 
 package body Gdk.Event is
@@ -632,109 +631,17 @@ package body Gdk.Event is
    -- Get_Requestor --
    -------------------
 
-   function Get_Requestor (Event : Gdk_Event) return Guint32 is
-      function Internal (Event : Gdk_Event) return Guint32;
+   function Get_Requestor (Event : Gdk_Event) return Gdk_Window is
+      function Internal (Event : Gdk_Event) return Gdk_Window;
       pragma Import (C, Internal, "ada_gdk_event_get_requestor");
 
-      Req : constant Guint32 := Internal (Event);
+      Req : constant Gdk_Window := Internal (Event);
 
    begin
-      if Req = Invalid_Guint32_Value then
-         raise Invalid_Field;
-      end if;
-
+      --  Do not raise Invalid_Field if the window is null, since this
+      --  might be a valid result even if the event type is correct.
       return Req;
    end Get_Requestor;
-
-   ----------------------
-   -- Get_Message_Type --
-   ----------------------
-
-   function Get_Message_Type (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gdk_Atom;
-      pragma Import (C, Internal, "ada_gdk_event_get_message_type");
-
-      Message : constant Gdk_Atom := Internal (Event);
-
-   begin
-      if Message = null then
-         raise Invalid_Field;
-      end if;
-
-      return Message;
-   end Get_Message_Type;
-
-   --------------
-   -- Get_Data --
-   --------------
-
-   function Get_Data (Event : Gdk_Event) return Gdk_Event_Client_Data is
-      package IC  renames Interfaces.C;
-      package ICS renames Interfaces.C.Strings;
-
-      type Local_Short_Array is array (Natural range <>) of aliased IC.short;
-      package Shorts_Ptr is new IC.Pointers
-        (Index => Natural,
-         Element => IC.short,
-         Element_Array => Local_Short_Array,
-         Default_Terminator => 0);
-
-      type Local_Long_Array is array (Natural range <>) of aliased IC.long;
-      package Longs_Ptr is new IC.Pointers
-        (Index => Natural,
-         Element => IC.long,
-         Element_Array => Local_Long_Array,
-         Default_Terminator => 0);
-
-      function Format_Of
-        (Event : Gdk_Event) return Gdk_Event_Client_Data_Format;
-      pragma Import (C, Format_Of, "ada_gdk_event_client_get_data_format");
-
-      function B_Of (Event : Gdk_Event) return ICS.chars_ptr;
-      pragma Import (C, B_Of, "ada_gdk_event_client_get_b");
-
-      function S_Of (Event : Gdk_Event) return Shorts_Ptr.Pointer;
-      pragma Import (C, S_Of, "ada_gdk_event_client_get_s");
-
-      function L_Of (Event : Gdk_Event) return Longs_Ptr.Pointer;
-      pragma Import (C, L_Of, "ada_gdk_event_client_get_l");
-
-      Result : Gdk_Event_Client_Data (Format => Format_Of (Event));
-
-   begin
-      case Result.Format is
-         when Char_Array =>
-            Result.B :=
-              IC.To_Ada
-                (ICS.Value (Item => B_Of (Event),
-                            Length => Number_Of_Characters),
-                 Trim_Nul => False);
-
-         when Short_Array =>
-            declare
-               Tmp : constant Local_Short_Array :=
-                 Shorts_Ptr.Value
-                   (Ref => S_Of (Event), Length => Number_Of_Shorts);
-            begin
-               for Index in 1 .. Number_Of_Shorts loop
-                  Result.S (Index) := Gshort (Tmp (Index));
-               end loop;
-            end;
-
-         when Long_Array =>
-            declare
-               Tmp : constant Local_Long_Array :=
-                 Longs_Ptr.Value
-                   (Ref => L_Of (Event), Length => Number_Of_Longs);
-            begin
-               for Index in 1 .. Number_Of_Shorts loop
-                  Result.L (Index) := Glong (Tmp (Index));
-               end loop;
-            end;
-      end case;
-
-      return Result;
-   end Get_Data;
 
    -------------------------
    -- Get_Graphics_Expose --
@@ -1244,8 +1151,9 @@ package body Gdk.Event is
    -- Set_Requestor --
    -------------------
 
-   procedure Set_Requestor (Event : Gdk_Event; Requestor : Guint32) is
-      function Internal (Event : Gdk_Event; Requestor : Guint32) return Gint;
+   procedure Set_Requestor (Event : Gdk_Event; Requestor : Gdk_Window) is
+      function Internal
+        (Event : Gdk_Event; Requestor : Gdk_Window) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_requestor");
 
    begin
@@ -1253,20 +1161,6 @@ package body Gdk.Event is
          raise Invalid_Field;
       end if;
    end Set_Requestor;
-
-   ----------------------
-   -- Set_Message_Type --
-   ----------------------
-
-   procedure Set_Message_Type (Event : Gdk_Event; Typ : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Typ : Gdk_Atom) return Gint;
-      pragma Import (C, Internal, "ada_gdk_event_set_message_type");
-
-   begin
-      if Internal (Event, Typ) = 0 then
-         raise Invalid_Field;
-      end if;
-   end Set_Message_Type;
 
    ----------------
    -- Set_String --
