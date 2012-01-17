@@ -218,11 +218,6 @@ Gtk.Fixed
 
 Subprograms Set_Has_Windows and Get_Has_Windows are now in Gtk.Widget.
 
-Gtk.HRuler
-==========
-
-This widget has been removed without any replacement.
-
 Gtk.Gamma_Curve
 ===============
 
@@ -232,6 +227,11 @@ Gtk.GC
 ======
 
 This package has been removed: Cairo packages should be used for drawing.
+
+Gtk.HRuler
+==========
+
+This widget has been removed without any replacement.
 
 Gtk.Image
 =========
@@ -244,6 +244,11 @@ Gtk.Input_Dialog
 
 This package is no longer part of Gtk+, so this binding has been removed
 without replacement.
+
+Gtk.Item
+========
+
+This obsolete package has been removed with no replacement.
 
 Gtk.Item_Factory
 ================
