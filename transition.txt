@@ -103,6 +103,12 @@ Gtk.Clist
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
+Gtk.Container
+=============
+
+Procedure Propagate_Expose has been removed and will be replaced with
+Propagate_Draw.
+
 Gtk.Color_Button
 ================
 
