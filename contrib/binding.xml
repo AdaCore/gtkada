@@ -1083,6 +1083,9 @@ See Gtk_Text_View for a multiple-line text editing widget.
      </doc>
      <parameter name="self" ada="The_Entry"/>
      <enum ctype="GtkEntryIconPosition" prefix=""/>
+     <extra>
+        <spec>subtype Gtk_GEntry is Gtk_Entry;</spec>
+     </extra>
 
      <method id="gtk_entry_set_invisible_char">
         <parameter name="ch" ada="Char"/>
@@ -2070,16 +2073,17 @@ The following default key bindings are provided, but you can use a gtkrc file to
   </package>
 
   <package id="Gtk.Editable">
+     <parameter name="self" ada="Editable"/>
      <extra>
         <spec>
    procedure Insert_Text
-     (Editable : access Gtk_Editable_Record;
+     (Editable : Gtk_Editable;
       New_Text : UTF8_String;
       Position : in out Gint);
         </spec>
         <body>
    procedure Insert_Text
-     (Editable : access Gtk_Editable_Record;
+     (Editable : Gtk_Editable;
       New_Text : UTF8_String;
       Position : in out Gint)
    is

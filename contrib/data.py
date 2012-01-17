@@ -279,7 +279,6 @@ naming.type_exceptions = {
     "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
     "GtkComboBoxText":     GObject("Gtk.Combo_Box_Text.Gtk_Combo_Box_Text"),
     "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
-    "GtkEditable":     GObject("Gtk.Editable.Gtk_Editable"),
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
     "GtkEntryBuffer":  GObject("Gtk.Entry_Buffer.Gtk_Entry_Buffer"),
     "GtkEntryCompletion": GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
