@@ -31,7 +31,6 @@
 --  <testgtk>create_cursors.adb</testgtk>
 
 with Glib;
-with Gdk.Color;
 
 package Gdk.Cursor is
 
@@ -121,28 +120,6 @@ package Gdk.Cursor is
      (Widget      : out Gdk_Cursor;
       Cursor_Type : Gdk_Cursor_Type);
    --  Create a new standard cursor.
-
-   procedure Gdk_New
-     (Widget : out Gdk_Cursor;
-      Source : Gdk.Gdk_Pixmap;
-      Mask   : Gdk.Gdk_Pixmap;
-      Fg     : Gdk.Color.Gdk_Color;
-      Bg     : Gdk.Color.Gdk_Color;
-      X      : Glib.Gint;
-      Y      : Glib.Gint);
-   --  Create a new cursor from a given pixmap and mask.
-   --  See also Gdk.Pixbuf.Gdk_New_From_Pixbuf.
-   --  Both the pixmap and mask must have a depth of 1 (i.e. each pixel has
-   --  only 2 values - on or off). The standard cursor size is 16 by 16 pixels.
-   --   - Source is the pixmap specifying the cursor.
-   --   - Mask is the pixmap specifying the mask, which must be the same size
-   --   as source.
-   --   - Fg is the foreground color, used for the bits in the source which are
-   --   enabled. The color does not have to be allocated first.
-   --   - Bg is the background color, used for the bits in the source which are
-   --   disabled. The color does not have to be allocated first.
-   --   - X is the horizontal offset of the 'hotspot' of the cursor.
-   --   - Y is the vertical offset of the 'hotspot' of the cursor.
 
    --  procedure Gdk_New_From_Pixbuf (...)
    --  This function is declared in Gdk.Pixbuf, for dependency circularity
