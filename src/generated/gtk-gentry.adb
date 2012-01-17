@@ -1048,33 +1048,33 @@ package body Gtk.GEntry is
    -- Copy_Clipboard --
    --------------------
 
-   procedure Copy_Clipboard (Self : access Gtk_Entry_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Copy_Clipboard (Editable : access Gtk_Entry_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_copy_clipboard");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Editable));
    end Copy_Clipboard;
 
    -------------------
    -- Cut_Clipboard --
    -------------------
 
-   procedure Cut_Clipboard (Self : access Gtk_Entry_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Cut_Clipboard (Editable : access Gtk_Entry_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_cut_clipboard");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Editable));
    end Cut_Clipboard;
 
    ----------------------
    -- Delete_Selection --
    ----------------------
 
-   procedure Delete_Selection (Self : access Gtk_Entry_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Delete_Selection (Editable : access Gtk_Entry_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_delete_selection");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Editable));
    end Delete_Selection;
 
    -----------------
@@ -1082,17 +1082,17 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Delete_Text
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint)
    is
       procedure Internal
-         (Self      : System.Address;
+         (Editable  : System.Address;
           Start_Pos : Gint;
           End_Pos   : Gint);
       pragma Import (C, Internal, "gtk_editable_delete_text");
    begin
-      Internal (Get_Object (Self), Start_Pos, End_Pos);
+      Internal (Get_Object (Editable), Start_Pos, End_Pos);
    end Delete_Text;
 
    ------------------
@@ -1111,39 +1111,39 @@ package body Gtk.GEntry is
    ---------------
 
    function Get_Chars
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint) return UTF8_String
    is
       function Internal
-         (Self      : System.Address;
+         (Editable  : System.Address;
           Start_Pos : Gint;
           End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self), Start_Pos, End_Pos));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Editable), Start_Pos, End_Pos));
    end Get_Chars;
 
    ------------------
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Self : access Gtk_Entry_Record) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+   function Get_Editable (Editable : access Gtk_Entry_Record) return Boolean is
+      function Internal (Editable : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Editable)));
    end Get_Editable;
 
    ------------------
    -- Get_Position --
    ------------------
 
-   function Get_Position (Self : access Gtk_Entry_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Position (Editable : access Gtk_Entry_Record) return Gint is
+      function Internal (Editable : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_editable_get_position");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Editable));
    end Get_Position;
 
    -----------------
@@ -1151,20 +1151,20 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Insert_Text
-      (Self            : access Gtk_Entry_Record;
+      (Editable        : access Gtk_Entry_Record;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint)
    is
       procedure Internal
-         (Self            : System.Address;
+         (Editable        : System.Address;
           New_Text        : Interfaces.C.Strings.chars_ptr;
           New_Text_Length : Gint;
           Position        : in out Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
-      Internal (Get_Object (Self), Tmp_New_Text, New_Text_Length, Position);
+      Internal (Get_Object (Editable), Tmp_New_Text, New_Text_Length, Position);
       Free (Tmp_New_Text);
    end Insert_Text;
 
@@ -1172,11 +1172,11 @@ package body Gtk.GEntry is
    -- Paste_Clipboard --
    ---------------------
 
-   procedure Paste_Clipboard (Self : access Gtk_Entry_Record) is
-      procedure Internal (Self : System.Address);
+   procedure Paste_Clipboard (Editable : access Gtk_Entry_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_paste_clipboard");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Editable));
    end Paste_Clipboard;
 
    -------------------
@@ -1195,17 +1195,17 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Select_Region
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint)
    is
       procedure Internal
-         (Self      : System.Address;
+         (Editable  : System.Address;
           Start_Pos : Gint;
           End_Pos   : Gint);
       pragma Import (C, Internal, "gtk_editable_select_region");
    begin
-      Internal (Get_Object (Self), Start_Pos, End_Pos);
+      Internal (Get_Object (Editable), Start_Pos, End_Pos);
    end Select_Region;
 
    ------------------
@@ -1213,24 +1213,27 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Set_Editable
-      (Self        : access Gtk_Entry_Record;
+      (Editable    : access Gtk_Entry_Record;
        Is_Editable : Boolean)
    is
-      procedure Internal (Self : System.Address; Is_Editable : Integer);
+      procedure Internal (Editable : System.Address; Is_Editable : Integer);
       pragma Import (C, Internal, "gtk_editable_set_editable");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Is_Editable));
+      Internal (Get_Object (Editable), Boolean'Pos (Is_Editable));
    end Set_Editable;
 
    ------------------
    -- Set_Position --
    ------------------
 
-   procedure Set_Position (Self : access Gtk_Entry_Record; Position : Gint) is
-      procedure Internal (Self : System.Address; Position : Gint);
+   procedure Set_Position
+      (Editable : access Gtk_Entry_Record;
+       Position : Gint)
+   is
+      procedure Internal (Editable : System.Address; Position : Gint);
       pragma Import (C, Internal, "gtk_editable_set_position");
    begin
-      Internal (Get_Object (Self), Position);
+      Internal (Get_Object (Editable), Position);
    end Set_Position;
 
    -------------------

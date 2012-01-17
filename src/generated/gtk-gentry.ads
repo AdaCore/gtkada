@@ -648,6 +648,12 @@ package Gtk.GEntry is
    --  used again.
    --  Since: gtk+ 2.16
 
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   subtype Gtk_GEntry is Gtk_Entry;
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -660,40 +666,42 @@ package Gtk.GEntry is
       (Cell_Editable : access Gtk_Entry_Record;
        Event         : Gdk.Event.Gdk_Event);
 
-   procedure Copy_Clipboard (Self : access Gtk_Entry_Record);
+   procedure Copy_Clipboard (Editable : access Gtk_Entry_Record);
 
-   procedure Cut_Clipboard (Self : access Gtk_Entry_Record);
+   procedure Cut_Clipboard (Editable : access Gtk_Entry_Record);
 
-   procedure Delete_Selection (Self : access Gtk_Entry_Record);
+   procedure Delete_Selection (Editable : access Gtk_Entry_Record);
 
    procedure Delete_Text
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint);
 
    function Get_Chars
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint) return UTF8_String;
 
-   function Get_Editable (Self : access Gtk_Entry_Record) return Boolean;
+   function Get_Editable (Editable : access Gtk_Entry_Record) return Boolean;
    procedure Set_Editable
-      (Self        : access Gtk_Entry_Record;
+      (Editable    : access Gtk_Entry_Record;
        Is_Editable : Boolean);
 
-   function Get_Position (Self : access Gtk_Entry_Record) return Gint;
-   procedure Set_Position (Self : access Gtk_Entry_Record; Position : Gint);
+   function Get_Position (Editable : access Gtk_Entry_Record) return Gint;
+   procedure Set_Position
+      (Editable : access Gtk_Entry_Record;
+       Position : Gint);
 
    procedure Insert_Text
-      (Self            : access Gtk_Entry_Record;
+      (Editable        : access Gtk_Entry_Record;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint);
 
-   procedure Paste_Clipboard (Self : access Gtk_Entry_Record);
+   procedure Paste_Clipboard (Editable : access Gtk_Entry_Record);
 
    procedure Select_Region
-      (Self      : access Gtk_Entry_Record;
+      (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint);
 

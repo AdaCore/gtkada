@@ -76,23 +76,23 @@ package Gtk.Editable is
    -- Methods --
    -------------
 
-   procedure Copy_Clipboard (Self : Gtk_Editable);
+   procedure Copy_Clipboard (Editable : Gtk_Editable);
    pragma Import (C, Copy_Clipboard, "gtk_editable_copy_clipboard");
    --  Copies the contents of the currently selected content in the editable
    --  and puts it on the clipboard.
 
-   procedure Cut_Clipboard (Self : Gtk_Editable);
+   procedure Cut_Clipboard (Editable : Gtk_Editable);
    pragma Import (C, Cut_Clipboard, "gtk_editable_cut_clipboard");
    --  Removes the contents of the currently selected content in the editable
    --  and puts it on the clipboard.
 
-   procedure Delete_Selection (Self : Gtk_Editable);
+   procedure Delete_Selection (Editable : Gtk_Editable);
    pragma Import (C, Delete_Selection, "gtk_editable_delete_selection");
    --  Deletes the currently selected text of the editable. This call doesn't
    --  do anything if there is no selected text.
 
    procedure Delete_Text
-      (Self      : Gtk_Editable;
+      (Editable  : Gtk_Editable;
        Start_Pos : Gint;
        End_Pos   : Gint);
    pragma Import (C, Delete_Text, "gtk_editable_delete_text");
@@ -105,7 +105,7 @@ package Gtk.Editable is
    --  "end_pos": end position
 
    function Get_Chars
-      (Self      : Gtk_Editable;
+      (Editable  : Gtk_Editable;
        Start_Pos : Gint;
        End_Pos   : Gint) return UTF8_String;
    --  Retrieves a sequence of characters. The characters that are retrieved
@@ -118,15 +118,15 @@ package Gtk.Editable is
    --  "start_pos": start of text
    --  "end_pos": end of text
 
-   function Get_Editable (Self : Gtk_Editable) return Boolean;
-   procedure Set_Editable (Self : Gtk_Editable; Is_Editable : Boolean);
+   function Get_Editable (Editable : Gtk_Editable) return Boolean;
+   procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
    --  "is_editable": True if the user is allowed to edit the text in the
    --  widget
 
-   function Get_Position (Self : Gtk_Editable) return Gint;
+   function Get_Position (Editable : Gtk_Editable) return Gint;
    pragma Import (C, Get_Position, "gtk_editable_get_position");
-   procedure Set_Position (Self : Gtk_Editable; Position : Gint);
+   procedure Set_Position (Editable : Gtk_Editable; Position : Gint);
    pragma Import (C, Set_Position, "gtk_editable_set_position");
    --  Sets the cursor position in the editable to the given value.
    --  The cursor is displayed before the character with the given (base 0)
@@ -137,7 +137,7 @@ package Gtk.Editable is
    --  "position": the position of the cursor
 
    procedure Insert_Text
-      (Self            : Gtk_Editable;
+      (Editable        : Gtk_Editable;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint);
@@ -149,13 +149,13 @@ package Gtk.Editable is
    --  "new_text_length": the length of the text in bytes, or -1
    --  "position": location of the position text will be inserted at
 
-   procedure Paste_Clipboard (Self : Gtk_Editable);
+   procedure Paste_Clipboard (Editable : Gtk_Editable);
    pragma Import (C, Paste_Clipboard, "gtk_editable_paste_clipboard");
    --  Pastes the content of the clipboard to the current position of the
    --  cursor in the editable.
 
    procedure Select_Region
-      (Self      : Gtk_Editable;
+      (Editable  : Gtk_Editable;
        Start_Pos : Gint;
        End_Pos   : Gint);
    pragma Import (C, Select_Region, "gtk_editable_select_region");
@@ -166,6 +166,15 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  "start_pos": start of region
    --  "end_pos": end of region
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   procedure Insert_Text
+     (Editable : Gtk_Editable;
+      New_Text : UTF8_String;
+      Position : in out Gint);
 
    -------------
    -- Signals --

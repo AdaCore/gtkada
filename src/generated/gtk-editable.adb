@@ -27,33 +27,46 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Editable is
 
+   procedure Insert_Text
+     (Editable : Gtk_Editable;
+      New_Text : UTF8_String;
+      Position : in out Gint)
+   is
+   begin
+      Insert_Text
+        (Editable,
+         New_Text & ASCII.NUL,
+         New_Text'Length,
+         Position);
+   end Insert_Text;
+
    ---------------
    -- Get_Chars --
    ---------------
 
    function Get_Chars
-      (Self      : Gtk_Editable;
+      (Editable  : Gtk_Editable;
        Start_Pos : Gint;
        End_Pos   : Gint) return UTF8_String
    is
       function Internal
-         (Self      : Gtk_Editable;
+         (Editable  : Gtk_Editable;
           Start_Pos : Gint;
           End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
-      return Interfaces.C.Strings.Value (Internal (Self, Start_Pos, End_Pos));
+      return Interfaces.C.Strings.Value (Internal (Editable, Start_Pos, End_Pos));
    end Get_Chars;
 
    ------------------
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Self : Gtk_Editable) return Boolean is
-      function Internal (Self : Gtk_Editable) return Integer;
+   function Get_Editable (Editable : Gtk_Editable) return Boolean is
+      function Internal (Editable : Gtk_Editable) return Integer;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
-      return Boolean'Val (Internal (Self));
+      return Boolean'Val (Internal (Editable));
    end Get_Editable;
 
    -----------------
@@ -61,20 +74,20 @@ package body Gtk.Editable is
    -----------------
 
    procedure Insert_Text
-      (Self            : Gtk_Editable;
+      (Editable        : Gtk_Editable;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint)
    is
       procedure Internal
-         (Self            : Gtk_Editable;
+         (Editable        : Gtk_Editable;
           New_Text        : Interfaces.C.Strings.chars_ptr;
           New_Text_Length : Gint;
           Position        : in out Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
-      Internal (Self, Tmp_New_Text, New_Text_Length, Position);
+      Internal (Editable, Tmp_New_Text, New_Text_Length, Position);
       Free (Tmp_New_Text);
    end Insert_Text;
 
@@ -82,11 +95,11 @@ package body Gtk.Editable is
    -- Set_Editable --
    ------------------
 
-   procedure Set_Editable (Self : Gtk_Editable; Is_Editable : Boolean) is
-      procedure Internal (Self : Gtk_Editable; Is_Editable : Integer);
+   procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean) is
+      procedure Internal (Editable : Gtk_Editable; Is_Editable : Integer);
       pragma Import (C, Internal, "gtk_editable_set_editable");
    begin
-      Internal (Self, Boolean'Pos (Is_Editable));
+      Internal (Editable, Boolean'Pos (Is_Editable));
    end Set_Editable;
 
 end Gtk.Editable;
