@@ -1245,12 +1245,12 @@ package body Gtk.Tree_View is
    function Create_Row_Drag_Icon
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path)
-      return Gdk.Pixmap.Gdk_Pixmap
+      return Cairo.Cairo_Surface
    is
       function Internal
         (Tree_View : System.Address;
          Path      : Gtk.Tree_Model.Gtk_Tree_Path)
-         return Gdk.Pixmap.Gdk_Pixmap;
+         return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_tree_view_create_row_drag_icon");
 
    begin
