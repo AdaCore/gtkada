@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,33 +47,13 @@
  ********************************************************************/
 
 void
-ada_gtk_plot_set_color (GtkPlotLine* line, GdkColor* color) {
-  line->color = *color;
-}
-
-void
 ada_gtk_plot_set_line_style (GtkPlotLine* line, GtkPlotLineStyle style) {
   line->line_style = style;
-}
-
-void
-ada_gtk_plot_set_line_width (GtkPlotLine* line, gfloat width) {
-  line->line_width = width;
 }
 
 char*
 ada_gtk_dataset_get_name (GtkPlotData* data) {
   return data->name;
-}
-
-GList*
-ada_gtk_plot_get_datasets (GtkPlot* plot) {
-  return plot->data_sets;
-}
-
-GList*
-ada_gtk_plot_get_texts (GtkPlot* plot) {
-  return plot->text;
 }
 
 gchar*
