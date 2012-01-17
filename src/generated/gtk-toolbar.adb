@@ -77,11 +77,10 @@ package body Gtk.Toolbar is
    function Get_Icon_Size
       (Toolbar : access Gtk_Toolbar_Record) return Gtk.Enums.Gtk_Icon_Size
    is
-      function Internal
-         (Toolbar : System.Address) return Gtk.Enums.Gtk_Icon_Size;
+      function Internal (Toolbar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toolbar_get_icon_size");
    begin
-      return Internal (Get_Object (Toolbar));
+      return Gtk.Enums.Gtk_Icon_Size'Val (Internal (Get_Object (Toolbar)));
    end Get_Icon_Size;
 
    --------------------

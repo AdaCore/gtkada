@@ -57,8 +57,8 @@ package Gtk.Toolshell is
    --  gtk_tool_item_get_ellipsize_mode instead.
    --  Since: gtk+ 2.20
 
-   function Get_Icon_Size (Self : Gtk_Toolshell) return Gtk_Icon_Size;
-   pragma Import (C, Get_Icon_Size, "gtk_tool_shell_get_icon_size");
+   function Get_Icon_Size
+      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Icon_Size;
    --  Retrieves the icon size for the tool shell. Tool items must not call
    --  this function directly, but rely on gtk_tool_item_get_icon_size instead.
    --  Since: gtk+ 2.14

@@ -39,6 +39,19 @@ package body Gtk.Toolshell is
       return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Self));
    end Get_Ellipsize_Mode;
 
+   -------------------
+   -- Get_Icon_Size --
+   -------------------
+
+   function Get_Icon_Size
+      (Self : Gtk_Toolshell) return Gtk.Enums.Gtk_Icon_Size
+   is
+      function Internal (Self : Gtk_Toolshell) return Integer;
+      pragma Import (C, Internal, "gtk_tool_shell_get_icon_size");
+   begin
+      return Gtk.Enums.Gtk_Icon_Size'Val (Internal (Self));
+   end Get_Icon_Size;
+
    ---------------------
    -- Get_Orientation --
    ---------------------

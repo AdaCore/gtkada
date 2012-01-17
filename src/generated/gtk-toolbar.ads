@@ -98,8 +98,8 @@ package Gtk.Toolbar is
    --  This should only be used for special-purpose toolbars, normal
    --  application toolbars should respect the user preferences for the size of
    --  icons.
-   --  "icon_size": The Gtk_Icon_Size that stock icons in the toolbar shall
-   --  have.
+   --  "icon_size": The Gtk.Enums.Gtk_Icon_Size that stock icons in the
+   --  toolbar shall have.
 
    function Get_Item_Index
       (Toolbar : access Gtk_Toolbar_Record;
