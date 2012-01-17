@@ -1210,25 +1210,7 @@ lower    value        value + page_size       upper
         <parameter name="mode" default="Both"/>
      </method>
      <method id="gtk_size_group_get_widgets" return="WidgetSList"/>
-     <extra>
-        <with_spec pkg="Glib.Generic_Properties"/>
-        <type ctype="GtkSizeGroupMode" ada="Size_Group_Mode"
-              properties="Gtk.Size_Group.Property_Size_Group_Mode">
-   type Size_Group_Mode is (None, Horizontal, Vertical, Both);
-   pragma Convention (C, Size_Group_Mode);
-   --  This type indicates how the size of all widgets in the group match:
-   --  - None: The behavior is the same as if there was no size. Each widget
-   --          requests its most appropriate size.
-   --  - Horizontal: All the widgets in the group will have the same width.
-   --  - Vertical: All the widgets in the group will have the same height
-   --  - Both: All the widgets in the group will have exactly the same size.
-
-   package Size_Group_Mode_Properties is new
-      Glib.Generic_Properties.Generic_Internal_Discrete_Property
-         (Size_Group_Mode);
-   type Property_Size_Group_Mode is new Size_Group_Mode_Properties.Property;
-        </type>
-     </extra>
+     <enum ctype="GtkSizeGroupMode"/>
   </package>
 
   <package id="Gtk.Alignment">

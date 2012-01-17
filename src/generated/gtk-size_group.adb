@@ -52,10 +52,10 @@ package body Gtk.Size_Group is
       (Size_Group : access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both)
    is
-      function Internal (Mode : Size_Group_Mode) return System.Address;
+      function Internal (Mode : Integer) return System.Address;
       pragma Import (C, Internal, "gtk_size_group_new");
    begin
-      Set_Object (Size_Group, Internal (Mode));
+      Set_Object (Size_Group, Internal (Gtk.Size_Group.Size_Group_Mode'Pos (Mode)));
    end Initialize;
 
    ----------------
@@ -94,10 +94,10 @@ package body Gtk.Size_Group is
    function Get_Mode
       (Size_Group : access Gtk_Size_Group_Record) return Size_Group_Mode
    is
-      function Internal (Size_Group : System.Address) return Size_Group_Mode;
+      function Internal (Size_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_size_group_get_mode");
    begin
-      return Internal (Get_Object (Size_Group));
+      return Gtk.Size_Group.Size_Group_Mode'Val (Internal (Get_Object (Size_Group)));
    end Get_Mode;
 
    -----------------
@@ -156,12 +156,10 @@ package body Gtk.Size_Group is
       (Size_Group : access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode)
    is
-      procedure Internal
-         (Size_Group : System.Address;
-          Mode       : Size_Group_Mode);
+      procedure Internal (Size_Group : System.Address; Mode : Integer);
       pragma Import (C, Internal, "gtk_size_group_set_mode");
    begin
-      Internal (Get_Object (Size_Group), Mode);
+      Internal (Get_Object (Size_Group), Gtk.Size_Group.Size_Group_Mode'Pos (Mode));
    end Set_Mode;
 
 end Gtk.Size_Group;

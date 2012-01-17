@@ -212,6 +212,24 @@ class Enum(CType):
         self.convert = "%s'Pos (%%(var)s)" % ada
         self.returns = (ada, self.cparam, "%s'Val (%%(var)s)" % ada, [])
 
+    @staticmethod
+    def register_ada_decl(pkg, ctype, ada=None):
+        """Register an enumeration type.
+        [pkg] is the name of the current package in which the enumeration
+        will be defined.
+        """
+        
+        # Compute the Ada name automatically if needed.
+        if not ada:
+            ada = naming.type(name="", cname=ctype).ada
+            ada = ada.replace("Gtk_", "")
+        
+        full_name = "%s.%s" % (pkg, ada)
+        t = Enum(full_name, "%s.Property_%s" % (pkg, ada))
+        naming.add_type_exception(cname=ctype, type=t)
+
+        # naming.add_girname(girname=full_name, ctype=ctype)
+
 
 class GObject(CType):
     def __init__(self, ada):
@@ -671,7 +689,7 @@ def indent_code(code, indent=3, addnewlines=True):
 
         result += l + eol_comment + "\n"
 
-        if(l.endswith("then") and not l.endswith("and then")) \
+        if (l.endswith("then") and not l.endswith("and then")) \
            or l.endswith("loop") \
            or(l.endswith("else") and not l.endswith("or else"))\
            or l.endswith("begin") \
@@ -680,6 +698,13 @@ def indent_code(code, indent=3, addnewlines=True):
            or l.endswith("is") \
            or l.endswith("declare"):
             indent += 3
+
+        # Case of generic instantiation:
+        #     package A is
+        #         new B ();
+        if l.startswith("new"):
+            indent -= 3
+
 
     return result
 

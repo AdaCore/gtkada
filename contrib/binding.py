@@ -53,6 +53,7 @@ nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
 nreturn = QName(uri, "return-value").text
 nfield = QName(uri, "field").text
+nmember = QName(uri, "member").text
 nimplements = QName(uri, "implements").text
 
 class GIR(object):
@@ -67,6 +68,7 @@ class GIR(object):
         self.classes = dict()  # Maps GIR's "name" to a GIRClass instance
         self.interfaces = dict() # Maps GIR's "name" to an interface
         self.callbacks = dict()  # Ada name to GIR XML node
+        self.enums = dict()  # Maps C "name" to a GIR XML node
 
         k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
         for cl in self.root.findall(k):
@@ -84,6 +86,10 @@ class GIR(object):
         for cl in self.root.findall(k):
             self.classes[cl.get("name")] = self._create_class(
                 cl, is_interface=False)
+
+        k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
+        for cl in self.root.findall(k):
+            self.enums[cl.get(ctype)] = cl
 
         self.globals = GlobalsBinder(self, self.root) # global vars
 
@@ -1281,6 +1287,46 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
+        for ctype, enum in self.gtkpkg.enumerations():
+            base = enum.ada
+            if "." in base:
+                base = base[base.rfind(".") + 1:]
+
+            decl = "\ntype %s is (\n" % base
+            node = gir.enums[ctype]
+            members = []
+            
+            for member in node.findall(nmember):
+                cname = member.get(cidentifier)
+                m = naming.adamethod_name(cname)
+
+                if cname == m:
+                    # No special case ? Attempt a simple rule
+                    m = cname.replace("GTK_", "")
+                elif "." in m:
+                    m = m[m.rfind(".") + 1:]
+
+                # For proper substitution in docs
+                naming.add_cmethod(
+                    cname=cname,
+                    adaname="%s.%s" % (self.name, m))
+
+                members.append(m)
+
+            decl += ",\n      ".join(members)
+            decl += ");\n"
+            decl += "pragma Convention (C, %s);\n" % base
+            decl += format_doc([node.findtext(ndoc, "")], indent="")
+            decl += "\n\n"
+            decl += "package %s_Properties is\n" % base
+            decl += "   new Generic_Internal_Discrete_Property (%s);\n" % base
+            decl += "type Property_%s is new %s_Properties.Property;\n\n" % (
+                base, base)
+
+            self.pkg.add_with("Glib.Generic_Properties")
+
+            section.add_code(decl)
+
         if extra:
             for p in extra:
                 if p.tag == "with_spec":
@@ -1296,6 +1342,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                         cname=p.get("ctype"),
                         type=Proxy(p.get("ada"), p.get("properties", None)))
                     section.add_code(p.text)
+
                 elif p.tag == "body":
                     # Go before the body of generated subprograms, so that
                     # we can add type definition

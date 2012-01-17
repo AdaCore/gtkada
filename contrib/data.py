@@ -126,9 +126,10 @@ naming.cname_to_adaname = {
     "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
     "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
-    "GTK_SIZE_GROUP_VERTICAL":      "Gtk.Size_Group.Vertical",
-    "GTK_SIZE_GROUP_HORIZONTAL":    "Gtk.Size_Group.Horizontal",
-    "GTK_SIZE_GROUP_BOTH":          "Gtk.Size_Group.Both",
+    "GTK_SIZE_GROUP_NONE":          "None",
+    "GTK_SIZE_GROUP_VERTICAL":      "Vertical",
+    "GTK_SIZE_GROUP_HORIZONTAL":    "Horizontal",
+    "GTK_SIZE_GROUP_BOTH":          "Both",
 
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
@@ -142,11 +143,10 @@ naming.cname_to_adaname = {
     "gtk_container_add": "Gtk.Container.Add"
 }
 
-# Maps GIR's "name" to a "c:type". This isn't needed for the
-# classes themselves, since this is automatically read from the
-# GIR file.
-# Mostly used for properties. The values must correspond to
-# entries in self.type_exceptions.
+# Maps GIR's "name" to a "c:type". This isn't needed for the classes
+# themselves, since this is automatically read from the GIR file.
+# Mostly used for properties. The values must correspond to entries in
+# self.type_exceptions.
 
 naming.girname_to_ctype = {
     "GdkPixbuf.Pixbuf":    "GdkPixbuf",

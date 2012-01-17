@@ -108,21 +108,21 @@ package body Gtk.Entry_Completion is
 
          Data : constant Completion_User_Data :=
          new Completion_User_Data_Record'
-           (Callback    => Func,
-            User_Data   => new Data_Type'(Func_Data),
-            Notify      => Func_Notify);
-      begin
-         Internal (Get_Object (Completion),
-            Internal_Completion_Func'Address,
-            Data, Internal_Notify'Address);
-      end Set_Match_Func;
-   end Match_Functions;
+        (Callback    => Func,
+         User_Data   => new Data_Type'(Func_Data),
+         Notify      => Func_Notify);
+   begin
+      Internal (Get_Object (Completion),
+         Internal_Completion_Func'Address,
+         Data, Internal_Notify'Address);
+   end Set_Match_Func;
+end Match_Functions;
 
-   function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Entry_Completion_Match_Func);
+function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
+  (System.Address, Gtk_Entry_Completion_Match_Func);
 
-   function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Cell_Data_Func);
+function To_Cell_Data_Func is new Ada.Unchecked_Conversion
+  (System.Address, Cell_Data_Func);
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;

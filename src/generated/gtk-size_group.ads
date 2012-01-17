@@ -107,18 +107,17 @@ package Gtk.Size_Group is
    type Gtk_Size_Group_Record is new GObject_Record with null record;
    type Gtk_Size_Group is access all Gtk_Size_Group_Record'Class;
 
-   type Size_Group_Mode is (None, Horizontal, Vertical, Both);
+   type Size_Group_Mode is (
+      None,
+      Horizontal,
+      Vertical,
+      Both);
    pragma Convention (C, Size_Group_Mode);
-   --  This type indicates how the size of all widgets in the group match:
-   --  - None: The behavior is the same as if there was no size. Each widget
-   --          requests its most appropriate size.
-   --  - Horizontal: All the widgets in the group will have the same width.
-   --  - Vertical: All the widgets in the group will have the same height
-   --  - Both: All the widgets in the group will have exactly the same size.
+   --  The mode of the size group determines the directions in which the size
+   --  group affects the requested sizes of its component widgets.
 
-   package Size_Group_Mode_Properties is new
-   Glib.Generic_Properties.Generic_Internal_Discrete_Property
-     (Size_Group_Mode);
+   package Size_Group_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Size_Group_Mode);
    type Property_Size_Group_Mode is new Size_Group_Mode_Properties.Property;
 
    ------------------
@@ -169,11 +168,11 @@ package Gtk.Size_Group is
    procedure Set_Mode
       (Size_Group : access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode);
-   --  Sets the Size_Group_Mode of the size group. The mode of the size group
-   --  determines whether the widgets in the size group should all have the
-   --  same horizontal requisition (Gtk.Size_Group.Horizontal) all have the
-   --  same vertical requisition (Gtk.Size_Group.Vertical), or should all have
-   --  the same requisition in both directions (Gtk.Size_Group.Both).
+   --  Sets the Gtk.Size_Group.Size_Group_Mode of the size group. The mode of
+   --  the size group determines whether the widgets in the size group should
+   --  all have the same horizontal requisition (Gtk.Size_Group.Horizontal) all
+   --  have the same vertical requisition (Gtk.Size_Group.Vertical), or should
+   --  all have the same requisition in both directions (Gtk.Size_Group.Both).
    --  "mode": the mode to set for the size group.
 
    function Get_Widgets

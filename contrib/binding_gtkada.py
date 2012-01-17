@@ -75,13 +75,19 @@ Where the package node is defined as follows:
                              <!--  content is same as <method> -->
        </function>
 
+       <!-- The following statement indicates that the binding for the
+            enumeration should be added in the current package.
+            This automatically generates the naming exceptions.
+       -->           
+       <enum ctype="..."
+             ada="..."/>   <!-- optional Ada name (no package info needed) -->
+
        <extra>
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
           <with_spec pkg="..." use="true"/>
                            <!-- extra with clauses for spec -->
           <with_body pkg="..." use="true"/>
                            <!-- extra with clauses for body -->
-          <enum ctype="..."/>  <!--  Include binding for enumeration type -->
 
           <!-- Code will be put after generated subprograms-->
           <spec>...     <!-- optional, code to insert in spec -->
@@ -99,7 +105,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType, CType, naming
+from adaformat import AdaType, CType, naming, Enum
 
 
 class GtkAda(object):
@@ -123,6 +129,27 @@ class GtkAdaPackage(object):
     def __init__(self, node):
         self.node = node
         self.doc = []
+
+        # If we are going to generate some enumerations in the package, we
+        # need to register them now, so that all places where the enumeration
+        # is referenced have the proper full name.
+
+        if node:
+            for enum in node.findall("enum"):
+                Enum.register_ada_decl(pkg=node.get("id"),
+                                       ctype=enum.get("ctype"),
+                                       ada=enum.get("ada", None))
+
+    def enumerations(self):
+        """List of all enumeration types that need to be declared in the
+           package. The result is a list of Enum() instances.
+        """
+        result = []
+        if self.node:
+            for enum in self.node.findall("enum"):
+                result.append((enum.get("ctype"),
+                               naming.type(name="", cname=enum.get("ctype"))))
+        return result
 
     def get_doc(self):
         """Return the overridden doc for for the package, as a list of
