@@ -54,7 +54,6 @@ package body Gdk.Window_Attr is
       Wclass            : Gdk.Window.Gdk_Window_Class :=
         Gdk.Window.Input_Output;
       Visual            : Gdk.Visual.Gdk_Visual := null;
-      Colormap          : Gdk.Color.Gdk_Colormap := null;
       Window_Type       : Gdk.Window.Gdk_Window_Type :=
         Gdk.Window.Window_Root;
       Cursor            : Gdk.Cursor.Gdk_Cursor := null;
@@ -76,7 +75,6 @@ package body Gdk.Window_Attr is
       Set_Height (Window_Attr, Height);
       Set_Window_Class (Window_Attr, Wclass);
       Set_Visual (Window_Attr, Visual);
-      Set_Colormap (Window_Attr, Colormap);
       Set_Window_Type (Window_Attr, Window_Type);
       Set_Cursor (Window_Attr, Cursor);
       Set_Wmclass_Name (Window_Attr, Wmclass_Name);
