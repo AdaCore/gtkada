@@ -224,6 +224,12 @@ Gtk.Image
 The subprograms working with Gdk_Pixmap have been removed, use the
 variants working on Gdk_Pixbuf instead.
 
+Gtk.Input_Dialog
+================
+
+This package is no longer part of Gtk+, so this binding has been removed
+without replacement.
+
 Gtk.Item_Factory
 ================
 
