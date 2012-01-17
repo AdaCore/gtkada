@@ -229,6 +229,7 @@ naming.type_exceptions = {
     "GtkFileChooserAction": Enum("Gtk.Enums.Gtk_File_Chooser_Action"),
     "GtkFileChooserConfirmation": Enum("Gtk_File_Chooser_Confirmation"),
     "GtkFileChooserError": Enum("Gtk.Enums.Gtk_File_Chooser_Error"),
+    "GtkIconSize":        Enum("Gtk.Enums.Gtk_Icon_Size"),
     "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
     "GtkMetricType":      Enum("Gtk.Enums.Gtk_Metric_Type",
                                "Gtk.Enums.Property_Metric_Type"),
