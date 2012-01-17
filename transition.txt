@@ -224,6 +224,11 @@ Gtk.Image
 The subprograms working with Gdk_Pixmap have been removed, use the
 variants working on Gdk_Pixbuf instead.
 
+Gtk.Item_Factory
+================
+
+This obsolete package has been removed in favor of Gtk.UI_Manager.
+
 Gtk.Layout
 ==========
 
@@ -237,6 +242,11 @@ All widget parameter names have been normalized to "Self".
 The Set_Uri_Hook function has been eliminated, and along with it the
 Uri_Func type and the Generic_Uri_Hook package.  Register a callback
 for the button's "clicked" signal instead.
+
+Gtk.List_Item
+=============
+
+This widget has been removed: use a Gtk.Tree_View instead.
 
 Gtk.Menu_Tool_Button
 ====================
@@ -354,6 +364,11 @@ Gtk.Text_View
 
 The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
 versions of Gtk+ and have been removed.
+
+Gtk.Tips_Query
+==============
+
+This obsolete package has been removed.
 
 Gtk.Tool_Item
 =============
