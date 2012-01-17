@@ -89,18 +89,16 @@ package Gtk.Button_Box is
       (Widget       : access Gtk_Button_Box_Record;
        Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean);
-   --  Set whether Child should appear in a secondary group of children. A
+   --  Sets whether Child should appear in a secondary group of children. A
    --  typical use of a secondary child is the help button in a dialog.
    --  This group appears after the other children if the style is
-   --  Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the
-   --  other children if the style is Buttonbox_End. For horizontal button
-   --  boxes, the definition of before/after depends on direction of the
-   --  widget. (See Gtk.Widget.Set_Direction) If the style is Buttonbox_Start,
-   --  or Buttonbox_End, then the secondary children are aligned at the other
-   --  end of the button box from the main children. For the other styles, they
-   --  appear immediately next to the main children.
-   --  Is_Secondary: if True, the Child appears in a secondary group of the
-   --  button box.
+   --  %GTK_BUTTONBOX_START, %GTK_BUTTONBOX_SPREAD or %GTK_BUTTONBOX_EDGE, and
+   --  before the other children if the style is %GTK_BUTTONBOX_END. For
+   --  horizontal button boxes, the definition of before/after depends on
+   --  direction of the widget (see Gtk.Window.Set_Direction). If the style is
+   --  %GTK_BUTTONBOX_START or %GTK_BUTTONBOX_END, then the secondary children
+   --  are aligned at the other end of the button box from the main children.
+   --  For the other styles, they appear immediately next to the main children.
    --  "child": a child of Widget
    --  "is_secondary": if True, the Child appears in a secondary group of the
    --  button box.

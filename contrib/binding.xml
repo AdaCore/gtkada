@@ -703,27 +703,11 @@ Note that if the widget fills its allocated area, these two parameters
 won't have any effect.
          </doc>
       </method>
-      <method id="gtk_misc_set_padding">
-         <doc>
-Set the padding (i.e. the extra spaces on the side of the widget).
-If Xpad or Ypad is negative, they will be changed to 0.
-         </doc>
-      </method>
    </package>
 
    <package id="Gtk.Bin">
       <doc group="Abstract base classes"/>
       <parameter name="self" ada="Bin"/>
-   </package>
-
-   <package id="Gtk.Progress" obsolescent="True">
-      <doc group="Obsolescent widgets">This package is deprecated. It now only acts as an abstract base class for other widgets.</doc>
-      <parameter name="self" ada="Progress"/> <!-- for all methods -->
-      <method id="gtk_progress_get_adjustment">
-         <parameter name="self" ada="widget"/>
-      </method>
-      <method id="gtkada_GtkProgress_get_adjustment" bind="true"/>
-      <method id="gtkada_GtkProgress_get_activity_mode" bind="true"/>
    </package>
 
    <!-- #################################################################
@@ -784,27 +768,6 @@ You can not instantiate a Gtk_Button_Box directly, and have to use one the
 above two instead.
       </doc>
       <parameter name="self" ada="Widget"/>
-      <method id="gtk_button_box_set_child_size" obsolescent="True"/>
-      <method id="gtk_button_box_get_child_size" obsolescent="True"/>
-      <method id="gtk_button_box_set_child_ipadding" obsolescent="True"/>
-      <method id="gtk_button_box_set_child_secondary">
-         <doc>
-Set whether Child should appear in a secondary group of children.
-A typical use of a secondary child is the help button in a dialog.
-
-This group appears after the other children if the style is
-Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the
-other children if the style is Buttonbox_End. For horizontal button
-boxes, the definition of before/after depends on direction of the
-widget. (See Gtk.Widget.Set_Direction) If the style is Buttonbox_Start,
-or Buttonbox_End, then the secondary children are aligned at
-the other end of the button box from the main children. For the
-other styles, they appear immediately next to the main children.
-
-Is_Secondary: if True, the Child appears in a secondary group of the
-              button box.
-         </doc>
-      </method>
    </package>
 
    <package id="Gtk.Hbutton_Box">
@@ -815,14 +778,6 @@ The beginning of the box (when you add children with Gtk.Box.Pack_Start)
 is on the left of the box. Its end (for Gtk.Box.Pack_End) is on the right.
       </doc>
       <parameter name="self" ada="Widget"/>
-      <method id="gtk_hbutton_box_get_spacing_default" obsolescent="True"/>
-      <method id="gtk_hbutton_box_set_spacing_default" obsolescent="True">
-         <doc>Set the default spacing (space between two adjacent children). This is done for all the Hbutton_Boxes in your application. This can be overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.</doc>
-      </method>
-      <method id="gtk_hbutton_box_get_layout_default" obsolescent="True"/>
-      <method id="gtk_hbutton_box_set_layout_default" obsolescent="True">
-         <doc>Set the the default layout to use for all the hbutton_boxes in your application that don't have a specific value set by Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge</doc>
-      </method>
    </package>
 
    <package id="Gtk.Vbutton_Box">
@@ -833,10 +788,6 @@ The beginning of the box (when you add children with Gtk.Box.Pack_Start)
 is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
       </doc>
       <parameter name="self" ada="Widget"/>
-      <method id="gtk_vbutton_box_get_spacing_default" obsolescent="True"/>
-      <method id="gtk_vbutton_box_set_spacing_default" obsolescent="True"/>
-      <method id="gtk_vbutton_box_get_layout_default" obsolescent="True"/>
-      <method id="gtk_vbutton_box_get_layout_default" obsolescent="True"/>
    </package>
 
    <package id="Gtk.Volume_Button">
@@ -845,10 +796,9 @@ is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
 
    <package id="Gtk.About_Dialog">
       <doc group="Windows" testgtk="create_about.adb"/>
-     <parameter name="self" ada="About"/>
-
-     <extra>
-       <type ctype="GtkLicense" ada="Gtk_License">
+      <parameter name="self" ada="About"/>
+      <extra>
+         <type ctype="GtkLicense" ada="Gtk_License">
          type Gtk_License is (
          License_Unknown,
          License_Custom,
@@ -859,8 +809,8 @@ is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
          License_BSD,
          License_MIT_X11,
          License_Artistic);
-       </type>
-     </extra>
+         </type>
+      </extra>
   </package>
 
   <package id="Gtk.GEntry">
@@ -873,68 +823,6 @@ on the screen, so that the cursor position is visible at all times.
 See Gtk_Text_View for a multiple-line text editing widget.
      </doc>
      <parameter name="self" ada="The_Entry"/>
-  </package>
-
-  <package id="Gtk.Combo" obsolescent="True">
-     <doc group="Obsolescent widgets" screenshot="gtk-combo"
-          see="Gtk.Combo_Box">
-The Gtk_Combo widget consists of a single-line text entry field and a
-drop-down list. The drop-down list is displayed when the user clicks on a
-small arrow button to the right of the entry field.
-
-The drop-down list is a Gtk_List widget and can be accessed using the list
-member of the Gtk_Combo. List elements can contain arbitrary widgets, but
-if an element is not a plain label, then you must use the
-Gtk_List.Set_Item_String function. This sets the string which will be
-placed in the text entry field when the item is selected.
-
-By default, the user can step through the items in the list using the arrow
-(cursor) keys, though this behaviour can be turned off with Set_Use_Arrows.
-
-Normally the arrow keys are only active when the contents of the text entry
-field matches one of the items in the list. If the contents of the entry
-field do not match any of the list items, then pressing the arrow keys does
-nothing. However, by calling Set_Use_Arrows_Always you can specify that the
-arrow keys are always active. If the contents of the entry field does not
-match any of the items in the list, then pressing the up or down arrow key
-will set the entry field to the last or first item in the list,
-respectively.
-     </doc>
-     <parameter name="self" ada="Combo_Box"/>
-     <method id="gtk_combo_set_value_in_list">
-        <parameter name="val" default="True"/>
-        <parameter name="ok_if_empty" default="False"/>
-        <doc>Specify whether the value entered in the text entry field must match one of the values in the list. If this is set then the user will not be able to perform any other action until a valid value has been entered. If an empty field is acceptable, the Ok_If_Empty parameter should be True. If the value entered must match one of the values in the list, val should be True.</doc>
-     </method>
-     <method id="gtk_combo_set_use_arrows">
-        <parameter name="val" default="True"/>
-        <doc>Specify if the arrow (cursor) keys can be used to step through the items in the list. This is on by default.</doc>
-     </method>
-     <method id="gtk_combo_set_use_arrows_always">
-        <parameter name="val" default="True"/>
-        <doc>Specify if the arrow keys will still work even if the current contents of the Gtk_Entry field do not match any of the list items.</doc>
-     </method>
-     <method id="gtk_combo_set_case_sensitive">
-        <parameter name="val" default="True"/>
-        <doc>Specify whether the text entered into the Gtk_Entry field and the text in the list items are case sensitive. This may be useful, for example, when you have called Set_Value_In_List to limit the values entered, but you are not worried about differences in case.</doc>
-     </method>
-     <method id="gtk_combo_set_popdown_strings">
-        <parameter name="strings" ctype="StringList"/>
-        <doc>Set all the items in the popup list.</doc>
-     </method>
-     <method id="gtk_combo_disable_activate">
-        <doc>Disable the standard handler for the return key in the entry field. The default behavior is to popdown the combo box list, so that the user can choose from it. However, if you want to add your own callback for the return key, you need to call this subprogram, and connect a handler to the "activate" signal for the entry.</doc>
-     </method>
-     <method id="gtk_combo_set_item_string">
-        <doc>Set the string to place in the Gtk_Entry field when a particular list item is selected. This is needed if the list item is not a simple label.</doc>
-     </method>
-     <method id="gtkada_GtkCombo_get_entry"  bind="True"/>
-     <method id="gtkada_GtkCombo_set_entry"  bind="True"/>
-     <method id="gtkada_GtkCombo_get_list"   bind="True"/>
-     <method id="gtkada_GtkCombo_get_popwin" bind="True"/>
-     <extra>
-        <with_spec pkg="Gtk.Enums" />  <!--  for String_List -->
-     </extra>
   </package>
 
   <package id="Gtk.Dialog">
@@ -1171,9 +1059,6 @@ The Gtk_Curve widget has 3 modes of operation: spline, linear and free.  In spli
      <doc group="Drawing" testgtk="libart_demo.adb">
 See also the Double_Buffer widget provided in the GtkAda examples for an advanced example that demonstrates how to use double buffering, to avoid flickering in your drawings.</doc>
      <parameter name="self" ada="Drawing_Area"/>
-     <method id="gtk_drawing_area_size" obsolescent="True">
-        <doc>Request a new size for the area. This queues a resize request for the area.</doc>
-     </method>
   </package>
 
   <package id="Gtk.Adjustment">
@@ -1294,8 +1179,6 @@ lower    value        value + page_size       upper
      <doc group="Selectors" testgtk="create_calendar.adb"
           screenshot="gtk-calendar"/>
      <parameter name="self" ada="Calendar"/>
-     <method id="gtk_calendar_freeze" obsolescent="True"/>
-     <method id="gtk_calendar_thaw" obsolescent="True"/>
      <extra>
         <type ctype="GtkCalendarDisplayOptions"
               ada="Gtk_Calendar_Display_Options">

@@ -91,8 +91,7 @@ package Gtk.Misc is
       (Misc : access Gtk_Misc_Record;
        Xpad : Gint;
        Ypad : Gint);
-   --  Set the padding (i.e. the extra spaces on the side of the widget). If
-   --  Xpad or Ypad is negative, they will be changed to 0.
+   --  Sets the amount of space to add around the widget.
    --  "xpad": the amount of space to add on the left and right of the widget,
    --  in pixels.
    --  "ypad": the amount of space to add on the top and bottom of the widget,
