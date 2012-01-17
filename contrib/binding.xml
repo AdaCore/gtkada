@@ -1083,9 +1083,6 @@ See Gtk_Text_View for a multiple-line text editing widget.
      </doc>
      <parameter name="self" ada="The_Entry"/>
      <enum ctype="GtkEntryIconPosition" prefix=""/>
-     <extra>
-        <spec>subtype Gtk_GEntry is Gtk_Entry;</spec>
-     </extra>
 
      <method id="gtk_entry_set_invisible_char">
         <parameter name="ch" ada="Char"/>
@@ -1098,6 +1095,26 @@ See Gtk_Text_View for a multiple-line text editing widget.
      </method>
      <!-- ??? inclusion of below method is pending on L117-038 -->
      <method id="gtk_editable_get_selection_bounds" bind="False"/>
+
+     <extra>
+        <spec>subtype Gtk_GEntry is Gtk_Entry;</spec>
+        <spec>
+   procedure Insert_Text
+      (Editable : access Gtk_Entry_Record;
+       New_Text : UTF8_String;
+       Position : in out Gint);
+        </spec>
+        <body>
+   procedure Insert_Text
+      (Editable : access Gtk_Entry_Record;
+       New_Text : UTF8_String;
+       Position : in out Gint) is
+   begin
+      Insert_Text
+        (Editable, New_Text &amp; ASCII.NUL, New_Text'Length, Position);
+   end Insert_Text;
+        </body>
+     </extra>
   </package>
 
   <package id="Gtk.Dialog">
@@ -2089,10 +2106,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
    is
    begin
       Insert_Text
-        (Editable,
-         New_Text &amp; ASCII.NUL,
-         New_Text'Length,
-         Position);
+        (Editable, New_Text &amp; ASCII.NUL, New_Text'Length, Position);
    end Insert_Text;
         </body>
      </extra>

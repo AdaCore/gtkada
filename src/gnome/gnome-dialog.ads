@@ -90,7 +90,7 @@ package Gnome.Dialog is
 
    procedure Editable_Enters
      (Dialog   : access Gnome_Dialog_Record;
-      Editable : access Gtk.Editable.Gtk_Editable_Record'Class);
+      Editable : Gtk.Editable.Gtk_Editable);
    --  Connect activate signal from editable to return
 
    procedure Grab_Focus

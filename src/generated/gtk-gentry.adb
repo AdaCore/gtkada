@@ -28,6 +28,15 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.GEntry is
 
+   procedure Insert_Text
+     (Editable : access Gtk_Entry_Record;
+      New_Text : UTF8_String;
+      Position : in out Gint) is
+   begin
+      Insert_Text
+        (Editable, New_Text & ASCII.NUL, New_Text'Length, Position);
+   end Insert_Text;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Entry_Record);
    pragma Unreferenced (Type_Conversion);

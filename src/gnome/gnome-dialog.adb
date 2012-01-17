@@ -154,15 +154,15 @@ package body Gnome.Dialog is
 
    procedure Editable_Enters
      (Dialog   : access Gnome_Dialog_Record;
-      Editable : access Gtk.Editable.Gtk_Editable_Record'Class)
+      Editable : Gtk.Editable.Gtk_Editable)
    is
       procedure Internal
         (Dialog    : System.Address;
-         Editable  : System.Address);
+         Editable  : Gtk.Editable.Gtk_Editable);
       pragma Import (C, Internal, "gnome_dialog_editable_enters");
 
    begin
-      Internal (Get_Object (Dialog), Get_Object (Editable));
+      Internal (Get_Object (Dialog), Editable);
    end Editable_Enters;
 
    ----------------

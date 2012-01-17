@@ -654,6 +654,11 @@ package Gtk.GEntry is
 
    subtype Gtk_GEntry is Gtk_Entry;
 
+   procedure Insert_Text
+     (Editable : access Gtk_Entry_Record;
+      New_Text : UTF8_String;
+      Position : in out Gint);
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
