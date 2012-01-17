@@ -31,6 +31,9 @@
 --  <group>Gdk, the low-level API</group>
 
 with Glib;
+pragma Warnings (Off);
+with System;
+pragma Warnings (On);
 
 package Gdk is
    pragma Preelaborate;
