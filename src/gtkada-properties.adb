@@ -38,6 +38,7 @@ with Gtk.Button;               use Gtk.Button;
 with Gtk.Check_Button;         use Gtk.Check_Button;
 with Gtk.Color_Button;         use Gtk.Color_Button;
 with Gtk.Combo_Box;            use Gtk.Combo_Box;
+with Gtk.Combo_Box_Text;       use Gtk.Combo_Box_Text;
 with Gtk.Container;            use Gtk.Container;
 with Gtk.Enums;                use Gtk.Enums;
 with Gtk.Event_Box;            use Gtk.Event_Box;
@@ -630,7 +631,7 @@ package body Gtkada.Properties is
       E_Klass : Enum_Class;
       Val     : Enum_Value;
       K       : Guint;
-      Combo   : Gtk_Combo_Box;
+      Combo   : Gtk_Combo_Box_Text;
       Label   : Gtk_Label;
       Color   : Gtk_Color_Button;
 
@@ -684,7 +685,7 @@ package body Gtkada.Properties is
          return Gtk_Widget (Spin);
 
       elsif Fundamental (Value_Type (Property)) = GType_Enum then
-         Gtk_New_Text (Combo);
+         Gtk_New (Combo);
          E_Klass := Enumeration (Param_Spec_Enum (Property));
          K := 0;
          loop
