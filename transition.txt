@@ -8,6 +8,12 @@ package, and a cast to the interface type (with "-" and "+"). Instead,
 each package now contains the list of subprograms inherited from the
 various interfaces.
 
+Gdk.Bitmap
+==========
+
+This package has been removed: Cairo packages should be used for drawing, and
+Gdk.Pixbuf for representing image data in memory.
+
 Gdk.Cursor
 ==========
 
