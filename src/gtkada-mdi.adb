@@ -3670,8 +3670,6 @@ package body Gtkada.MDI is
       Page_Count : constant Gint := Get_N_Pages (Notebook);
       Visible_Page_Count : Natural := 0;
    begin
-      Set_Property (Notebook, Tab_Border_Property, 0);
-
       --  Some pages might be hidden, in which case they should not be counted
       --  when we compute whether the tabs should be made visible
 
