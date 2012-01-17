@@ -21,10 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.Bitmap; use Gdk.Bitmap;
 with Gdk.Color;  use Gdk.Color;
 with Gdk.Event;  use Gdk.Event;
-with Gdk.Pixmap; use Gdk.Pixmap;
 with Gdk.Types;  use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Widget; use Gtk.Widget;
@@ -351,9 +349,9 @@ package body Gtk.Dnd is
 
    procedure Source_Set
      (Widget            : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Start_Button_Mask : in Gdk.Types.Gdk_Modifier_Type;
-      Targets           : in Target_Entry_Array;
-      Actions           : in Drag_Action)
+      Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
+      Targets           : Target_Entry_Array;
+      Actions           : Drag_Action)
    is
       procedure Internal
         (Widget            : System.Address;
@@ -431,7 +429,7 @@ package body Gtk.Dnd is
    -----------------------
 
    function Get_Source_Widget
-     (Context : in Drag_Context) return Gtk.Widget.Gtk_Widget
+     (Context : Drag_Context) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Context : Drag_Context) return System.Address;
       pragma Import (C, Internal, "gtk_drag_get_source_widget");
@@ -518,18 +516,16 @@ package body Gtk.Dnd is
    procedure Source_Set_Icon
      (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap)
+      Pixbuf   : Gdk.Pixbuf.Gdk_Pixbuf)
    is
       procedure Internal
         (Widget : System.Address;
          Colormap : Gdk.Gdk_Colormap;
-         Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-         Mask     : Gdk.Bitmap.Gdk_Bitmap);
+         Pixbuf   : System.Address);
       pragma Import (C, Internal, "gtk_drag_source_set_icon");
 
    begin
-      Internal (Get_Object (Widget), Colormap, Pixmap, Mask);
+      Internal (Get_Object (Widget), Colormap, Get_Object (Pixbuf));
    end Source_Set_Icon;
 
    ----------------------------
