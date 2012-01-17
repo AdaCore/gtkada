@@ -28,17 +28,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.File_Filter is
 
-   function Convert (Self : Gtk_File_Filter) return System.Address is
-   begin
-      return Get_Object (Self);
-   end Convert;
-
-   function Convert (Self : System.Address) return Gtk_File_Filter is
-      Stub : Gtk_File_Filter_Record;
-   begin
-      return Gtk_File_Filter (Get_User_Data (Self, Stub));
-   end Convert;
-
    function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_File_Filter_Func);
 

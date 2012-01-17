@@ -67,8 +67,6 @@ pragma Ada_05;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
-with Glib.GSlist;          use Glib.GSlist;
-with Glib.Glist;           use Glib.Glist;
 with Glib.Object;          use Glib.Object;
 with Glib.Types;           use Glib.Types;
 with Gtk.Buildable;        use Gtk.Buildable;
@@ -234,16 +232,6 @@ package Gtk.File_Filter is
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  calling Gtk.File_Filter.Filter
    --  Since: gtk+ 2.4
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   function Convert (Self : Gtk_File_Filter) return System.Address;
-   function Convert (Self : System.Address) return Gtk_File_Filter;
-
-   package File_Filter_List is new Glib.Glist.Generic_List (Gtk_File_Filter);
-   package File_Filter_SList is new Glib.GSlist.Generic_SList (Gtk_File_Filter);
 
    ----------------
    -- Interfaces --
