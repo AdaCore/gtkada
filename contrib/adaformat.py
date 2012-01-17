@@ -493,6 +493,9 @@ class AdaNaming(object):
         elif cname:
             # Check whether the C type, including trailing "*", maps
             # directly to an Ada type.
+            #t = self.type_exceptions.get(
+            #    cname,
+            #    Proxy(self.__camel_case_to_ada(cname)))
             t = self.__full_type_from_girname(cname)
             is_ptr = False
 

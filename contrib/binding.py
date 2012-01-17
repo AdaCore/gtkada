@@ -41,7 +41,7 @@ c_uri = "http://www.gtk.org/introspection/c/1.0"
 namespace = QName(uri, "namespace").text
 nvarargs = QName(uri, "varargs").text
 ntype = QName(uri, "type").text
-ctype = QName(c_uri, "type").text
+ctype_qname = QName(c_uri, "type").text
 cidentifier = QName(c_uri, "identifier").text
 ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
@@ -60,45 +60,47 @@ nvalue = QName(uri, "value").text
 nimplements = QName(uri, "implements").text
 
 class GIR(object):
-    def __init__(self, filename):
+    def __init__(self, files):
         """Parse filename and initializes SELF"""
-        self._tree = parse(filename)
-        self.root = self._tree.getroot()
-        self.namespace = self.root.find(namespace).get("name")
 
         self.packages = dict() # Ada name (lower case) -> Package instance
         self.ccode = ""
-        self.classes = dict()  # Maps GIR's "name" to a GIRClass instance
+        self.classes = dict()  # Maps C name to a GIRClass instance
         self.interfaces = dict() # Maps GIR's "name" to an interface
         self.callbacks = dict()  # Ada name to GIR XML node
         self.enums = dict()  # Maps C "name" to a GIR XML node
+        self.globals = GlobalsBinder(self) # global vars
 
-        k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
-        for cl in self.root.findall(k):
-            ct = cl.get(ctype)
-            naming.add_type_exception(cname=ct, type=Proxy(ct))
-            ct = naming.type(ct).ada
-            self.callbacks[ct] = cl
+        for filename in files:
+            _tree = parse(filename)
+            root = _tree.getroot()
 
-        k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
-        for cl in self.root.findall(k):
-            self.interfaces[cl.get("name")] = self._create_class(
-                cl, is_interface=True)
+            k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
+            for cl in root.findall(k):
+                ct = cl.get(ctype_qname)
+                naming.add_type_exception(cname=ct, type=Proxy(ct))
+                ct = naming.type(ct).ada
+                self.callbacks[ct] = cl
+                
+            k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
+            for cl in root.findall(k):
+                self.interfaces[cl.get("name")] = self._create_class(
+                    cl, is_interface=True)
 
-        k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
-        for cl in self.root.findall(k):
-            self.classes[cl.get("name")] = self._create_class(
-                cl, is_interface=False)
+            k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
+            for cl in root.findall(k):
+                self.classes[cl.get(ctype_qname)] = self._create_class(
+                    cl, is_interface=False)
 
-        k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
-        for cl in self.root.findall(k):
-            self.enums[cl.get(ctype)] = cl
+            k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
+            for cl in root.findall(k):
+                self.enums[cl.get(ctype_qname)] = cl
 
-        k = "{%(uri)s}namespace/{%(uri)s}bitfield" % {"uri":uri}
-        for cl in self.root.findall(k):
-            self.enums[cl.get(ctype)] = cl
+            k = "{%(uri)s}namespace/{%(uri)s}bitfield" % {"uri":uri}
+            for cl in root.findall(k):
+                self.enums[cl.get(ctype_qname)] = cl
 
-        self.globals = GlobalsBinder(self, self.root) # global vars
+            self.globals.add(root)
 
     def _create_class(self, node, is_interface):
         n = node.get("name")
@@ -109,8 +111,8 @@ class GIR(object):
         else:
             t = GObject("Gtk.%(name)s.Gtk_%(name)s" % {"name":naming.case(n)})
 
-        naming.add_type_exception(cname=node.get(ctype), type=t)
-        naming.add_girname(girname=n, ctype=node.get(ctype))
+        naming.add_type_exception(cname=node.get(ctype_qname), type=t)
+        naming.add_girname(girname=n, ctype=node.get(ctype_qname))
         return GIRClass(self, node, is_interface)
 
     def debug(self, element):
@@ -180,10 +182,11 @@ class GIR(object):
 
 
 class GlobalsBinder(object):
-    def __init__(self, gir, node):
+    def __init__(self, gir):
         self.gir = gir
         self.globals = dict()
 
+    def add(self, node):
         k = "{%(uri)s}namespace/{%(uri)s}function" % {"uri":uri}
         all = node.findall(k)
         if all is not None:
@@ -208,7 +211,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
         if t.get("name") == "none":
             return None
         return naming.type(name=t.get("name"),
-                     cname=t.get(ctype), allow_access=allow_access,
+                     cname=t.get(ctype_qname), allow_access=allow_access,
                      empty_maps_to_null=empty_maps_to_null,
                      pkg=pkg)
 
@@ -216,7 +219,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
     if a is not None:
         t = a.find(ntype)
         if a:
-            type = t.get(ctype)
+            type = t.get(ctype_qname)
             name = t.get("name") or type  # Sometimes name is not set
             if type:
                 type = "array_of_%s" % type
@@ -500,7 +503,7 @@ class GIRClass(object):
     def __init__(self, gir, node, is_interface):
         self.gir = gir
         self.node = node
-        self.ctype = self.node.get(ctype)
+        self.ctype = self.node.get(ctype_qname)
         self._subst = dict()  # for substitution in string templates
         self._private = ""
         self._generated = False
@@ -952,7 +955,7 @@ pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
     def _get_c_type(self, node):
         t = node.find(ntype)
         if t is not None:
-            return t.get(ctype)
+            return t.get(ctype_qname)
         return None
 
     def _fields(self):
@@ -1402,6 +1405,7 @@ parser = OptionParser()
 parser.add_option (
     "--gir-file",
     help="input GTK .gir file",
+    action="append",
     dest="gir_file",
     metavar="FILE")
 parser.add_option (
@@ -1496,8 +1500,8 @@ gtkada = GtkAda(options.xml_file)
 for name in interfaces:
     gir.interfaces[name].generate(gir)
 
-for name in binding:
-    gir.classes[name].generate(gir)
+for the_ctype in binding:
+    gir.classes[the_ctype].generate(gir)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

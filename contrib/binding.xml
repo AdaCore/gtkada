@@ -467,7 +467,7 @@ This is equivalent to using Pack2 with its default parameters.
       </method>
    </package>
 
-   <package id="Gtk.Vpaned" into="Paned">
+   <package id="Gtk.Vpaned" into="GtkPaned">
       <type name="Gtk_Vpaned" subtype="true"/>
       <parameter name="self" ada="Paned"/>
       <method id="gtk_vpaned_new" ada="Gtk_New_Vpaned">
@@ -476,7 +476,7 @@ This is equivalent to using Pack2 with its default parameters.
       <method id="gtk_vpaned_get_type" ada="Get_Type_Vpaned" />
    </package>
 
-   <package id="Gtk.Hpaned" into="Paned">
+   <package id="Gtk.Hpaned" into="GtkPaned">
       <type name="Gtk_Hpaned" subtype="true"/>
       <parameter name="self" ada="Paned"/>
       <method id="gtk_hpaned_new" ada="Gtk_New_Hpaned">
@@ -525,7 +525,7 @@ on how all the parameters for the boxes work.
       </extra>
    </package>
 
-   <package id="Gtk.Vbox" into="Box">
+   <package id="Gtk.Vbox" into="GtkBox">
       <type name="Gtk_Vbox" subtype="true"/>
       <method id="gtk_vbox_new" ada="Gtk_New_Vbox">
          <parameter name="homogeneous" default="False"/>
@@ -535,7 +535,7 @@ on how all the parameters for the boxes work.
       <method id="gtk_vbox_get_type" ada="Get_Vbox_Type" />
    </package>
 
-   <package id="Gtk.Hbox" into="Box">
+   <package id="Gtk.Hbox" into="GtkBox">
       <type name="Gtk_Hbox" subtype="true"/>
       <method id="gtk_hbox_new" ada="Gtk_New_Hbox" >
          <parameter name="homogeneous" default="False"/>
@@ -549,7 +549,7 @@ on how all the parameters for the boxes work.
       <doc group="Numeric/Text Data Entry" screenshot="gtk-scale.png"/>
       <parameter name="self" ada="Scale"/>
    </package>
-   <package id="Gtk.Vscale" into="Scale">
+   <package id="Gtk.Vscale" into="GtkScale">
       <parameter name="self" ada="Scale"/>
       <type name="Gtk_Vscale" subtype="true"/>
       <method id="gtk_vscale_new" ada="Gtk_New_Vscale">
@@ -558,7 +558,7 @@ on how all the parameters for the boxes work.
       <method id="gtk_vscale_new_with_range" ada="Gtk_New_Vscale"/>
       <method id="gtk_vscale_get_type" ada="Vscale_Get_Type" />
    </package>
-   <package id="Gtk.Hscale" into="Scale">
+   <package id="Gtk.Hscale" into="GtkScale">
       <parameter name="self" ada="Scale"/>
       <type name="Gtk_Hscale" subtype="true"/>
       <method id="gtk_hscale_new" ada="Gtk_New_Hscale">
@@ -1448,13 +1448,13 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
       <doc group="Ornaments" screenshot="gtk-separator"/>
       <parameter name="self" ada="Separator"/>
   </package>
-  <package id="Gtk.Vseparator" into="Separator">
+  <package id="Gtk.Vseparator" into="GtkSeparator">
       <type name="Gtk_Vseparator" subtype="true"/>
       <method id="gtk_vseparator_new" ada="Gtk_New_Vseparator"/>
       <parameter name="self" ada="Separator"/>
       <method id="gtk_vseparator_get_type" ada="Vseparator_Get_Type" />
   </package>
-  <package id="Gtk.Hseparator" into="Separator">
+  <package id="Gtk.Hseparator" into="GtkSeparator">
       <type name="Gtk_Hseparator" subtype="true"/>
       <method id="gtk_hseparator_new" ada="Gtk_New_Hseparator"/>
       <parameter name="self" ada="Separator"/>
@@ -1480,13 +1480,13 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
         <doc>Set or get the units used for a Gtk_Ruler. See Set_Metric</doc>
      </method>
   </package>
-  <package id="Gtk.Vruler" into="Ruler">
+  <package id="Gtk.Vruler" into="GtkRuler">
       <type name="Gtk_Vruler" subtype="true"/>
       <method id="gtk_vruler_new" ada="Gtk_New_Vruler"/>
       <parameter name="self" ada="Ruler"/>
       <method id="gtk_vruler_get_type" ada="Vruler_Get_Type" />
   </package>
-  <package id="Gtk.Hruler" into="Ruler">
+  <package id="Gtk.Hruler" into="GtkRuler">
       <type name="Gtk_Hruler" subtype="true"/>
       <method id="gtk_hruler_new" ada="Gtk_New_Hruler"/>
       <parameter name="self" ada="Ruler"/>
@@ -1746,7 +1746,6 @@ The following default key bindings are provided, but you can use a gtkrc file to
   </package>
 
   <package id="Gtk.File_Filter">
-     <doc group=""/>
      <enum ctype="GtkFileFilterFlags"/>
      <extra>
         <with_spec pkg="Interfaces.C.Strings" />
