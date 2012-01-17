@@ -511,61 +511,51 @@ package body Gdk.Pixbuf is
       return Internal (Get_Object (Pixbuf));
    end Get_Colorspace;
 
-   -----------------------
-   -- Get_From_Drawable --
-   -----------------------
+   ---------------------
+   -- Get_From_Window --
+   ---------------------
 
-   function Get_From_Drawable
-     (Dest   : Gdk_Pixbuf;
-      Src    : Gdk.Drawable.Gdk_Drawable;
-      Cmap   : Gdk.Color.Gdk_Colormap;
+   function Get_From_Window
+     (Window : Gdk_Window;
       Src_X  : Gint;
       Src_Y  : Gint;
-      Dest_X : Gint;
-      Dest_Y : Gint;
       Width  : Gint;
       Height : Gint) return Gdk_Pixbuf
    is
       function Internal
-        (Dest   : System.Address;
-         Src    : Gdk.Drawable.Gdk_Drawable;
-         Cmap   : Gdk.Color.Gdk_Colormap;
+        (Window : Gdk_Window;
          Src_X  : Gint;
          Src_Y  : Gint;
-         Dest_X : Gint;
-         Dest_Y : Gint;
          Width  : Gint;
          Height : Gint) return System.Address;
-      pragma Import (C, Internal, "gdk_pixbuf_get_from_drawable");
+      pragma Import (C, Internal, "gdk_pixbuf_get_from_window");
 
    begin
-      if Dest = null then
-         return Convert
-           (Internal
-              (System.Null_Address,
-               Src,
-               Cmap,
-               Src_X,
-               Src_Y,
-               Dest_X,
-               Dest_Y,
-               Width,
-               Height));
+      return Convert (Internal (Window, Src_X, Src_Y, Width, Height));
+   end Get_From_Window;
 
-      else
-         return Convert
-           (Internal
-              (Get_Object (Dest),
-               Src,
-               Cmap,
-               Src_X,
-               Src_Y,
-               Dest_X,
-               Dest_Y,
-               Width,
-               Height));
-      end if;
-   end Get_From_Drawable;
+   ----------------------
+   -- Get_From_Surface --
+   ----------------------
+
+   function Get_From_Surface
+     (Surface : Cairo.Cairo_Surface;
+      Src_X   : Gint;
+      Src_Y   : Gint;
+      Width   : Gint;
+      Height  : Gint) return Gdk_Pixbuf
+   is
+      function Internal
+        (Surface : Cairo.Cairo_Surface;
+         Src_X  : Gint;
+         Src_Y  : Gint;
+         Width  : Gint;
+         Height : Gint) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_get_from_surface");
+
+   begin
+      return Convert (Internal (Surface, Src_X, Src_Y, Width, Height));
+   end Get_From_Surface;
 
    -------------------
    -- Get_Has_Alpha --

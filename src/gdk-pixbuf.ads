@@ -42,12 +42,10 @@
 
 with Interfaces.C.Strings;
 with System;
-
+with Cairo;
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
-with Gdk.Drawable;
-with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Display;
 
@@ -314,48 +312,48 @@ package Gdk.Pixbuf is
    -- Rendering --
    ---------------
 
-   function Get_From_Drawable
-     (Dest   : Gdk_Pixbuf;
-      Src    : Gdk.Drawable.Gdk_Drawable;
-      Cmap   : Gdk.Color.Gdk_Colormap;
+   function Get_From_Window
+     (Window : Gdk_Window;
       Src_X  : Gint;
       Src_Y  : Gint;
-      Dest_X : Gint;
-      Dest_Y : Gint;
       Width  : Gint;
       Height : Gint) return Gdk_Pixbuf;
-   --  Transfer image data from a Gdk drawable and converts it to an RGB(A)
-   --  representation inside a Gdk_Pixbuf.
+   function Get_From_Surface
+     (Surface : Cairo.Cairo_Surface;
+      Src_X   : Gint;
+      Src_Y   : Gint;
+      Width   : Gint;
+      Height  : Gint) return Gdk_Pixbuf;
+   --  Transfers image data from a Gdk_Window and converts it to an RGB(A)
+   --  representation inside a Gdk_Pixbuf. In other words, copies
+   --  image data from a server-side drawable to a client-side RGB(A) buffer.
+   --  This allows you to efficiently read individual pixels on the client
+   --  side.
    --
-   --  If the drawable src is a pixmap, then a suitable colormap must be
-   --  specified, since pixmaps are just blocks of pixel data without an
-   --  associated colormap.
-   --  If the drawable is a window, the Cmap argument will be ignored and the
-   --  window's own colormap will be used instead.
+   --  This function will create an RGB pixbuf with 8 bits per channel with
+   --  the same size specified by the Width and Height arguments. The pixbuf
+   --  will contain an alpha channel if the window contains one.
    --
-   --  If the specified destination pixbuf Dest is Null_Pixbuf, then this
-   --  function will create an RGB pixbuf with 8 bits per channel and no
-   --  alpha, with the same size specified by the Width and Height
-   --  arguments. In this case, the Dest_x and Dest_y arguments must be
-   --  specified as 0, otherwise the function will return Null_Pixbuf.  If the
-   --  specified destination pixbuf is not Null_Pixbuf and it contains alpha
-   --  information, then the filled pixels will be set to full opacity.
+   --  If the window is off the screen, then there is no image data in the
+   --  obscured/offscreen regions to be placed in the pixbuf. The contents
+   --  of portions of the pixbuf corresponding to the offscreen region are
+   --  undefined.
    --
-   --  If the specified drawable is a pixmap, then the requested source
-   --  rectangle must be completely contained within the pixmap, otherwise the
-   --  function will return Null_Pixbuf.
+   --  If the window you're obtaining data from is partially obscured by other
+   --  windows, then the contents of the pixbuf areas corresponding to the
+   --  obscured regions are undefined.
    --
-   --  If the specified drawable is a window, then it must be viewable, i.e.
-   --  all of its ancestors up to the root window must be mapped.  Also, the
-   --  specified source rectangle must be completely contained within the
-   --  window and within the screen.  If regions of the window are obscured by
-   --  non-inferior windows, the contents of those regions are undefined.
-   --  The contents of regions obscured by inferior windows of a different
-   --  depth than that of the source window will also be undefined.
+   --  If the window is not mapped (typically because it's iconified/minimized
+   --  or not on the current workspace), then Null_Pixbuf will be returned.
    --
-   --  Return value: The same pixbuf as Dest if it was non-NULL, or a
-   --  newly-created pixbuf with a reference count of 1 if no destination
-   --  pixbuf was specified.
+   --  If memory can't be allocated for the return value, Null_Pixbuf
+   --  will be returned instead.
+   --
+   --  (In short, there are several ways this function can fail, and if it
+   --   fails it returns Null_Pixbuf; so check the return value.)
+   --
+   --  Return value: (transfer full): A newly-created pixbuf with a reference
+   --      count of 1, or Null_Pixbuf on error
 
    -------------
    -- Scaling --
