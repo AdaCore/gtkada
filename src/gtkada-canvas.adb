@@ -548,7 +548,8 @@ package body Gtkada.Canvas is
 
       --  Configure with default values
       Configure (Canvas);
-      Set_Scroll_Adjustments (Canvas, null, null);
+      --  ??? Gtk3: Should this be replaced with something else?
+--        Set_Scroll_Adjustments (Canvas, null, null);
    end Initialize;
 
    --------------
