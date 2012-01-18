@@ -3400,37 +3400,3 @@ ada_gdk_get_default_modifier ()
   return GDK_CONTROL_MASK;
 #endif
 }
-
-/****  Below this point are calls that will produce an error with
-       -DGTK_DISABLE_DEPRECATED
-       but which will be removed with the switch to Gtk+ 3.x
-*/
-
-/*
- *
- * object macros
- *
- */
-
-guint32 ada_widget_flags (GtkWidget * widget)
-{
-  return GTK_WIDGET_FLAGS (widget);
-}
-
-void
-ada_widget_set_flags (GtkWidget * widget, guint32 flags)
-{
-  GTK_WIDGET_SET_FLAGS (widget, flags);
-}
-
-gint
-ada_widget_flag_is_set (GtkWidget * widget, guint32 flag)
-{
-  return ((GTK_WIDGET_FLAGS (widget) & flag) != 0);
-}
-
-void
-ada_widget_unset_flags (GtkWidget * widget, guint32 flags)
-{
-  GTK_WIDGET_UNSET_FLAGS (widget, flags);
-}

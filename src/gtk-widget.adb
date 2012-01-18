@@ -2185,7 +2185,7 @@ package body Gtk.Widget is
 
    function Flags (Widget : access Gtk_Widget_Record) return Guint32 is
       function Internal (Object : System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_widget_flags");
+      pragma Import (C, Internal, "ada_widget_get_state_flags");
 
    begin
       return Internal (Get_Object (Widget));
@@ -2197,7 +2197,7 @@ package body Gtk.Widget is
 
    procedure Set_Flags (Widget : access Gtk_Widget_Record; Flags : Guint32) is
       procedure Internal (Widget : System.Address; Flags : Guint32);
-      pragma Import (C, Internal, "ada_widget_set_flags");
+      pragma Import (C, Internal, "ada_widget_set_state_flags");
 
    begin
       Internal (Get_Object (Widget), Flags);
@@ -2211,7 +2211,7 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record; Flags : Guint32)
    is
       procedure Internal (Object : System.Address; Flags : Guint32);
-      pragma Import (C, Internal, "ada_widget_unset_flags");
+      pragma Import (C, Internal, "ada_widget_unset_state_flags");
 
    begin
       Internal (Get_Object (Widget), Flags);
@@ -2228,7 +2228,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "ada_widget_flag_is_set");
 
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Flag));
+      return (Flag and Flags (Widget)) /= 0;
    end Flag_Is_Set;
 
    ---------------------
