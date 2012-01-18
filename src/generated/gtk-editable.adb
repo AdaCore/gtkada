@@ -28,15 +28,10 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Editable is
 
-   -----------------
-   -- Insert_Text --
-   -----------------
-
    procedure Insert_Text
      (Editable : Gtk_Editable;
       New_Text : UTF8_String;
-      Position : in out Gint)
-   is
+      Position : in out Gint) is
    begin
       Insert_Text
         (Editable, New_Text & ASCII.NUL, New_Text'Length, Position);

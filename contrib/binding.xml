@@ -1182,10 +1182,6 @@ See Gtk_Text_View for a multiple-line text editing widget.
    --  the requirement to supply the New_Text_Length argument.
         </spec>
         <body>
-   -----------------
-   -- Insert_Text --
-   -----------------
-
    procedure Insert_Text
       (Editable : access Gtk_Entry_Record;
        New_Text : UTF8_String;
@@ -1531,7 +1527,6 @@ lower    value        value + page_size       upper
       Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
       return Interfaces.C.Strings.Value (Stock);
    end Get;
-
         </body>
      </extra>
   </package>
@@ -2001,15 +1996,10 @@ The following default key bindings are provided, but you can use a gtkrc file to
    --  the requirement to supply the New_Text_Length argument.
         </spec>
         <body>
-   -----------------
-   -- Insert_Text --
-   -----------------
-
    procedure Insert_Text
      (Editable : Gtk_Editable;
       New_Text : UTF8_String;
-      Position : in out Gint)
-   is
+      Position : in out Gint) is
    begin
       Insert_Text
         (Editable, New_Text &amp; ASCII.NUL, New_Text'Length, Position);

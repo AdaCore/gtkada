@@ -29,10 +29,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.GEntry is
 
-   -----------------
-   -- Insert_Text --
-   -----------------
-
    procedure Insert_Text
      (Editable : access Gtk_Entry_Record;
       New_Text : UTF8_String;
