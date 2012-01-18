@@ -232,7 +232,6 @@ naming.type_exceptions = {
     "ObjectSList": List("Glib.Object.Object_List.GSList"),
     "StringList":  List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
-    "MessagesList": List("Gtk.Status_Bar.Messages_List.GSlist"),
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),

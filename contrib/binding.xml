@@ -2055,36 +2055,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
          <!-- hack to make cell_area an in-out parameter -->
          <parameter name="cell_area" ctype="GdkRectangle**"/>
       </method>
-      <extra>
-         <with_spec pkg="Glib.Glist"/>
-         <spec>
-   function Convert (R : Gtk_Cell_Renderer) return System.Address;
-   function Convert (R : System.Address) return Gtk_Cell_Renderer;
-   package Cell_Renderer_List is
-      new Glib.Glist.Generic_List (Gtk_Cell_Renderer);
-         </spec>
-         <body>
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (R : Gtk_Cell_Renderer) return System.Address is
-   begin
-      return Get_Object (R);
-   end Convert;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (R : System.Address) return Gtk_Cell_Renderer is
-      Stub        : Gtk_Cell_Renderer_Record;
-   begin
-      return Gtk_Cell_Renderer
-        (Glib.Object.Get_User_Data (R, Stub));
-   end Convert;
-         </body>
-      </extra>
+      <list ada="Cell_Renderer_List" ctype="GtkCellRenderer"/>
    </package>
 
    <package id="Gtk.Status_Icon">
@@ -2112,12 +2083,10 @@ The following default key bindings are provided, but you can use a gtkrc file to
          <spec>
    procedure Gtk_New
       (Menu_Item : out Gtk_Menu_Item;
-       Label     : UTF8_String)
-      renames Gtk_New_With_Label;
+       Label     : UTF8_String) renames Gtk_New_With_Label;
    procedure Initialize
       (Menu_Item : access Gtk_Menu_Item_Record'Class;
-       Label     : UTF8_String)
-      renames Initialize_With_Label;
+       Label     : UTF8_String) renames Initialize_With_Label;
    --  For backwards compatibility.
          </spec>
       </extra>
@@ -2127,29 +2096,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <parameter name="self" ada="Filter"/>
      <enum ctype="GtkRecentFilterFlags" />
      <record ctype="GtkRecentFilterInfo" />
-     <extra>
-       <with_spec pkg="Glib.GSlist"/>
-       <spec>
-   function Convert (Widget : Gtk_Recent_Filter) return System.Address;
-   function Convert (Widget : System.Address) return Gtk_Recent_Filter;
-   package Gtk_Recent_Filter_List is
-     new Glib.GSlist.Generic_SList (Gtk_Recent_Filter);
-   --  Instantiation of a singly-linked list of Gtk_Recent_Filter's.
-       </spec>
-       <body>
-   function Convert (Widget : Gtk_Recent_Filter) return System.Address is
-   begin
-      return Get_Object (Widget);
-   end Convert;
-
-   function Convert (Widget : System.Address) return Gtk_Recent_Filter is
-      Stub : Gtk_Recent_Filter_Record;
-   begin
-      return Gtk_Recent_Filter (Get_User_Data (Widget, Stub));
-   end Convert;
-
-       </body>
-     </extra>
+     <slist ada="Gtk_Recent_Filter_List" ctype="GtkRecentFilter"/>
    </package>
 
    <package id="Gtk.File_Chooser_Dialog">

@@ -211,12 +211,10 @@ package Gtk.Menu_Item is
 
    procedure Gtk_New
      (Menu_Item : out Gtk_Menu_Item;
-      Label     : UTF8_String)
-   renames Gtk_New_With_Label;
+      Label     : UTF8_String) renames Gtk_New_With_Label;
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class;
-      Label     : UTF8_String)
-   renames Initialize_With_Label;
+      Label     : UTF8_String) renames Initialize_With_Label;
    --  For backwards compatibility.
 
    ---------------------------------------------

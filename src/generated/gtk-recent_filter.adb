@@ -29,17 +29,16 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Recent_Filter is
 
-   function Convert (Widget : Gtk_Recent_Filter) return System.Address is
+   function Convert (R : Gtk.Recent_Filter.Gtk_Recent_Filter) return System.Address is
    begin
-      return Get_Object (Widget);
+      return Get_Object (R);
    end Convert;
 
-   function Convert (Widget : System.Address) return Gtk_Recent_Filter is
-      Stub : Gtk_Recent_Filter_Record;
+   function Convert (R : System.Address) return Gtk.Recent_Filter.Gtk_Recent_Filter is
+      Stub : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
    begin
-      return Gtk_Recent_Filter (Get_User_Data (Widget, Stub));
+      return Gtk.Recent_Filter.Gtk_Recent_Filter (Glib.Object.Get_User_Data (R, Stub));
    end Convert;
-
    function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Recent_Filter_Func);
 

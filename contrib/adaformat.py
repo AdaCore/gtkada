@@ -401,6 +401,14 @@ class List(CType):
            self.param, self.cparam,
             "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
 
+    @staticmethod
+    def register_ada_list(pkg, ada, ctype):
+        """Register a list of GObject instantiated in Ada"""
+        listCname = "%sList" % ctype  # Default list name
+        ada = ada or naming.type(cname=listCname).ada
+        t = List("%s.%s" % (pkg, ada))
+        naming.add_type_exception(listCname, t)
+
     def convert(self):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
@@ -532,7 +540,7 @@ class AdaNaming(object):
                 # Else return the GIR name itself
                 Proxy(self.__camel_case_to_ada(girname))))
 
-    def type(self, name, cname=None, pkg=None, isArray=False,
+    def type(self, name="", cname=None, pkg=None, isArray=False,
              allow_access=True, empty_maps_to_null=False,
              useclass=True):
         """Build an instance of CType for the corresponding cname.

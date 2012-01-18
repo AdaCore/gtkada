@@ -103,6 +103,11 @@ package Gtk.Cell_Renderer is
       new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_Mode);
    type Property_Gtk_Cell_Renderer_Mode is new Gtk_Cell_Renderer_Mode_Properties.Property;
 
+
+   function Convert (R : Gtk.Cell_Renderer.Gtk_Cell_Renderer) return System.Address;
+   function Convert (R : System.Address) return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   package Cell_Renderer_List is new Generic_List (Gtk.Cell_Renderer.Gtk_Cell_Renderer);
+
    ------------------
    -- Constructors --
    ------------------
@@ -373,15 +378,6 @@ package Gtk.Cell_Renderer is
    --  of Gtk.Cell_Editable.Gtk_Cell_Editable.
    --  Since: gtk+ 2.6
    --  "canceled": True if the editing has been canceled
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   function Convert (R : Gtk_Cell_Renderer) return System.Address;
-   function Convert (R : System.Address) return Gtk_Cell_Renderer;
-   package Cell_Renderer_List is
-      new Glib.Glist.Generic_List (Gtk_Cell_Renderer);
 
    ----------------
    -- Properties --

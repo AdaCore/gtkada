@@ -1259,6 +1259,39 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment('- "%(name)s"' % impl)
                 section.add_code(impl["code"])
 
+    def add_list_binding(self, section, adaname, ctype, singleList):
+        """Generate a list instantiation"""
+
+        decl = "function Convert (R : %s) return System.Address;\n" % (
+            ctype.ada)
+        decl += "function Convert (R : System.Address) return %s;\n" % (
+            ctype.ada)
+
+        if singleList:
+            pkg = "GSlist"
+            generic = "Generic_SList"
+        else:
+            pkg = "Glist"
+            generic = "Generic_List"
+
+        self.pkg.add_with("Glib.%s" % pkg)
+
+        decl += "package %s is new %s (%s);\n" % (adaname, generic, ctype.ada)
+        section.add_code(decl)
+
+        decl = "function Convert (R : %s) return System.Address is\n" % (
+            ctype.ada)
+        decl += "begin\nreturn Get_Object (R);\nend Convert;\n\n"
+
+        decl += "function Convert (R : System.Address) return %s is\n" % (
+            ctype.ada)
+        decl += "Stub : %s_Record;" % ctype.ada
+        decl += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
+            ctype.ada)
+        decl += "end Convert;"
+        section.add_code(decl, specs=False)
+
+
     def record_binding(self, ctype, type, override_fields):
         """Create the binding for a <record> type.
            override_fields has the same format as returned by
@@ -1453,6 +1486,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         for ctype, enum, override_fields in self.gtkpkg.records():
             decl = self.record_binding(ctype, enum, override_fields)
             section.add_code(decl)
+
+        for ada, ctype, single in self.gtkpkg.lists():
+            self.add_list_binding(section, ada, ctype, single)
 
         if extra:
             for p in extra:

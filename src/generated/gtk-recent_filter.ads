@@ -118,6 +118,10 @@ package Gtk.Recent_Filter is
    --  A GtkRecentFilterInfo struct is used to pass information about the tested
    --  file to gtk_recent_filter_filter.
 
+   function Convert (R : Gtk.Recent_Filter.Gtk_Recent_Filter) return System.Address;
+   function Convert (R : System.Address) return Gtk.Recent_Filter.Gtk_Recent_Filter;
+   package Gtk_Recent_Filter_List is new Generic_SList (Gtk.Recent_Filter.Gtk_Recent_Filter);
+
 
    type Gtk_Recent_Filter_Func is access function (Filter_Info : Gtk_Recent_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
@@ -282,16 +286,6 @@ package Gtk.Recent_Filter is
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  calling Gtk.Recent_Filter.Filter
    --  Since: gtk+ 2.10
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   function Convert (Widget : Gtk_Recent_Filter) return System.Address;
-   function Convert (Widget : System.Address) return Gtk_Recent_Filter;
-   package Gtk_Recent_Filter_List is
-      new Glib.GSlist.Generic_SList (Gtk_Recent_Filter);
-   --  Instantiation of a singly-linked list of Gtk_Recent_Filter's.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -103,6 +103,13 @@ Where the package node is defined as follows:
              ada="..."     <!-- optional Ada name (no package info needed) -->
        />
 
+       <!-- Instantiates a list of elements -->
+
+       <list ada="Ada name for the list type"
+             ctype="..."/>  <!--  Name of the element contained in the list -->
+       <slist ada="Ada name for the list type"  <!-- single-linked list -->
+             ctype="..."/>  <!--  Name of the element contained in the list -->
+
        <extra>
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
           <with_spec pkg="..." use="true"/>
@@ -126,7 +133,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType, CType, Proxy, naming, Enum
+from adaformat import AdaType, CType, Proxy, List, naming, Enum
 
 
 class GtkAda(object):
@@ -165,6 +172,16 @@ class GtkAdaPackage(object):
                     pkg=node.get("id"),
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None))
+            for rec in node.findall("list"):
+                List.register_ada_list(
+                    pkg=node.get("id"),
+                    ctype=rec.get("ctype"),
+                    ada=rec.get("ada", None))
+            for rec in node.findall("slist"):
+                List.register_ada_list(
+                    pkg=node.get("id"),
+                    ctype=rec.get("ctype"),
+                    ada=rec.get("ada", None))
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the
@@ -176,6 +193,24 @@ class GtkAdaPackage(object):
                 result.append((enum.get("ctype"),
                                naming.type(name="", cname=enum.get("ctype")),
                                enum.get("prefix", "GTK_")))
+        return result
+
+    def lists(self):
+        """Return the list of list instantiations we need to add to the
+           package. Returns a list of tuples:
+              [(adaname, CType for element, true for a single-linked list), ..]
+        """
+        result = []
+        if self.node:
+            for l in self.node.findall("list"):
+                result.append((l.get("ada"),
+                               naming.type(name="", cname=l.get("ctype")),
+                               False))
+            for l in self.node.findall("slist"):
+                result.append((l.get("ada"),
+                               naming.type(name="", cname=l.get("ctype")),
+                               True))
+
         return result
 
     def records(self):
