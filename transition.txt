@@ -123,6 +123,12 @@ Parameter "Colormap" has been removed from procedure Gdk_New. This parameter
 Set_Colormap and Get_Colormap should no longer be needed and have been removed
 as well.
 
+Gtk.Action
+==========
+
+Block_Activate_From, Unblock_Activate_From, Connect_Proxy, Disconnect_Proxy:
+these obsolete subprograms have been removed without a replacement.
+
 Gtk.Aspect_Frame
 ================
 
