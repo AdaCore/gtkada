@@ -328,7 +328,7 @@ class UTF8_List(CType):
     def __init__(self):
         CType.__init__(self, "GNAT.Strings.String_List", "")
         self.cparam = "Interfaces.C.Strings.chars_ptr_array"
-        self.cleanup = "GtkAda.Types.Free (%s)"
+        self.cleanup = "GtkAda.Types.Free (%s);"
         self.returns = (
             self.param, "chars_ptr_array_access",
             "To_String_List (%(var)s.all)", [])
