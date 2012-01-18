@@ -2142,4 +2142,22 @@ The following default key bindings are provided, but you can use a gtkrc file to
      </method>
   </package>
 
+   <package id="Gtk.Scrollbar">
+      <parameter name="self" ada="Scrollbar"/>
+   </package>
+
+   <package id="Gtk.Hscrollbar" into="GtkScrollbar">
+      <parameter name="self" ada="Scrollbar"/>
+      <type name="Gtk_Hscrollbar" subtype="true"/>
+      <method id="gtk_hscrollbar_new" ada="Gtk_New_Hscrollbar"/>
+      <method id="gtk_hscrollbar_get_type" ada="Hscrollbar_Get_Type"/>
+   </package>
+
+   <package id="Gtk.Vscrollbar" into="GtkScrollbar">
+      <parameter name="self" ada="Scrollbar"/>
+      <type name="Gtk_Vscrollbar" subtype="true"/>
+      <method id="gtk_vscrollbar_new" ada="Gtk_New_Vscrollbar"/>
+      <method id="gtk_vscrollbar_get_type" ada="Vscrollbar_Get_Type"/>
+   </package>
+
 </GIR>
