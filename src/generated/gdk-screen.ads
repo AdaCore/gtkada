@@ -66,7 +66,8 @@ package Gdk.Screen is
    -------------
 
    function Get_Active_Window
-      (Screen : access Gdk_Screen_Record) return Gdk.Window.Gdk_Window;
+      (Screen : not null access Gdk_Screen_Record)
+       return Gdk.Window.Gdk_Window;
    --  Returns the screen's currently active window.
    --  On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property on
    --  the root window, as described in the <ulink
@@ -81,14 +82,16 @@ package Gdk.Screen is
    --  Since: gtk+ 2.10
 
    function Get_Display
-      (Screen : access Gdk_Screen_Record) return Gdk.Display.Gdk_Display;
+      (Screen : not null access Gdk_Screen_Record)
+       return Gdk.Display.Gdk_Display;
    --  Gets the display to which the Screen belongs.
    --  Since: gtk+ 2.2
 
    function Get_Font_Options
-      (Screen : access Gdk_Screen_Record) return Cairo.Cairo_Font_Options;
+      (Screen : not null access Gdk_Screen_Record)
+       return Cairo.Cairo_Font_Options;
    procedure Set_Font_Options
-      (Screen  : access Gdk_Screen_Record;
+      (Screen  : not null access Gdk_Screen_Record;
        Options : in out Cairo.Cairo_Font_Options);
    --  Sets the default font options for the screen. These options will be set
    --  on any Pango_Context's newly created with
@@ -98,17 +101,19 @@ package Gdk.Screen is
    --  "options": a Cairo.Cairo_Font_Options, or null to unset any previously
    --  set default font options.
 
-   function Get_Height (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_Height
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the height of Screen in pixels
    --  Since: gtk+ 2.2
 
-   function Get_Height_Mm (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_Height_Mm
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Returns the height of Screen in millimeters. Note that on some X
    --  servers this value will not be correct.
    --  Since: gtk+ 2.2
 
    function Get_Monitor_At_Point
-      (Screen : access Gdk_Screen_Record;
+      (Screen : not null access Gdk_Screen_Record;
        X      : Gint;
        Y      : Gint) return Gint;
    --  Returns the monitor number in which the point (X,Y) is located.
@@ -118,7 +123,7 @@ package Gdk.Screen is
    --  "y": the y coordinate in the virtual screen.
 
    function Get_Monitor_At_Window
-      (Screen : access Gdk_Screen_Record;
+      (Screen : not null access Gdk_Screen_Record;
        Window : Gdk.Window.Gdk_Window) return Gint;
    --  Returns the number of the monitor in which the largest area of the
    --  bounding rectangle of Window resides.
@@ -128,7 +133,7 @@ package Gdk.Screen is
    --  "window": a Gdk.Window.Gdk_Window
 
    procedure Get_Monitor_Geometry
-      (Screen      : access Gdk_Screen_Record;
+      (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
    --  Retrieves the Gdk_Rectangle representing the size and position of the
@@ -141,7 +146,7 @@ package Gdk.Screen is
    --  "dest": a Gdk_Rectangle to be filled with the monitor geometry
 
    function Get_Monitor_Height_Mm
-      (Screen      : access Gdk_Screen_Record;
+      (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint) return Gint;
    --  Gets the height in millimeters of the specified monitor.
    --  Since: gtk+ 2.14
@@ -149,7 +154,7 @@ package Gdk.Screen is
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Plug_Name
-      (Screen      : access Gdk_Screen_Record;
+      (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint) return UTF8_String;
    --  Returns the output name of the specified monitor. Usually something
    --  like VGA, DVI, or TV, not the actual product name of the display device.
@@ -159,24 +164,26 @@ package Gdk.Screen is
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Width_Mm
-      (Screen      : access Gdk_Screen_Record;
+      (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint) return Gint;
    --  Gets the width in millimeters of the specified monitor, if available.
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
-   function Get_N_Monitors (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_N_Monitors
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Returns the number of monitors which Screen consists of.
    --  Since: gtk+ 2.2
 
-   function Get_Number (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_Number
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the index of Screen among the screens in the display to which it
    --  belongs. (See Gdk.Screen.Get_Display)
    --  Since: gtk+ 2.2
 
    function Get_Primary_Monitor
-      (Screen : access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the primary monitor for Screen. The primary monitor is considered
    --  the monitor where the 'main desktop' lives. While normal application
    --  windows typically allow the window manager to place the windows,
@@ -187,9 +194,9 @@ package Gdk.Screen is
    --  Since: gtk+ 2.20
 
    function Get_Resolution
-      (Screen : access Gdk_Screen_Record) return Gdouble;
+      (Screen : not null access Gdk_Screen_Record) return Gdouble;
    procedure Set_Resolution
-      (Screen : access Gdk_Screen_Record;
+      (Screen : not null access Gdk_Screen_Record;
        Dpi    : Gdouble);
    --  Since: gtk+ 2.10
    --  "dpi": the resolution in "dots per inch". (Physical inches aren't
@@ -200,7 +207,8 @@ package Gdk.Screen is
    --  72. = 13.3).
 
    function Get_Rgba_Visual
-      (Screen : access Gdk_Screen_Record) return Gdk.Visual.Gdk_Visual;
+      (Screen : not null access Gdk_Screen_Record)
+       return Gdk.Visual.Gdk_Visual;
    --  Gets a visual to use for creating windows with an alpha channel. The
    --  windowing system on which GTK+ is running may not support this
    --  capability, in which case null will be returned. Even if a non-null
@@ -215,18 +223,20 @@ package Gdk.Screen is
    --  Since: gtk+ 2.8
 
    function Get_Root_Window
-      (Screen : access Gdk_Screen_Record) return Gdk.Window.Gdk_Window;
+      (Screen : not null access Gdk_Screen_Record)
+       return Gdk.Window.Gdk_Window;
    --  Gets the root window of Screen.
    --  Since: gtk+ 2.2
 
    function Get_System_Visual
-      (Screen : access Gdk_Screen_Record) return Gdk.Visual.Gdk_Visual;
+      (Screen : not null access Gdk_Screen_Record)
+       return Gdk.Visual.Gdk_Visual;
    --  Get the system's default visual for Screen. This is the visual for the
    --  root window of the display. The return value should not be freed.
    --  Since: gtk+ 2.2
 
    function Get_Toplevel_Windows
-      (Screen : access Gdk_Screen_Record)
+      (Screen : not null access Gdk_Screen_Record)
        return Gdk.Window.Gdk_Window_List.GList;
    --  Obtains a list of all toplevel windows known to GDK on the screen
    --  Screen. A toplevel window is a child of the root window (see
@@ -236,17 +246,19 @@ package Gdk.Screen is
    --  list of toplevel windows, free with g_list_free
    --  Since: gtk+ 2.2
 
-   function Get_Width (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_Width
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the width of Screen in pixels
    --  Since: gtk+ 2.2
 
-   function Get_Width_Mm (Screen : access Gdk_Screen_Record) return Gint;
+   function Get_Width_Mm
+      (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the width of Screen in millimeters. Note that on some X servers
    --  this value will not be correct.
    --  Since: gtk+ 2.2
 
    function Get_Window_Stack
-      (Screen : access Gdk_Screen_Record)
+      (Screen : not null access Gdk_Screen_Record)
        return Gdk.Window.Gdk_Window_List.GList;
    --  Returns a GList of Gdk.Window.Gdk_Window<!-- -->s representing the
    --  current window stack.
@@ -264,7 +276,8 @@ package Gdk.Screen is
    --  or null.
    --  Since: gtk+ 2.10
 
-   function Is_Composited (Screen : access Gdk_Screen_Record) return Boolean;
+   function Is_Composited
+      (Screen : not null access Gdk_Screen_Record) return Boolean;
    --  Returns whether windows with an RGBA visual can reasonably be expected
    --  to have their alpha channel drawn correctly on the screen.
    --  On X11 this function returns whether a compositing manager is
@@ -273,7 +286,7 @@ package Gdk.Screen is
    --  Since: gtk+ 2.10
 
    function List_Visuals
-      (Screen : access Gdk_Screen_Record)
+      (Screen : not null access Gdk_Screen_Record)
        return Gdk.Window.Gdk_Window_List.GList;
    --  Lists the available visuals for the specified Screen. A visual
    --  describes a hardware image data format. For example, a visual might
@@ -284,7 +297,7 @@ package Gdk.Screen is
    --  Since: gtk+ 2.2
 
    function Make_Display_Name
-      (Screen : access Gdk_Screen_Record) return UTF8_String;
+      (Screen : not null access Gdk_Screen_Record) return UTF8_String;
    --  Determines the name to pass to gdk_display_open to get a
    --  Gdk.Display.Gdk_Display with this screen as the default screen.
    --  Since: gtk+ 2.2

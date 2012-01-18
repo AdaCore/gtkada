@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
@@ -72,7 +73,7 @@ package body Gtk.Entry_Buffer is
    -----------------
 
    function Delete_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        N_Chars  : Gint) return Guint
    is
@@ -90,7 +91,7 @@ package body Gtk.Entry_Buffer is
    -----------------------
 
    procedure Emit_Deleted_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        N_Chars  : Guint)
    is
@@ -108,7 +109,7 @@ package body Gtk.Entry_Buffer is
    ------------------------
 
    procedure Emit_Inserted_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
        N_Chars  : Guint)
@@ -129,7 +130,9 @@ package body Gtk.Entry_Buffer is
    -- Get_Bytes --
    ---------------
 
-   function Get_Bytes (Self : access Gtk_Entry_Buffer_Record) return gsize is
+   function Get_Bytes
+      (Self : not null access Gtk_Entry_Buffer_Record) return gsize
+   is
       function Internal (Self : System.Address) return gsize;
       pragma Import (C, Internal, "gtk_entry_buffer_get_bytes");
    begin
@@ -140,7 +143,9 @@ package body Gtk.Entry_Buffer is
    -- Get_Length --
    ----------------
 
-   function Get_Length (Self : access Gtk_Entry_Buffer_Record) return Guint is
+   function Get_Length
+      (Self : not null access Gtk_Entry_Buffer_Record) return Guint
+   is
       function Internal (Self : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_entry_buffer_get_length");
    begin
@@ -152,7 +157,7 @@ package body Gtk.Entry_Buffer is
    --------------------
 
    function Get_Max_Length
-      (Self : access Gtk_Entry_Buffer_Record) return Gint
+      (Self : not null access Gtk_Entry_Buffer_Record) return Gint
    is
       function Internal (Self : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_buffer_get_max_length");
@@ -165,7 +170,7 @@ package body Gtk.Entry_Buffer is
    --------------
 
    function Get_Text
-      (Self : access Gtk_Entry_Buffer_Record) return UTF8_String
+      (Self : not null access Gtk_Entry_Buffer_Record) return UTF8_String
    is
       function Internal
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -179,7 +184,7 @@ package body Gtk.Entry_Buffer is
    -----------------
 
    function Insert_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
        N_Chars  : Gint) return Guint
@@ -203,7 +208,7 @@ package body Gtk.Entry_Buffer is
    --------------------
 
    procedure Set_Max_Length
-      (Self       : access Gtk_Entry_Buffer_Record;
+      (Self       : not null access Gtk_Entry_Buffer_Record;
        Max_Length : Gint)
    is
       procedure Internal (Self : System.Address; Max_Length : Gint);
@@ -217,7 +222,7 @@ package body Gtk.Entry_Buffer is
    --------------
 
    procedure Set_Text
-      (Self    : access Gtk_Entry_Buffer_Record;
+      (Self    : not null access Gtk_Entry_Buffer_Record;
        Chars   : UTF8_String;
        N_Chars : Gint)
    is

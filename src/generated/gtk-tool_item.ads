@@ -74,7 +74,7 @@ package Gtk.Tool_Item is
    -------------
 
    function Get_Ellipsize_Mode
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
    --  Returns the ellipsize mode used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
@@ -83,9 +83,9 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.20
 
    function Get_Expand
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Expand
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Expand    : Boolean);
    --  Sets whether Tool_Item is allocated extra space when there is more room
    --  on the toolbar then needed for the items. The effect is that the item
@@ -95,9 +95,9 @@ package Gtk.Tool_Item is
    --  "expand": Whether Tool_Item is allocated extra space
 
    function Get_Homogeneous
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Homogeneous
-      (Tool_Item   : access Gtk_Tool_Item_Record;
+      (Tool_Item   : not null access Gtk_Tool_Item_Record;
        Homogeneous : Boolean);
    --  Sets whether Tool_Item is to be allocated the same size as other
    --  homogeneous items. The effect is that all homogeneous items will have
@@ -107,7 +107,7 @@ package Gtk.Tool_Item is
    --  items
 
    function Get_Icon_Size
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Icon_Size;
    --  Returns the icon size used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
@@ -116,9 +116,9 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.4
 
    function Get_Is_Important
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Is_Important
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Is_Important : Boolean);
    --  Sets whether Tool_Item should be considered important. The
    --  Gtk.Tool_Button.Gtk_Tool_Button class uses this property to determine
@@ -130,7 +130,7 @@ package Gtk.Tool_Item is
    --  "is_important": whether the tool item should be considered important
 
    function Get_Orientation
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation;
    --  Returns the orientation used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
@@ -139,12 +139,13 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.4
 
    function Get_Proxy_Menu_Item
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String) return Gtk.Menu_Item.Gtk_Menu_Item;
    procedure Set_Proxy_Menu_Item
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
-       Menu_Item    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
+      ;
    --  Sets the Gtk.Menu_Item.Gtk_Menu_Item used in the toolbar overflow menu.
    --  The Menu_Item_Id is used to identify the caller of this function and
    --  should also be used with Gtk.Tool_Item.Get_Proxy_Menu_Item.
@@ -154,7 +155,7 @@ package Gtk.Tool_Item is
    --  menu
 
    function Get_Relief_Style
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Relief_Style;
    --  Returns the relief style of Tool_Item. See gtk_button_set_relief_style.
    --  Custom subclasses of Gtk.Tool_Item.Gtk_Tool_Item should call this
@@ -165,7 +166,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.4
 
    function Get_Text_Alignment
-      (Tool_Item : access Gtk_Tool_Item_Record) return Gfloat;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Gfloat;
    --  Returns the text alignment used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be aligned.
@@ -173,7 +174,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.20
 
    function Get_Text_Orientation
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation;
    --  Returns the text orientation used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
@@ -182,7 +183,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.20
 
    function Get_Text_Size_Group
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Size_Group.Gtk_Size_Group;
    --  Returns the size group used for labels in Tool_Item. Custom subclasses
    --  of Gtk.Tool_Item.Gtk_Tool_Item should call this function and use the
@@ -190,7 +191,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.20
 
    function Get_Toolbar_Style
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Toolbar_Style;
    --  Returns the toolbar style used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function in the handler of
@@ -210,9 +211,9 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.4
 
    function Get_Use_Drag_Window
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Use_Drag_Window
-      (Tool_Item       : access Gtk_Tool_Item_Record;
+      (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean);
    --  Sets whether Tool_Item has a drag window. When True the toolitem can be
    --  used as a drag source through gtk_drag_source_set. When Tool_Item has a
@@ -222,9 +223,9 @@ package Gtk.Tool_Item is
    --  "use_drag_window": Whether Tool_Item has a drag window.
 
    function Get_Visible_Horizontal
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Visible_Horizontal
-      (Tool_Item          : access Gtk_Tool_Item_Record;
+      (Tool_Item          : not null access Gtk_Tool_Item_Record;
        Visible_Horizontal : Boolean);
    --  Sets whether Tool_Item is visible when the toolbar is docked
    --  horizontally.
@@ -233,9 +234,9 @@ package Gtk.Tool_Item is
    --  mode
 
    function Get_Visible_Vertical
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean;
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Visible_Vertical
-      (Tool_Item        : access Gtk_Tool_Item_Record;
+      (Tool_Item        : not null access Gtk_Tool_Item_Record;
        Visible_Vertical : Boolean);
    --  Sets whether Tool_Item is visible when the toolbar is docked
    --  vertically. Some tool items, such as text entries, are too wide to be
@@ -245,7 +246,7 @@ package Gtk.Tool_Item is
    --  "visible_vertical": whether Tool_Item is visible when the toolbar is in
    --  vertical mode
 
-   procedure Rebuild_Menu (Tool_Item : access Gtk_Tool_Item_Record);
+   procedure Rebuild_Menu (Tool_Item : not null access Gtk_Tool_Item_Record);
    --  Calling this function signals to the toolbar that the overflow menu
    --  item for Tool_Item has changed. If the overflow menu is visible when
    --  this function it called, the menu will be rebuilt.
@@ -255,7 +256,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.6
 
    function Retrieve_Proxy_Menu_Item
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Menu_Item.Gtk_Menu_Item;
    --  Returns the Gtk.Menu_Item.Gtk_Menu_Item that was last set by
    --  Gtk.Tool_Item.Set_Proxy_Menu_Item, ie. the Gtk.Menu_Item.Gtk_Menu_Item
@@ -264,7 +265,7 @@ package Gtk.Tool_Item is
    --  Since: gtk+ 2.4
 
    procedure Set_Tooltip_Markup
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Markup    : UTF8_String);
    --  Sets the markup text to be displayed as tooltip on the item. See
    --  gtk_widget_set_tooltip_markup.
@@ -272,14 +273,15 @@ package Gtk.Tool_Item is
    --  "markup": markup text to be used as tooltip for Tool_Item
 
    procedure Set_Tooltip_Text
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Text      : UTF8_String);
    --  Sets the text to be displayed as tooltip on the item. See
    --  gtk_widget_set_tooltip_text.
    --  Since: gtk+ 2.12
    --  "text": text to be used as tooltip for Tool_Item
 
-   procedure Toolbar_Reconfigured (Tool_Item : access Gtk_Tool_Item_Record);
+   procedure Toolbar_Reconfigured
+      (Tool_Item : not null access Gtk_Tool_Item_Record);
    --  Emits the signal Gtk.Tool_Item.Gtk_Tool_Item::toolbar_reconfigured on
    --  Tool_Item. Gtk.Toolbar.Gtk_Toolbar and other
    --  Gtk.Tool_Shell.Gtk_Tool_Shell implementations use this function to
@@ -291,23 +293,24 @@ package Gtk.Tool_Item is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Tool_Item_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Tool_Item_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Tool_Item_Record) return Boolean;
+      (Self : not null access Gtk_Tool_Item_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Tool_Item_Record;
+      (Self           : not null access Gtk_Tool_Item_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Tool_Item_Record;
+      (Self   : not null access Gtk_Tool_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

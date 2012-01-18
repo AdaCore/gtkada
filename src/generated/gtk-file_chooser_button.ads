@@ -163,19 +163,11 @@ package Gtk.File_Chooser_Button is
        Uri     : UTF8_String) return Boolean;
 
    function Get_Action
-<<<<<<< HEAD
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action;
    procedure Set_Action
-      (Chooser : access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
-=======
-      (Chooser : not null access Gtk_File_Chooser_Button_Record)
-       return Gtk.Enums.Gtk_File_Chooser_Action;
-   procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action);
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
 
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Button_Record)

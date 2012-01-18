@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
@@ -58,7 +59,7 @@ package body Gtk.Tool_Item is
    ------------------------
 
    function Get_Ellipsize_Mode
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -72,7 +73,7 @@ package body Gtk.Tool_Item is
    ----------------
 
    function Get_Expand
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_expand");
@@ -85,7 +86,7 @@ package body Gtk.Tool_Item is
    ---------------------
 
    function Get_Homogeneous
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_homogeneous");
@@ -98,7 +99,7 @@ package body Gtk.Tool_Item is
    -------------------
 
    function Get_Icon_Size
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Icon_Size
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -112,7 +113,7 @@ package body Gtk.Tool_Item is
    ----------------------
 
    function Get_Is_Important
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_is_important");
@@ -125,7 +126,7 @@ package body Gtk.Tool_Item is
    ---------------------
 
    function Get_Orientation
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -139,7 +140,7 @@ package body Gtk.Tool_Item is
    -------------------------
 
    function Get_Proxy_Menu_Item
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String) return Gtk.Menu_Item.Gtk_Menu_Item
    is
       function Internal
@@ -161,7 +162,7 @@ package body Gtk.Tool_Item is
    ----------------------
 
    function Get_Relief_Style
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Relief_Style
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -175,7 +176,7 @@ package body Gtk.Tool_Item is
    ------------------------
 
    function Get_Text_Alignment
-      (Tool_Item : access Gtk_Tool_Item_Record) return Gfloat
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Gfloat
    is
       function Internal (Tool_Item : System.Address) return Gfloat;
       pragma Import (C, Internal, "gtk_tool_item_get_text_alignment");
@@ -188,7 +189,7 @@ package body Gtk.Tool_Item is
    --------------------------
 
    function Get_Text_Orientation
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -202,7 +203,7 @@ package body Gtk.Tool_Item is
    -------------------------
 
    function Get_Text_Size_Group
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Size_Group.Gtk_Size_Group
    is
       function Internal (Tool_Item : System.Address) return System.Address;
@@ -217,7 +218,7 @@ package body Gtk.Tool_Item is
    -----------------------
 
    function Get_Toolbar_Style
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Toolbar_Style
    is
       function Internal (Tool_Item : System.Address) return Integer;
@@ -231,7 +232,7 @@ package body Gtk.Tool_Item is
    -------------------------
 
    function Get_Use_Drag_Window
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_use_drag_window");
@@ -244,7 +245,7 @@ package body Gtk.Tool_Item is
    ----------------------------
 
    function Get_Visible_Horizontal
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_horizontal");
@@ -257,7 +258,7 @@ package body Gtk.Tool_Item is
    --------------------------
 
    function Get_Visible_Vertical
-      (Tool_Item : access Gtk_Tool_Item_Record) return Boolean
+      (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_vertical");
@@ -269,7 +270,7 @@ package body Gtk.Tool_Item is
    -- Rebuild_Menu --
    ------------------
 
-   procedure Rebuild_Menu (Tool_Item : access Gtk_Tool_Item_Record) is
+   procedure Rebuild_Menu (Tool_Item : not null access Gtk_Tool_Item_Record) is
       procedure Internal (Tool_Item : System.Address);
       pragma Import (C, Internal, "gtk_tool_item_rebuild_menu");
    begin
@@ -281,7 +282,7 @@ package body Gtk.Tool_Item is
    ------------------------------
 
    function Retrieve_Proxy_Menu_Item
-      (Tool_Item : access Gtk_Tool_Item_Record)
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Menu_Item.Gtk_Menu_Item
    is
       function Internal (Tool_Item : System.Address) return System.Address;
@@ -296,7 +297,7 @@ package body Gtk.Tool_Item is
    ----------------
 
    procedure Set_Expand
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Expand    : Boolean)
    is
       procedure Internal (Tool_Item : System.Address; Expand : Integer);
@@ -310,7 +311,7 @@ package body Gtk.Tool_Item is
    ---------------------
 
    procedure Set_Homogeneous
-      (Tool_Item   : access Gtk_Tool_Item_Record;
+      (Tool_Item   : not null access Gtk_Tool_Item_Record;
        Homogeneous : Boolean)
    is
       procedure Internal (Tool_Item : System.Address; Homogeneous : Integer);
@@ -324,7 +325,7 @@ package body Gtk.Tool_Item is
    ----------------------
 
    procedure Set_Is_Important
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Is_Important : Boolean)
    is
       procedure Internal
@@ -340,9 +341,10 @@ package body Gtk.Tool_Item is
    -------------------------
 
    procedure Set_Proxy_Menu_Item
-      (Tool_Item    : access Gtk_Tool_Item_Record;
+      (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
-       Menu_Item    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
+       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
+      
    is
       procedure Internal
          (Tool_Item    : System.Address;
@@ -360,7 +362,7 @@ package body Gtk.Tool_Item is
    ------------------------
 
    procedure Set_Tooltip_Markup
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Markup    : UTF8_String)
    is
       procedure Internal
@@ -378,7 +380,7 @@ package body Gtk.Tool_Item is
    ----------------------
 
    procedure Set_Tooltip_Text
-      (Tool_Item : access Gtk_Tool_Item_Record;
+      (Tool_Item : not null access Gtk_Tool_Item_Record;
        Text      : UTF8_String)
    is
       procedure Internal
@@ -396,7 +398,7 @@ package body Gtk.Tool_Item is
    -------------------------
 
    procedure Set_Use_Drag_Window
-      (Tool_Item       : access Gtk_Tool_Item_Record;
+      (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean)
    is
       procedure Internal
@@ -412,7 +414,7 @@ package body Gtk.Tool_Item is
    ----------------------------
 
    procedure Set_Visible_Horizontal
-      (Tool_Item          : access Gtk_Tool_Item_Record;
+      (Tool_Item          : not null access Gtk_Tool_Item_Record;
        Visible_Horizontal : Boolean)
    is
       procedure Internal
@@ -428,7 +430,7 @@ package body Gtk.Tool_Item is
    --------------------------
 
    procedure Set_Visible_Vertical
-      (Tool_Item        : access Gtk_Tool_Item_Record;
+      (Tool_Item        : not null access Gtk_Tool_Item_Record;
        Visible_Vertical : Boolean)
    is
       procedure Internal
@@ -443,7 +445,9 @@ package body Gtk.Tool_Item is
    -- Toolbar_Reconfigured --
    --------------------------
 
-   procedure Toolbar_Reconfigured (Tool_Item : access Gtk_Tool_Item_Record) is
+   procedure Toolbar_Reconfigured
+      (Tool_Item : not null access Gtk_Tool_Item_Record)
+   is
       procedure Internal (Tool_Item : System.Address);
       pragma Import (C, Internal, "gtk_tool_item_toolbar_reconfigured");
    begin
@@ -455,8 +459,8 @@ package body Gtk.Tool_Item is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -469,7 +473,8 @@ package body Gtk.Tool_Item is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Tool_Item_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Tool_Item_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -483,7 +488,7 @@ package body Gtk.Tool_Item is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Tool_Item_Record) return Boolean
+      (Self : not null access Gtk_Tool_Item_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -496,8 +501,8 @@ package body Gtk.Tool_Item is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -510,7 +515,7 @@ package body Gtk.Tool_Item is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Tool_Item_Record;
+      (Self           : not null access Gtk_Tool_Item_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -524,13 +529,13 @@ package body Gtk.Tool_Item is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Tool_Item_Record;
+      (Self   : not null access Gtk_Tool_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Tool_Item;

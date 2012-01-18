@@ -73,7 +73,7 @@ package Gtk.Entry_Buffer is
    -------------
 
    function Delete_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        N_Chars  : Gint) return Guint;
    --  Deletes a sequence of characters from the buffer. N_Chars characters
@@ -87,7 +87,7 @@ package Gtk.Entry_Buffer is
    --  "n_chars": number of characters to delete
 
    procedure Emit_Deleted_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        N_Chars  : Guint);
    --  Used when subclassing Gtk.Entry_Buffer.Gtk_Entry_Buffer
@@ -96,7 +96,7 @@ package Gtk.Entry_Buffer is
    --  "n_chars": number of characters deleted
 
    procedure Emit_Inserted_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
        N_Chars  : Guint);
@@ -106,19 +106,21 @@ package Gtk.Entry_Buffer is
    --  "chars": text that was inserted
    --  "n_chars": number of characters inserted
 
-   function Get_Bytes (Self : access Gtk_Entry_Buffer_Record) return gsize;
+   function Get_Bytes
+      (Self : not null access Gtk_Entry_Buffer_Record) return gsize;
    --  Retrieves the length in bytes of the buffer. See
    --  Gtk.Entry_Buffer.Get_Length.
    --  Since: gtk+ 2.18
 
-   function Get_Length (Self : access Gtk_Entry_Buffer_Record) return Guint;
+   function Get_Length
+      (Self : not null access Gtk_Entry_Buffer_Record) return Guint;
    --  Retrieves the length in characters of the buffer.
    --  Since: gtk+ 2.18
 
    function Get_Max_Length
-      (Self : access Gtk_Entry_Buffer_Record) return Gint;
+      (Self : not null access Gtk_Entry_Buffer_Record) return Gint;
    procedure Set_Max_Length
-      (Self       : access Gtk_Entry_Buffer_Record;
+      (Self       : not null access Gtk_Entry_Buffer_Record;
        Max_Length : Gint);
    --  Sets the maximum allowed length of the contents of the buffer. If the
    --  current contents are longer than the given length, then they will be
@@ -129,9 +131,9 @@ package Gtk.Entry_Buffer is
    --  will be clamped to the range 0-65536.
 
    function Get_Text
-      (Self : access Gtk_Entry_Buffer_Record) return UTF8_String;
+      (Self : not null access Gtk_Entry_Buffer_Record) return UTF8_String;
    procedure Set_Text
-      (Self    : access Gtk_Entry_Buffer_Record;
+      (Self    : not null access Gtk_Entry_Buffer_Record;
        Chars   : UTF8_String;
        N_Chars : Gint);
    --  Sets the text in the buffer.
@@ -143,7 +145,7 @@ package Gtk.Entry_Buffer is
    --  "n_chars": the number of characters in Text, or -1
 
    function Insert_Text
-      (Self     : access Gtk_Entry_Buffer_Record;
+      (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
        N_Chars  : Gint) return Guint;

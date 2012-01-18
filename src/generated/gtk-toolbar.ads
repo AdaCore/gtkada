@@ -145,19 +145,11 @@ package Gtk.Toolbar is
    --  "show_arrow": Whether to show an overflow menu
 
    function Get_Style
-<<<<<<< HEAD
-      (Toolbar : access Gtk_Toolbar_Record)
+      (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Toolbar_Style;
    procedure Set_Style
-      (Toolbar : access Gtk_Toolbar_Record;
-       Style   : Gtk.Enums.Gtk_Toolbar_Style);
-=======
-      (Toolbar : not null access Gtk_Toolbar_Record)
-       return Gtk_Toolbar_Style;
-   procedure Set_Style
       (Toolbar : not null access Gtk_Toolbar_Record;
-       Style   : Gtk_Toolbar_Style);
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       Style   : Gtk.Enums.Gtk_Toolbar_Style);
    --  Alters the view of Toolbar to display either icons only, text only, or
    --  both.
    --  "style": the new style for Toolbar.

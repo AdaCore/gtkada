@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
@@ -61,7 +62,8 @@ package body Gtk.GEntry is
 
    procedure Gtk_New_With_Buffer
       (The_Entry : out Gtk_Entry;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      
    is
    begin
       The_Entry := new Gtk_Entry_Record;
@@ -85,7 +87,8 @@ package body Gtk.GEntry is
 
    procedure Initialize_With_Buffer
       (The_Entry : access Gtk_Entry_Record'Class;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      
    is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_buffer");
@@ -98,7 +101,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    function Get_Activates_Default
-      (The_Entry : access Gtk_Entry_Record) return Boolean
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_activates_default");
@@ -111,7 +114,7 @@ package body Gtk.GEntry is
    -------------------
 
    function Get_Alignment
-      (The_Entry : access Gtk_Entry_Record) return Gfloat
+      (The_Entry : not null access Gtk_Entry_Record) return Gfloat
    is
       function Internal (The_Entry : System.Address) return Gfloat;
       pragma Import (C, Internal, "gtk_entry_get_alignment");
@@ -124,7 +127,7 @@ package body Gtk.GEntry is
    ----------------
 
    function Get_Buffer
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Entry_Buffer.Gtk_Entry_Buffer
    is
       function Internal (The_Entry : System.Address) return System.Address;
@@ -139,7 +142,7 @@ package body Gtk.GEntry is
    --------------------
 
    function Get_Completion
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Entry_Completion.Gtk_Entry_Completion
    is
       function Internal (The_Entry : System.Address) return System.Address;
@@ -154,7 +157,7 @@ package body Gtk.GEntry is
    ----------------------------------
 
    function Get_Current_Icon_Drag_Source
-      (The_Entry : access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Gint
    is
       function Internal (The_Entry : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_get_current_icon_drag_source");
@@ -167,7 +170,7 @@ package body Gtk.GEntry is
    ----------------------------
 
    function Get_Cursor_Hadjustment
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (The_Entry : System.Address) return System.Address;
@@ -182,7 +185,7 @@ package body Gtk.GEntry is
    -------------------
 
    function Get_Has_Frame
-      (The_Entry : access Gtk_Entry_Record) return Boolean
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_has_frame");
@@ -195,7 +198,7 @@ package body Gtk.GEntry is
    --------------------------
 
    function Get_Icon_Activatable
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Boolean
    is
       function Internal
@@ -211,7 +214,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Get_Icon_Area
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon_Area : out Gdk.Rectangle.Gdk_Rectangle)
    is
@@ -229,7 +232,7 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Icon_At_Pos
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        X         : Gint;
        Y         : Gint) return Gint
    is
@@ -247,7 +250,7 @@ package body Gtk.GEntry is
    --------------------
 
    function Get_Icon_Gicon
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.G_Icon.G_Icon
    is
       function Internal
@@ -263,7 +266,7 @@ package body Gtk.GEntry is
    -------------------
 
    function Get_Icon_Name
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String
    is
       function Internal
@@ -279,7 +282,7 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Icon_Pixbuf
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
@@ -296,7 +299,7 @@ package body Gtk.GEntry is
    ------------------------
 
    function Get_Icon_Sensitive
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Boolean
    is
       function Internal
@@ -312,7 +315,7 @@ package body Gtk.GEntry is
    --------------------
 
    function Get_Icon_Stock
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String
    is
       function Internal
@@ -328,7 +331,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    function Get_Icon_Storage_Type
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Gtk.Image.Gtk_Image_Type
    is
       function Internal
@@ -344,7 +347,7 @@ package body Gtk.GEntry is
    -----------------------------
 
    function Get_Icon_Tooltip_Markup
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String
    is
       function Internal
@@ -360,7 +363,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    function Get_Icon_Tooltip_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String
    is
       function Internal
@@ -376,7 +379,8 @@ package body Gtk.GEntry is
    ----------------------
 
    function Get_Inner_Border
-      (The_Entry : access Gtk_Entry_Record) return Gtk.Style.Gtk_Border
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Gtk.Style.Gtk_Border
    is
       function Internal
          (The_Entry : System.Address) return Gtk.Style.Gtk_Border;
@@ -390,7 +394,7 @@ package body Gtk.GEntry is
    ------------------------
 
    function Get_Invisible_Char
-      (The_Entry : access Gtk_Entry_Record) return gunichar
+      (The_Entry : not null access Gtk_Entry_Record) return gunichar
    is
       function Internal (The_Entry : System.Address) return gunichar;
       pragma Import (C, Internal, "gtk_entry_get_invisible_char");
@@ -403,7 +407,8 @@ package body Gtk.GEntry is
    ----------------
 
    function Get_Layout
-      (The_Entry : access Gtk_Entry_Record) return Pango.Layout.Pango_Layout
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Pango.Layout.Pango_Layout
    is
       function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_layout");
@@ -417,7 +422,7 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure Get_Layout_Offsets
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        X         : out Gint;
        Y         : out Gint)
    is
@@ -434,7 +439,9 @@ package body Gtk.GEntry is
    -- Get_Max_Length --
    --------------------
 
-   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint is
+   function Get_Max_Length
+      (The_Entry : not null access Gtk_Entry_Record) return Gint
+   is
       function Internal (The_Entry : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_get_max_length");
    begin
@@ -446,7 +453,7 @@ package body Gtk.GEntry is
    ------------------------
 
    function Get_Overwrite_Mode
-      (The_Entry : access Gtk_Entry_Record) return Boolean
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_overwrite_mode");
@@ -459,7 +466,7 @@ package body Gtk.GEntry is
    --------------------------
 
    function Get_Placeholder_Text
-      (The_Entry : access Gtk_Entry_Record) return UTF8_String
+      (The_Entry : not null access Gtk_Entry_Record) return UTF8_String
    is
       function Internal
          (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -473,7 +480,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    function Get_Progress_Fraction
-      (The_Entry : access Gtk_Entry_Record) return Gdouble
+      (The_Entry : not null access Gtk_Entry_Record) return Gdouble
    is
       function Internal (The_Entry : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_entry_get_progress_fraction");
@@ -486,7 +493,7 @@ package body Gtk.GEntry is
    -----------------------------
 
    function Get_Progress_Pulse_Step
-      (The_Entry : access Gtk_Entry_Record) return Gdouble
+      (The_Entry : not null access Gtk_Entry_Record) return Gdouble
    is
       function Internal (The_Entry : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_entry_get_progress_pulse_step");
@@ -499,7 +506,7 @@ package body Gtk.GEntry is
    --------------
 
    function Get_Text
-      (The_Entry : access Gtk_Entry_Record) return UTF8_String
+      (The_Entry : not null access Gtk_Entry_Record) return UTF8_String
    is
       function Internal
          (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -513,7 +520,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Get_Text_Area
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text_Area : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
@@ -529,7 +536,7 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Text_Length
-      (The_Entry : access Gtk_Entry_Record) return guint16
+      (The_Entry : not null access Gtk_Entry_Record) return guint16
    is
       function Internal (The_Entry : System.Address) return guint16;
       pragma Import (C, Internal, "gtk_entry_get_text_length");
@@ -542,7 +549,7 @@ package body Gtk.GEntry is
    --------------------
 
    function Get_Visibility
-      (The_Entry : access Gtk_Entry_Record) return Boolean
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_visibility");
@@ -555,7 +562,7 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Width_Chars
-      (The_Entry : access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Gint
    is
       function Internal (The_Entry : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_get_width_chars");
@@ -568,7 +575,7 @@ package body Gtk.GEntry is
    --------------------------------
 
    function Im_Context_Filter_Keypress
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Event     : Gdk.Event.Gdk_Event_Key) return Boolean
    is
       function Internal
@@ -584,7 +591,7 @@ package body Gtk.GEntry is
    --------------------------------
 
    function Layout_Index_To_Text_Index
-      (The_Entry    : access Gtk_Entry_Record;
+      (The_Entry    : not null access Gtk_Entry_Record;
        Layout_Index : Gint) return Gint
    is
       function Internal
@@ -599,7 +606,7 @@ package body Gtk.GEntry is
    -- Progress_Pulse --
    --------------------
 
-   procedure Progress_Pulse (The_Entry : access Gtk_Entry_Record) is
+   procedure Progress_Pulse (The_Entry : not null access Gtk_Entry_Record) is
       procedure Internal (The_Entry : System.Address);
       pragma Import (C, Internal, "gtk_entry_progress_pulse");
    begin
@@ -610,7 +617,7 @@ package body Gtk.GEntry is
    -- Reset_Im_Context --
    ----------------------
 
-   procedure Reset_Im_Context (The_Entry : access Gtk_Entry_Record) is
+   procedure Reset_Im_Context (The_Entry : not null access Gtk_Entry_Record) is
       procedure Internal (The_Entry : System.Address);
       pragma Import (C, Internal, "gtk_entry_reset_im_context");
    begin
@@ -622,7 +629,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    procedure Set_Activates_Default
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean)
    is
       procedure Internal (The_Entry : System.Address; Setting : Integer);
@@ -636,7 +643,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Set_Alignment
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Xalign    : Gfloat)
    is
       procedure Internal (The_Entry : System.Address; Xalign : Gfloat);
@@ -650,8 +657,9 @@ package body Gtk.GEntry is
    ----------------
 
    procedure Set_Buffer
-      (The_Entry : access Gtk_Entry_Record;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      (The_Entry : not null access Gtk_Entry_Record;
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      
    is
       procedure Internal
          (The_Entry : System.Address;
@@ -666,7 +674,7 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Completion
-      (The_Entry  : access Gtk_Entry_Record;
+      (The_Entry  : not null access Gtk_Entry_Record;
        Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class)
       
    is
@@ -675,7 +683,7 @@ package body Gtk.GEntry is
           Completion : System.Address);
       pragma Import (C, Internal, "gtk_entry_set_completion");
    begin
-      Internal (Get_Object (The_Entry), Get_Object (Completion));
+      Internal (Get_Object (The_Entry), Get_Object_Or_Null (GObject (Completion)));
    end Set_Completion;
 
    ----------------------------
@@ -683,8 +691,9 @@ package body Gtk.GEntry is
    ----------------------------
 
    procedure Set_Cursor_Hadjustment
-      (The_Entry  : access Gtk_Entry_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      (The_Entry  : not null access Gtk_Entry_Record;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      
    is
       procedure Internal
          (The_Entry  : System.Address;
@@ -699,7 +708,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Set_Has_Frame
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean := True)
    is
       procedure Internal (The_Entry : System.Address; Setting : Integer);
@@ -713,7 +722,7 @@ package body Gtk.GEntry is
    --------------------------
 
    procedure Set_Icon_Activatable
-      (The_Entry   : access Gtk_Entry_Record;
+      (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Activatable : Boolean)
    is
@@ -731,7 +740,7 @@ package body Gtk.GEntry is
    --------------------------
 
    procedure Set_Icon_Drag_Source
-      (The_Entry   : access Gtk_Entry_Record;
+      (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Target_List : Gtk.Selection.Target_List;
        Actions     : Gdk.Dnd.Drag_Action)
@@ -751,7 +760,7 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure Set_Icon_From_Gicon
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon      : Glib.G_Icon.G_Icon)
    is
@@ -769,7 +778,7 @@ package body Gtk.GEntry is
    -----------------------------
 
    procedure Set_Icon_From_Icon_Name
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon_Name : UTF8_String)
    is
@@ -789,7 +798,7 @@ package body Gtk.GEntry is
    --------------------------
 
    procedure Set_Icon_From_Pixbuf
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
@@ -799,7 +808,7 @@ package body Gtk.GEntry is
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_pixbuf");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Get_Object (Pixbuf));
+      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Get_Object_Or_Null (GObject (Pixbuf)));
    end Set_Icon_From_Pixbuf;
 
    -------------------------
@@ -807,7 +816,7 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure Set_Icon_From_Stock
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Stock_Id  : UTF8_String)
    is
@@ -827,7 +836,7 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure Set_Icon_Sensitive
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Sensitive : Boolean)
    is
@@ -845,7 +854,7 @@ package body Gtk.GEntry is
    -----------------------------
 
    procedure Set_Icon_Tooltip_Markup
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Tooltip   : UTF8_String)
    is
@@ -865,7 +874,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    procedure Set_Icon_Tooltip_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Tooltip   : UTF8_String)
    is
@@ -885,7 +894,7 @@ package body Gtk.GEntry is
    ----------------------
 
    procedure Set_Inner_Border
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Border    : in out Gtk.Style.Gtk_Border)
    is
       procedure Internal
@@ -901,7 +910,7 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure Set_Invisible_Char
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Char      : gunichar)
    is
       procedure Internal (The_Entry : System.Address; Char : gunichar);
@@ -915,7 +924,7 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Max_Length
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Max       : Gint)
    is
       procedure Internal (The_Entry : System.Address; Max : Gint);
@@ -929,7 +938,7 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure Set_Overwrite_Mode
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Overwrite : Boolean)
    is
       procedure Internal (The_Entry : System.Address; Overwrite : Integer);
@@ -943,7 +952,7 @@ package body Gtk.GEntry is
    --------------------------
 
    procedure Set_Placeholder_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text      : UTF8_String)
    is
       procedure Internal
@@ -961,7 +970,7 @@ package body Gtk.GEntry is
    ---------------------------
 
    procedure Set_Progress_Fraction
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Fraction  : Gdouble)
    is
       procedure Internal (The_Entry : System.Address; Fraction : Gdouble);
@@ -975,7 +984,7 @@ package body Gtk.GEntry is
    -----------------------------
 
    procedure Set_Progress_Pulse_Step
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Fraction  : Gdouble)
    is
       procedure Internal (The_Entry : System.Address; Fraction : Gdouble);
@@ -989,7 +998,7 @@ package body Gtk.GEntry is
    --------------
 
    procedure Set_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text      : UTF8_String)
    is
       procedure Internal
@@ -1007,7 +1016,7 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Visibility
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Visible   : Boolean)
    is
       procedure Internal (The_Entry : System.Address; Visible : Integer);
@@ -1021,7 +1030,7 @@ package body Gtk.GEntry is
    ---------------------
 
    procedure Set_Width_Chars
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Width     : Gint)
    is
       procedure Internal (The_Entry : System.Address; Width : Gint);
@@ -1035,7 +1044,7 @@ package body Gtk.GEntry is
    --------------------------------
 
    function Text_Index_To_Layout_Index
-      (The_Entry  : access Gtk_Entry_Record;
+      (The_Entry  : not null access Gtk_Entry_Record;
        Text_Index : Gint) return Gint
    is
       function Internal
@@ -1050,7 +1059,9 @@ package body Gtk.GEntry is
    -- Unset_Invisible_Char --
    --------------------------
 
-   procedure Unset_Invisible_Char (The_Entry : access Gtk_Entry_Record) is
+   procedure Unset_Invisible_Char
+      (The_Entry : not null access Gtk_Entry_Record)
+   is
       procedure Internal (The_Entry : System.Address);
       pragma Import (C, Internal, "gtk_entry_unset_invisible_char");
    begin
@@ -1061,7 +1072,7 @@ package body Gtk.GEntry is
    -- Copy_Clipboard --
    --------------------
 
-   procedure Copy_Clipboard (Editable : access Gtk_Entry_Record) is
+   procedure Copy_Clipboard (Editable : not null access Gtk_Entry_Record) is
       procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_copy_clipboard");
    begin
@@ -1072,7 +1083,7 @@ package body Gtk.GEntry is
    -- Cut_Clipboard --
    -------------------
 
-   procedure Cut_Clipboard (Editable : access Gtk_Entry_Record) is
+   procedure Cut_Clipboard (Editable : not null access Gtk_Entry_Record) is
       procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_cut_clipboard");
    begin
@@ -1083,7 +1094,7 @@ package body Gtk.GEntry is
    -- Delete_Selection --
    ----------------------
 
-   procedure Delete_Selection (Editable : access Gtk_Entry_Record) is
+   procedure Delete_Selection (Editable : not null access Gtk_Entry_Record) is
       procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_delete_selection");
    begin
@@ -1095,7 +1106,7 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Delete_Text
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1)
    is
@@ -1112,7 +1123,7 @@ package body Gtk.GEntry is
    -- Editing_Done --
    ------------------
 
-   procedure Editing_Done (Cell_Editable : access Gtk_Entry_Record) is
+   procedure Editing_Done (Cell_Editable : not null access Gtk_Entry_Record) is
       procedure Internal (Cell_Editable : System.Address);
       pragma Import (C, Internal, "gtk_cell_editable_editing_done");
    begin
@@ -1124,7 +1135,7 @@ package body Gtk.GEntry is
    ---------------
 
    function Get_Chars
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1) return UTF8_String
    is
@@ -1141,7 +1152,9 @@ package body Gtk.GEntry is
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Editable : access Gtk_Entry_Record) return Boolean is
+   function Get_Editable
+      (Editable : not null access Gtk_Entry_Record) return Boolean
+   is
       function Internal (Editable : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
@@ -1152,7 +1165,9 @@ package body Gtk.GEntry is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Editable : access Gtk_Entry_Record) return Gint is
+   function Get_Position
+      (Editable : not null access Gtk_Entry_Record) return Gint
+   is
       function Internal (Editable : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_editable_get_position");
    begin
@@ -1164,7 +1179,7 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Insert_Text
-      (Editable        : access Gtk_Entry_Record;
+      (Editable        : not null access Gtk_Entry_Record;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint)
@@ -1185,7 +1200,7 @@ package body Gtk.GEntry is
    -- Paste_Clipboard --
    ---------------------
 
-   procedure Paste_Clipboard (Editable : access Gtk_Entry_Record) is
+   procedure Paste_Clipboard (Editable : not null access Gtk_Entry_Record) is
       procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_paste_clipboard");
    begin
@@ -1196,7 +1211,9 @@ package body Gtk.GEntry is
    -- Remove_Widget --
    -------------------
 
-   procedure Remove_Widget (Cell_Editable : access Gtk_Entry_Record) is
+   procedure Remove_Widget
+      (Cell_Editable : not null access Gtk_Entry_Record)
+   is
       procedure Internal (Cell_Editable : System.Address);
       pragma Import (C, Internal, "gtk_cell_editable_remove_widget");
    begin
@@ -1208,7 +1225,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Select_Region
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1)
    is
@@ -1226,7 +1243,7 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Set_Editable
-      (Editable    : access Gtk_Entry_Record;
+      (Editable    : not null access Gtk_Entry_Record;
        Is_Editable : Boolean)
    is
       procedure Internal (Editable : System.Address; Is_Editable : Integer);
@@ -1240,7 +1257,7 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Set_Position
-      (Editable : access Gtk_Entry_Record;
+      (Editable : not null access Gtk_Entry_Record;
        Position : Gint)
    is
       procedure Internal (Editable : System.Address; Position : Gint);
@@ -1254,7 +1271,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Start_Editing
-      (Cell_Editable : access Gtk_Entry_Record;
+      (Cell_Editable : not null access Gtk_Entry_Record;
        Event         : Gdk.Event.Gdk_Event)
    is
       procedure Internal

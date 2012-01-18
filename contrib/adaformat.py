@@ -1442,6 +1442,9 @@ class Package(object):
             if Package.copyright_header:
                 result.append(Package.copyright_header)
 
+            if self.language_version:
+                result.append(self.language_version)
+
             result.append("pragma Style_Checks (Off);")
             result.append('pragma Warnings (Off, "*is already use-visible*");')
             result.append(self._output_withs(self.body_withs))

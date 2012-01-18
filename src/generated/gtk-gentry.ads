@@ -118,10 +118,12 @@ package Gtk.GEntry is
 
    procedure Gtk_New_With_Buffer
       (The_Entry : out Gtk_Entry;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      ;
    procedure Initialize_With_Buffer
       (The_Entry : access Gtk_Entry_Record'Class;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      ;
    --  Creates a new entry with the specified text buffer.
    --  Since: gtk+ 2.18
    --  "buffer": The buffer to use for the new Gtk.GEntry.Gtk_Entry.
@@ -134,9 +136,9 @@ package Gtk.GEntry is
    -------------
 
    function Get_Activates_Default
-      (The_Entry : access Gtk_Entry_Record) return Boolean;
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean;
    procedure Set_Activates_Default
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean);
    --  If Setting is True, pressing Enter in the Entry will activate the
    --  default widget for the window containing the entry. This usually means
@@ -148,9 +150,9 @@ package Gtk.GEntry is
    --  "setting": True to activate window's default widget on Enter keypress
 
    function Get_Alignment
-      (The_Entry : access Gtk_Entry_Record) return Gfloat;
+      (The_Entry : not null access Gtk_Entry_Record) return Gfloat;
    procedure Set_Alignment
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Xalign    : Gfloat);
    --  Sets the alignment for the contents of the entry. This controls the
    --  horizontal positioning of the contents when the displayed text is
@@ -160,21 +162,22 @@ package Gtk.GEntry is
    --  Reversed for RTL layouts
 
    function Get_Buffer
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Entry_Buffer.Gtk_Entry_Buffer;
    procedure Set_Buffer
-      (The_Entry : access Gtk_Entry_Record;
-       Buffer    : access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
+      (The_Entry : not null access Gtk_Entry_Record;
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+      ;
    --  Set the Gtk.Entry_Buffer.Gtk_Entry_Buffer object which holds the text
    --  for this widget.
    --  Since: gtk+ 2.18
    --  "buffer": a Gtk.Entry_Buffer.Gtk_Entry_Buffer
 
    function Get_Completion
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Entry_Completion.Gtk_Entry_Completion;
    procedure Set_Completion
-      (The_Entry  : access Gtk_Entry_Record;
+      (The_Entry  : not null access Gtk_Entry_Record;
        Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class)
       ;
    --  Sets Completion to be the auxiliary completion object to use with
@@ -185,7 +188,7 @@ package Gtk.GEntry is
    --  "completion": The Gtk.Entry_Completion.Gtk_Entry_Completion or null
 
    function Get_Current_Icon_Drag_Source
-      (The_Entry : access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Gint;
    --  Returns the index of the icon which is the source of the current DND
    --  operation, or -1.
    --  This function is meant to be used in a
@@ -194,11 +197,12 @@ package Gtk.GEntry is
    --  Since: gtk+ 2.16
 
    function Get_Cursor_Hadjustment
-      (The_Entry : access Gtk_Entry_Record)
+      (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Cursor_Hadjustment
-      (The_Entry  : access Gtk_Entry_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      (The_Entry  : not null access Gtk_Entry_Record;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      ;
    --  Hooks up an adjustment to the cursor position in an entry, so that when
    --  the cursor is moved, the adjustment is scrolled to show that position.
    --  See gtk_scrolled_window_get_hadjustment for a typical way of obtaining
@@ -210,18 +214,18 @@ package Gtk.GEntry is
    --  moved, or null
 
    function Get_Has_Frame
-      (The_Entry : access Gtk_Entry_Record) return Boolean;
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean;
    procedure Set_Has_Frame
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean := True);
    --  Sets whether the entry has a beveled frame around it.
    --  "setting": new value
 
    function Get_Icon_Activatable
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Boolean;
    procedure Set_Icon_Activatable
-      (The_Entry   : access Gtk_Entry_Record;
+      (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Activatable : Boolean);
    --  Sets whether the icon is activatable.
@@ -230,7 +234,7 @@ package Gtk.GEntry is
    --  "activatable": True if the icon should be activatable
 
    procedure Get_Icon_Area
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon_Area : out Gdk.Rectangle.Gdk_Rectangle);
    --  Gets the area where entry's icon at Icon_Pos is drawn. This function is
@@ -243,7 +247,7 @@ package Gtk.GEntry is
    --  "icon_area": Return location for the icon's area
 
    function Get_Icon_At_Pos
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        X         : Gint;
        Y         : Gint) return Gint;
    --  Finds the icon at the given position and return its index. The
@@ -256,7 +260,7 @@ package Gtk.GEntry is
    --  "y": the y coordinate of the position to find
 
    function Get_Icon_Gicon
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.G_Icon.G_Icon;
    --  Retrieves the GIcon used for the icon, or null if there is no icon or
    --  if the icon was set by some other method (e.g., by stock, pixbuf, or
@@ -266,7 +270,7 @@ package Gtk.GEntry is
    --  "icon_pos": Icon position
 
    function Get_Icon_Name
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    --  Retrieves the icon name used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, stock or
@@ -276,7 +280,7 @@ package Gtk.GEntry is
    --  "icon_pos": Icon position
 
    function Get_Icon_Pixbuf
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Retrieves the image used for the icon.
    --  Unlike the other methods of setting and getting icon data, this method
@@ -287,10 +291,10 @@ package Gtk.GEntry is
    --  "icon_pos": Icon position
 
    function Get_Icon_Sensitive
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Boolean;
    procedure Set_Icon_Sensitive
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Sensitive : Boolean);
    --  Sets the sensitivity for the specified icon.
@@ -300,7 +304,7 @@ package Gtk.GEntry is
    --  insensitive
 
    function Get_Icon_Stock
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    --  Retrieves the stock id used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, icon name
@@ -310,7 +314,7 @@ package Gtk.GEntry is
    --  "icon_pos": Icon position
 
    function Get_Icon_Storage_Type
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Gtk.Image.Gtk_Image_Type;
    --  Gets the type of representation being used by the icon to store image
    --  data. If the icon has no image data, the return value will be
@@ -319,10 +323,10 @@ package Gtk.GEntry is
    --  "icon_pos": Icon position
 
    function Get_Icon_Tooltip_Markup
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    procedure Set_Icon_Tooltip_Markup
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Tooltip   : UTF8_String);
    --  Sets Tooltip as the contents of the tooltip for the icon at the
@@ -336,10 +340,10 @@ package Gtk.GEntry is
    --  "tooltip": the contents of the tooltip for the icon, or null
 
    function Get_Icon_Tooltip_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    procedure Set_Icon_Tooltip_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Tooltip   : UTF8_String);
    --  Sets Tooltip as the contents of the tooltip for the icon at the
@@ -352,9 +356,10 @@ package Gtk.GEntry is
    --  "tooltip": the contents of the tooltip for the icon, or null
 
    function Get_Inner_Border
-      (The_Entry : access Gtk_Entry_Record) return Gtk.Style.Gtk_Border;
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Gtk.Style.Gtk_Border;
    procedure Set_Inner_Border
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Border    : in out Gtk.Style.Gtk_Border);
    --  Sets %entry's inner-border property to %border, or clears it if null is
    --  passed. The inner-border is the area around the entry's text, but inside
@@ -367,9 +372,9 @@ package Gtk.GEntry is
    --  "border": a Gtk.Style.Gtk_Border, or null
 
    function Get_Invisible_Char
-      (The_Entry : access Gtk_Entry_Record) return gunichar;
+      (The_Entry : not null access Gtk_Entry_Record) return gunichar;
    procedure Set_Invisible_Char
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Char      : gunichar);
    --  Sets the character to use in place of the actual text when
    --  Gtk.GEntry.Set_Visibility has been called to set text visibility to
@@ -381,7 +386,8 @@ package Gtk.GEntry is
    --  "Char": a Unicode character
 
    function Get_Layout
-      (The_Entry : access Gtk_Entry_Record) return Pango.Layout.Pango_Layout;
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the entry. The
    --  layout is useful to e.g. convert text positions to pixel positions, in
    --  combination with Gtk.GEntry.Get_Layout_Offsets. The returned layout is
@@ -392,7 +398,7 @@ package Gtk.GEntry is
    --  in the layout to byte indices in the entry contents.
 
    procedure Get_Layout_Offsets
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        X         : out Gint;
        Y         : out Gint);
    --  Obtains the position of the Pango.Layout.Pango_Layout used to render
@@ -414,9 +420,10 @@ package Gtk.GEntry is
    --  "x": location to store X offset of layout, or null
    --  "y": location to store Y offset of layout, or null
 
-   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint;
+   function Get_Max_Length
+      (The_Entry : not null access Gtk_Entry_Record) return Gint;
    procedure Set_Max_Length
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Max       : Gint);
    --  Sets the maximum allowed length of the contents of the widget. If the
    --  current contents are longer than the given length, then they will be
@@ -429,9 +436,9 @@ package Gtk.GEntry is
    --  to the range 0-65536.
 
    function Get_Overwrite_Mode
-      (The_Entry : access Gtk_Entry_Record) return Boolean;
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean;
    procedure Set_Overwrite_Mode
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Overwrite : Boolean);
    --  Sets whether the text is overwritten when typing in the
    --  Gtk.GEntry.Gtk_Entry.
@@ -439,9 +446,9 @@ package Gtk.GEntry is
    --  "overwrite": new value
 
    function Get_Placeholder_Text
-      (The_Entry : access Gtk_Entry_Record) return UTF8_String;
+      (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    procedure Set_Placeholder_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text      : UTF8_String);
    --  Sets text to be displayed in Entry when it is empty and unfocused. This
    --  can be used to give a visual hint of the expected contents of the
@@ -455,9 +462,9 @@ package Gtk.GEntry is
    --  null
 
    function Get_Progress_Fraction
-      (The_Entry : access Gtk_Entry_Record) return Gdouble;
+      (The_Entry : not null access Gtk_Entry_Record) return Gdouble;
    procedure Set_Progress_Fraction
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Fraction  : Gdouble);
    --  Causes the entry's progress indicator to "fill in" the given fraction
    --  of the bar. The fraction should be between 0.0 and 1.0, inclusive.
@@ -465,9 +472,9 @@ package Gtk.GEntry is
    --  "fraction": fraction of the task that's been completed
 
    function Get_Progress_Pulse_Step
-      (The_Entry : access Gtk_Entry_Record) return Gdouble;
+      (The_Entry : not null access Gtk_Entry_Record) return Gdouble;
    procedure Set_Progress_Pulse_Step
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Fraction  : Gdouble);
    --  Sets the fraction of total entry width to move the progress bouncing
    --  block for each call to Gtk.GEntry.Progress_Pulse.
@@ -475,9 +482,9 @@ package Gtk.GEntry is
    --  "fraction": fraction between 0.0 and 1.0
 
    function Get_Text
-      (The_Entry : access Gtk_Entry_Record) return UTF8_String;
+      (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    procedure Set_Text
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text      : UTF8_String);
    --  Sets the text in the widget to the given value, replacing the current
    --  contents.
@@ -485,7 +492,7 @@ package Gtk.GEntry is
    --  "text": the new text
 
    procedure Get_Text_Area
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Text_Area : out Gdk.Rectangle.Gdk_Rectangle);
    --  Gets the area where the entry's text is drawn. This function is useful
    --  when drawing something to the entry in a draw callback.
@@ -495,7 +502,7 @@ package Gtk.GEntry is
    --  "text_area": Return location for the text area.
 
    function Get_Text_Length
-      (The_Entry : access Gtk_Entry_Record) return guint16;
+      (The_Entry : not null access Gtk_Entry_Record) return guint16;
    --  Retrieves the current length of the text in Entry.
    --  This is equivalent to:
    --  <informalexample><programlisting> gtk_entry_buffer_get_length
@@ -504,9 +511,9 @@ package Gtk.GEntry is
    --  Since: gtk+ 2.14
 
    function Get_Visibility
-      (The_Entry : access Gtk_Entry_Record) return Boolean;
+      (The_Entry : not null access Gtk_Entry_Record) return Boolean;
    procedure Set_Visibility
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Visible   : Boolean);
    --  Sets whether the contents of the entry are visible or not. When
    --  visibility is set to False, characters are displayed as the invisible
@@ -517,9 +524,9 @@ package Gtk.GEntry is
    --  "visible": True if the contents of the entry are displayed as plaintext
 
    function Get_Width_Chars
-      (The_Entry : access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Gint;
    procedure Set_Width_Chars
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Width     : Gint);
    --  Changes the size request of the entry to be about the right size for
    --  N_Chars characters. Note that it changes the size
@@ -529,7 +536,7 @@ package Gtk.GEntry is
    --  "Width": width in chars
 
    function Im_Context_Filter_Keypress
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Event     : Gdk.Event.Gdk_Event_Key) return Boolean;
    --  Allow the Gtk.GEntry.Gtk_Entry input method to internally handle key
    --  press and release events. If this function returns True, then no further
@@ -544,7 +551,7 @@ package Gtk.GEntry is
    --  "event": the key event
 
    function Layout_Index_To_Text_Index
-      (The_Entry    : access Gtk_Entry_Record;
+      (The_Entry    : not null access Gtk_Entry_Record;
        Layout_Index : Gint) return Gint;
    --  Converts from a position in the entry contents (returned by
    --  Gtk.GEntry.Get_Text) to a position in the entry's
@@ -552,7 +559,7 @@ package Gtk.GEntry is
    --  retrieved via pango_layout_get_text).
    --  "layout_index": byte index into the entry layout text
 
-   procedure Progress_Pulse (The_Entry : access Gtk_Entry_Record);
+   procedure Progress_Pulse (The_Entry : not null access Gtk_Entry_Record);
    --  Indicates that some progress is made, but you don't know how much.
    --  Causes the entry's progress indicator to enter "activity mode," where a
    --  block bounces back and forth. Each call to Gtk.GEntry.Progress_Pulse
@@ -560,14 +567,14 @@ package Gtk.GEntry is
    --  pulse is determined by Gtk.GEntry.Set_Progress_Pulse_Step).
    --  Since: gtk+ 2.16
 
-   procedure Reset_Im_Context (The_Entry : access Gtk_Entry_Record);
+   procedure Reset_Im_Context (The_Entry : not null access Gtk_Entry_Record);
    --  Reset the input method context of the entry if needed.
    --  This can be necessary in the case where modifying the buffer would
    --  confuse on-going input method behavior.
    --  Since: gtk+ 2.22
 
    procedure Set_Icon_Drag_Source
-      (The_Entry   : access Gtk_Entry_Record;
+      (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Target_List : Gtk.Selection.Target_List;
        Actions     : Gdk.Dnd.Drag_Action);
@@ -589,7 +596,7 @@ package Gtk.GEntry is
    --  "actions": a bitmask of the allowed drag actions
 
    procedure Set_Icon_From_Gicon
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon      : Glib.G_Icon.G_Icon);
    --  Sets the icon shown in the entry at the specified position from the
@@ -601,7 +608,7 @@ package Gtk.GEntry is
    --  "icon": The icon to set, or null
 
    procedure Set_Icon_From_Icon_Name
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Icon_Name : UTF8_String);
    --  Sets the icon shown in the entry at the specified position from the
@@ -614,7 +621,7 @@ package Gtk.GEntry is
    --  "icon_name": An icon name, or null
 
    procedure Set_Icon_From_Pixbuf
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the icon shown in the specified position using a pixbuf.
@@ -624,7 +631,7 @@ package Gtk.GEntry is
    --  "pixbuf": A Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Set_Icon_From_Stock
-      (The_Entry : access Gtk_Entry_Record;
+      (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Stock_Id  : UTF8_String);
    --  Sets the icon shown in the entry at the specified position from a stock
@@ -635,14 +642,15 @@ package Gtk.GEntry is
    --  "stock_id": The name of the stock item, or null
 
    function Text_Index_To_Layout_Index
-      (The_Entry  : access Gtk_Entry_Record;
+      (The_Entry  : not null access Gtk_Entry_Record;
        Text_Index : Gint) return Gint;
    --  Converts from a position in the entry's Pango.Layout.Pango_Layout
    --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
    --  (returned by Gtk.GEntry.Get_Text).
    --  "text_index": byte index into the entry contents
 
-   procedure Unset_Invisible_Char (The_Entry : access Gtk_Entry_Record);
+   procedure Unset_Invisible_Char
+      (The_Entry : not null access Gtk_Entry_Record);
    --  Unsets the invisible char previously set with
    --  Gtk.GEntry.Set_Invisible_Char. So that the default invisible char is
    --  used again.
@@ -665,50 +673,53 @@ package Gtk.GEntry is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
-   procedure Editing_Done (Cell_Editable : access Gtk_Entry_Record);
+   procedure Editing_Done (Cell_Editable : not null access Gtk_Entry_Record);
 
-   procedure Remove_Widget (Cell_Editable : access Gtk_Entry_Record);
+   procedure Remove_Widget
+      (Cell_Editable : not null access Gtk_Entry_Record);
 
    procedure Start_Editing
-      (Cell_Editable : access Gtk_Entry_Record;
+      (Cell_Editable : not null access Gtk_Entry_Record;
        Event         : Gdk.Event.Gdk_Event);
 
-   procedure Copy_Clipboard (Editable : access Gtk_Entry_Record);
+   procedure Copy_Clipboard (Editable : not null access Gtk_Entry_Record);
 
-   procedure Cut_Clipboard (Editable : access Gtk_Entry_Record);
+   procedure Cut_Clipboard (Editable : not null access Gtk_Entry_Record);
 
-   procedure Delete_Selection (Editable : access Gtk_Entry_Record);
+   procedure Delete_Selection (Editable : not null access Gtk_Entry_Record);
 
    procedure Delete_Text
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1);
 
    function Get_Chars
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1) return UTF8_String;
 
-   function Get_Editable (Editable : access Gtk_Entry_Record) return Boolean;
+   function Get_Editable
+      (Editable : not null access Gtk_Entry_Record) return Boolean;
    procedure Set_Editable
-      (Editable    : access Gtk_Entry_Record;
+      (Editable    : not null access Gtk_Entry_Record;
        Is_Editable : Boolean);
 
-   function Get_Position (Editable : access Gtk_Entry_Record) return Gint;
+   function Get_Position
+      (Editable : not null access Gtk_Entry_Record) return Gint;
    procedure Set_Position
-      (Editable : access Gtk_Entry_Record;
+      (Editable : not null access Gtk_Entry_Record;
        Position : Gint);
 
    procedure Insert_Text
-      (Editable        : access Gtk_Entry_Record;
+      (Editable        : not null access Gtk_Entry_Record;
        New_Text        : UTF8_String;
        New_Text_Length : Gint;
        Position        : in out Gint);
 
-   procedure Paste_Clipboard (Editable : access Gtk_Entry_Record);
+   procedure Paste_Clipboard (Editable : not null access Gtk_Entry_Record);
 
    procedure Select_Region
-      (Editable  : access Gtk_Entry_Record;
+      (Editable  : not null access Gtk_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1);
 

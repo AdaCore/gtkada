@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
@@ -163,13 +164,8 @@ package body Gtk.Toolbar is
    ---------------
 
    function Get_Style
-<<<<<<< HEAD
-      (Toolbar : access Gtk_Toolbar_Record)
-       return Gtk.Enums.Gtk_Toolbar_Style
-=======
       (Toolbar : not null access Gtk_Toolbar_Record)
-       return Gtk_Toolbar_Style
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       return Gtk.Enums.Gtk_Toolbar_Style
    is
       function Internal (Toolbar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toolbar_get_style");
@@ -246,13 +242,8 @@ package body Gtk.Toolbar is
    ---------------
 
    procedure Set_Style
-<<<<<<< HEAD
-      (Toolbar : access Gtk_Toolbar_Record;
-       Style   : Gtk.Enums.Gtk_Toolbar_Style)
-=======
       (Toolbar : not null access Gtk_Toolbar_Record;
-       Style   : Gtk_Toolbar_Style)
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       Style   : Gtk.Enums.Gtk_Toolbar_Style)
    is
       procedure Internal (Toolbar : System.Address; Style : Integer);
       pragma Import (C, Internal, "gtk_toolbar_set_style");

@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
@@ -242,13 +243,8 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    function Get_Action
-<<<<<<< HEAD
-      (Chooser : access Gtk_File_Chooser_Button_Record)
-       return Gtk.File_Chooser.Gtk_File_Chooser_Action
-=======
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
-       return Gtk.Enums.Gtk_File_Chooser_Action
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       return Gtk.File_Chooser.Gtk_File_Chooser_Action
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
@@ -696,13 +692,8 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    procedure Set_Action
-<<<<<<< HEAD
-      (Chooser : access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
-=======
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Action  : Gtk.Enums.Gtk_File_Chooser_Action)
->>>>>>> Cleanup the handling of default null value for widget parameters.
+       Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
       procedure Internal (Chooser : System.Address; Action : Integer);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
