@@ -2160,4 +2160,44 @@ The following default key bindings are provided, but you can use a gtkrc file to
       <method id="gtk_vscrollbar_get_type" ada="Vscrollbar_Get_Type"/>
    </package>
 
+   <package id="Gtk.Cell_Renderer">
+      <parameter name="self" ada="Cell"/>
+      <enum ctype="GtkCellRendererState"/>
+      <enum ctype="GtkCellRendererMode"/>
+      <method id="gtk_cell_renderer_get_size">
+         <!-- hack to make cell_area an in-out parameter -->
+         <parameter name="cell_area" ctype="GdkRectangle**"/>
+      </method>
+      <extra>
+         <with_spec pkg="Glib.Glist"/>
+         <spec>
+   function Convert (R : Gtk_Cell_Renderer) return System.Address;
+   function Convert (R : System.Address) return Gtk_Cell_Renderer;
+   package Cell_Renderer_List is
+      new Glib.Glist.Generic_List (Gtk_Cell_Renderer);
+         </spec>
+         <body>
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (R : Gtk_Cell_Renderer) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (R : System.Address) return Gtk_Cell_Renderer is
+      Stub        : Gtk_Cell_Renderer_Record;
+   begin
+      return Gtk_Cell_Renderer
+        (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
+         </body>
+      </extra>
+   </package>
+
 </GIR>

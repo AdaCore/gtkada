@@ -122,6 +122,12 @@ Gtk.Assistant
 The values in Gtk_Assistant_Page_Type were renamed for consistency,
 removing their Gtk_ prefix.
 
+Gtk.Cell_Renderer
+=================
+
+The Render subprogram is now called with a Cairo_Context rather than a
+Gdk_Window.
+
 Gtk.Clist
 =========
 

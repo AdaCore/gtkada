@@ -367,6 +367,17 @@ package Gtk.Enums is
       Shadow_Etched_Out);
    --  The type of shadows that can be drawn around widgets
 
+   type Gtk_State_Flags is mod 2 ** 32;
+   --  Describes a widget state.
+
+   Gtk_State_Flag_Normal       : constant Gtk_State_Flags := 0;
+   Gtk_State_Flag_Active       : constant Gtk_State_Flags := 1;
+   Gtk_State_Flag_Prelight     : constant Gtk_State_Flags := 2;
+   Gtk_State_Flag_Selected     : constant Gtk_State_Flags := 4;
+   Gtk_State_Flag_Insensitive  : constant Gtk_State_Flags := 8;
+   Gtk_State_Flag_Inconsistent : constant Gtk_State_Flags := 16;
+   Gtk_State_Flag_Focused      : constant Gtk_State_Flags := 32;
+
    type Gtk_State_Type is
      (State_Normal,
       State_Active,
