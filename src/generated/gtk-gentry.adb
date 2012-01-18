@@ -743,16 +743,16 @@ package body Gtk.GEntry is
       (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Target_List : Gtk.Selection.Target_List;
-       Actions     : Gdk.Dnd.Drag_Action)
+       Actions     : Gdk.Drag_Contexts.Gdk_Drag_Action)
    is
       procedure Internal
          (The_Entry   : System.Address;
           Icon_Pos    : Integer;
           Target_List : Gtk.Selection.Target_List;
-          Actions     : Gdk.Dnd.Drag_Action);
+          Actions     : Integer);
       pragma Import (C, Internal, "gtk_entry_set_icon_drag_source");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Target_List, Actions);
+      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Target_List, Gdk.Drag_Contexts.Gdk_Drag_Action'Pos (Actions));
    end Set_Icon_Drag_Source;
 
    -------------------------

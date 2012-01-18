@@ -71,7 +71,7 @@ pragma Ada_05;
 --  <testgtk>create_entry.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Dnd;                 use Gdk.Dnd;
+with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -577,7 +577,7 @@ package Gtk.GEntry is
       (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
        Target_List : Gtk.Selection.Target_List;
-       Actions     : Gdk.Dnd.Drag_Action);
+       Actions     : Gdk.Drag_Contexts.Gdk_Drag_Action);
    --  Sets up the icon at the given position so that GTK+ will start a drag
    --  operation when the user clicks and drags the icon.
    --  To handle the drag operation, you need to connect to the usual
