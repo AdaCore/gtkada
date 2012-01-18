@@ -2123,4 +2123,8 @@ The following default key bindings are provided, but you can use a gtkrc file to
       </extra>
    </package>
 
+   <package id="Gtk.Handle_Box">
+     <parameter name="self" ada="Handle_Box"/>
+   </package>
+
 </GIR>
