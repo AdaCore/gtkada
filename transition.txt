@@ -225,6 +225,12 @@ Gtk.File_Chooser_Dialog
 Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
 removed: use Gtk_New and Initialize instead.
 
+Gtk.File_Chooser_Widget
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
+
 Gtk.File_Selection
 ==================
 
@@ -309,6 +315,11 @@ The obsolete procedures Remove_Submenu, Set_Right_Justify, and
 Right_Justify have been removed.  Instead, use Set_Submenu,
 Set_Right_Justified, or Set_Right_Justified with Justify = True,
 respectively.
+
+Calling Gtk_New with one Menu_Item argument has the same effect now
+as before.  However, from this version on, if a Label argument exists
+(even if set to ""), a Gtk_Label child will be created with the given
+value.
 
 Gtk.Menu_Tool_Button
 ====================

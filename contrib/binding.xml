@@ -2075,4 +2075,39 @@ The following default key bindings are provided, but you can use a gtkrc file to
        </body>
      </extra>
    </package>
+
+   <package id="Gtk.File_Chooser_Dialog">
+      <parameter name="self" ada="Dialog"/>
+
+      <!-- method below has varargs -->
+      <method id="gtk_file_chooser_dialog_new" bind="False"/>
+
+      <extra>
+         <gir:constructor name="new"
+                          c:identifier="ada_gtk_file_chooser_dialog_new"
+                          version="2.4"
+                          introspectable="0">
+            <gir:doc xml:whitespace="preserve">Creates a new #GtkFileChooserDialog.  This function is analogous to gtk_dialog_new_with_buttons().</gir:doc>
+            <gir:return-value transfer-ownership="none">
+               <gir:doc xml:whitespace="preserve">a new #GtkFileChooserDialog</gir:doc>
+               <gir:type name="Widget" c:type="GtkWidget*"/>
+            </gir:return-value>
+            <gir:parameters>
+               <gir:parameter name="title" transfer-ownership="none" allow-none="1">
+                  <gir:doc xml:whitespace="preserve">Title of the dialog, or %NULL</gir:doc>
+                  <gir:type name="utf8" c:type="gchar*"/>
+               </gir:parameter>
+               <gir:parameter name="parent" transfer-ownership="none" allow-none="1">
+                  <gir:doc xml:whitespace="preserve">Transient parent of the dialog, or %NULL</gir:doc>
+                  <gir:type name="Window" c:type="GtkWindow*"/>
+               </gir:parameter>
+               <gir:parameter name="action" transfer-ownership="none">
+                  <gir:doc xml:whitespace="preserve">Open or save mode for the dialog</gir:doc>
+                  <gir:type name="FileChooserAction" c:type="GtkFileChooserAction"/>
+               </gir:parameter>
+            </gir:parameters>
+         </gir:constructor>
+      </extra>
+   </package>
+
 </GIR>
