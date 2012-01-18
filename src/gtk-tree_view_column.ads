@@ -56,8 +56,10 @@
 with Glib.Properties;
 with Glib.Generic_Properties;
 with Glib.Object;
+with Glib.Types;
 with Gdk.Rectangle;
 with Gtk;
+with Gtk.Cell_Layout;
 with Gtk.Cell_Renderer;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Tree_Model;
@@ -70,7 +72,7 @@ with Ada.Unchecked_Conversion;
 package Gtk.Tree_View_Column is
 
    type Gtk_Tree_View_Column_Record is
-     new Glib.Object.GObject_Record with private;
+     new Glib.Object.GObject_Record with null record;
    type Gtk_Tree_View_Column is access all Gtk_Tree_View_Column_Record'Class;
 
    function Convert is new Ada.Unchecked_Conversion
@@ -136,13 +138,6 @@ package Gtk.Tree_View_Column is
    procedure Clear (Tree_Column : access Gtk_Tree_View_Column_Record);
    --  Remove all the renderers set in the column.
    --  The column will always be empty until you put some new renderers.
-
-   function Get_Cell_Renderers
-     (Tree_Column : access Gtk_Tree_View_Column_Record)
-      return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
-   pragma Obsolescent (Get_Cell_Renderers);
-   --  Return the list of cell renderers set in the column. The returned list
-   --  must be freed by the caller.
 
    ------------------------------------
    -- Specifying the data to display --
@@ -468,6 +463,29 @@ package Gtk.Tree_View_Column is
    --  2 or more editable and activatable cells.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Cell_Layout"
+   --    This interface should be used to add new renderers to the view, to
+   --    render various columns of the model
+
+   package Implements_Cell_Layout is new Glib.Types.Implements
+     (Gtk.Cell_Layout.Gtk_Cell_Layout,
+      Gtk_Tree_View_Column_Record,
+      Gtk_Tree_View_Column);
+   function "+"
+     (View : access Gtk_Tree_View_Column_Record'Class)
+      return Gtk.Cell_Layout.Gtk_Cell_Layout
+      renames Implements_Cell_Layout.To_Interface;
+   function "-"
+     (Layout : Gtk.Cell_Layout.Gtk_Cell_Layout)
+      return Gtk_Tree_View_Column
+      renames Implements_Cell_Layout.To_Object;
+   --  Converts to and from the Gtk_Cell_Layout interface
+
+   ----------------
    -- Properties --
    ----------------
 
@@ -578,10 +596,8 @@ package Gtk.Tree_View_Column is
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
 
 private
-   type Gtk_Tree_View_Column_Record is
-     new Glib.Object.GObject_Record with null record;
 
-      Alignment_Property : constant Glib.Properties.Property_Float :=
+   Alignment_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("alignment");
    Clickable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("clickable");

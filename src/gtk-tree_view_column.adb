@@ -121,25 +121,6 @@ package body Gtk.Tree_View_Column is
       Internal (Get_Object (Tree_Column));
    end Clear;
 
-   ------------------------
-   -- Get_Cell_Renderers --
-   ------------------------
-
-   function Get_Cell_Renderers
-     (Tree_Column : access Gtk_Tree_View_Column_Record)
-      return Gtk.Cell_Renderer.Cell_Renderer_List.Glist
-   is
-      function Internal (Tree_Column : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_tree_view_column_get_cell_renderers");
-
-      List : Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
-
-   begin
-      Gtk.Cell_Renderer.Cell_Renderer_List.Set_Object
-        (List, Internal (Get_Object (Tree_Column)));
-      return List;
-   end Get_Cell_Renderers;
-
    -------------------
    -- Add_Attribute --
    -------------------

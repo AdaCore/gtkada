@@ -465,6 +465,12 @@ Gtk.Text_View
 The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
 versions of Gtk+ and have been removed.
 
+Gtk.Tree_View_Column
+====================
+
+Get_Cell_Renderers is obsolete, use the Gtk.Cell_Layout interface and
+Gtk.Cell_Layout.Get_Cell_Renderers.
+
 Gtk.Tips_Query
 ==============
 
