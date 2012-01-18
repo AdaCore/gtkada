@@ -94,7 +94,7 @@ package Gtk.Editable is
    procedure Delete_Text
       (Editable  : Gtk_Editable;
        Start_Pos : Gint;
-       End_Pos   : Gint);
+       End_Pos   : Gint := -1);
    pragma Import (C, Delete_Text, "gtk_editable_delete_text");
    --  Deletes a sequence of characters. The characters that are deleted are
    --  those characters at positions from Start_Pos up to, but not including
@@ -107,7 +107,7 @@ package Gtk.Editable is
    function Get_Chars
       (Editable  : Gtk_Editable;
        Start_Pos : Gint;
-       End_Pos   : Gint) return UTF8_String;
+       End_Pos   : Gint := -1) return UTF8_String;
    --  Retrieves a sequence of characters. The characters that are retrieved
    --  are those characters at positions from Start_Pos up to, but not
    --  including End_Pos. If End_Pos is negative, then the the characters
@@ -157,7 +157,7 @@ package Gtk.Editable is
    procedure Select_Region
       (Editable  : Gtk_Editable;
        Start_Pos : Gint;
-       End_Pos   : Gint);
+       End_Pos   : Gint := -1);
    pragma Import (C, Select_Region, "gtk_editable_select_region");
    --  Selects a region of text. The characters that are selected are those
    --  characters at positions from Start_Pos up to, but not including End_Pos.
@@ -175,6 +175,8 @@ package Gtk.Editable is
      (Editable : Gtk_Editable;
       New_Text : UTF8_String;
       Position : in out Gint);
+   --  Convenience subprogram, identical to Insert_Text above without
+   --  the requirement to supply the New_Text_Length argument.
 
    -------------
    -- Signals --

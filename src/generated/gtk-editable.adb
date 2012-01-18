@@ -27,6 +27,10 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Editable is
 
+   -----------------
+   -- Insert_Text --
+   -----------------
+
    procedure Insert_Text
      (Editable : Gtk_Editable;
       New_Text : UTF8_String;
@@ -34,10 +38,7 @@ package body Gtk.Editable is
    is
    begin
       Insert_Text
-        (Editable,
-         New_Text & ASCII.NUL,
-         New_Text'Length,
-         Position);
+        (Editable, New_Text & ASCII.NUL, New_Text'Length, Position);
    end Insert_Text;
 
    ---------------
@@ -47,7 +48,7 @@ package body Gtk.Editable is
    function Get_Chars
       (Editable  : Gtk_Editable;
        Start_Pos : Gint;
-       End_Pos   : Gint) return UTF8_String
+       End_Pos   : Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : Gtk_Editable;

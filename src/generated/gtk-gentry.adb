@@ -28,6 +28,10 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.GEntry is
 
+   -----------------
+   -- Insert_Text --
+   -----------------
+
    procedure Insert_Text
      (Editable : access Gtk_Entry_Record;
       New_Text : UTF8_String;
@@ -1093,7 +1097,7 @@ package body Gtk.GEntry is
    procedure Delete_Text
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint)
+       End_Pos   : Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
@@ -1122,7 +1126,7 @@ package body Gtk.GEntry is
    function Get_Chars
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint) return UTF8_String
+       End_Pos   : Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : System.Address;
@@ -1206,7 +1210,7 @@ package body Gtk.GEntry is
    procedure Select_Region
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint)
+       End_Pos   : Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;

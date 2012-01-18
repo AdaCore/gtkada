@@ -658,6 +658,8 @@ package Gtk.GEntry is
      (Editable : access Gtk_Entry_Record;
       New_Text : UTF8_String;
       Position : in out Gint);
+   --  Convenience subprogram, identical to Insert_Text above without
+   --  the requirement to supply the New_Text_Length argument.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -680,12 +682,12 @@ package Gtk.GEntry is
    procedure Delete_Text
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint);
+       End_Pos   : Gint := -1);
 
    function Get_Chars
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint) return UTF8_String;
+       End_Pos   : Gint := -1) return UTF8_String;
 
    function Get_Editable (Editable : access Gtk_Entry_Record) return Boolean;
    procedure Set_Editable
@@ -708,7 +710,7 @@ package Gtk.GEntry is
    procedure Select_Region
       (Editable  : access Gtk_Entry_Record;
        Start_Pos : Gint;
-       End_Pos   : Gint);
+       End_Pos   : Gint := -1);
 
    ----------------
    -- Interfaces --
