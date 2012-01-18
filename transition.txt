@@ -141,6 +141,11 @@ Gtk.Assistant
 The values in Gtk_Assistant_Page_Type were renamed for consistency,
 removing their Gtk_ prefix.
 
+Gtk.Cell_Layout
+===============
+
+Get_Cell_Renderers has been renamed to Get_Cells.
+
 Gtk.Cell_Renderer
 =================
 
@@ -469,7 +474,7 @@ Gtk.Tree_View_Column
 ====================
 
 Get_Cell_Renderers is obsolete, use the Gtk.Cell_Layout interface and
-Gtk.Cell_Layout.Get_Cell_Renderers.
+Gtk.Cell_Layout.Get_Cells.
 
 Gtk.Tips_Query
 ==============

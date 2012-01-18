@@ -113,7 +113,7 @@ package Gtk.Cell_View is
    --  Returns the model for Cell_View.  If no model is used, null is
    --  returned.
 
-   function Get_Cell_Renderers
+   function Get_Cells
      (Cell_View : access Gtk_Cell_View_Record)
      return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
    --  Returns the cell renderers which have been added to Cell_View.
