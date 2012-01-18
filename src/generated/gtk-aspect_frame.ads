@@ -85,7 +85,7 @@ package Gtk.Aspect_Frame is
    -------------
 
    procedure Set
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record;
        Xalign       : Gfloat;
        Yalign       : Gfloat;
        Ratio        : Gfloat;

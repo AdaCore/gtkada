@@ -73,7 +73,7 @@ package Gtk.Font_Selection is
    -------------
 
    function Get_Face_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Face_List);
    --  This returns the Gtk.Tree_View.Gtk_Tree_View which lists all styles
@@ -82,7 +82,7 @@ package Gtk.Font_Selection is
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Family_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Family_List);
    --  This returns the Gtk.Tree_View.Gtk_Tree_View that lists font families,
@@ -91,10 +91,11 @@ package Gtk.Font_Selection is
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Font_Name
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String;
    pragma Obsolescent (Get_Font_Name);
    function Set_Font_Name
-      (Fontsel  : access Gtk_Font_Selection_Record;
+      (Fontsel  : not null access Gtk_Font_Selection_Record;
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently-selected font.
@@ -107,7 +108,7 @@ package Gtk.Font_Selection is
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Preview_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Preview_Entry);
    --  This returns the Gtk.GEntry.Gtk_Entry used to display the font as a
@@ -116,10 +117,11 @@ package Gtk.Font_Selection is
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    procedure Set_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record;
+      (Fontsel : not null access Gtk_Font_Selection_Record;
        Text    : UTF8_String);
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area. The Text is used to show
@@ -128,7 +130,7 @@ package Gtk.Font_Selection is
    --  "text": the text to display in the preview area
 
    function Get_Size
-      (Fontsel : access Gtk_Font_Selection_Record) return Gint;
+      (Fontsel : not null access Gtk_Font_Selection_Record) return Gint;
    pragma Obsolescent (Get_Size);
    --  The selected font size.
    --  or -1 if no font size is selected.
@@ -136,7 +138,7 @@ package Gtk.Font_Selection is
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Size_Entry);
    --  This returns the Gtk.GEntry.Gtk_Entry used to allow the user to edit
@@ -146,7 +148,7 @@ package Gtk.Font_Selection is
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Size_List);
    --  This returns the Gtk_Treee_View used to list font sizes.
@@ -158,10 +160,10 @@ package Gtk.Font_Selection is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Font_Selection_Record)
+      (Self : not null access Gtk_Font_Selection_Record)
        return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Font_Selection_Record;
+      (Self        : not null access Gtk_Font_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

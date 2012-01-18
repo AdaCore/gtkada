@@ -106,7 +106,8 @@ package body Gtk.Toggle_Button is
    ----------------
 
    function Get_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean
    is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_active");
@@ -119,7 +120,8 @@ package body Gtk.Toggle_Button is
    ----------------------
 
    function Get_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean
    is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_inconsistent");
@@ -132,7 +134,8 @@ package body Gtk.Toggle_Button is
    --------------
 
    function Get_Mode
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean
    is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_mode");
@@ -145,7 +148,7 @@ package body Gtk.Toggle_Button is
    ----------------
 
    procedure Set_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Is_Active     : Boolean)
    is
       procedure Internal
@@ -161,7 +164,7 @@ package body Gtk.Toggle_Button is
    ----------------------
 
    procedure Set_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Setting       : Boolean := True)
    is
       procedure Internal (Toggle_Button : System.Address; Setting : Integer);
@@ -175,7 +178,7 @@ package body Gtk.Toggle_Button is
    --------------
 
    procedure Set_Mode
-      (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
        Draw_Indicator : Boolean)
    is
       procedure Internal
@@ -190,7 +193,9 @@ package body Gtk.Toggle_Button is
    -- Toggled --
    -------------
 
-   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record) is
+   procedure Toggled
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+   is
       procedure Internal (Toggle_Button : System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");
    begin
@@ -202,8 +207,8 @@ package body Gtk.Toggle_Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -216,7 +221,8 @@ package body Gtk.Toggle_Button is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Toggle_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Toggle_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -230,7 +236,7 @@ package body Gtk.Toggle_Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Toggle_Button_Record) return Boolean
+      (Self : not null access Gtk_Toggle_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -243,8 +249,8 @@ package body Gtk.Toggle_Button is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -257,7 +263,7 @@ package body Gtk.Toggle_Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Toggle_Button_Record;
+      (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -271,13 +277,13 @@ package body Gtk.Toggle_Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Toggle_Button_Record;
+      (Self   : not null access Gtk_Toggle_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Toggle_Button;

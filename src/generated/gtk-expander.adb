@@ -98,7 +98,7 @@ package body Gtk.Expander is
    ------------------
 
    function Get_Expanded
-      (Expander : access Gtk_Expander_Record) return Boolean
+      (Expander : not null access Gtk_Expander_Record) return Boolean
    is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_expanded");
@@ -111,7 +111,7 @@ package body Gtk.Expander is
    ---------------
 
    function Get_Label
-      (Expander : access Gtk_Expander_Record) return UTF8_String
+      (Expander : not null access Gtk_Expander_Record) return UTF8_String
    is
       function Internal
          (Expander : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -125,7 +125,7 @@ package body Gtk.Expander is
    --------------------
 
    function Get_Label_Fill
-      (Expander : access Gtk_Expander_Record) return Boolean
+      (Expander : not null access Gtk_Expander_Record) return Boolean
    is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_label_fill");
@@ -138,7 +138,8 @@ package body Gtk.Expander is
    ----------------------
 
    function Get_Label_Widget
-      (Expander : access Gtk_Expander_Record) return Gtk.Widget.Gtk_Widget
+      (Expander : not null access Gtk_Expander_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Expander : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_expander_get_label_widget");
@@ -152,7 +153,7 @@ package body Gtk.Expander is
    -------------------------
 
    function Get_Resize_Toplevel
-      (Expander : access Gtk_Expander_Record) return Boolean
+      (Expander : not null access Gtk_Expander_Record) return Boolean
    is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_resize_toplevel");
@@ -164,7 +165,9 @@ package body Gtk.Expander is
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Expander : access Gtk_Expander_Record) return Gint is
+   function Get_Spacing
+      (Expander : not null access Gtk_Expander_Record) return Gint
+   is
       function Internal (Expander : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_expander_get_spacing");
    begin
@@ -176,7 +179,7 @@ package body Gtk.Expander is
    --------------------
 
    function Get_Use_Markup
-      (Expander : access Gtk_Expander_Record) return Boolean
+      (Expander : not null access Gtk_Expander_Record) return Boolean
    is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_use_markup");
@@ -189,7 +192,7 @@ package body Gtk.Expander is
    -----------------------
 
    function Get_Use_Underline
-      (Expander : access Gtk_Expander_Record) return Boolean
+      (Expander : not null access Gtk_Expander_Record) return Boolean
    is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_use_underline");
@@ -202,7 +205,7 @@ package body Gtk.Expander is
    ------------------
 
    procedure Set_Expanded
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Expanded : Boolean)
    is
       procedure Internal (Expander : System.Address; Expanded : Integer);
@@ -216,7 +219,7 @@ package body Gtk.Expander is
    ---------------
 
    procedure Set_Label
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Label    : UTF8_String)
    is
       procedure Internal
@@ -234,7 +237,7 @@ package body Gtk.Expander is
    --------------------
 
    procedure Set_Label_Fill
-      (Expander   : access Gtk_Expander_Record;
+      (Expander   : not null access Gtk_Expander_Record;
        Label_Fill : Boolean)
    is
       procedure Internal (Expander : System.Address; Label_Fill : Integer);
@@ -248,7 +251,7 @@ package body Gtk.Expander is
    ----------------------
 
    procedure Set_Label_Widget
-      (Expander     : access Gtk_Expander_Record;
+      (Expander     : not null access Gtk_Expander_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
@@ -256,7 +259,7 @@ package body Gtk.Expander is
           Label_Widget : System.Address);
       pragma Import (C, Internal, "gtk_expander_set_label_widget");
    begin
-      Internal (Get_Object (Expander), Get_Object (Label_Widget));
+      Internal (Get_Object (Expander), Get_Object_Or_Null (GObject (Label_Widget)));
    end Set_Label_Widget;
 
    -------------------------
@@ -264,7 +267,7 @@ package body Gtk.Expander is
    -------------------------
 
    procedure Set_Resize_Toplevel
-      (Expander        : access Gtk_Expander_Record;
+      (Expander        : not null access Gtk_Expander_Record;
        Resize_Toplevel : Boolean)
    is
       procedure Internal
@@ -280,7 +283,7 @@ package body Gtk.Expander is
    -----------------
 
    procedure Set_Spacing
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Spacing  : Gint)
    is
       procedure Internal (Expander : System.Address; Spacing : Gint);
@@ -294,7 +297,7 @@ package body Gtk.Expander is
    --------------------
 
    procedure Set_Use_Markup
-      (Expander   : access Gtk_Expander_Record;
+      (Expander   : not null access Gtk_Expander_Record;
        Use_Markup : Boolean)
    is
       procedure Internal (Expander : System.Address; Use_Markup : Integer);
@@ -308,7 +311,7 @@ package body Gtk.Expander is
    -----------------------
 
    procedure Set_Use_Underline
-      (Expander      : access Gtk_Expander_Record;
+      (Expander      : not null access Gtk_Expander_Record;
        Use_Underline : Boolean)
    is
       procedure Internal

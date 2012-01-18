@@ -89,9 +89,10 @@ package Gtk.Separator is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Separator_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Separator_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Separator_Record;
+      (Self        : not null access Gtk_Separator_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

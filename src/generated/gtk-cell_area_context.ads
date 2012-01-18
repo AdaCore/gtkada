@@ -61,7 +61,7 @@ package Gtk.Cell_Area_Context is
    -------------
 
    procedure Allocate
-      (Self   : access Gtk_Cell_Area_Context_Record;
+      (Self   : not null access Gtk_Cell_Area_Context_Record;
        Width  : Gint;
        Height : Gint);
    --  Allocates a width and/or a height for all rows which are to be rendered
@@ -80,7 +80,7 @@ package Gtk.Cell_Area_Context is
    --  rows rendered with Context, or -1.
 
    procedure Get_Allocation
-      (Self   : access Gtk_Cell_Area_Context_Record;
+      (Self   : not null access Gtk_Cell_Area_Context_Record;
        Width  : out Gint;
        Height : out Gint);
    --  Fetches the current allocation size for Context.
@@ -92,7 +92,7 @@ package Gtk.Cell_Area_Context is
    --  "height": location to store the allocated height, or null
 
    procedure Get_Preferred_Height
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Height : out Gint;
        Natural_Height : out Gint);
    --  Gets the accumulative preferred height for all rows which have been
@@ -105,7 +105,7 @@ package Gtk.Cell_Area_Context is
    --  "natural_height": location to store the natural height, or null
 
    procedure Get_Preferred_Height_For_Width
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Width          : Gint;
        Minimum_Height : out Gint;
        Natural_Height : out Gint);
@@ -120,7 +120,7 @@ package Gtk.Cell_Area_Context is
    --  "natural_height": location to store the natural height, or null
 
    procedure Get_Preferred_Width
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Width : out Gint;
        Natural_Width : out Gint);
    --  Gets the accumulative preferred width for all rows which have been
@@ -133,7 +133,7 @@ package Gtk.Cell_Area_Context is
    --  "natural_width": location to store the natural width, or null
 
    procedure Get_Preferred_Width_For_Height
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Height        : Gint;
        Minimum_Width : out Gint;
        Natural_Width : out Gint);
@@ -148,7 +148,7 @@ package Gtk.Cell_Area_Context is
    --  "natural_width": location to store the natural width, or null
 
    procedure Push_Preferred_Height
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Height : Gint;
        Natural_Height : Gint);
    --  Causes the minimum and/or natural height to grow if the new proposed
@@ -162,7 +162,7 @@ package Gtk.Cell_Area_Context is
    --  "natural_height": the proposed new natural height for Context
 
    procedure Push_Preferred_Width
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Width : Gint;
        Natural_Width : Gint);
    --  Causes the minimum and/or natural width to grow if the new proposed
@@ -175,7 +175,7 @@ package Gtk.Cell_Area_Context is
    --  "minimum_width": the proposed new minimum width for Context
    --  "natural_width": the proposed new natural width for Context
 
-   procedure Reset (Self : access Gtk_Cell_Area_Context_Record);
+   procedure Reset (Self : not null access Gtk_Cell_Area_Context_Record);
    --  Resets any previously cached request and allocation data.
    --  When underlying Gtk.Tree_Model.Gtk_Tree_Model data changes its important
    --  to reset the context if the content size is allowed to shrink. If the

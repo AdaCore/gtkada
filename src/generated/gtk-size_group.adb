@@ -63,8 +63,8 @@ package body Gtk.Size_Group is
    ----------------
 
    procedure Add_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Size_Group : System.Address;
@@ -79,7 +79,7 @@ package body Gtk.Size_Group is
    -----------------------
 
    function Get_Ignore_Hidden
-      (Size_Group : access Gtk_Size_Group_Record) return Boolean
+      (Size_Group : not null access Gtk_Size_Group_Record) return Boolean
    is
       function Internal (Size_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_size_group_get_ignore_hidden");
@@ -92,7 +92,8 @@ package body Gtk.Size_Group is
    --------------
 
    function Get_Mode
-      (Size_Group : access Gtk_Size_Group_Record) return Size_Group_Mode
+      (Size_Group : not null access Gtk_Size_Group_Record)
+       return Size_Group_Mode
    is
       function Internal (Size_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_size_group_get_mode");
@@ -105,7 +106,7 @@ package body Gtk.Size_Group is
    -----------------
 
    function Get_Widgets
-      (Size_Group : access Gtk_Size_Group_Record)
+      (Size_Group : not null access Gtk_Size_Group_Record)
        return Gtk.Widget.Widget_SList.GSList
    is
       function Internal (Size_Group : System.Address) return System.Address;
@@ -121,8 +122,8 @@ package body Gtk.Size_Group is
    -------------------
 
    procedure Remove_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Size_Group : System.Address;
@@ -137,7 +138,7 @@ package body Gtk.Size_Group is
    -----------------------
 
    procedure Set_Ignore_Hidden
-      (Size_Group    : access Gtk_Size_Group_Record;
+      (Size_Group    : not null access Gtk_Size_Group_Record;
        Ignore_Hidden : Boolean)
    is
       procedure Internal
@@ -153,7 +154,7 @@ package body Gtk.Size_Group is
    --------------
 
    procedure Set_Mode
-      (Size_Group : access Gtk_Size_Group_Record;
+      (Size_Group : not null access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode)
    is
       procedure Internal (Size_Group : System.Address; Mode : Integer);

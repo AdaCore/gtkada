@@ -98,13 +98,13 @@ package Gtk.Alignment is
    -------------
 
    procedure Get_Padding
-      (Alignment      : access Gtk_Alignment_Record;
+      (Alignment      : not null access Gtk_Alignment_Record;
        Padding_Top    : out Guint;
        Padding_Bottom : out Guint;
        Padding_Left   : out Guint;
        Padding_Right  : out Guint);
    procedure Set_Padding
-      (Alignment      : access Gtk_Alignment_Record;
+      (Alignment      : not null access Gtk_Alignment_Record;
        Padding_Top    : Guint;
        Padding_Bottom : Guint;
        Padding_Left   : Guint;
@@ -120,7 +120,7 @@ package Gtk.Alignment is
    --  "padding_right": the padding at the right of the widget.
 
    procedure Set
-      (Alignment : access Gtk_Alignment_Record;
+      (Alignment : not null access Gtk_Alignment_Record;
        Xalign    : Gfloat;
        Yalign    : Gfloat;
        Xscale    : Gfloat;

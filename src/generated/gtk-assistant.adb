@@ -100,8 +100,8 @@ package body Gtk.Assistant is
    -----------------------
 
    procedure Add_Action_Widget
-      (Assistant : access Gtk_Assistant_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Assistant : System.Address;
@@ -116,8 +116,9 @@ package body Gtk.Assistant is
    -----------------
 
    function Append_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gint
    is
       function Internal
          (Assistant : System.Address;
@@ -131,7 +132,7 @@ package body Gtk.Assistant is
    -- Commit --
    ------------
 
-   procedure Commit (Assistant : access Gtk_Assistant_Record) is
+   procedure Commit (Assistant : not null access Gtk_Assistant_Record) is
       procedure Internal (Assistant : System.Address);
       pragma Import (C, Internal, "gtk_assistant_commit");
    begin
@@ -143,7 +144,7 @@ package body Gtk.Assistant is
    ----------------------
 
    function Get_Current_Page
-      (Assistant : access Gtk_Assistant_Record) return Gint
+      (Assistant : not null access Gtk_Assistant_Record) return Gint
    is
       function Internal (Assistant : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_assistant_get_current_page");
@@ -156,7 +157,7 @@ package body Gtk.Assistant is
    -----------------
 
    function Get_N_Pages
-      (Assistant : access Gtk_Assistant_Record) return Gint
+      (Assistant : not null access Gtk_Assistant_Record) return Gint
    is
       function Internal (Assistant : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_assistant_get_n_pages");
@@ -169,7 +170,7 @@ package body Gtk.Assistant is
    ------------------
 
    function Get_Nth_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
@@ -186,8 +187,9 @@ package body Gtk.Assistant is
    -----------------------
 
    function Get_Page_Complete
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean
    is
       function Internal
          (Assistant : System.Address;
@@ -202,8 +204,8 @@ package body Gtk.Assistant is
    ---------------------------
 
    function Get_Page_Header_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
@@ -220,8 +222,8 @@ package body Gtk.Assistant is
    -------------------------
 
    function Get_Page_Side_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
@@ -238,8 +240,8 @@ package body Gtk.Assistant is
    --------------------
 
    function Get_Page_Title
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return UTF8_String
    is
       function Internal
@@ -255,8 +257,8 @@ package body Gtk.Assistant is
    -------------------
 
    function Get_Page_Type
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Assistant_Page_Type
    is
       function Internal
@@ -272,8 +274,8 @@ package body Gtk.Assistant is
    -----------------
 
    function Insert_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position  : Gint) return Gint
    is
       function Internal
@@ -289,7 +291,7 @@ package body Gtk.Assistant is
    -- Next_Page --
    ---------------
 
-   procedure Next_Page (Assistant : access Gtk_Assistant_Record) is
+   procedure Next_Page (Assistant : not null access Gtk_Assistant_Record) is
       procedure Internal (Assistant : System.Address);
       pragma Import (C, Internal, "gtk_assistant_next_page");
    begin
@@ -301,8 +303,9 @@ package body Gtk.Assistant is
    ------------------
 
    function Prepend_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gint
    is
       function Internal
          (Assistant : System.Address;
@@ -316,7 +319,9 @@ package body Gtk.Assistant is
    -- Previous_Page --
    -------------------
 
-   procedure Previous_Page (Assistant : access Gtk_Assistant_Record) is
+   procedure Previous_Page
+      (Assistant : not null access Gtk_Assistant_Record)
+   is
       procedure Internal (Assistant : System.Address);
       pragma Import (C, Internal, "gtk_assistant_previous_page");
    begin
@@ -328,8 +333,8 @@ package body Gtk.Assistant is
    --------------------------
 
    procedure Remove_Action_Widget
-      (Assistant : access Gtk_Assistant_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Assistant : System.Address;
@@ -344,7 +349,7 @@ package body Gtk.Assistant is
    -----------------
 
    procedure Remove_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint)
    is
       procedure Internal (Assistant : System.Address; Page_Num : Gint);
@@ -358,7 +363,7 @@ package body Gtk.Assistant is
    ----------------------
 
    procedure Set_Current_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint)
    is
       procedure Internal (Assistant : System.Address; Page_Num : Gint);
@@ -372,7 +377,7 @@ package body Gtk.Assistant is
    ---------------------------
 
    procedure Set_Forward_Page_Func
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Func : Gtk_Assistant_Page_Func)
    is
    begin
@@ -414,7 +419,7 @@ package body Gtk.Assistant is
       ---------------------------
 
       procedure Set_Forward_Page_Func
-         (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
+         (Assistant : not null access Gtk.Assistant.Gtk_Assistant_Record;
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type)
       is
@@ -429,8 +434,8 @@ package body Gtk.Assistant is
    -----------------------
 
    procedure Set_Page_Complete
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Complete  : Boolean)
    is
       procedure Internal
@@ -447,8 +452,8 @@ package body Gtk.Assistant is
    ---------------------------
 
    procedure Set_Page_Header_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal
@@ -457,7 +462,7 @@ package body Gtk.Assistant is
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_assistant_set_page_header_image");
    begin
-      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object (Pixbuf));
+      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object_Or_Null (GObject (Pixbuf)));
    end Set_Page_Header_Image;
 
    -------------------------
@@ -465,8 +470,8 @@ package body Gtk.Assistant is
    -------------------------
 
    procedure Set_Page_Side_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal
@@ -475,7 +480,7 @@ package body Gtk.Assistant is
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_assistant_set_page_side_image");
    begin
-      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object (Pixbuf));
+      Internal (Get_Object (Assistant), Get_Object (Page), Get_Object_Or_Null (GObject (Pixbuf)));
    end Set_Page_Side_Image;
 
    --------------------
@@ -483,8 +488,8 @@ package body Gtk.Assistant is
    --------------------
 
    procedure Set_Page_Title
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Title     : UTF8_String)
    is
       procedure Internal
@@ -503,8 +508,8 @@ package body Gtk.Assistant is
    -------------------
 
    procedure Set_Page_Type
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        The_Type  : Gtk_Assistant_Page_Type)
    is
       procedure Internal
@@ -520,7 +525,9 @@ package body Gtk.Assistant is
    -- Update_Buttons_State --
    --------------------------
 
-   procedure Update_Buttons_State (Assistant : access Gtk_Assistant_Record) is
+   procedure Update_Buttons_State
+      (Assistant : not null access Gtk_Assistant_Record)
+   is
       procedure Internal (Assistant : System.Address);
       pragma Import (C, Internal, "gtk_assistant_update_buttons_state");
    begin

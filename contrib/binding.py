@@ -448,13 +448,15 @@ class SubprogramProfile(object):
             name = p.get("name")
             gtkparam = gtkmethod.get_param(name=name)
             name = gtkparam.ada_name() or name  # override
+
             default = gtkparam.get_default()
+            allow_access=not default
 
             type = gtkparam.get_type(pkg=pkg) \
                 or _get_type(
                     p,
                     empty_maps_to_null=gtkparam.empty_maps_to_null(),
-                    allow_access=not default,
+                    allow_access=allow_access,
                     pkg=pkg)
 
             if type is None:
@@ -479,6 +481,24 @@ class SubprogramProfile(object):
             doc = p.findtext(ndoc, "")
             if doc:
                 doc = '"%s": %s' % (name, doc)
+
+            if not default \
+                    and p.get("allow-none", "0") == "1" \
+                    and isinstance(type, GObject):
+
+                # We cannot set a "null" default, since the following is not
+                # allowed in Ada05:
+                #    procedure P (A : access GObject_Record'Class := null);
+                # We need a named type instead, ie:
+                #    procedure P (A : GObject := null);
+                # but then this needs an extra cast in user code.
+
+                #default = "null"
+
+                type.can_be_null = True
+
+            elif default == "null":
+                type.can_be_null = True
 
             result.append(
                 Parameter(name=naming.case(name),

@@ -56,7 +56,7 @@ package body Gtk.Spinner is
    -- Start --
    -----------
 
-   procedure Start (Spinner : access Gtk_Spinner_Record) is
+   procedure Start (Spinner : not null access Gtk_Spinner_Record) is
       procedure Internal (Spinner : System.Address);
       pragma Import (C, Internal, "gtk_spinner_start");
    begin
@@ -67,7 +67,7 @@ package body Gtk.Spinner is
    -- Stop --
    ----------
 
-   procedure Stop (Spinner : access Gtk_Spinner_Record) is
+   procedure Stop (Spinner : not null access Gtk_Spinner_Record) is
       procedure Internal (Spinner : System.Address);
       pragma Import (C, Internal, "gtk_spinner_stop");
    begin

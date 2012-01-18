@@ -87,7 +87,7 @@ package body Gtk.Radio_Action is
    -----------------------
 
    function Get_Current_Value
-      (Action : access Gtk_Radio_Action_Record) return Gint
+      (Action : not null access Gtk_Radio_Action_Record) return Gint
    is
       function Internal (Action : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_radio_action_get_current_value");
@@ -100,7 +100,7 @@ package body Gtk.Radio_Action is
    ---------------
 
    function Get_Group
-      (Action : access Gtk_Radio_Action_Record)
+      (Action : not null access Gtk_Radio_Action_Record)
        return Gtk.Widget.Widget_SList.GSList
    is
       function Internal (Action : System.Address) return System.Address;
@@ -116,7 +116,7 @@ package body Gtk.Radio_Action is
    ----------------
 
    procedure Join_Group
-      (Action       : access Gtk_Radio_Action_Record;
+      (Action       : not null access Gtk_Radio_Action_Record;
        Group_Source : access Gtk_Radio_Action_Record'Class)
    is
       procedure Internal
@@ -124,7 +124,7 @@ package body Gtk.Radio_Action is
           Group_Source : System.Address);
       pragma Import (C, Internal, "gtk_radio_action_join_group");
    begin
-      Internal (Get_Object (Action), Get_Object (Group_Source));
+      Internal (Get_Object (Action), Get_Object_Or_Null (GObject (Group_Source)));
    end Join_Group;
 
    -----------------------
@@ -132,7 +132,7 @@ package body Gtk.Radio_Action is
    -----------------------
 
    procedure Set_Current_Value
-      (Action        : access Gtk_Radio_Action_Record;
+      (Action        : not null access Gtk_Radio_Action_Record;
        Current_Value : Gint)
    is
       procedure Internal (Action : System.Address; Current_Value : Gint);
@@ -146,7 +146,7 @@ package body Gtk.Radio_Action is
    ---------------
 
    procedure Set_Group
-      (Action : access Gtk_Radio_Action_Record;
+      (Action : not null access Gtk_Radio_Action_Record;
        Group  : Gtk.Widget.Widget_SList.GSList)
    is
       procedure Internal (Action : System.Address; Group : System.Address);

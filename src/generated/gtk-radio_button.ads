@@ -171,10 +171,10 @@ package Gtk.Radio_Button is
    -------------
 
    function Get_Group
-      (Radio_Button : access Gtk_Radio_Button_Record)
+      (Radio_Button : not null access Gtk_Radio_Button_Record)
        return Gtk.Widget.Widget_SList.GSList;
    procedure Set_Group
-      (Radio_Button : access Gtk_Radio_Button_Record;
+      (Radio_Button : not null access Gtk_Radio_Button_Record;
        Group        : Gtk.Widget.Widget_SList.GSList);
    --  Sets a Gtk.Radio_Button.Gtk_Radio_Button's group. It should be noted
    --  that this does not change the layout of your interface in any way, so if
@@ -184,7 +184,7 @@ package Gtk.Radio_Button is
    --  Gtk.Radio_Button.Get_Group.
 
    procedure Join_Group
-      (Radio_Button : access Gtk_Radio_Button_Record;
+      (Radio_Button : not null access Gtk_Radio_Button_Record;
        Group_Source : access Gtk_Radio_Button_Record'Class);
    --  Joins a Gtk.Radio_Button.Gtk_Radio_Button object to the group of
    --  another Gtk.Radio_Button.Gtk_Radio_Button object
@@ -205,23 +205,24 @@ package Gtk.Radio_Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Radio_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Radio_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Radio_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Radio_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Radio_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Radio_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Radio_Button_Record) return Boolean;
+      (Self : not null access Gtk_Radio_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Radio_Button_Record;
+      (Self           : not null access Gtk_Radio_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Radio_Button_Record;
+      (Self   : not null access Gtk_Radio_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

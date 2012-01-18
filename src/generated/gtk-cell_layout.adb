@@ -86,7 +86,7 @@ package body Gtk.Cell_Layout is
 
    procedure Add_Attribute
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint)
    is
@@ -108,7 +108,7 @@ package body Gtk.Cell_Layout is
 
    procedure Clear_Attributes
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       
    is
       procedure Internal
@@ -142,7 +142,7 @@ package body Gtk.Cell_Layout is
 
    procedure Pack_End
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -160,7 +160,7 @@ package body Gtk.Cell_Layout is
 
    procedure Pack_Start
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -178,7 +178,7 @@ package body Gtk.Cell_Layout is
 
    procedure Reorder
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint)
    is
       procedure Internal
@@ -196,7 +196,7 @@ package body Gtk.Cell_Layout is
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Cell_Data_Func)
    is
    begin
@@ -212,8 +212,8 @@ package body Gtk.Cell_Layout is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       --  A function which should set the value of Cell_Layout's cell
@@ -230,8 +230,8 @@ package body Gtk.Cell_Layout is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
@@ -246,7 +246,7 @@ package body Gtk.Cell_Layout is
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type)
       is

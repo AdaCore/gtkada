@@ -67,7 +67,8 @@ package body Gtk.Layout is
    --------------------
 
    function Get_Bin_Window
-      (Layout : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window
+      (Layout : not null access Gtk_Layout_Record)
+       return Gdk.Window.Gdk_Window
    is
       function Internal
          (Layout : System.Address) return Gdk.Window.Gdk_Window;
@@ -81,7 +82,7 @@ package body Gtk.Layout is
    --------------
 
    procedure Get_Size
-      (Layout : access Gtk_Layout_Record;
+      (Layout : not null access Gtk_Layout_Record;
        Width  : out Guint;
        Height : out Guint)
    is
@@ -99,8 +100,8 @@ package body Gtk.Layout is
    ----------
 
    procedure Move
-      (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Layout       : not null access Gtk_Layout_Record;
+       Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint)
    is
@@ -119,8 +120,8 @@ package body Gtk.Layout is
    ---------
 
    procedure Put
-      (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Layout       : not null access Gtk_Layout_Record;
+       Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint)
    is
@@ -139,7 +140,7 @@ package body Gtk.Layout is
    --------------
 
    procedure Set_Size
-      (Layout : access Gtk_Layout_Record;
+      (Layout : not null access Gtk_Layout_Record;
        Width  : Guint;
        Height : Guint)
    is
@@ -157,7 +158,8 @@ package body Gtk.Layout is
    ---------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
+      (Self : not null access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
@@ -171,7 +173,7 @@ package body Gtk.Layout is
    ------------------------
 
    function Get_Hscroll_Policy
-      (Self : access Gtk_Layout_Record)
+      (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
       function Internal (Self : System.Address) return Integer;
@@ -185,7 +187,8 @@ package body Gtk.Layout is
    ---------------------
 
    function Get_Vadjustment
-      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
+      (Self : not null access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
@@ -199,7 +202,7 @@ package body Gtk.Layout is
    ------------------------
 
    function Get_Vscroll_Policy
-      (Self : access Gtk_Layout_Record)
+      (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
       function Internal (Self : System.Address) return Integer;
@@ -213,7 +216,7 @@ package body Gtk.Layout is
    ---------------------
 
    procedure Set_Hadjustment
-      (Self        : access Gtk_Layout_Record;
+      (Self        : not null access Gtk_Layout_Record;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
@@ -221,7 +224,7 @@ package body Gtk.Layout is
           Hadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object (Hadjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Hadjustment)));
    end Set_Hadjustment;
 
    ------------------------
@@ -229,7 +232,7 @@ package body Gtk.Layout is
    ------------------------
 
    procedure Set_Hscroll_Policy
-      (Self   : access Gtk_Layout_Record;
+      (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
       procedure Internal (Self : System.Address; Policy : Integer);
@@ -243,7 +246,7 @@ package body Gtk.Layout is
    ---------------------
 
    procedure Set_Vadjustment
-      (Self        : access Gtk_Layout_Record;
+      (Self        : not null access Gtk_Layout_Record;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
@@ -251,7 +254,7 @@ package body Gtk.Layout is
           Vadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object (Vadjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
 
    ------------------------
@@ -259,7 +262,7 @@ package body Gtk.Layout is
    ------------------------
 
    procedure Set_Vscroll_Policy
-      (Self   : access Gtk_Layout_Record;
+      (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
       procedure Internal (Self : System.Address; Policy : Integer);

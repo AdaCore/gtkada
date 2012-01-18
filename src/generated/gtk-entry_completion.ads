@@ -99,7 +99,7 @@ package Gtk.Entry_Completion is
 
 
    type Gtk_Entry_Completion_Match_Func is access function
-     (Completion : access Gtk_Entry_Completion_Record'Class;
+     (Completion : not null access Gtk_Entry_Completion_Record'Class;
       Key        : UTF8_String;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  A function which decides whether the row indicated by Iter matches a
@@ -115,8 +115,8 @@ package Gtk.Entry_Completion is
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
@@ -137,10 +137,12 @@ package Gtk.Entry_Completion is
 
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
-       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+      ;
    procedure Initialize_With_Area
       (Completion : access Gtk_Entry_Completion_Record'Class;
-       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+      ;
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
    --  the specified Area to layout cells in the underlying
    --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
@@ -154,35 +156,38 @@ package Gtk.Entry_Completion is
    -- Methods --
    -------------
 
-   procedure Complete (Completion : access Gtk_Entry_Completion_Record);
+   procedure Complete
+      (Completion : not null access Gtk_Entry_Completion_Record);
    --  Requests a completion operation, or in other words a refiltering of the
    --  current list with completions, using the current key. The completion
    --  list view will be updated accordingly.
    --  Since: gtk+ 2.4
 
    procedure Delete_Action
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint);
    --  Deletes the action at Index_ from Completion's action list.
    --  Since: gtk+ 2.4
    --  "index_": the index of the item to delete
 
    function Get_Completion_Prefix
-      (Completion : access Gtk_Entry_Completion_Record) return UTF8_String;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return UTF8_String;
    --  Get the original text entered by the user that triggered the completion
    --  or null if there's no completion ongoing.
    --  Since: gtk+ 2.12
 
    function Get_Entry
-      (Completion : access Gtk_Entry_Completion_Record)
+      (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the entry Completion has been attached to.
    --  Since: gtk+ 2.4
 
    function Get_Inline_Completion
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean;
    procedure Set_Inline_Completion
-      (Completion        : access Gtk_Entry_Completion_Record;
+      (Completion        : not null access Gtk_Entry_Completion_Record;
        Inline_Completion : Boolean);
    --  Sets whether the common prefix of the possible completions should be
    --  automatically inserted in the entry.
@@ -190,9 +195,10 @@ package Gtk.Entry_Completion is
    --  "inline_completion": True to do inline completion
 
    function Get_Inline_Selection
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean;
    procedure Set_Inline_Selection
-      (Completion       : access Gtk_Entry_Completion_Record;
+      (Completion       : not null access Gtk_Entry_Completion_Record;
        Inline_Selection : Boolean);
    --  Sets whether it is possible to cycle through the possible completions
    --  inside the entry.
@@ -200,9 +206,9 @@ package Gtk.Entry_Completion is
    --  "inline_selection": True to do inline selection
 
    function Get_Minimum_Key_Length
-      (Completion : access Gtk_Entry_Completion_Record) return Gint;
+      (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
    procedure Set_Minimum_Key_Length
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Length     : Gint);
    --  Requires the length of the search key for Completion to be at least
    --  Length. This is useful for long lists, where completing using a small
@@ -212,10 +218,10 @@ package Gtk.Entry_Completion is
    --  "length": the minimum length of the key in order to start completing
 
    function Get_Model
-      (Completion : access Gtk_Entry_Completion_Record)
+      (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model;
    procedure Set_Model
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
    --  Sets the model for a Gtk.Entry_Completion.Gtk_Entry_Completion. If
    --  Completion already has a model set, it will remove it before setting the
@@ -224,18 +230,20 @@ package Gtk.Entry_Completion is
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Popup_Completion
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean;
    procedure Set_Popup_Completion
-      (Completion       : access Gtk_Entry_Completion_Record;
+      (Completion       : not null access Gtk_Entry_Completion_Record;
        Popup_Completion : Boolean);
    --  Sets whether the completions should be presented in a popup window.
    --  Since: gtk+ 2.6
    --  "popup_completion": True to do popup completion
 
    function Get_Popup_Set_Width
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean;
    procedure Set_Popup_Set_Width
-      (Completion      : access Gtk_Entry_Completion_Record;
+      (Completion      : not null access Gtk_Entry_Completion_Record;
        Popup_Set_Width : Boolean);
    --  Sets whether the completion popup window will be resized to be the same
    --  width as the entry.
@@ -244,9 +252,10 @@ package Gtk.Entry_Completion is
    --  entry
 
    function Get_Popup_Single_Match
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean;
    procedure Set_Popup_Single_Match
-      (Completion         : access Gtk_Entry_Completion_Record;
+      (Completion         : not null access Gtk_Entry_Completion_Record;
        Popup_Single_Match : Boolean);
    --  Sets whether the completion popup window will appear even if there is
    --  only a single match. You may want to set this to False if you are using
@@ -257,9 +266,9 @@ package Gtk.Entry_Completion is
    --  match
 
    function Get_Text_Column
-      (Completion : access Gtk_Entry_Completion_Record) return Gint;
+      (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
    procedure Set_Text_Column
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Column     : Gint);
    --  Convenience function for setting up the most used case of this code: a
    --  completion list with just strings. This function will set up Completion
@@ -274,7 +283,7 @@ package Gtk.Entry_Completion is
    --  "column": the column in the model of Completion to get strings from
 
    procedure Insert_Action_Markup
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint;
        Markup     : UTF8_String);
    --  Inserts an action in Completion's action item list at position Index_
@@ -284,7 +293,7 @@ package Gtk.Entry_Completion is
    --  "markup": markup of the item to insert
 
    procedure Insert_Action_Text
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint;
        Text       : UTF8_String);
    --  Inserts an action in Completion's action item list at position Index_
@@ -294,12 +303,13 @@ package Gtk.Entry_Completion is
    --  "index_": the index of the item to insert
    --  "text": text of the item to insert
 
-   procedure Insert_Prefix (Completion : access Gtk_Entry_Completion_Record);
+   procedure Insert_Prefix
+      (Completion : not null access Gtk_Entry_Completion_Record);
    --  Requests a prefix insertion.
    --  Since: gtk+ 2.6
 
    procedure Set_Match_Func
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Func       : Gtk_Entry_Completion_Match_Func);
    --  Sets the match function for Completion to be Func. The match function
    --  is used to determine if a row should or should not be in the completion
@@ -313,7 +323,7 @@ package Gtk.Entry_Completion is
    package Set_Match_Func_User_Data is
 
       type Gtk_Entry_Completion_Match_Func is access function
-        (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
+        (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
          Key        : UTF8_String;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          User_Data  : User_Data_Type) return Boolean;
@@ -330,7 +340,7 @@ package Gtk.Entry_Completion is
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
+         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
           Func       : Gtk_Entry_Completion_Match_Func;
           Func_Data  : User_Data_Type);
       --  Sets the match function for Completion to be Func. The match
@@ -344,8 +354,8 @@ package Gtk.Entry_Completion is
    end Set_Match_Func_User_Data;
 
    procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Gtk.Cell_Layout.Cell_Data_Func);
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
    --  This function is used instead of the standard attributes mapping for
@@ -363,8 +373,8 @@ package Gtk.Entry_Completion is
 
       type Cell_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -376,8 +386,8 @@ package Gtk.Entry_Completion is
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);
       --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
@@ -422,35 +432,36 @@ package Gtk.Entry_Completion is
    ---------------------------------------------
 
    procedure Add_Attribute
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint);
 
-   procedure Clear (Cell_Layout : access Gtk_Entry_Completion_Record);
+   procedure Clear
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record);
 
    procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       ;
 
    function Get_Cells
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record)
        return Glib.Object.Object_Simple_List.GList;
 
    procedure Pack_End
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
 
    procedure Pack_Start
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
 
    procedure Reorder
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
 
    ----------------

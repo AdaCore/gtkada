@@ -33,7 +33,8 @@ package body Gtk.File_Chooser is
 
    procedure Add_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -380,7 +381,8 @@ package body Gtk.File_Chooser is
 
    procedure Remove_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -580,7 +582,7 @@ package body Gtk.File_Chooser is
 
    procedure Set_Extra_Widget
       (Chooser      : Gtk_File_Chooser;
-       Extra_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+       Extra_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Chooser      : Gtk_File_Chooser;
@@ -616,7 +618,8 @@ package body Gtk.File_Chooser is
 
    procedure Set_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -646,7 +649,7 @@ package body Gtk.File_Chooser is
 
    procedure Set_Preview_Widget
       (Chooser        : Gtk_File_Chooser;
-       Preview_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+       Preview_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Chooser        : Gtk_File_Chooser;

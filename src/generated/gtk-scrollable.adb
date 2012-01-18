@@ -93,7 +93,7 @@ package body Gtk.Scrollable is
           Hadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
    begin
-      Internal (Self, Get_Object (Hadjustment));
+      Internal (Self, Get_Object_Or_Null (GObject (Hadjustment)));
    end Set_Hadjustment;
 
    ------------------------
@@ -123,7 +123,7 @@ package body Gtk.Scrollable is
           Vadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
    begin
-      Internal (Self, Get_Object (Vadjustment));
+      Internal (Self, Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
 
    ------------------------

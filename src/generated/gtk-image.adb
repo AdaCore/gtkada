@@ -242,7 +242,7 @@ package body Gtk.Image is
       function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_pixbuf");
    begin
-      Set_Object (Image, Internal (Get_Object (Pixbuf)));
+      Set_Object (Image, Internal (Get_Object_Or_Null (GObject (Pixbuf))));
    end Initialize;
 
    ----------------
@@ -308,7 +308,7 @@ package body Gtk.Image is
    -- Clear --
    -----------
 
-   procedure Clear (Image : access Gtk_Image_Record) is
+   procedure Clear (Image : not null access Gtk_Image_Record) is
       procedure Internal (Image : System.Address);
       pragma Import (C, Internal, "gtk_image_clear");
    begin
@@ -320,7 +320,7 @@ package body Gtk.Image is
    ---------
 
    function Get
-      (Image : access Gtk_Image_Record)
+      (Image : not null access Gtk_Image_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf_Animation
    is
       function Internal
@@ -335,7 +335,7 @@ package body Gtk.Image is
    ---------
 
    procedure Get
-      (Image : access Gtk_Image_Record;
+      (Image : not null access Gtk_Image_Record;
        Gicon : out Glib.G_Icon.G_Icon;
        Size  : out Gtk.Enums.Gtk_Icon_Size)
    is
@@ -353,7 +353,7 @@ package body Gtk.Image is
    ---------
 
    procedure Get
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size)
    is
@@ -371,7 +371,8 @@ package body Gtk.Image is
    ---------
 
    function Get
-      (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+      (Image : not null access Gtk_Image_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (Image : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_get_pixbuf");
@@ -384,7 +385,9 @@ package body Gtk.Image is
    -- Get_Pixel_Size --
    --------------------
 
-   function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint is
+   function Get_Pixel_Size
+      (Image : not null access Gtk_Image_Record) return Gint
+   is
       function Internal (Image : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_image_get_pixel_size");
    begin
@@ -396,7 +399,7 @@ package body Gtk.Image is
    ----------------------
 
    function Get_Storage_Type
-      (Image : access Gtk_Image_Record) return Gtk_Image_Type
+      (Image : not null access Gtk_Image_Record) return Gtk_Image_Type
    is
       function Internal (Image : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_image_get_storage_type");
@@ -409,7 +412,7 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image     : access Gtk_Image_Record;
+      (Image     : not null access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation)
    is
       procedure Internal
@@ -424,7 +427,10 @@ package body Gtk.Image is
    -- Set --
    ---------
 
-   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String) is
+   procedure Set
+      (Image    : not null access Gtk_Image_Record;
+       Filename : UTF8_String)
+   is
       procedure Internal
          (Image    : System.Address;
           Filename : Interfaces.C.Strings.chars_ptr);
@@ -440,7 +446,7 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image : access Gtk_Image_Record;
+      (Image : not null access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -458,7 +464,7 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -476,13 +482,13 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image  : access Gtk_Image_Record;
+      (Image  : not null access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal (Image : System.Address; Pixbuf : System.Address);
       pragma Import (C, Internal, "gtk_image_set_from_pixbuf");
    begin
-      Internal (Get_Object (Image), Get_Object (Pixbuf));
+      Internal (Get_Object (Image), Get_Object_Or_Null (GObject (Pixbuf)));
    end Set;
 
    ---------
@@ -490,7 +496,7 @@ package body Gtk.Image is
    ---------
 
    procedure Set
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -510,7 +516,7 @@ package body Gtk.Image is
    ------------------------
 
    procedure Set_From_Icon_Name
-      (Image     : access Gtk_Image_Record;
+      (Image     : not null access Gtk_Image_Record;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -530,7 +536,7 @@ package body Gtk.Image is
    --------------------
 
    procedure Set_Pixel_Size
-      (Image      : access Gtk_Image_Record;
+      (Image      : not null access Gtk_Image_Record;
        Pixel_Size : Gint)
    is
       procedure Internal (Image : System.Address; Pixel_Size : Gint);

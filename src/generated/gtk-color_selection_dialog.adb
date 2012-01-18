@@ -69,7 +69,7 @@ package body Gtk.Color_Selection_Dialog is
    -------------------------
 
    function Get_Color_Selection
-      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
+      (Color_Selection_Dialog : not null access Gtk_Color_Selection_Dialog_Record)
        return Gtk.Color_Selection.Gtk_Color_Selection
    is
       function Internal

@@ -120,8 +120,8 @@ package body Gtk.Dialog is
    -----------------------
 
    procedure Add_Action_Widget
-      (Dialog      : access Gtk_Dialog_Record;
-       Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Dialog      : not null access Gtk_Dialog_Record;
+       Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -138,7 +138,7 @@ package body Gtk.Dialog is
    ----------------
 
    function Add_Button
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Text        : UTF8_String;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget
    is
@@ -161,7 +161,7 @@ package body Gtk.Dialog is
    ---------------------
 
    function Get_Action_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_action_area");
@@ -175,7 +175,7 @@ package body Gtk.Dialog is
    ----------------------
 
    function Get_Content_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_content_area");
@@ -189,8 +189,8 @@ package body Gtk.Dialog is
    -----------------------------
 
    function Get_Response_For_Widget
-      (Dialog : access Gtk_Dialog_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Dialog : not null access Gtk_Dialog_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type
    is
       function Internal
@@ -206,7 +206,7 @@ package body Gtk.Dialog is
    -----------------------------
 
    function Get_Widget_For_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget
    is
       function Internal
@@ -223,7 +223,7 @@ package body Gtk.Dialog is
    --------------
 
    procedure Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -238,7 +238,9 @@ package body Gtk.Dialog is
    -- Run --
    ---------
 
-   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type is
+   function Run
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk_Response_Type
+   is
       function Internal (Dialog : System.Address) return Gtk_Response_Type;
       pragma Import (C, Internal, "gtk_dialog_run");
    begin
@@ -250,7 +252,7 @@ package body Gtk.Dialog is
    --------------------------
 
    procedure Set_Default_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -266,7 +268,7 @@ package body Gtk.Dialog is
    ----------------------------
 
    procedure Set_Response_Sensitive
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean)
    is

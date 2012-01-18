@@ -141,8 +141,8 @@ package Gtk.Cell_Layout is
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
@@ -164,7 +164,7 @@ package Gtk.Cell_Layout is
 
    procedure Add_Attribute
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint);
    --  Adds an attribute mapping to the list in Cell_Layout.
@@ -186,7 +186,7 @@ package Gtk.Cell_Layout is
 
    procedure Clear_Attributes
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       ;
    --  Clears all existing attributes previously set with
    --  gtk_cell_layout_set_attributes.
@@ -204,7 +204,7 @@ package Gtk.Cell_Layout is
 
    procedure Pack_End
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
    --  Adds the Cell to the end of Cell_Layout. If Expand is False, then the
    --  Cell is allocated no more space than it needs. Any unused space is
@@ -217,7 +217,7 @@ package Gtk.Cell_Layout is
 
    procedure Pack_Start
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
    --  Packs the Cell into the beginning of Cell_Layout. If Expand is False,
    --  then the Cell is allocated no more space than it needs. Any unused space
@@ -230,7 +230,7 @@ package Gtk.Cell_Layout is
 
    procedure Reorder
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
    --  Re-inserts Cell at Position.
    --  Note that Cell has already to be packed into Cell_Layout for this to
@@ -241,7 +241,7 @@ package Gtk.Cell_Layout is
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Cell_Data_Func);
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
    --  This function is used instead of the standard attributes mapping for
@@ -259,8 +259,8 @@ package Gtk.Cell_Layout is
 
       type Cell_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -273,7 +273,7 @@ package Gtk.Cell_Layout is
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);
       --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.

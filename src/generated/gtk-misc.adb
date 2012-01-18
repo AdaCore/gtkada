@@ -36,7 +36,7 @@ package body Gtk.Misc is
    -------------------
 
    procedure Get_Alignment
-      (Misc   : access Gtk_Misc_Record;
+      (Misc   : not null access Gtk_Misc_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
@@ -54,7 +54,7 @@ package body Gtk.Misc is
    -----------------
 
    procedure Get_Padding
-      (Misc : access Gtk_Misc_Record;
+      (Misc : not null access Gtk_Misc_Record;
        Xpad : out Gint;
        Ypad : out Gint)
    is
@@ -72,7 +72,7 @@ package body Gtk.Misc is
    -------------------
 
    procedure Set_Alignment
-      (Misc   : access Gtk_Misc_Record;
+      (Misc   : not null access Gtk_Misc_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
@@ -90,7 +90,7 @@ package body Gtk.Misc is
    -----------------
 
    procedure Set_Padding
-      (Misc : access Gtk_Misc_Record;
+      (Misc : not null access Gtk_Misc_Record;
        Xpad : Gint;
        Ypad : Gint)
    is

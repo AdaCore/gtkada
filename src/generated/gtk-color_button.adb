@@ -112,7 +112,7 @@ package body Gtk.Color_Button is
    ---------------
 
    function Get_Alpha
-      (Button : access Gtk_Color_Button_Record) return guint16
+      (Button : not null access Gtk_Color_Button_Record) return guint16
    is
       function Internal (Button : System.Address) return guint16;
       pragma Import (C, Internal, "gtk_color_button_get_alpha");
@@ -125,7 +125,7 @@ package body Gtk.Color_Button is
    ---------------
 
    procedure Get_Color
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Color  : out Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -141,7 +141,7 @@ package body Gtk.Color_Button is
    --------------
 
    procedure Get_Rgba
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Rgba   : out Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal
@@ -157,7 +157,7 @@ package body Gtk.Color_Button is
    ---------------
 
    function Get_Title
-      (Button : access Gtk_Color_Button_Record) return UTF8_String
+      (Button : not null access Gtk_Color_Button_Record) return UTF8_String
    is
       function Internal
          (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -171,7 +171,7 @@ package body Gtk.Color_Button is
    -------------------
 
    function Get_Use_Alpha
-      (Button : access Gtk_Color_Button_Record) return Boolean
+      (Button : not null access Gtk_Color_Button_Record) return Boolean
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_color_button_get_use_alpha");
@@ -184,7 +184,7 @@ package body Gtk.Color_Button is
    ---------------
 
    procedure Set_Alpha
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Alpha  : guint16)
    is
       procedure Internal (Button : System.Address; Alpha : guint16);
@@ -198,7 +198,7 @@ package body Gtk.Color_Button is
    ---------------
 
    procedure Set_Color
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Color  : Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -214,7 +214,7 @@ package body Gtk.Color_Button is
    --------------
 
    procedure Set_Rgba
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Rgba   : Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal (Button : System.Address; Rgba : Gdk.RGBA.Gdk_RGBA);
@@ -228,7 +228,7 @@ package body Gtk.Color_Button is
    ---------------
 
    procedure Set_Title
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Title  : UTF8_String)
    is
       procedure Internal
@@ -246,7 +246,7 @@ package body Gtk.Color_Button is
    -------------------
 
    procedure Set_Use_Alpha
-      (Button    : access Gtk_Color_Button_Record;
+      (Button    : not null access Gtk_Color_Button_Record;
        Use_Alpha : Boolean)
    is
       procedure Internal (Button : System.Address; Use_Alpha : Integer);
@@ -260,8 +260,8 @@ package body Gtk.Color_Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Color_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Color_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -274,7 +274,8 @@ package body Gtk.Color_Button is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Color_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Color_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -288,7 +289,7 @@ package body Gtk.Color_Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Color_Button_Record) return Boolean
+      (Self : not null access Gtk_Color_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -301,8 +302,8 @@ package body Gtk.Color_Button is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Color_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Color_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -315,7 +316,7 @@ package body Gtk.Color_Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Color_Button_Record;
+      (Self           : not null access Gtk_Color_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -329,13 +330,13 @@ package body Gtk.Color_Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Color_Button_Record;
+      (Self   : not null access Gtk_Color_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Color_Button;

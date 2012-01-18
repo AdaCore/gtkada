@@ -106,7 +106,7 @@ package Gtk.Status_Bar is
    -------------
 
    function Get_Context_Id
-      (Statusbar           : access Gtk_Status_Bar_Record;
+      (Statusbar           : not null access Gtk_Status_Bar_Record;
        Context_Description : UTF8_String) return Context_Id;
    --  Returns a new context identifier, given a description of the actual
    --  context. Note that the description is <emphasis>not</emphasis> shown in
@@ -115,13 +115,13 @@ package Gtk.Status_Bar is
    --  message is being used in
 
    function Get_Message_Area
-      (Statusbar : access Gtk_Status_Bar_Record)
+      (Statusbar : not null access Gtk_Status_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the box containing the label widget.
    --  Since: gtk+ 2.20
 
    procedure Pop
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id);
    --  Removes the first message in the Gtk_Status_Bar's stack with the given
    --  context id.
@@ -130,7 +130,7 @@ package Gtk.Status_Bar is
    --  "context": a context identifier
 
    function Push
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Text      : UTF8_String) return Message_Id;
    --  Pushes a new message onto a statusbar's stack.
@@ -140,7 +140,7 @@ package Gtk.Status_Bar is
    --  "text": the message to add to the statusbar
 
    procedure Remove
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Message   : Message_Id);
    --  Forces the removal of a message from a statusbar's stack. The exact
@@ -149,7 +149,7 @@ package Gtk.Status_Bar is
    --  "Message": a message identifier, as returned by Gtk.Status_Bar.Push
 
    procedure Remove_All
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id);
    --  Forces the removal of all messages from a statusbar's stack with the
    --  exact Context_Id.
@@ -161,9 +161,10 @@ package Gtk.Status_Bar is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Status_Bar_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Status_Bar_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Status_Bar_Record;
+      (Self        : not null access Gtk_Status_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

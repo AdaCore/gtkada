@@ -82,9 +82,9 @@ package Gtk.Radio_Action is
    -------------
 
    function Get_Current_Value
-      (Action : access Gtk_Radio_Action_Record) return Gint;
+      (Action : not null access Gtk_Radio_Action_Record) return Gint;
    procedure Set_Current_Value
-      (Action        : access Gtk_Radio_Action_Record;
+      (Action        : not null access Gtk_Radio_Action_Record;
        Current_Value : Gint);
    --  Sets the currently active group member to the member with value
    --  property Current_Value.
@@ -92,10 +92,10 @@ package Gtk.Radio_Action is
    --  "current_value": the new value
 
    function Get_Group
-      (Action : access Gtk_Radio_Action_Record)
+      (Action : not null access Gtk_Radio_Action_Record)
        return Gtk.Widget.Widget_SList.GSList;
    procedure Set_Group
-      (Action : access Gtk_Radio_Action_Record;
+      (Action : not null access Gtk_Radio_Action_Record;
        Group  : Gtk.Widget.Widget_SList.GSList);
    --  Sets the radio group for the radio action object.
    --  A common way to set up a group of radio group is the following:
@@ -110,7 +110,7 @@ package Gtk.Radio_Action is
    --  "group": a list representing a radio group
 
    procedure Join_Group
-      (Action       : access Gtk_Radio_Action_Record;
+      (Action       : not null access Gtk_Radio_Action_Record;
        Group_Source : access Gtk_Radio_Action_Record'Class);
    --  Joins a radio action object to the group of another radio action
    --  object.

@@ -78,7 +78,7 @@ package body Gtk.Adjustment is
    -- Changed --
    -------------
 
-   procedure Changed (Adjustment : access Gtk_Adjustment_Record) is
+   procedure Changed (Adjustment : not null access Gtk_Adjustment_Record) is
       procedure Internal (Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_adjustment_changed");
    begin
@@ -90,7 +90,7 @@ package body Gtk.Adjustment is
    ----------------
 
    procedure Clamp_Page
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble;
        Upper      : Gdouble)
    is
@@ -108,7 +108,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Configure
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;
@@ -134,7 +134,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Lower
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_lower");
@@ -147,7 +147,7 @@ package body Gtk.Adjustment is
    ---------------------------
 
    function Get_Minimum_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_minimum_increment");
@@ -160,7 +160,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    function Get_Page_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_page_increment");
@@ -173,7 +173,7 @@ package body Gtk.Adjustment is
    -------------------
 
    function Get_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_page_size");
@@ -186,7 +186,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    function Get_Step_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
@@ -199,7 +199,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Upper
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_upper");
@@ -212,7 +212,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Value
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_value");
@@ -225,7 +225,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Lower
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Lower : Gdouble);
@@ -239,7 +239,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    procedure Set_Page_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Page_Increment : Gdouble)
    is
       procedure Internal
@@ -255,7 +255,7 @@ package body Gtk.Adjustment is
    -------------------
 
    procedure Set_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Page_Size  : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Page_Size : Gdouble);
@@ -269,7 +269,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    procedure Set_Step_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Step_Increment : Gdouble)
    is
       procedure Internal
@@ -285,7 +285,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Upper
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Upper      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Upper : Gdouble);
@@ -299,7 +299,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Value
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Value      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Value : Gdouble);
@@ -312,7 +312,9 @@ package body Gtk.Adjustment is
    -- Value_Changed --
    -------------------
 
-   procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record) is
+   procedure Value_Changed
+      (Adjustment : not null access Gtk_Adjustment_Record)
+   is
       procedure Internal (Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_adjustment_value_changed");
    begin

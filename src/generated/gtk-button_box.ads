@@ -72,11 +72,12 @@ package Gtk.Button_Box is
    -------------
 
    function Get_Child_Non_Homogeneous
-      (Widget : access Gtk_Button_Box_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
    procedure Set_Child_Non_Homogeneous
-      (Widget          : access Gtk_Button_Box_Record;
-       Child           : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Widget          : not null access Gtk_Button_Box_Record;
+       Child           : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Non_Homogeneous : Boolean);
    --  Sets whether the child is exempted from homogeous sizing.
    --  Since: gtk+ 3.2
@@ -84,11 +85,12 @@ package Gtk.Button_Box is
    --  "non_homogeneous": the new value
 
    function Get_Child_Secondary
-      (Widget : access Gtk_Button_Box_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
    procedure Set_Child_Secondary
-      (Widget       : access Gtk_Button_Box_Record;
-       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Widget       : not null access Gtk_Button_Box_Record;
+       Child        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean);
    --  Sets whether Child should appear in a secondary group of children. A
    --  typical use of a secondary child is the help button in a dialog.
@@ -105,10 +107,10 @@ package Gtk.Button_Box is
    --  button box.
 
    function Get_Layout
-      (Widget : access Gtk_Button_Box_Record)
+      (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
    procedure Set_Layout
-      (Widget       : access Gtk_Button_Box_Record;
+      (Widget       : not null access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
    --  Changes the way buttons are arranged in their container.
    --  "layout_style": the new layout style
@@ -118,9 +120,10 @@ package Gtk.Button_Box is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Button_Box_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Button_Box_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Button_Box_Record;
+      (Self        : not null access Gtk_Button_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

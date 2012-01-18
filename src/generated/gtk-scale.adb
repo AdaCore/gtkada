@@ -132,7 +132,7 @@ package body Gtk.Scale is
           Adjustment  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_new");
    begin
-      Set_Object (Scale, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Get_Object (Adjustment)));
+      Set_Object (Scale, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Get_Object_Or_Null (GObject (Adjustment))));
    end Initialize;
 
    -----------------------
@@ -227,7 +227,7 @@ package body Gtk.Scale is
    --------------
 
    procedure Add_Mark
-      (Scale    : access Gtk_Scale_Record;
+      (Scale    : not null access Gtk_Scale_Record;
        Value    : Gdouble;
        Position : Gtk.Enums.Gtk_Position_Type;
        Markup   : UTF8_String)
@@ -248,7 +248,7 @@ package body Gtk.Scale is
    -- Clear_Marks --
    -----------------
 
-   procedure Clear_Marks (Scale : access Gtk_Scale_Record) is
+   procedure Clear_Marks (Scale : not null access Gtk_Scale_Record) is
       procedure Internal (Scale : System.Address);
       pragma Import (C, Internal, "gtk_scale_clear_marks");
    begin
@@ -259,7 +259,9 @@ package body Gtk.Scale is
    -- Get_Digits --
    ----------------
 
-   function Get_Digits (Scale : access Gtk_Scale_Record) return Gint is
+   function Get_Digits
+      (Scale : not null access Gtk_Scale_Record) return Gint
+   is
       function Internal (Scale : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_scale_get_digits");
    begin
@@ -270,7 +272,9 @@ package body Gtk.Scale is
    -- Get_Draw_Value --
    --------------------
 
-   function Get_Draw_Value (Scale : access Gtk_Scale_Record) return Boolean is
+   function Get_Draw_Value
+      (Scale : not null access Gtk_Scale_Record) return Boolean
+   is
       function Internal (Scale : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_scale_get_draw_value");
    begin
@@ -282,7 +286,8 @@ package body Gtk.Scale is
    ----------------
 
    function Get_Layout
-      (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout
+      (Scale : not null access Gtk_Scale_Record)
+       return Pango.Layout.Pango_Layout
    is
       function Internal (Scale : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_get_layout");
@@ -296,7 +301,7 @@ package body Gtk.Scale is
    ------------------------
 
    procedure Get_Layout_Offsets
-      (Scale : access Gtk_Scale_Record;
+      (Scale : not null access Gtk_Scale_Record;
        X     : out Gint;
        Y     : out Gint)
    is
@@ -314,7 +319,8 @@ package body Gtk.Scale is
    -------------------
 
    function Get_Value_Pos
-      (Scale : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Position_Type
+      (Scale : not null access Gtk_Scale_Record)
+       return Gtk.Enums.Gtk_Position_Type
    is
       function Internal (Scale : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_scale_get_value_pos");
@@ -327,7 +333,7 @@ package body Gtk.Scale is
    ----------------
 
    procedure Set_Digits
-      (Scale            : access Gtk_Scale_Record;
+      (Scale            : not null access Gtk_Scale_Record;
        Number_Of_Digits : Gint)
    is
       procedure Internal (Scale : System.Address; Number_Of_Digits : Gint);
@@ -341,7 +347,7 @@ package body Gtk.Scale is
    --------------------
 
    procedure Set_Draw_Value
-      (Scale      : access Gtk_Scale_Record;
+      (Scale      : not null access Gtk_Scale_Record;
        Draw_Value : Boolean)
    is
       procedure Internal (Scale : System.Address; Draw_Value : Integer);
@@ -355,7 +361,7 @@ package body Gtk.Scale is
    -------------------
 
    procedure Set_Value_Pos
-      (Scale : access Gtk_Scale_Record;
+      (Scale : not null access Gtk_Scale_Record;
        Pos   : Gtk.Enums.Gtk_Position_Type)
    is
       procedure Internal (Scale : System.Address; Pos : Integer);
@@ -369,7 +375,8 @@ package body Gtk.Scale is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Scale_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -382,7 +389,7 @@ package body Gtk.Scale is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Scale_Record;
+      (Self        : not null access Gtk_Scale_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

@@ -101,16 +101,17 @@ package Gtk.Layout is
    -------------
 
    function Get_Bin_Window
-      (Layout : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window;
+      (Layout : not null access Gtk_Layout_Record)
+       return Gdk.Window.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
 
    procedure Get_Size
-      (Layout : access Gtk_Layout_Record;
+      (Layout : not null access Gtk_Layout_Record;
        Width  : out Guint;
        Height : out Guint);
    procedure Set_Size
-      (Layout : access Gtk_Layout_Record;
+      (Layout : not null access Gtk_Layout_Record;
        Width  : Guint;
        Height : Guint);
    --  Sets the size of the scrollable area of the layout.
@@ -118,8 +119,8 @@ package Gtk.Layout is
    --  "height": height of entire scrollable area
 
    procedure Move
-      (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Layout       : not null access Gtk_Layout_Record;
+       Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint);
    --  Moves a current child of Layout to a new position.
@@ -128,8 +129,8 @@ package Gtk.Layout is
    --  "y": Y position to move to
 
    procedure Put
-      (Layout       : access Gtk_Layout_Record;
-       Child_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Layout       : not null access Gtk_Layout_Record;
+       Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X            : Gint;
        Y            : Gint);
    --  The child will be displayed on the screen only if at least part of it
@@ -146,29 +147,31 @@ package Gtk.Layout is
    ---------------------------------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
+      (Self : not null access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Hadjustment
-      (Self        : access Gtk_Layout_Record;
+      (Self        : not null access Gtk_Layout_Record;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    function Get_Hscroll_Policy
-      (Self : access Gtk_Layout_Record)
+      (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
    procedure Set_Hscroll_Policy
-      (Self   : access Gtk_Layout_Record;
+      (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    function Get_Vadjustment
-      (Self : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
+      (Self : not null access Gtk_Layout_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Vadjustment
-      (Self        : access Gtk_Layout_Record;
+      (Self        : not null access Gtk_Layout_Record;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    function Get_Vscroll_Policy
-      (Self : access Gtk_Layout_Record)
+      (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
    procedure Set_Vscroll_Policy
-      (Self   : access Gtk_Layout_Record;
+      (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------

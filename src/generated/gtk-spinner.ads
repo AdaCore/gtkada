@@ -61,11 +61,11 @@ package Gtk.Spinner is
    -- Methods --
    -------------
 
-   procedure Start (Spinner : access Gtk_Spinner_Record);
+   procedure Start (Spinner : not null access Gtk_Spinner_Record);
    --  Starts the animation of the spinner.
    --  Since: gtk+ 2.20
 
-   procedure Stop (Spinner : access Gtk_Spinner_Record);
+   procedure Stop (Spinner : not null access Gtk_Spinner_Record);
    --  Stops the animation of the spinner.
    --  Since: gtk+ 2.20
 

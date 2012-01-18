@@ -129,7 +129,7 @@ package body Gtk.Box is
    ---------------
 
    function Get_Child
-      (Box : access Gtk_Box_Record;
+      (Box : not null access Gtk_Box_Record;
        Num : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
@@ -145,7 +145,9 @@ package body Gtk.Box is
    -- Get_Homogeneous --
    ---------------------
 
-   function Get_Homogeneous (Box : access Gtk_Box_Record) return Boolean is
+   function Get_Homogeneous
+      (Box : not null access Gtk_Box_Record) return Boolean
+   is
       function Internal (Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_box_get_homogeneous");
    begin
@@ -156,7 +158,7 @@ package body Gtk.Box is
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Box : access Gtk_Box_Record) return Gint is
+   function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint is
       function Internal (Box : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_box_get_spacing");
    begin
@@ -168,8 +170,8 @@ package body Gtk.Box is
    --------------
 
    procedure Pack_End
-      (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (In_Box  : not null access Gtk_Box_Record;
+       Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0)
@@ -190,8 +192,8 @@ package body Gtk.Box is
    ----------------
 
    procedure Pack_Start
-      (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (In_Box  : not null access Gtk_Box_Record;
+       Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0)
@@ -212,8 +214,8 @@ package body Gtk.Box is
    -------------------------
 
    procedure Query_Child_Packing
-      (Box       : access Gtk_Box_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box       : not null access Gtk_Box_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
        Padding   : out Guint;
@@ -242,8 +244,8 @@ package body Gtk.Box is
    -------------------
 
    procedure Reorder_Child
-      (Box      : access Gtk_Box_Record;
-       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box      : not null access Gtk_Box_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint)
    is
       procedure Internal
@@ -260,8 +262,8 @@ package body Gtk.Box is
    -----------------------
 
    procedure Set_Child_Packing
-      (Box       : access Gtk_Box_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box       : not null access Gtk_Box_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
        Padding   : Guint;
@@ -284,7 +286,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Set_Homogeneous
-      (Box         : access Gtk_Box_Record;
+      (Box         : not null access Gtk_Box_Record;
        Homogeneous : Boolean)
    is
       procedure Internal (Box : System.Address; Homogeneous : Integer);
@@ -297,7 +299,10 @@ package body Gtk.Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (Box : access Gtk_Box_Record; Spacing : Gint) is
+   procedure Set_Spacing
+      (Box     : not null access Gtk_Box_Record;
+       Spacing : Gint)
+   is
       procedure Internal (Box : System.Address; Spacing : Gint);
       pragma Import (C, Internal, "gtk_box_set_spacing");
    begin
@@ -309,7 +314,8 @@ package body Gtk.Box is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Box_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Box_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -322,7 +328,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Box_Record;
+      (Self        : not null access Gtk_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

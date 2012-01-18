@@ -128,8 +128,8 @@ package Gtk.Paned is
    -------------
 
    procedure Add1
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the first child of the container. The child will be displayed
    --  either in the top or in the left pane, depending on the orientation of
    --  the container. This is equivalent to using the Pack1 procedure with its
@@ -137,40 +137,46 @@ package Gtk.Paned is
    --  "child": the child to add
 
    procedure Add2
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the second child of the container. It will be displayed in the
    --  bottom or right pane, depending on the container's orientation. This is
    --  equivalent to using Pack2 with its default parameters.
    --  "child": the child to add
 
    function Get_Child1
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Child2
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Handle_Window
-      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
+      (Paned : not null access Gtk_Paned_Record)
+       return Gdk.Window.Gdk_Window;
    --  Returns the Gdk.Window.Gdk_Window of the handle. This function is
    --  useful when handling button or motion events because it enables the
    --  callback to distinguish between the window of the paned, a child and the
    --  handle.
    --  Since: gtk+ 2.20
 
-   function Get_Position (Paned : access Gtk_Paned_Record) return Gint;
-   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint);
+   function Get_Position
+      (Paned : not null access Gtk_Paned_Record) return Gint;
+   procedure Set_Position
+      (Paned    : not null access Gtk_Paned_Record;
+       Position : Gint);
    --  Sets the position of the divider between the two panes.
    --  "position": pixel position of divider, a negative value means that the
    --  position is unset.
 
    procedure Pack1
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True);
    --  Add a child to the top or left pane. You can not change dynamically the
@@ -184,8 +190,8 @@ package Gtk.Paned is
    --  "shrink": can this child be made smaller than its requisition.
 
    procedure Pack2
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False);
    --  Adds a child to the bottom or right pane.
@@ -198,9 +204,10 @@ package Gtk.Paned is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Paned_Record;
+      (Self        : not null access Gtk_Paned_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

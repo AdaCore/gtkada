@@ -99,11 +99,11 @@ package Gtk.Button is
    -- Methods --
    -------------
 
-   procedure Clicked (Button : access Gtk_Button_Record);
+   procedure Clicked (Button : not null access Gtk_Button_Record);
    --  Emits a Gtk.Button.Gtk_Button::clicked signal to the given
    --  Gtk.Button.Gtk_Button.
 
-   procedure Enter (Button : access Gtk_Button_Record);
+   procedure Enter (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Enter);
    --  Emits a Gtk.Button.Gtk_Button::enter signal to the given
    --  Gtk.Button.Gtk_Button.
@@ -111,11 +111,11 @@ package Gtk.Button is
    --  Gtk.Widget.Gtk_Widget::enter-notify-event signal.
 
    procedure Get_Alignment
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
    procedure Set_Alignment
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Sets the alignment of the child. This property has no effect unless the
@@ -127,15 +127,16 @@ package Gtk.Button is
    --  is bottom aligned
 
    function Get_Event_Window
-      (Button : access Gtk_Button_Record) return Gdk.Window.Gdk_Window;
+      (Button : not null access Gtk_Button_Record)
+       return Gdk.Window.Gdk_Window;
    --  Returns the button's event window if it is realized, null otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22
 
    function Get_Focus_On_Click
-      (Button : access Gtk_Button_Record) return Boolean;
+      (Button : not null access Gtk_Button_Record) return Boolean;
    procedure Set_Focus_On_Click
-      (Button         : access Gtk_Button_Record;
+      (Button         : not null access Gtk_Button_Record;
        Focus_On_Click : Boolean);
    --  Sets whether the button will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
@@ -146,10 +147,11 @@ package Gtk.Button is
    --  mouse
 
    function Get_Image
-      (Button : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget;
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Widget.Gtk_Widget;
    procedure Set_Image
-      (Button : access Gtk_Button_Record;
-       Image  : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Button : not null access Gtk_Button_Record;
+       Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set the image of Button to the given widget. Note that it depends on
    --  the Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the
    --  image will be displayed or not, you don't have to call Gtk.Widget.Show
@@ -158,17 +160,19 @@ package Gtk.Button is
    --  "image": a widget to set as the image for the button
 
    function Get_Image_Position
-      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Position_Type;
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Enums.Gtk_Position_Type;
    procedure Set_Image_Position
-      (Button   : access Gtk_Button_Record;
+      (Button   : not null access Gtk_Button_Record;
        Position : Gtk.Enums.Gtk_Position_Type);
    --  Sets the position of the image relative to the text inside the button.
    --  Since: gtk+ 2.10
    --  "position": the position
 
-   function Get_Label (Button : access Gtk_Button_Record) return UTF8_String;
+   function Get_Label
+      (Button : not null access Gtk_Button_Record) return UTF8_String;
    procedure Set_Label
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Label  : UTF8_String);
    --  Sets the text of the label of the button to Str. This text is also used
    --  to select the stock item if Gtk.Button.Set_Use_Stock is used.
@@ -176,9 +180,10 @@ package Gtk.Button is
    --  "label": a string
 
    function Get_Relief
-      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Enums.Gtk_Relief_Style;
    procedure Set_Relief
-      (Button   : access Gtk_Button_Record;
+      (Button   : not null access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style);
    --  Sets the relief style of the edges of the given Gtk.Button.Gtk_Button
    --  widget. Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF,
@@ -187,38 +192,39 @@ package Gtk.Button is
    --  <!-- FIXME: put pictures of each style -->
    --  "newstyle": The GtkReliefStyle as described above.
 
-   function Get_Use_Stock (Button : access Gtk_Button_Record) return Boolean;
+   function Get_Use_Stock
+      (Button : not null access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Stock
-      (Button    : access Gtk_Button_Record;
+      (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean);
    --  If True, the label set on the button is used as a stock id to select
    --  the stock item for the button.
    --  "use_stock": True if the button should use a stock item
 
    function Get_Use_Underline
-      (Button : access Gtk_Button_Record) return Boolean;
+      (Button : not null access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Underline
-      (Button        : access Gtk_Button_Record;
+      (Button        : not null access Gtk_Button_Record;
        Use_Underline : Boolean);
    --  If true, an underline in the text of the button label indicates the
    --  next character should be used for the mnemonic accelerator key.
    --  "use_underline": True if underlines in the text indicate mnemonics
 
-   procedure Leave (Button : access Gtk_Button_Record);
+   procedure Leave (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Leave);
    --  Emits a Gtk.Button.Gtk_Button::leave signal to the given
    --  Gtk.Button.Gtk_Button.
    --  Deprecated since 2.20, Use the
    --  Gtk.Widget.Gtk_Widget::leave-notify-event signal.
 
-   procedure Pressed (Button : access Gtk_Button_Record);
+   procedure Pressed (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Pressed);
    --  Emits a Gtk.Button.Gtk_Button::pressed signal to the given
    --  Gtk.Button.Gtk_Button.
    --  Deprecated since 2.20, Use the
    --  Gtk.Widget.Gtk_Widget::button-press-event signal.
 
-   procedure Released (Button : access Gtk_Button_Record);
+   procedure Released (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Released);
    --  Emits a Gtk.Button.Gtk_Button::released signal to the given
    --  Gtk.Button.Gtk_Button.
@@ -230,23 +236,24 @@ package Gtk.Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Button_Record) return Boolean;
+      (Self : not null access Gtk_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Button_Record;
+      (Self           : not null access Gtk_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Button_Record;
+      (Self   : not null access Gtk_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

@@ -32,7 +32,7 @@ package body Gtk.Activatable is
 
    procedure Do_Set_Related_Action
       (Self   : Gtk_Activatable;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : Gtk_Activatable; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -73,7 +73,7 @@ package body Gtk.Activatable is
 
    procedure Set_Related_Action
       (Self   : Gtk_Activatable;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : Gtk_Activatable; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -106,7 +106,7 @@ package body Gtk.Activatable is
       procedure Internal (Self : Gtk_Activatable; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Self, Get_Object (Action));
+      Internal (Self, Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Activatable;

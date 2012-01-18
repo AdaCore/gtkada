@@ -162,24 +162,27 @@ package Gtk.Box is
    -- Methods --
    -------------
 
-   function Get_Homogeneous (Box : access Gtk_Box_Record) return Boolean;
+   function Get_Homogeneous
+      (Box : not null access Gtk_Box_Record) return Boolean;
    procedure Set_Homogeneous
-      (Box         : access Gtk_Box_Record;
+      (Box         : not null access Gtk_Box_Record;
        Homogeneous : Boolean);
    --  Sets the Gtk.Box.Gtk_Box:homogeneous property of Box, controlling
    --  whether or not all children of Box are given equal space in the box.
    --  "homogeneous": a boolean value, True to create equal allotments, False
    --  for variable allotments
 
-   function Get_Spacing (Box : access Gtk_Box_Record) return Gint;
-   procedure Set_Spacing (Box : access Gtk_Box_Record; Spacing : Gint);
+   function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint;
+   procedure Set_Spacing
+      (Box     : not null access Gtk_Box_Record;
+       Spacing : Gint);
    --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number
    --  of pixels to place between children of Box.
    --  "spacing": the number of pixels to put between children
 
    procedure Pack_End
-      (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (In_Box  : not null access Gtk_Box_Record;
+       Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0);
@@ -202,8 +205,8 @@ package Gtk.Box is
    --  and the reference edge of Box
 
    procedure Pack_Start
-      (In_Box  : access Gtk_Box_Record;
-       Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (In_Box  : not null access Gtk_Box_Record;
+       Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand  : Boolean := True;
        Fill    : Boolean := True;
        Padding : Guint := 0);
@@ -226,15 +229,15 @@ package Gtk.Box is
    --  and the reference edge of Box
 
    procedure Query_Child_Packing
-      (Box       : access Gtk_Box_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box       : not null access Gtk_Box_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : out Boolean;
        Fill      : out Boolean;
        Padding   : out Guint;
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
    procedure Set_Child_Packing
-      (Box       : access Gtk_Box_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box       : not null access Gtk_Box_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Expand    : Boolean;
        Fill      : Boolean;
        Padding   : Guint;
@@ -248,8 +251,8 @@ package Gtk.Box is
    --  property
 
    procedure Reorder_Child
-      (Box      : access Gtk_Box_Record;
-       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Box      : not null access Gtk_Box_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint);
    --  Moves Child to a new Position in the list of Box children. The list is
    --  the <structfield>children</structfield> field of Gtk.Box.Gtk_Box-struct,
@@ -264,7 +267,7 @@ package Gtk.Box is
    --  starting from 0. If negative, indicates the end of the list
 
    function Get_Child
-      (Box : access Gtk_Box_Record;
+      (Box : not null access Gtk_Box_Record;
        Num : Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
@@ -274,9 +277,10 @@ package Gtk.Box is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Box_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Box_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Box_Record;
+      (Self        : not null access Gtk_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

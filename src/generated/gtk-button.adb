@@ -134,7 +134,7 @@ package body Gtk.Button is
    -- Clicked --
    -------------
 
-   procedure Clicked (Button : access Gtk_Button_Record) is
+   procedure Clicked (Button : not null access Gtk_Button_Record) is
       procedure Internal (Button : System.Address);
       pragma Import (C, Internal, "gtk_button_clicked");
    begin
@@ -145,7 +145,7 @@ package body Gtk.Button is
    -- Enter --
    -----------
 
-   procedure Enter (Button : access Gtk_Button_Record) is
+   procedure Enter (Button : not null access Gtk_Button_Record) is
       procedure Internal (Button : System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
@@ -157,7 +157,7 @@ package body Gtk.Button is
    -------------------
 
    procedure Get_Alignment
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
@@ -175,7 +175,8 @@ package body Gtk.Button is
    ----------------------
 
    function Get_Event_Window
-      (Button : access Gtk_Button_Record) return Gdk.Window.Gdk_Window
+      (Button : not null access Gtk_Button_Record)
+       return Gdk.Window.Gdk_Window
    is
       function Internal
          (Button : System.Address) return Gdk.Window.Gdk_Window;
@@ -189,7 +190,7 @@ package body Gtk.Button is
    ------------------------
 
    function Get_Focus_On_Click
-      (Button : access Gtk_Button_Record) return Boolean
+      (Button : not null access Gtk_Button_Record) return Boolean
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_focus_on_click");
@@ -202,7 +203,8 @@ package body Gtk.Button is
    ---------------
 
    function Get_Image
-      (Button : access Gtk_Button_Record) return Gtk.Widget.Gtk_Widget
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_button_get_image");
@@ -216,7 +218,8 @@ package body Gtk.Button is
    ------------------------
 
    function Get_Image_Position
-      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Position_Type
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Enums.Gtk_Position_Type
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_image_position");
@@ -228,7 +231,9 @@ package body Gtk.Button is
    -- Get_Label --
    ---------------
 
-   function Get_Label (Button : access Gtk_Button_Record) return UTF8_String is
+   function Get_Label
+      (Button : not null access Gtk_Button_Record) return UTF8_String
+   is
       function Internal
          (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_button_get_label");
@@ -241,7 +246,8 @@ package body Gtk.Button is
    ----------------
 
    function Get_Relief
-      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style
+      (Button : not null access Gtk_Button_Record)
+       return Gtk.Enums.Gtk_Relief_Style
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_relief");
@@ -253,7 +259,9 @@ package body Gtk.Button is
    -- Get_Use_Stock --
    -------------------
 
-   function Get_Use_Stock (Button : access Gtk_Button_Record) return Boolean is
+   function Get_Use_Stock
+      (Button : not null access Gtk_Button_Record) return Boolean
+   is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_use_stock");
    begin
@@ -265,7 +273,7 @@ package body Gtk.Button is
    -----------------------
 
    function Get_Use_Underline
-      (Button : access Gtk_Button_Record) return Boolean
+      (Button : not null access Gtk_Button_Record) return Boolean
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_use_underline");
@@ -277,7 +285,7 @@ package body Gtk.Button is
    -- Leave --
    -----------
 
-   procedure Leave (Button : access Gtk_Button_Record) is
+   procedure Leave (Button : not null access Gtk_Button_Record) is
       procedure Internal (Button : System.Address);
       pragma Import (C, Internal, "gtk_button_leave");
    begin
@@ -288,7 +296,7 @@ package body Gtk.Button is
    -- Pressed --
    -------------
 
-   procedure Pressed (Button : access Gtk_Button_Record) is
+   procedure Pressed (Button : not null access Gtk_Button_Record) is
       procedure Internal (Button : System.Address);
       pragma Import (C, Internal, "gtk_button_pressed");
    begin
@@ -299,7 +307,7 @@ package body Gtk.Button is
    -- Released --
    --------------
 
-   procedure Released (Button : access Gtk_Button_Record) is
+   procedure Released (Button : not null access Gtk_Button_Record) is
       procedure Internal (Button : System.Address);
       pragma Import (C, Internal, "gtk_button_released");
    begin
@@ -311,7 +319,7 @@ package body Gtk.Button is
    -------------------
 
    procedure Set_Alignment
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
@@ -329,7 +337,7 @@ package body Gtk.Button is
    ------------------------
 
    procedure Set_Focus_On_Click
-      (Button         : access Gtk_Button_Record;
+      (Button         : not null access Gtk_Button_Record;
        Focus_On_Click : Boolean)
    is
       procedure Internal (Button : System.Address; Focus_On_Click : Integer);
@@ -343,8 +351,8 @@ package body Gtk.Button is
    ---------------
 
    procedure Set_Image
-      (Button : access Gtk_Button_Record;
-       Image  : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Button : not null access Gtk_Button_Record;
+       Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Button : System.Address; Image : System.Address);
       pragma Import (C, Internal, "gtk_button_set_image");
@@ -357,7 +365,7 @@ package body Gtk.Button is
    ------------------------
 
    procedure Set_Image_Position
-      (Button   : access Gtk_Button_Record;
+      (Button   : not null access Gtk_Button_Record;
        Position : Gtk.Enums.Gtk_Position_Type)
    is
       procedure Internal (Button : System.Address; Position : Integer);
@@ -371,7 +379,7 @@ package body Gtk.Button is
    ---------------
 
    procedure Set_Label
-      (Button : access Gtk_Button_Record;
+      (Button : not null access Gtk_Button_Record;
        Label  : UTF8_String)
    is
       procedure Internal
@@ -389,7 +397,7 @@ package body Gtk.Button is
    ----------------
 
    procedure Set_Relief
-      (Button   : access Gtk_Button_Record;
+      (Button   : not null access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style)
    is
       procedure Internal (Button : System.Address; Newstyle : Integer);
@@ -403,7 +411,7 @@ package body Gtk.Button is
    -------------------
 
    procedure Set_Use_Stock
-      (Button    : access Gtk_Button_Record;
+      (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean)
    is
       procedure Internal (Button : System.Address; Use_Stock : Integer);
@@ -417,7 +425,7 @@ package body Gtk.Button is
    -----------------------
 
    procedure Set_Use_Underline
-      (Button        : access Gtk_Button_Record;
+      (Button        : not null access Gtk_Button_Record;
        Use_Underline : Boolean)
    is
       procedure Internal (Button : System.Address; Use_Underline : Integer);
@@ -431,8 +439,8 @@ package body Gtk.Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -445,7 +453,8 @@ package body Gtk.Button is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -459,7 +468,7 @@ package body Gtk.Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Button_Record) return Boolean
+      (Self : not null access Gtk_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -472,8 +481,8 @@ package body Gtk.Button is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -486,7 +495,7 @@ package body Gtk.Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Button_Record;
+      (Self           : not null access Gtk_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -500,13 +509,13 @@ package body Gtk.Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Button_Record;
+      (Self   : not null access Gtk_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Button;

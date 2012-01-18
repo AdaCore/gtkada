@@ -67,7 +67,7 @@ package body Gtk.Arrow is
    ---------
 
    procedure Set
-      (Arrow       : access Gtk_Arrow_Record;
+      (Arrow       : not null access Gtk_Arrow_Record;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is

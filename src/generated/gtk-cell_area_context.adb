@@ -36,7 +36,7 @@ package body Gtk.Cell_Area_Context is
    --------------
 
    procedure Allocate
-      (Self   : access Gtk_Cell_Area_Context_Record;
+      (Self   : not null access Gtk_Cell_Area_Context_Record;
        Width  : Gint;
        Height : Gint)
    is
@@ -54,7 +54,7 @@ package body Gtk.Cell_Area_Context is
    --------------------
 
    procedure Get_Allocation
-      (Self   : access Gtk_Cell_Area_Context_Record;
+      (Self   : not null access Gtk_Cell_Area_Context_Record;
        Width  : out Gint;
        Height : out Gint)
    is
@@ -72,7 +72,7 @@ package body Gtk.Cell_Area_Context is
    --------------------------
 
    procedure Get_Preferred_Height
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Height : out Gint;
        Natural_Height : out Gint)
    is
@@ -90,7 +90,7 @@ package body Gtk.Cell_Area_Context is
    ------------------------------------
 
    procedure Get_Preferred_Height_For_Width
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Width          : Gint;
        Minimum_Height : out Gint;
        Natural_Height : out Gint)
@@ -110,7 +110,7 @@ package body Gtk.Cell_Area_Context is
    -------------------------
 
    procedure Get_Preferred_Width
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Width : out Gint;
        Natural_Width : out Gint)
    is
@@ -128,7 +128,7 @@ package body Gtk.Cell_Area_Context is
    ------------------------------------
 
    procedure Get_Preferred_Width_For_Height
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Height        : Gint;
        Minimum_Width : out Gint;
        Natural_Width : out Gint)
@@ -148,7 +148,7 @@ package body Gtk.Cell_Area_Context is
    ---------------------------
 
    procedure Push_Preferred_Height
-      (Self           : access Gtk_Cell_Area_Context_Record;
+      (Self           : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Height : Gint;
        Natural_Height : Gint)
    is
@@ -166,7 +166,7 @@ package body Gtk.Cell_Area_Context is
    --------------------------
 
    procedure Push_Preferred_Width
-      (Self          : access Gtk_Cell_Area_Context_Record;
+      (Self          : not null access Gtk_Cell_Area_Context_Record;
        Minimum_Width : Gint;
        Natural_Width : Gint)
    is
@@ -183,7 +183,7 @@ package body Gtk.Cell_Area_Context is
    -- Reset --
    -----------
 
-   procedure Reset (Self : access Gtk_Cell_Area_Context_Record) is
+   procedure Reset (Self : not null access Gtk_Cell_Area_Context_Record) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "gtk_cell_area_context_reset");
    begin

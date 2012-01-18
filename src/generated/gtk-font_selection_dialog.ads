@@ -64,7 +64,7 @@ package Gtk.Font_Selection_Dialog is
    -------------
 
    function Get_Cancel_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Cancel_Button);
    --  Gets the 'Cancel' button.
@@ -74,10 +74,11 @@ package Gtk.Font_Selection_Dialog is
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Font_Name
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String;
    pragma Obsolescent (Get_Font_Name);
    function Set_Font_Name
-      (Dialog   : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
@@ -87,7 +88,7 @@ package Gtk.Font_Selection_Dialog is
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Font_Selection
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Font_Selection);
    --  Retrieves the Gtk.Font_Selection.Gtk_Font_Selection widget embedded in
@@ -97,7 +98,7 @@ package Gtk.Font_Selection_Dialog is
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Ok_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Ok_Button);
    --  Gets the 'OK' button.
@@ -107,10 +108,11 @@ package Gtk.Font_Selection_Dialog is
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
    function Get_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    procedure Set_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String);
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area.

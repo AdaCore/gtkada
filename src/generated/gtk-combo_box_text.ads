@@ -79,8 +79,8 @@ package Gtk.Combo_Box_Text is
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
@@ -116,7 +116,7 @@ package Gtk.Combo_Box_Text is
    -------------
 
    procedure Append
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Id   : UTF8_String;
        Text : UTF8_String);
    --  Appends Text to the list of strings stored in Combo_Box. If Id is
@@ -128,7 +128,7 @@ package Gtk.Combo_Box_Text is
    --  "text": A string
 
    procedure Append_Text
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Text : UTF8_String);
    --  Appends Text to the list of strings stored in Combo_Box.
    --  This is the same as calling Gtk.Combo_Box_Text.Insert_Text with a
@@ -137,7 +137,7 @@ package Gtk.Combo_Box_Text is
    --  "text": A string
 
    function Get_Active_Text
-      (Self : access Gtk_Combo_Box_Text_Record) return UTF8_String;
+      (Self : not null access Gtk_Combo_Box_Text_Record) return UTF8_String;
    --  Returns the currently active string in Combo_Box, or null if none is
    --  selected. If Combo_Box contains an entry, this function will return its
    --  contents (which will not necessarily be an item from the list).
@@ -145,7 +145,7 @@ package Gtk.Combo_Box_Text is
    --  Since: gtk+ 2.24
 
    procedure Insert
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
        Id       : UTF8_String;
        Text     : UTF8_String);
@@ -159,7 +159,7 @@ package Gtk.Combo_Box_Text is
    --  "text": A string to display
 
    procedure Insert_Text
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box.
@@ -171,7 +171,7 @@ package Gtk.Combo_Box_Text is
    --  "text": A string
 
    procedure Prepend
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Id   : UTF8_String;
        Text : UTF8_String);
    --  Prepends Text to the list of strings stored in Combo_Box. If Id is
@@ -183,7 +183,7 @@ package Gtk.Combo_Box_Text is
    --  "text": a string
 
    procedure Prepend_Text
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Text : UTF8_String);
    --  Prepends Text to the list of strings stored in Combo_Box.
    --  This is the same as calling Gtk.Combo_Box_Text.Insert_Text with a
@@ -192,19 +192,19 @@ package Gtk.Combo_Box_Text is
    --  "text": A string
 
    procedure Remove
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint);
    --  Removes the string at Position from Combo_Box.
    --  Since: gtk+ 2.24
    --  "position": Index of the item to remove
 
-   procedure Remove_All (Self : access Gtk_Combo_Box_Text_Record);
+   procedure Remove_All (Self : not null access Gtk_Combo_Box_Text_Record);
    --  Removes all the text entries from the combo box.
    --  Since: gtk+ 3.0
 
    procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Gtk.Cell_Layout.Cell_Data_Func);
    --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
    --  This function is used instead of the standard attributes mapping for
@@ -222,8 +222,8 @@ package Gtk.Combo_Box_Text is
 
       type Cell_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -235,8 +235,8 @@ package Gtk.Combo_Box_Text is
       --  "data": user data passed to Gtk.Combo_Box_Text.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);
       --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
@@ -255,45 +255,46 @@ package Gtk.Combo_Box_Text is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
-   procedure Editing_Done (Cell_Editable : access Gtk_Combo_Box_Text_Record);
+   procedure Editing_Done
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record);
 
    procedure Remove_Widget
-      (Cell_Editable : access Gtk_Combo_Box_Text_Record);
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record);
 
    procedure Start_Editing
-      (Cell_Editable : access Gtk_Combo_Box_Text_Record;
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record;
        Event         : Gdk.Event.Gdk_Event);
 
    procedure Add_Attribute
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint);
 
-   procedure Clear (Cell_Layout : access Gtk_Combo_Box_Text_Record);
+   procedure Clear (Cell_Layout : not null access Gtk_Combo_Box_Text_Record);
 
    procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       ;
 
    function Get_Cells
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record)
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record)
        return Glib.Object.Object_Simple_List.GList;
 
    procedure Pack_End
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
 
    procedure Pack_Start
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
 
    procedure Reorder
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
 
    ----------------

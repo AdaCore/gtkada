@@ -69,7 +69,7 @@ package body Gtk.Font_Selection_Dialog is
    -----------------------
 
    function Get_Cancel_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -84,7 +84,8 @@ package body Gtk.Font_Selection_Dialog is
    -------------------
 
    function Get_Font_Name
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String
    is
       function Internal
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -98,7 +99,7 @@ package body Gtk.Font_Selection_Dialog is
    ------------------------
 
    function Get_Font_Selection
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -113,7 +114,7 @@ package body Gtk.Font_Selection_Dialog is
    -------------------
 
    function Get_Ok_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -128,7 +129,8 @@ package body Gtk.Font_Selection_Dialog is
    ----------------------
 
    function Get_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String
    is
       function Internal
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -142,7 +144,7 @@ package body Gtk.Font_Selection_Dialog is
    -------------------
 
    function Set_Font_Name
-      (Dialog   : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean
    is
       function Internal
@@ -162,7 +164,7 @@ package body Gtk.Font_Selection_Dialog is
    ----------------------
 
    procedure Set_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String)
    is
       procedure Internal

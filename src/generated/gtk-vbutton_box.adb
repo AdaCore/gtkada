@@ -57,7 +57,7 @@ package body Gtk.Vbutton_Box is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Vbutton_Box_Record)
+      (Self : not null access Gtk_Vbutton_Box_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
@@ -71,7 +71,7 @@ package body Gtk.Vbutton_Box is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Vbutton_Box_Record;
+      (Self        : not null access Gtk_Vbutton_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

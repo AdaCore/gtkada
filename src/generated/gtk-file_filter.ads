@@ -142,7 +142,7 @@ package Gtk.File_Filter is
    -------------
 
    procedure Add_Custom
-      (Self   : access Gtk_File_Filter_Record;
+      (Self   : not null access Gtk_File_Filter_Record;
        Needed : Gtk_File_Filter_Flags;
        Func   : Gtk_File_Filter_Func;
        Notify : Glib.G_Destroy_Notify_Address);
@@ -173,7 +173,7 @@ package Gtk.File_Filter is
       --  "data": user data passed to Gtk.File_Filter.Add_Custom
 
       procedure Add_Custom
-         (Self   : access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
+         (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record;
           Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
           Data   : User_Data_Type;
@@ -194,25 +194,26 @@ package Gtk.File_Filter is
    end Add_Custom_User_Data;
 
    procedure Add_Mime_Type
-      (Self      : access Gtk_File_Filter_Record;
+      (Self      : not null access Gtk_File_Filter_Record;
        Mime_Type : UTF8_String);
    --  Adds a rule allowing a given mime type to Filter.
    --  Since: gtk+ 2.4
    --  "mime_type": name of a MIME type
 
    procedure Add_Pattern
-      (Self    : access Gtk_File_Filter_Record;
+      (Self    : not null access Gtk_File_Filter_Record;
        Pattern : UTF8_String);
    --  Adds a rule allowing a shell style glob to a filter.
    --  Since: gtk+ 2.4
    --  "pattern": a shell style glob
 
-   procedure Add_Pixbuf_Formats (Self : access Gtk_File_Filter_Record);
+   procedure Add_Pixbuf_Formats
+      (Self : not null access Gtk_File_Filter_Record);
    --  Adds a rule allowing image files in the formats supported by GdkPixbuf.
    --  Since: gtk+ 2.6
 
    function Filter
-      (Self        : access Gtk_File_Filter_Record;
+      (Self        : not null access Gtk_File_Filter_Record;
        Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  Tests whether a file should be displayed according to Filter. The
    --  Gtk_File_Filter_Info structure Filter_Info should include the fields
@@ -225,9 +226,9 @@ package Gtk.File_Filter is
    --  about a file.
 
    function Get_Name
-      (Self : access Gtk_File_Filter_Record) return UTF8_String;
+      (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
    procedure Set_Name
-      (Self : access Gtk_File_Filter_Record;
+      (Self : not null access Gtk_File_Filter_Record;
        Name : UTF8_String);
    --  Sets the human-readable name of the filter; this is the string that
    --  will be displayed in the file selector user interface if there is a
@@ -237,7 +238,8 @@ package Gtk.File_Filter is
    --  existing name.
 
    function Get_Needed
-      (Self : access Gtk_File_Filter_Record) return Gtk_File_Filter_Flags;
+      (Self : not null access Gtk_File_Filter_Record)
+       return Gtk_File_Filter_Flags;
    --  Gets the fields that need to be filled in for the structure passed to
    --  Gtk.File_Filter.Filter
    --  This function will not typically be used by applications; it is intended

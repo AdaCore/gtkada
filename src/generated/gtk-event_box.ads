@@ -60,9 +60,9 @@ package Gtk.Event_Box is
    -------------
 
    function Get_Above_Child
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
    procedure Set_Above_Child
-      (Event_Box   : access Gtk_Event_Box_Record;
+      (Event_Box   : not null access Gtk_Event_Box_Record;
        Above_Child : Boolean);
    --  Set whether the event box window is positioned above the windows of its
    --  child, as opposed to below it. If the window is above, all events inside
@@ -74,9 +74,9 @@ package Gtk.Event_Box is
    --  "above_child": True if the event box window is above its child
 
    function Get_Visible_Window
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
    procedure Set_Visible_Window
-      (Event_Box      : access Gtk_Event_Box_Record;
+      (Event_Box      : not null access Gtk_Event_Box_Record;
        Visible_Window : Boolean);
    --  Set whether the event box uses a visible or invisible child window. The
    --  default is to use visible windows.

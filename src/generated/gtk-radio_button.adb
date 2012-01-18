@@ -187,7 +187,7 @@ package body Gtk.Radio_Button is
    ---------------
 
    function Get_Group
-      (Radio_Button : access Gtk_Radio_Button_Record)
+      (Radio_Button : not null access Gtk_Radio_Button_Record)
        return Gtk.Widget.Widget_SList.GSList
    is
       function Internal
@@ -204,7 +204,7 @@ package body Gtk.Radio_Button is
    ----------------
 
    procedure Join_Group
-      (Radio_Button : access Gtk_Radio_Button_Record;
+      (Radio_Button : not null access Gtk_Radio_Button_Record;
        Group_Source : access Gtk_Radio_Button_Record'Class)
    is
       procedure Internal
@@ -212,7 +212,7 @@ package body Gtk.Radio_Button is
           Group_Source : System.Address);
       pragma Import (C, Internal, "gtk_radio_button_join_group");
    begin
-      Internal (Get_Object (Radio_Button), Get_Object (Group_Source));
+      Internal (Get_Object (Radio_Button), Get_Object_Or_Null (GObject (Group_Source)));
    end Join_Group;
 
    ---------------
@@ -220,7 +220,7 @@ package body Gtk.Radio_Button is
    ---------------
 
    procedure Set_Group
-      (Radio_Button : access Gtk_Radio_Button_Record;
+      (Radio_Button : not null access Gtk_Radio_Button_Record;
        Group        : Gtk.Widget.Widget_SList.GSList)
    is
       procedure Internal
@@ -236,8 +236,8 @@ package body Gtk.Radio_Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Radio_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Radio_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -250,7 +250,8 @@ package body Gtk.Radio_Button is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Radio_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Radio_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -264,7 +265,7 @@ package body Gtk.Radio_Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Radio_Button_Record) return Boolean
+      (Self : not null access Gtk_Radio_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -277,8 +278,8 @@ package body Gtk.Radio_Button is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Radio_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Radio_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -291,7 +292,7 @@ package body Gtk.Radio_Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Radio_Button_Record;
+      (Self           : not null access Gtk_Radio_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -305,13 +306,13 @@ package body Gtk.Radio_Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Radio_Button_Record;
+      (Self   : not null access Gtk_Radio_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Radio_Button;

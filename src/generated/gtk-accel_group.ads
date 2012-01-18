@@ -111,9 +111,9 @@ package Gtk.Accel_Group is
    -------------
 
    function Activate
-      (Accel_Group   : access Gtk_Accel_Group_Record;
+      (Accel_Group   : not null access Gtk_Accel_Group_Record;
        Accel_Quark   : Glib.GQuark;
-       Acceleratable : access Glib.Object.GObject_Record'Class;
+       Acceleratable : not null access Glib.Object.GObject_Record'Class;
        Accel_Key     : Guint;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in Accel_Group that matches Accel_Key and
@@ -126,7 +126,7 @@ package Gtk.Accel_Group is
    --  "accel_mods": keyboard state mask from a key event
 
    procedure Connect
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Key   : Guint;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags : Gtk_Accel_Flags;
@@ -145,7 +145,7 @@ package Gtk.Accel_Group is
    --  "closure": closure to be executed upon accelerator activation
 
    procedure Connect_By_Path
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Path  : UTF8_String;
        Closure     : C_Gtk_Accel_Group_Activate);
    --  Installs an accelerator in this group, using an accelerator path to
@@ -162,7 +162,7 @@ package Gtk.Accel_Group is
    --  "closure": closure to be executed upon accelerator activation
 
    function Disconnect
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Closure     : C_Gtk_Accel_Group_Activate) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
@@ -171,7 +171,7 @@ package Gtk.Accel_Group is
    --  to remove all closures
 
    function Disconnect_Key
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Key   : Guint;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
@@ -181,7 +181,7 @@ package Gtk.Accel_Group is
    --  "accel_mods": modifier combination of the accelerator
 
    function Find
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
    --  returns True and returns its Gtk_Accel_Key.
@@ -200,7 +200,7 @@ package Gtk.Accel_Group is
       --  Since: gtk+ 2.2
 
       function Find
-         (Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record;
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func
@@ -212,20 +212,20 @@ package Gtk.Accel_Group is
    end Find_User_Data;
 
    function Get_Is_Locked
-      (Accel_Group : access Gtk_Accel_Group_Record) return Boolean;
+      (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
    --  Gtk.Accel_Group.Unlock.
    --  False otherwise.
    --  Since: gtk+ 2.14
 
    function Get_Modifier_Mask
-      (Accel_Group : access Gtk_Accel_Group_Record)
+      (Accel_Group : not null access Gtk_Accel_Group_Record)
        return Gdk.Types.Gdk_Modifier_Type;
    --  Gets a Gdk.Types.Gdk_Modifier_Type representing the mask for this
    --  Accel_Group. For example, GDK_CONTROL_MASK, GDK_SHIFT_MASK, etc.
    --  Since: gtk+ 2.14
 
-   procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
+   procedure Lock (Accel_Group : not null access Gtk_Accel_Group_Record);
    --  Locks the given accelerator group.
    --  Locking an acelerator group prevents the accelerators contained within
    --  it to be changed during runtime. Refer to Gtk.Accel_Map.Change_Entry
@@ -233,7 +233,7 @@ package Gtk.Accel_Group is
    --  If called more than once, Accel_Group remains locked until
    --  Gtk.Accel_Group.Unlock has been called an equivalent number of times.
 
-   procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record);
+   procedure Unlock (Accel_Group : not null access Gtk_Accel_Group_Record);
    --  Undoes the last call to Gtk.Accel_Group.Lock on this Accel_Group.
 
    ---------------
@@ -248,7 +248,7 @@ package Gtk.Accel_Group is
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
-      (Object     : access Glib.Object.GObject_Record'Class;
+      (Object     : not null access Glib.Object.GObject_Record'Class;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in any Gtk.Accel_Group.Gtk_Accel_Group
@@ -261,7 +261,7 @@ package Gtk.Accel_Group is
    --  "accel_mods": keyboard state mask from a key event
 
    function From_Object
-      (Object : access Glib.Object.GObject_Record'Class)
+      (Object : not null access Glib.Object.GObject_Record'Class)
        return Glib.Object.Object_List.GSList;
    --  Gets a list of all accel groups which are attached to Object.
    --  all accel groups which are attached to Object

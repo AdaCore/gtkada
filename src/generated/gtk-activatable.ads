@@ -235,7 +235,7 @@ package Gtk.Activatable is
 
    procedure Do_Set_Related_Action
       (Self   : Gtk_Activatable;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
    --  This is a utility function for Gtk.Activatable.Gtk_Activatable
    --  implementors.
    --  When implementing Gtk.Activatable.Gtk_Activatable you must call this
@@ -256,7 +256,7 @@ package Gtk.Activatable is
       (Self : Gtk_Activatable) return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
       (Self   : Gtk_Activatable;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
    --  Sets the related action on the Activatable object.
    --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:related-action property and call

@@ -95,20 +95,21 @@ package Gtk.Frame is
    -- Methods --
    -------------
 
-   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String;
+   function Get_Label
+      (Frame : not null access Gtk_Frame_Record) return UTF8_String;
    procedure Set_Label
-      (Frame : access Gtk_Frame_Record;
+      (Frame : not null access Gtk_Frame_Record;
        Label : UTF8_String);
    --  Sets the text of the label. If Label is null, the current label is
    --  removed.
    --  "label": the text to use as the label of the frame
 
    procedure Get_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
    procedure Set_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Sets the alignment of the frame widget's label. The default values for
@@ -121,18 +122,20 @@ package Gtk.Frame is
    --  completely above or below the frame.
 
    function Get_Label_Widget
-      (Frame : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget;
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Widget.Gtk_Widget;
    procedure Set_Label_Widget
-      (Frame        : access Gtk_Frame_Record;
-       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Frame        : not null access Gtk_Frame_Record;
+       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the label widget for the frame. This is the widget that will
    --  appear embedded in the top edge of the frame as a title.
    --  "label_widget": the new label widget
 
    function Get_Shadow_Type
-      (Frame : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type;
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Enums.Gtk_Shadow_Type;
    procedure Set_Shadow_Type
-      (Frame    : access Gtk_Frame_Record;
+      (Frame    : not null access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type for Frame.
    --  "type": the new Gtk.Enums.Gtk_Shadow_Type

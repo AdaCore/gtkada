@@ -93,9 +93,9 @@ package body Gtk.Accel_Group is
    --------------
 
    function Activate
-      (Accel_Group   : access Gtk_Accel_Group_Record;
+      (Accel_Group   : not null access Gtk_Accel_Group_Record;
        Accel_Quark   : Glib.GQuark;
-       Acceleratable : access Glib.Object.GObject_Record'Class;
+       Acceleratable : not null access Glib.Object.GObject_Record'Class;
        Accel_Key     : Guint;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
@@ -115,7 +115,7 @@ package body Gtk.Accel_Group is
    -------------
 
    procedure Connect
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Key   : Guint;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags : Gtk_Accel_Flags;
@@ -137,7 +137,7 @@ package body Gtk.Accel_Group is
    ---------------------
 
    procedure Connect_By_Path
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Path  : UTF8_String;
        Closure     : C_Gtk_Accel_Group_Activate)
    is
@@ -157,7 +157,7 @@ package body Gtk.Accel_Group is
    ----------------
 
    function Disconnect
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Closure     : C_Gtk_Accel_Group_Activate) return Boolean
    is
       function Internal
@@ -173,7 +173,7 @@ package body Gtk.Accel_Group is
    --------------------
 
    function Disconnect_Key
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Accel_Key   : Guint;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
@@ -191,7 +191,7 @@ package body Gtk.Accel_Group is
    ----------
 
    function Find
-      (Accel_Group : access Gtk_Accel_Group_Record;
+      (Accel_Group : not null access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key
    is
    begin
@@ -216,7 +216,7 @@ package body Gtk.Accel_Group is
       ----------
 
       function Find
-         (Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record;
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk_Accel_Key
       is
@@ -245,7 +245,7 @@ package body Gtk.Accel_Group is
    -------------------
 
    function Get_Is_Locked
-      (Accel_Group : access Gtk_Accel_Group_Record) return Boolean
+      (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean
    is
       function Internal (Accel_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_get_is_locked");
@@ -258,7 +258,7 @@ package body Gtk.Accel_Group is
    -----------------------
 
    function Get_Modifier_Mask
-      (Accel_Group : access Gtk_Accel_Group_Record)
+      (Accel_Group : not null access Gtk_Accel_Group_Record)
        return Gdk.Types.Gdk_Modifier_Type
    is
       function Internal
@@ -272,7 +272,7 @@ package body Gtk.Accel_Group is
    -- Lock --
    ----------
 
-   procedure Lock (Accel_Group : access Gtk_Accel_Group_Record) is
+   procedure Lock (Accel_Group : not null access Gtk_Accel_Group_Record) is
       procedure Internal (Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_accel_group_lock");
    begin
@@ -283,7 +283,7 @@ package body Gtk.Accel_Group is
    -- Unlock --
    ------------
 
-   procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record) is
+   procedure Unlock (Accel_Group : not null access Gtk_Accel_Group_Record) is
       procedure Internal (Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_accel_group_unlock");
    begin
@@ -295,7 +295,7 @@ package body Gtk.Accel_Group is
    ---------------------------
 
    function Accel_Groups_Activate
-      (Object     : access Glib.Object.GObject_Record'Class;
+      (Object     : not null access Glib.Object.GObject_Record'Class;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
@@ -398,7 +398,7 @@ package body Gtk.Accel_Group is
    -----------------
 
    function From_Object
-      (Object : access Glib.Object.GObject_Record'Class)
+      (Object : not null access Glib.Object.GObject_Record'Class)
        return Glib.Object.Object_List.GSList
    is
       function Internal (Object : System.Address) return System.Address;

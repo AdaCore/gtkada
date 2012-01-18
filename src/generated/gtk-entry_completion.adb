@@ -234,7 +234,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
 
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
-       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+      
    is
    begin
       Completion := new Gtk_Entry_Completion_Record;
@@ -260,7 +261,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
 
    procedure Initialize_With_Area
       (Completion : access Gtk_Entry_Completion_Record'Class;
-       Area       : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+      
    is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new_with_area");
@@ -272,7 +274,9 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -- Complete --
    --------------
 
-   procedure Complete (Completion : access Gtk_Entry_Completion_Record) is
+   procedure Complete
+      (Completion : not null access Gtk_Entry_Completion_Record)
+   is
       procedure Internal (Completion : System.Address);
       pragma Import (C, Internal, "gtk_entry_completion_complete");
    begin
@@ -284,7 +288,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -------------------
 
    procedure Delete_Action
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint)
    is
       procedure Internal (Completion : System.Address; Index : Gint);
@@ -298,7 +302,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------------------
 
    function Get_Completion_Prefix
-      (Completion : access Gtk_Entry_Completion_Record) return UTF8_String
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return UTF8_String
    is
       function Internal
          (Completion : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -312,7 +317,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------
 
    function Get_Entry
-      (Completion : access Gtk_Entry_Completion_Record)
+      (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Completion : System.Address) return System.Address;
@@ -327,7 +332,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------------------
 
    function Get_Inline_Completion
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean
    is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_completion");
@@ -340,7 +346,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------------
 
    function Get_Inline_Selection
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean
    is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_selection");
@@ -353,7 +360,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------------------
 
    function Get_Minimum_Key_Length
-      (Completion : access Gtk_Entry_Completion_Record) return Gint
+      (Completion : not null access Gtk_Entry_Completion_Record) return Gint
    is
       function Internal (Completion : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_completion_get_minimum_key_length");
@@ -366,7 +373,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------
 
    function Get_Model
-      (Completion : access Gtk_Entry_Completion_Record)
+      (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model
    is
       function Internal (Completion : System.Address) return System.Address;
@@ -381,7 +388,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------------
 
    function Get_Popup_Completion
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean
    is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_completion");
@@ -394,7 +402,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -------------------------
 
    function Get_Popup_Set_Width
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean
    is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_set_width");
@@ -407,7 +416,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------------------
 
    function Get_Popup_Single_Match
-      (Completion : access Gtk_Entry_Completion_Record) return Boolean
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Boolean
    is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_single_match");
@@ -420,7 +430,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------------
 
    function Get_Text_Column
-      (Completion : access Gtk_Entry_Completion_Record) return Gint
+      (Completion : not null access Gtk_Entry_Completion_Record) return Gint
    is
       function Internal (Completion : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_entry_completion_get_text_column");
@@ -433,7 +443,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------------
 
    procedure Insert_Action_Markup
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint;
        Markup     : UTF8_String)
    is
@@ -453,7 +463,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ------------------------
 
    procedure Insert_Action_Text
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Gint;
        Text       : UTF8_String)
    is
@@ -472,7 +482,9 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -- Insert_Prefix --
    -------------------
 
-   procedure Insert_Prefix (Completion : access Gtk_Entry_Completion_Record) is
+   procedure Insert_Prefix
+      (Completion : not null access Gtk_Entry_Completion_Record)
+   is
       procedure Internal (Completion : System.Address);
       pragma Import (C, Internal, "gtk_entry_completion_insert_prefix");
    begin
@@ -484,8 +496,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ------------------------
 
    procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Gtk.Cell_Layout.Cell_Data_Func)
    is
    begin
@@ -501,8 +513,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       --  A function which should set the value of Cell_Layout's cell
@@ -519,8 +531,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
@@ -534,8 +546,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
       ------------------------
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type)
       is
@@ -550,7 +562,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------------------
 
    procedure Set_Inline_Completion
-      (Completion        : access Gtk_Entry_Completion_Record;
+      (Completion        : not null access Gtk_Entry_Completion_Record;
        Inline_Completion : Boolean)
    is
       procedure Internal
@@ -566,7 +578,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------------
 
    procedure Set_Inline_Selection
-      (Completion       : access Gtk_Entry_Completion_Record;
+      (Completion       : not null access Gtk_Entry_Completion_Record;
        Inline_Selection : Boolean)
    is
       procedure Internal
@@ -582,7 +594,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------
 
    procedure Set_Match_Func
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Func       : Gtk_Entry_Completion_Match_Func)
    is
    begin
@@ -597,7 +609,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Entry_Completion_Match_Func);
 
       function Internal_Cb
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
+         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
           Key        : UTF8_String;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Boolean;
@@ -618,7 +630,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
       -----------------
 
       function Internal_Cb
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
+         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
           Key        : UTF8_String;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Boolean
@@ -633,7 +645,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
       --------------------
 
       procedure Set_Match_Func
-         (Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
+         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
           Func       : Gtk_Entry_Completion_Match_Func;
           Func_Data  : User_Data_Type)
       is
@@ -648,7 +660,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------------------
 
    procedure Set_Minimum_Key_Length
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Length     : Gint)
    is
       procedure Internal (Completion : System.Address; Length : Gint);
@@ -662,7 +674,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------
 
    procedure Set_Model
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
    is
       procedure Internal
@@ -670,7 +682,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
           Model      : System.Address);
       pragma Import (C, Internal, "gtk_entry_completion_set_model");
    begin
-      Internal (Get_Object (Completion), Get_Object (Model));
+      Internal (Get_Object (Completion), Get_Object_Or_Null (GObject (Model)));
    end Set_Model;
 
    --------------------------
@@ -678,7 +690,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------------------
 
    procedure Set_Popup_Completion
-      (Completion       : access Gtk_Entry_Completion_Record;
+      (Completion       : not null access Gtk_Entry_Completion_Record;
        Popup_Completion : Boolean)
    is
       procedure Internal
@@ -694,7 +706,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -------------------------
 
    procedure Set_Popup_Set_Width
-      (Completion      : access Gtk_Entry_Completion_Record;
+      (Completion      : not null access Gtk_Entry_Completion_Record;
        Popup_Set_Width : Boolean)
    is
       procedure Internal
@@ -710,7 +722,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------------------
 
    procedure Set_Popup_Single_Match
-      (Completion         : access Gtk_Entry_Completion_Record;
+      (Completion         : not null access Gtk_Entry_Completion_Record;
        Popup_Single_Match : Boolean)
    is
       procedure Internal
@@ -726,7 +738,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------------
 
    procedure Set_Text_Column
-      (Completion : access Gtk_Entry_Completion_Record;
+      (Completion : not null access Gtk_Entry_Completion_Record;
        Column     : Gint)
    is
       procedure Internal (Completion : System.Address; Column : Gint);
@@ -740,8 +752,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -------------------
 
    procedure Add_Attribute
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint)
    is
@@ -761,7 +773,9 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -- Clear --
    -----------
 
-   procedure Clear (Cell_Layout : access Gtk_Entry_Completion_Record) is
+   procedure Clear
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record)
+   is
       procedure Internal (Cell_Layout : System.Address);
       pragma Import (C, Internal, "gtk_cell_layout_clear");
    begin
@@ -773,8 +787,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------------
 
    procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       
    is
       procedure Internal
@@ -790,7 +804,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ---------------
 
    function Get_Cells
-      (Cell_Layout : access Gtk_Entry_Completion_Record)
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record)
        return Glib.Object.Object_Simple_List.GList
    is
       function Internal (Cell_Layout : System.Address) return System.Address;
@@ -806,8 +820,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --------------
 
    procedure Pack_End
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -824,8 +838,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    ----------------
 
    procedure Pack_Start
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -842,8 +856,8 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    -------------
 
    procedure Reorder
-      (Cell_Layout : access Gtk_Entry_Completion_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Entry_Completion_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint)
    is
       procedure Internal

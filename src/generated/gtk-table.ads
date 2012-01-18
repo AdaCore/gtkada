@@ -96,8 +96,8 @@ package Gtk.Table is
    -------------
 
    procedure Attach
-      (Table         : access Gtk_Table_Record;
-       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Table         : not null access Gtk_Table_Record;
+       Child         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : Guint;
        Right_Attach  : Guint;
        Top_Attach    : Guint;
@@ -131,8 +131,8 @@ package Gtk.Table is
    --  "ypadding": The amount of padding above and below the child widget.
 
    procedure Attach_Defaults
-      (Table         : access Gtk_Table_Record;
-       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Table         : not null access Gtk_Table_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : Guint;
        Right_Attach  : Guint;
        Top_Attach    : Guint;
@@ -151,10 +151,10 @@ package Gtk.Table is
    --  widget to.
 
    function Get_Col_Spacing
-      (Table  : access Gtk_Table_Record;
+      (Table  : not null access Gtk_Table_Record;
        Column : Guint) return Guint;
    procedure Set_Col_Spacing
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Column  : Guint;
        Spacing : Guint);
    --  Set the spacing in pixels between Column and the next one.
@@ -162,18 +162,19 @@ package Gtk.Table is
    --  "spacing": number of pixels that the spacing should take up.
 
    function Get_Default_Col_Spacing
-      (Table : access Gtk_Table_Record) return Guint;
+      (Table : not null access Gtk_Table_Record) return Guint;
    --  Gets the default column spacing for the table. This is the spacing that
    --  will be used for newly added columns. (See Gtk.Table.Set_Col_Spacings)
 
    function Get_Default_Row_Spacing
-      (Table : access Gtk_Table_Record) return Guint;
+      (Table : not null access Gtk_Table_Record) return Guint;
    --  Gets the default row spacing for the table. This is the spacing that
    --  will be used for newly added rows. (See Gtk.Table.Set_Row_Spacings)
 
-   function Get_Homogeneous (Table : access Gtk_Table_Record) return Boolean;
+   function Get_Homogeneous
+      (Table : not null access Gtk_Table_Record) return Boolean;
    procedure Set_Homogeneous
-      (Table       : access Gtk_Table_Record;
+      (Table       : not null access Gtk_Table_Record;
        Homogeneous : Boolean);
    --  Indicate the homogeneous status of the table. If Homogeneous is True,
    --  the rows and columns of the table will all be allocated the same width
@@ -182,10 +183,10 @@ package Gtk.Table is
    --  Set to False if this is not your desired behaviour.
 
    function Get_Row_Spacing
-      (Table : access Gtk_Table_Record;
+      (Table : not null access Gtk_Table_Record;
        Row   : Guint) return Guint;
    procedure Set_Row_Spacing
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Row     : Guint;
        Spacing : Guint);
    --  Changes the space between a given table row and the subsequent row.
@@ -193,7 +194,7 @@ package Gtk.Table is
    --  "spacing": number of pixels that the spacing should take up.
 
    procedure Get_Size
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Rows    : out Guint;
        Columns : out Guint);
    --  Gets the number of rows and columns in the table.
@@ -202,7 +203,7 @@ package Gtk.Table is
    --  "columns": return location for the number of columns, or null
 
    procedure Resize
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Rows    : Guint;
        Columns : Guint);
    --  If you need to change a table's size <emphasis>after</emphasis> it has
@@ -211,14 +212,14 @@ package Gtk.Table is
    --  "columns": The new number of columns.
 
    procedure Set_Col_Spacings
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Spacing : Guint);
    --  Sets the space between every column in Table equal to Spacing.
    --  "spacing": the number of pixels of space to place between every column
    --  in the table.
 
    procedure Set_Row_Spacings
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Spacing : Guint);
    --  Sets the space between every row in Table equal to Spacing.
    --  "spacing": the number of pixels of space to place between every row in

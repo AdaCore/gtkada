@@ -124,18 +124,20 @@ package Gtk.Toggle_Button is
    -------------
 
    function Get_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
    procedure Set_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Is_Active     : Boolean);
    --  Change the state of the button. When Is_Active is True, the button is
    --  drawn as a pressed button
    --  "is_active": True or False.
 
    function Get_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
    procedure Set_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Setting       : Boolean := True);
    --  If the user has selected a range of elements (such as some text or
    --  spreadsheet cells) that are affected by a toggle button, and the current
@@ -148,9 +150,10 @@ package Gtk.Toggle_Button is
    --  "setting": True if state is inconsistent
 
    function Get_Mode
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
    procedure Set_Mode
-      (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
    --  You can call this function on a checkbutton or a radiobutton with
@@ -162,7 +165,8 @@ package Gtk.Toggle_Button is
    --  "draw_indicator": if True, draw the button as a separate indicator and
    --  label; if False, draw the button like a normal button
 
-   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+   procedure Toggled
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record);
    --  Emits the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal on the
    --  Gtk.Toggle_Button.Gtk_Toggle_Button. There is no good reason for an
    --  application ever to call this function.
@@ -172,23 +176,24 @@ package Gtk.Toggle_Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Toggle_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Toggle_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Toggle_Button_Record) return Boolean;
+      (Self : not null access Gtk_Toggle_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Toggle_Button_Record;
+      (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Toggle_Button_Record;
+      (Self   : not null access Gtk_Toggle_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

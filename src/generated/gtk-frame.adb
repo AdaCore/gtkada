@@ -70,7 +70,9 @@ package body Gtk.Frame is
    -- Get_Label --
    ---------------
 
-   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String is
+   function Get_Label
+      (Frame : not null access Gtk_Frame_Record) return UTF8_String
+   is
       function Internal
          (Frame : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
@@ -83,7 +85,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Get_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
@@ -101,7 +103,8 @@ package body Gtk.Frame is
    ----------------------
 
    function Get_Label_Widget
-      (Frame : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Frame : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_get_label_widget");
@@ -115,7 +118,8 @@ package body Gtk.Frame is
    ---------------------
 
    function Get_Shadow_Type
-      (Frame : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Enums.Gtk_Shadow_Type
    is
       function Internal (Frame : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_frame_get_shadow_type");
@@ -128,7 +132,7 @@ package body Gtk.Frame is
    ---------------
 
    procedure Set_Label
-      (Frame : access Gtk_Frame_Record;
+      (Frame : not null access Gtk_Frame_Record;
        Label : UTF8_String)
    is
       procedure Internal
@@ -146,7 +150,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
@@ -164,8 +168,8 @@ package body Gtk.Frame is
    ----------------------
 
    procedure Set_Label_Widget
-      (Frame        : access Gtk_Frame_Record;
-       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Frame        : not null access Gtk_Frame_Record;
+       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Frame        : System.Address;
@@ -180,7 +184,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Frame    : access Gtk_Frame_Record;
+      (Frame    : not null access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
       procedure Internal (Frame : System.Address; The_Type : Integer);

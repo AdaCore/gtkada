@@ -270,23 +270,24 @@ package Gtk.Image is
    -- Methods --
    -------------
 
-   procedure Clear (Image : access Gtk_Image_Record);
+   procedure Clear (Image : not null access Gtk_Image_Record);
    --  Resets the image to be empty.
    --  Since: gtk+ 2.8
 
    function Get
-      (Image : access Gtk_Image_Record)
+      (Image : not null access Gtk_Image_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf_Animation;
    procedure Get
-      (Image : access Gtk_Image_Record;
+      (Image : not null access Gtk_Image_Record;
        Gicon : out Glib.G_Icon.G_Icon;
        Size  : out Gtk.Enums.Gtk_Icon_Size);
    procedure Get
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
    function Get
-      (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+      (Image : not null access Gtk_Image_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
    --  Gtk.Image.Gtk_Image. The storage type of the image must be
    --  Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
@@ -294,9 +295,10 @@ package Gtk.Image is
    --  reference to the returned pixbuf.
    --  the image is empty
 
-   function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint;
+   function Get_Pixel_Size
+      (Image : not null access Gtk_Image_Record) return Gint;
    procedure Set_Pixel_Size
-      (Image      : access Gtk_Image_Record;
+      (Image      : not null access Gtk_Image_Record;
        Pixel_Size : Gint);
    --  Sets the pixel size to use for named icons. If the pixel size is set to
    --  a value != -1, it is used instead of the icon size set by
@@ -305,28 +307,30 @@ package Gtk.Image is
    --  "pixel_size": the new pixel size
 
    function Get_Storage_Type
-      (Image : access Gtk_Image_Record) return Gtk_Image_Type;
+      (Image : not null access Gtk_Image_Record) return Gtk_Image_Type;
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
    --  return value will be Gtk.Image.Image_Empty.
 
    procedure Set
-      (Image     : access Gtk_Image_Record;
+      (Image     : not null access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
-   procedure Set (Image : access Gtk_Image_Record; Filename : UTF8_String);
    procedure Set
-      (Image : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
+       Filename : UTF8_String);
+   procedure Set
+      (Image : not null access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size);
    procedure Set
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Set
-      (Image  : access Gtk_Image_Record;
+      (Image  : not null access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    procedure Set
-      (Image    : access Gtk_Image_Record;
+      (Image    : not null access Gtk_Image_Record;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  See Gtk.Image.Gtk_New for details.
@@ -334,7 +338,7 @@ package Gtk.Image is
    --  "size": a stock icon size
 
    procedure Set_From_Icon_Name
-      (Image     : access Gtk_Image_Record;
+      (Image     : not null access Gtk_Image_Record;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    --  See Gtk.Image.Gtk_New_From_Icon_Name for details.

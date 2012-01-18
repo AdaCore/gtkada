@@ -36,7 +36,7 @@ package body Gtk.GRange is
    --------------------
 
    function Get_Adjustment
-      (The_Range : access Gtk_Range_Record)
+      (The_Range : not null access Gtk_Range_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (The_Range : System.Address) return System.Address;
@@ -51,7 +51,7 @@ package body Gtk.GRange is
    --------------------
 
    function Get_Fill_Level
-      (The_Range : access Gtk_Range_Record) return Gdouble
+      (The_Range : not null access Gtk_Range_Record) return Gdouble
    is
       function Internal (The_Range : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_range_get_fill_level");
@@ -64,7 +64,7 @@ package body Gtk.GRange is
    -------------------
 
    function Get_Flippable
-      (The_Range : access Gtk_Range_Record) return Boolean
+      (The_Range : not null access Gtk_Range_Record) return Boolean
    is
       function Internal (The_Range : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_range_get_flippable");
@@ -77,7 +77,7 @@ package body Gtk.GRange is
    ------------------
 
    function Get_Inverted
-      (The_Range : access Gtk_Range_Record) return Boolean
+      (The_Range : not null access Gtk_Range_Record) return Boolean
    is
       function Internal (The_Range : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_range_get_inverted");
@@ -90,7 +90,7 @@ package body Gtk.GRange is
    -----------------------------------
 
    function Get_Lower_Stepper_Sensitivity
-      (The_Range : access Gtk_Range_Record)
+      (The_Range : not null access Gtk_Range_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type
    is
       function Internal (The_Range : System.Address) return Integer;
@@ -104,7 +104,7 @@ package body Gtk.GRange is
    -------------------------
 
    function Get_Min_Slider_Size
-      (The_Range : access Gtk_Range_Record) return Gint
+      (The_Range : not null access Gtk_Range_Record) return Gint
    is
       function Internal (The_Range : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_range_get_min_slider_size");
@@ -117,7 +117,7 @@ package body Gtk.GRange is
    --------------------
 
    procedure Get_Range_Rect
-      (The_Range  : access Gtk_Range_Record;
+      (The_Range  : not null access Gtk_Range_Record;
        Range_Rect : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
@@ -133,7 +133,7 @@ package body Gtk.GRange is
    --------------------------------
 
    function Get_Restrict_To_Fill_Level
-      (The_Range : access Gtk_Range_Record) return Boolean
+      (The_Range : not null access Gtk_Range_Record) return Boolean
    is
       function Internal (The_Range : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_range_get_restrict_to_fill_level");
@@ -146,7 +146,7 @@ package body Gtk.GRange is
    ----------------------
 
    function Get_Round_Digits
-      (The_Range : access Gtk_Range_Record) return Gint
+      (The_Range : not null access Gtk_Range_Record) return Gint
    is
       function Internal (The_Range : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_range_get_round_digits");
@@ -159,7 +159,7 @@ package body Gtk.GRange is
    -------------------------
 
    function Get_Show_Fill_Level
-      (The_Range : access Gtk_Range_Record) return Boolean
+      (The_Range : not null access Gtk_Range_Record) return Boolean
    is
       function Internal (The_Range : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_range_get_show_fill_level");
@@ -172,7 +172,7 @@ package body Gtk.GRange is
    ----------------------
 
    procedure Get_Slider_Range
-      (The_Range    : access Gtk_Range_Record;
+      (The_Range    : not null access Gtk_Range_Record;
        Slider_Start : out Gint;
        Slider_End   : out Gint)
    is
@@ -190,7 +190,7 @@ package body Gtk.GRange is
    ---------------------------
 
    function Get_Slider_Size_Fixed
-      (The_Range : access Gtk_Range_Record) return Boolean
+      (The_Range : not null access Gtk_Range_Record) return Boolean
    is
       function Internal (The_Range : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_range_get_slider_size_fixed");
@@ -203,7 +203,7 @@ package body Gtk.GRange is
    -----------------------------------
 
    function Get_Upper_Stepper_Sensitivity
-      (The_Range : access Gtk_Range_Record)
+      (The_Range : not null access Gtk_Range_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type
    is
       function Internal (The_Range : System.Address) return Integer;
@@ -216,7 +216,9 @@ package body Gtk.GRange is
    -- Get_Value --
    ---------------
 
-   function Get_Value (The_Range : access Gtk_Range_Record) return Gdouble is
+   function Get_Value
+      (The_Range : not null access Gtk_Range_Record) return Gdouble
+   is
       function Internal (The_Range : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_range_get_value");
    begin
@@ -228,8 +230,9 @@ package body Gtk.GRange is
    --------------------
 
    procedure Set_Adjustment
-      (The_Range  : access Gtk_Range_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      (The_Range  : not null access Gtk_Range_Record;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      
    is
       procedure Internal
          (The_Range  : System.Address;
@@ -244,7 +247,7 @@ package body Gtk.GRange is
    --------------------
 
    procedure Set_Fill_Level
-      (The_Range  : access Gtk_Range_Record;
+      (The_Range  : not null access Gtk_Range_Record;
        Fill_Level : Gdouble)
    is
       procedure Internal (The_Range : System.Address; Fill_Level : Gdouble);
@@ -258,7 +261,7 @@ package body Gtk.GRange is
    -------------------
 
    procedure Set_Flippable
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Flippable : Boolean)
    is
       procedure Internal (The_Range : System.Address; Flippable : Integer);
@@ -272,7 +275,7 @@ package body Gtk.GRange is
    --------------------
 
    procedure Set_Increments
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Step      : Gdouble;
        Page      : Gdouble)
    is
@@ -290,7 +293,7 @@ package body Gtk.GRange is
    ------------------
 
    procedure Set_Inverted
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Setting   : Boolean)
    is
       procedure Internal (The_Range : System.Address; Setting : Integer);
@@ -304,7 +307,7 @@ package body Gtk.GRange is
    -----------------------------------
 
    procedure Set_Lower_Stepper_Sensitivity
-      (The_Range   : access Gtk_Range_Record;
+      (The_Range   : not null access Gtk_Range_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
    is
       procedure Internal (The_Range : System.Address; Sensitivity : Integer);
@@ -318,7 +321,7 @@ package body Gtk.GRange is
    -------------------------
 
    procedure Set_Min_Slider_Size
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Min_Size  : Gint)
    is
       procedure Internal (The_Range : System.Address; Min_Size : Gint);
@@ -332,7 +335,7 @@ package body Gtk.GRange is
    ---------------
 
    procedure Set_Range
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Min       : Gdouble;
        Max       : Gdouble)
    is
@@ -350,7 +353,7 @@ package body Gtk.GRange is
    --------------------------------
 
    procedure Set_Restrict_To_Fill_Level
-      (The_Range              : access Gtk_Range_Record;
+      (The_Range              : not null access Gtk_Range_Record;
        Restrict_To_Fill_Level : Boolean)
    is
       procedure Internal
@@ -366,7 +369,7 @@ package body Gtk.GRange is
    ----------------------
 
    procedure Set_Round_Digits
-      (The_Range    : access Gtk_Range_Record;
+      (The_Range    : not null access Gtk_Range_Record;
        Round_Digits : Gint)
    is
       procedure Internal (The_Range : System.Address; Round_Digits : Gint);
@@ -380,7 +383,7 @@ package body Gtk.GRange is
    -------------------------
 
    procedure Set_Show_Fill_Level
-      (The_Range       : access Gtk_Range_Record;
+      (The_Range       : not null access Gtk_Range_Record;
        Show_Fill_Level : Boolean)
    is
       procedure Internal
@@ -396,7 +399,7 @@ package body Gtk.GRange is
    ---------------------------
 
    procedure Set_Slider_Size_Fixed
-      (The_Range  : access Gtk_Range_Record;
+      (The_Range  : not null access Gtk_Range_Record;
        Size_Fixed : Boolean)
    is
       procedure Internal (The_Range : System.Address; Size_Fixed : Integer);
@@ -410,7 +413,7 @@ package body Gtk.GRange is
    -----------------------------------
 
    procedure Set_Upper_Stepper_Sensitivity
-      (The_Range   : access Gtk_Range_Record;
+      (The_Range   : not null access Gtk_Range_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
    is
       procedure Internal (The_Range : System.Address; Sensitivity : Integer);
@@ -424,7 +427,7 @@ package body Gtk.GRange is
    ---------------
 
    procedure Set_Value
-      (The_Range : access Gtk_Range_Record;
+      (The_Range : not null access Gtk_Range_Record;
        Value     : Gdouble)
    is
       procedure Internal (The_Range : System.Address; Value : Gdouble);
@@ -438,7 +441,8 @@ package body Gtk.GRange is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Range_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Range_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -451,7 +455,7 @@ package body Gtk.GRange is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Range_Record;
+      (Self        : not null access Gtk_Range_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

@@ -70,9 +70,9 @@ package Gtk.Separator_Tool_Item is
    -------------
 
    function Get_Draw
-      (Item : access Gtk_Separator_Tool_Item_Record) return Boolean;
+      (Item : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
    procedure Set_Draw
-      (Item : access Gtk_Separator_Tool_Item_Record;
+      (Item : not null access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
    --  Whether Item is drawn as a vertical line, or just blank. Setting this
    --  to False along with Gtk.Tool_Item.Set_Expand is useful to create an item
@@ -85,24 +85,24 @@ package Gtk.Separator_Tool_Item is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Separator_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Separator_Tool_Item_Record)
+      (Self : not null access Gtk_Separator_Tool_Item_Record)
        return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Separator_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean;
+      (Self : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Separator_Tool_Item_Record;
+      (Self           : not null access Gtk_Separator_Tool_Item_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Separator_Tool_Item_Record;
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

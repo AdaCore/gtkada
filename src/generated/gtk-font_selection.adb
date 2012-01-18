@@ -58,7 +58,7 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Get_Face_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Fontsel : System.Address) return System.Address;
@@ -73,7 +73,7 @@ package body Gtk.Font_Selection is
    ---------------------
 
    function Get_Family_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Fontsel : System.Address) return System.Address;
@@ -88,7 +88,8 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Get_Font_Name
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String
    is
       function Internal
          (Fontsel : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -102,7 +103,7 @@ package body Gtk.Font_Selection is
    -----------------------
 
    function Get_Preview_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Fontsel : System.Address) return System.Address;
@@ -117,7 +118,8 @@ package body Gtk.Font_Selection is
    ----------------------
 
    function Get_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String
    is
       function Internal
          (Fontsel : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -131,7 +133,7 @@ package body Gtk.Font_Selection is
    --------------
 
    function Get_Size
-      (Fontsel : access Gtk_Font_Selection_Record) return Gint
+      (Fontsel : not null access Gtk_Font_Selection_Record) return Gint
    is
       function Internal (Fontsel : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_font_selection_get_size");
@@ -144,7 +146,7 @@ package body Gtk.Font_Selection is
    --------------------
 
    function Get_Size_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Fontsel : System.Address) return System.Address;
@@ -159,7 +161,7 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Get_Size_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Fontsel : System.Address) return System.Address;
@@ -174,7 +176,7 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Set_Font_Name
-      (Fontsel  : access Gtk_Font_Selection_Record;
+      (Fontsel  : not null access Gtk_Font_Selection_Record;
        Fontname : UTF8_String) return Boolean
    is
       function Internal
@@ -194,7 +196,7 @@ package body Gtk.Font_Selection is
    ----------------------
 
    procedure Set_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record;
+      (Fontsel : not null access Gtk_Font_Selection_Record;
        Text    : UTF8_String)
    is
       procedure Internal
@@ -212,7 +214,7 @@ package body Gtk.Font_Selection is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Font_Selection_Record)
+      (Self : not null access Gtk_Font_Selection_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
@@ -226,7 +228,7 @@ package body Gtk.Font_Selection is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Font_Selection_Record;
+      (Self        : not null access Gtk_Font_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

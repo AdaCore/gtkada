@@ -113,7 +113,7 @@ package body Gtk.Calendar is
    -- Clear_Marks --
    -----------------
 
-   procedure Clear_Marks (Calendar : access Gtk_Calendar_Record) is
+   procedure Clear_Marks (Calendar : not null access Gtk_Calendar_Record) is
       procedure Internal (Calendar : System.Address);
       pragma Import (C, Internal, "gtk_calendar_clear_marks");
    begin
@@ -125,7 +125,7 @@ package body Gtk.Calendar is
    --------------
 
    procedure Get_Date
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Year     : out Guint;
        Month    : out Guint;
        Day      : out Guint)
@@ -145,7 +145,7 @@ package body Gtk.Calendar is
    -----------------------
 
    function Get_Day_Is_Marked
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint) return Boolean
    is
       function Internal
@@ -161,7 +161,7 @@ package body Gtk.Calendar is
    ----------------------------
 
    function Get_Detail_Height_Rows
-      (Calendar : access Gtk_Calendar_Record) return Gint
+      (Calendar : not null access Gtk_Calendar_Record) return Gint
    is
       function Internal (Calendar : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_calendar_get_detail_height_rows");
@@ -174,7 +174,7 @@ package body Gtk.Calendar is
    ----------------------------
 
    function Get_Detail_Width_Chars
-      (Calendar : access Gtk_Calendar_Record) return Gint
+      (Calendar : not null access Gtk_Calendar_Record) return Gint
    is
       function Internal (Calendar : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_calendar_get_detail_width_chars");
@@ -187,7 +187,7 @@ package body Gtk.Calendar is
    -------------------------
 
    function Get_Display_Options
-      (Calendar : access Gtk_Calendar_Record)
+      (Calendar : not null access Gtk_Calendar_Record)
        return Gtk_Calendar_Display_Options
    is
       function Internal (Calendar : System.Address) return Integer;
@@ -200,7 +200,10 @@ package body Gtk.Calendar is
    -- Mark_Day --
    --------------
 
-   procedure Mark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint) is
+   procedure Mark_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint)
+   is
       procedure Internal (Calendar : System.Address; Day : Guint);
       pragma Import (C, Internal, "gtk_calendar_mark_day");
    begin
@@ -211,7 +214,10 @@ package body Gtk.Calendar is
    -- Select_Day --
    ----------------
 
-   procedure Select_Day (Calendar : access Gtk_Calendar_Record; Day : Guint) is
+   procedure Select_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint)
+   is
       procedure Internal (Calendar : System.Address; Day : Guint);
       pragma Import (C, Internal, "gtk_calendar_select_day");
    begin
@@ -223,7 +229,7 @@ package body Gtk.Calendar is
    ------------------
 
    procedure Select_Month
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Month    : Guint;
        Year     : Guint)
    is
@@ -241,7 +247,7 @@ package body Gtk.Calendar is
    ---------------------
 
    procedure Set_Detail_Func
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Func     : Gtk_Calendar_Detail_Func)
    is
    begin
@@ -256,7 +262,7 @@ package body Gtk.Calendar is
         (System.Address, Gtk_Calendar_Detail_Func);
 
       function Internal_Cb
-         (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar  : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
@@ -278,7 +284,7 @@ package body Gtk.Calendar is
       -----------------
 
       function Internal_Cb
-         (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar  : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
@@ -294,7 +300,7 @@ package body Gtk.Calendar is
       ---------------------
 
       procedure Set_Detail_Func
-         (Calendar : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record;
           Func     : Gtk_Calendar_Detail_Func;
           Data     : User_Data_Type)
       is
@@ -309,7 +315,7 @@ package body Gtk.Calendar is
    ----------------------------
 
    procedure Set_Detail_Height_Rows
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Rows     : Gint)
    is
       procedure Internal (Calendar : System.Address; Rows : Gint);
@@ -323,7 +329,7 @@ package body Gtk.Calendar is
    ----------------------------
 
    procedure Set_Detail_Width_Chars
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Chars    : Gint)
    is
       procedure Internal (Calendar : System.Address; Chars : Gint);
@@ -337,7 +343,7 @@ package body Gtk.Calendar is
    -------------------------
 
    procedure Set_Display_Options
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Flags    : Gtk_Calendar_Display_Options)
    is
       procedure Internal (Calendar : System.Address; Flags : Integer);
@@ -350,7 +356,10 @@ package body Gtk.Calendar is
    -- Unmark_Day --
    ----------------
 
-   procedure Unmark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint) is
+   procedure Unmark_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint)
+   is
       procedure Internal (Calendar : System.Address; Day : Guint);
       pragma Import (C, Internal, "gtk_calendar_unmark_day");
    begin

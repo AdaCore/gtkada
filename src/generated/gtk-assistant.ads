@@ -112,20 +112,21 @@ package Gtk.Assistant is
    -------------
 
    procedure Add_Action_Widget
-      (Assistant : access Gtk_Assistant_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Assistant : not null access Gtk_Assistant_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds a widget to the action area of a Gtk.Assistant.Gtk_Assistant.
    --  Since: gtk+ 2.10
    --  "child": a Gtk.Widget.Gtk_Widget
 
    function Append_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gint;
    --  Appends a page to the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
 
-   procedure Commit (Assistant : access Gtk_Assistant_Record);
+   procedure Commit (Assistant : not null access Gtk_Assistant_Record);
    --  Erases the visited page history so the back button is not shown on the
    --  current page, and removes the cancel button from subsequent pages.
    --  Use this when the information provided up to the current page is
@@ -135,9 +136,9 @@ package Gtk.Assistant is
    --  Since: gtk+ 2.22
 
    function Get_Current_Page
-      (Assistant : access Gtk_Assistant_Record) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record) return Gint;
    procedure Set_Current_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint);
    --  Switches the page to Page_Num.
    --  Note that this will only be necessary in custom buttons, as the
@@ -148,12 +149,12 @@ package Gtk.Assistant is
    --  pages in the Assistant, nothing will be done.
 
    function Get_N_Pages
-      (Assistant : access Gtk_Assistant_Record) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record) return Gint;
    --  Returns the number of pages in the Assistant
    --  Since: gtk+ 2.10
 
    function Get_Nth_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num.
    --  if Page_Num is out of bounds
@@ -162,11 +163,12 @@ package Gtk.Assistant is
    --  page
 
    function Get_Page_Complete
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
    procedure Set_Page_Complete
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Complete  : Boolean);
    --  Sets whether Page contents are complete.
    --  This will make Assistant update the buttons state to be able to continue
@@ -176,13 +178,13 @@ package Gtk.Assistant is
    --  "complete": the completeness status of the page
 
    function Get_Page_Header_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Header_Image);
    procedure Set_Page_Header_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Set_Page_Header_Image);
    --  Sets a header image for Page.
@@ -193,13 +195,13 @@ package Gtk.Assistant is
    --  "pixbuf": the new header image Page
 
    function Get_Page_Side_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Side_Image);
    procedure Set_Page_Side_Image
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Set_Page_Side_Image);
    --  Sets a side image for Page.
@@ -212,12 +214,12 @@ package Gtk.Assistant is
    --  "pixbuf": the new side image Page
 
    function Get_Page_Title
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return UTF8_String;
    procedure Set_Page_Title
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Title     : UTF8_String);
    --  Sets a title for Page.
    --  The title is displayed in the header area of the assistant when Page is
@@ -227,12 +229,12 @@ package Gtk.Assistant is
    --  "title": the new title for Page
 
    function Get_Page_Type
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Assistant_Page_Type;
    procedure Set_Page_Type
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        The_Type  : Gtk_Assistant_Page_Type);
    --  Sets the page type for Page.
    --  The page type determines the page behavior in the Assistant.
@@ -241,8 +243,8 @@ package Gtk.Assistant is
    --  "type": the new type for Page
 
    function Insert_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position  : Gint) return Gint;
    --  Inserts a page in the Assistant at a given position.
    --  Since: gtk+ 2.10
@@ -250,7 +252,7 @@ package Gtk.Assistant is
    --  "position": the index (starting at 0) at which to insert the page, or
    --  -1 to append the page to the Assistant
 
-   procedure Next_Page (Assistant : access Gtk_Assistant_Record);
+   procedure Next_Page (Assistant : not null access Gtk_Assistant_Record);
    --  Navigate to the next page.
    --  It is a programming error to call this function when there is no next
    --  page.
@@ -259,13 +261,15 @@ package Gtk.Assistant is
    --  Since: gtk+ 3.0
 
    function Prepend_Page
-      (Assistant : access Gtk_Assistant_Record;
-       Page      : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gint;
    --  Prepends a page to the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
 
-   procedure Previous_Page (Assistant : access Gtk_Assistant_Record);
+   procedure Previous_Page
+      (Assistant : not null access Gtk_Assistant_Record);
    --  Navigate to the previous visited page.
    --  It is a programming error to call this function when no previous page is
    --  available.
@@ -274,14 +278,14 @@ package Gtk.Assistant is
    --  Since: gtk+ 3.0
 
    procedure Remove_Action_Widget
-      (Assistant : access Gtk_Assistant_Record;
-       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Assistant : not null access Gtk_Assistant_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Removes a widget from the action area of a Gtk.Assistant.Gtk_Assistant.
    --  Since: gtk+ 2.10
    --  "child": a Gtk.Widget.Gtk_Widget
 
    procedure Remove_Page
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint);
    --  Removes the Page_Num's page from Assistant.
    --  Since: gtk+ 3.2
@@ -289,7 +293,7 @@ package Gtk.Assistant is
    --  last page
 
    procedure Set_Forward_Page_Func
-      (Assistant : access Gtk_Assistant_Record;
+      (Assistant : not null access Gtk_Assistant_Record;
        Page_Func : Gtk_Assistant_Page_Func);
    --  Sets the page forwarding function to be Page_Func.
    --  This function will be used to determine what will be the next page when
@@ -314,7 +318,7 @@ package Gtk.Assistant is
       --  "data": user data.
 
       procedure Set_Forward_Page_Func
-         (Assistant : access Gtk.Assistant.Gtk_Assistant_Record'Class;
+         (Assistant : not null access Gtk.Assistant.Gtk_Assistant_Record;
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type);
       --  Sets the page forwarding function to be Page_Func.
@@ -329,7 +333,8 @@ package Gtk.Assistant is
 
    end Set_Forward_Page_Func_User_Data;
 
-   procedure Update_Buttons_State (Assistant : access Gtk_Assistant_Record);
+   procedure Update_Buttons_State
+      (Assistant : not null access Gtk_Assistant_Record);
    --  Forces Assistant to recompute the buttons state.
    --  GTK+ automatically takes care of this in most situations, e.g. when the
    --  user goes to a different page, or when the visibility or completeness of

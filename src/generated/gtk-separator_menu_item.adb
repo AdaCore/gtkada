@@ -59,8 +59,8 @@ package body Gtk.Separator_Menu_Item is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Separator_Menu_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Separator_Menu_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -73,7 +73,7 @@ package body Gtk.Separator_Menu_Item is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Separator_Menu_Item_Record)
+      (Self : not null access Gtk_Separator_Menu_Item_Record)
        return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
@@ -88,7 +88,7 @@ package body Gtk.Separator_Menu_Item is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Separator_Menu_Item_Record) return Boolean
+      (Self : not null access Gtk_Separator_Menu_Item_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -101,8 +101,8 @@ package body Gtk.Separator_Menu_Item is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Separator_Menu_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Separator_Menu_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -115,7 +115,7 @@ package body Gtk.Separator_Menu_Item is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Separator_Menu_Item_Record;
+      (Self           : not null access Gtk_Separator_Menu_Item_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -129,13 +129,13 @@ package body Gtk.Separator_Menu_Item is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Separator_Menu_Item_Record;
+      (Self   : not null access Gtk_Separator_Menu_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Separator_Menu_Item;

@@ -67,7 +67,8 @@ package body Gtk.Viewport is
    --------------------
 
    function Get_Bin_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record)
+       return Gdk.Window.Gdk_Window
    is
       function Internal
          (Viewport : System.Address) return Gdk.Window.Gdk_Window;
@@ -81,7 +82,7 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record)
+      (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type
    is
       function Internal (Viewport : System.Address) return Integer;
@@ -95,7 +96,8 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_View_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record)
+       return Gdk.Window.Gdk_Window
    is
       function Internal
          (Viewport : System.Address) return Gdk.Window.Gdk_Window;
@@ -109,7 +111,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record;
+      (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
       procedure Internal (Viewport : System.Address; The_Type : Integer);
@@ -123,7 +125,7 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
@@ -138,7 +140,7 @@ package body Gtk.Viewport is
    ------------------------
 
    function Get_Hscroll_Policy
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
       function Internal (Self : System.Address) return Integer;
@@ -152,7 +154,7 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Self : System.Address) return System.Address;
@@ -167,7 +169,7 @@ package body Gtk.Viewport is
    ------------------------
 
    function Get_Vscroll_Policy
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
       function Internal (Self : System.Address) return Integer;
@@ -181,7 +183,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Hadjustment
-      (Self        : access Gtk_Viewport_Record;
+      (Self        : not null access Gtk_Viewport_Record;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
@@ -189,7 +191,7 @@ package body Gtk.Viewport is
           Hadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object (Hadjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Hadjustment)));
    end Set_Hadjustment;
 
    ------------------------
@@ -197,7 +199,7 @@ package body Gtk.Viewport is
    ------------------------
 
    procedure Set_Hscroll_Policy
-      (Self   : access Gtk_Viewport_Record;
+      (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
       procedure Internal (Self : System.Address; Policy : Integer);
@@ -211,7 +213,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Vadjustment
-      (Self        : access Gtk_Viewport_Record;
+      (Self        : not null access Gtk_Viewport_Record;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
@@ -219,7 +221,7 @@ package body Gtk.Viewport is
           Vadjustment : System.Address);
       pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
    begin
-      Internal (Get_Object (Self), Get_Object (Vadjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
 
    ------------------------
@@ -227,7 +229,7 @@ package body Gtk.Viewport is
    ------------------------
 
    procedure Set_Vscroll_Policy
-      (Self   : access Gtk_Viewport_Record;
+      (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
       procedure Internal (Self : System.Address; Policy : Integer);

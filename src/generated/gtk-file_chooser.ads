@@ -410,7 +410,8 @@ package Gtk.File_Chooser is
 
    procedure Add_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      ;
    --  Adds Filter to the list of filters that the user can select between.
    --  When a filter is selected, only files that are passed by that filter are
    --  displayed.
@@ -515,7 +516,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Widget.Gtk_Widget;
    procedure Set_Extra_Widget
       (Chooser      : Gtk_File_Chooser;
-       Extra_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+       Extra_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets an application-supplied widget to provide extra options to the
    --  user.
    --  Since: gtk+ 2.4
@@ -566,7 +567,8 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.File_Filter.Gtk_File_Filter;
    procedure Set_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      ;
    --  Sets the current filter; only the files that pass the filter will be
    --  displayed. If the user-selectable list of filters is non-empty, then the
    --  filter should be one of the filters in that list. Setting the current
@@ -607,7 +609,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Widget.Gtk_Widget;
    procedure Set_Preview_Widget
       (Chooser        : Gtk_File_Chooser;
-       Preview_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+       Preview_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets an application-supplied widget to use to display a custom preview
    --  of the currently selected file. To implement a preview, after setting
    --  the preview widget, you connect to the
@@ -738,7 +740,8 @@ package Gtk.File_Chooser is
 
    procedure Remove_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      ;
    --  Removes Filter from the list of filters that the user can select
    --  between.
    --  Since: gtk+ 2.4

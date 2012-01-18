@@ -36,7 +36,7 @@ package body Gtk.Bin is
    ---------------
 
    function Get_Child
-      (Bin : access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget
+      (Bin : not null access Gtk_Bin_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Bin : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_bin_get_child");

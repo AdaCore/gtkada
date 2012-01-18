@@ -142,8 +142,8 @@ package Gtk.Size_Group is
    -------------
 
    procedure Add_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds a widget to a Gtk.Size_Group.Gtk_Size_Group. In the future, the
    --  requisition of the widget will be determined as the maximum of its
    --  requisition and the requisition of the other widgets in the size group.
@@ -154,9 +154,9 @@ package Gtk.Size_Group is
    --  "widget": the Gtk.Widget.Gtk_Widget to add
 
    function Get_Ignore_Hidden
-      (Size_Group : access Gtk_Size_Group_Record) return Boolean;
+      (Size_Group : not null access Gtk_Size_Group_Record) return Boolean;
    procedure Set_Ignore_Hidden
-      (Size_Group    : access Gtk_Size_Group_Record;
+      (Size_Group    : not null access Gtk_Size_Group_Record;
        Ignore_Hidden : Boolean);
    --  Sets whether unmapped widgets should be ignored when calculating the
    --  size.
@@ -165,9 +165,10 @@ package Gtk.Size_Group is
    --  calculating the size
 
    function Get_Mode
-      (Size_Group : access Gtk_Size_Group_Record) return Size_Group_Mode;
+      (Size_Group : not null access Gtk_Size_Group_Record)
+       return Size_Group_Mode;
    procedure Set_Mode
-      (Size_Group : access Gtk_Size_Group_Record;
+      (Size_Group : not null access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode);
    --  Sets the Gtk.Size_Group.Size_Group_Mode of the size group. The mode of
    --  the size group determines whether the widgets in the size group should
@@ -177,15 +178,15 @@ package Gtk.Size_Group is
    --  "mode": the mode to set for the size group.
 
    function Get_Widgets
-      (Size_Group : access Gtk_Size_Group_Record)
+      (Size_Group : not null access Gtk_Size_Group_Record)
        return Gtk.Widget.Widget_SList.GSList;
    --  Returns the list of widgets associated with Size_Group.
    --  widgets. The list is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.10
 
    procedure Remove_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Removes a widget from a Gtk.Size_Group.Gtk_Size_Group.
    --  "widget": the Gtk.Widget.Gtk_Widget to remove
 

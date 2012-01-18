@@ -52,7 +52,7 @@ package body Gtk.File_Chooser_Button is
 
    procedure Gtk_New_With_Dialog
       (Button : out Gtk_File_Chooser_Button;
-       Dialog : access Gtk.Widget.Gtk_Widget_Record'Class)
+       Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
    begin
       Button := new Gtk_File_Chooser_Button_Record;
@@ -86,7 +86,7 @@ package body Gtk.File_Chooser_Button is
 
    procedure Initialize_With_Dialog
       (Button : access Gtk_File_Chooser_Button_Record'Class;
-       Dialog : access Gtk.Widget.Gtk_Widget_Record'Class)
+       Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_button_new_with_dialog");
@@ -99,7 +99,8 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    function Get_Focus_On_Click
-      (Button : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Button : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_button_get_focus_on_click");
@@ -112,7 +113,8 @@ package body Gtk.File_Chooser_Button is
    ---------------
 
    function Get_Title
-      (Button : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Button : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -126,7 +128,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Get_Width_Chars
-      (Button : access Gtk_File_Chooser_Button_Record) return Gint
+      (Button : not null access Gtk_File_Chooser_Button_Record) return Gint
    is
       function Internal (Button : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_file_chooser_button_get_width_chars");
@@ -139,7 +141,7 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    procedure Set_Focus_On_Click
-      (Button         : access Gtk_File_Chooser_Button_Record;
+      (Button         : not null access Gtk_File_Chooser_Button_Record;
        Focus_On_Click : Boolean)
    is
       procedure Internal (Button : System.Address; Focus_On_Click : Integer);
@@ -153,7 +155,7 @@ package body Gtk.File_Chooser_Button is
    ---------------
 
    procedure Set_Title
-      (Button : access Gtk_File_Chooser_Button_Record;
+      (Button : not null access Gtk_File_Chooser_Button_Record;
        Title  : UTF8_String)
    is
       procedure Internal
@@ -171,7 +173,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    procedure Set_Width_Chars
-      (Button  : access Gtk_File_Chooser_Button_Record;
+      (Button  : not null access Gtk_File_Chooser_Button_Record;
        N_Chars : Gint)
    is
       procedure Internal (Button : System.Address; N_Chars : Gint);
@@ -185,8 +187,9 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    procedure Add_Filter
-      (Chooser : access Gtk_File_Chooser_Button_Record;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_add_filter");
@@ -199,7 +202,7 @@ package body Gtk.File_Chooser_Button is
    -------------------------
 
    function Add_Shortcut_Folder
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Folder  : UTF8_String) return Boolean
    is
       function Internal
@@ -219,7 +222,7 @@ package body Gtk.File_Chooser_Button is
    -----------------------------
 
    function Add_Shortcut_Folder_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String) return Boolean
    is
       function Internal
@@ -239,8 +242,13 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    function Get_Action
+<<<<<<< HEAD
       (Chooser : access Gtk_File_Chooser_Button_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action
+=======
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Gtk.Enums.Gtk_File_Chooser_Action
+>>>>>>> Cleanup the handling of default null value for widget parameters.
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
@@ -253,7 +261,8 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    function Get_Create_Folders
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_create_folders");
@@ -266,7 +275,8 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    function Get_Current_Folder
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -280,7 +290,8 @@ package body Gtk.File_Chooser_Button is
    ----------------------------
 
    function Get_Current_Folder_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -294,7 +305,8 @@ package body Gtk.File_Chooser_Button is
    -----------------------------------
 
    function Get_Do_Overwrite_Confirmation
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_do_overwrite_confirmation");
@@ -307,7 +319,7 @@ package body Gtk.File_Chooser_Button is
    ----------------------
 
    function Get_Extra_Widget
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -322,7 +334,8 @@ package body Gtk.File_Chooser_Button is
    ------------------
 
    function Get_Filename
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -336,7 +349,7 @@ package body Gtk.File_Chooser_Button is
    -------------------
 
    function Get_Filenames
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.String_SList.GSlist
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -352,7 +365,7 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    function Get_Filter
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.File_Filter.Gtk_File_Filter
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -367,7 +380,8 @@ package body Gtk.File_Chooser_Button is
    --------------------
 
    function Get_Local_Only
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_local_only");
@@ -380,7 +394,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_File_Chooser_Button_Record)
+      (Self : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
@@ -394,7 +408,8 @@ package body Gtk.File_Chooser_Button is
    --------------------------
 
    function Get_Preview_Filename
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -408,7 +423,8 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Get_Preview_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -422,7 +438,7 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    function Get_Preview_Widget
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -437,7 +453,8 @@ package body Gtk.File_Chooser_Button is
    -------------------------------
 
    function Get_Preview_Widget_Active
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_widget_active");
@@ -450,7 +467,8 @@ package body Gtk.File_Chooser_Button is
    -------------------------
 
    function Get_Select_Multiple
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_select_multiple");
@@ -463,7 +481,8 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Get_Show_Hidden
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_show_hidden");
@@ -476,7 +495,8 @@ package body Gtk.File_Chooser_Button is
    -------------
 
    function Get_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record) return UTF8_String
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String
    is
       function Internal
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -490,7 +510,7 @@ package body Gtk.File_Chooser_Button is
    --------------
 
    function Get_Uris
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.String_SList.GSlist
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -506,7 +526,8 @@ package body Gtk.File_Chooser_Button is
    ---------------------------
 
    function Get_Use_Preview_Label
-      (Chooser : access Gtk_File_Chooser_Button_Record) return Boolean
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return Boolean
    is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_use_preview_label");
@@ -519,7 +540,7 @@ package body Gtk.File_Chooser_Button is
    ------------------
 
    function List_Filters
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Glib.Object.Object_List.GSList
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -535,7 +556,7 @@ package body Gtk.File_Chooser_Button is
    -------------------------------
 
    function List_Shortcut_Folder_Uris
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.String_SList.GSlist
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -551,7 +572,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------------
 
    function List_Shortcut_Folders
-      (Chooser : access Gtk_File_Chooser_Button_Record)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.String_SList.GSlist
    is
       function Internal (Chooser : System.Address) return System.Address;
@@ -567,8 +588,9 @@ package body Gtk.File_Chooser_Button is
    -------------------
 
    procedure Remove_Filter
-      (Chooser : access Gtk_File_Chooser_Button_Record;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_remove_filter");
@@ -581,7 +603,7 @@ package body Gtk.File_Chooser_Button is
    ----------------------------
 
    function Remove_Shortcut_Folder
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Folder  : UTF8_String) return Boolean
    is
       function Internal
@@ -601,7 +623,7 @@ package body Gtk.File_Chooser_Button is
    --------------------------------
 
    function Remove_Shortcut_Folder_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String) return Boolean
    is
       function Internal
@@ -620,7 +642,9 @@ package body Gtk.File_Chooser_Button is
    -- Select_All --
    ----------------
 
-   procedure Select_All (Chooser : access Gtk_File_Chooser_Button_Record) is
+   procedure Select_All
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+   is
       procedure Internal (Chooser : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_select_all");
    begin
@@ -632,7 +656,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Select_Filename
-      (Chooser  : access Gtk_File_Chooser_Button_Record;
+      (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String) return Boolean
    is
       function Internal
@@ -652,7 +676,7 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    function Select_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String) return Boolean
    is
       function Internal
@@ -672,8 +696,13 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    procedure Set_Action
+<<<<<<< HEAD
       (Chooser : access Gtk_File_Chooser_Button_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+=======
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Action  : Gtk.Enums.Gtk_File_Chooser_Action)
+>>>>>>> Cleanup the handling of default null value for widget parameters.
    is
       procedure Internal (Chooser : System.Address; Action : Integer);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
@@ -686,7 +715,7 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    procedure Set_Create_Folders
-      (Chooser        : access Gtk_File_Chooser_Button_Record;
+      (Chooser        : not null access Gtk_File_Chooser_Button_Record;
        Create_Folders : Boolean)
    is
       procedure Internal
@@ -702,7 +731,7 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    function Set_Current_Folder
-      (Chooser  : access Gtk_File_Chooser_Button_Record;
+      (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String) return Boolean
    is
       function Internal
@@ -722,7 +751,7 @@ package body Gtk.File_Chooser_Button is
    ----------------------------
 
    function Set_Current_Folder_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String) return Boolean
    is
       function Internal
@@ -742,7 +771,7 @@ package body Gtk.File_Chooser_Button is
    ----------------------
 
    procedure Set_Current_Name
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Name    : UTF8_String)
    is
       procedure Internal
@@ -760,7 +789,7 @@ package body Gtk.File_Chooser_Button is
    -----------------------------------
 
    procedure Set_Do_Overwrite_Confirmation
-      (Chooser                   : access Gtk_File_Chooser_Button_Record;
+      (Chooser                   : not null access Gtk_File_Chooser_Button_Record;
        Do_Overwrite_Confirmation : Boolean)
    is
       procedure Internal
@@ -776,8 +805,8 @@ package body Gtk.File_Chooser_Button is
    ----------------------
 
    procedure Set_Extra_Widget
-      (Chooser      : access Gtk_File_Chooser_Button_Record;
-       Extra_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Chooser      : not null access Gtk_File_Chooser_Button_Record;
+       Extra_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Chooser      : System.Address;
@@ -792,7 +821,7 @@ package body Gtk.File_Chooser_Button is
    ------------------
 
    function Set_Filename
-      (Chooser  : access Gtk_File_Chooser_Button_Record;
+      (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String) return Boolean
    is
       function Internal
@@ -812,8 +841,9 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    procedure Set_Filter
-      (Chooser : access Gtk_File_Chooser_Button_Record;
-       Filter  : access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
+      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_set_filter");
@@ -826,7 +856,7 @@ package body Gtk.File_Chooser_Button is
    --------------------
 
    procedure Set_Local_Only
-      (Chooser    : access Gtk_File_Chooser_Button_Record;
+      (Chooser    : not null access Gtk_File_Chooser_Button_Record;
        Local_Only : Boolean)
    is
       procedure Internal (Chooser : System.Address; Local_Only : Integer);
@@ -840,7 +870,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_File_Chooser_Button_Record;
+      (Self        : not null access Gtk_File_Chooser_Button_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);
@@ -854,8 +884,8 @@ package body Gtk.File_Chooser_Button is
    ------------------------
 
    procedure Set_Preview_Widget
-      (Chooser        : access Gtk_File_Chooser_Button_Record;
-       Preview_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Chooser        : not null access Gtk_File_Chooser_Button_Record;
+       Preview_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Chooser        : System.Address;
@@ -870,7 +900,7 @@ package body Gtk.File_Chooser_Button is
    -------------------------------
 
    procedure Set_Preview_Widget_Active
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Active  : Boolean)
    is
       procedure Internal (Chooser : System.Address; Active : Integer);
@@ -884,7 +914,7 @@ package body Gtk.File_Chooser_Button is
    -------------------------
 
    procedure Set_Select_Multiple
-      (Chooser         : access Gtk_File_Chooser_Button_Record;
+      (Chooser         : not null access Gtk_File_Chooser_Button_Record;
        Select_Multiple : Boolean)
    is
       procedure Internal
@@ -900,7 +930,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    procedure Set_Show_Hidden
-      (Chooser     : access Gtk_File_Chooser_Button_Record;
+      (Chooser     : not null access Gtk_File_Chooser_Button_Record;
        Show_Hidden : Boolean)
    is
       procedure Internal (Chooser : System.Address; Show_Hidden : Integer);
@@ -914,7 +944,7 @@ package body Gtk.File_Chooser_Button is
    -------------
 
    function Set_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String) return Boolean
    is
       function Internal
@@ -934,7 +964,7 @@ package body Gtk.File_Chooser_Button is
    ---------------------------
 
    procedure Set_Use_Preview_Label
-      (Chooser   : access Gtk_File_Chooser_Button_Record;
+      (Chooser   : not null access Gtk_File_Chooser_Button_Record;
        Use_Label : Boolean)
    is
       procedure Internal (Chooser : System.Address; Use_Label : Integer);
@@ -947,7 +977,9 @@ package body Gtk.File_Chooser_Button is
    -- Unselect_All --
    ------------------
 
-   procedure Unselect_All (Chooser : access Gtk_File_Chooser_Button_Record) is
+   procedure Unselect_All
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+   is
       procedure Internal (Chooser : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_unselect_all");
    begin
@@ -959,7 +991,7 @@ package body Gtk.File_Chooser_Button is
    -----------------------
 
    procedure Unselect_Filename
-      (Chooser  : access Gtk_File_Chooser_Button_Record;
+      (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String)
    is
       procedure Internal
@@ -977,7 +1009,7 @@ package body Gtk.File_Chooser_Button is
    ------------------
 
    procedure Unselect_Uri
-      (Chooser : access Gtk_File_Chooser_Button_Record;
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Uri     : UTF8_String)
    is
       procedure Internal

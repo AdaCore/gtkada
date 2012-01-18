@@ -102,7 +102,7 @@ package body Gtk.File_Filter is
    ----------------
 
    procedure Add_Custom
-      (Self   : access Gtk_File_Filter_Record;
+      (Self   : not null access Gtk_File_Filter_Record;
        Needed : Gtk_File_Filter_Flags;
        Func   : Gtk_File_Filter_Func;
        Notify : Glib.G_Destroy_Notify_Address)
@@ -132,7 +132,7 @@ package body Gtk.File_Filter is
       ----------------
 
       procedure Add_Custom
-         (Self   : access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
+         (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record;
           Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
           Data   : User_Data_Type;
@@ -162,7 +162,7 @@ package body Gtk.File_Filter is
    -------------------
 
    procedure Add_Mime_Type
-      (Self      : access Gtk_File_Filter_Record;
+      (Self      : not null access Gtk_File_Filter_Record;
        Mime_Type : UTF8_String)
    is
       procedure Internal
@@ -180,7 +180,7 @@ package body Gtk.File_Filter is
    -----------------
 
    procedure Add_Pattern
-      (Self    : access Gtk_File_Filter_Record;
+      (Self    : not null access Gtk_File_Filter_Record;
        Pattern : UTF8_String)
    is
       procedure Internal
@@ -197,7 +197,9 @@ package body Gtk.File_Filter is
    -- Add_Pixbuf_Formats --
    ------------------------
 
-   procedure Add_Pixbuf_Formats (Self : access Gtk_File_Filter_Record) is
+   procedure Add_Pixbuf_Formats
+      (Self : not null access Gtk_File_Filter_Record)
+   is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "gtk_file_filter_add_pixbuf_formats");
    begin
@@ -209,7 +211,7 @@ package body Gtk.File_Filter is
    ------------
 
    function Filter
-      (Self        : access Gtk_File_Filter_Record;
+      (Self        : not null access Gtk_File_Filter_Record;
        Filter_Info : Gtk_File_Filter_Info) return Boolean
    is
       function Internal
@@ -225,7 +227,7 @@ package body Gtk.File_Filter is
    --------------
 
    function Get_Name
-      (Self : access Gtk_File_Filter_Record) return UTF8_String
+      (Self : not null access Gtk_File_Filter_Record) return UTF8_String
    is
       function Internal
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -239,7 +241,8 @@ package body Gtk.File_Filter is
    ----------------
 
    function Get_Needed
-      (Self : access Gtk_File_Filter_Record) return Gtk_File_Filter_Flags
+      (Self : not null access Gtk_File_Filter_Record)
+       return Gtk_File_Filter_Flags
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_filter_get_needed");
@@ -252,7 +255,7 @@ package body Gtk.File_Filter is
    --------------
 
    procedure Set_Name
-      (Self : access Gtk_File_Filter_Record;
+      (Self : not null access Gtk_File_Filter_Record;
        Name : UTF8_String)
    is
       procedure Internal

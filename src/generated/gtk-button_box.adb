@@ -63,8 +63,9 @@ package body Gtk.Button_Box is
    -------------------------------
 
    function Get_Child_Non_Homogeneous
-      (Widget : access Gtk_Button_Box_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean
    is
       function Internal
          (Widget : System.Address;
@@ -79,8 +80,9 @@ package body Gtk.Button_Box is
    -------------------------
 
    function Get_Child_Secondary
-      (Widget : access Gtk_Button_Box_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean
    is
       function Internal
          (Widget : System.Address;
@@ -95,7 +97,7 @@ package body Gtk.Button_Box is
    ----------------
 
    function Get_Layout
-      (Widget : access Gtk_Button_Box_Record)
+      (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style
    is
       function Internal (Widget : System.Address) return Integer;
@@ -109,8 +111,8 @@ package body Gtk.Button_Box is
    -------------------------------
 
    procedure Set_Child_Non_Homogeneous
-      (Widget          : access Gtk_Button_Box_Record;
-       Child           : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Widget          : not null access Gtk_Button_Box_Record;
+       Child           : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Non_Homogeneous : Boolean)
    is
       procedure Internal
@@ -127,8 +129,8 @@ package body Gtk.Button_Box is
    -------------------------
 
    procedure Set_Child_Secondary
-      (Widget       : access Gtk_Button_Box_Record;
-       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Widget       : not null access Gtk_Button_Box_Record;
+       Child        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean)
    is
       procedure Internal
@@ -145,7 +147,7 @@ package body Gtk.Button_Box is
    ----------------
 
    procedure Set_Layout
-      (Widget       : access Gtk_Button_Box_Record;
+      (Widget       : not null access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style)
    is
       procedure Internal (Widget : System.Address; Layout_Style : Integer);
@@ -159,7 +161,8 @@ package body Gtk.Button_Box is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Button_Box_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Button_Box_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -172,7 +175,7 @@ package body Gtk.Button_Box is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Button_Box_Record;
+      (Self        : not null access Gtk_Button_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

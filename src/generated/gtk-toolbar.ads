@@ -77,7 +77,7 @@ package Gtk.Toolbar is
    -------------
 
    function Get_Drop_Index
-      (Toolbar : access Gtk_Toolbar_Record;
+      (Toolbar : not null access Gtk_Toolbar_Record;
        X       : Gint;
        Y       : Gint) return Gint;
    --  Returns the position corresponding to the indicated point on Toolbar.
@@ -89,9 +89,10 @@ package Gtk.Toolbar is
    --  "y": y coordinate of a point on the toolbar
 
    function Get_Icon_Size
-      (Toolbar : access Gtk_Toolbar_Record) return Gtk.Enums.Gtk_Icon_Size;
+      (Toolbar : not null access Gtk_Toolbar_Record)
+       return Gtk.Enums.Gtk_Icon_Size;
    procedure Set_Icon_Size
-      (Toolbar   : access Gtk_Toolbar_Record;
+      (Toolbar   : not null access Gtk_Toolbar_Record;
        Icon_Size : Gtk.Enums.Gtk_Icon_Size);
    --  This function sets the size of stock icons in the toolbar. You can call
    --  it both before you add the icons and after they've been added. The size
@@ -103,20 +104,21 @@ package Gtk.Toolbar is
    --  toolbar shall have.
 
    function Get_Item_Index
-      (Toolbar : access Gtk_Toolbar_Record;
-       Item    : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
+      (Toolbar : not null access Gtk_Toolbar_Record;
+       Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
        return Gint;
    --  Returns the position of Item on the toolbar, starting from 0. It is an
    --  error if Item is not a child of the toolbar.
    --  Since: gtk+ 2.4
    --  "item": a Gtk.Tool_Item.Gtk_Tool_Item that is a child of Toolbar
 
-   function Get_N_Items (Toolbar : access Gtk_Toolbar_Record) return Gint;
+   function Get_N_Items
+      (Toolbar : not null access Gtk_Toolbar_Record) return Gint;
    --  Returns the number of items on the toolbar.
    --  Since: gtk+ 2.4
 
    function Get_Nth_Item
-      (Toolbar : access Gtk_Toolbar_Record;
+      (Toolbar : not null access Gtk_Toolbar_Record;
        N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Returns the N<!-- -->'th item on Toolbar, or null if the toolbar does
    --  not contain an N<!-- -->'th item.
@@ -125,16 +127,16 @@ package Gtk.Toolbar is
    --  "n": A position on the toolbar
 
    function Get_Relief_Style
-      (Toolbar : access Gtk_Toolbar_Record)
+      (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Relief_Style;
    --  Returns the relief style of buttons on Toolbar. See
    --  Gtk.Button.Set_Relief.
    --  Since: gtk+ 2.4
 
    function Get_Show_Arrow
-      (Toolbar : access Gtk_Toolbar_Record) return Boolean;
+      (Toolbar : not null access Gtk_Toolbar_Record) return Boolean;
    procedure Set_Show_Arrow
-      (Toolbar    : access Gtk_Toolbar_Record;
+      (Toolbar    : not null access Gtk_Toolbar_Record;
        Show_Arrow : Boolean := True);
    --  Sets whether to show an overflow menu when Toolbar doesn't have room
    --  for all items on it. If True, items that there are not room are
@@ -143,18 +145,26 @@ package Gtk.Toolbar is
    --  "show_arrow": Whether to show an overflow menu
 
    function Get_Style
+<<<<<<< HEAD
       (Toolbar : access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Toolbar_Style;
    procedure Set_Style
       (Toolbar : access Gtk_Toolbar_Record;
        Style   : Gtk.Enums.Gtk_Toolbar_Style);
+=======
+      (Toolbar : not null access Gtk_Toolbar_Record)
+       return Gtk_Toolbar_Style;
+   procedure Set_Style
+      (Toolbar : not null access Gtk_Toolbar_Record;
+       Style   : Gtk_Toolbar_Style);
+>>>>>>> Cleanup the handling of default null value for widget parameters.
    --  Alters the view of Toolbar to display either icons only, text only, or
    --  both.
    --  "style": the new style for Toolbar.
 
    procedure Insert
-      (Toolbar : access Gtk_Toolbar_Record;
-       Item    : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
+      (Toolbar : not null access Gtk_Toolbar_Record;
+       Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
        Pos     : Gint := -1);
    --  Insert a Gtk.Tool_Item.Gtk_Tool_Item into the toolbar at position Pos.
    --  If Pos is 0 the item is prepended to the start of the toolbar. If Pos is
@@ -164,7 +174,7 @@ package Gtk.Toolbar is
    --  "pos": the position of the new item
 
    procedure Set_Drop_Highlight_Item
-      (Toolbar   : access Gtk_Toolbar_Record;
+      (Toolbar   : not null access Gtk_Toolbar_Record;
        Tool_Item : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
        Index     : Gint);
    --  Highlights Toolbar to give an idea of what it would look like if Item
@@ -178,11 +188,11 @@ package Gtk.Toolbar is
    --  highlighting
    --  "index_": a position on Toolbar
 
-   procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record);
+   procedure Unset_Icon_Size (Toolbar : not null access Gtk_Toolbar_Record);
    --  Unsets toolbar icon size set with Gtk.Toolbar.Set_Icon_Size, so that
    --  user preferences will be used to determine the icon size.
 
-   procedure Unset_Style (Toolbar : access Gtk_Toolbar_Record);
+   procedure Unset_Style (Toolbar : not null access Gtk_Toolbar_Record);
    --  Unsets a toolbar style set with Gtk.Toolbar.Set_Style, so that user
    --  preferences will be used to determine the toolbar style.
 
@@ -191,26 +201,28 @@ package Gtk.Toolbar is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Toolbar_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Toolbar_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Toolbar_Record;
+      (Self        : not null access Gtk_Toolbar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    function Get_Ellipsize_Mode
-      (Self : access Gtk_Toolbar_Record)
+      (Self : not null access Gtk_Toolbar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
 
    function Get_Text_Alignment
-      (Self : access Gtk_Toolbar_Record) return Gfloat;
+      (Self : not null access Gtk_Toolbar_Record) return Gfloat;
 
    function Get_Text_Orientation
-      (Self : access Gtk_Toolbar_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Toolbar_Record)
+       return Gtk.Enums.Gtk_Orientation;
 
    function Get_Text_Size_Group
-      (Self : access Gtk_Toolbar_Record)
+      (Self : not null access Gtk_Toolbar_Record)
        return Gtk.Size_Group.Gtk_Size_Group;
 
-   procedure Rebuild_Menu (Self : access Gtk_Toolbar_Record);
+   procedure Rebuild_Menu (Self : not null access Gtk_Toolbar_Record);
 
    ----------------
    -- Interfaces --

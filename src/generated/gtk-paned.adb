@@ -105,8 +105,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add1
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add1");
@@ -119,8 +119,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add2
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add2");
@@ -133,7 +133,8 @@ package body Gtk.Paned is
    ----------------
 
    function Get_Child1
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
@@ -147,7 +148,8 @@ package body Gtk.Paned is
    ----------------
 
    function Get_Child2
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
@@ -161,7 +163,8 @@ package body Gtk.Paned is
    -----------------------
 
    function Get_Handle_Window
-      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window
+      (Paned : not null access Gtk_Paned_Record)
+       return Gdk.Window.Gdk_Window
    is
       function Internal
          (Paned : System.Address) return Gdk.Window.Gdk_Window;
@@ -174,7 +177,9 @@ package body Gtk.Paned is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Paned : access Gtk_Paned_Record) return Gint is
+   function Get_Position
+      (Paned : not null access Gtk_Paned_Record) return Gint
+   is
       function Internal (Paned : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_paned_get_position");
    begin
@@ -186,8 +191,8 @@ package body Gtk.Paned is
    -----------
 
    procedure Pack1
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True)
    is
@@ -206,8 +211,8 @@ package body Gtk.Paned is
    -----------
 
    procedure Pack2
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False)
    is
@@ -225,7 +230,10 @@ package body Gtk.Paned is
    -- Set_Position --
    ------------------
 
-   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint) is
+   procedure Set_Position
+      (Paned    : not null access Gtk_Paned_Record;
+       Position : Gint)
+   is
       procedure Internal (Paned : System.Address; Position : Gint);
       pragma Import (C, Internal, "gtk_paned_set_position");
    begin
@@ -237,7 +245,8 @@ package body Gtk.Paned is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -250,7 +259,7 @@ package body Gtk.Paned is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Paned_Record;
+      (Self        : not null access Gtk_Paned_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

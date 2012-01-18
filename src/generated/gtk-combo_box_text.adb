@@ -134,7 +134,7 @@ package body Gtk.Combo_Box_Text is
    ------------
 
    procedure Append
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Id   : UTF8_String;
        Text : UTF8_String)
    is
@@ -156,7 +156,7 @@ package body Gtk.Combo_Box_Text is
    -----------------
 
    procedure Append_Text
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Text : UTF8_String)
    is
       procedure Internal
@@ -174,7 +174,7 @@ package body Gtk.Combo_Box_Text is
    ---------------------
 
    function Get_Active_Text
-      (Self : access Gtk_Combo_Box_Text_Record) return UTF8_String
+      (Self : not null access Gtk_Combo_Box_Text_Record) return UTF8_String
    is
       function Internal
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -188,7 +188,7 @@ package body Gtk.Combo_Box_Text is
    ------------
 
    procedure Insert
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
        Id       : UTF8_String;
        Text     : UTF8_String)
@@ -212,7 +212,7 @@ package body Gtk.Combo_Box_Text is
    -----------------
 
    procedure Insert_Text
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
        Text     : UTF8_String)
    is
@@ -232,7 +232,7 @@ package body Gtk.Combo_Box_Text is
    -------------
 
    procedure Prepend
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Id   : UTF8_String;
        Text : UTF8_String)
    is
@@ -254,7 +254,7 @@ package body Gtk.Combo_Box_Text is
    ------------------
 
    procedure Prepend_Text
-      (Self : access Gtk_Combo_Box_Text_Record;
+      (Self : not null access Gtk_Combo_Box_Text_Record;
        Text : UTF8_String)
    is
       procedure Internal
@@ -272,7 +272,7 @@ package body Gtk.Combo_Box_Text is
    ------------
 
    procedure Remove
-      (Self     : access Gtk_Combo_Box_Text_Record;
+      (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint)
    is
       procedure Internal (Self : System.Address; Position : Gint);
@@ -285,7 +285,7 @@ package body Gtk.Combo_Box_Text is
    -- Remove_All --
    ----------------
 
-   procedure Remove_All (Self : access Gtk_Combo_Box_Text_Record) is
+   procedure Remove_All (Self : not null access Gtk_Combo_Box_Text_Record) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "gtk_combo_box_text_remove_all");
    begin
@@ -297,8 +297,8 @@ package body Gtk.Combo_Box_Text is
    ------------------------
 
    procedure Set_Cell_Data_Func
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func        : Gtk.Cell_Layout.Cell_Data_Func)
    is
    begin
@@ -314,8 +314,8 @@ package body Gtk.Combo_Box_Text is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       --  A function which should set the value of Cell_Layout's cell
@@ -332,8 +332,8 @@ package body Gtk.Combo_Box_Text is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
@@ -347,8 +347,8 @@ package body Gtk.Combo_Box_Text is
       ------------------------
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record'Class;
-          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record;
+          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type)
       is
@@ -363,8 +363,8 @@ package body Gtk.Combo_Box_Text is
    -------------------
 
    procedure Add_Attribute
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
        Column      : Gint)
    is
@@ -384,7 +384,7 @@ package body Gtk.Combo_Box_Text is
    -- Clear --
    -----------
 
-   procedure Clear (Cell_Layout : access Gtk_Combo_Box_Text_Record) is
+   procedure Clear (Cell_Layout : not null access Gtk_Combo_Box_Text_Record) is
       procedure Internal (Cell_Layout : System.Address);
       pragma Import (C, Internal, "gtk_cell_layout_clear");
    begin
@@ -396,8 +396,8 @@ package body Gtk.Combo_Box_Text is
    ----------------------
 
    procedure Clear_Attributes
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
       
    is
       procedure Internal
@@ -412,7 +412,9 @@ package body Gtk.Combo_Box_Text is
    -- Editing_Done --
    ------------------
 
-   procedure Editing_Done (Cell_Editable : access Gtk_Combo_Box_Text_Record) is
+   procedure Editing_Done
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record)
+   is
       procedure Internal (Cell_Editable : System.Address);
       pragma Import (C, Internal, "gtk_cell_editable_editing_done");
    begin
@@ -424,7 +426,7 @@ package body Gtk.Combo_Box_Text is
    ---------------
 
    function Get_Cells
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record)
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record)
        return Glib.Object.Object_Simple_List.GList
    is
       function Internal (Cell_Layout : System.Address) return System.Address;
@@ -440,8 +442,8 @@ package body Gtk.Combo_Box_Text is
    --------------
 
    procedure Pack_End
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -458,8 +460,8 @@ package body Gtk.Combo_Box_Text is
    ----------------
 
    procedure Pack_Start
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean)
    is
       procedure Internal
@@ -476,7 +478,7 @@ package body Gtk.Combo_Box_Text is
    -------------------
 
    procedure Remove_Widget
-      (Cell_Editable : access Gtk_Combo_Box_Text_Record)
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record)
    is
       procedure Internal (Cell_Editable : System.Address);
       pragma Import (C, Internal, "gtk_cell_editable_remove_widget");
@@ -489,8 +491,8 @@ package body Gtk.Combo_Box_Text is
    -------------
 
    procedure Reorder
-      (Cell_Layout : access Gtk_Combo_Box_Text_Record;
-       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint)
    is
       procedure Internal
@@ -507,7 +509,7 @@ package body Gtk.Combo_Box_Text is
    -------------------
 
    procedure Start_Editing
-      (Cell_Editable : access Gtk_Combo_Box_Text_Record;
+      (Cell_Editable : not null access Gtk_Combo_Box_Text_Record;
        Event         : Gdk.Event.Gdk_Event)
    is
       procedure Internal

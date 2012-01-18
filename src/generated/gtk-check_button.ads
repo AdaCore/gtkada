@@ -86,23 +86,24 @@ package Gtk.Check_Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Check_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Check_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Check_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Check_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Check_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Check_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Check_Button_Record) return Boolean;
+      (Self : not null access Gtk_Check_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Check_Button_Record;
+      (Self           : not null access Gtk_Check_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Check_Button_Record;
+      (Self   : not null access Gtk_Check_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

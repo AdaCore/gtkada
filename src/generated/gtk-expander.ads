@@ -127,9 +127,9 @@ package Gtk.Expander is
    -------------
 
    function Get_Expanded
-      (Expander : access Gtk_Expander_Record) return Boolean;
+      (Expander : not null access Gtk_Expander_Record) return Boolean;
    procedure Set_Expanded
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Expanded : Boolean);
    --  Sets the state of the expander. Set to True, if you want the child
    --  widget to be revealed, and False if you want the child widget to be
@@ -138,9 +138,9 @@ package Gtk.Expander is
    --  "expanded": whether the child widget is revealed
 
    function Get_Label
-      (Expander : access Gtk_Expander_Record) return UTF8_String;
+      (Expander : not null access Gtk_Expander_Record) return UTF8_String;
    procedure Set_Label
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Label    : UTF8_String);
    --  Sets the text of the label of the expander to Label.
    --  This will also clear any previously set labels.
@@ -148,9 +148,9 @@ package Gtk.Expander is
    --  "label": a string
 
    function Get_Label_Fill
-      (Expander : access Gtk_Expander_Record) return Boolean;
+      (Expander : not null access Gtk_Expander_Record) return Boolean;
    procedure Set_Label_Fill
-      (Expander   : access Gtk_Expander_Record;
+      (Expander   : not null access Gtk_Expander_Record;
        Label_Fill : Boolean);
    --  Sets whether the label widget should fill all available horizontal
    --  space allocated to Expander.
@@ -159,9 +159,10 @@ package Gtk.Expander is
    --  horizontal space
 
    function Get_Label_Widget
-      (Expander : access Gtk_Expander_Record) return Gtk.Widget.Gtk_Widget;
+      (Expander : not null access Gtk_Expander_Record)
+       return Gtk.Widget.Gtk_Widget;
    procedure Set_Label_Widget
-      (Expander     : access Gtk_Expander_Record;
+      (Expander     : not null access Gtk_Expander_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set the label widget for the expander. This is the widget that will
    --  appear embedded alongside the expander arrow.
@@ -169,18 +170,19 @@ package Gtk.Expander is
    --  "label_widget": the new label widget
 
    function Get_Resize_Toplevel
-      (Expander : access Gtk_Expander_Record) return Boolean;
+      (Expander : not null access Gtk_Expander_Record) return Boolean;
    procedure Set_Resize_Toplevel
-      (Expander        : access Gtk_Expander_Record;
+      (Expander        : not null access Gtk_Expander_Record;
        Resize_Toplevel : Boolean);
    --  Sets whether the expander will resize the toplevel widget containing
    --  the expander upon resizing and collpasing.
    --  Since: gtk+ 3.2
    --  "resize_toplevel": whether to resize the toplevel
 
-   function Get_Spacing (Expander : access Gtk_Expander_Record) return Gint;
+   function Get_Spacing
+      (Expander : not null access Gtk_Expander_Record) return Gint;
    procedure Set_Spacing
-      (Expander : access Gtk_Expander_Record;
+      (Expander : not null access Gtk_Expander_Record;
        Spacing  : Gint);
    --  Sets the spacing field of Expander, which is the number of pixels to
    --  place between expander and the child.
@@ -188,9 +190,9 @@ package Gtk.Expander is
    --  "spacing": distance between the expander and child in pixels
 
    function Get_Use_Markup
-      (Expander : access Gtk_Expander_Record) return Boolean;
+      (Expander : not null access Gtk_Expander_Record) return Boolean;
    procedure Set_Use_Markup
-      (Expander   : access Gtk_Expander_Record;
+      (Expander   : not null access Gtk_Expander_Record;
        Use_Markup : Boolean);
    --  Sets whether the text of the label contains markup in <link
    --  linkend="PangoMarkupFormat">Pango's text markup language</link>. See
@@ -199,9 +201,9 @@ package Gtk.Expander is
    --  "use_markup": True if the label's text should be parsed for markup
 
    function Get_Use_Underline
-      (Expander : access Gtk_Expander_Record) return Boolean;
+      (Expander : not null access Gtk_Expander_Record) return Boolean;
    procedure Set_Use_Underline
-      (Expander      : access Gtk_Expander_Record;
+      (Expander      : not null access Gtk_Expander_Record;
        Use_Underline : Boolean);
    --  If true, an underline in the text of the expander label indicates the
    --  next character should be used for the mnemonic accelerator key.

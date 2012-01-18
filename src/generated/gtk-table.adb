@@ -70,8 +70,8 @@ package body Gtk.Table is
    ------------
 
    procedure Attach
-      (Table         : access Gtk_Table_Record;
-       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Table         : not null access Gtk_Table_Record;
+       Child         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : Guint;
        Right_Attach  : Guint;
        Top_Attach    : Guint;
@@ -102,8 +102,8 @@ package body Gtk.Table is
    ---------------------
 
    procedure Attach_Defaults
-      (Table         : access Gtk_Table_Record;
-       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Table         : not null access Gtk_Table_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : Guint;
        Right_Attach  : Guint;
        Top_Attach    : Guint;
@@ -126,7 +126,7 @@ package body Gtk.Table is
    ---------------------
 
    function Get_Col_Spacing
-      (Table  : access Gtk_Table_Record;
+      (Table  : not null access Gtk_Table_Record;
        Column : Guint) return Guint
    is
       function Internal
@@ -142,7 +142,7 @@ package body Gtk.Table is
    -----------------------------
 
    function Get_Default_Col_Spacing
-      (Table : access Gtk_Table_Record) return Guint
+      (Table : not null access Gtk_Table_Record) return Guint
    is
       function Internal (Table : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_table_get_default_col_spacing");
@@ -155,7 +155,7 @@ package body Gtk.Table is
    -----------------------------
 
    function Get_Default_Row_Spacing
-      (Table : access Gtk_Table_Record) return Guint
+      (Table : not null access Gtk_Table_Record) return Guint
    is
       function Internal (Table : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_table_get_default_row_spacing");
@@ -167,7 +167,9 @@ package body Gtk.Table is
    -- Get_Homogeneous --
    ---------------------
 
-   function Get_Homogeneous (Table : access Gtk_Table_Record) return Boolean is
+   function Get_Homogeneous
+      (Table : not null access Gtk_Table_Record) return Boolean
+   is
       function Internal (Table : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_table_get_homogeneous");
    begin
@@ -179,7 +181,7 @@ package body Gtk.Table is
    ---------------------
 
    function Get_Row_Spacing
-      (Table : access Gtk_Table_Record;
+      (Table : not null access Gtk_Table_Record;
        Row   : Guint) return Guint
    is
       function Internal (Table : System.Address; Row : Guint) return Guint;
@@ -193,7 +195,7 @@ package body Gtk.Table is
    --------------
 
    procedure Get_Size
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Rows    : out Guint;
        Columns : out Guint)
    is
@@ -211,7 +213,7 @@ package body Gtk.Table is
    ------------
 
    procedure Resize
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Rows    : Guint;
        Columns : Guint)
    is
@@ -229,7 +231,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Col_Spacing
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Column  : Guint;
        Spacing : Guint)
    is
@@ -247,7 +249,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Col_Spacings
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Spacing : Guint)
    is
       procedure Internal (Table : System.Address; Spacing : Guint);
@@ -261,7 +263,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Homogeneous
-      (Table       : access Gtk_Table_Record;
+      (Table       : not null access Gtk_Table_Record;
        Homogeneous : Boolean)
    is
       procedure Internal (Table : System.Address; Homogeneous : Integer);
@@ -275,7 +277,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Row_Spacing
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Row     : Guint;
        Spacing : Guint)
    is
@@ -293,7 +295,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Row_Spacings
-      (Table   : access Gtk_Table_Record;
+      (Table   : not null access Gtk_Table_Record;
        Spacing : Guint)
    is
       procedure Internal (Table : System.Address; Spacing : Guint);

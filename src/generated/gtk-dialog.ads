@@ -240,8 +240,8 @@ package Gtk.Dialog is
    -------------
 
    procedure Add_Action_Widget
-      (Dialog      : access Gtk_Dialog_Record;
-       Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Dialog      : not null access Gtk_Dialog_Record;
+       Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Response_Id : Gtk_Response_Type);
    --  Adds an activatable widget to the action area of a
    --  Gtk.Dialog.Gtk_Dialog, connecting a signal handler that will emit the
@@ -253,7 +253,7 @@ package Gtk.Dialog is
    --  "response_id": response ID for Child
 
    function Add_Button
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Text        : UTF8_String;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Adds a button with the given text (or a stock button, if Button_Text is
@@ -265,18 +265,18 @@ package Gtk.Dialog is
    --  "response_id": response ID for the button
 
    function Get_Action_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the action area of Dialog.
    --  Since: gtk+ 2.14
 
    function Get_Content_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the content area of Dialog.
    --  Since: gtk+ 2.14
 
    function Get_Response_For_Widget
-      (Dialog : access Gtk_Dialog_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Dialog : not null access Gtk_Dialog_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type;
    --  Gets the response id of a widget in the action area of a dialog.
    --  if Widget doesn't have a response id set.
@@ -284,7 +284,7 @@ package Gtk.Dialog is
    --  "widget": a widget in the action area of Dialog
 
    function Get_Widget_For_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
@@ -293,7 +293,7 @@ package Gtk.Dialog is
    --  "response_id": the response ID used by the Dialog widget
 
    procedure Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type);
    --  Emits the Gtk.Dialog.Gtk_Dialog::response signal with the given
    --  response ID. Used to indicate that the user has responded to the dialog
@@ -301,7 +301,8 @@ package Gtk.Dialog is
    --  the ::response signal and take appropriate action.
    --  "response_id": response ID
 
-   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type;
+   function Run
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk_Response_Type;
    --  Blocks in a recursive main loop until the Dialog either emits the
    --  Gtk.Dialog.Gtk_Dialog::response signal, or is destroyed. If the dialog
    --  is destroyed during the call to Gtk.Dialog.Run, Gtk.Dialog.Run returns
@@ -333,7 +334,7 @@ package Gtk.Dialog is
    --  be triggered during a Gtk.Dialog.Run call.
 
    procedure Set_Default_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type);
    --  Sets the last widget in the dialog's action area with the given
    --  Response_Id as the default widget for the dialog. Pressing "Enter"
@@ -341,7 +342,7 @@ package Gtk.Dialog is
    --  "response_id": a response ID
 
    procedure Set_Response_Sensitive
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean);
    --  Calls <literal>gtk_widget_set_sensitive (widget, Setting)</literal> for

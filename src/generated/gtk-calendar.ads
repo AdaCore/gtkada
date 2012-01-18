@@ -79,7 +79,7 @@ package Gtk.Calendar is
 
 
    type Gtk_Calendar_Detail_Func is access function
-     (Calendar : access Gtk_Calendar_Record'Class;
+     (Calendar : not null access Gtk_Calendar_Record'Class;
       Year     : Guint;
       Month    : Guint;
       Day      : Guint) return UTF8_String;
@@ -109,11 +109,11 @@ package Gtk.Calendar is
    -- Methods --
    -------------
 
-   procedure Clear_Marks (Calendar : access Gtk_Calendar_Record);
+   procedure Clear_Marks (Calendar : not null access Gtk_Calendar_Record);
    --  Remove all visual markers.
 
    procedure Get_Date
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Year     : out Guint;
        Month    : out Guint;
        Day      : out Guint);
@@ -124,16 +124,16 @@ package Gtk.Calendar is
    --  "day": location to store the day number (between 1 and 31), or null
 
    function Get_Day_Is_Marked
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint) return Boolean;
    --  Returns if the Day of the Calendar is already marked.
    --  Since: gtk+ 3.0
    --  "day": the day number between 1 and 31.
 
    function Get_Detail_Height_Rows
-      (Calendar : access Gtk_Calendar_Record) return Gint;
+      (Calendar : not null access Gtk_Calendar_Record) return Gint;
    procedure Set_Detail_Height_Rows
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Rows     : Gint);
    --  Updates the height of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows.
@@ -141,9 +141,9 @@ package Gtk.Calendar is
    --  "rows": detail height in rows.
 
    function Get_Detail_Width_Chars
-      (Calendar : access Gtk_Calendar_Record) return Gint;
+      (Calendar : not null access Gtk_Calendar_Record) return Gint;
    procedure Set_Detail_Width_Chars
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Chars    : Gint);
    --  Updates the width of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
@@ -151,27 +151,31 @@ package Gtk.Calendar is
    --  "chars": detail width in characters.
 
    function Get_Display_Options
-      (Calendar : access Gtk_Calendar_Record)
+      (Calendar : not null access Gtk_Calendar_Record)
        return Gtk_Calendar_Display_Options;
    procedure Set_Display_Options
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Flags    : Gtk_Calendar_Display_Options);
    --  Sets display options (whether to display the heading and the month
    --  headings).
    --  Since: gtk+ 2.4
    --  "flags": the display options to set
 
-   procedure Mark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
+   procedure Mark_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint);
    --  Places a visual marker on a particular day.
    --  "day": the day number to mark between 1 and 31.
 
-   procedure Select_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
+   procedure Select_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint);
    --  Selects a day from the current month.
    --  "day": the day number between 1 and 31, or 0 to unselect the currently
    --  selected day.
 
    procedure Select_Month
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Month    : Guint;
        Year     : Guint);
    --  Shifts the calendar to a different month.
@@ -179,7 +183,7 @@ package Gtk.Calendar is
    --  "year": the year the month is in.
 
    procedure Set_Detail_Func
-      (Calendar : access Gtk_Calendar_Record;
+      (Calendar : not null access Gtk_Calendar_Record;
        Func     : Gtk_Calendar_Detail_Func);
    --  Installs a function which provides Pango markup with detail information
    --  for each day. Examples for such details are holidays or appointments.
@@ -200,7 +204,7 @@ package Gtk.Calendar is
    package Set_Detail_Func_User_Data is
 
       type Gtk_Calendar_Detail_Func is access function
-        (Calendar  : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+        (Calendar  : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
          Year      : Guint;
          Month     : Guint;
          Day       : Guint;
@@ -218,7 +222,7 @@ package Gtk.Calendar is
       --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
 
       procedure Set_Detail_Func
-         (Calendar : access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record;
           Func     : Gtk_Calendar_Detail_Func;
           Data     : User_Data_Type);
       --  Installs a function which provides Pango markup with detail
@@ -237,7 +241,9 @@ package Gtk.Calendar is
 
    end Set_Detail_Func_User_Data;
 
-   procedure Unmark_Day (Calendar : access Gtk_Calendar_Record; Day : Guint);
+   procedure Unmark_Day
+      (Calendar : not null access Gtk_Calendar_Record;
+       Day      : Guint);
    --  Removes the visual marker from a particular day.
    --  "day": the day number to unmark between 1 and 31.
 

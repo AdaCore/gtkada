@@ -97,8 +97,8 @@ package Gtk.Fixed is
    -------------
 
    procedure Move
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);
    --  Move a child of a GtkFixed container to the given position. X indicates
@@ -109,8 +109,8 @@ package Gtk.Fixed is
    --  "y": the vertical position to move the widget to.
 
    procedure Put
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);
    --  Add Widget to a Fixed container at the given position. X indicates the

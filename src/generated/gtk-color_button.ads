@@ -90,47 +90,47 @@ package Gtk.Color_Button is
    -------------
 
    function Get_Alpha
-      (Button : access Gtk_Color_Button_Record) return guint16;
+      (Button : not null access Gtk_Color_Button_Record) return guint16;
    procedure Set_Alpha
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Alpha  : guint16);
    --  Sets the current opacity to be Alpha.
    --  Since: gtk+ 2.4
    --  "alpha": an integer between 0 and 65535
 
    procedure Get_Color
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Color  : out Gdk.Color.Gdk_Color);
    procedure Set_Color
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Color  : Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color.
    --  Since: gtk+ 2.4
    --  "color": A Gdk_Color to set the current color with
 
    procedure Get_Rgba
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Rgba   : out Gdk.RGBA.Gdk_RGBA);
    procedure Set_Rgba
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    --  Sets the current color to be Rgba.
    --  Since: gtk+ 3.0
    --  "rgba": a Gdk_RGBA to set the current color with
 
    function Get_Title
-      (Button : access Gtk_Color_Button_Record) return UTF8_String;
+      (Button : not null access Gtk_Color_Button_Record) return UTF8_String;
    procedure Set_Title
-      (Button : access Gtk_Color_Button_Record;
+      (Button : not null access Gtk_Color_Button_Record;
        Title  : UTF8_String);
    --  Sets the title for the color selection dialog.
    --  Since: gtk+ 2.4
    --  "title": String containing new window title
 
    function Get_Use_Alpha
-      (Button : access Gtk_Color_Button_Record) return Boolean;
+      (Button : not null access Gtk_Color_Button_Record) return Boolean;
    procedure Set_Use_Alpha
-      (Button    : access Gtk_Color_Button_Record;
+      (Button    : not null access Gtk_Color_Button_Record;
        Use_Alpha : Boolean);
    --  Sets whether or not the color button should use the alpha channel.
    --  Since: gtk+ 2.4
@@ -142,23 +142,24 @@ package Gtk.Color_Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Color_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Color_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Color_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Color_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Color_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Color_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Color_Button_Record) return Boolean;
+      (Self : not null access Gtk_Color_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Color_Button_Record;
+      (Self           : not null access Gtk_Color_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Color_Button_Record;
+      (Self   : not null access Gtk_Color_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

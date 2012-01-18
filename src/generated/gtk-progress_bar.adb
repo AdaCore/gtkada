@@ -60,7 +60,7 @@ package body Gtk.Progress_Bar is
    -------------------
 
    function Get_Ellipsize
-      (Progress_Bar : access Gtk_Progress_Bar_Record)
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
       function Internal (Progress_Bar : System.Address) return Integer;
@@ -74,7 +74,8 @@ package body Gtk.Progress_Bar is
    ------------------
 
    function Get_Fraction
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Gdouble
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Gdouble
    is
       function Internal (Progress_Bar : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_progress_bar_get_fraction");
@@ -87,7 +88,8 @@ package body Gtk.Progress_Bar is
    ------------------
 
    function Get_Inverted
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Boolean
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Boolean
    is
       function Internal (Progress_Bar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_progress_bar_get_inverted");
@@ -100,7 +102,8 @@ package body Gtk.Progress_Bar is
    --------------------
 
    function Get_Pulse_Step
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Gdouble
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Gdouble
    is
       function Internal (Progress_Bar : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_progress_bar_get_pulse_step");
@@ -113,7 +116,8 @@ package body Gtk.Progress_Bar is
    -------------------
 
    function Get_Show_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Boolean
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Boolean
    is
       function Internal (Progress_Bar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_progress_bar_get_show_text");
@@ -126,7 +130,8 @@ package body Gtk.Progress_Bar is
    --------------
 
    function Get_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return UTF8_String
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return UTF8_String
    is
       function Internal
          (Progress_Bar : System.Address)
@@ -140,7 +145,7 @@ package body Gtk.Progress_Bar is
    -- Pulse --
    -----------
 
-   procedure Pulse (Progress_Bar : access Gtk_Progress_Bar_Record) is
+   procedure Pulse (Progress_Bar : not null access Gtk_Progress_Bar_Record) is
       procedure Internal (Progress_Bar : System.Address);
       pragma Import (C, Internal, "gtk_progress_bar_pulse");
    begin
@@ -152,7 +157,7 @@ package body Gtk.Progress_Bar is
    -------------------
 
    procedure Set_Ellipsize
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Mode         : Pango.Layout.Pango_Ellipsize_Mode)
    is
       procedure Internal (Progress_Bar : System.Address; Mode : Integer);
@@ -166,7 +171,7 @@ package body Gtk.Progress_Bar is
    ------------------
 
    procedure Set_Fraction
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble)
    is
       procedure Internal (Progress_Bar : System.Address; Fraction : Gdouble);
@@ -180,7 +185,7 @@ package body Gtk.Progress_Bar is
    ------------------
 
    procedure Set_Inverted
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Inverted     : Boolean)
    is
       procedure Internal (Progress_Bar : System.Address; Inverted : Integer);
@@ -194,7 +199,7 @@ package body Gtk.Progress_Bar is
    --------------------
 
    procedure Set_Pulse_Step
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble)
    is
       procedure Internal (Progress_Bar : System.Address; Fraction : Gdouble);
@@ -208,7 +213,7 @@ package body Gtk.Progress_Bar is
    -------------------
 
    procedure Set_Show_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Show_Text    : Boolean)
    is
       procedure Internal
@@ -224,7 +229,7 @@ package body Gtk.Progress_Bar is
    --------------
 
    procedure Set_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Text         : UTF8_String)
    is
       procedure Internal
@@ -242,7 +247,7 @@ package body Gtk.Progress_Bar is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Progress_Bar_Record)
+      (Self : not null access Gtk_Progress_Bar_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
@@ -256,7 +261,7 @@ package body Gtk.Progress_Bar is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Progress_Bar_Record;
+      (Self        : not null access Gtk_Progress_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

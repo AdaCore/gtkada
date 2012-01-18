@@ -117,7 +117,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    function Get_Current_Alpha
-      (Colorsel : access Gtk_Color_Selection_Record) return guint16
+      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16
    is
       function Internal (Colorsel : System.Address) return guint16;
       pragma Import (C, Internal, "gtk_color_selection_get_current_alpha");
@@ -130,7 +130,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Get_Current_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -146,7 +146,7 @@ package body Gtk.Color_Selection is
    ----------------------
 
    procedure Get_Current_Rgba
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal
@@ -162,7 +162,7 @@ package body Gtk.Color_Selection is
    -----------------------------
 
    function Get_Has_Opacity_Control
-      (Colorsel : access Gtk_Color_Selection_Record) return Boolean
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
       function Internal (Colorsel : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_color_selection_get_has_opacity_control");
@@ -175,7 +175,7 @@ package body Gtk.Color_Selection is
    ---------------------
 
    function Get_Has_Palette
-      (Colorsel : access Gtk_Color_Selection_Record) return Boolean
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
       function Internal (Colorsel : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_color_selection_get_has_palette");
@@ -188,7 +188,7 @@ package body Gtk.Color_Selection is
    ------------------------
 
    function Get_Previous_Alpha
-      (Colorsel : access Gtk_Color_Selection_Record) return guint16
+      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16
    is
       function Internal (Colorsel : System.Address) return guint16;
       pragma Import (C, Internal, "gtk_color_selection_get_previous_alpha");
@@ -201,7 +201,7 @@ package body Gtk.Color_Selection is
    ------------------------
 
    procedure Get_Previous_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -217,7 +217,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Get_Previous_Rgba
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal
@@ -233,7 +233,7 @@ package body Gtk.Color_Selection is
    ------------------
 
    function Is_Adjusting
-      (Colorsel : access Gtk_Color_Selection_Record) return Boolean
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
       function Internal (Colorsel : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_color_selection_is_adjusting");
@@ -246,7 +246,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Set_Current_Alpha
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Alpha    : guint16)
    is
       procedure Internal (Colorsel : System.Address; Alpha : guint16);
@@ -260,7 +260,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Set_Current_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -276,7 +276,7 @@ package body Gtk.Color_Selection is
    ----------------------
 
    procedure Set_Current_Rgba
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal
@@ -292,7 +292,7 @@ package body Gtk.Color_Selection is
    -----------------------------
 
    procedure Set_Has_Opacity_Control
-      (Colorsel    : access Gtk_Color_Selection_Record;
+      (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean)
    is
       procedure Internal (Colorsel : System.Address; Has_Opacity : Integer);
@@ -306,7 +306,7 @@ package body Gtk.Color_Selection is
    ---------------------
 
    procedure Set_Has_Palette
-      (Colorsel    : access Gtk_Color_Selection_Record;
+      (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Palette : Boolean)
    is
       procedure Internal (Colorsel : System.Address; Has_Palette : Integer);
@@ -320,7 +320,7 @@ package body Gtk.Color_Selection is
    ------------------------
 
    procedure Set_Previous_Alpha
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Alpha    : guint16)
    is
       procedure Internal (Colorsel : System.Address; Alpha : guint16);
@@ -334,7 +334,7 @@ package body Gtk.Color_Selection is
    ------------------------
 
    procedure Set_Previous_Color
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color)
    is
       procedure Internal
@@ -350,7 +350,7 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Set_Previous_Rgba
-      (Colorsel : access Gtk_Color_Selection_Record;
+      (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA)
    is
       procedure Internal
@@ -379,7 +379,7 @@ package body Gtk.Color_Selection is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Color_Selection_Record)
+      (Self : not null access Gtk_Color_Selection_Record)
        return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
@@ -393,7 +393,7 @@ package body Gtk.Color_Selection is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Color_Selection_Record;
+      (Self        : not null access Gtk_Color_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

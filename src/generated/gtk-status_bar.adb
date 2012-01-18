@@ -72,7 +72,7 @@ package body Gtk.Status_Bar is
    --------------------
 
    function Get_Context_Id
-      (Statusbar           : access Gtk_Status_Bar_Record;
+      (Statusbar           : not null access Gtk_Status_Bar_Record;
        Context_Description : UTF8_String) return Context_Id
    is
       function Internal
@@ -93,7 +93,7 @@ package body Gtk.Status_Bar is
    ----------------------
 
    function Get_Message_Area
-      (Statusbar : access Gtk_Status_Bar_Record)
+      (Statusbar : not null access Gtk_Status_Bar_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Statusbar : System.Address) return System.Address;
@@ -108,7 +108,7 @@ package body Gtk.Status_Bar is
    ---------
 
    procedure Pop
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id)
    is
       procedure Internal (Statusbar : System.Address; Context : Context_Id);
@@ -122,7 +122,7 @@ package body Gtk.Status_Bar is
    ----------
 
    function Push
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Text      : UTF8_String) return Message_Id
    is
@@ -144,7 +144,7 @@ package body Gtk.Status_Bar is
    ------------
 
    procedure Remove
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Message   : Message_Id)
    is
@@ -162,7 +162,7 @@ package body Gtk.Status_Bar is
    ----------------
 
    procedure Remove_All
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id)
    is
       procedure Internal (Statusbar : System.Address; Context : Context_Id);
@@ -176,7 +176,8 @@ package body Gtk.Status_Bar is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Status_Bar_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Status_Bar_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
@@ -189,7 +190,7 @@ package body Gtk.Status_Bar is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Status_Bar_Record;
+      (Self        : not null access Gtk_Status_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal (Self : System.Address; Orientation : Integer);

@@ -57,8 +57,8 @@ package body Gtk.Fixed is
    ----------
 
    procedure Move
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint)
    is
@@ -77,8 +77,8 @@ package body Gtk.Fixed is
    ---------
 
    procedure Put
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint)
    is

@@ -60,7 +60,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Artists
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -75,7 +75,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Authors
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -90,7 +90,7 @@ package body Gtk.About_Dialog is
    ------------------
 
    function Get_Comments
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -104,7 +104,7 @@ package body Gtk.About_Dialog is
    -------------------
 
    function Get_Copyright
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -118,7 +118,7 @@ package body Gtk.About_Dialog is
    ---------------------
 
    function Get_Documenters
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -133,7 +133,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_License
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -147,7 +147,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_License_Type
-      (About : access Gtk_About_Dialog_Record) return Gtk_License
+      (About : not null access Gtk_About_Dialog_Record) return Gtk_License
    is
       function Internal (About : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_about_dialog_get_license_type");
@@ -160,7 +160,8 @@ package body Gtk.About_Dialog is
    --------------
 
    function Get_Logo
-      (About : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+      (About : not null access Gtk_About_Dialog_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
@@ -174,7 +175,7 @@ package body Gtk.About_Dialog is
    ------------------------
 
    function Get_Logo_Icon_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -188,7 +189,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_Program_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -202,7 +203,7 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    function Get_Translator_Credits
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -216,7 +217,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Version
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -230,7 +231,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Website
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -244,7 +245,7 @@ package body Gtk.About_Dialog is
    -----------------------
 
    function Get_Website_Label
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -258,7 +259,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_Wrap_License
-      (About : access Gtk_About_Dialog_Record) return Boolean
+      (About : not null access Gtk_About_Dialog_Record) return Boolean
    is
       function Internal (About : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_about_dialog_get_wrap_license");
@@ -271,7 +272,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Artists
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Artists : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -289,7 +290,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Authors
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Authors : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -307,7 +308,7 @@ package body Gtk.About_Dialog is
    ------------------
 
    procedure Set_Comments
-      (About    : access Gtk_About_Dialog_Record;
+      (About    : not null access Gtk_About_Dialog_Record;
        Comments : UTF8_String)
    is
       procedure Internal
@@ -325,7 +326,7 @@ package body Gtk.About_Dialog is
    -------------------
 
    procedure Set_Copyright
-      (About     : access Gtk_About_Dialog_Record;
+      (About     : not null access Gtk_About_Dialog_Record;
        Copyright : UTF8_String)
    is
       procedure Internal
@@ -343,7 +344,7 @@ package body Gtk.About_Dialog is
    ---------------------
 
    procedure Set_Documenters
-      (About       : access Gtk_About_Dialog_Record;
+      (About       : not null access Gtk_About_Dialog_Record;
        Documenters : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -361,7 +362,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_License
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        License : UTF8_String)
    is
       procedure Internal
@@ -379,7 +380,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_License_Type
-      (About        : access Gtk_About_Dialog_Record;
+      (About        : not null access Gtk_About_Dialog_Record;
        License_Type : Gtk_License)
    is
       procedure Internal (About : System.Address; License_Type : Integer);
@@ -393,13 +394,13 @@ package body Gtk.About_Dialog is
    --------------
 
    procedure Set_Logo
-      (About : access Gtk_About_Dialog_Record;
+      (About : not null access Gtk_About_Dialog_Record;
        Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal (About : System.Address; Logo : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");
    begin
-      Internal (Get_Object (About), Get_Object (Logo));
+      Internal (Get_Object (About), Get_Object_Or_Null (GObject (Logo)));
    end Set_Logo;
 
    ------------------------
@@ -407,7 +408,7 @@ package body Gtk.About_Dialog is
    ------------------------
 
    procedure Set_Logo_Icon_Name
-      (About     : access Gtk_About_Dialog_Record;
+      (About     : not null access Gtk_About_Dialog_Record;
        Icon_Name : UTF8_String)
    is
       procedure Internal
@@ -425,7 +426,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_Program_Name
-      (About : access Gtk_About_Dialog_Record;
+      (About : not null access Gtk_About_Dialog_Record;
        Name  : UTF8_String)
    is
       procedure Internal
@@ -443,7 +444,7 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    procedure Set_Translator_Credits
-      (About              : access Gtk_About_Dialog_Record;
+      (About              : not null access Gtk_About_Dialog_Record;
        Translator_Credits : UTF8_String)
    is
       procedure Internal
@@ -461,7 +462,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Version
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Version : UTF8_String)
    is
       procedure Internal
@@ -479,7 +480,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Website
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Website : UTF8_String)
    is
       procedure Internal
@@ -497,7 +498,7 @@ package body Gtk.About_Dialog is
    -----------------------
 
    procedure Set_Website_Label
-      (About         : access Gtk_About_Dialog_Record;
+      (About         : not null access Gtk_About_Dialog_Record;
        Website_Label : UTF8_String)
    is
       procedure Internal
@@ -515,7 +516,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_Wrap_License
-      (About        : access Gtk_About_Dialog_Record;
+      (About        : not null access Gtk_About_Dialog_Record;
        Wrap_License : Boolean)
    is
       procedure Internal (About : System.Address; Wrap_License : Integer);

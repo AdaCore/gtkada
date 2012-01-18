@@ -83,10 +83,10 @@ package Gtk.Progress_Bar is
    -------------
 
    function Get_Ellipsize
-      (Progress_Bar : access Gtk_Progress_Bar_Record)
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
    procedure Set_Ellipsize
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Mode         : Pango.Layout.Pango_Ellipsize_Mode);
    --  Sets the mode used to ellipsize (add an ellipsis: "...") the text if
    --  there is not enough space to render the entire string.
@@ -94,36 +94,40 @@ package Gtk.Progress_Bar is
    --  "mode": a Pango.Layout.Pango_Ellipsize_Mode
 
    function Get_Fraction
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Gdouble;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Gdouble;
    procedure Set_Fraction
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble);
    --  Causes the progress bar to "fill in" the given fraction of the bar. The
    --  fraction should be between 0.0 and 1.0, inclusive.
    --  "fraction": fraction of the task that's been completed
 
    function Get_Inverted
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Boolean;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Boolean;
    procedure Set_Inverted
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Inverted     : Boolean);
    --  Progress bars normally grow from top to bottom or left to right.
    --  Inverted progress bars grow in the opposite direction.
    --  "inverted": True to invert the progress bar
 
    function Get_Pulse_Step
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Gdouble;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Gdouble;
    procedure Set_Pulse_Step
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble);
    --  Sets the fraction of total progress bar length to move the bouncing
    --  block for each call to Gtk.Progress_Bar.Pulse.
    --  "fraction": fraction between 0.0 and 1.0
 
    function Get_Show_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return Boolean;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return Boolean;
    procedure Set_Show_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Show_Text    : Boolean);
    --  Sets whether the progressbar will show text superimposed over the bar.
    --  The shown text is either the value of the
@@ -137,9 +141,10 @@ package Gtk.Progress_Bar is
    --  "show_text": whether to show superimposed text
 
    function Get_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record) return UTF8_String;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record)
+       return UTF8_String;
    procedure Set_Text
-      (Progress_Bar : access Gtk_Progress_Bar_Record;
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Text         : UTF8_String);
    --  Causes the given Text to appear superimposed on the progress bar.
    --  If Text is null and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is True,
@@ -152,7 +157,7 @@ package Gtk.Progress_Bar is
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is True.
    --  "text": a UTF-8 string, or null
 
-   procedure Pulse (Progress_Bar : access Gtk_Progress_Bar_Record);
+   procedure Pulse (Progress_Bar : not null access Gtk_Progress_Bar_Record);
    --  Indicates that some progress is made, but you don't know how much.
    --  Causes the progress bar to enter "activity mode," where a block bounces
    --  back and forth. Each call to Gtk.Progress_Bar.Pulse causes the block to
@@ -164,10 +169,10 @@ package Gtk.Progress_Bar is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Progress_Bar_Record)
+      (Self : not null access Gtk_Progress_Bar_Record)
        return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Progress_Bar_Record;
+      (Self        : not null access Gtk_Progress_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

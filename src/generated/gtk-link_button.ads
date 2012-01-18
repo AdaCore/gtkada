@@ -90,9 +90,9 @@ package Gtk.Link_Button is
    -------------
 
    function Get_Uri
-      (Self : access Gtk_Link_Button_Record) return UTF8_String;
+      (Self : not null access Gtk_Link_Button_Record) return UTF8_String;
    procedure Set_Uri
-      (Self : access Gtk_Link_Button_Record;
+      (Self : not null access Gtk_Link_Button_Record;
        Uri  : UTF8_String);
    --  Sets Uri as the URI where the Gtk.Link_Button.Gtk_Link_Button points.
    --  As a side-effect this unsets the 'visited' state of the button.
@@ -100,9 +100,9 @@ package Gtk.Link_Button is
    --  "uri": a valid URI
 
    function Get_Visited
-      (Self : access Gtk_Link_Button_Record) return Boolean;
+      (Self : not null access Gtk_Link_Button_Record) return Boolean;
    procedure Set_Visited
-      (Self    : access Gtk_Link_Button_Record;
+      (Self    : not null access Gtk_Link_Button_Record;
        Visited : Boolean);
    --  Sets the 'visited' state of the URI where the
    --  Gtk.Link_Button.Gtk_Link_Button points. See Gtk.Link_Button.Get_Visited
@@ -115,23 +115,24 @@ package Gtk.Link_Button is
    ---------------------------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Link_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Link_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Link_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Link_Button_Record)
+       return Gtk.Action.Gtk_Action;
    procedure Set_Related_Action
-      (Self   : access Gtk_Link_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Link_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Link_Button_Record) return Boolean;
+      (Self : not null access Gtk_Link_Button_Record) return Boolean;
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Link_Button_Record;
+      (Self           : not null access Gtk_Link_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Link_Button_Record;
+      (Self   : not null access Gtk_Link_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------

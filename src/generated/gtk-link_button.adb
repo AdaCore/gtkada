@@ -103,7 +103,7 @@ package body Gtk.Link_Button is
    -------------
 
    function Get_Uri
-      (Self : access Gtk_Link_Button_Record) return UTF8_String
+      (Self : not null access Gtk_Link_Button_Record) return UTF8_String
    is
       function Internal
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -117,7 +117,7 @@ package body Gtk.Link_Button is
    -----------------
 
    function Get_Visited
-      (Self : access Gtk_Link_Button_Record) return Boolean
+      (Self : not null access Gtk_Link_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_link_button_get_visited");
@@ -130,7 +130,7 @@ package body Gtk.Link_Button is
    -------------
 
    procedure Set_Uri
-      (Self : access Gtk_Link_Button_Record;
+      (Self : not null access Gtk_Link_Button_Record;
        Uri  : UTF8_String)
    is
       procedure Internal
@@ -148,7 +148,7 @@ package body Gtk.Link_Button is
    -----------------
 
    procedure Set_Visited
-      (Self    : access Gtk_Link_Button_Record;
+      (Self    : not null access Gtk_Link_Button_Record;
        Visited : Boolean)
    is
       procedure Internal (Self : System.Address; Visited : Integer);
@@ -162,8 +162,8 @@ package body Gtk.Link_Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Link_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Link_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -176,7 +176,8 @@ package body Gtk.Link_Button is
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Link_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Link_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
@@ -190,7 +191,7 @@ package body Gtk.Link_Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Link_Button_Record) return Boolean
+      (Self : not null access Gtk_Link_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
@@ -203,8 +204,8 @@ package body Gtk.Link_Button is
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Link_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Link_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -217,7 +218,7 @@ package body Gtk.Link_Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Link_Button_Record;
+      (Self           : not null access Gtk_Link_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -231,13 +232,13 @@ package body Gtk.Link_Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Link_Button_Record;
+      (Self   : not null access Gtk_Link_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Link_Button;

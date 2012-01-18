@@ -65,8 +65,8 @@ package Gtk.Buildable is
 
    procedure Add_Child
       (Self     : Gtk_Buildable;
-       Builder  : access Gtk.Builder.Gtk_Builder_Record'Class;
-       Child    : access Glib.Object.GObject_Record'Class;
+       Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
+       Child    : not null access Glib.Object.GObject_Record'Class;
        The_Type : UTF8_String);
    --  Adds a child to Buildable. Type is an optional string describing how
    --  the child should be added.
@@ -77,7 +77,7 @@ package Gtk.Buildable is
 
    function Construct_Child
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String) return Glib.Object.GObject;
    --  Constructs a child of Buildable with the name Name.
    --  Gtk.Builder.Gtk_Builder calls this function if a "constructor" has been
@@ -88,7 +88,7 @@ package Gtk.Buildable is
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : System.Address);
@@ -102,7 +102,7 @@ package Gtk.Buildable is
 
    procedure Custom_Tag_End
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : in out System.Address);
@@ -116,7 +116,7 @@ package Gtk.Buildable is
 
    function Get_Internal_Child
       (Self      : Gtk_Buildable;
-       Builder   : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder   : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Childname : UTF8_String) return Glib.Object.GObject;
    --  Get the internal child called Childname of the Buildable object.
    --  Since: gtk+ 2.12
@@ -131,7 +131,7 @@ package Gtk.Buildable is
 
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class);
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class);
    --  Called when the builder finishes the parsing of a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link>. Note that this
    --  will be called once for each time Gtk.Builder.Add_From_File or
@@ -141,7 +141,7 @@ package Gtk.Buildable is
 
    procedure Set_Buildable_Property
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String;
        Value   : in out Glib.Values.GValue);
    --  Sets the property name Name to Value on the Buildable object.

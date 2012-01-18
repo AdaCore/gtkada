@@ -104,14 +104,14 @@ package Gtk.Adjustment is
    -- Methods --
    -------------
 
-   procedure Changed (Adjustment : access Gtk_Adjustment_Record);
+   procedure Changed (Adjustment : not null access Gtk_Adjustment_Record);
    --  Emits a Gtk.Adjustment.Gtk_Adjustment::changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed any of the
    --  Gtk.Adjustment.Gtk_Adjustment fields other than the value.
 
    procedure Clamp_Page
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble;
        Upper      : Gdouble);
    --  Update the Adjustment value to ensure that the range between Lower and
@@ -123,7 +123,7 @@ package Gtk.Adjustment is
    --  "upper": the upper value.
 
    procedure Configure
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;
@@ -143,9 +143,9 @@ package Gtk.Adjustment is
    --  "page_size": the new page size
 
    function Get_Lower
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Lower
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble);
    --  Sets the minimum value of the adjustment.
    --  When setting multiple adjustment properties via their individual
@@ -162,14 +162,14 @@ package Gtk.Adjustment is
    --  "lower": the new minimum value
 
    function Get_Minimum_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Gets the smaller of step increment and page increment.
    --  Since: gtk+ 3.2
 
    function Get_Page_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Page_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Page_Increment : Gdouble);
    --  Sets the page increment of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
@@ -178,9 +178,9 @@ package Gtk.Adjustment is
    --  "page_increment": the new page increment
 
    function Get_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Page_Size  : Gdouble);
    --  Sets the page size of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
@@ -189,9 +189,9 @@ package Gtk.Adjustment is
    --  "page_size": the new page size
 
    function Get_Step_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Step_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Step_Increment : Gdouble);
    --  Sets the step increment of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
@@ -200,9 +200,9 @@ package Gtk.Adjustment is
    --  "step_increment": the new step increment
 
    function Get_Upper
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Upper
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Upper      : Gdouble);
    --  Sets the maximum value of the adjustment.
    --  Note that values will be restricted by <literal>upper -
@@ -213,9 +213,9 @@ package Gtk.Adjustment is
    --  "upper": the new maximum value
 
    function Get_Value
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    procedure Set_Value
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Value      : Gdouble);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment value. The value is clamped to
    --  lie between Gtk.Adjustment.Gtk_Adjustment.lower and
@@ -227,7 +227,8 @@ package Gtk.Adjustment is
    --  Gtk.Adjustment.Gtk_Adjustment.page_size.
    --  "value": the new value.
 
-   procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record);
+   procedure Value_Changed
+      (Adjustment : not null access Gtk_Adjustment_Record);
    --  Emits a Gtk.Adjustment.Gtk_Adjustment::value_changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed the

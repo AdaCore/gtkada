@@ -182,7 +182,7 @@ package Gtk.Scale is
    -------------
 
    procedure Add_Mark
-      (Scale    : access Gtk_Scale_Record;
+      (Scale    : not null access Gtk_Scale_Record;
        Value    : Gdouble;
        Position : Gtk.Enums.Gtk_Position_Type;
        Markup   : UTF8_String);
@@ -202,13 +202,14 @@ package Gtk.Scale is
    --  "markup": Text to be shown at the mark, using <link
    --  linkend="PangoMarkupFormat">Pango markup</link>, or null
 
-   procedure Clear_Marks (Scale : access Gtk_Scale_Record);
+   procedure Clear_Marks (Scale : not null access Gtk_Scale_Record);
    --  Removes any marks that have been added with Gtk.Scale.Add_Mark.
    --  Since: gtk+ 2.16
 
-   function Get_Digits (Scale : access Gtk_Scale_Record) return Gint;
+   function Get_Digits
+      (Scale : not null access Gtk_Scale_Record) return Gint;
    procedure Set_Digits
-      (Scale            : access Gtk_Scale_Record;
+      (Scale            : not null access Gtk_Scale_Record;
        Number_Of_Digits : Gint);
    --  Sets the number of decimal places that are displayed in the value. Also
    --  causes the value of the adjustment to be rounded off to this number of
@@ -216,16 +217,18 @@ package Gtk.Scale is
    --  "digits": the number of decimal places to display, e.g. use 1 to
    --  display 1.0, 2 to display 1.00, etc
 
-   function Get_Draw_Value (Scale : access Gtk_Scale_Record) return Boolean;
+   function Get_Draw_Value
+      (Scale : not null access Gtk_Scale_Record) return Boolean;
    procedure Set_Draw_Value
-      (Scale      : access Gtk_Scale_Record;
+      (Scale      : not null access Gtk_Scale_Record;
        Draw_Value : Boolean);
    --  Specifies whether the current value is displayed as a string next to
    --  the slider.
    --  "draw_value": True to draw the value
 
    function Get_Layout
-      (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout;
+      (Scale : not null access Gtk_Scale_Record)
+       return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
    --  the caller.
@@ -233,7 +236,7 @@ package Gtk.Scale is
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets
-      (Scale : access Gtk_Scale_Record;
+      (Scale : not null access Gtk_Scale_Record;
        X     : out Gint;
        Y     : out Gint);
    --  Obtains the coordinates where the scale will draw the
@@ -247,9 +250,10 @@ package Gtk.Scale is
    --  "y": location to store Y offset of layout, or null
 
    function Get_Value_Pos
-      (Scale : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Position_Type;
+      (Scale : not null access Gtk_Scale_Record)
+       return Gtk.Enums.Gtk_Position_Type;
    procedure Set_Value_Pos
-      (Scale : access Gtk_Scale_Record;
+      (Scale : not null access Gtk_Scale_Record;
        Pos   : Gtk.Enums.Gtk_Position_Type);
    --  Sets the position in which the current value is displayed.
    --  "pos": the position in which the current value is displayed
@@ -259,9 +263,10 @@ package Gtk.Scale is
    ---------------------------------------------
 
    function Get_Orientation
-      (Self : access Gtk_Scale_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Scale_Record)
+       return Gtk.Enums.Gtk_Orientation;
    procedure Set_Orientation
-      (Self        : access Gtk_Scale_Record;
+      (Self        : not null access Gtk_Scale_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------

@@ -67,11 +67,11 @@ package Gtk.Misc is
    -------------
 
    procedure Get_Alignment
-      (Misc   : access Gtk_Misc_Record;
+      (Misc   : not null access Gtk_Misc_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
    procedure Set_Alignment
-      (Misc   : access Gtk_Misc_Record;
+      (Misc   : not null access Gtk_Misc_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
    --  Modify the alignment for the widget. Xalign and Yalign are both values
@@ -85,11 +85,11 @@ package Gtk.Misc is
    --  "yalign": the vertical alignment, from 0 (top) to 1 (bottom).
 
    procedure Get_Padding
-      (Misc : access Gtk_Misc_Record;
+      (Misc : not null access Gtk_Misc_Record;
        Xpad : out Gint;
        Ypad : out Gint);
    procedure Set_Padding
-      (Misc : access Gtk_Misc_Record;
+      (Misc : not null access Gtk_Misc_Record;
        Xpad : Gint;
        Ypad : Gint);
    --  Sets the amount of space to add around the widget.

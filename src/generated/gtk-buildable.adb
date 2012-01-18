@@ -33,8 +33,8 @@ package body Gtk.Buildable is
 
    procedure Add_Child
       (Self     : Gtk_Buildable;
-       Builder  : access Gtk.Builder.Gtk_Builder_Record'Class;
-       Child    : access Glib.Object.GObject_Record'Class;
+       Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
+       Child    : not null access Glib.Object.GObject_Record'Class;
        The_Type : UTF8_String)
    is
       procedure Internal
@@ -55,7 +55,7 @@ package body Gtk.Buildable is
 
    function Construct_Child
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String) return Glib.Object.GObject
    is
       function Internal
@@ -78,7 +78,7 @@ package body Gtk.Buildable is
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : System.Address)
@@ -92,7 +92,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_custom_finished");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Finished;
 
@@ -102,7 +102,7 @@ package body Gtk.Buildable is
 
    procedure Custom_Tag_End
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : in out System.Address)
@@ -116,7 +116,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_custom_tag_end");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Tag_End;
 
@@ -126,7 +126,7 @@ package body Gtk.Buildable is
 
    function Get_Internal_Child
       (Self      : Gtk_Buildable;
-       Builder   : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder   : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Childname : UTF8_String) return Glib.Object.GObject
    is
       function Internal
@@ -161,7 +161,7 @@ package body Gtk.Buildable is
 
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class)
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class)
    is
       procedure Internal (Self : Gtk_Buildable; Builder : System.Address);
       pragma Import (C, Internal, "gtk_buildable_parser_finished");
@@ -175,7 +175,7 @@ package body Gtk.Buildable is
 
    procedure Set_Buildable_Property
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String;
        Value   : in out Glib.Values.GValue)
    is

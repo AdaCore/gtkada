@@ -82,21 +82,23 @@ package Gtk.Viewport is
    -------------
 
    function Get_Bin_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
+      (Viewport : not null access Gtk_Viewport_Record)
+       return Gdk.Window.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
 
    function Get_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record)
+      (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
    procedure Set_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record;
+      (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type of the viewport.
    --  "type": the new shadow type.
 
    function Get_View_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window;
+      (Viewport : not null access Gtk_Viewport_Record)
+       return Gdk.Window.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
 
@@ -105,31 +107,31 @@ package Gtk.Viewport is
    ---------------------------------------------
 
    function Get_Hadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Hadjustment
-      (Self        : access Gtk_Viewport_Record;
+      (Self        : not null access Gtk_Viewport_Record;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    function Get_Hscroll_Policy
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
    procedure Set_Hscroll_Policy
-      (Self   : access Gtk_Viewport_Record;
+      (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    function Get_Vadjustment
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Vadjustment
-      (Self        : access Gtk_Viewport_Record;
+      (Self        : not null access Gtk_Viewport_Record;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    function Get_Vscroll_Policy
-      (Self : access Gtk_Viewport_Record)
+      (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
    procedure Set_Vscroll_Policy
-      (Self   : access Gtk_Viewport_Record;
+      (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------
