@@ -90,6 +90,8 @@ binding = ("GdkDevice",
            "GtkRadioButton",
            "GtkRange",
            "GtkRecentFilter",
+           "GtkRecentInfo",
+           "GtkRecentManager",
            "GtkScale",
            "GtkScaleButton",
            "GtkSeparator",
@@ -210,6 +212,7 @@ naming.type_exceptions = {
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
     "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
+    "GAppInfo": Proxy("Glib.GApp_Info"),
 
     "cairo_t":               DirectBinding("Cairo.Cairo_Context"),
     "cairo_font_options_t":  DirectBinding("Cairo.Cairo_Font_Options"),
@@ -218,6 +221,10 @@ naming.type_exceptions = {
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
+
+    # The following are defined as <record> in GIR, so they would result in
+    # tagged types in Ada. However, we do not need that for now.
+    "GtkRequisition":    Proxy("Gtk.Widget.Gtk_Requisition"),
 
     "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 

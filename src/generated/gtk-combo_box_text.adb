@@ -61,7 +61,8 @@ package body Gtk.Combo_Box_Text is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  value for
    --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
    -----------------------------
@@ -324,7 +325,8 @@ package body Gtk.Combo_Box_Text is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  value for
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       -----------------

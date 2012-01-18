@@ -102,7 +102,7 @@ package Gtk.Entry_Completion is
    --  for Key
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk_Tree_Iter indicating the row to match
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -114,7 +114,8 @@ package Gtk.Entry_Completion is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  value for
 
    ------------------
    -- Constructors --
@@ -327,7 +328,7 @@ package Gtk.Entry_Completion is
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk_Tree_Iter indicating the row to match
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
@@ -372,7 +373,8 @@ package Gtk.Entry_Completion is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  value for
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
@@ -551,9 +553,9 @@ package Gtk.Entry_Completion is
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
    --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Tree_Iter) return Boolean;
+   --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk_Tree_Iter positioned at the selected match
+   --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
@@ -579,9 +581,9 @@ package Gtk.Entry_Completion is
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
    --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Tree_Iter) return Boolean;
+   --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk_Tree_Iter positioned at the selected match
+   --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.

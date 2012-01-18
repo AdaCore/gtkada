@@ -97,7 +97,8 @@ package body Gtk.Combo_Box is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  value for
    --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
@@ -106,7 +107,7 @@ package body Gtk.Combo_Box is
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk_Tree_Iter pointing at a row in Model
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
    --  "data": user data
 
    -----------------------------
@@ -635,7 +636,8 @@ package body Gtk.Combo_Box is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  value for
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       -----------------
@@ -786,7 +788,7 @@ package body Gtk.Combo_Box is
       --  to have a boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
       --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk_Tree_Iter pointing at a row in Model
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
       --  "data": user data
 
       -----------------

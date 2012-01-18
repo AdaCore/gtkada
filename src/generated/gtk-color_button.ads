@@ -70,7 +70,7 @@ package Gtk.Color_Button is
        Color  : Gdk.Color.Gdk_Color);
    --  Creates a new color button.
    --  Since: gtk+ 2.4
-   --  "color": A Gdk_Color to set the current color with
+   --  "color": A Gdk.Color.Gdk_Color to set the current color with
 
    procedure Gtk_New_With_Rgba
       (Button : out Gtk_Color_Button;
@@ -80,7 +80,7 @@ package Gtk.Color_Button is
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    --  Creates a new color button.
    --  Since: gtk+ 3.0
-   --  "rgba": A Gdk_RGBA to set the current color with
+   --  "rgba": A Gdk.Rgba.Gdk_Rgba to set the current color with
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_button_get_type");
@@ -106,7 +106,7 @@ package Gtk.Color_Button is
        Color  : Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color.
    --  Since: gtk+ 2.4
-   --  "color": A Gdk_Color to set the current color with
+   --  "color": A Gdk.Color.Gdk_Color to set the current color with
 
    procedure Get_Rgba
       (Button : not null access Gtk_Color_Button_Record;
@@ -116,7 +116,7 @@ package Gtk.Color_Button is
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    --  Sets the current color to be Rgba.
    --  Since: gtk+ 3.0
-   --  "rgba": a Gdk_RGBA to set the current color with
+   --  "rgba": a Gdk.Rgba.Gdk_Rgba to set the current color with
 
    function Get_Title
       (Button : not null access Gtk_Color_Button_Record) return UTF8_String;

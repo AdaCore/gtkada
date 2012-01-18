@@ -135,7 +135,7 @@ package Gtk.Cell_Renderer is
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk_Tree_Path
+   --  Gtk.Tree_Path.Gtk_Tree_Path
    --  "background_area": background area as passed to
    --  Gtk.Cell_Renderer.Render
    --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render
@@ -224,8 +224,8 @@ package Gtk.Cell_Renderer is
    procedure Get_Preferred_Size
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gtk_Requisition;
-       Natural_Size : out Gtk_Requisition);
+       Minimum_Size : out Gtk.Widget.Gtk_Requisition;
+       Natural_Size : out Gtk.Widget.Gtk_Requisition);
    --  Retrieves the minimum and natural size of a cell taking into account
    --  the widget's preference for height-for-width management.
    --  Since: gtk+ 3.0
@@ -361,7 +361,7 @@ package Gtk.Cell_Renderer is
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk_Tree_Path
+   --  Gtk.Tree_Path.Gtk_Tree_Path
    --  "background_area": background area as passed to
    --  Gtk.Cell_Renderer.Render
    --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render
@@ -396,7 +396,7 @@ package Gtk.Cell_Renderer is
    --  Name: Cell_Background_Rgba_Property
    --  Type: Gdk.RGBA
    --  Flags: read-write
-   --  Cell background as a Gdk_RGBA
+   --  Cell background as a Gdk.Rgba.Gdk_Rgba
    --
    --  Name: Cell_Background_Set_Property
    --  Type: Boolean

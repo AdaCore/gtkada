@@ -156,6 +156,8 @@ package Glib is
    --  C_Proxy is a public type so that one can compare directly the value
    --  of the variables with 'null'.
 
+   type GApp_Info is new C_Proxy;
+
    --  <doc_ignore>
    pragma Convention (C, C_Proxy);
 

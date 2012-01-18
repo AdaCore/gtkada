@@ -78,7 +78,8 @@ package body Gtk.Entry_Completion is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  value for
    --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
    function Internal_Gtk_Entry_Completion_Match_Func
@@ -89,7 +90,7 @@ package body Gtk.Entry_Completion is
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk_Tree_Iter indicating the row to match
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
    --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
    -----------------------------
@@ -434,7 +435,8 @@ package body Gtk.Entry_Completion is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  value for
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       -----------------
@@ -534,7 +536,7 @@ package body Gtk.Entry_Completion is
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk_Tree_Iter indicating the row to match
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       -----------------

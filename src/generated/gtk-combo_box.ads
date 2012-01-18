@@ -80,7 +80,7 @@ package Gtk.Combo_Box is
    --  boolean column in the model, whose values the
    --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk_Tree_Iter pointing at a row in Model
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
 
    type Cell_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -92,7 +92,8 @@ package Gtk.Combo_Box is
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  value for
 
    ------------------
    -- Constructors --
@@ -346,7 +347,7 @@ package Gtk.Combo_Box is
    --  Sets the current active item to be the one referenced by Iter, or
    --  unsets the active item if Iter is null.
    --  Since: gtk+ 2.4
-   --  "iter": The Gtk_Tree_Iter, or null
+   --  "iter": The Gtk.Tree_Iter.Gtk_Tree_Iter, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -362,7 +363,7 @@ package Gtk.Combo_Box is
       --  boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
       --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk_Tree_Iter pointing at a row in Model
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
       --  "data": user data
 
       procedure Set_Row_Separator_Func
@@ -407,7 +408,8 @@ package Gtk.Combo_Box is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk_Tree_Iter indicating the row to set the value for
+      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  value for
       --  "data": user data passed to Gtk.Combo_Box.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
@@ -540,8 +542,8 @@ package Gtk.Combo_Box is
    --  The item which is currently active. If the model is a non-flat
    --  treemodel, and the active item is not an immediate child of the root of
    --  the tree, this property has the value <literal>gtk_tree_path_get_indices
-   --  (path)[0]</literal>, where <literal>path</literal> is the Gtk_Tree_Path
-   --  of the active item.
+   --  (path)[0]</literal>, where <literal>path</literal> is the
+   --  Gtk.Tree_Path.Gtk_Tree_Path of the active item.
    --
    --  Name: Active_Id_Property
    --  Type: UTF8_String

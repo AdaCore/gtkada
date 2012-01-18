@@ -36,6 +36,7 @@ with Glib.Properties;
 with Glib.Types;
 with Gtk.Recent_Filter;
 with Gtk.Recent_Manager;
+with Gtk.Recent_Info;  use Gtk.Recent_Info;
 
 package Gtk.Recent_Chooser is
 
@@ -50,7 +51,7 @@ package Gtk.Recent_Chooser is
    --------------------
 
    function Get_Current_Item
-     (Chooser : Gtk_Recent_Chooser) return Gtk.Recent_Manager.Gtk_Recent_Info;
+     (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Info;
    --  Gets the Gtk_Recent_Info currently selected by Chooser.
    --  Use Gtk.Recent_Manager.Unref when you have finished using it.
 
@@ -215,7 +216,7 @@ package Gtk.Recent_Chooser is
       type Comparison is (Before, Equal, After);
 
       type Gtk_Recent_Sort_Func is access function
-        (Left, Right : Gtk.Recent_Manager.Gtk_Recent_Info;
+        (Left, Right : Gtk_Recent_Info;
          User_Data   : Data_Type_Access)
          return Comparison;
       --  Return whether the Left comes Before, After, or is Equal to,

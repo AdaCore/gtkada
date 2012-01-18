@@ -98,6 +98,15 @@ class GIR(object):
                 self.classes[cl.get(ctype_qname)] = self._create_class(
                     root, cl, is_interface=False)
 
+            # Some <record> are defined with methods. They are bound the same
+            # way in GtkAda, except that they do not derive from GObject
+
+            k = "%s/%s" % (namespace, nrecord)
+            for cl in root.findall(k):
+                if cl.findall(nmethod):
+                    self.classes[cl.get(ctype_qname)] = self._create_class(
+                        root, cl, is_interface=False, is_gobject=False)
+
             for enums in (nenumeration, nbitfield):
                 k = "%s/%s" % (namespace, enums)
                 for cl in root.findall(k):
@@ -119,15 +128,17 @@ class GIR(object):
                 return cl
         return None
 
-    def _create_class(self, rootNode, node, is_interface):
+    def _create_class(self, rootNode, node, is_interface, is_gobject=True):
         n = node.get(ctype_qname)
         n = naming.case(n)
         pkg = n.replace("_", ".", 1)
 
         if is_interface:
             t = Interface("%s.%s" % (pkg, n))
-        else:
+        elif is_gobject:
             t = GObject("%s.%s" % (pkg, n))
+        else:
+            t = Tagged("%s.%s" % (pkg, n))
 
         naming.add_type_exception(cname=node.get(ctype_qname), type=t)
         naming.add_girname(girname=n, ctype=node.get(ctype_qname))
@@ -983,7 +994,10 @@ class GIRClass(object):
                     returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
                 .import_c(n))
 
-            if not self.gtktype.is_subtype() and not self.is_interface:
+            if not self.gtktype.is_subtype() \
+                    and not self.is_interface \
+                    and self._subst["parent"] is not None:
+
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False);
                 section.add_code("""
 package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -1285,9 +1299,16 @@ See Glib.Properties for more information on properties)""")
 
         decl += "function Convert (R : System.Address) return %s is\n" % (
             ctype.ada)
-        decl += "Stub : %s_Record;" % ctype.ada
-        decl += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
-            ctype.ada)
+
+        if isinstance(ctype, Tagged):
+            # Not a GObject ?
+            decl += "begin\nreturn From_Object(R);"
+
+        else:
+            decl += "Stub : %s_Record;" % ctype.ada
+            decl += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
+                ctype.ada)
+
         decl += "end Convert;"
         section.add_code(decl, specs=False)
 
@@ -1390,7 +1411,9 @@ See Glib.Properties for more information on properties)""")
         if self._generated:
             return
 
-        typename = naming.type(self.ctype).ada   # The type we are mapping
+        classtype = naming.type(self.ctype)
+
+        typename = classtype.ada   # The type we are mapping
 
         self.name = typename[:typename.rfind(".")]    # Only package part
         self._subst["name"] = self.name
@@ -1472,6 +1495,32 @@ See Glib.Properties for more information on properties)""")
             """
 subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
+
+        elif self._subst["parent"] is None:
+            section.add_code("""
+type %(typename)s is tagged record
+   Ptr : System.Address := System.Null_Address;
+end record;
+
+   function Get_Object
+     (Object : %(typename)s'Class) return System.Address;
+   function From_Object (Object : System.Address) return %(typename)s;
+""" % self._subst)
+
+            section.add_code("""
+
+   function From_Object (Object : System.Address) return %(typename)s is
+      S : %(typename)s;
+   begin
+      S.Ptr := Object;
+      return S;
+   end From_Object;
+
+   function Get_Object
+     (Object : %(typename)s'Class) return System.Address is
+   begin
+      return Object.Ptr;
+   end Get_Object;""" % self._subst, specs=False)
 
         else:
             section.add_code("""

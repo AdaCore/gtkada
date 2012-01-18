@@ -181,7 +181,8 @@ class GtkAdaPackage(object):
                 List.register_ada_list(
                     pkg=node.get("id"),
                     ctype=rec.get("ctype"),
-                    ada=rec.get("ada", None))
+                    ada=rec.get("ada", None),
+                    single=True)
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the

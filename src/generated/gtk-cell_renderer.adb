@@ -199,14 +199,14 @@ package body Gtk.Cell_Renderer is
    procedure Get_Preferred_Size
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gtk_Requisition;
-       Natural_Size : out Gtk_Requisition)
+       Minimum_Size : out Gtk.Widget.Gtk_Requisition;
+       Natural_Size : out Gtk.Widget.Gtk_Requisition)
    is
       procedure Internal
          (Cell         : System.Address;
           Widget       : System.Address;
-          Minimum_Size : out Gtk_Requisition;
-          Natural_Size : out Gtk_Requisition);
+          Minimum_Size : out Gtk.Widget.Gtk_Requisition;
+          Natural_Size : out Gtk.Widget.Gtk_Requisition);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_size");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Minimum_Size, Natural_Size);

@@ -229,7 +229,7 @@ package Gtk.Image is
    --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
-   --  "icon_set": a Gtk_Icon_Set
+   --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
    --  "size": a stock icon size
 
    procedure Gtk_New

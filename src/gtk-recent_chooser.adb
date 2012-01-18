@@ -50,14 +50,14 @@ package body Gtk.Recent_Chooser is
    ----------------------
 
    function Get_Current_Item
-     (Chooser : Gtk_Recent_Chooser) return Gtk.Recent_Manager.Gtk_Recent_Info
+     (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Info
    is
       function Internal (Chooser : Gtk_Recent_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_item");
-      Stub : Gtk.Recent_Manager.Gtk_Recent_Info_Record;
+      Stub : Gtk_Recent_Info;
    begin
-      return Gtk.Recent_Manager.Gtk_Recent_Info
-        (Get_User_Data (Internal (Chooser), Stub));
+      Stub.Ptr := Internal (Chooser);
+      return Stub;
    end Get_Current_Item;
 
    ---------------------
@@ -527,10 +527,9 @@ package body Gtk.Recent_Chooser is
       is
          use Gtk.Recent_Manager;
          Left, Right : Gtk_Recent_Info;
-         Stub : Gtk_Recent_Info_Record;
       begin
-         Left  := Gtk_Recent_Info (Get_User_Data (A, Stub));
-         Right := Gtk_Recent_Info (Get_User_Data (B, Stub));
+         Left.Ptr := A;
+         Right.Ptr := B;
          case Data.User_Func (Left, Right, Data.User_Data) is
             when Before => return  1;
             when Equal  => return  0;

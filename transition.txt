@@ -481,6 +481,11 @@ Procedure Set_Pulse_Step's "Step" parameter has been renamed to "Formal."
 Set_Ellipsize and Get_Ellipsize parameter names have been normalized
 from "Pbar" to "Progress_Bar".
 
+Gtk.Recent_Manager
+==================
+
+The type Gtk_Recent_Info is now bound in its own package.
+
 Gtk.Ruler
 =========
 

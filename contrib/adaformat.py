@@ -297,10 +297,21 @@ class GObject(CType):
 
     def copy(self, **kwargs):
         result = CType.copy(self)
-        result.userecord = "userecord" in kwargs and kwargs["userecord"]
+        result.userecord =  "userecord" in kwargs and kwargs["userecord"]
         result.classwide = "useclass" not in kwargs or kwargs["useclass"]
         return result
 
+class Tagged(GObject):
+    """Tagged types that map C objects, but do not derive from GObject"""
+
+    def __init__(self, ada):
+        GObject.__init__(self, ada)
+        self.returns = (
+            self.param, self.cparam, "From_Object (%(var)s)", [])
+
+    def as_ada_param(self, pkg):
+        self.userecord = False
+        return super(Tagged, self).as_ada_param(pkg)
 
 class UTF8(CType):
     def __init__(self, empty_maps_to_null):
@@ -402,11 +413,17 @@ class List(CType):
             "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
 
     @staticmethod
-    def register_ada_list(pkg, ada, ctype):
+    def register_ada_list(pkg, ada, ctype, single=False):
         """Register a list of GObject instantiated in Ada"""
         listCname = "%sList" % ctype  # Default list name
         ada = ada or naming.type(cname=listCname).ada
-        t = List("%s.%s" % (pkg, ada))
+
+        if single:
+            gtype = "GSlist"
+        else:
+            gtype = "Glist"
+
+        t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)
 
     def convert(self):

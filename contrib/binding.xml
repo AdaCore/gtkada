@@ -2131,4 +2131,62 @@ The following default key bindings are provided, but you can use a gtkrc file to
       <parameter name="self" ada="Button"/>
   </package>
 
+   <package id="Gtk.Recent_Manager">
+     <doc>
+In case the default screen is being used, adding a new recently used file is as
+simple as:
+
+%PRE%
+     declare
+        Manager : constant Gtk_Recent_Manager := Get_Default;
+     begin
+        Add_Item (Manager, File_URI);
+     end;
+
+While looking up a recently used file is as simple as using:
+
+%PRE%
+     declare
+        Manager : constant Gtk_Recent_Manager := Get_Default;
+        Info    : Gtk_Recent_Info;
+        Error   : Glib.Error.GError;
+     begin
+        Lookup_Item (Info, Manager, File_URI, Error);
+        if Error /= null then
+           --  Use the info object
+           Unref (Info);
+        else
+           Put_Line
+             ("Could not find the file: " &amp; Glib.Error.Get_Message (Error));
+           Glib.Error.Error_Free (Error);
+        end if;
+     end;
+     </doc>
+     <param name="self" ada="Manager" />
+     <record ctype="GtkRecentData" />
+     <method id="gtk_recent_manager_get_items" return="GtkRecentInfoList"/>
+     <list ada="Gtk_Recent_Info_List" ctype="GtkRecentInfo"/>
+   </package>
+
+   <package id="Gtk.Recent_Info">  <!-- into="GtkRecentManager">-->
+     <method id="gtk_recent_info_ref" return="void" />
+
+     <!-- ??? Disabled for now, we are creating an unconstrained local var -->
+     <method id="gtk_recent_info_get_application_info" return="void" bind="False"/>
+
+     <!-- These functions return the length separately, not needed in Ada-->
+     <method id="gtk_recent_info_get_applications" bind="False" />
+     <method id="gtk_recent_info_get_groups" bind="False" />
+
+     <extra>
+       <type>
+   subtype time_t is Long_Integer;
+   --  Type to interface with C's time_t type.  To convert this to/from
+   --  an Ada type, look at Ada.Calendar.Conversion_Operations and be
+   --  sure to pay special attention to the ranges each type is capable
+   --  of representing.
+       </type>
+     </extra>
+   </package>
+
 </GIR>
