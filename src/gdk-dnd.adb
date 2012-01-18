@@ -23,6 +23,8 @@
 
 with System;
 
+with Glib.Object; use Glib.Object;
+
 with Gdk;    use Gdk;
 with Gtk;    use Gtk;
 
@@ -38,12 +40,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Action  : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_status");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Drag_Action'Pos (Action),
                 Time);
    end Drag_Status;
@@ -58,12 +60,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Ok      : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drop_reply");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Boolean'Pos (Ok),
                 Time);
    end Drop_Reply;
@@ -78,12 +80,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Success : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drop_finish");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Boolean'Pos (Success),
                 Time);
    end Drop_Finish;
@@ -95,11 +97,11 @@ package body Gdk.Dnd is
    function Drag_Get_Selection (Context : Drag_Context)
                                 return Gdk_Atom
    is
-      function Internal (Context : Drag_Context)
+      function Internal (Context : System.Address)
                          return Gdk_Atom;
       pragma Import (C, Internal, "gdk_drag_get_selection");
    begin
-      return Internal (Context);
+      return Internal (Get_Object (Context));
    end Drag_Get_Selection;
 
    ----------------
@@ -114,11 +116,12 @@ package body Gdk.Dnd is
       function Internal
         (Window  : Gdk_Window;
          Targets : System.Address)
-         return Drag_Context;
+         return System.Address;
       pragma Import (C, Internal, "gdk_drag_begin");
+      Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
-      return Internal (Window,
-                       Targets.all'Address);
+      return Drag_Context
+        (Get_User_Data (Internal (Window, Targets.all'Address), Stub));
    end Drag_Begin;
 
    -----------------------
@@ -153,7 +156,7 @@ package body Gdk.Dnd is
       Protocol    : Drag_Protocol)
    is
       procedure Internal
-        (Context     : Drag_Context;
+        (Context     : System.Address;
          Drag_Window : Gdk_Window;
          X_Root      : Gint;
          Y_Root      : Gint;
@@ -161,7 +164,7 @@ package body Gdk.Dnd is
          Protocol    : Drag_Protocol);
       pragma Import (C, Internal, "gdk_drag_find_window");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Drag_Window,
                 X_Root,
                 Y_Root,
@@ -185,7 +188,7 @@ package body Gdk.Dnd is
       return Boolean
    is
       function Internal
-        (Context          : Drag_Context;
+        (Context          : System.Address;
          Dest_Window      : Gdk_Window;
          Protocol         : Gint;
          X_Root           : Gint;
@@ -196,7 +199,7 @@ package body Gdk.Dnd is
          return Gint;
       pragma Import (C, Internal, "gdk_drag_motion");
    begin
-      return Boolean'Val (Internal (Context,
+      return Boolean'Val (Internal (Get_Object (Context),
                                     Dest_Window,
                                     Drag_Protocol'Pos (Protocol),
                                     X_Root,
@@ -215,12 +218,11 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_drop");
    begin
-      Internal (Context,
-                Time);
+      Internal (Get_Object (Context), Time);
    end Drag_Drop;
 
    ----------------
@@ -232,12 +234,11 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_abort");
    begin
-      Internal (Context,
-                Time);
+      Internal (Get_Object (Context), Time);
    end Drag_Abort;
 
    -----------------
@@ -245,16 +246,17 @@ package body Gdk.Dnd is
    -----------------
 
    function Get_Targets (Context : Drag_Context) return Gdk_Atom_Array is
-      function Targets_Count (Context : Drag_Context) return Guint;
+      function Targets_Count (Context : System.Address) return Guint;
       pragma Import (C, Targets_Count, "ada_gtk_dnd_context_targets_count");
 
-      procedure Internal (Context : Drag_Context; Result : Gdk_Atom_Array);
+      procedure Internal (Context : System.Address; Result : Gdk_Atom_Array);
       pragma Import (C, Internal, "ada_gtk_dnd_context_get_targets");
 
-      Length : constant Natural := Natural (Targets_Count (Context));
+      Length : constant Natural := Natural
+        (Targets_Count (Get_Object (Context)));
       Result : Gdk_Atom_Array (0 .. Length - 1);
    begin
-      Internal (Context, Result);
+      Internal (Get_Object (Context), Result);
       return Result;
    end Get_Targets;
 
