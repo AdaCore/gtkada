@@ -79,7 +79,6 @@
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>
 
-with Gdk.Color;
 with Gdk.Dnd;           use Gdk.Dnd;
 with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Event;
@@ -261,10 +260,6 @@ package Gtk.Dnd is
    --  and Source_Set_Target_List
    --  Widget: a #GtkWidget that's is a drag source
 
-   procedure Source_Set_Icon
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixbuf   : Gdk.Pixbuf.Gdk_Pixbuf);
    procedure Source_Set_Icon_Pixbuf
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);

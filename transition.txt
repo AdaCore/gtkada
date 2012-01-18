@@ -270,7 +270,7 @@ Subprogram Get_Vbox was replaced with Get_Content_Area.
 Gtk.Dnd
 =======
 
-Source_Set_Icon now works with a Gdk_Pixbuf.
+Source_Set_Icon has been removed: use Source_Set_Icon_Pixbuf instead.
 Set_Icon_Pixmap has been removed: use Set_Icon_Pixbuf instead.
 Obsolete Set_Default_Icon working on Gdk.Pixmap has been removed without a
  replacement.

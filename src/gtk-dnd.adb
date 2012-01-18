@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.Color;  use Gdk.Color;
 with Gdk.Event;  use Gdk.Event;
 with Gdk.Types;  use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
@@ -527,25 +526,6 @@ package body Gtk.Dnd is
    begin
       Internal (Get_Object (Context), Get_Object (Widget), Hot_X, Hot_Y);
    end Set_Icon_Widget;
-
-   ---------------------
-   -- Source_Set_Icon --
-   ---------------------
-
-   procedure Source_Set_Icon
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixbuf   : Gdk.Pixbuf.Gdk_Pixbuf)
-   is
-      procedure Internal
-        (Widget : System.Address;
-         Colormap : Gdk.Gdk_Colormap;
-         Pixbuf   : System.Address);
-      pragma Import (C, Internal, "gtk_drag_source_set_icon");
-
-   begin
-      Internal (Get_Object (Widget), Colormap, Get_Object (Pixbuf));
-   end Source_Set_Icon;
 
    ----------------------------
    -- Dest_Add_Image_Targets --
