@@ -164,7 +164,7 @@ package body Gdk.Dnd is
          Y_Root      : Gint;
          Dest_Window : Gdk_Window;
          Protocol    : Drag_Protocol);
-      pragma Import (C, Internal, "gdk_drag_find_window");
+      pragma Import (C, Internal, "gdk_drag_find_window_for_screen");
    begin
       Internal (Get_Object (Context),
                 Drag_Window,
