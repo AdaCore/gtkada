@@ -58,7 +58,7 @@ pragma Ada_05;
 --  <envar>G_FILENAME_ENCODING</envar> environment variable. Please see the
 --  Glib documentation for more details about this variable.
 --  Note: This means that while you can pass the result of
---  Gtk.File_Chooser_Button.Get_Filename to <function>open(2)</function> or
+--  Gtk.File_Chooser_Widget.Get_Filename to <function>open(2)</function> or
 --  <function>fopen(3)</function>, you may not be able to directly set it as
 --  the text of a Gtk.Label.Gtk_Label widget unless you convert it first to
 --  UTF-8, which all GTK+ widgets expect. You should use g_filename_to_utf8 to
@@ -68,14 +68,14 @@ pragma Ada_05;
 --
 --  You can add a custom preview widget to a file chooser and then get
 --  notification about when the preview needs to be updated. To install a
---  preview widget, use Gtk.File_Chooser_Button.Set_Preview_Widget. Then,
+--  preview widget, use Gtk.File_Chooser_Widget.Set_Preview_Widget. Then,
 --  connect to the Gtk.File_Chooser.Gtk_File_Chooser::update-preview signal to
 --  get notified when you need to update the contents of the preview.
 --
---  Your callback should use Gtk.File_Chooser_Button.Get_Preview_Filename to
+--  Your callback should use Gtk.File_Chooser_Widget.Get_Preview_Filename to
 --  see what needs previewing. Once you have generated the preview for the
 --  corresponding file, you must call
---  Gtk.File_Chooser_Button.Set_Preview_Widget_Active with a boolean flag that
+--  Gtk.File_Chooser_Widget.Set_Preview_Widget_Active with a boolean flag that
 --  indicates whether your callback could successfully generate a preview.
 --
 --  <example id="example-gtkfilechooser-preview">
@@ -112,7 +112,7 @@ pragma Ada_05;
 --  You can add extra widgets to a file chooser to provide options that are
 --  not present in the default design. For example, you can add a toggle button
 --  to give the user the option to open a file in read-only mode. You can use
---  Gtk.File_Chooser_Button.Set_Extra_Widget to insert additional widgets in a
+--  Gtk.File_Chooser_Widget.Set_Extra_Widget to insert additional widgets in a
 --  file chooser.
 --
 --  <example id="example-gtkfilechooser-extra">
@@ -557,7 +557,7 @@ package Gtk.File_Chooser is
    --  Lists all the selected files and subfolders in the current folder of
    --  Chooser. The returned names are full absolute paths. If files in the
    --  current folder cannot be represented as local filenames they will be
-   --  ignored. (See Gtk.File_Chooser_Button.Get_Uris)
+   --  ignored. (See Gtk.File_Chooser_Widget.Get_Uris)
    --  containing the filenames of all selected files and subfolders in the
    --  current folder. Free the returned list with g_slist_free, and the
    --  filenames with g_free.
@@ -586,22 +586,22 @@ package Gtk.File_Chooser is
    --  guaranteed to be accessible through the operating systems native file
    --  file system and therefore the application only needs to worry about the
    --  filename functions in Gtk.File_Chooser.Gtk_File_Chooser, like
-   --  Gtk.File_Chooser_Button.Get_Filename, rather than the URI functions like
-   --  Gtk.File_Chooser_Button.Get_Uri,
+   --  Gtk.File_Chooser_Widget.Get_Filename, rather than the URI functions like
+   --  Gtk.File_Chooser_Widget.Get_Uri,
    --  Since: gtk+ 2.4
    --  "local_only": True if only local files can be selected
 
    function Get_Preview_Filename
       (Chooser : Gtk_File_Chooser) return UTF8_String;
    --  Gets the filename that should be previewed in a custom preview widget.
-   --  See Gtk.File_Chooser_Button.Set_Preview_Widget.
+   --  See Gtk.File_Chooser_Widget.Set_Preview_Widget.
    --  no file is selected, or if the selected file cannot be represented as a
    --  local filename. Free with g_free
    --  Since: gtk+ 2.4
 
    function Get_Preview_Uri (Chooser : Gtk_File_Chooser) return UTF8_String;
    --  Gets the URI that should be previewed in a custom preview widget. See
-   --  Gtk.File_Chooser_Button.Set_Preview_Widget.
+   --  Gtk.File_Chooser_Widget.Set_Preview_Widget.
    --  selected. Free with g_free.
    --  Since: gtk+ 2.4
 
@@ -614,10 +614,10 @@ package Gtk.File_Chooser is
    --  of the currently selected file. To implement a preview, after setting
    --  the preview widget, you connect to the
    --  Gtk.File_Chooser.Gtk_File_Chooser::update-preview signal, and call
-   --  Gtk.File_Chooser_Button.Get_Preview_Filename or
-   --  Gtk.File_Chooser_Button.Get_Preview_Uri on each change. If you can
+   --  Gtk.File_Chooser_Widget.Get_Preview_Filename or
+   --  Gtk.File_Chooser_Widget.Get_Preview_Uri on each change. If you can
    --  display a preview of the new file, update your widget and set the
-   --  preview active using Gtk.File_Chooser_Button.Set_Preview_Widget_Active.
+   --  preview active using Gtk.File_Chooser_Widget.Set_Preview_Widget_Active.
    --  Otherwise, set the preview inactive.
    --  When there is no application-supplied preview widget, or the
    --  application-supplied preview widget is not active, the file chooser may
@@ -632,11 +632,11 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser;
        Active  : Boolean);
    --  Sets whether the preview widget set by
-   --  Gtk.File_Chooser_Button.Set_Preview_Widget should be shown for the
+   --  Gtk.File_Chooser_Widget.Set_Preview_Widget should be shown for the
    --  current filename. When Active is set to false, the file chooser may
    --  display an internally generated preview of the current file or it may
    --  display no preview at all. See
-   --  Gtk.File_Chooser_Button.Set_Preview_Widget for more details.
+   --  Gtk.File_Chooser_Widget.Set_Preview_Widget for more details.
    --  Since: gtk+ 2.4
    --  "active": whether to display the user-specified preview widget
 
@@ -707,7 +707,7 @@ package Gtk.File_Chooser is
    --  Applications that want to draw the whole preview area themselves should
    --  set this to False and display the name themselves in their preview
    --  widget.
-   --  See also: Gtk.File_Chooser_Button.Set_Preview_Widget
+   --  See also: Gtk.File_Chooser_Widget.Set_Preview_Widget
    --  Since: gtk+ 2.4
    --  "use_label": whether to display a stock label with the name of the
    --  previewed file
@@ -715,8 +715,8 @@ package Gtk.File_Chooser is
    function List_Filters
       (Chooser : Gtk_File_Chooser) return Glib.Object.Object_List.GSList;
    --  Lists the current set of user-selectable filters; see
-   --  Gtk.File_Chooser_Button.Add_Filter,
-   --  Gtk.File_Chooser_Button.Remove_Filter.
+   --  Gtk.File_Chooser_Widget.Add_Filter,
+   --  Gtk.File_Chooser_Widget.Remove_Filter.
    --  GSList containing the current set of user selectable filters. The
    --  contents of the list are owned by GTK+, but you must free the list
    --  itself with g_slist_free when you are done with it.
@@ -725,7 +725,7 @@ package Gtk.File_Chooser is
    function List_Shortcut_Folder_Uris
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
-   --  Gtk.File_Chooser_Button.Add_Shortcut_Folder_Uri.
+   --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder_Uri.
    --  URIs, or null if there are no shortcut folders. Free the returned list
    --  with g_slist_free, and the URIs with g_free.
    --  Since: gtk+ 2.4
@@ -733,7 +733,7 @@ package Gtk.File_Chooser is
    function List_Shortcut_Folders
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
-   --  Gtk.File_Chooser_Button.Add_Shortcut_Folder.
+   --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder.
    --  folder filenames, or null if there are no shortcut folders. Free the
    --  returned list with g_slist_free, and the filenames with g_free.
    --  Since: gtk+ 2.4
@@ -752,7 +752,7 @@ package Gtk.File_Chooser is
        Folder  : UTF8_String) return Boolean;
    --  Removes a folder from a file chooser's list of shortcut folders.
    --  In the latter case, the Error will be set as appropriate.
-   --  See also: Gtk.File_Chooser_Button.Add_Shortcut_Folder
+   --  See also: Gtk.File_Chooser_Widget.Add_Shortcut_Folder
    --  Since: gtk+ 2.4
    --  "folder": filename of the folder to remove
 
@@ -761,7 +761,7 @@ package Gtk.File_Chooser is
        URI     : UTF8_String) return Boolean;
    --  Removes a folder URI from a file chooser's list of shortcut folders.
    --  In the latter case, the Error will be set as appropriate.
-   --  See also: Gtk.File_Chooser_Button.Add_Shortcut_Folder_Uri
+   --  See also: Gtk.File_Chooser_Widget.Add_Shortcut_Folder_Uri
    --  Since: gtk+ 2.4
    --  "uri": URI of the folder to remove
 
@@ -776,7 +776,7 @@ package Gtk.File_Chooser is
    --  Selects a filename. If the file name isn't in the current folder of
    --  Chooser, then the current folder of Chooser will be changed to the
    --  folder containing Filename.
-   --   See also: Gtk.File_Chooser_Button.Set_Filename
+   --   See also: Gtk.File_Chooser_Widget.Set_Filename
    --  Since: gtk+ 2.4
    --  "filename": the filename to select
 
@@ -798,9 +798,9 @@ package Gtk.File_Chooser is
    --  "Save As..." dialog. You can pass "Untitled.doc" or a similarly suitable
    --  suggestion for the Name.
    --  If you want to preselect a particular existing file, you should use
-   --  Gtk.File_Chooser_Button.Set_Filename or Gtk.File_Chooser_Button.Set_Uri
+   --  Gtk.File_Chooser_Widget.Set_Filename or Gtk.File_Chooser_Widget.Set_Uri
    --  instead. Please see the documentation for those functions for an example
-   --  of using Gtk.File_Chooser_Button.Set_Current_Name as well.
+   --  of using Gtk.File_Chooser_Widget.Set_Current_Name as well.
    --  Since: gtk+ 2.4
    --  "name": the filename to use, as a UTF-8 string
 
