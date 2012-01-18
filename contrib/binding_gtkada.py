@@ -56,7 +56,8 @@ Where the package node is defined as follows:
                                 add the bindings -->
            return_as_param="..." <!-- optional, replace return parameter with
                                 an out parameter with this name -->
-           return="..."    <!-- Override C type for the returned value -->
+           return="..."    <!-- Override C type for the returned value, or
+                                "void" to change into procedure. -->
        >
          <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
             ...            <!-- "\n" forces a newline, paragraphs are created
@@ -91,7 +92,7 @@ Where the package node is defined as follows:
                 For instance:    "GTK_SIZE_GROUP_NONE": "None"
               * or setting the prefix attribute, for instance
                  prefix="GTK_SIZE_GROUP_"
-       -->           
+       -->
        <enum ctype="..."
              ada="..."     <!-- optional Ada name (no package info needed) -->
              prefix="GTK_" <!-- remove prefix from values to get Ada name -->

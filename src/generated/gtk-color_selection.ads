@@ -168,6 +168,7 @@ package Gtk.Color_Selection is
    type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access
    procedure (Screen : Gdk.Gdk_Screen;
       Colors : Gdk.Color.Gdk_Color_Array);
+   pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  This function should save the new palette contents, and update the
    --  Gtk_Settings property "gtk-color-palette" so all Gtk_Color_Selection
    --  widgets will be modified, including the current one. For instance, you
@@ -189,9 +190,8 @@ package Gtk.Color_Selection is
    -- Functions --
    ---------------
 
-   function Set_Change_Palette_With_Screen_Hook
-      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
-       return Gtk_Color_Selection_Change_Palette_With_Screen_Func;
+   procedure Set_Change_Palette_With_Screen_Hook
+      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  Installs a global function to be called whenever the user tries to
    --  modify the palette in a color selection.
    --  This function should save the new palette contents, and update the

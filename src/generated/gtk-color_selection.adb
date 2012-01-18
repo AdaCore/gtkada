@@ -366,16 +366,13 @@ package body Gtk.Color_Selection is
    -- Set_Change_Palette_With_Screen_Hook --
    -----------------------------------------
 
-   function Set_Change_Palette_With_Screen_Hook
+   procedure Set_Change_Palette_With_Screen_Hook
       (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
-       return Gtk_Color_Selection_Change_Palette_With_Screen_Func
    is
-      function Internal
-         (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
-          return Gtk_Color_Selection_Change_Palette_With_Screen_Func;
+      procedure Internal (Func : System.Address);
       pragma Import (C, Internal, "gtk_color_selection_set_change_palette_with_screen_hook");
    begin
-      return Internal (Func);
+      Internal (Func'Address);
    end Set_Change_Palette_With_Screen_Hook;
 
    ---------------------

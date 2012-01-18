@@ -521,6 +521,8 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8":
             t = UTF8_List()
+        elif cname == "void":
+            return None
         elif name == "utf8" or cname == "gchar*" or cname == "char*":
             t = UTF8(empty_maps_to_null=empty_maps_to_null)
         elif cname:

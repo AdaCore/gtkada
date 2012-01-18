@@ -78,7 +78,7 @@ class GIR(object):
             k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
             for cl in root.findall(k):
                 ct = cl.get(ctype_qname)
-                type = Proxy(naming.case(ct))
+                type = Callback(naming.case(ct))
                 naming.add_type_exception(cname=ct, type=type)
                 ct = naming.type(ct).ada
                 self.callbacks[ct] = cl
