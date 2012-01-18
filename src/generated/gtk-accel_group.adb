@@ -39,7 +39,7 @@ package body Gtk.Accel_Group is
        Data        : System.Address) return Gtk_Accel_Key;
    pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns True and returns its Gtk_Accel_Key.
+   --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
    --  "data": data to pass to Find_Func
@@ -207,7 +207,7 @@ package body Gtk.Accel_Group is
         (System.Address, Gtk_Accel_Group_Find_Func);
 
       function Internal_Cb
-         (Key     : Gtk_Accel_Key;
+         (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
           Data    : System.Address) return Boolean;
       --  Since: gtk+ 2.2
@@ -219,7 +219,7 @@ package body Gtk.Accel_Group is
       function Find
          (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record;
           Find_Func   : Gtk_Accel_Group_Find_Func;
-          Data        : User_Data_Type) return Gtk_Accel_Key
+          Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key
       is
       begin
          return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (Find_Func'Address, Data));
@@ -230,7 +230,7 @@ package body Gtk.Accel_Group is
       -----------------
 
       function Internal_Cb
-         (Key     : Gtk_Accel_Key;
+         (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
           Data    : System.Address) return Boolean
       is

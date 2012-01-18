@@ -1601,15 +1601,11 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      <function id="gtk_accelerator_get_default_mod_mask"
                return="GdkModifierType" ada="Get_Default_Mod_Mask"/>
      <enum ctype="GtkAccelFlags" prefix="GTK_"/>
+     <record ctype="GtkAccelKey">
+       <field name="accel_key" ctype="GdkKeyType"/>
+       <field name="accel_flags" ctype="GtkAccelFlags"/>
+     </record>
      <extra>
-        <type ctype="GtkAccelKey*" ada="Gtk_Accel_Key">
-   type Gtk_Accel_Key is record
-      Accel_Key  : Gdk.Types.Gdk_Key_Type;
-      Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-      Flags      : Gtk_Accel_Flags;
-   end record;
-   pragma Convention (C, Gtk_Accel_Key);
-        </type>
         <type ctype="GtkAccelGroupActive" ada="Gtk_Accel_Group_Activate">
    type Gtk_Accel_Group_Activate is access function
      (Accel_Group   : access Gtk_Accel_Group_Record'Class;
@@ -1984,31 +1980,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
 
   <package id="Gtk.File_Filter">
      <enum ctype="GtkFileFilterFlags"/>
-     <extra>
-        <with_spec pkg="Interfaces.C.Strings" />
-        <with_spec pkg="Gtk.Enums" />
-        <type ctype="GtkFileFilterInfo*" ada="Gtk_File_Filter_Info">
-   type Gtk_File_Filter_Info is record
-      Contains     : Gtk_File_Filter_Flags;
-      Filename     : Interfaces.C.Strings.chars_ptr;
-      URI          : Interfaces.C.Strings.chars_ptr;
-      Display_Name : Interfaces.C.Strings.chars_ptr;
-      Mime_Type    : Interfaces.C.Strings.chars_ptr;
-   end record;
-   --  A Gtk_File_Filter_Info is used to pass information about the
-   --  tested file to Filter.
-   --
-   --  Fields:
-   --     Contains     : Flags indicating which of the following fields
-   --                    need are filled
-   --     Filename     : the filename of the file being tested
-   --     URI          : the URI for the file being tested
-   --     Display_Name : the string that will be used to display the
-   --                    file in the file chooser
-   --     Mime_Type    : the mime type of the file
-   --
-        </type>
-     </extra>
+     <record ctype="GtkFileFilterInfo"/>
   </package>
 
   <package id="Gtk.File_Chooser">
@@ -2029,17 +2001,13 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <method id="gtk_file_chooser_set_file" bind="False"/>
      <method id="gtk_file_chooser_unselect_file" bind="False"/>
 
-     <method id="gtk_file_chooser_get_filenames"
-             return="StringSList"/>
-     <method id="gtk_file_chooser_get_uris"
-             return="StringSList"/>
+     <method id="gtk_file_chooser_get_filenames" return="StringSList"/>
+     <method id="gtk_file_chooser_get_uris" return="StringSList"/>
      <method id="gtk_file_chooser_list_shortcut_folder_uris"
              return="StringSList"/>
      <method id="gtk_file_chooser_list_shortcut_folders"
              return="StringSList"/>
-
-     <method id="gtk_file_chooser_list_filters"
-             return="ObjectSList"/>
+     <method id="gtk_file_chooser_list_filters" return="ObjectSList"/>
   </package>
 
   <package id="Gtk.File_Chooser_Button">

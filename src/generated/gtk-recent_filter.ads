@@ -106,13 +106,13 @@ package Gtk.Recent_Filter is
 
 
    type Gtk_Recent_Filter_Info is record
-      contains : Gtk_Recent_Filter_Flags;
-      uri : Interfaces.C.Strings.chars_ptr;
-      display_name : Interfaces.C.Strings.chars_ptr;
-      mime_type : Interfaces.C.Strings.chars_ptr;
-      applications : Interfaces.C.Strings.char_array_access;
-      groups : Interfaces.C.Strings.char_array_access;
-      age : Gint;
+      Contains : Gtk_Recent_Filter_Flags;
+      URI : Interfaces.C.Strings.chars_ptr;
+      Display_Name : Interfaces.C.Strings.chars_ptr;
+      Mime_Type : Interfaces.C.Strings.chars_ptr;
+      Applications : Interfaces.C.Strings.char_array_access;
+      Groups : Interfaces.C.Strings.char_array_access;
+      Age : Gint;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);
    --  A GtkRecentFilterInfo struct is used to pass information about the tested

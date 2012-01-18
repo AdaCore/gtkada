@@ -179,11 +179,25 @@ class GtkAdaPackage(object):
         return result
 
     def records(self):
+        """Returns the list of record types, as a list of tuples:
+               [ (ctype name,  corresponding CType, [fields]) ...]
+           Where fields is a dict for each field whose type is
+           overridden:
+               { name: CType, ... }
+        """
+
         result = []
         if self.node:
             for rec in self.node.findall("record"):
+                override_fields = {}
+
+                for field in rec.findall("field"):
+                    override_fields[field.get("name")] = \
+                        naming.type(name="", cname=field.get("ctype"))
+
                 result.append((rec.get("ctype"),
-                               naming.type(name="", cname=rec.get("ctype"))))
+                               naming.type(name="", cname=rec.get("ctype")),
+                               override_fields))
         return result
 
     def get_doc(self):

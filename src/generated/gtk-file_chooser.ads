@@ -433,7 +433,7 @@ package Gtk.File_Chooser is
 
    function Add_Shortcut_Folder_Uri
       (Chooser : Gtk_File_Chooser;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
    --  Adds a folder URI to be displayed with the shortcut folders in a file
    --  chooser. Note that shortcut folders do not get saved, as they are
    --  provided by the application. For example, you can use this to add a
@@ -482,7 +482,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return UTF8_String;
    function Set_Current_Folder_Uri
       (Chooser : Gtk_File_Chooser;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
    --  Sets the current folder for Chooser from an URI. The user will be shown
    --  the full contents of the current folder, plus user interface elements
    --  for navigating to other folders.
@@ -662,7 +662,7 @@ package Gtk.File_Chooser is
    function Get_Uri (Chooser : Gtk_File_Chooser) return UTF8_String;
    function Set_Uri
       (Chooser : Gtk_File_Chooser;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
    --  Sets the file referred to by Uri as the current file for the file
    --  chooser, by changing to the URI's parent folder and actually selecting
    --  the URI in the list. If the Chooser is Gtk.File_Chooser.Action_Save
@@ -758,7 +758,7 @@ package Gtk.File_Chooser is
 
    function Remove_Shortcut_Folder_Uri
       (Chooser : Gtk_File_Chooser;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
    --  Removes a folder URI from a file chooser's list of shortcut folders.
    --  In the latter case, the Error will be set as appropriate.
    --  See also: Gtk.File_Chooser_Button.Add_Shortcut_Folder_Uri
@@ -782,7 +782,7 @@ package Gtk.File_Chooser is
 
    function Select_Uri
       (Chooser : Gtk_File_Chooser;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
    --  Selects the file to by Uri. If the URI doesn't refer to a file in the
    --  current folder of Chooser, then the current folder of Chooser will be
    --  changed to the folder containing Filename.
@@ -818,7 +818,7 @@ package Gtk.File_Chooser is
    --  Since: gtk+ 2.4
    --  "filename": the filename to unselect
 
-   procedure Unselect_Uri (Chooser : Gtk_File_Chooser; Uri : UTF8_String);
+   procedure Unselect_Uri (Chooser : Gtk_File_Chooser; URI : UTF8_String);
    --  Unselects the file referred to by Uri. If the file is not in the
    --  current directory, does not exist, or is otherwise not currently
    --  selected, does nothing.

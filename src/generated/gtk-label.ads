@@ -679,7 +679,7 @@ package Gtk.Label is
    --  "activate-link"
    --     function Handler
    --       (Self : access Gtk_Label_Record'Class;
-   --        Uri  : UTF8_String) return Boolean;
+   --        URI  : UTF8_String) return Boolean;
    --    --  "uri": the URI that is activated
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call

@@ -187,6 +187,7 @@ naming.exceptions = {
     "Function": "Func",
     "Digits": "Number_Of_Digits",
     "Reverse": "Gtk_Reverse",
+    "Uri": "URI",
 }
 
 # Maps C types to type descriptions.

@@ -224,17 +224,17 @@ package body Gtk.File_Chooser_Button is
 
    function Add_Shortcut_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean
+       URI     : UTF8_String) return Boolean
    is
       function Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_add_shortcut_folder_uri");
-      Tmp_Uri    : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Add_Shortcut_Folder_Uri;
 
@@ -620,17 +620,17 @@ package body Gtk.File_Chooser_Button is
 
    function Remove_Shortcut_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean
+       URI     : UTF8_String) return Boolean
    is
       function Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_remove_shortcut_folder_uri");
-      Tmp_Uri    : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Remove_Shortcut_Folder_Uri;
 
@@ -673,17 +673,17 @@ package body Gtk.File_Chooser_Button is
 
    function Select_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean
+       URI     : UTF8_String) return Boolean
    is
       function Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_select_uri");
-      Tmp_Uri    : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Select_Uri;
 
@@ -743,17 +743,17 @@ package body Gtk.File_Chooser_Button is
 
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean
+       URI     : UTF8_String) return Boolean
    is
       function Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_set_current_folder_uri");
-      Tmp_Uri    : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Set_Current_Folder_Uri;
 
@@ -936,17 +936,17 @@ package body Gtk.File_Chooser_Button is
 
    function Set_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean
+       URI     : UTF8_String) return Boolean
    is
       function Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_set_uri");
-      Tmp_Uri    : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Set_Uri;
 
@@ -1001,16 +1001,16 @@ package body Gtk.File_Chooser_Button is
 
    procedure Unselect_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String)
+       URI     : UTF8_String)
    is
       procedure Internal
          (Chooser : System.Address;
-          Uri     : Interfaces.C.Strings.chars_ptr);
+          URI     : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_file_chooser_unselect_uri");
-      Tmp_Uri : Interfaces.C.Strings.chars_ptr := New_String (Uri);
+      Tmp_URI : Interfaces.C.Strings.chars_ptr := New_String (URI);
    begin
-      Internal (Get_Object (Chooser), Tmp_Uri);
-      Free (Tmp_Uri);
+      Internal (Get_Object (Chooser), Tmp_URI);
+      Free (Tmp_URI);
    end Unselect_Uri;
 
 end Gtk.File_Chooser_Button;

@@ -163,7 +163,7 @@ package Gtk.File_Chooser_Button is
 
    function Add_Shortcut_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
 
    function Get_Action
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
@@ -191,7 +191,7 @@ package Gtk.File_Chooser_Button is
        return UTF8_String;
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
 
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
@@ -274,7 +274,7 @@ package Gtk.File_Chooser_Button is
        return UTF8_String;
    function Set_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
 
    function Get_Uris
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
@@ -310,7 +310,7 @@ package Gtk.File_Chooser_Button is
 
    function Remove_Shortcut_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
 
    procedure Select_All
       (Chooser : not null access Gtk_File_Chooser_Button_Record);
@@ -321,7 +321,7 @@ package Gtk.File_Chooser_Button is
 
    function Select_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String) return Boolean;
+       URI     : UTF8_String) return Boolean;
 
    procedure Set_Current_Name
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
@@ -336,7 +336,7 @@ package Gtk.File_Chooser_Button is
 
    procedure Unselect_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Uri     : UTF8_String);
+       URI     : UTF8_String);
 
    function Get_Orientation
       (Self : not null access Gtk_File_Chooser_Button_Record)

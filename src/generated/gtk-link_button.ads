@@ -61,21 +61,21 @@ package Gtk.Link_Button is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Link_Button; Uri : UTF8_String);
+   procedure Gtk_New (Self : out Gtk_Link_Button; URI : UTF8_String);
    procedure Initialize
       (Self : access Gtk_Link_Button_Record'Class;
-       Uri  : UTF8_String);
+       URI  : UTF8_String);
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
    procedure Gtk_New_With_Label
       (Self  : out Gtk_Link_Button;
-       Uri   : UTF8_String;
+       URI   : UTF8_String;
        Label : UTF8_String);
    procedure Initialize_With_Label
       (Self  : access Gtk_Link_Button_Record'Class;
-       Uri   : UTF8_String;
+       URI   : UTF8_String;
        Label : UTF8_String);
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
    --  Since: gtk+ 2.10
@@ -93,7 +93,7 @@ package Gtk.Link_Button is
       (Self : not null access Gtk_Link_Button_Record) return UTF8_String;
    procedure Set_Uri
       (Self : not null access Gtk_Link_Button_Record;
-       Uri  : UTF8_String);
+       URI  : UTF8_String);
    --  Sets Uri as the URI where the Gtk.Link_Button.Gtk_Link_Button points.
    --  As a side-effect this unsets the 'visited' state of the button.
    --  Since: gtk+ 2.10
@@ -175,7 +175,7 @@ package Gtk.Link_Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
    --
-   --  Name: Uri_Property
+   --  Name: URI_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The URI bound to this button.
@@ -186,7 +186,7 @@ package Gtk.Link_Button is
    --  The 'visited' state of this button. A visited link is drawn in a
    --  different color.
 
-   Uri_Property : constant Glib.Properties.Property_String;
+   URI_Property : constant Glib.Properties.Property_String;
    Visited_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
@@ -208,7 +208,7 @@ package Gtk.Link_Button is
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 
 private
-   Uri_Property : constant Glib.Properties.Property_String :=
+   URI_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("uri");
    Visited_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visited");

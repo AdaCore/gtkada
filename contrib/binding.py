@@ -1259,7 +1259,12 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment('- "%(name)s"' % impl)
                 section.add_code(impl["code"])
 
-    def record_binding(self, ctype, type):
+    def record_binding(self, ctype, type, override_fields):
+        """Create the binding for a <record> type.
+           override_fields has the same format as returned by
+           GtkAdaPackage.records()
+        """
+
         base = type.ada
         if "." in base:
             base = base[base.rfind(".") + 1:]
@@ -1269,19 +1274,23 @@ See Glib.Properties for more information on properties)""")
 
         fields = []
         for field in node.findall(nfield):
-            name = naming.adamethod_name(
-                field.get("name"), warning_if_not_found=False)
+            name = field.get("name")
             type = field.findall(ntype)
 
             if not type:
                 print "Field has no type: %s.%s" % (ctype, name)
             else:
-                ftype = naming.type(name="", cname=type[0].get(ctype_qname))
+                ftype = override_fields.get(name, None)
+                if ftype is None:
+                    ftype = naming.type(
+                        name="", cname=type[0].get(ctype_qname))
+
                 ftype = ftype.record_field_type(pkg=self.pkg)
 
                 if "." in ftype:
                     self.pkg.add_with(ftype[:ftype.rfind(".")])
-                fields.append((name, ftype))
+
+                fields.append((naming.case(name), ftype))
 
         decl += "\n".join("%s : %s;" % f for f in fields)
         decl += "\nend record;\npragma Convention (C, %s);\n" % base
@@ -1441,8 +1450,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             decl = self.enumeration_binding(ctype, enum, prefix)
             section.add_code(decl)
 
-        for ctype, enum in self.gtkpkg.records():
-            decl = self.record_binding(ctype, enum)
+        for ctype, enum, override_fields in self.gtkpkg.records():
+            decl = self.record_binding(ctype, enum, override_fields)
             section.add_code(decl)
 
         if extra:

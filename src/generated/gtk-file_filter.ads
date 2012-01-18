@@ -70,7 +70,6 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
-with Gtk.Enums;               use Gtk.Enums;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package Gtk.File_Filter is
@@ -80,8 +79,8 @@ package Gtk.File_Filter is
 
    type Gtk_File_Filter_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_File_Filter_Flags);
-   --  These flags indicate what parts of a Gtk_File_Filter_Info struct are
-   --  filled or need to be filled.
+   --  These flags indicate what parts of a Gtk.File_Filter.Gtk_File_Filter_Info
+   --  struct are filled or need to be filled.
 
    File_Filter_Filename : constant Gtk_File_Filter_Flags := 1;
    File_Filter_Uri : constant Gtk_File_Filter_Flags := 2;
@@ -95,31 +94,22 @@ package Gtk.File_Filter is
 
 
    type Gtk_File_Filter_Info is record
-      Contains     : Gtk_File_Filter_Flags;
-      Filename     : Interfaces.C.Strings.chars_ptr;
-      URI          : Interfaces.C.Strings.chars_ptr;
+      Contains : Gtk_File_Filter_Flags;
+      Filename : Interfaces.C.Strings.chars_ptr;
+      URI : Interfaces.C.Strings.chars_ptr;
       Display_Name : Interfaces.C.Strings.chars_ptr;
-      Mime_Type    : Interfaces.C.Strings.chars_ptr;
+      Mime_Type : Interfaces.C.Strings.chars_ptr;
    end record;
-   --  A Gtk_File_Filter_Info is used to pass information about the
-   --  tested file to Filter.
-   --
-   --  Fields:
-   --     Contains     : Flags indicating which of the following fields
-   --                    need are filled
-   --     Filename     : the filename of the file being tested
-   --     URI          : the URI for the file being tested
-   --     Display_Name : the string that will be used to display the
-   --                    file in the file chooser
-   --     Mime_Type    : the mime type of the file
-   --
+   pragma Convention (C, Gtk_File_Filter_Info);
+   --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass information
+   --  about the tested file to gtk_file_filter_filter.
 
 
    type Gtk_File_Filter_Func is access function (Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
    --  Gtk.File_Filter.Add_Custom.
-   --  "filter_info": a Gtk_File_Filter_Info that is filled according to the
-   --  Needed flags passed to Gtk.File_Filter.Add_Custom
+   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
+   --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
 
    ------------------
    -- Constructors --
@@ -165,12 +155,12 @@ package Gtk.File_Filter is
    package Add_Custom_User_Data is
 
       type Gtk_File_Filter_Func is access function
-        (Filter_Info : Gtk_File_Filter_Info;
+        (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
          Data        : User_Data_Type) return Boolean;
       --  The type of function that is used with custom filters, see
       --  Gtk.File_Filter.Add_Custom.
-      --  "filter_info": a Gtk_File_Filter_Info that is filled according to the
-      --  Needed flags passed to Gtk.File_Filter.Add_Custom
+      --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
+      --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
       --  "data": user data passed to Gtk.File_Filter.Add_Custom
 
       procedure Add_Custom
@@ -217,14 +207,14 @@ package Gtk.File_Filter is
       (Self        : not null access Gtk_File_Filter_Record;
        Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  Tests whether a file should be displayed according to Filter. The
-   --  Gtk_File_Filter_Info structure Filter_Info should include the fields
-   --  returned from Gtk.File_Filter.Get_Needed.
+   --  Gtk.File_Filter.Gtk_File_Filter_Info structure Filter_Info should
+   --  include the fields returned from Gtk.File_Filter.Get_Needed.
    --  This function will not typically be used by applications; it is intended
    --  principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
-   --  "filter_info": a Gtk_File_Filter_Info structure containing information
-   --  about a file.
+   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info structure
+   --  containing information about a file.
 
    function Get_Name
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
