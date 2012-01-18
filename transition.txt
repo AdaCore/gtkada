@@ -340,6 +340,12 @@ Gtk.Old_Editable
 
 This obsolescent API has been removed, use Gtk.Editable where relevant.
 
+Gtk.Option_Menu
+===============
+
+Gtk.Option_Menu has been removed.  Using Gtk.Combo_Box instead is
+recommended.
+
 Gtk.Pixmap
 ==========
 
