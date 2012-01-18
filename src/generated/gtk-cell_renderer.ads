@@ -77,6 +77,7 @@ package Gtk.Cell_Renderer is
    type Gtk_Cell_Renderer is access all Gtk_Cell_Renderer_Record'Class;
 
    type Gtk_Cell_Renderer_State is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Cell_Renderer_State);
    --  Tells how a cell is to be rendererd.
 
    Cell_Renderer_Selected : constant Gtk_Cell_Renderer_State := 1;

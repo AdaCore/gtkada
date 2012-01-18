@@ -118,6 +118,13 @@ class CType(object):
         else:
             return self.returns
 
+    def record_field_type(self, pkg=None):
+        """The type to use when self is used in a record.
+           [pkg] should be the current package, to avoid fully qualified name
+           that reference that package.
+        """
+        return self.as_c_param(pkg=pkg)
+
     def as_ada_param(self, pkg):
         """Converts self to a description for an Ada parameter to a
            subprogram.
@@ -128,13 +135,14 @@ class CType(object):
         p = self.ada[:self.ada.rfind(".")]
         return self.param.replace("%s." % pkg.name, "")
 
-    def as_c_param(self, pkg):
+    def as_c_param(self, pkg=None):
         """Returns the C type (as a parameter to a subprogram that imports
            a C function)
         """
-        # Do not fully qualify within the current package
-        p = self.ada[:self.ada.rfind(".")]
-        return self.cparam.replace("%s." % pkg.name, "")
+        if pkg:
+            return self.cparam.replace("%s." % pkg.name, "")
+        else:
+            return self.cparam
 
     def as_call(
         self, name, wrapper="%s", lang="ada->ada", mode="in", value=None):
@@ -221,6 +229,12 @@ class Enum(CType):
 
     def convert(self):
         return "%s'Pos (%%(var)s)" % self.ada
+
+    def record_field_type(self, pkg=None):
+        if pkg:
+            return self.ada.replace("%s." % pkg.name, "")
+        else:
+            return self.ada
 
     @staticmethod
     def register_ada_decl(pkg, ctype, ada=None):
@@ -319,6 +333,9 @@ class UTF8_List(CType):
             self.param, "chars_ptr_array_access",
             "To_String_List (%(var)s.all)", [])
 
+    def record_field_type(self, pkg=None):
+        return "Interfaces.C.Strings.char_array_access"
+
     def convert(self):
         return "From_String_List (%(var)s)"
 
@@ -336,6 +353,19 @@ class Proxy(CType):
             CType.__init__(self, ada, "Glib.Properties.Property_Boxed")
         else:
             CType.__init__(self, ada, property)
+
+    @staticmethod
+    def register_ada_record(pkg, ctype, ada=None):
+        """Register a <record> type.
+        [pkg] is the name of the current package in which the enumeration
+        will be defined.
+        """
+
+        ada = ada or naming.type(name="", cname=ctype).ada
+        full_name = "%s.%s" % (pkg, ada)
+        t = Proxy(full_name)
+        naming.add_type_exception(cname="%s*" % ctype, type=t)
+        naming.add_type_exception(cname=ctype, type=t)
 
 
 class Callback(CType):

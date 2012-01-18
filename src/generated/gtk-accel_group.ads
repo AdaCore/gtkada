@@ -53,6 +53,7 @@ package Gtk.Accel_Group is
    type Gtk_Accel_Group is access all Gtk_Accel_Group_Record'Class;
 
    type Gtk_Accel_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Accel_Flags);
 
 
    Accel_Visible : constant Gtk_Accel_Flags := 1;

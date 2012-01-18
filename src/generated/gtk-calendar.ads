@@ -63,6 +63,7 @@ package Gtk.Calendar is
    type Gtk_Calendar is access all Gtk_Calendar_Record'Class;
 
    type Gtk_Calendar_Display_Options is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Calendar_Display_Options);
    --  These options can be used to influence the display and behaviour of a
    --  Gtk.Calendar.Gtk_Calendar.
 

@@ -98,6 +98,11 @@ Where the package node is defined as follows:
              prefix="GTK_" <!-- remove prefix from values to get Ada name -->
        />
 
+       <!-- Support for <record> types -->
+       <record ctype="..."
+             ada="..."     <!-- optional Ada name (no package info needed) -->
+       />
+
        <extra>
           <gir:method>...  <!-- optional, same nodes as in the .gir file -->
           <with_spec pkg="..." use="true"/>
@@ -121,7 +126,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType, CType, naming, Enum
+from adaformat import AdaType, CType, Proxy, naming, Enum
 
 
 class GtkAda(object):
@@ -155,6 +160,11 @@ class GtkAdaPackage(object):
                 Enum.register_ada_decl(pkg=node.get("id"),
                                        ctype=enum.get("ctype"),
                                        ada=enum.get("ada", None))
+            for rec in node.findall("record"):
+                Proxy.register_ada_record(
+                    pkg=node.get("id"),
+                    ctype=rec.get("ctype"),
+                    ada=rec.get("ada", None))
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the
@@ -166,6 +176,14 @@ class GtkAdaPackage(object):
                 result.append((enum.get("ctype"),
                                naming.type(name="", cname=enum.get("ctype")),
                                enum.get("prefix", "GTK_")))
+        return result
+
+    def records(self):
+        result = []
+        if self.node:
+            for rec in self.node.findall("record"):
+                result.append((rec.get("ctype"),
+                               naming.type(name="", cname=rec.get("ctype"))))
         return result
 
     def get_doc(self):

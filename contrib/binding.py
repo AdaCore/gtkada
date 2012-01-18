@@ -38,26 +38,30 @@ uri = "http://www.gtk.org/introspection/core/1.0"
 glib_uri = "http://www.gtk.org/introspection/glib/1.0"
 c_uri = "http://www.gtk.org/introspection/c/1.0"
 
-namespace = QName(uri, "namespace").text
-nvarargs = QName(uri, "varargs").text
-ntype = QName(uri, "type").text
-ctype_qname = QName(c_uri, "type").text
 cidentifier = QName(c_uri, "identifier").text
+ctype_qname = QName(c_uri, "type").text
 ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
+namespace = QName(uri, "namespace").text
 narray = QName(uri, "array").text
+nbitfield = QName(uri, "bitfield").text
+ncallback = QName(uri, "callback").text
+nclass = QName(uri, "class").text
 ndoc = QName(uri, "doc").text
-nmethod = QName(uri, "method").text
+nenumeration = QName(uri, "enumeration").text
+nfield = QName(uri, "field").text
 nfunction = QName(uri, "function").text
+nimplements = QName(uri, "implements").text
+ninterface = QName(uri, "interface").text
+nmember = QName(uri, "member").text
+nmethod = QName(uri, "method").text
 nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
+nrecord = QName(uri, "record").text
 nreturn = QName(uri, "return-value").text
-nfield = QName(uri, "field").text
-nmember = QName(uri, "member").text
-nenumeration = QName(uri, "enumeration").text
-nbitfield = QName(uri, "bitfield").text
+ntype = QName(uri, "type").text
 nvalue = QName(uri, "value").text
-nimplements = QName(uri, "implements").text
+nvarargs = QName(uri, "varargs").text
 
 class GIR(object):
     def __init__(self, files):
@@ -70,12 +74,13 @@ class GIR(object):
         self.callbacks = dict()  # Ada name to GIR XML node
         self.enums = dict()  # Maps C "name" to a GIR XML node
         self.globals = GlobalsBinder(self) # global vars
+        self.records = dict() # Maps C "name" to a GIR XML node
 
         for filename in files:
             _tree = parse(filename)
             root = _tree.getroot()
 
-            k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
+            k = "%s/%s" % (namespace, ncallback)
             for cl in root.findall(k):
                 ct = cl.get(ctype_qname)
                 type = Callback(naming.case(ct))
@@ -83,23 +88,24 @@ class GIR(object):
                 ct = naming.type(ct).ada
                 self.callbacks[ct] = cl
 
-            k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
+            k = "%s/%s" % (namespace, ninterface)
             for cl in root.findall(k):
                 self.interfaces[cl.get("name")] = self._create_class(
                     root, cl, is_interface=True)
 
-            k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri":uri}
+            k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
                 self.classes[cl.get(ctype_qname)] = self._create_class(
                     root, cl, is_interface=False)
 
-            k = "{%(uri)s}namespace/{%(uri)s}enumeration" % {"uri":uri}
-            for cl in root.findall(k):
-                self.enums[cl.get(ctype_qname)] = cl
+            for enums in (nenumeration, nbitfield):
+                k = "%s/%s" % (namespace, enums)
+                for cl in root.findall(k):
+                    self.enums[cl.get(ctype_qname)] = cl
 
-            k = "{%(uri)s}namespace/{%(uri)s}bitfield" % {"uri":uri}
+            k = "%s/%s" % (namespace, nrecord)
             for cl in root.findall(k):
-                self.enums[cl.get(ctype_qname)] = cl
+                self.records[cl.get(ctype_qname)] = cl
 
             self.globals.add(root)
 
@@ -1253,6 +1259,35 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment('- "%(name)s"' % impl)
                 section.add_code(impl["code"])
 
+    def record_binding(self, ctype, type):
+        base = type.ada
+        if "." in base:
+            base = base[base.rfind(".") + 1:]
+
+        decl = "\ntype %s is record\n" % base
+        node = gir.records[ctype]
+
+        fields = []
+        for field in node.findall(nfield):
+            name = naming.adamethod_name(
+                field.get("name"), warning_if_not_found=False)
+            type = field.findall(ntype)
+
+            if not type:
+                print "Field has no type: %s.%s" % (ctype, name)
+            else:
+                ftype = naming.type(name="", cname=type[0].get(ctype_qname))
+                ftype = ftype.record_field_type(pkg=self.pkg)
+
+                if "." in ftype:
+                    self.pkg.add_with(ftype[:ftype.rfind(".")])
+                fields.append((name, ftype))
+
+        decl += "\n".join("%s : %s;" % f for f in fields)
+        decl += "\nend record;\npragma Convention (C, %s);\n" % base
+        decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n"
+        return decl
+
     def enumeration_binding(self, ctype, type, prefix):
         """Return the Ada type definition for the <enumeration> ctype.
            type is the corresponding instance of CType().
@@ -1295,6 +1330,7 @@ See Glib.Properties for more information on properties)""")
 
         elif node.tag == nbitfield:
             decl += "mod 2 ** Integer'Size;\n";
+            decl += "pragma Convention (C, %s);\n" % base
             decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n\n"
 
             for m, value in members:
@@ -1403,6 +1439,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
 
         for ctype, enum, prefix in self.gtkpkg.enumerations():
             decl = self.enumeration_binding(ctype, enum, prefix)
+            section.add_code(decl)
+
+        for ctype, enum in self.gtkpkg.records():
+            decl = self.record_binding(ctype, enum)
             section.add_code(decl)
 
         if extra:
