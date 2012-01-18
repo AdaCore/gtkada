@@ -55,55 +55,55 @@ package Gtk.Tool_Shell is
       (Self : Gtk_Tool_Shell) return Pango.Layout.Pango_Ellipsize_Mode;
    --  Retrieves the current ellipsize mode for the tool shell. Tool items
    --  must not call this function directly, but rely on
-   --  gtk_tool_item_get_ellipsize_mode instead.
+   --  Gtk.Tool_Item.Get_Ellipsize_Mode instead.
    --  Since: gtk+ 2.20
 
    function Get_Icon_Size
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
    --  Retrieves the icon size for the tool shell. Tool items must not call
-   --  this function directly, but rely on gtk_tool_item_get_icon_size instead.
+   --  this function directly, but rely on Gtk.Tool_Item.Get_Icon_Size instead.
    --  Since: gtk+ 2.14
 
    function Get_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
    --  Retrieves the current orientation for the tool shell. Tool items must
    --  not call this function directly, but rely on
-   --  gtk_tool_item_get_orientation instead.
+   --  Gtk.Tool_Item.Get_Orientation instead.
    --  Since: gtk+ 2.14
 
    function Get_Relief_Style
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
    --  Returns the relief style of buttons on Shell. Tool items must not call
-   --  this function directly, but rely on gtk_tool_item_get_relief_style
+   --  this function directly, but rely on Gtk.Tool_Item.Get_Relief_Style
    --  instead.
    --  Since: gtk+ 2.14
 
-   function Get_Style (Self : Gtk_Tool_Shell) return Gtk_Toolbar_Style;
-   pragma Import (C, Get_Style, "gtk_tool_shell_get_style");
+   function Get_Style
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style;
    --  Retrieves whether the tool shell has text, icons, or both. Tool items
    --  must not call this function directly, but rely on
-   --  gtk_tool_item_get_toolbar_style instead.
+   --  Gtk.Tool_Item.Get_Toolbar_Style instead.
    --  Since: gtk+ 2.14
 
    function Get_Text_Alignment (Self : Gtk_Tool_Shell) return Gfloat;
    pragma Import (C, Get_Text_Alignment, "gtk_tool_shell_get_text_alignment");
    --  Retrieves the current text alignment for the tool shell. Tool items
    --  must not call this function directly, but rely on
-   --  gtk_tool_item_get_text_alignment instead.
+   --  Gtk.Tool_Item.Get_Text_Alignment instead.
    --  Since: gtk+ 2.20
 
    function Get_Text_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
    --  Retrieves the current text orientation for the tool shell. Tool items
    --  must not call this function directly, but rely on
-   --  gtk_tool_item_get_text_orientation instead.
+   --  Gtk.Tool_Item.Get_Text_Orientation instead.
    --  Since: gtk+ 2.20
 
    function Get_Text_Size_Group
       (Self : Gtk_Tool_Shell) return Gtk.Size_Group.Gtk_Size_Group;
    --  Retrieves the current text size group for the tool shell. Tool items
    --  must not call this function directly, but rely on
-   --  gtk_tool_item_get_text_size_group instead.
+   --  Gtk.Tool_Item.Get_Text_Size_Group instead.
    --  Since: gtk+ 2.20
 
    procedure Rebuild_Menu (Self : Gtk_Tool_Shell);
@@ -112,7 +112,7 @@ package Gtk.Tool_Shell is
    --  item for tool items have changed. If there is an overflow menu and if it
    --  is visible when this function it called, the menu will be rebuilt.
    --  Tool items must not call this function directly, but rely on
-   --  gtk_tool_item_rebuild_menu instead.
+   --  Gtk.Tool_Item.Rebuild_Menu instead.
    --  Since: gtk+ 2.14
 
 end Gtk.Tool_Shell;

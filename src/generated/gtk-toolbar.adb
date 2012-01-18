@@ -160,12 +160,13 @@ package body Gtk.Toolbar is
    ---------------
 
    function Get_Style
-      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Toolbar_Style
+      (Toolbar : access Gtk_Toolbar_Record)
+       return Gtk.Enums.Gtk_Toolbar_Style
    is
-      function Internal (Toolbar : System.Address) return Gtk_Toolbar_Style;
+      function Internal (Toolbar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toolbar_get_style");
    begin
-      return Internal (Get_Object (Toolbar));
+      return Gtk.Enums.Gtk_Toolbar_Style'Val (Internal (Get_Object (Toolbar)));
    end Get_Style;
 
    ------------
@@ -238,14 +239,12 @@ package body Gtk.Toolbar is
 
    procedure Set_Style
       (Toolbar : access Gtk_Toolbar_Record;
-       Style   : Gtk_Toolbar_Style)
+       Style   : Gtk.Enums.Gtk_Toolbar_Style)
    is
-      procedure Internal
-         (Toolbar : System.Address;
-          Style   : Gtk_Toolbar_Style);
+      procedure Internal (Toolbar : System.Address; Style : Integer);
       pragma Import (C, Internal, "gtk_toolbar_set_style");
    begin
-      Internal (Get_Object (Toolbar), Style);
+      Internal (Get_Object (Toolbar), Gtk.Enums.Gtk_Toolbar_Style'Pos (Style));
    end Set_Style;
 
    ---------------------

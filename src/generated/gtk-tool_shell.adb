@@ -78,6 +78,19 @@ package body Gtk.Tool_Shell is
       return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Self));
    end Get_Relief_Style;
 
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style
+      (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style
+   is
+      function Internal (Self : Gtk_Tool_Shell) return Integer;
+      pragma Import (C, Internal, "gtk_tool_shell_get_style");
+   begin
+      return Gtk.Enums.Gtk_Toolbar_Style'Val (Internal (Self));
+   end Get_Style;
+
    --------------------------
    -- Get_Text_Orientation --
    --------------------------

@@ -143,10 +143,11 @@ package Gtk.Toolbar is
    --  "show_arrow": Whether to show an overflow menu
 
    function Get_Style
-      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Toolbar_Style;
+      (Toolbar : access Gtk_Toolbar_Record)
+       return Gtk.Enums.Gtk_Toolbar_Style;
    procedure Set_Style
       (Toolbar : access Gtk_Toolbar_Record;
-       Style   : Gtk_Toolbar_Style);
+       Style   : Gtk.Enums.Gtk_Toolbar_Style);
    --  Alters the view of Toolbar to display either icons only, text only, or
    --  both.
    --  "style": the new style for Toolbar.
@@ -281,13 +282,13 @@ package Gtk.Toolbar is
    --  Flags: read-write
    --
    --  Name: Toolbar_Style_Property
-   --  Type: Toolbar_Style
+   --  Type: Gtk.Enums.Gtk_Toolbar_Style
    --  Flags: read-write
 
    Icon_Size_Property : constant Glib.Properties.Property_Int;
    Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
    Show_Arrow_Property : constant Glib.Properties.Property_Boolean;
-   Toolbar_Style_Property : constant Glib.Properties.Property_Boxed;
+   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
 
    -------------
    -- Signals --
@@ -331,8 +332,8 @@ package Gtk.Toolbar is
    --  "style-changed"
    --     procedure Handler
    --       (Self  : access Gtk_Toolbar_Record'Class;
-   --        Style : Toolbar_Style);
-   --    --  "style": the new Gtk_Toolbar_Style of the toolbar
+   --        Style : Gtk.Enums.Gtk_Toolbar_Style);
+   --    --  "style": the new Gtk.Enums.Gtk_Toolbar_Style of the toolbar
    --  Emitted when the style of the toolbar changes.
 
    Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
@@ -347,6 +348,6 @@ private
      Glib.Properties.Build ("icon-size-set");
    Show_Arrow_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-arrow");
-   Toolbar_Style_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("toolbar-style");
+   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=
+     Gtk.Enums.Build ("toolbar-style");
 end Gtk.Toolbar;
