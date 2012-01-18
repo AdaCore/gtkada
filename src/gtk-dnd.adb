@@ -29,6 +29,19 @@ with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Dnd is
 
+   ----------------------
+   -- Set_Icon_Default --
+   ----------------------
+
+   procedure Set_Icon_Default (Context : Drag_Context) is
+      procedure Internal
+        (Context : System.Address);
+      pragma Import (C, Internal, "gtk_drag_set_icon_default");
+
+   begin
+      Internal (Get_Object (Context));
+   end Set_Icon_Default;
+
    ---------------------
    -- Set_Icon_Pixbuf --
    ---------------------
@@ -40,14 +53,14 @@ package body Gtk.Dnd is
       Hot_Y   : Gint)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Pixbuf  : System.Address;
          Hot_X   : Gint;
          Hot_Y   : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_pixbuf");
 
    begin
-      Internal (Context, Get_Object (Pixbuf), Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Get_Object (Pixbuf), Hot_X, Hot_Y);
    end Set_Icon_Pixbuf;
 
    -------------------
@@ -61,13 +74,13 @@ package body Gtk.Dnd is
       Hot_Y     : Gint)
    is
       procedure Internal
-        (Context   : Drag_Context;
+        (Context   : System.Address;
          Icon_Name : String;
          Hot_X     : Gint;
          Hot_Y     : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_name");
    begin
-      Internal (Context, Icon_Name & ASCII.NUL, Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Icon_Name & ASCII.NUL, Hot_X, Hot_Y);
    end Set_Icon_Name;
 
    --------------------
@@ -81,13 +94,13 @@ package body Gtk.Dnd is
       Hot_Y    : Gint)
    is
       procedure Internal
-        (Context  : Drag_Context;
+        (Context  : System.Address;
          Stock_Id : String;
          Hot_X    : Gint;
          Hot_Y    : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_stock");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Stock_Id & ASCII.NUL,
                 Hot_X,
                 Hot_Y);
@@ -235,17 +248,18 @@ package body Gtk.Dnd is
 
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Context     : Drag_Context;
+      Context     : Gdk.Drag_Contexts.Drag_Context;
       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
    is
       function Internal
         (Widget      : System.Address;
-         Context     : Drag_Context;
+         Context     : System.Address;
          Target_List : System.Address)
          return Gdk_Atom;
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
-      return Internal (Get_Object (Widget), Context, Target_List.all'Address);
+      return Internal
+        (Get_Object (Widget), Get_Object (Context), Target_List.all'Address);
    end Dest_Find_Target;
 
    ---------------------------
@@ -393,14 +407,15 @@ package body Gtk.Dnd is
       Time    : Guint32 := 0)
    is
       procedure Internal
-        (Context  : Drag_Context;
+        (Context  : System.Address;
          Succcess : Gint;
          Del      : Gint;
          Time     : Guint32);
       pragma Import (C, Internal, "gtk_drag_finish");
 
    begin
-      Internal (Context, Boolean'Pos (Success), Boolean'Pos (Del), Time);
+      Internal
+        (Get_Object (Context), Boolean'Pos (Success), Boolean'Pos (Del), Time);
    end Finish;
 
    --------------
@@ -415,13 +430,13 @@ package body Gtk.Dnd is
    is
       procedure Internal
         (Widget   : System.Address;
-         Context  : Drag_Context;
+         Context  : System.Address;
          Target   : Gdk.Types.Gdk_Atom;
          Time     : Guint32);
       pragma Import (C, Internal, "gtk_drag_get_data");
 
    begin
-      Internal (Get_Object (Widget), Context, Target, Time);
+      Internal (Get_Object (Widget), Get_Object (Context), Target, Time);
    end Get_Data;
 
    -----------------------
@@ -431,11 +446,11 @@ package body Gtk.Dnd is
    function Get_Source_Widget
      (Context : Drag_Context) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Context : Drag_Context) return System.Address;
+      function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_drag_get_source_widget");
 
    begin
-      return Convert (Internal (Context));
+      return Convert (Internal (Get_Object (Context)));
    end Get_Source_Widget;
 
    ---------------
@@ -480,12 +495,16 @@ package body Gtk.Dnd is
          Targets : Target_List;
          Actions : Drag_Action;
          Button  : Gint;
-         Event   : System.Address) return Drag_Context;
+         Event   : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_drag_begin");
-
+      Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
-      return Internal (Get_Object (Widget), Targets, Actions, Button,
-                       To_Address (Event));
+      return Drag_Context
+        (Get_User_Data
+           (Internal
+              (Get_Object (Widget),
+               Targets, Actions, Button, To_Address (Event)),
+            Stub));
    end Drag_Begin;
 
    ---------------------
@@ -499,14 +518,14 @@ package body Gtk.Dnd is
       Hot_Y   : Gint)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Widget  : System.Address;
          Hot_X   : Gint;
          Hot_Y   : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_widget");
 
    begin
-      Internal (Context, Get_Object (Widget), Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Get_Object (Widget), Hot_X, Hot_Y);
    end Set_Icon_Widget;
 
    ---------------------

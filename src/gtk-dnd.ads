@@ -80,7 +80,8 @@
 --  <testgtk>create_dnd.adb</testgtk>
 
 with Gdk.Color;
-with Gdk.Dnd;        use Gdk.Dnd;
+with Gdk.Dnd;           use Gdk.Dnd;
+with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.Types;
@@ -189,7 +190,7 @@ package Gtk.Dnd is
 
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Context     : Gdk.Dnd.Drag_Context;
+      Context     : Gdk.Drag_Contexts.Drag_Context;
       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
    --  Looks for a match between the targets set for context and the
    --  Target_List, returning the first matching target, otherwise returning
@@ -530,6 +531,4 @@ private
    Dest_Default_Highlight : constant Dest_Defaults := 2 ** 1;
    Dest_Default_Drop      : constant Dest_Defaults := 2 ** 2;
    Dest_Default_All       : constant Dest_Defaults := 7;
-
-   pragma Import (C, Set_Icon_Default, "gtk_drag_set_icon_default");
 end Gtk.Dnd;

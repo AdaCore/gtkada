@@ -28,30 +28,6 @@ with Gtk;    use Gtk;
 
 package body Gdk.Dnd is
 
-   ----------------------
-   -- Drag_Context_Ref --
-   ----------------------
-
-   procedure Drag_Context_Ref (Context : Drag_Context)
-   is
-      procedure Internal (Context : Drag_Context);
-      pragma Import (C, Internal, "gdk_drag_context_ref");
-   begin
-      Internal (Context);
-   end Drag_Context_Ref;
-
-   ------------------------
-   -- Drag_Context_Unref --
-   ------------------------
-
-   procedure Drag_Context_Unref (Context : Drag_Context)
-   is
-      procedure Internal (Context : Drag_Context);
-      pragma Import (C, Internal, "gdk_drag_context_unref");
-   begin
-      Internal (Context);
-   end Drag_Context_Unref;
-
    -----------------
    -- Drag_Status --
    -----------------
