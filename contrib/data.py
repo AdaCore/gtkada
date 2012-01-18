@@ -30,7 +30,9 @@ interfaces = ("Activatable",
 # List of widgets to bind.
 # Contains C type names
 
-binding = ("GdkScreen",
+binding = ("GdkDevice",
+           "GdkDragContext",
+           "GdkScreen",
            "GtkAboutDialog",
            "GtkAccelGroup",
            "GtkAdjustment",
@@ -189,6 +191,7 @@ naming.exceptions = {
     "Function": "Func",
     "Digits": "Number_Of_Digits",
     "Reverse": "Gtk_Reverse",
+    "Use": "GUse",
     "Uri": "URI",
 }
 
@@ -280,7 +283,7 @@ naming.type_exceptions = {
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
 
     "GdkColor*":          DirectBinding("Gdk.Color.Gdk_Color"),
-    "GdkDragAction":      Proxy("Gdk.Dnd.Drag_Action"),
+    "GdkDragContext":     GObject("Gdk.Drag_Contexts.Drag_Context"),
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkVisual*":         Proxy("Gdk.Visual.Gdk_Visual"),
@@ -291,6 +294,9 @@ naming.type_exceptions = {
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
     "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+    "GdkScreen":          GObject("Gdk.Screen.Gdk_Screen"),
+    # ??? The above should not be needed, we should infer it from the Gir.
+    # we need it to generate the "Stub" object in Gdk.Device.Get_Position
     "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA"),
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),

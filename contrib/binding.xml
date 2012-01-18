@@ -6,6 +6,82 @@
      xmlns:c="http://www.gtk.org/introspection/c/1.0">
 
    <!-- ################################################
+        Gdk.Device
+        ################################################-->
+
+   <package id="Gdk.Device">
+      <enum ctype="GdkDeviceType" />
+      <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
+      <method id="gdk_device_get_axis_value" bind="False" /><!-- need support for array of gdoubles -->
+      <method id="gdk_device_get_history" bind="False" /><!-- need support for array of Gdk_Time_Coord -->
+      <method id="gdk_device_free_history" bind="False" /><!-- no need while we don't bind get_history -->
+      <method id="gdk_device_grab_info_libgtk_only" bind="False" /><!-- not part of library -->
+      <method id="gdk_device_get_key" return="" bind="False"/><!-- pending L118-010 -->
+      <method id="gdk_device_get_window_at_position" bind="False"/><!-- below -->
+      <method id="gdk_device_get_position" bind="False"/><!-- pending resolution of a problem with generating the stub object -->
+      <method id="gdk_device_grab" bind="False"/><!-- no support for Gdk_Grab_Ownership yet -->
+      <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
+      <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support for Gdk_Device_Type_Master lists -->
+      <extra>
+         <spec>
+   procedure Get_Window_At_Position
+      (Self   : not null access Gdk_Device_Record;
+       Win_X  : out Gint;
+       Win_Y  : out Gint;
+       Window : out Gdk.Window.Gdk_Window);
+   --  Obtains the window underneath Device, returning the location of the
+   --  device in Win_X and Win_Y. Returns null if the window tree under Device
+   --  is not known to GDK (for example, belongs to another application).
+   --  As a slave device coordinates are those of its master pointer, This
+   --  function may not be called on devices of type
+   --  Gdk.Device.Gdk_Device_Type_Slave, unless there is an ongoing grab on
+   --  them, see Gdk.Device.Grab.
+   --  Since: gtk+ 3.0
+   --  "win_x": return location for the X coordinate of the device location,
+   --  relative to the window origin, or null.
+   --  "win_y": return location for the Y coordinate of the device location,
+   --  relative to the window origin, or null.
+         </spec>
+         <body>
+   ----------------------------
+   -- Get_Window_At_Position --
+   ----------------------------
+
+   procedure Get_Window_At_Position
+      (Self   : not null access Gdk_Device_Record;
+       Win_X  : out Gint;
+       Win_Y  : out Gint;
+       Window : out Gdk.Window.Gdk_Window)
+   is
+      function Internal
+         (Self      : System.Address;
+          Acc_Win_X : access Gint;
+          Acc_Win_Y : access Gint) return Gdk.Window.Gdk_Window;
+      pragma Import (C, Internal, "gdk_device_get_window_at_position");
+      Acc_Win_X  : aliased Gint;
+      Acc_Win_Y  : aliased Gint;
+      Tmp_Return : Gdk.Window.Gdk_Window;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
+      Win_X := Acc_Win_X;
+      Win_Y := Acc_Win_Y;
+      Window :=  Tmp_Return;
+   end Get_Window_At_Position;
+         </body>
+      </extra>
+   </package>
+
+   <!-- ################################################
+        Gdk.Drag_Contexts
+        ################################################-->
+
+   <package id="Gdk.Drag_Contexts">
+      <enum ctype="GdkDragAction" />
+      <enum ctype="GdkDragProtocol" />
+      <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
+   </package>
+
+   <!-- ################################################
         Gdk.Screen
         ################################################-->
 
@@ -1911,7 +1987,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
      </method>
      <method id="gtk_editable_delete_text">
         <parameter name="end_pos" default="-1"/>
-     </method> 
+     </method>
      <method id="gtk_editable_get_chars">
         <parameter name="end_pos" default="-1"/>
      </method>
