@@ -2222,11 +2222,7 @@ package body Gtk.Widget is
    -----------------
 
    function Flag_Is_Set
-     (Widget : access Gtk_Widget_Record; Flag : Guint32) return Boolean
-   is
-      function Internal (Widget : System.Address; Flag : Guint32) return Gint;
-      pragma Import (C, Internal, "ada_widget_flag_is_set");
-
+     (Widget : access Gtk_Widget_Record; Flag : Guint32) return Boolean is
    begin
       return (Flag and Flags (Widget)) /= 0;
    end Flag_Is_Set;
