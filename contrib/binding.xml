@@ -2189,4 +2189,14 @@ While looking up a recently used file is as simple as using:
      </extra>
    </package>
 
+   <package id="Gtk.Recent_Chooser">
+     <parameter name="self" ada="Chooser" />
+     <method id="gtk_recent_chooser_get_items" return="RecentInfoList"/>
+     <enum ctype="GtkRecentSortType" />
+
+     <!-- These functions return the length separately, not needed in Ada-->
+     <method id="gtk_recent_chooser_get_uris" bind="False" />
+
+     <method id="gtk_recent_chooser_list_filters" return="RecentFilterList"/>
+   </package>
 </GIR>
