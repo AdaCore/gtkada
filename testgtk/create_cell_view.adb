@@ -49,9 +49,9 @@ package body Create_Cell_View is
 
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
+      Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Compute dynamically what to display in the third column of the view,
    --  based on the contents of the model. In this example, this is a
    --  concatenation of the two model columns
@@ -97,9 +97,9 @@ package body Create_Cell_View is
 
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Iter  : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
       pragma Unreferenced (Cell_Layout);
    begin

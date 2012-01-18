@@ -27,7 +27,6 @@ with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
-with Gtk.Handlers; use Gtk.Handlers;
 with Gtk.Table;    use Gtk.Table;
 with Gtk.Widget;   use Gtk.Widget;
 with Common;       use Common;

@@ -100,9 +100,8 @@ package body Create_Cursors is
    -- Set_Cursor --
    ----------------
 
-
    procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
-                         Widget  : in Gtk_Drawing_Area)
+                         Widget  : Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
       function To_Cursor is new Unchecked_Conversion
@@ -121,7 +120,7 @@ package body Create_Cursors is
       --  Note: the cursor pixmap is copied to the server, which keeps it as
       --  long at it needs. On the client side, it is possible to delete the
       --  cursor right now.
-      Destroy (Cursor);
+      Unref (Cursor);
    end Set_Cursor;
 
    ------------------
@@ -193,7 +192,7 @@ package body Create_Cursors is
       Pack_Start (Vbox, Frame2);
 
       Gtk_New (Darea);
-      Set_USize (Darea, 80, 80);
+      Set_Size_Request (Darea, 80, 80);
       Add (Frame2, Darea);
       Da_Cb.Object_Connect
         (Darea, "expose_event",
@@ -217,5 +216,3 @@ package body Create_Cursors is
    end Run;
 
 end Create_Cursors;
-
-

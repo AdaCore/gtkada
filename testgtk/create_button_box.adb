@@ -33,12 +33,10 @@ with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
-   function Create_Bbox (Horizontal : in Boolean;
-                         Title      : in String;
-                         Spacing    : in Gint;
-                         Child_W    : in Gint;
-                         Child_H    : in Gint;
-                         Layout     : in Gtk_Button_Box_Style)
+   function Create_Bbox (Horizontal : Boolean;
+                         Title      : String;
+                         Spacing    : Gint;
+                         Layout     : Gtk_Button_Box_Style)
                          return Gtk_Frame;
    --  Create one of the sample button box
 
@@ -61,12 +59,10 @@ package body Create_Button_Box is
    -- Create_Bbox --
    -----------------
 
-   function Create_Bbox (Horizontal : in Boolean;
-                         Title      : in String;
-                         Spacing    : in Gint;
-                         Child_W    : in Gint;
-                         Child_H    : in Gint;
-                         Layout     : in Gtk_Button_Box_Style)
+   function Create_Bbox (Horizontal : Boolean;
+                         Title      : String;
+                         Spacing    : Gint;
+                         Layout     : Gtk_Button_Box_Style)
                          return Gtk_Frame
    is
       Bbox   : Gtk_Button_Box;
@@ -95,7 +91,6 @@ package body Create_Button_Box is
 
       Set_Layout (Bbox, Layout);
       Set_Spacing (Bbox, Spacing);
-      Set_Child_Size (Bbox, Child_W, Child_H);
 
       Gtk_New (Button, Label => "OK");
       Add (Bbox, Button);
@@ -137,18 +132,17 @@ package body Create_Button_Box is
       Add (Frame_Horz, Vbox);
 
       Pack_Start
-        (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Buttonbox_Spread),
+        (Vbox, Create_Bbox (True, "Spread", 20, Buttonbox_Spread),
          True, True, 0);
       Pack_Start
-        (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Buttonbox_Edge),
+        (Vbox, Create_Bbox (True, "Edge", 20, Buttonbox_Edge),
          True, True, 5);
       Pack_Start
-        (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
+        (Vbox, Create_Bbox (True, "Start", 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_End),
+        (Vbox, Create_Bbox (True, "End", 20, Buttonbox_End),
          True, True, 5);
-
 
       Gtk_New (Frame_Vert, "Vertical Button Boxes");
       Pack_Start (Main_Vbox,
@@ -161,19 +155,18 @@ package body Create_Button_Box is
       Add (Frame_Vert, Hbox);
 
       Pack_Start
-        (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Buttonbox_Spread),
+        (Hbox, Create_Bbox (False, "Spread", 20, Buttonbox_Spread),
          True, True, 0);
       Pack_Start
-        (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Buttonbox_Edge),
+        (Hbox, Create_Bbox (False, "Edge", 20, Buttonbox_Edge),
          True, True, 5);
       Pack_Start
-        (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
+        (Hbox, Create_Bbox (False, "Start", 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_End),
+        (Hbox, Create_Bbox (False, "End", 20, Buttonbox_End),
          True, True, 5);
       Show_All (Main_Vbox);
    end Run;
 
 end Create_Button_Box;
-

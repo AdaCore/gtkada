@@ -25,6 +25,7 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Recent_Manager is
 
@@ -37,6 +38,83 @@ package body Gtk.Recent_Manager is
    begin
       return From_Object(R);
    end Convert;
+
+   function Add_Full
+     (Manager      : access Gtk_Recent_Manager_Record;
+      Uri          : UTF8_String;
+      Display_Name : UTF8_String := "";
+      Description  : UTF8_String := "";
+      Mime_Type    : UTF8_String;
+      App_Name     : UTF8_String;
+      App_Exec     : UTF8_String;
+      Groups       : GNAT.Strings.String_List;
+      Is_Private   : Boolean)
+   return Boolean
+   is
+      function Internal
+        (Manager     : System.Address;
+         Uri         : String;
+         Recent_Data : System.Address)
+      return Gboolean;
+      pragma Import (C, Internal, "gtk_recent_manager_add_full");
+
+      type Gtk_Recent_Data_Record is record
+         display_name : chars_ptr;
+         description  : chars_ptr;
+         mime_type    : chars_ptr;
+         app_name     : chars_ptr;
+         app_exec     : chars_ptr;
+         groups       : System.Address;
+         is_private   : Gboolean;
+      end record;
+      pragma Convention (C, Gtk_Recent_Data_Record);
+      --  Internal record that matches struct _GtkRecentData in
+      --  gtkrecentmanager.h
+
+      C_Groups : aliased chars_ptr_array := From_String_List (Groups);
+      --  Temporary variable to aid translation
+
+      GRD : aliased Gtk_Recent_Data_Record;
+      --  Data to feed in to gtk_recent_manager_add_full()
+
+      Result : Gboolean;
+   begin
+      --  Set up.
+      GRD.display_name := String_Or_Null (Display_Name);
+      GRD.description  := String_Or_Null (Description);
+      GRD.mime_type    := New_String (Mime_Type);
+      GRD.app_name     := New_String (App_Name);
+      GRD.app_exec     := New_String (App_Exec);
+      GRD.is_private   := Boolean'Pos (Is_Private);
+
+      if C_Groups'Length > 0 then
+         GRD.groups := C_Groups (C_Groups'First)'Address;
+      else
+         GRD.groups := System.Null_Address;
+      end if;
+      --  Invoke function.
+      Result := Internal (Get_Object (Manager), Uri & ASCII.NUL, GRD'Address);
+
+      --  Clean up, making sure to avoid double-deallocations where such
+      --  may be possible.
+      if GRD.display_name /= Null_Ptr then
+         Free (GRD.display_name);
+      end if;
+      if GRD.description /= Null_Ptr then
+         Free (GRD.description);
+      end if;
+      Free (GRD.mime_type);
+      Free (GRD.app_name);
+      Free (GRD.app_exec);
+      for I in C_Groups'Range loop
+         if C_Groups (I) /= Null_Ptr then
+            Free (C_Groups (I));
+         end if;
+      end loop;
+
+      --  Return result.
+      return Boolean'Val (Result);
+   end Add_Full;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Recent_Manager_Record);
@@ -62,28 +140,6 @@ package body Gtk.Recent_Manager is
    begin
       Set_Object (Self, Internal);
    end Initialize;
-
-   --------------
-   -- Add_Full --
-   --------------
-
-   function Add_Full
-      (Self        : not null access Gtk_Recent_Manager_Record;
-       URI         : UTF8_String;
-       Recent_Data : Gtk_Recent_Data) return Boolean
-   is
-      function Internal
-         (Self        : System.Address;
-          URI         : Interfaces.C.Strings.chars_ptr;
-          Recent_Data : Gtk_Recent_Data) return Integer;
-      pragma Import (C, Internal, "gtk_recent_manager_add_full");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_URI, Recent_Data);
-      Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
-   end Add_Full;
 
    --------------
    -- Add_Item --

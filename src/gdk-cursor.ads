@@ -130,11 +130,6 @@ package Gdk.Cursor is
       Name    : String);
    --  Create a cursor from a name
 
-   procedure Destroy (Cursor : Gdk_Cursor);
-   pragma Obsolescent;  --  Destroy
-   --  Destroy a cursor, freeing any resources allocated for it.
-   --  Deprecated, use Unref instead.
-
    procedure Ref (Cursor : Gdk_Cursor);
    --  Increment the reference counting for the cursor.
 
@@ -144,7 +139,6 @@ package Gdk.Cursor is
 
 private
    Null_Cursor : constant Gdk_Cursor := null;
-   pragma Import (C, Destroy, "gdk_cursor_unref");
    pragma Import (C, Ref, "gdk_cursor_ref");
    pragma Import (C, Unref, "gdk_cursor_unref");
 

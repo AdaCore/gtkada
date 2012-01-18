@@ -28,6 +28,7 @@ with Gtk.Box;                use Gtk.Box;
 with Gtk.Frame;              use Gtk.Frame;
 with Gtk.Cell_Renderer_Pixbuf; use Gtk.Cell_Renderer_Pixbuf;
 with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
+with Gtk.Combo_Box_Text;     use Gtk.Combo_Box_Text;
 with Gtk.Combo_Box;          use Gtk.Combo_Box;
 with Gtk.Cell_Layout;        use Gtk.Cell_Layout;
 with Gtk.List_Store;         use Gtk.List_Store;
@@ -130,6 +131,7 @@ package body Create_Combo_Box is
       Model      : Gtk_List_Store;
       Iter       : Gtk_Tree_Iter;
       Combo      : Gtk_Combo_Box;
+      TCombo      : Gtk_Combo_Box_Text;
       Render     : Gtk_Cell_Renderer_Text;
       Pix        : Gtk_Cell_Renderer_Pixbuf;
    begin
@@ -140,12 +142,12 @@ package body Create_Combo_Box is
 
       --  A simple text combo
 
-      Gtk_New_Text (Combo);
-      Pack_Start (Box, Combo, Expand => False);
-      Append_Text (Combo, "Simple Text Combo 1");
-      Append_Text (Combo, "Simple Text Combo 2");
-      Append_Text (Combo, "Simple Text Combo 3");
-      Set_Active (Combo, 0);
+      Gtk_New (TCombo);
+      Pack_Start (Box, TCombo, Expand => False);
+      Append_Text (TCombo, "Simple Text Combo 1");
+      Append_Text (TCombo, "Simple Text Combo 2");
+      Append_Text (TCombo, "Simple Text Combo 3");
+      Set_Active (TCombo, 0);
 
       --  Create a model. This is a set of rows, each with two columns in this
       --  specific case.

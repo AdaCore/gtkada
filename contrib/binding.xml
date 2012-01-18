@@ -1891,7 +1891,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
   <package id="Gtk.Assistant">
      <doc group="Windows" testgtk="create_assistant.adb"/>
      <parameter name="self" ada="Assistant"/>
-     <enum ctype="GtkAssistantPageType" />
+     <enum ctype="GtkAssistantPageType" prefix=""/>
   </package>
 
   <package id="Gtk.Spinner">
@@ -2166,6 +2166,142 @@ While looking up a recently used file is as simple as using:
      <record ctype="GtkRecentData" />
      <method id="gtk_recent_manager_get_items" return="GtkRecentInfoList"/>
      <list ada="Gtk_Recent_Info_List" ctype="GtkRecentInfo"/>
+
+     <!-- Bound below -->
+     <method id="gtk_recent_manager_add_full" bind="False" />
+
+     <extra>
+       <with_spec pkg="GNAT.Strings" />
+       <with_body pkg="Gtkada.Bindings" />
+       <spec>
+   function Add_Full
+     (Manager      : access Gtk_Recent_Manager_Record;
+      Uri          : UTF8_String;
+      Display_Name : UTF8_String := "";
+      Description  : UTF8_String := "";
+      Mime_Type    : UTF8_String;
+      App_Name     : UTF8_String;
+      App_Exec     : UTF8_String;
+      Groups       : GNAT.Strings.String_List;
+      Is_Private   : Boolean)
+      return Boolean;
+   --  Manager      : the Gtk_Recent_Manager on which to operate
+   --  Uri          : pointer to resource
+   --  Display_Name : a UTF-8 encoded string, containing the name of the
+   --                 recently used resource to be displayed, or "".
+   --  Description  : a UTF-8 encoded string, containing a short description
+   --                 of the resource, or "".
+   --  Mime_Type    : the MIME type of the resource.
+   --  App_Name     : the name of the application that is registering this
+   --                 recently used resource.
+   --  App_Exec     : command line used to launch this resource; may contain
+   --                 the "%f" and "%u" escape characters which will be
+   --                 expanded to the resource file path and URI, respectively,
+   --                 when the command line is retrieved.
+   --  Groups       : a vector of strings containing groups names.
+   --  Is_Private   : whether this resource should be displayed only by the
+   --                 applications that have registered it or not.
+   --
+   --  Adds a new resource, pointed by Uri, into the recently used
+   --  resources list, using the metadata specified.
+   --
+   --  The passed URI will be used to identify this resource inside the
+   --  list.
+   --
+   --  In order to register the new recently used resource, metadata about
+   --  the resource must be passed as well as the URI.  This metadata must
+   --  contain the MIME type of the resource pointed by the URI; the name of
+   --  the application that is registering the item, and a command line to be
+   --  used when launching the item.
+   --
+   --  Optionally, it is possible to specify a UTF-8 string to be used when
+   --  viewing the item instead of the last component of the URI; a short
+   --  description of the item; whether the item should be considered private -
+   --  that is, should be displayed only by the applications that have
+   --  registered it.
+   --
+   --  Returns True if the new item was successfully added to the recently
+   --  used resources list, False otherwise.
+       </spec>
+       <body>
+   function Add_Full
+     (Manager      : access Gtk_Recent_Manager_Record;
+      Uri          : UTF8_String;
+      Display_Name : UTF8_String := "";
+      Description  : UTF8_String := "";
+      Mime_Type    : UTF8_String;
+      App_Name     : UTF8_String;
+      App_Exec     : UTF8_String;
+      Groups       : GNAT.Strings.String_List;
+      Is_Private   : Boolean)
+      return Boolean
+   is
+      function Internal
+        (Manager     : System.Address;
+         Uri         : String;
+         Recent_Data : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_recent_manager_add_full");
+
+      type Gtk_Recent_Data_Record is record
+         display_name : chars_ptr;
+         description  : chars_ptr;
+         mime_type    : chars_ptr;
+         app_name     : chars_ptr;
+         app_exec     : chars_ptr;
+         groups       : System.Address;
+         is_private   : Gboolean;
+      end record;
+      pragma Convention (C, Gtk_Recent_Data_Record);
+      --  Internal record that matches struct _GtkRecentData in
+      --  gtkrecentmanager.h
+
+      C_Groups : aliased chars_ptr_array := From_String_List (Groups);
+      --  Temporary variable to aid translation
+
+      GRD : aliased Gtk_Recent_Data_Record;
+      --  Data to feed in to gtk_recent_manager_add_full()
+
+      Result : Gboolean;
+   begin
+      --  Set up.
+      GRD.display_name := String_Or_Null (Display_Name);
+      GRD.description  := String_Or_Null (Description);
+      GRD.mime_type    := New_String (Mime_Type);
+      GRD.app_name     := New_String (App_Name);
+      GRD.app_exec     := New_String (App_Exec);
+      GRD.is_private   := Boolean'Pos (Is_Private);
+
+      if C_Groups'Length > 0 then
+         GRD.groups := C_Groups (C_Groups'First)'Address;
+      else
+         GRD.groups := System.Null_Address;
+      end if;
+      --  Invoke function.
+      Result := Internal (Get_Object (Manager), Uri &amp; ASCII.NUL, GRD'Address);
+
+      --  Clean up, making sure to avoid double-deallocations where such
+      --  may be possible.
+      if GRD.display_name /= Null_Ptr then
+         Free (GRD.display_name);
+      end if;
+      if GRD.description /= Null_Ptr then
+         Free (GRD.description);
+      end if;
+      Free (GRD.mime_type);
+      Free (GRD.app_name);
+      Free (GRD.app_exec);
+      for I in C_Groups'Range loop
+         if C_Groups (I) /= Null_Ptr then
+            Free (C_Groups (I));
+         end if;
+      end loop;
+
+      --  Return result.
+      return Boolean'Val (Result);
+   end Add_Full;
+       </body>
+     </extra>
    </package>
 
    <package id="Gtk.Recent_Info">  <!-- into="GtkRecentManager">-->

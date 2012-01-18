@@ -111,6 +111,7 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with GNAT.Strings;         use GNAT.Strings;
 with Glib;                 use Glib;
 with Glib.Glist;           use Glib.Glist;
 with Glib.Object;          use Glib.Object;
@@ -163,30 +164,6 @@ package Gtk.Recent_Manager is
    -- Methods --
    -------------
 
-   function Add_Full
-      (Self        : not null access Gtk_Recent_Manager_Record;
-       URI         : UTF8_String;
-       Recent_Data : Gtk_Recent_Data) return Boolean;
-   --  Adds a new resource, pointed by Uri, into the recently used resources
-   --  list, using the metadata specified inside the
-   --  Gtk.Recent_Manager.Gtk_Recent_Data structure passed in Recent_Data.
-   --  The passed URI will be used to identify this resource inside the list.
-   --  In order to register the new recently used resource, metadata about the
-   --  resource must be passed as well as the URI; the metadata is stored in a
-   --  Gtk.Recent_Manager.Gtk_Recent_Data structure, which must contain the
-   --  MIME type of the resource pointed by the URI; the name of the
-   --  application that is registering the item, and a command line to be used
-   --  when launching the item.
-   --  Optionally, a Gtk.Recent_Manager.Gtk_Recent_Data structure might contain
-   --  a UTF-8 string to be used when viewing the item instead of the last
-   --  component of the URI; a short description of the item; whether the item
-   --  should be considered private - that is, should be displayed only by the
-   --  applications that have registered it.
-   --  recently used resources list, False otherwise.
-   --  Since: gtk+ 2.10
-   --  "uri": a valid URI
-   --  "recent_data": metadata of the resource
-
    function Add_Item
       (Self : not null access Gtk_Recent_Manager_Record;
        URI  : UTF8_String) return Boolean;
@@ -194,8 +171,8 @@ package Gtk.Recent_Manager is
    --  list.
    --  This function automatically retrieves some of the needed metadata and
    --  setting other metadata to common default values; it then feeds the data
-   --  to Gtk.Recent_Manager.Add_Full.
-   --  See Gtk.Recent_Manager.Add_Full if you want to explicitly define the
+   --  to gtk_recent_manager_add_full.
+   --  See gtk_recent_manager_add_full if you want to explicitly define the
    --  metadata for the resource pointed by Uri.
    --  to the recently used resources list
    --  Since: gtk+ 2.10
@@ -255,6 +232,59 @@ package Gtk.Recent_Manager is
    --  removed by the recently used resources list, and False otherwise.
    --  Since: gtk+ 2.10
    --  "uri": the URI of the item you wish to remove
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function Add_Full
+     (Manager      : access Gtk_Recent_Manager_Record;
+      Uri          : UTF8_String;
+      Display_Name : UTF8_String := "";
+      Description  : UTF8_String := "";
+      Mime_Type    : UTF8_String;
+      App_Name     : UTF8_String;
+      App_Exec     : UTF8_String;
+      Groups       : GNAT.Strings.String_List;
+      Is_Private   : Boolean)
+   return Boolean;
+   --  Manager      : the Gtk_Recent_Manager on which to operate
+   --  Uri          : pointer to resource
+   --  Display_Name : a UTF-8 encoded string, containing the name of the
+   --                 recently used resource to be displayed, or "".
+   --  Description  : a UTF-8 encoded string, containing a short description
+   --                 of the resource, or "".
+   --  Mime_Type    : the MIME type of the resource.
+   --  App_Name     : the name of the application that is registering this
+   --                 recently used resource.
+   --  App_Exec     : command line used to launch this resource; may contain
+   --                 the "%f" and "%u" escape characters which will be
+   --                 expanded to the resource file path and URI, respectively,
+   --                 when the command line is retrieved.
+   --  Groups       : a vector of strings containing groups names.
+   --  Is_Private   : whether this resource should be displayed only by the
+   --                 applications that have registered it or not.
+   --
+   --  Adds a new resource, pointed by Uri, into the recently used
+   --  resources list, using the metadata specified.
+   --
+   --  The passed URI will be used to identify this resource inside the
+   --  list.
+   --
+   --  In order to register the new recently used resource, metadata about
+   --  the resource must be passed as well as the URI.  This metadata must
+   --  contain the MIME type of the resource pointed by the URI; the name of
+   --  the application that is registering the item, and a command line to be
+   --  used when launching the item.
+   --
+   --  Optionally, it is possible to specify a UTF-8 string to be used when
+   --  viewing the item instead of the last component of the URI; a short
+   --  description of the item; whether the item should be considered private -
+   --  that is, should be displayed only by the applications that have
+   --  registered it.
+   --
+   --  Returns True if the new item was successfully added to the recently
+   --  used resources list, False otherwise.
 
    ---------------
    -- Functions --

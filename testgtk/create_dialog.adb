@@ -100,7 +100,7 @@ package body Create_Dialog is
             Label_Destroy.To_Marshaller (Destroyed'Access),
             Global_Label'Access);
          Set_Padding (Global_Label, 10, 10);
-         Pack_Start (Get_Vbox (Dialog), Global_Label, True, True, 0);
+         Pack_Start (Get_Content_Area (Dialog), Global_Label, True, True, 0);
          Show (Global_Label);
       else
          Destroy (Global_Label);
@@ -123,7 +123,7 @@ package body Create_Dialog is
             Dialog'Access);
          Set_Title (Dialog, "Gtk_Dialog");
          Set_Border_Width (Dialog, 0);
-         Set_USize (Dialog, 200, 110);
+         Set_Size_Request (Dialog, 200, 110);
 
          Gtk_New (Button, "OK");
          Set_Flags (Button, Can_Default);

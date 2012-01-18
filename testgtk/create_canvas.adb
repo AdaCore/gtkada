@@ -946,11 +946,11 @@ package body Create_Canvas is
 
       Realize (Canvas);
 
-      --  Initialize the colors
+      --  Initialize the colors. They no longer need to be allocated in
+      --  gtk3.
 
       for J in Color_Names'Range loop
          Colors (J) := Parse (Color_Names (J).all);
-         Alloc (Gtk.Widget.Get_Default_Colormap, Colors (J));
       end loop;
 
       Layout := Create_Pango_Layout (Frame);

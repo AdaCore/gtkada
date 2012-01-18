@@ -54,6 +54,7 @@ package body Create_Color_Selection is
 
    procedure On_Palette_Changed
      (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array);
+   pragma Convention (C, On_Palette_Changed);
    --  Called when the palette is changed
 
    ----------

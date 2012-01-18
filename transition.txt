@@ -63,6 +63,8 @@ Gdk.Cursor
 The Gdk_New function working on Gdk_Pixmap has been removed. Use
  Gdk.Pixbuf.Gdk_New_From_Pixbuf to create a cursor from a pixbuf.
 
+Destroy was removed, and should be replaced with Unref.
+
 Gdk.Dnd
 =======
 
@@ -185,6 +187,12 @@ Gtk.Assistant
 
 The values in Gtk_Assistant_Page_Type were renamed for consistency,
 removing their Gtk_ prefix.
+
+Gtk.Button_Box
+==============
+
+Set_Child_Size was removed. Equivalent behavior can only be done by
+changing the theme properties child-min-width and child-min-height.
 
 Gtk.Cell_Layout
 ===============

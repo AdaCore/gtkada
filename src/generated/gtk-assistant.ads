@@ -66,19 +66,20 @@ package Gtk.Assistant is
    type Gtk_Assistant is access all Gtk_Assistant_Record'Class;
 
    type Gtk_Assistant_Page_Type is (
-      Assistant_Page_Content,
-      Assistant_Page_Intro,
-      Assistant_Page_Confirm,
-      Assistant_Page_Summary,
-      Assistant_Page_Progress,
-      Assistant_Page_Custom);
+      Gtk_Assistant_Page_Content,
+      Gtk_Assistant_Page_Intro,
+      Gtk_Assistant_Page_Confirm,
+      Gtk_Assistant_Page_Summary,
+      Gtk_Assistant_Page_Progress,
+      Gtk_Assistant_Page_Custom);
    pragma Convention (C, Gtk_Assistant_Page_Type);
    --  An enum for determining the page role inside the
    --  Gtk.Assistant.Gtk_Assistant. It's used to handle buttons sensitivity and
    --  visibility.
    --  Note that an assistant needs to end its page flow with a page of type
-   --  Gtk.Assistant.Assistant_Page_Confirm, Gtk.Assistant.Assistant_Page_Summary
-   --  or Gtk.Assistant.Assistant_Page_Progress to be correct.
+   --  Gtk.Assistant.Gtk_Assistant_Page_Confirm,
+   --  Gtk.Assistant.Gtk_Assistant_Page_Summary or
+   --  Gtk.Assistant.Gtk_Assistant_Page_Progress to be correct.
    --  The Cancel button will only be shown if the page isn't "committed". See
    --  gtk_assistant_commit for details.
 
@@ -389,9 +390,9 @@ package Gtk.Assistant is
    --  A handler for the ::apply signal should carry out the actions for which
    --  the wizard has collected data. If the action takes a long time to
    --  complete, you might consider putting a page of type
-   --  Gtk.Assistant.Assistant_Page_Progress after the confirmation page and
-   --  handle this operation within the Gtk.Assistant.Gtk_Assistant::prepare
-   --  signal of the progress page.
+   --  Gtk.Assistant.Gtk_Assistant_Page_Progress after the confirmation page
+   --  and handle this operation within the
+   --  Gtk.Assistant.Gtk_Assistant::prepare signal of the progress page.
    --
    --  "cancel"
    --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
@@ -401,7 +402,7 @@ package Gtk.Assistant is
    --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
    --  The ::close signal is emitted either when the close button of a summary
    --  page is clicked, or when the apply button in the last page in the flow
-   --  (of type Gtk.Assistant.Assistant_Page_Confirm) is clicked.
+   --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
    --
    --  "prepare"
    --     procedure Handler
