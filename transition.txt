@@ -20,6 +20,14 @@ Gdk.Cursor
 The Gdk_New function working on Gdk_Pixmap has been removed. Use
  Gdk.Pixbuf.Gdk_New_From_Pixbuf to create a cursor from a pixbuf.
 
+Gdk.Dnd
+=======
+
+The functions for handling Drag_Contexts have been moved to new package
+Gdk.Drag_Contexts.
+The Gdk_Drag_Context itself now inherits from GObject, which means that it no
+longer requires its own Ref/Unref functions.
+
 Gdk.Drawable
 ============
 
