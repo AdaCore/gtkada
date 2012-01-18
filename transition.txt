@@ -392,6 +392,8 @@ This widget has been removed without any replacement.
 Gtk.Status_Icon
 ===============
 
+Status_Icon widget parameter names have been normalized to "Status_Icon".
+
 Get_Blinking and Set_Blinking have been removed, it is no longer possible to
 make the status icon blink.
 
