@@ -28,7 +28,7 @@ pragma Ada_05;
 --  and a page size. It is used within several GTK+ widgets, including
 --  Gtk.Spin_Button.Gtk_Spin_Button, Gtk.Viewport.Gtk_Viewport, and
 --  Gtk.GRange.Gtk_Range (which is a base class for
---  Gtk.Hscrollbar.Gtk_Hscrollbar, Gtk.Vscrollbar.Gtk_Vscrollbar,
+--  Gtk.Scrollbar.Gtk_Hscrollbar, Gtk.Scrollbar.Gtk_Vscrollbar,
 --  Gtk.Scale.Gtk_Hscale, and Gtk.Scale.Gtk_Vscale).
 --
 --  The Gtk.Adjustment.Gtk_Adjustment object does not update the value itself.
