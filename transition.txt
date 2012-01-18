@@ -60,6 +60,8 @@ Gdk.Main
 
 Set_Locale functions are no longer needed and have been removed.
 
+Functions Set_Use_Xshm and Get_Use_Xshm have been removed.
+
 Gdk.Pixbuf
 ==========
 
@@ -198,7 +200,7 @@ Gtk.Editable
 ============
 
 The type representing a Gtk_Editable_Record has been changed from a
-Widget (which is a GObject) to an Interface (a System.Address). 
+Widget (which is a GObject) to an Interface (a System.Address).
 Therefore the Gtk_Editable_Record type has been eliminated.  User code
 referencing only the Gtk_Editable type should function unchanged.
 

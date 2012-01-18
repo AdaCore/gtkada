@@ -50,13 +50,6 @@ package Gdk.Main is
    --  Allocated structures are freed and the program exits cleanly.
    --  This function is deprecated.
 
-   procedure Set_Use_Xshm (Use_Xshm : Boolean := True);
-   --  Set whether shared memory (when supported by the graphic server) should
-   --  be used.
-
-   function Get_Use_Xshm return Boolean;
-   --  Return whether shared memory on the graphic server is used.
-
    function Get_Display return String;
    --  Return the name of the display.
 
