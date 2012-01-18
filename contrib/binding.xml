@@ -2216,4 +2216,24 @@ The following default key bindings are provided, but you can use a gtkrc file to
       </method>
    </package>
 
+   <package id="Gtk.Menu_Item">
+      <parameter name="self" ada="Menu_Item"/>
+      <method id="gtk_menu_item_select" ada="Gtk_Select"/>
+      <method id="gtk_menu_item_set_right_justified">
+         <parameter name="right_justified" default="True"/>
+      </method>
+      <extra>
+         <spec>
+   procedure Gtk_New
+      (Menu_Item : out Gtk_Menu_Item;
+       Label     : UTF8_String)
+      renames Gtk_New_With_Label;
+   procedure Initialize
+      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+       Label     : UTF8_String)
+      renames Initialize_With_Label;
+   --  For backwards compatibility.
+         </spec>
+      </extra>
+   </package>
 </GIR>

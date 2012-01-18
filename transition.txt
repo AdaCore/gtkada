@@ -299,6 +299,17 @@ Gtk.List_Item
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
+Gtk.Menu_Item
+=============
+
+For subprogram Set_Right_Justified, the parameter "Justify" has been
+renamed to "Right_Justified".
+
+The obsolete procedures Remove_Submenu, Set_Right_Justify, and
+Right_Justify have been removed.  Instead, use Set_Submenu,
+Set_Right_Justified, or Set_Right_Justified with Justify = True,
+respectively.
+
 Gtk.Menu_Tool_Button
 ====================
 
