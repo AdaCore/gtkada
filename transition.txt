@@ -8,6 +8,49 @@ package, and a cast to the interface type (with "-" and "+"). Instead,
 each package now contains the list of subprograms inherited from the
 various interfaces.
 
+Ada 2005
+========
+
+The GtkAda 3 toolkit makes use of Ada 2005.  When transitioning source
+code written for an Ada 95 compiler to GtkAda 3, it is not always
+necessary to compile your code with GNAT Pro in Ada 2005 mode.  However
+you should keep in mind that handling of null values in access types
+has changed significantly between the two language revisions.
+
+One symptom of the incompatibility is the following compiler error:
+
+   file.adb:x:y: null is not allowed as argument for an access parameter
+
+Other error messages that are symptomatic of the incompatibility may
+resemble the following (the message is referring to a parameter in a
+subprogram callback):
+
+   file.adb:x:y: not subtype conformant with declaration at abc.ads:z ...
+   file.adb:x:y: type of "Subprogram_Param" does not match
+
+where the types are access types or access to classwide types, etc. that
+apparently seem to match.
+
+Fixing the code to accomodate the differences is left mostly as an
+exercise for the user, but we can offer a few suggestions.
+
+Of course, if you encounter the "null is not allowed" message you may
+replace the null argument with a valid value.
+
+Another possible solution is to compile the user code in Ada 2005 mode
+(using compiler options or the "Ada_05" pragma).  This has the effect
+of cohering the subtypes between GtkAda and application code.
+
+For the issue with callback subprogram parameters, it may be necessary
+to compile in Ada 2005 mode and modify the access type by using
+"not null" appropriately, so the callback:
+
+   procedure CB (Widget : access Gtk_Widget_Record'Class);
+
+becomes
+
+   procedure CB (Widget : not null access Gtk_Widget_Record'Class);
+
 Gdk.Bitmap
 ==========
 

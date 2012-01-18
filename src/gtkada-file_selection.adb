@@ -22,6 +22,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
+
 with Gtk.Main;           use Gtk.Main;
 with Gtk.Button;         use Gtk.Button;
 with Gtk.Dialog;         use Gtk.Dialog;
@@ -41,15 +43,20 @@ package body Gtkada.File_Selection is
    end record;
    type Gtkada_File_Selection is access all Gtkada_File_Selection_Record'Class;
 
-   function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean;
-   procedure Clicked_Ok_Cb (Button : access Gtk_Widget_Record'Class);
-   procedure Clicked_Cancel_Cb (Button : access Gtk_Widget_Record'Class);
+   function Delete_Cb
+     (Win : not null access Gtk_Widget_Record'Class) return Boolean;
+   procedure Clicked_Ok_Cb
+     (Button : not null access Gtk_Widget_Record'Class);
+   procedure Clicked_Cancel_Cb
+     (Button : not null access Gtk_Widget_Record'Class);
 
    ---------------
    -- Delete_Cb --
    ---------------
 
-   function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean is
+   function Delete_Cb
+     (Win : not null access Gtk_Widget_Record'Class) return Boolean
+   is
       pragma Unreferenced (Win);
    begin
       Main_Quit;
@@ -60,7 +67,9 @@ package body Gtkada.File_Selection is
    -- Clicked_Ok_Cb --
    -------------------
 
-   procedure Clicked_Ok_Cb (Button : access Gtk_Widget_Record'Class) is
+   procedure Clicked_Ok_Cb
+     (Button : not null access Gtk_Widget_Record'Class)
+   is
    begin
       Gtkada_File_Selection (Get_Toplevel (Button)).File_Selected := True;
       Main_Quit;
@@ -70,7 +79,9 @@ package body Gtkada.File_Selection is
    -- Clicked_Cancel_Cb --
    -----------------------
 
-   procedure Clicked_Cancel_Cb (Button : access Gtk_Widget_Record'Class) is
+   procedure Clicked_Cancel_Cb
+     (Button : not null access Gtk_Widget_Record'Class)
+   is
    begin
       Gtkada_File_Selection (Get_Toplevel (Button)).File_Selected := False;
       Main_Quit;
@@ -109,7 +120,7 @@ package body Gtkada.File_Selection is
       Set_Position (Dialog, Win_Pos_Mouse);
       Return_Callback.Connect
         (Dialog, "delete_event",
-         Return_Callback.To_Marshaller (Delete_Cb'Access));
+         Delete_Cb'Access);
       Button := Gtk_Button (Add_Button (Dialog, Stock_Ok, Gtk_Response_OK));
       Widget_Callback.Connect
         (Button, "clicked",
