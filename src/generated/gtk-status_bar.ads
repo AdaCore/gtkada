@@ -58,15 +58,13 @@ pragma Ada_05;
 --  <testgtk>create_status.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.GSlist;          use Glib.GSlist;
-with Glib.Types;           use Glib.Types;
-with Gtk.Box;              use Gtk.Box;
-with Gtk.Buildable;        use Gtk.Buildable;
-with Gtk.Enums;            use Gtk.Enums;
-with Gtk.Orientable;       use Gtk.Orientable;
-with Gtk.Widget;           use Gtk.Widget;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;           use Glib;
+with Glib.Types;     use Glib.Types;
+with Gtk.Box;        use Gtk.Box;
+with Gtk.Buildable;  use Gtk.Buildable;
+with Gtk.Enums;      use Gtk.Enums;
+with Gtk.Orientable; use Gtk.Orientable;
+with Gtk.Widget;     use Gtk.Widget;
 
 package Gtk.Status_Bar is
 
@@ -75,20 +73,6 @@ package Gtk.Status_Bar is
 
    type Context_Id is new Guint;
    type Message_Id is new Guint;
-
-   type Status_Bar_Msg is record
-      Text    : Interfaces.C.Strings.chars_ptr;
-      Context : Context_Id;
-      Message : Message_Id;
-   end record;
-   --  A message from the queue. Each of this message is associated with a
-   --  specific context, and has a specific number.
-
-   --  <no_doc>
-   function Convert (Msg : Status_Bar_Msg) return System.Address;
-   function Convert (Msg : System.Address) return Status_Bar_Msg;
-   package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
-   --  </no_doc>
 
    ------------------
    -- Constructors --

@@ -24,24 +24,10 @@
 pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Status_Bar is
-
-   function Convert (Msg : Status_Bar_Msg) return System.Address is
-   begin
-      return Msg'Address;
-      --  This function is anyway not supposed to be used
-   end Convert;
-
-   function Convert (Msg : System.Address) return Status_Bar_Msg is
-      type Status_Bar_Msg_Access is access all Status_Bar_Msg;
-      function Internal is new
-      Ada.Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
-   begin
-      return Internal (Msg).all;
-   end Convert;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Status_Bar_Record);

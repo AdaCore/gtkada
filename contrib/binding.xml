@@ -1498,43 +1498,10 @@ lower    value        value + page_size       upper
              bind="True"/>
      <method id="gtk_statusbar_push" return="Message_Id"/>
      <extra>
-        <with_spec pkg="Interfaces.C.Strings"/>
-        <with_spec pkg="Glib.GSlist"/>
-        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
-        <type ctype="StatusBarMsg" ada="Status_Bar_Msg">
+        <type>
    type Context_Id is new Guint;
    type Message_Id is new Guint;
-
-   type Status_Bar_Msg is record
-      Text    : Interfaces.C.Strings.chars_ptr;
-      Context : Context_Id;
-      Message : Message_Id;
-   end record;
-   --  A message from the queue. Each of this message is associated with a
-   --  specific context, and has a specific number.
-
-   --  &lt;no_doc&gt;
-   function Convert (Msg : Status_Bar_Msg) return System.Address;
-   function Convert (Msg : System.Address) return Status_Bar_Msg;
-   package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
-   --  &lt;/no_doc&gt;
         </type>
-        <body>
-   function Convert (Msg : Status_Bar_Msg) return System.Address is
-   begin
-      return Msg'Address;
-      --  This function is anyway not supposed to be used
-   end Convert;
-
-   function Convert (Msg : System.Address) return Status_Bar_Msg is
-      type Status_Bar_Msg_Access is access all Status_Bar_Msg;
-      function Internal is new
-        Ada.Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
-   begin
-      return Internal (Msg).all;
-   end Convert;
-
-        </body>
      </extra>
   </package>
 
@@ -2265,5 +2232,4 @@ The following default key bindings are provided, but you can use a gtkrc file to
        </body>
      </extra>
    </package>
-
 </GIR>
