@@ -194,6 +194,17 @@ Set_Icon_Pixmap has been removed: use Set_Icon_Pixbuf instead.
 Obsolete Set_Default_Icon working on Gdk.Pixmap has been removed without a
  replacement.
 
+Gtk.Editable
+============
+
+The type representing a Gtk_Editable_Record has been changed from a
+Widget (which is a GObject) to an Interface (a System.Address). 
+Therefore the Gtk_Editable_Record type has been eliminated.  User code
+referencing only the Gtk_Editable type should function unchanged.
+
+The Select_Region subprogram parameter name The_End has been normalized
+to End_Pos.
+
 Gtk.File_Chooser_Button
 =======================
 
