@@ -25,6 +25,7 @@
 with Glib; use Glib;
 with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Types; use Gdk.Types;
+with Gdk.Screen;
 with Gdk.Window;
 with Gtk;
 with Gtk.Selection; use Gtk.Selection;
@@ -67,9 +68,10 @@ package Gdk.Dnd is
       Protocol : Drag_Protocol) return Guint32;
    --  Return which drag protocol is recognized by a given low level window.
 
-   procedure Drag_Find_Window
+   procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;
       Drag_Window : Gdk.Window.Gdk_Window;
+      Screen      : Gdk.Screen.Gdk_Screen;
       X_Root      : Gint;
       Y_Root      : Gint;
       Dest_Window : Gdk.Window.Gdk_Window;

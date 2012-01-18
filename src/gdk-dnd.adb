@@ -147,9 +147,10 @@ package body Gdk.Dnd is
    -- Drag_Find_Window --
    ----------------------
 
-   procedure Drag_Find_Window
+   procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;
       Drag_Window : Gdk.Window.Gdk_Window;
+      Screen      : Gdk.Screen.Gdk_Screen;
       X_Root      : Gint;
       Y_Root      : Gint;
       Dest_Window : Gdk.Window.Gdk_Window;
@@ -158,6 +159,7 @@ package body Gdk.Dnd is
       procedure Internal
         (Context     : System.Address;
          Drag_Window : Gdk_Window;
+         Screen      : System.Address;
          X_Root      : Gint;
          Y_Root      : Gint;
          Dest_Window : Gdk_Window;
@@ -166,11 +168,12 @@ package body Gdk.Dnd is
    begin
       Internal (Get_Object (Context),
                 Drag_Window,
+                Get_Object (Screen),
                 X_Root,
                 Y_Root,
                 Dest_Window,
                 Protocol);
-   end Drag_Find_Window;
+   end Drag_Find_Window_For_Screen;
 
    -----------------
    -- Drag_Motion --

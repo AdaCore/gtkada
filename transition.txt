@@ -27,6 +27,7 @@ The functions for handling Drag_Contexts have been moved to new package
 Gdk.Drag_Contexts.
 The Gdk_Drag_Context itself now inherits from GObject, which means that it no
 longer requires its own Ref/Unref functions.
+Drag_Find_Window has been removed, use Drag_Find_Window_For_Screen instead.
 
 Gdk.Drawable
 ============
