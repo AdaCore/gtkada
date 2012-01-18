@@ -549,30 +549,6 @@ package Gtk.Tree_View is
    --  versa), for the latter Convert_Bin_Window_To_Tree_Coords (and vice
    --  versa).
 
-   procedure Widget_To_Tree_Coords
-     (Tree_View : access Gtk_Tree_View_Record;
-      Wx        : Gint;
-      Wy        : Gint;
-      Tx        : out Gint;
-      Ty        : out Gint);
-   pragma Obsolescent; --  Widget_To_Tree_Coords
-   --  Converts widget coordinates to coordinates for the
-   --  tree window (the full scrollable area of the tree).
-   --
-   --  Obsolescent; use Convert_Widget_To_Tree_Coords instead.
-
-   procedure Tree_To_Widget_Coords
-     (Tree_View : access Gtk_Tree_View_Record;
-      Tx        : Gint;
-      Ty        : Gint;
-      Wx        : out Gint;
-      Wy        : out Gint);
-   pragma Obsolescent; --  Tree_To_Widget_Coords
-   --  Converts tree coordinates (coordinates in full scrollable area of
-   --  the tree) to widget coordinates.
-   --
-   --  Obsolescent; use Convert_Tree_To_Widget_Coords instead.
-
    procedure Convert_Widget_To_Tree_Coords
      (Tree_View : access Gtk_Tree_View_Record;
       Wx        : Gint;

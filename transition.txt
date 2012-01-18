@@ -492,6 +492,9 @@ Procedure Create_Row_Drag_Icon now returns a Cairo_Surface.
 Get_Hadjustment, Set_Hadjustment, Get_Vadjustment, Set_Vadjustment have been
 removed: use the equivalent properties.
 
+Widget_To_Tree_Coords and Tree_To_Widget_Coords have been removed: use
+Convert_Widget_To_Tree_Coords and Convert_Tree_To_Widget_Coords.
+
 Gtk.VRuler
 ==========
 
