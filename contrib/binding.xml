@@ -2127,4 +2127,8 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <parameter name="self" ada="Handle_Box"/>
    </package>
 
+   <package id="Gtk.Scale_Button">
+      <parameter name="self" ada="Button"/>
+  </package>
+
 </GIR>
