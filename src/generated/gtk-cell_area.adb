@@ -113,7 +113,7 @@ package body Gtk.Cell_Area is
    pragma Import (C, C_Gtk_Cell_Area_Foreach, "gtk_cell_area_foreach");
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
+   --  "callback": the Gtk_Cell_Callback to call
    --  "callback_data": user provided data pointer
 
    procedure C_Gtk_Cell_Area_Foreach_Alloc
@@ -134,7 +134,7 @@ package body Gtk.Cell_Area is
    --  "cell_area": the Widget relative coordinates and size for Area
    --  "background_area": the Widget relative coordinates of the background
    --  area
-   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
+   --  "callback": the Gtk_Cell_Alloc_Callback to call
    --  "callback_data": user provided data pointer
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
@@ -257,11 +257,11 @@ package body Gtk.Cell_Area is
           Context   : System.Address;
           Widget    : System.Address;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
+          Flags     : Integer;
           Edit_Only : Integer) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)));
+      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags), Boolean'Pos (Edit_Only)));
    end Activate;
 
    -------------------
@@ -282,11 +282,10 @@ package body Gtk.Cell_Area is
           Renderer  : System.Address;
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
-          return Integer;
+          Flags     : Integer) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate_cell");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Flags));
+      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags)));
    end Activate_Cell;
 
    ---------
@@ -482,10 +481,10 @@ package body Gtk.Cell_Area is
           Widget    : System.Address;
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Gint;
+          Flags     : Integer) return Gint;
       pragma Import (C, Internal, "gtk_cell_area_event");
    begin
-      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Event, Cell_Area, Flags);
+      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Event, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags));
    end Event;
 
    -----------
@@ -982,11 +981,11 @@ package body Gtk.Cell_Area is
           Cr              : in out Cairo.Cairo_Context;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
+          Flags           : Integer;
           Paint_Focus     : Integer);
       pragma Import (C, Internal, "gtk_cell_area_render");
    begin
-      Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cr, Background_Area, Cell_Area, Flags, Boolean'Pos (Paint_Focus));
+      Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cr, Background_Area, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags), Boolean'Pos (Paint_Focus));
    end Render;
 
    ----------------------

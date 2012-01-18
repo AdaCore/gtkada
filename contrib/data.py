@@ -232,6 +232,11 @@ naming.type_exceptions = {
     "GObject":       Proxy("Glib.Object.GObject"),
     "GClosure":      Proxy("GClosure"),
 
+    "GtkBorder":       Proxy("Gtk.Style.Gtk_Border"),
+    "GtkIconSet*":     Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
+    "GtkTargetList*":  Proxy ("Gtk.Selection.Target_List"),
+    "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
+
     "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
     "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
     "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
@@ -255,78 +260,18 @@ naming.type_exceptions = {
     "GtkToolbarStyle":    Enum("Gtk.Enums.Gtk_Toolbar_Style"),
     "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
 
-    "GtkCellEditable": Interface("Gtk.Cell_Editable.Gtk_Cell_Editable"),
-    "GtkCellLayout":   Interface("Gtk.Cell_Layout.Gtk_Cell_Layout"),
-    "GtkFileChooser":  Interface("Gtk.File_Chooser.Gtk_File_Chooser"),
-    "GtkFileFilter":   Interface("Gtk.File_Filter.Gtk_File_Filter"),
-    "GtkRecentChooser":
-        Interface("Gtk.Recent_Chooser.Gtk_Recent_Chooser"),
-    "GtkTreeSortable": Interface("Gtk.Tree_Sortable.Gtk_Tree_Sortable"),
-
-    "GtkAboutDialog":  GObject("Gtk.About_Dialog.Gtk_About_Dialog"),
-    "GtkAccelGroup":   GObject("Gtk.Accel_Group.Gtk_Accel_Group"),
-    "GtkAspectFrame":  GObject("Gtk.Aspect_Frame.Gtk_Aspect_Frame"),
-    "GtkButtonBox":    GObject("Gtk.Button_Box.Gtk_Button_Box"),
-    "GtkCellArea":     GObject("Gtk.Cell_Area.Gtk_Cell_Area"),
-    "GtkCellAreaContext":
-        GObject("Gtk.Cell_Area_Context.Gtk_Cell_Area_Context"),
-    "GtkCellAllocCallback": Proxy("Gtk.Cell_Area.Gtk_Cell_Alloc_Callback"),
-    "GtkCellCallback": Proxy("Gtk.Cell_Area.Gtk_Cell_Callback"),
-    "GtkCellRenderer":
-        GObject("Gtk.Cell_Renderer.Gtk_Cell_Renderer"),
-    "GtkCellRendererState":
-        DirectBinding("Gtk.Cell_Renderer.Gtk_Cell_Renderer_State"),
-    "GtkCheckButton":  GObject("Gtk.Check_Button.Gtk_Check_Button"),
-    "GtkColorButton":  GObject("Gtk.Color_Button.Gtk_Color_Button"),
-    "GtkColorSelection":
-        GObject("Gtk.Color_Selection.Gtk_Color_Selection"),
-    "GtkColorSelectionDialog":
-        GObject("Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog"),
-    "GtkComboBox":     GObject("Gtk.Combo_Box.Gtk_Combo_Box"),
-    "GtkComboBoxText":     GObject("Gtk.Combo_Box_Text.Gtk_Combo_Box_Text"),
-    "GtkDrawingArea":  GObject("Gtk.Drawing_Area.Gtk_Drawing_Area"),
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
-    "GtkEntryBuffer":  GObject("Gtk.Entry_Buffer.Gtk_Entry_Buffer"),
-    "GtkEntryCompletion": GObject("Gtk.Entry_Completion.Gtk_Entry_Completion"),
-    "GtkEventBox":     GObject("Gtk.Event_Box.Gtk_Event_Box"),
-    "GtkFileChooserButton":
-       GObject("Gtk.File_Chooser_Button.Gtk_File_Chooser_Button"),
     "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),
-    "GtkFontSelection": GObject("Gtk.Font_Selection.Gtk_Font_Selection"),
-    "GtkFontSelectionDialog":
-       GObject("Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog"),
     "GtkHButtonBox":   GObject("Gtk.Hbutton_Box.Gtk_Hbutton_Box"),
-    "GtkLinkButton":   GObject("Gtk.Link_Button.Gtk_Link_Button"),
-    "GtkMenuItem":     GObject("Gtk.Menu_Item.Gtk_Menu_Item"),
-    "GtkNotebook":     GObject("Gtk.Notebook.Gtk_Notebook"),
-    "GtkProgressBar":  GObject("Gtk.Progress_Bar.Gtk_Progress_Bar"),
-    "GtkRadioAction":  GObject("Gtk.Radio_Action.Gtk_Radio_Action"),
-    "GtkRadioButton":  GObject("Gtk.Radio_Button.Gtk_Radio_Button"),
     "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
-    "GtkScaleButton":  GObject("Gtk.Scale_Button.Gtk_Scale_Button"),
-    "GtkScrollBar":    GObject("Gtk.Scrollbar.Gtk_Scrollbar"),
-    "GtkSizeGroup":    GObject("Gtk.Size_Group.Gtk_Size_Group"),
-    "GtkSeparatorMenuItem":
-        GObject("Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item"),
-    "GtkSeparatorToolItem":
-        GObject("Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item"),
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
-    "GtkTargetList*":  Proxy ("Gtk.Selection.Target_List"),
-    "GtkToggleAction": GObject("Gtk.Toggle_Action.Gtk_Toggle_Action"),
-    "GtkToggleButton": GObject("Gtk.Toggle_Button.Gtk_Toggle_Button"),
-    "GtkToolItem":     GObject("Gtk.Tool_Item.Gtk_Tool_Item"),
-    "GtkToolbar":      GObject("Gtk.Toolbar.Gtk_Toolbar"),
-    "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
-    "GtkVolumeButton": GObject("Gtk.Volume_Button.Gtk_Volume_Button"),
 
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
     "GtkCellLayoutDataFunc":
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
-    "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
-    "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 
     "GdkColor*":          DirectBinding("Gdk.Color.Gdk_Color"),
     "GdkDragAction":      Proxy("Gdk.Dnd.Drag_Action"),

@@ -45,8 +45,8 @@ pragma Ada_05;
 --  The GtkFileFilter implementation of the GtkBuildable interface supports
 --  adding rules using the <mime-types>, <patterns> and <applications> elements
 --  and listing the rules within. Specifying a <mime-type> or <pattern> is the
---  same as calling Gtk.Recent_Filter.Add_Mime_Type or
---  Gtk.Recent_Filter.Add_Pattern
+--  same as calling gtk_recent_filter_add_mime_type or
+--  gtk_recent_filter_add_pattern
 --
 --  == A UI definition fragment specifying GtkFileFilter rules ==
 --

@@ -571,7 +571,7 @@ package Gtk.Cell_Area is
        Callback : Gtk_Cell_Callback);
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
+   --  "callback": the Gtk_Cell_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
@@ -593,7 +593,7 @@ package Gtk.Cell_Area is
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in
       --  Area.
       --  Since: gtk+ 3.0
-      --  "callback": the Gtk.Cell_Area.Gtk_Cell_Callback to call
+      --  "callback": the Gtk_Cell_Callback to call
       --  "callback_data": user provided data pointer
 
    end Foreach_User_Data;
@@ -614,7 +614,7 @@ package Gtk.Cell_Area is
    --  "cell_area": the Widget relative coordinates and size for Area
    --  "background_area": the Widget relative coordinates of the background
    --  area
-   --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
+   --  "callback": the Gtk_Cell_Alloc_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
@@ -653,7 +653,7 @@ package Gtk.Cell_Area is
       --  "cell_area": the Widget relative coordinates and size for Area
       --  "background_area": the Widget relative coordinates of the background
       --  area
-      --  "callback": the Gtk.Cell_Area.Gtk_Cell_Alloc_Callback to call
+      --  "callback": the Gtk_Cell_Alloc_Callback to call
       --  "callback_data": user provided data pointer
 
    end Foreach_Alloc_User_Data;
