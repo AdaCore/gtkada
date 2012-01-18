@@ -63,10 +63,10 @@ package Gdk.Dnd is
      (Window  : Gdk.Window.Gdk_Window;
       Targets : Target_List) return Drag_Context;
 
-   function Drag_Get_Protocol
-     (Xid      : Guint32;
-      Protocol : Drag_Protocol) return Guint32;
-   --  Return which drag protocol is recognized by a given low level window.
+   function Drag_Context_Get_Protocol
+     (Context  : Drag_Context;
+      Protocol : Drag_Protocol) return Drag_Protocol;
+   --  Return which drag protocol is recognized by a given context.
 
    procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;

@@ -128,20 +128,19 @@ package body Gdk.Dnd is
    -- Drag_Get_Protocol --
    -----------------------
 
-   function Drag_Get_Protocol
-     (Xid      : Guint32;
+   function Drag_Context_Get_Protocol
+     (Context  : Drag_Context;
       Protocol : Drag_Protocol)
-      return Guint32
+      return Drag_Protocol
    is
       function Internal
-        (Xid      : Guint32;
+        (Context  : System.Address;
          Protocol : Drag_Protocol)
-         return Guint32;
-      pragma Import (C, Internal, "gdk_drag_get_protocol");
+         return Drag_Protocol;
+      pragma Import (C, Internal, "gdk_drag_context_get_protocol");
    begin
-      return Internal (Xid,
-                       Protocol);
-   end Drag_Get_Protocol;
+      return Internal (Get_Object (Context), Protocol);
+   end Drag_Context_Get_Protocol;
 
    ----------------------
    -- Drag_Find_Window --
