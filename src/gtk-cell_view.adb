@@ -238,20 +238,4 @@ package body Gtk.Cell_View is
       Internal (Get_Object (Cell_View), Get_Object (Model));
    end Set_Model;
 
-   ---------------
-   -- Get_Cells --
-   ---------------
-
-   function Get_Cells
-     (Cell_View : access Gtk_Cell_View_Record)
-      return Cell_Renderer_List.Glist
-   is
-      function Internal (Cell_View : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_cell_view_get_cells");
-      L : Cell_Renderer_List.Glist;
-   begin
-      Cell_Renderer_List.Set_Object (L, Internal (Get_Object (Cell_View)));
-      return L;
-   end Get_Cells;
-
 end Gtk.Cell_View;

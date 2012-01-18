@@ -35,7 +35,6 @@ with Glib.Properties;
 with Glib.Types;
 with Gdk.Color;
 with Gdk.Pixbuf;
-with Gtk.Cell_Renderer;
 with Gtk.Cell_Layout;
 with Gtk.Tree_Model;
 with Gtk.Widget;
@@ -112,13 +111,6 @@ package Gtk.Cell_View is
       return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model for Cell_View.  If no model is used, null is
    --  returned.
-
-   function Get_Cells
-     (Cell_View : access Gtk_Cell_View_Record)
-     return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
-   --  Returns the cell renderers which have been added to Cell_View.
-   --  Return value: a list of cell renderers.
-   --  The list must be freed by the caller.
 
    ----------------
    -- Interfaces --

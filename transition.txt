@@ -152,6 +152,12 @@ Gtk.Cell_Renderer
 The Render subprogram is now called with a Cairo_Context rather than a
 Gdk_Window.
 
+Gtk.Cell_View
+=============
+
+Get_Cell_Renderers is obsolete, use the Gtk.Cell_Layout interface and
+Gtk.Cell_Layout.Get_Cells.
+
 Gtk.Clist
 =========
 
