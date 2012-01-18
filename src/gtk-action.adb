@@ -693,23 +693,4 @@ package body Gtk.Action is
           (Internal (Get_Object (Action)), Stub));
    end Create_Menu;
 
-   ---------------------------
-   -- Gtk_Widget_Get_Action --
-   ---------------------------
-
-   function Gtk_Widget_Get_Action
-     (Widget : access Gtk_Widget_Record)
-      return Gtk_Action
-   is
-      function Internal
-        (Widget : System.Address)
-         return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_action");
-      Stub : Gtk_Action_Record;
-   begin
-      return Gtk_Action
-        (Get_User_Data
-          (Internal (Get_Object (Widget)), Stub));
-   end Gtk_Widget_Get_Action;
-
 end Gtk.Action;

@@ -172,6 +172,8 @@ Gtk.Action
 Block_Activate_From, Unblock_Activate_From, Connect_Proxy, Disconnect_Proxy:
 these obsolete subprograms have been removed without a replacement.
 
+Get_Action has been removed without a replacement.
+
 Gtk.Aspect_Frame
 ================
 

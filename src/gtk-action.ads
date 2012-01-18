@@ -234,13 +234,6 @@ package Gtk.Action is
    --  Returns the proxy widgets for an action. The returned list must not be
    --  modified
 
-   function Gtk_Widget_Get_Action
-     (Widget : access Gtk.Widget.Gtk_Widget_Record) return Gtk_Action;
-   pragma Obsolescent (Gtk_Widget_Get_Action);
-   --  Returns the action that Widget is a proxy for.
-   --  See also Get_Proxies.
-   --  Since: 2.10
-
    procedure Block_Activate   (Action : access Gtk_Action_Record);
    procedure Unblock_Activate (Action : access Gtk_Action_Record);
    --  Disable or reenable activation signals from the action.  This is
