@@ -22,6 +22,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
+
 --  <description>
 --
 --  The aim of this package is to provide some services to connect a

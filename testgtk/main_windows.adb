@@ -145,8 +145,7 @@ package body Main_Windows is
    procedure Display_Help (Button : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
 
-   package Notebook_Cb is new Gtk.Handlers.User_Callback
-     (Gtk_Notebook_Record, Gtk_Notebook);
+   package Notebook_Cb is new Gtk.Handlers.Callback (Gtk_Notebook_Record);
 
    Help_Dialog : Gtk.Dialog.Gtk_Dialog;
    Help_Text   : Gtk.Text_Buffer.Gtk_Text_Buffer;
@@ -182,9 +181,7 @@ package body Main_Windows is
    procedure Destroy_Help (Button : access Gtk_Widget_Record'Class);
    function Opengl_Help return String;
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : Gtk.Gtk_Notebook_Page;
-                          User     : Gtk_Notebook);
+   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class);
    --  Called when a new notebook page is selected
 
    procedure Create_Demo_Frame
@@ -500,18 +497,17 @@ package body Main_Windows is
    begin
       if Help_Dialog = null then
          Gtk_New (Help_Dialog);
-         Set_Policy (Help_Dialog, Allow_Shrink => True, Allow_Grow => True,
-                     Auto_Shrink => True);
+         Help_Dialog.Set_Resizable (True);
          Set_Title (Help_Dialog, "testgtk help");
          Set_Default_Size (Help_Dialog, 640, 450);
 
-         Set_Spacing (Get_Vbox (Help_Dialog), 3);
+         Set_Spacing (Get_Content_Area (Help_Dialog), 3);
 
          Gtk_New (Label, "Information on this demo");
-         Pack_Start (Get_Vbox (Help_Dialog), Label, False, True, 0);
+         Pack_Start (Get_Content_Area (Help_Dialog), Label, False, True, 0);
 
          Gtk_New (Scrolled);
-         Pack_Start (Get_Vbox (Help_Dialog), Scrolled, True, True, 0);
+         Pack_Start (Get_Content_Area (Help_Dialog), Scrolled, True, True, 0);
          Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
          Gtk_New (Help_Text);
@@ -558,8 +554,8 @@ package body Main_Windows is
             --  Points to the first character of the next line
 
          begin
+            --  In gtk3, the colors no longer need to be allocated.
             Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
-            Alloc (Get_Default_Colormap, Blue);
 
             loop
 
@@ -720,12 +716,7 @@ package body Main_Windows is
    -- Switch_Page --
    -----------------
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : Gtk.Gtk_Notebook_Page;
-                          User     : Gtk_Notebook)
-   is
-      pragma Warnings (Off, Page);
-      pragma Warnings (Off, User);
+   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       if Get_Current_Page (Notebook) = 3 then
          Set_Help (Opengl_Help'Access);
@@ -838,10 +829,7 @@ package body Main_Windows is
       Gtk_New (Win.Notebook);
       Pack_Start (Vbox, Win.Notebook, Expand => True, Fill => True);
       Notebook_Cb.Connect
-        (Win.Notebook, "switch_page",
-         Notebook_Cb.To_Marshaller (Switch_Page'Access),
-         Win.Notebook,
-         After => True);
+        (Win.Notebook, "switch_page", Switch_Page'Access, After => True);
 
       --  First page: Gtk demos
       Create_Demo_Frame (Win, 1, "Gtk demo", False, False);

@@ -29,12 +29,9 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;
-with Gtk.Option_Menu;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
-with Gtkada.Types;     use Gtkada.Types;
 with Interfaces.C.Strings;
-with Gtk.Extra.Plot;
 
 package Common is
 
@@ -65,23 +62,9 @@ package Common is
    procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
                              Ptr : Gtk_Dialog_Access);
 
-   procedure Build_Option_Menu
-     (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-      Gr      : in out Widget_SList.GSlist;
-      Items   : Chars_Ptr_Array;
-      History : Gint;
-      Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler);
-   --  Builds an option menu with the given list of items.
-   --  If 'History' is in Items'Range, then item number 'History'
-   --  will be set to active.
-
    function Image_Of (I : Gint) return String;
    --  Returns the image of the given Gint. The leading spaces are
    --  stripped.
-
-   procedure Set_Default_Plot_Attributes
-     (Plot : access Gtk.Extra.Plot.Gtk_Plot_Record'Class);
-   --  Set the default attributes for a plot (fonts,...)
 
    package ICS renames Interfaces.C.Strings;
    Book_Open_Xpm    : ICS.chars_ptr_array :=
