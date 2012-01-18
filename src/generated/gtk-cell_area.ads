@@ -226,8 +226,8 @@ pragma Ada_05;
 --  The Gtk.Cell_Area.Gtk_Cell_Area drives keyboard focus from cell to cell in
 --  a way similar to Gtk.Widget.Gtk_Widget. For layouting widgets that support
 --  giving focus to cells it's important to remember to pass
---  GTK_CELL_RENDERER_FOCUSED to the area functions for the row that has focus
---  and to tell the area to paint the focus at render time.
+--  Gtk.Cell_Renderer.Cell_Renderer_Focused to the area functions for the row
+--  that has focus and to tell the area to paint the focus at render time.
 --
 --  Layouting widgets that accept focus on cells should implement the
 --  Gtk_Widget_Class.focus virtual method. The layouting widget is always
@@ -409,7 +409,7 @@ package Gtk.Cell_Area is
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State flags for Area
    --  for this row of data.
    --  "edit_only": if True then only cell renderers that are
-   --  GTK_CELL_RENDERER_MODE_EDITABLE will be activated.
+   --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable will be activated.
 
    function Activate_Cell
       (Self      : not null access Gtk_Cell_Area_Record;
