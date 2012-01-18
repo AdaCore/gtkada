@@ -63,22 +63,6 @@ package body Gtk.Action is
    end Block_Activate;
 
    -------------------------
-   -- Block_Activate_From --
-   -------------------------
-
-   procedure Block_Activate_From
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk_Widget_Record'Class)
-   is
-      procedure Internal
-        (Action : System.Address;
-         Proxy  : System.Address);
-      pragma Import (C, Internal, "gtk_action_block_activate_from");
-   begin
-      Internal (Get_Object (Action), Get_Object (Proxy));
-   end Block_Activate_From;
-
-   -------------------------
    -- Connect_Accelerator --
    -------------------------
 
@@ -91,22 +75,6 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action));
    end Connect_Accelerator;
-
-   -------------------
-   -- Connect_Proxy --
-   -------------------
-
-   procedure Connect_Proxy
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk_Widget_Record'Class)
-   is
-      procedure Internal
-        (Action : System.Address;
-         Proxy  : System.Address);
-      pragma Import (C, Internal, "gtk_action_connect_proxy");
-   begin
-      Internal (Get_Object (Action), Get_Object (Proxy));
-   end Connect_Proxy;
 
    -------------
    -- Convert --
@@ -190,22 +158,6 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action));
    end Disconnect_Accelerator;
-
-   ----------------------
-   -- Disconnect_Proxy --
-   ----------------------
-
-   procedure Disconnect_Proxy
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk_Widget_Record'Class)
-   is
-      procedure Internal
-        (Action : System.Address;
-         Proxy  : System.Address);
-      pragma Import (C, Internal, "gtk_action_disconnect_proxy");
-   begin
-      Internal (Get_Object (Action), Get_Object (Proxy));
-   end Disconnect_Proxy;
 
    --------------------
    -- Get_Accel_Path --
@@ -721,22 +673,6 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action));
    end Unblock_Activate;
-
-   ---------------------------
-   -- Unblock_Activate_From --
-   ---------------------------
-
-   procedure Unblock_Activate_From
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk_Widget_Record'Class)
-   is
-      procedure Internal
-        (Action : System.Address;
-         Proxy  : System.Address);
-      pragma Import (C, Internal, "gtk_action_unblock_activate_from");
-   begin
-      Internal (Get_Object (Action), Get_Object (Proxy));
-   end Unblock_Activate_From;
 
    -----------------
    -- Create_Menu --

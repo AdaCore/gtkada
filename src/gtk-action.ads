@@ -241,41 +241,12 @@ package Gtk.Action is
    --  See also Get_Proxies.
    --  Since: 2.10
 
-   procedure Connect_Proxy
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Connect_Proxy);
-   procedure Disconnect_Proxy
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Disconnect_Proxy);
-   --  Connects a widget to an action object as a proxy. Synchronises various
-   --  properties of the action with the widget (such as label text, icon,
-   --  tooltip, etc), and attaches a callback so that the action gets activated
-   --  when the proxy widget does.
-   --  If the widget is already connected to an action, it is disconnected
-   --  first.
-   --  Disconnect_Proxy does not destroy the widget.
-
    procedure Block_Activate   (Action : access Gtk_Action_Record);
    procedure Unblock_Activate (Action : access Gtk_Action_Record);
    --  Disable or reenable activation signals from the action.  This is
    --  needed when updating the state of your proxy widget could result
    --  in calling Activate.  This is a convenience function to avoid
    --  recursing in those cases (updating toggle state for instance).
-
-   procedure Block_Activate_From
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Block_Activate_From);
-   procedure Unblock_Activate_From
-     (Action : access Gtk_Action_Record;
-      Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
-   pragma Obsolescent (Unblock_Activate_From);
-   --  Disables calls to the Activate function by signals on the given proxy
-   --  widget. This is used to break notification loops for things like check
-   --  or radio actions.
-   --  This function is intended for use by action implementations.
 
    ----------------
    -- Properties --
