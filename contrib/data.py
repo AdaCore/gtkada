@@ -196,6 +196,7 @@ naming.type_exceptions = {
     "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
+    "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
 
     "cairo_t":               DirectBinding("Cairo.Cairo_Context"),
@@ -230,9 +231,6 @@ naming.type_exceptions = {
     "GQuark":        Proxy("Glib.GQuark"),
     "GObject":       Proxy("Glib.Object.GObject"),
     "GClosure":      Proxy("GClosure"),
-
-    "CellLayoutDataFunc": Proxy("Gtk.Cell_Layout.Cell_Data_Func", ""),
-    "GtkFileFilterFunc":  Proxy("Gtk.File_Filter.Gtk_File_Filter_Func", ""),
 
     "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
     "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
@@ -325,20 +323,8 @@ naming.type_exceptions = {
 
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
-    "GtkAboutDialogActivateLinkFunc":
-        Callback("Gtk.About_Dialog.Activate_Link_Func"),
-    "GtkAccelGroupFindFunc":
-        Callback("Gtk.Accel_Group.Gtk_Accel_Group_Find_Func"),
-    "GtkColorSelectionChangePaletteWithScreenFunc":
-        Callback("Gtk.Color_Selection.Gtk_Color_Selection_Change_Palette_With_Screen_Func"),
-    "GtkEntryCompletionMatchFunc":
-        Callback("Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func"),
-    "GtkCalendarDetailFunc":
-        Callback("Gtk.Calendar.Gtk_Calendar_Detail_Func"),
     "GtkCellLayoutDataFunc":
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
-    "GtkAssistantPageFunc":
-        Callback("Gtk.Assistant.Gtk_Assistant_Page_Func"),
     "GtkBorder":          Proxy("Gtk.Style.Gtk_Border"),
     "GtkIconSet*":        Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
 

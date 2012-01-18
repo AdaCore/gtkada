@@ -502,7 +502,7 @@ package Gtk.GEntry is
    --  "text_area": Return location for the text area.
 
    function Get_Text_Length
-      (The_Entry : not null access Gtk_Entry_Record) return guint16;
+      (The_Entry : not null access Gtk_Entry_Record) return Guint16;
    --  Retrieves the current length of the text in Entry.
    --  This is equivalent to:
    --  <informalexample><programlisting> gtk_entry_buffer_get_length

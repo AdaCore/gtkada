@@ -71,10 +71,10 @@ package Gtk.Color_Selection is
    -------------
 
    function Get_Current_Alpha
-      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16;
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
    procedure Set_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
-       Alpha    : guint16);
+       Alpha    : Guint16);
    --  Sets the current opacity to be Alpha.
    --  The first time this is called, it will also set the original opacity to
    --  be Alpha too.
@@ -120,10 +120,10 @@ package Gtk.Color_Selection is
    --  "has_palette": True if palette is to be visible, False otherwise
 
    function Get_Previous_Alpha
-      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16;
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
    procedure Set_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
-       Alpha    : guint16);
+       Alpha    : Guint16);
    --  Sets the 'previous' alpha to be Alpha.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that alpha change.
@@ -189,8 +189,9 @@ package Gtk.Color_Selection is
    -- Functions --
    ---------------
 
-   procedure Set_Change_Palette_With_Screen_Hook
-      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
+   function Set_Change_Palette_With_Screen_Hook
+      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
+       return Gtk_Color_Selection_Change_Palette_With_Screen_Func;
    --  Installs a global function to be called whenever the user tries to
    --  modify the palette in a color selection.
    --  This function should save the new palette contents, and update the

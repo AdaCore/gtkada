@@ -118,9 +118,9 @@ package body Gtk.Color_Selection is
    -----------------------
 
    function Get_Current_Alpha
-      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16
    is
-      function Internal (Colorsel : System.Address) return guint16;
+      function Internal (Colorsel : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_color_selection_get_current_alpha");
    begin
       return Internal (Get_Object (Colorsel));
@@ -189,9 +189,9 @@ package body Gtk.Color_Selection is
    ------------------------
 
    function Get_Previous_Alpha
-      (Colorsel : not null access Gtk_Color_Selection_Record) return guint16
+      (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16
    is
-      function Internal (Colorsel : System.Address) return guint16;
+      function Internal (Colorsel : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_color_selection_get_previous_alpha");
    begin
       return Internal (Get_Object (Colorsel));
@@ -248,9 +248,9 @@ package body Gtk.Color_Selection is
 
    procedure Set_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
-       Alpha    : guint16)
+       Alpha    : Guint16)
    is
-      procedure Internal (Colorsel : System.Address; Alpha : guint16);
+      procedure Internal (Colorsel : System.Address; Alpha : Guint16);
       pragma Import (C, Internal, "gtk_color_selection_set_current_alpha");
    begin
       Internal (Get_Object (Colorsel), Alpha);
@@ -322,9 +322,9 @@ package body Gtk.Color_Selection is
 
    procedure Set_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
-       Alpha    : guint16)
+       Alpha    : Guint16)
    is
-      procedure Internal (Colorsel : System.Address; Alpha : guint16);
+      procedure Internal (Colorsel : System.Address; Alpha : Guint16);
       pragma Import (C, Internal, "gtk_color_selection_set_previous_alpha");
    begin
       Internal (Get_Object (Colorsel), Alpha);
@@ -366,13 +366,16 @@ package body Gtk.Color_Selection is
    -- Set_Change_Palette_With_Screen_Hook --
    -----------------------------------------
 
-   procedure Set_Change_Palette_With_Screen_Hook
+   function Set_Change_Palette_With_Screen_Hook
       (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
+       return Gtk_Color_Selection_Change_Palette_With_Screen_Func
    is
-      procedure Internal (Func : System.Address);
+      function Internal
+         (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
+          return Gtk_Color_Selection_Change_Palette_With_Screen_Func;
       pragma Import (C, Internal, "gtk_color_selection_set_change_palette_with_screen_hook");
    begin
-      Internal (Func'Address);
+      return Internal (Func);
    end Set_Change_Palette_With_Screen_Hook;
 
    ---------------------

@@ -262,7 +262,7 @@ package Gtk.Notebook is
    --  "detachable": whether the tab is detachable or not
 
    function Get_Tab_Hborder
-      (Notebook : not null access Gtk_Notebook_Record) return guint16;
+      (Notebook : not null access Gtk_Notebook_Record) return Guint16;
    --  Returns the horizontal width of a tab border.
    --  Since: gtk+ 2.22
 
@@ -317,7 +317,7 @@ package Gtk.Notebook is
    --  "reorderable": whether the tab is reorderable or not
 
    function Get_Tab_Vborder
-      (Notebook : not null access Gtk_Notebook_Record) return guint16;
+      (Notebook : not null access Gtk_Notebook_Record) return Guint16;
    --  Returns the vertical width of a tab border.
    --  Since: gtk+ 2.22
 

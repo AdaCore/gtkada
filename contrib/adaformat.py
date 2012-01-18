@@ -91,7 +91,7 @@ class CType(object):
     def convert(self):
         """How to convert from Ada parameter to C parameter If it uses %(tmp)s,
            we assume the converter sets the value of the temporary variable
-           itself.  
+           itself.
            It can also use %(var)s which will be substituted by the name of the
            parameter.
            Otherwise, it is used as " Tmp := <convert>"
@@ -228,11 +228,11 @@ class Enum(CType):
         [pkg] is the name of the current package in which the enumeration
         will be defined.
         """
-        
+
         # Compute the Ada name automatically if needed.
         if not ada:
             ada = naming.type(name="", cname=ctype).ada
-        
+
         full_name = "%s.%s" % (pkg, ada)
         t = Enum(full_name, "%s.Property_%s" % (pkg, ada))
         naming.add_type_exception(cname=ctype, type=t)
@@ -470,6 +470,7 @@ class AdaNaming(object):
 
     def __camel_case_to_ada(self, name):
         """Converts a name with CamelCase to Camel_Case"""
+
         if not name:
             return name
 

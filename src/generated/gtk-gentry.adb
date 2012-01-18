@@ -536,9 +536,9 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Text_Length
-      (The_Entry : not null access Gtk_Entry_Record) return guint16
+      (The_Entry : not null access Gtk_Entry_Record) return Guint16
    is
-      function Internal (The_Entry : System.Address) return guint16;
+      function Internal (The_Entry : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_entry_get_text_length");
    begin
       return Internal (Get_Object (The_Entry));

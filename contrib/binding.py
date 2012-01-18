@@ -78,10 +78,11 @@ class GIR(object):
             k = "{%(uri)s}namespace/{%(uri)s}callback" % {"uri":uri}
             for cl in root.findall(k):
                 ct = cl.get(ctype_qname)
-                naming.add_type_exception(cname=ct, type=Proxy(ct))
+                type = Proxy(naming.case(ct))
+                naming.add_type_exception(cname=ct, type=type)
                 ct = naming.type(ct).ada
                 self.callbacks[ct] = cl
-                
+
             k = "{%(uri)s}namespace/{%(uri)s}interface" % {"uri":uri}
             for cl in root.findall(k):
                 self.interfaces[cl.get("name")] = self._create_class(
@@ -170,7 +171,7 @@ class GIR(object):
                          flags=re.DOTALL or re.MULTILINE)
 
             doc = re.sub("\n\n\n+", "\n\n", doc)
-            
+
             result = []
             for paragraph in doc.split("\n\n"):
                 result.append(paragraph)
@@ -1267,24 +1268,24 @@ See Glib.Properties for more information on properties)""")
         node = gir.enums[ctype]
 
         members = []
-        
+
         for member in node.findall(nmember):
             cname = member.get(cidentifier)
             m = naming.adamethod_name(cname, warning_if_not_found=False)
-            
+
             if cname == m:
                 # No special case ? Attempt a simple rule (remove leading
                 # Gtk prefix, and capitalize the value)
                 m = cname.replace(prefix, "").title()
-                
+
             elif "." in m:
                 m = m[m.rfind(".") + 1:]
-                
+
             # For proper substitution in docs
             naming.add_cmethod(
                 cname=cname,
                 adaname="%s.%s" % (self.name, m))
-            
+
             members.append((m, member.get("value")))
 
         if node.tag == nenumeration:

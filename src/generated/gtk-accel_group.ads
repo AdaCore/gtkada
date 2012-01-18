@@ -136,7 +136,7 @@ package Gtk.Accel_Group is
    --  Gtk.Accel_Group.Accel_Groups_Activate, Closure will be invoked if the
    --  Accel_Key and Accel_Mods from Gtk.Accel_Group.Accel_Groups_Activate
    --  match those of this connection.
-   --  The signature used for the Closure is that of GtkAccelGroupActivate.
+   --  The signature used for the Closure is that of Gtk_Accel_Group_Activate.
    --  Note that, due to implementation details, a single closure can only be
    --  connected to one accelerator group.
    --  "accel_key": key value of the accelerator
@@ -154,7 +154,7 @@ package Gtk.Accel_Group is
    --  Gtk.Accel_Group.Accel_Groups_Activate, Closure will be invoked if the
    --  Accel_Key and Accel_Mods from Gtk.Accel_Group.Accel_Groups_Activate
    --  match the key and modifiers for the path.
-   --  The signature used for the Closure is that of GtkAccelGroupActivate.
+   --  The signature used for the Closure is that of Gtk_Accel_Group_Activate.
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.

@@ -153,7 +153,7 @@ function To_Cell_Data_Func is new Ada.Unchecked_Conversion
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to use
+   --  "func": the Gtk_Entry_Completion_Match_Func to use
    --  "func_data": user data for Func
    --  "func_notify": destroy notify for Func_Data.
 

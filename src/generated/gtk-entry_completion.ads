@@ -315,7 +315,7 @@ package Gtk.Entry_Completion is
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to use
+   --  "func": the Gtk_Entry_Completion_Match_Func to use
 
    generic
       type User_Data_Type (<>) is private;
@@ -347,8 +347,7 @@ package Gtk.Entry_Completion is
       --  function is used to determine if a row should or should not be in the
       --  completion list.
       --  Since: gtk+ 2.4
-      --  "func": the Gtk.Entry_Completion.Gtk_Entry_Completion_Match_Func to
-      --  use
+      --  "func": the Gtk_Entry_Completion_Match_Func to use
       --  "func_data": user data for Func
 
    end Set_Match_Func_User_Data;

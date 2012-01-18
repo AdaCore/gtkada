@@ -90,10 +90,10 @@ package Gtk.Color_Button is
    -------------
 
    function Get_Alpha
-      (Button : not null access Gtk_Color_Button_Record) return guint16;
+      (Button : not null access Gtk_Color_Button_Record) return Guint16;
    procedure Set_Alpha
       (Button : not null access Gtk_Color_Button_Record;
-       Alpha  : guint16);
+       Alpha  : Guint16);
    --  Sets the current opacity to be Alpha.
    --  Since: gtk+ 2.4
    --  "alpha": an integer between 0 and 65535

@@ -294,9 +294,9 @@ package body Gtk.Notebook is
    ---------------------
 
    function Get_Tab_Hborder
-      (Notebook : not null access Gtk_Notebook_Record) return guint16
+      (Notebook : not null access Gtk_Notebook_Record) return Guint16
    is
-      function Internal (Notebook : System.Address) return guint16;
+      function Internal (Notebook : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_notebook_get_tab_hborder");
    begin
       return Internal (Get_Object (Notebook));
@@ -373,9 +373,9 @@ package body Gtk.Notebook is
    ---------------------
 
    function Get_Tab_Vborder
-      (Notebook : not null access Gtk_Notebook_Record) return guint16
+      (Notebook : not null access Gtk_Notebook_Record) return Guint16
    is
-      function Internal (Notebook : System.Address) return guint16;
+      function Internal (Notebook : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_notebook_get_tab_vborder");
    begin
       return Internal (Get_Object (Notebook));

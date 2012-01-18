@@ -113,9 +113,9 @@ package body Gtk.Color_Button is
    ---------------
 
    function Get_Alpha
-      (Button : not null access Gtk_Color_Button_Record) return guint16
+      (Button : not null access Gtk_Color_Button_Record) return Guint16
    is
-      function Internal (Button : System.Address) return guint16;
+      function Internal (Button : System.Address) return Guint16;
       pragma Import (C, Internal, "gtk_color_button_get_alpha");
    begin
       return Internal (Get_Object (Button));
@@ -186,9 +186,9 @@ package body Gtk.Color_Button is
 
    procedure Set_Alpha
       (Button : not null access Gtk_Color_Button_Record;
-       Alpha  : guint16)
+       Alpha  : Guint16)
    is
-      procedure Internal (Button : System.Address; Alpha : guint16);
+      procedure Internal (Button : System.Address; Alpha : Guint16);
       pragma Import (C, Internal, "gtk_color_button_set_alpha");
    begin
       Internal (Get_Object (Button), Alpha);

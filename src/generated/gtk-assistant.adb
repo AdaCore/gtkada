@@ -46,8 +46,8 @@ package body Gtk.Assistant is
    --  the assistant to use the default forward function, which just goes to
    --  the next visible page.
    --  Since: gtk+ 2.10
-   --  "page_func": the Gtk.Assistant.Gtk_Assistant_Page_Func, or null to use
-   --  the default one
+   --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
+   --  one
    --  "data": user data for Page_Func
    --  "destroy": destroy notifier for Data
 
