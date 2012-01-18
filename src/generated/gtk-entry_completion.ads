@@ -73,30 +73,21 @@ pragma Ada_05;
 --  <group>Numeric/Text Data Entry</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Types;           use Glib.Types;
-with Gtk.Buildable;        use Gtk.Buildable;
-with Gtk.Cell_Area;        use Gtk.Cell_Area;
-with Gtk.Cell_Layout;      use Gtk.Cell_Layout;
-with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
-with Gtk.Tree_Model;       use Gtk.Tree_Model;
-with Gtk.Widget;           use Gtk.Widget;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
+with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Gtk.Buildable;     use Gtk.Buildable;
+with Gtk.Cell_Area;     use Gtk.Cell_Area;
+with Gtk.Cell_Layout;   use Gtk.Cell_Layout;
+with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
+with Gtk.Tree_Model;    use Gtk.Tree_Model;
+with Gtk.Widget;        use Gtk.Widget;
 
 package Gtk.Entry_Completion is
 
    type Gtk_Entry_Completion_Record is new GObject_Record with null record;
    type Gtk_Entry_Completion is access all Gtk_Entry_Completion_Record'Class;
-
-   type C_Gtk_Entry_Completion_Match_Func is access function
-     (Completion    : System.Address;
-      Key           : Interfaces.C.Strings.chars_ptr;
-      Iter          : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Data          : System.Address) return Boolean;
-   pragma Convention (C, C_Gtk_Entry_Completion_Match_Func);
-
 
    type Gtk_Entry_Completion_Match_Func is access function
      (Completion : not null access Gtk_Entry_Completion_Record'Class;
@@ -400,31 +391,6 @@ package Gtk.Entry_Completion is
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   generic
-   type Data_Type (<>) is private;
-   package Match_Functions is
-      type Gtk_Entry_Completion_Match_Func is access
-      function (Completion : access Gtk_Entry_Completion_Record'Class;
-         Key        : String;
-         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data  : Data_Type) return Boolean;
-
-      type Destroy_Notify is access procedure (Data : in out Data_Type);
-
-      procedure Set_Match_Func
-        (Completion  : access Gtk_Entry_Completion_Record;
-         Func        : Gtk_Entry_Completion_Match_Func;
-         Func_Data   : Data_Type;
-         Func_Notify : Destroy_Notify);
-      --  Sets the match function for completion to be Func. The match function
-      --  is used to determine if a row should or should not be in the
-      --  completion list.
-   end Match_Functions;
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

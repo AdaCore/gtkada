@@ -25,105 +25,16 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Ada.Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Entry_Completion is
 
-   package body Match_Functions is
+   function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Entry_Completion_Match_Func);
 
-      function Internal_Completion_Func
-        (Completion : System.Address;
-         Key        : Interfaces.C.Strings.chars_ptr;
-         Iter       : Gtk_Tree_Iter;
-         Data       : System.Address) return Gboolean;
-      pragma Convention (C, Internal_Completion_Func);
-      --  Internal callback
-
-      procedure Internal_Notify (Data : System.Address);
-      pragma Convention (C, Internal_Notify);
-      --  Internal notification function
-
-      type Data_Type_Access is access Data_Type;
-      type Completion_User_Data_Record is record
-         Callback  : Gtk_Entry_Completion_Match_Func;
-         User_Data : Data_Type_Access;
-         Notify    : Destroy_Notify;
-      end record;
-      type Completion_User_Data is access Completion_User_Data_Record;
-
-      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-        (Completion_User_Data_Record, Completion_User_Data);
-      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-        (Data_Type, Data_Type_Access);
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Completion_User_Data);
-
-      ------------------------------
-      -- Internal_Completion_Func --
-      ------------------------------
-
-      function Internal_Completion_Func
-        (Completion : System.Address;
-         Key        : Interfaces.C.Strings.chars_ptr;
-         Iter       : Gtk_Tree_Iter;
-         Data       : System.Address) return Gboolean
-      is
-         D : constant Completion_User_Data := Convert (Data);
-         Stub : Gtk_Entry_Completion_Record;
-         Complete : Gtk_Entry_Completion;
-      begin
-         Complete := Gtk_Entry_Completion (Get_User_Data (Completion, Stub));
-         return Boolean'Pos
-           (D.Callback (Complete, Value (Key), Iter, D.User_Data.all));
-      end Internal_Completion_Func;
-
-      ---------------------
-      -- Internal_Notify --
-      ---------------------
-
-      procedure Internal_Notify (Data : System.Address) is
-         D : Completion_User_Data := Convert (Data);
-      begin
-         D.Notify (D.User_Data.all);
-         Unchecked_Free (D.User_Data);
-         Unchecked_Free (D);
-      end Internal_Notify;
-
-      --------------------
-      -- Set_Match_Func --
-      --------------------
-
-      procedure Set_Match_Func
-        (Completion  : access Gtk_Entry_Completion_Record;
-         Func        : Gtk_Entry_Completion_Match_Func;
-         Func_Data   : Data_Type;
-         Func_Notify : Destroy_Notify)
-      is
-         procedure Internal
-           (Completion  : System.Address;
-            Func        : System.Address;
-            Func_Data   : Completion_User_Data;
-            Func_Notify : System.Address);
-         pragma Import (C, Internal, "gtk_entry_completion_set_match_func");
-
-         Data : constant Completion_User_Data :=
-         new Completion_User_Data_Record'
-        (Callback    => Func,
-         User_Data   => new Data_Type'(Func_Data),
-         Notify      => Func_Notify);
-   begin
-      Internal (Get_Object (Completion),
-         Internal_Completion_Func'Address,
-         Data, Internal_Notify'Address);
-   end Set_Match_Func;
-end Match_Functions;
-
-function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
-  (System.Address, Gtk_Entry_Completion_Match_Func);
-
-function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-  (System.Address, Cell_Data_Func);
+   function To_Cell_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Cell_Data_Func);
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
