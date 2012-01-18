@@ -489,6 +489,9 @@ Gtk.Tree_View
 
 Procedure Create_Row_Drag_Icon now returns a Cairo_Surface.
 
+Get_Hadjustment, Set_Hadjustment, Get_Vadjustment, Set_Vadjustment have been
+removed: use the equivalent properties.
+
 Gtk.VRuler
 ==========
 

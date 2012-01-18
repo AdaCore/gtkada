@@ -36,7 +36,6 @@ with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
 with Gtk;
-with Gtk.Adjustment;
 with Gtk.Cell_Renderer;
 with Gtk.Container;
 with Gtk.Enums;
@@ -92,23 +91,6 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record)
       return Gtk.Tree_Selection.Gtk_Tree_Selection;
    --  Gets the Gtk_Tree_Selection associated with Tree_View.
-
-   procedure Set_Hadjustment
-     (Tree_View  : access Gtk_Tree_View_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   function Get_Hadjustment
-     (Tree_View : access Gtk_Tree_View_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
-   --  Sets or gets the Gtk_Adjustment for the current horizontal aspect.
-
-   procedure Set_Vadjustment
-     (Tree_View  : access Gtk_Tree_View_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   function Get_Vadjustment
-     (Tree_View : access Gtk_Tree_View_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
-   --  Sets or Gets the Gtk_Adjustment currently being used for the vertical
-   --  aspect.
 
    function Get_Enable_Tree_Lines
      (Tree_View : access Gtk_Tree_View_Record) return Boolean;
