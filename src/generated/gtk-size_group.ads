@@ -190,6 +190,13 @@ package Gtk.Size_Group is
    --  Removes a widget from a Gtk.Size_Group.Gtk_Size_Group.
    --  "widget": the Gtk.Widget.Gtk_Widget to remove
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

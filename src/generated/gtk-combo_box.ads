@@ -438,6 +438,9 @@ package Gtk.Combo_Box is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Editing_Done
       (Cell_Editable : not null access Gtk_Combo_Box_Record);

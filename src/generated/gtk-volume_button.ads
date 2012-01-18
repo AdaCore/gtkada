@@ -63,6 +63,9 @@ package Gtk.Volume_Button is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Volume_Button_Record;

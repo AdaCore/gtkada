@@ -84,6 +84,9 @@ package Gtk.Check_Button is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Check_Button_Record;
@@ -136,5 +139,11 @@ package Gtk.Check_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Check_Button
    renames Implements_Buildable.To_Object;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
 end Gtk.Check_Button;

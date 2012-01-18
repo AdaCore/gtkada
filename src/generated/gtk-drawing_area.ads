@@ -132,6 +132,13 @@ package Gtk.Drawing_Area is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -149,5 +156,11 @@ package Gtk.Drawing_Area is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Drawing_Area
    renames Implements_Buildable.To_Object;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
 end Gtk.Drawing_Area;

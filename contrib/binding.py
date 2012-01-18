@@ -1210,10 +1210,18 @@ See Glib.Properties for more information on properties)""")
             # quite work: for instance, Gtk.About_Dialog already has a
             # Get_Name, so we can't redefine the one inherited from Buildable.
             section = self.pkg.section("Inherited subprograms (from interfaces)")
+
             for impl in sorted(self.implements.iterkeys()):
                 impl = self.implements[impl]
                 if impl["name"] == "Buildable":
                     # Do not repeat for buildable, that's rarely used
+
+                    section.add_comment(
+                        "Methods inherited from the Buildable interface are not"
+                        + " duplicated here since they are meant to be used by"
+                        + " tools, mostly. If you need to call them, use an"
+                        + ' explicit cast through the "-" operator below.')
+
                     continue
 
                 interf = impl["interface"]

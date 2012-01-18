@@ -115,4 +115,10 @@ package Gtk.Tool_Shell is
    --  Gtk.Tool_Item.Rebuild_Menu instead.
    --  Since: gtk+ 2.14
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
 end Gtk.Tool_Shell;

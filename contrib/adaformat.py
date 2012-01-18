@@ -1256,7 +1256,7 @@ class Section(object):
 
         result = []
 
-        if self.__subprograms or self.spec_code:
+        if self.__subprograms or self.spec_code or self.comment:
             if self.name:
                 result.append(box(self.name))
             if self.comment:

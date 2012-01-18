@@ -69,6 +69,13 @@ package Gtk.Spinner is
    --  Stops the animation of the spinner.
    --  Since: gtk+ 2.20
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

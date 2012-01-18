@@ -63,6 +63,13 @@ package Gtk.Bin is
    --  child widget. The returned widget does not have a reference added, so
    --  you do not need to unref it.
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -80,5 +87,11 @@ package Gtk.Bin is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Bin
    renames Implements_Buildable.To_Object;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
 end Gtk.Bin;

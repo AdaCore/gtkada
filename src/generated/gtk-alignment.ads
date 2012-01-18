@@ -138,6 +138,13 @@ package Gtk.Alignment is
    --  "yscale": the amount that the child widget expands vertically to fill
    --  up unused space, from 0 to 1. The values are similar to Xscale.
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

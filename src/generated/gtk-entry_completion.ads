@@ -430,6 +430,9 @@ package Gtk.Entry_Completion is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Add_Attribute
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;

@@ -98,6 +98,13 @@ package Gtk.Misc is
    --  "ypad": the amount of space to add on the top and bottom of the widget,
    --  in pixels.
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

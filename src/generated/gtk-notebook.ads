@@ -438,6 +438,13 @@ package Gtk.Notebook is
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Convenience functions, same as above but discarding the return value.
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

@@ -148,6 +148,9 @@ package Gtk.File_Chooser_Button is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;

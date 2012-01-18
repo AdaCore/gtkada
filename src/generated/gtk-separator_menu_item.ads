@@ -59,6 +59,9 @@ package Gtk.Separator_Menu_Item is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Separator_Menu_Item_Record;
@@ -111,5 +114,11 @@ package Gtk.Separator_Menu_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Separator_Menu_Item
    renames Implements_Buildable.To_Object;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
 end Gtk.Separator_Menu_Item;

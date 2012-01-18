@@ -273,6 +273,13 @@ package Gtk.About_Dialog is
    --  Since: gtk+ 2.8
    --  "wrap_license": whether to wrap the license
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------

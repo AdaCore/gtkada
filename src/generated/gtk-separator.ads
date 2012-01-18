@@ -87,6 +87,9 @@ package Gtk.Separator is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    function Get_Orientation
       (Self : not null access Gtk_Separator_Record)
@@ -125,5 +128,15 @@ package Gtk.Separator is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Separator
    renames Implements_Orientable.To_Object;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
 end Gtk.Separator;

@@ -247,6 +247,13 @@ package Gtk.Calendar is
    --  Removes the visual marker from a particular day.
    --  "day": the day number to unmark between 1 and 31.
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
    ----------------
    -- Interfaces --
    ----------------
