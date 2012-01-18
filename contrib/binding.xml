@@ -2135,4 +2135,13 @@ The following default key bindings are provided, but you can use a gtkrc file to
      <method id="gtk_editable_get_selection_bounds" bind="False"/>
   </package>
 
+  <package id="Gtk.Tool_Item">
+     <parameter name="self" ada="Tool_Item"/>
+     <method id="gtk_tool_item_retrieve_proxy_menu_item" return="GtkMenuItem"/>
+     <method id="gtk_tool_item_get_proxy_menu_item" return="GtkMenuItem"/>
+     <method id="gtk_tool_item_set_proxy_menu_item">
+        <parameter name="menu_item" ctype="GtkMenuItem"/>
+     </method>
+  </package>
+
 </GIR>
