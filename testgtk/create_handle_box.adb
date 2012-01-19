@@ -60,7 +60,7 @@ package body Create_Handle_Box is
 
    procedure Child_Signal (Handle : access Gtk_Handle_Box_Record'Class;
                            Child  : access Gtk_Widget_Record'Class;
-                           Data   : in String) is
+                           Data   : String) is
    begin
       Ada.Text_IO.Put_Line ("In Child Signal");
       if Is_Created  (Child.all) then
@@ -126,8 +126,7 @@ package body Create_Handle_Box is
                          Handle_Cb.To_Marshaller (Child_Signal'Access),
                          "detached");
 
-      Create_Toolbar.Make_Toolbar (Toolbar, Get_Window (Frame),
-                                   Get_Style (Frame));
+      Create_Toolbar.Make_Toolbar (Toolbar);
       Add (Handle, Toolbar);
 
       Gtk_New (Handle);

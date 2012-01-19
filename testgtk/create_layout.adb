@@ -35,6 +35,7 @@ with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Layout;          use Gtk.Layout;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
+with Gtk.Widget;          use Gtk.Widget;
 
 package body Create_Layout is
 
@@ -80,9 +81,6 @@ package body Create_Layout is
       Jmin := Guint (Area.Y) / 10;
       Jmax := (Guint (Area.Y) + Guint (Area.Height) + 9) / 10;
 
-      Clear_Area (Get_Window (Layout), Area.X, Area.Y, Area.Width,
-                  Area.Height);
-
       for I in Imin .. Imax - 1 loop
          for J in Jmin .. Jmax - 1 loop
             if (I + J) mod 2 /= 0 then
@@ -97,6 +95,7 @@ package body Create_Layout is
 
       Set_Source_Rgb (Context, Red => 0.0, Green => 0.0, Blue => 0.0);
       Cairo.Fill (Context);
+      Cairo.Paint (Context);
 
       return True;
    end Expose_Handler;
@@ -124,7 +123,7 @@ package body Create_Layout is
       Set_Step_Increment (Get_Hadjustment (Layout), 10.0);
       Set_Step_Increment (Get_Vadjustment (Layout), 10.0);
 
-      Event_Cb.Connect (Layout, "expose_event",
+      Event_Cb.Connect (Layout, Signal_Expose_Event,
                         Event_Cb.To_Marshaller (Expose_Handler'Access));
       Set_Size (Layout, 1600, 128000);
 

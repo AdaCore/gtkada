@@ -680,19 +680,6 @@ package Gtk.Widget is
    --  bits per pixel), and some information used internally by GtkAda to
    --  handle colors and colormaps.
 
-   procedure Push_Colormap (Cmap : Gdk.Color.Gdk_Colormap);
-   procedure Pop_Colormap;
-   --  Modify temporarily the default colormap set for newly created widgets.
-   --  You should use this in pair with Pop_Colormap (Push the new value,
-   --  create the widget, and pop the value).
-
-   procedure Set_Default_Colormap (Cmap : Gdk.Color.Gdk_Colormap);
-   function Get_Default_Colormap return Gdk.Color.Gdk_Colormap;
-   --  Modify permanently the default colormap used when a widget is created.
-   --  If you only want to modify this colormap temporarily for a few widgets,
-   --  you should consider using Push_Colormap and Pop_Colormap instead.
-   --  See also Gdk.Screen.Get_Default_Colormap for a multihead-aware version
-
    function Get_Default_Visual return Gdk.Visual.Gdk_Visual;
    --  Return the default visual used when a new widget is created.
 
@@ -2345,13 +2332,9 @@ private
    Wide_Separators_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wide-separators");
 
-   pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
    pragma Import (C, Requisition_Get_Type, "gtk_requisition_get_type");
-   pragma Import (C, Get_Default_Colormap, "gtk_widget_get_default_colormap");
    pragma Import (C, Get_Default_Visual, "gtk_widget_get_default_visual");
-   pragma Import (C, Push_Colormap, "gtk_widget_push_colormap");
-   pragma Import (C, Set_Default_Colormap, "gtk_widget_set_default_colormap");
    pragma Import (C, Set_Default_Size_Allocate_Handler,
                   "ada_gtk_widget_set_default_size_allocate_handler");
    pragma Import (C, Default_Expose_Event_Handler,

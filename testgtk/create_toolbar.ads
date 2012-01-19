@@ -22,16 +22,13 @@
 ------------------------------------------------------------------------------
 
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Style; use Gtk.Style;
 with Gtk.Toolbar; use Gtk.Toolbar;
 with Gdk.Window;  use Gdk.Window;
 
 package Create_Toolbar is
 
    procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;
-                           Toplevel   : in Gdk_Window;
-                           Style      : in Gtk_Style;
-                           With_Entry : in Boolean := False);
+                           With_Entry : Boolean := False);
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
    function Help return String;
 

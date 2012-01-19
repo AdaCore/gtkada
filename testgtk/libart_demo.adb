@@ -109,11 +109,6 @@ package body Libart_Demo is
    is
       Label : Gtk_Label;
    begin
-      --  The drawing area MUST be created with Gdk.Rgb colormap,
-      --  otherwise the image can not be rendered correctly.
-
-      Gtk.Widget.Push_Colormap (Get_Default_Colormap);
-
       Draw := new Image_Drawing_Record;
       Initialize_Vbox (Draw, Homogeneous => False, Spacing => 0);
 
@@ -136,8 +131,6 @@ package body Libart_Demo is
       Destroy_Cb.Connect
         (Draw, "destroy",
          Destroy_Cb.To_Marshaller (Destroy'Access));
-
-      Gtk.Widget.Pop_Colormap;
    end Gtk_New;
 
    ---------

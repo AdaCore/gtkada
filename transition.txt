@@ -1,4 +1,4 @@
-This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
+his document describes how to transition from GtkAda 2.x to GtkAda 3.x.
 
 General
 =======
@@ -164,6 +164,8 @@ Gdk.Window
 
 Copy_Area and Set_Back_Pixmap have been removed: use Gdk_Drawable and
 Gdk.Cairo functions instead.
+
+Clear_Area and Clear_Area_E were removed. Use Cairo for all drawings.
 
 Get_Desk_Relative_Origin: this function has been removed without a replacement.
 
@@ -602,7 +604,8 @@ Gtk.Tooltips
 The package Gtk.Tooltips has been removed, in favor of Gtk.Tooltip.
 
 For creating simple tooltips on all GtkAda widgets, the easiest is to use
-Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup.
+Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup. See the example
+in testgtk/create_tooltip.adb.
 
 Gtk.Tree_View
 =============
@@ -646,6 +649,10 @@ to fix the position of contained widgets. The functions in Gtk.Window, for
 instance Gtk.Window.Move, should be used for top-level widgets.
 
 Set_USize has been removed: use Set_Size_Request instead.
+
+Set_Default_Colormap, Get_Default_Colormap, Push_Colormap and Pop_Colormap were
+removed. They are no longer needed, since all drawing is done through Cairo
+which doesn't use a colormap but directly the red/green/blue components.
 
 Queue_Clear and Queue_Clear_Area have been removed, call Queue_Draw and
 Queue_Draw_Area instead.

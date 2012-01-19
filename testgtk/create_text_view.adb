@@ -114,7 +114,6 @@ package body Create_Text_View is
       --  text.
 
       Color := Parse ("red");
-      Alloc (Get_Default_Colormap, Color);
 
       Gtk_New (Tag, "red");
       Add (Tags, Tag);

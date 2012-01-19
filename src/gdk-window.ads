@@ -314,22 +314,6 @@ package Gdk.Window is
 
    procedure Clear (Window : Gdk_Window);
 
-   procedure Clear_Area
-     (Window : Gdk_Window;
-      X      : Gint;
-      Y      : Gint;
-      Width  : Gint;
-      Height : Gint);
-   --  Does not generate an expose event.
-
-   procedure Clear_Area_E
-     (Window : Gdk_Window;
-      X      : Gint;
-      Y      : Gint;
-      Width  : Gint;
-      Height : Gint);
-   --  Same as Clear_Area, but generates an expose event.
-
    function Create_Similar_Surface
      (Window  : Gdk_Window;
       Content : Cairo.Cairo_Content;
@@ -628,8 +612,6 @@ private
    pragma Import (C, Get_Type, "gdk_window_object_get_type");
    pragma Import (C, Add_Filter, "gdk_window_add_filter");
    pragma Import (C, Clear, "gdk_window_clear");
-   pragma Import (C, Clear_Area, "gdk_window_clear_area");
-   pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
    pragma Import (C, Focus, "gdk_window_focus");
    pragma Import (C, Scroll, "gdk_window_scroll");
    pragma Import (C, Shape_Combine_Mask, "gdk_window_shape_combine_mask");
