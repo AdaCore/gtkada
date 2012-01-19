@@ -114,7 +114,8 @@ binding = ("GdkDevice",
            "GtkVScrollbar",
            "GtkVSeparator",
            "GtkViewport",
-           "GtkVolumeButton"
+           "GtkVolumeButton",
+           "GtkWidget::merge",   # Partial binding
           )
 
 # Handling of functions with user data. The names below are the likely names
@@ -180,6 +181,7 @@ naming.girname_to_ctype = {
     "Gdk.Bitmap":          "GdkBitmap*",
     "GObject.Object":      "GObject*",
     "GObject.Closure":     "GClosure*",
+    "Cairo.Context":       "cairo_t",
     "GObject.InitiallyUnowned": "GObject*"  # An alias
 }
 

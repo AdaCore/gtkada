@@ -29,10 +29,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gdk.Screen is
 
-   ----------------
-   -- Get_Screen --
-   ----------------
-
    function Get_Screen
      (Display    : access Gdk_Display_Record'Class;
       Screen_Num : Gint)
@@ -51,10 +47,6 @@ package body Gdk.Screen is
            (Internal (Get_Object (Display), Screen_Num), Stub));
    end Get_Screen;
 
-   ------------------------
-   -- Get_Default_Screen --
-   ------------------------
-
    function Get_Default_Screen
      (Display : access Gdk_Display_Record'Class)
    return Gdk_Screen
@@ -70,10 +62,6 @@ package body Gdk.Screen is
         (Get_User_Data
            (Internal (Get_Object (Display)), Stub));
    end Get_Default_Screen;
-
-   -----------------
-   -- Get_Pointer --
-   -----------------
 
    procedure Get_Pointer
      (Display : access Gdk_Display_Record'Class;
@@ -98,10 +86,6 @@ package body Gdk.Screen is
       Internal (Get_Object (Display), S, X, Y, Mask);
       Screen := Gdk_Screen (Get_User_Data (S, Stub));
    end Get_Pointer;
-
-   ------------------
-   -- Warp_Pointer --
-   ------------------
 
    procedure Warp_Pointer
      (Display : access Gdk.Display.Gdk_Display_Record'Class;

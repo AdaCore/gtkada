@@ -98,7 +98,7 @@ package Gtk.Button_Box is
    --  GTK_BUTTONBOX_START, GTK_BUTTONBOX_SPREAD or GTK_BUTTONBOX_EDGE, and
    --  before the other children if the style is GTK_BUTTONBOX_END. For
    --  horizontal button boxes, the definition of before/after depends on
-   --  direction of the widget (see Gtk.Window.Set_Direction). If the style is
+   --  direction of the widget (see Gtk.Widget.Set_Direction). If the style is
    --  GTK_BUTTONBOX_START or GTK_BUTTONBOX_END, then the secondary children
    --  are aligned at the other end of the button box from the main children.
    --  For the other styles, they appear immediately next to the main children.

@@ -30,7 +30,7 @@ pragma Ada_05;
 --  *
 --
 --  Mouse and button press signals to respond to input from the user. (Use
---  Gtk.Widget.Add_Event to enable events you wish to receive.)
+--  Gtk.Widget.Add_Events to enable events you wish to receive.)
 --
 --  *
 --
@@ -84,7 +84,7 @@ pragma Ada_05;
 --  Draw signals are normally delivered when a drawing area first comes
 --  onscreen, or when it's covered by another window and then uncovered. You
 --  can also force an expose event by adding to the "damage region" of the
---  drawing area's window; gtk_widget_queue_draw_area and
+--  drawing area's window; Gtk.Widget.Queue_Draw_Area and
 --  gdk_window_invalidate_rect are equally good ways to do this. You'll then
 --  get a draw signal for the invalid region.
 --
@@ -93,10 +93,10 @@ pragma Ada_05;
 --  cairo documentation.
 --
 --  To receive mouse events on a drawing area, you will need to enable them
---  with Gtk.Widget.Add_Event. To receive keyboard events, you will need to set
---  the "can-focus" property on the drawing area, and you should probably draw
---  some user-visible indication that the drawing area is focused. Use
---  gtk_widget_has_focus in your expose event handler to decide whether to draw
+--  with Gtk.Widget.Add_Events. To receive keyboard events, you will need to
+--  set the "can-focus" property on the drawing area, and you should probably
+--  draw some user-visible indication that the drawing area is focused. Use
+--  Gtk.Widget.Has_Focus in your expose event handler to decide whether to draw
 --  the focus indicator. See gtk_render_focus for one way to draw focus.
 --
 --  </description>

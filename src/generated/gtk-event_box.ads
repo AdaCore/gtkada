@@ -98,7 +98,7 @@ package Gtk.Event_Box is
    --  descendent widgets of the event box create, events on these windows
    --  aren't propagated up by the windowing system, but only by GTK+. The
    --  practical effect of this is if an event isn't in the event mask for the
-   --  descendant window (see Gtk.Widget.Add_Event), it won't be received by
+   --  descendant window (see Gtk.Widget.Add_Events), it won't be received by
    --  the event box.
    --  This problem doesn't occur for visible event boxes, because in that
    --  case, the event box window is actually the ancestor of the descendant

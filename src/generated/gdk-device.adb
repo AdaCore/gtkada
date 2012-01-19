@@ -29,10 +29,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gdk.Device is
 
-   ----------------------------
-   -- Get_Window_At_Position --
-   ----------------------------
-
    procedure Get_Window_At_Position
      (Self   : not null access Gdk_Device_Record;
       Win_X  : out Gint;

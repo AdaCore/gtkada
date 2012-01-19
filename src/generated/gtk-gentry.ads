@@ -333,7 +333,7 @@ package Gtk.GEntry is
    --  specified position. Tooltip is assumed to be marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>.
    --  Use null for Tooltip to remove an existing tooltip.
-   --  See also gtk_widget_set_tooltip_markup and
+   --  See also Gtk.Widget.Set_Tooltip_Markup and
    --  gtk_enty_set_icon_tooltip_text.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
@@ -349,7 +349,7 @@ package Gtk.GEntry is
    --  Sets Tooltip as the contents of the tooltip for the icon at the
    --  specified position.
    --  Use null for Tooltip to remove an existing tooltip.
-   --  See also gtk_widget_set_tooltip_text and
+   --  See also Gtk.Widget.Set_Tooltip_Text and
    --  Gtk.GEntry.Set_Icon_Tooltip_Markup.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position

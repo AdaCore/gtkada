@@ -47,7 +47,7 @@ pragma Ada_05;
 --
 --  <important> The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button will
 --  ellipsize the label, and thus will thus request little horizontal space. To
---  give the button more space, you should call gtk_widget_get_preferred_size,
+--  give the button more space, you should call Gtk.Widget.Get_Preferred_Size,
 --  Gtk.File_Chooser_Button.Set_Width_Chars, or pack the button in such a way
 --  that other interface elements give space to the widget. </important>
 --  </description>

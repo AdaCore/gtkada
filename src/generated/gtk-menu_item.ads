@@ -120,7 +120,7 @@ package Gtk.Menu_Item is
    --  specifics of accelerator paths, and gtk_menu_set_accel_path for a more
    --  convenient variant of this function.
    --  This function is basically a convenience wrapper that handles calling
-   --  gtk_widget_set_accel_path with the appropriate accelerator group for the
+   --  Gtk.Widget.Set_Accel_Path with the appropriate accelerator group for the
    --  menu item.
    --  Note that you do need to set an accelerator on the parent menu with
    --  gtk_menu_set_accel_group for this to work.
@@ -162,7 +162,7 @@ package Gtk.Menu_Item is
    --  considered a bad idea. (If the widget layout is reversed for a
    --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
    --  appear at the left.)
-   --  gtk_widget_set_hexpand and gtk_widget_set_halign.
+   --  Gtk.Widget.Set_Hexpand and Gtk.Widget.Set_Halign.
    --  Deprecated since 3.2, If you insist on using it, use
    --  "right_justified": if True the menu item will appear at the far right
    --  if added to a menu bar

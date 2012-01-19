@@ -657,6 +657,10 @@ which doesn't use a colormap but directly the red/green/blue components.
 Queue_Clear and Queue_Clear_Area have been removed, call Queue_Draw and
 Queue_Draw_Area instead.
 
+The signal "expose_event" no longer exists. It has been replaced with the
+"draw" signal which provides a preconfigured Cairo_Context suitable for
+the drawing (including the clip area that is used to speed up the rendering).
+
 Gtk.Window
 ==========
 

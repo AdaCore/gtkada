@@ -202,10 +202,11 @@ class GIR(object):
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
         for pkg in self.packages.itervalues():
-            out.write(pkg.spec())
-            out.write("\n")
-            out.write(pkg.body())
-            out.write("\n")
+            if not getattr(pkg, "needs_merge", False):
+                out.write(pkg.spec())
+                out.write("\n")
+                out.write(pkg.body())
+                out.write("\n")
 
         cout.write(self.ccode)
 
@@ -1684,7 +1685,14 @@ for name in interfaces:
     gir.interfaces[name].generate(gir)
 
 for the_ctype in binding:
-    gir.classes[the_ctype].generate(gir)
+    needs_merge = "::merge" in the_ctype
+    if needs_merge:
+        the_ctype = the_ctype[:the_ctype.find("::merge")]
+    print the_ctype, needs_merge
+
+    cl = gir.classes[the_ctype]
+    cl.generate(gir)
+    cl.pkg.needs_merge = needs_merge
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")
