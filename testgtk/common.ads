@@ -26,6 +26,7 @@ with Gtk;              use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
+with Gtk.Combo_Box_Text; use Gtk.Combo_Box_Text;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;

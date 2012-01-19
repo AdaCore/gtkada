@@ -31,7 +31,6 @@ with Gtk.Scale;         use Gtk.Scale;
 with Gtk.Scale_Button;  use Gtk.Scale_Button;
 with Gtk.Scrollbar;     use Gtk.Scrollbar;
 with Gtk.Volume_Button; use Gtk.Volume_Button;
-with Gtkada.Types;      use Gtkada.Types;
 
 package body Create_Range is
 
@@ -88,8 +87,7 @@ package body Create_Range is
 
       Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
       Gtk_New_Hscale (Scale, Adjustment);
-      Set_USize (Scale, 150, 80);
-      Set_Update_Policy (Scale, Update_Delayed);
+      Scale.Set_Size_Request (150, 80);
       Set_Digits (Scale, 1);
       Set_Draw_Value (Scale, True);
       Set_Value_Pos (Scale, Pos_Bottom);
@@ -100,7 +98,6 @@ package body Create_Range is
       end loop;
 
       Gtk_New_Hscrollbar (Scrollbar, Adjustment);
-      Set_Update_Policy (Scrollbar, Update_Continuous);
       Pack_Start (Box2, Scrollbar, True, True, 0);
 
       Gtk_New_Hbox (Box3, False, 10);
@@ -109,7 +106,8 @@ package body Create_Range is
       Gtk_New (Label, "Scale button:");
       Pack_Start (Box3, Label, False, False, 0);
 
-      Scale_Button := Gtk_New (Icon_Size_Button, 0.0, 100.0, 2.0, Null_Array);
+      Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0,
+               Icons => (1 .. 0 => null));
       Pack_Start (Box3, Scale_Button, False, False, 0);
 
       Gtk_New (Label, "Volume button:");

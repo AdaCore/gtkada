@@ -348,6 +348,12 @@ Gtk.GEntry
 The names for Gtk_Entry_Record parameters have been normalized across
 the board to "The_Entry".
 
+Gtk.GRange
+==========
+
+Set_Update_Policy has been removed, with no replacement. If you require
+delayed updates, you will need to code it yourself.
+
 Gtk.HRuler
 ==========
 

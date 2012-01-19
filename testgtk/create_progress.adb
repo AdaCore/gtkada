@@ -30,23 +30,19 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
 with Glib.Main;           use Glib.Main;
---  ??? replace Option_Menu with, what, Combo_Box?
-with Gtk.Option_Menu;     use Gtk.Option_Menu;
+with Gtk.Combo_Box_Text;  use Gtk.Combo_Box_Text;
 with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Table;           use Gtk.Table;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk;                 use Gtk;
-with Gtkada.Types;        use Gtkada.Types;
+with Gtkada.Handlers;     use Gtkada.Handlers;
 
 with Common; use Common;
 
 package body Create_Progress is
 
    package Time_Cb  is new Glib.Main.Generic_Sources (Gtk_Progress_Bar);
-
-   Items1 : constant Chars_Ptr_Array := "Horizontal" + "Vertical";
-   Items2 : constant Chars_Ptr_Array := "Not Inverted" + "Inverted";
 
    type ProgressData is record
       Pbar            : Gtk_Progress_Bar;
@@ -56,9 +52,9 @@ package body Create_Progress is
       Step_Spin       : Gtk_Spin_Button;
       Act_Blocks_Spin : Gtk_Spin_Button;
       Label           : Gtk_Label;
-      Omenu1          : Gtk_Option_Menu;
+      Omenu1          : Gtk_Combo_Box_Text;
       Omenu1_Group    : Widget_SList.GSlist;
-      Omenu2          : Gtk_Option_Menu;
+      Omenu2          : Gtk_Combo_Box_Text;
       Omenu2_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
       Timer           : G_Source_Id;
@@ -117,10 +113,11 @@ package body Create_Progress is
    ----------------------
 
    procedure Toggle_Inversion (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
-      Is_Inverted : constant Boolean := Get_Inverted (Pdata.Pbar);
+      Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
+      Current : constant UTF8_String := Combo.Get_Active_Text;
+      Is_Inverted : constant Boolean := Current = "Inverted";
    begin
-      Set_Inverted (Pdata.Pbar, not Is_Inverted);
+      Pdata.Pbar.Set_Inverted (Is_Inverted);
    end Toggle_Inversion;
 
    ------------------------
@@ -128,13 +125,13 @@ package body Create_Progress is
    ------------------------
 
    procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
-      Orientation : constant Gtk_Orientation := Get_Orientation (Pdata.Pbar);
+      Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
+      Current : constant UTF8_String := Combo.Get_Active_Text;
    begin
-      if Orientation = Gtk_Orientation'Last then
-         Set_Orientation (Pdata.Pbar, Gtk_Orientation'First);
+      if Current = "Horizontal" then
+         Set_Orientation (Pdata.Pbar, Orientation_Horizontal);
       else
-         Set_Orientation (Pdata.Pbar, Gtk_Orientation'Succ (Orientation));
+         Set_Orientation (Pdata.Pbar, Orientation_Vertical);
       end if;
    end Toggle_Orientation;
 
@@ -268,8 +265,11 @@ package body Create_Progress is
               Enums.Expand or Enums.Fill, 5, 5);
       Set_Alignment (Label, 0.0, 0.5);
 
-      Build_Option_Menu (Pdata.Omenu1, Pdata.Omenu1_Group,
-                         Items1, 0, Toggle_Orientation'Access);
+      Gtk_New (Pdata.Omenu1);
+      Pdata.Omenu1.Append_Text ("Horizontal");
+      Pdata.Omenu1.Append_Text ("Vertical");
+      Widget_Callback.Connect
+         (Pdata.Omenu1, "changed", Toggle_Orientation'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 0, 1, Enums.Expand or Enums.Fill,
@@ -283,8 +283,11 @@ package body Create_Progress is
               Enums.Expand or Enums.Fill, 5, 5);
       Set_Alignment (Label, 0.0, 0.5);
 
-      Build_Option_Menu (Pdata.Omenu2, Pdata.Omenu2_Group,
-                         Items2, 0, Toggle_Inversion'Access);
+      Gtk_New (Pdata.Omenu2);
+      Pdata.Omenu2.Append_Text ("Not Inverted");
+      Pdata.Omenu2.Append_Text ("Inverted");
+      Widget_Callback.Connect
+         (Pdata.Omenu2, "changed", Toggle_Inversion'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
@@ -316,7 +319,7 @@ package body Create_Progress is
          Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
       Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
-      Set_USize (Pdata.Gentry, 100, -1);
+      Set_Size_Request (Pdata.Gentry, 100, -1);
       Set_Sensitive (Pdata.Gentry, False);
 
       --  Block Count

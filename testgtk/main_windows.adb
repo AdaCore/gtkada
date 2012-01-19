@@ -95,22 +95,19 @@ with Create_Notebook;
 with Create_Opacity;
 with Create_Paned;
 with Create_Pixbuf;
-with Create_Plot;
-with Create_Plot_3D;
-with Create_Plot_Realtime;
-with Create_Preview_Color;
-with Create_Preview_Gray;
+--  with Create_Plot;
+--  with Create_Plot_3D;
+--  with Create_Plot_Realtime;
 with Create_Print;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
 with Create_Reparent;
-with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Selection;
 with Create_Size_Groups;
-with Create_Sheet;
+--  with Create_Sheet;
 with Create_Sources;
 with Create_Spin;
 with Create_Spinners;
@@ -297,17 +294,13 @@ package body Main_Windows is
                                          Create_Opacity.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
-      (NS ("plot"),             Complex, Create_Plot.Run'Access,
-                                         Create_Plot.Help'Access),
-      (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
-                                         Create_Plot_3D.Help'Access),
-      (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
-                                         Create_Plot_Realtime.Help'Access),
+      --  (NS ("plot"),             Complex, Create_Plot.Run'Access,
+      --                                     Create_Plot.Help'Access),
+      --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
+      --                                     Create_Plot_3D.Help'Access),
+      --  (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
+      --                                     Create_Plot_Realtime.Help'Access),
       (NS ("properties"),       Misc,    null, null),
-      (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
-                                         Create_Preview_Color.Help'Access),
-      (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
-                                         Create_Preview_Gray.Help'Access),
       (NS ("printing"),         Base,    Create_Print.Run'Access,
                                          Create_Print.Help'Access),
       (NS ("progress bar"),     Complex, Create_Progress.Run'Access,
@@ -320,8 +313,6 @@ package body Main_Windows is
       (NS ("rc file"),          Misc,    null, null),
       (NS ("reparent"),         Complex, Create_Reparent.Run'Access,
                                          Create_Reparent.Help'Access),
-      (NS ("rulers"),           Gimp,    Create_Rulers.Run'Access,
-                                         Create_Rulers.Help'Access),
       (NS ("saved position"),   Misc,    null, null),
       (NS ("scaling/composing"), Pixbuf,  Libart_Demo.Run'Access,
                                          Libart_Demo.Help'Access),
@@ -330,8 +321,8 @@ package body Main_Windows is
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
                                          Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
-                                         Create_Sheet.Help'Access),
+      --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
+      --                                     Create_Sheet.Help'Access),
       (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
                                          Create_Size_Groups.Help'Access),
       (NS ("event sources"),    Misc,    Create_Sources.Run'Access,
