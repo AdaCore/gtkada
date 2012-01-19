@@ -23,11 +23,11 @@
 
 with Unchecked_Conversion;
 
+with Cairo;            use Cairo;
 with Glib;             use Glib;
+with Gdk.Cairo;        use Gdk.Cairo;
 with Gdk.Cursor;       use Gdk.Cursor;
-with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
-with Gdk.GC;           use Gdk.GC;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
@@ -36,7 +36,6 @@ with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Spin_Button;  use Gtk.Spin_Button;
-with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
 
@@ -77,22 +76,24 @@ package body Create_Cursors is
    function Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record'Class)
                                 return Gint
    is
-      Style      : constant Gtk_Style := Get_Style (Darea);
-      Draw       : constant Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
-      White_GC   : constant Gdk_GC := Get_White_GC (Style);
-      Black_GC   : constant Gdk_GC := Get_Black_GC (Style);
-      Gray_GC    : constant Gdk_GC := Get_Bg_GC (Style, State_Normal);
-      Max_Width  : constant Gint  := Get_Allocation_Width (Darea);
-      Max_Height : constant Gint  := Get_Allocation_Height (Darea);
+      Context : constant Cairo_Context := Create (Darea.Get_Window);
+      W       : constant Gdouble  := Gdouble (Get_Allocation_Width (Darea));
+      H       : constant Gdouble  := Gdouble (Get_Allocation_Height (Darea));
 
    begin
-      Draw_Rectangle (Draw, White_GC, True, 0, 0,
-                      Max_Width, Max_Height / 2);
-      Draw_Rectangle (Draw, Black_GC, True, 0, Max_Height / 2,
-                      Max_Width, Max_Height / 2);
-      Draw_Rectangle (Draw, Gray_GC, True, Max_Width / 3,
-                      Max_Height / 3, Max_Width / 3,
-                      Max_Height / 3);
+      Rectangle (Context, 0.0, 0.0, W, H / 2.0);
+      Set_Source_Rgb (Context, 1.0, 1.0, 1.0);
+      Cairo.Fill (Context);
+
+      Rectangle (Context, 0.0, H / 2.0, W, H / 2.0);
+      Set_Source_Rgb (Context, 0.0, 0.0, 0.0);
+      Cairo.Fill (Context);
+
+      Rectangle (Context, W / 3.0, H / 3.0, W / 3.0, H / 3.0);
+      Set_Source_Rgb (Context, 0.5, 0.5, 0.5);
+      Cairo.Fill (Context);
+
+      Destroy (Context);
       return 0;
    end Cursor_Expose_Event;
 

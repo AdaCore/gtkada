@@ -597,11 +597,13 @@ package Cairo is
    --  The default source pattern is a solid pattern that is opaque black,
    --  (that is, it is equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
 
+   subtype Color_Range is Gdouble range 0.0 .. 1.0;
+
    procedure Set_Source_Rgb
      (Cr    : Cairo_Context;
-      Red   : Gdouble;
-      Green : Gdouble;
-      Blue  : Gdouble);
+      Red   : Color_Range;
+      Green : Color_Range;
+      Blue  : Color_Range);
    --  Cr    : a cairo context
    --  Red   : Red component of color
    --  Green : Green component of color
@@ -620,10 +622,10 @@ package Cairo is
 
    procedure Set_Source_Rgba
      (Cr    : Cairo_Context;
-      Red   : Gdouble;
-      Green : Gdouble;
-      Blue  : Gdouble;
-      Alpha : Gdouble);
+      Red   : Color_Range;
+      Green : Color_Range;
+      Blue  : Color_Range;
+      Alpha : Color_Range);
    --  Cr    : a cairo context
    --  Red   : Red component of color
    --  Green : Green component of color
