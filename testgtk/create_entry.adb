@@ -25,7 +25,7 @@ with Glib;             use Glib;
 with Glib.Main;        use Glib.Main;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Combo;        use Gtk.Combo;
+with Gtk.Combo_Box_Text; use Gtk.Combo_Box_Text;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Handlers;     use Gtk.Handlers;
@@ -69,7 +69,7 @@ package body Create_Entry is
      (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry) is
    begin
-      Set_Editable (The_Entry, Get_Active (Button));
+      The_Entry.Set_Editable (Button.Get_Active);
    end Toggle_Editable;
 
    ----------------------
@@ -81,7 +81,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Overwrite_Mode (The_Entry, Get_Active (Button));
+      The_Entry.Set_Overwrite_Mode (Button.Get_Active);
    end Toggle_Overwrite;
 
    ----------------------
@@ -93,7 +93,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Sensitive (The_Entry, Get_Active (Button));
+      The_Entry.Set_Sensitive (Button.Get_Active);
    end Toggle_Sensitive;
 
    -----------------------
@@ -105,7 +105,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Visibility (The_Entry, Get_Active (Button));
+      The_Entry.Set_Visibility (Button.Get_Active);
    end Toggle_Visibility;
 
    -------------------
@@ -114,7 +114,7 @@ package body Create_Entry is
 
    function Pulse_Timeout (The_Entry : Gtk_Entry) return Boolean is
    begin
-      Progress_Pulse (The_Entry);
+      The_Entry.Progress_Pulse;
       return True;
    end Pulse_Timeout;
 
@@ -130,7 +130,7 @@ package body Create_Entry is
          Progress := 0.0;
       end if;
 
-      Set_Progress_Fraction (The_Entry, Progress);
+      The_Entry.Set_Progress_Fraction (Progress);
       return True;
    end Fractional_Timeout;
 
@@ -152,26 +152,13 @@ package body Create_Entry is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       use String_List;
 
-      List      : String_List.Glist;
-      Box1,
-        Box2    : Gtk_Box;
-      The_Entry : Gtk_Entry;
-      Combo     : Gtk_Combo;
-      Check     : Gtk_Check_Button;
-      Hsep      : Gtk_Hseparator;
+      Box1, Box2 : Gtk_Box;
+      The_Entry  : Gtk_Entry;
+      Combo      : Gtk_Combo_Box_Text;
+      Check      : Gtk_Check_Button;
+      Hsep       : Gtk_Hseparator;
 
    begin
-      Append (List, "item0");
-      Append (List, "item1 item1");
-      Append (List, "item2 item2 item2");
-      Append (List, "item3 item3 item3 item3");
-      Append (List, "item4 item4 item4 item4 item4");
-      Append (List, "item5 item5 item5 item5 item5 item5");
-      Append (List, "item6 item6 item6 item6 item6");
-      Append (List, "item7 item7 item7 item7");
-      Append (List, "item8 item8 item8");
-      Append (List, "item9 item9");
-
       Set_Label (Frame, "Entry");
 
       Gtk_New_Vbox (Box1, False, 0);
@@ -238,9 +225,15 @@ package body Create_Entry is
       Gtk_New_Hseparator (Hsep);
       Pack_Start (Box2, Hsep);
 
-      Gtk_New (Combo);
-      Set_Popdown_Strings (Combo, List);
-      Set_Text (Gtk_Entry (Get_Entry (Combo)), "hello world");
+      Gtk_New_With_Entry (Combo);
+      Combo.Append_Text ("item0");
+      Combo.Append_Text ("item1 item1");
+      Combo.Append_Text ("item2 item2 item2");
+      Combo.Append_Text ("item3 item3 item3 item3");
+      Combo.Append_Text ("item4 item4 item4 item4 item4");
+      Combo.Append_Text ("item5 item5 item5 item5 item5 item5");
+      Combo.Append_Text ("item6 item6 item6 item6 item6");
+      Set_Text (Gtk_Entry (Combo.Get_Child), "hello world");
       Pack_Start (Box2, Combo, True, True, 0);
 
       Show_All (Frame);

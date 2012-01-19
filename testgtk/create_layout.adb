@@ -21,7 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.Drawable;        use Gdk.Drawable;
+with Cairo;               use Cairo;
+with Gdk.Cairo;           use Gdk.Cairo;
 with Gdk.Event;           use Gdk.Event;
 with Gdk.Rectangle;       use Gdk.Rectangle;
 with Gdk.Window;          use Gdk.Window;
@@ -34,7 +35,6 @@ with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Layout;          use Gtk.Layout;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Style;           use Gtk.Style;
 
 package body Create_Layout is
 
@@ -70,6 +70,7 @@ package body Create_Layout is
                             Event  : Gdk_Event_Expose)
                            return Boolean
    is
+      Context : constant Cairo_Context := Create (Layout.Get_Bin_Window);
       Area : constant Gdk_Rectangle := Get_Area (Event);
       Imin, Imax : Guint;
       Jmin, Jmax : Guint;
@@ -85,16 +86,18 @@ package body Create_Layout is
       for I in Imin .. Imax - 1 loop
          for J in Jmin .. Jmax - 1 loop
             if (I + J) mod 2 /= 0 then
-               Draw_Rectangle (Get_Bin_Window (Layout),
-                               Get_Black_GC (Get_Style (Layout)),
-                               True,
-                               Gint (10 * I),
-                               Gint (10 * J),
-                               Gint (1 + I mod 10),
-                               Gint (1 + J mod 10));
+               Rectangle (Context,
+                          X      => Gdouble (10 * I),
+                          Y      => Gdouble (10 * J),
+                          Width  => Gdouble (1 + I mod 10),
+                          Height => Gdouble (1 + J mod 10));
             end if;
          end loop;
       end loop;
+
+      Set_Source_Rgb (Context, Red => 0.0, Green => 0.0, Blue => 0.0);
+      Cairo.Fill (Context);
+
       return True;
    end Expose_Handler;
 

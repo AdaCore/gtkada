@@ -22,7 +22,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Text_IO;               use Ada.Text_IO;
-with Glib.Error;                use Glib.Error;
 with GNAT.Directory_Operations; use GNAT.Directory_Operations;
 with Gtk.Box;                   use Gtk.Box;
 with Gtk.Button;                use Gtk.Button;
@@ -69,7 +68,6 @@ package body Create_File_Chooser is
       Hbox   : Gtk_Box;
       Button : Gtk_Button;
       File   : Gtk_File_Chooser_Button;
-      Error  : GError;
       Filter1, Filter2 : Gtk_File_Filter;
    begin
       Set_Label (Frame, "File Chooser Button");
@@ -94,8 +92,8 @@ package body Create_File_Chooser is
                Action  => Action_Open);
       Pack_Start (Hbox, File, Expand => True);
 
-      Add_Filter (+File, Filter1);
-      Add_Filter (+File, Filter2);
+      File.Add_Filter (Filter1);
+      File.Add_Filter (Filter2);
 
       Gtk_New_From_Stock (Button, Stock_Properties);
       Pack_Start (Hbox, Button, Expand => False);
@@ -104,9 +102,8 @@ package body Create_File_Chooser is
 
       --  Add a shortcut to the current directory
 
-      Error := Add_Shortcut_Folder (+File, Get_Current_Dir);
-      if Error /= null then
-         Put_Line (Get_Message (Error));
+      if not File.Add_Shortcut_Folder (Get_Current_Dir) then
+         Put_Line ("Got error when adding shortcut folder");
       end if;
 
       --  Directory chooser
@@ -122,8 +119,8 @@ package body Create_File_Chooser is
                Action  => Action_Open);
       Pack_Start (Hbox, File, Expand => True);
 
-      Set_Action (+File, Action_Select_Folder);
-      Add_Filter (+File, Filter1);
+      File.Set_Action (Action_Select_Folder);
+      File.Add_Filter (Filter1);
 
       Show_All (Frame);
    end Run_Button;

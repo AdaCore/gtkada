@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Gdk.Dnd;                  use Gdk.Dnd;
+with Gdk.Drag_Contexts;        use Gdk.Drag_Contexts;
 with Gdk.Pixbuf;               use Gdk.Pixbuf;
 with Gdk.Types;                use Gdk.Types;
 with Glib;                     use Glib;

@@ -83,10 +83,8 @@ with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
-with Create_Gc;
 with Create_Handle_Box;
 with Create_Icon_View;
-with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
 with Create_Link_Buttons;
@@ -274,14 +272,10 @@ package body Main_Windows is
                                          Create_Font_Selection.Help'Access),
       (NS ("frame/aspect frame"), Box,   Create_Frame.Run'Access,
                                          Create_Frame.Help'Access),
-      (NS ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
-                                         Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
       (NS ("icon view"),        Complex, Create_Icon_View.Run'Access,
                                          Create_Icon_View.Help'Access),
-      (NS ("item factory"),     Complex, Create_Item_Factory.Run'Access,
-                                         Create_Item_Factory.Help'Access),
       (NS ("labels"),           Base,    Create_Label.Run'Access,
                                          Create_Label.Help'Access),
       (NS ("layout"),           Box,     Create_Layout.Run'Access,
