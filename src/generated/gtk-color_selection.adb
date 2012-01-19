@@ -34,10 +34,6 @@ package body Gtk.Color_Selection is
      (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
       Gdk.Color.Gdk_Color_Array);
 
-   -------------------------
-   -- Palette_From_String --
-   -------------------------
-
    function Palette_From_String (Str : String) return Gdk_Color_Array is
       use Color_Arrays;
       function Internal
@@ -61,10 +57,6 @@ package body Gtk.Color_Selection is
          return Result;
       end;
    end Palette_From_String;
-
-   -----------------------
-   -- Palette_To_String --
-   -----------------------
 
    function Palette_To_String (Colors : Gdk_Color_Array) return String is
       function Internal

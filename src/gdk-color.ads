@@ -61,6 +61,16 @@ package Gdk.Color is
    type Gdk_Color_Array is array (Natural range <>) of Gdk_Color;
    --  An array of colors.
 
+   type Gdk_Color_Unconstrained_Array is array (Natural) of Gdk_Color;
+   pragma Convention (C, Gdk_Color_Unconstrained_Array);
+   --  An array of colors as returned by C. This is only useful in a few
+   --  low-level subprograms that also pass the size as argument
+
+   function To_Array
+      (Colors   : Gdk_Color_Unconstrained_Array;
+       N_Colors : Gint) return Gdk_Color_Array;
+   --  Return a version of Colors easier to use in Ada.
+
    Null_Color : constant Gdk_Color;
    --  No color. For most functions, this will select the default color in the
    --  context, although this exact specification depends on the function you

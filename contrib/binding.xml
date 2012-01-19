@@ -424,14 +424,12 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
      <method id="gtk_color_selection_palette_from_string" bind="False"/>
      <method id="gtk_color_selection_palette_to_string" bind="False"/>
 
-     <!-- Obsolescent, and not present in 2.x -->
-     <method id="gtk_color_selection_set_change_palette_hook" bind="False"/>
-
      <extra>
         <spec>
-   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access
-     procedure (Screen : Gdk.Gdk_Screen;
-                Colors : Gdk.Color.Gdk_Color_Array);
+   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
+      (Screen   : Gdk.Gdk_Screen;
+       Colors   : Gdk.Color.Gdk_Color_Unconstrained_Array;
+       N_Colors : Gint);
    pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  This function should save the new palette contents, and update the
    --  Gtk_Settings property "gtk-color-palette" so all Gtk_Color_Selection
@@ -459,10 +457,6 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
      (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
       Gdk.Color.Gdk_Color_Array);
 
-   -------------------------
-   -- Palette_From_String --
-   -------------------------
-
    function Palette_From_String (Str : String) return Gdk_Color_Array is
       use Color_Arrays;
       function Internal
@@ -485,10 +479,6 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
          return Result;
       end;
    end Palette_From_String;
-
-   -----------------------
-   -- Palette_To_String --
-   -----------------------
 
    function Palette_To_String (Colors : Gdk_Color_Array) return String is
       function Internal

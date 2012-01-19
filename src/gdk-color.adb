@@ -199,4 +199,19 @@ package body Gdk.Color is
         (Object, Color_Properties.Property (Name));
    end Get_Property;
 
+   --------------
+   -- To_Array --
+   --------------
+
+   function To_Array
+      (Colors   : Gdk_Color_Unconstrained_Array;
+       N_Colors : Gint) return Gdk_Color_Array
+   is
+      Result : Gdk_Color_Array (1 .. Integer (N_Colors));
+   begin
+      for R in Result'Range loop
+         Result (R) := Colors (Colors'First + R - Result'First);
+      end loop;
+      return Result;
+   end To_Array;
 end Gdk.Color;

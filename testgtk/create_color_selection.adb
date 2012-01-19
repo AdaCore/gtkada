@@ -53,7 +53,9 @@ package body Create_Color_Selection is
    --  Called when the dialog is destroyed
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array);
+     (Screen : Gdk.Gdk_Screen;
+      Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
+      N_Colors : Gint);
    pragma Convention (C, On_Palette_Changed);
    --  Called when the palette is changed
 
@@ -96,17 +98,16 @@ package body Create_Color_Selection is
    ------------------------
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array)
+     (Screen : Gdk.Gdk_Screen;
+      Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
+      N_Colors : Gint)
    is
       pragma Unreferenced (Screen);
-      Str : constant String := Palette_To_String (Colors);
+      Palette : constant Gdk_Color_Array := To_Array (Colors, N_Colors);
+      Str : constant String := Palette_To_String (Palette);
    begin
-      Put_Line ("Palette has changed: ");
-      Put_Line ("Palette=" & Str);
-
-      Glib.Properties.Set_Property
-        (Get_Default, Gtk_Color_Palette,
-         Palette_To_String (Colors));
+      Put_Line ("Palette has changed, and became " & Str);
+      Glib.Properties.Set_Property (Get_Default, Gtk_Color_Palette, Str);
    end On_Palette_Changed;
 
    --------------

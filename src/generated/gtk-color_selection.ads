@@ -165,9 +165,10 @@ package Gtk.Color_Selection is
    -- GtkAda additions --
    ----------------------
 
-   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access
-   procedure (Screen : Gdk.Gdk_Screen;
-      Colors : Gdk.Color.Gdk_Color_Array);
+   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
+     (Screen   : Gdk.Gdk_Screen;
+      Colors   : Gdk.Color.Gdk_Color_Unconstrained_Array;
+      N_Colors : Gint);
    pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);
    --  This function should save the new palette contents, and update the
    --  Gtk_Settings property "gtk-color-palette" so all Gtk_Color_Selection
