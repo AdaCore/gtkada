@@ -106,11 +106,11 @@ package Gtk.Notebook is
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
    --  page, or null to use the default label, 'page N'
 
-   function Append_Page_Menu
+   procedure Append_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Appends a page to Notebook, specifying the widget to use as the label
    --  in the popup menu.
    --  page in the notebook, or -1 if function fails

@@ -22,16 +22,13 @@
 ------------------------------------------------------------------------------
 
 with Gdk;
-with Gdk.Bitmap;          use Gdk.Bitmap;
-with Gdk.Color;           use Gdk.Color;
-with Gdk.Pixmap;          use Gdk.Pixmap;
+with Gdk.Pixbuf;          use Gdk.Pixbuf;
 with Glib;                use Glib;
-with Glib.Properties;     use Glib.Properties;
 with Gtk.Arguments;       use Gtk.Arguments;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Check_Button;    use Gtk.Check_Button;
-with Gtk.Combo_Box;       use Gtk.Combo_Box;
+with Gtk.Combo_Box_Text;  use Gtk.Combo_Box_Text;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Image;           use Gtk.Image;
@@ -48,26 +45,12 @@ package body Create_Notebook is
    package Button_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Notebook);
    package Combo_Cb is new Handlers.User_Callback
-     (Gtk_Combo_Box_Record, Gtk_Notebook);
+     (Gtk_Combo_Box_Text_Record, Gtk_Notebook);
    package Notebook_Cb is new Handlers.Callback (Gtk_Notebook_Record);
-   package Frame_Cb is new Handlers.User_Callback
-     (Gtk_Check_Button_Record, Gtk_Frame);
 
-   Book_Open        : Gdk_Pixmap;
-   Book_Open_Mask   : Gdk_Bitmap;
-   Book_Closed      : Gdk_Pixmap;
-   Book_Closed_Mask : Gdk_Bitmap;
+   Book_Open        : Gdk_Pixbuf;
+   Book_Closed      : Gdk_Pixbuf;
    Notebook         : Gtk_Notebook;
-
-   procedure Tab_Fill
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame);
-   --  Fill all the space with tabs
-
-   procedure Tab_Expand
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame);
-   --  Expand tabs
 
    procedure Hide (Widget : access Gtk_Widget_Record'Class);
    --  Hide tabs
@@ -77,10 +60,6 @@ package body Create_Notebook is
 
    procedure Prev_Page (Notebook : access Gtk_Notebook_Record'Class);
    --  Switch to the previous page
-
-   procedure Tab_Pack
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame);
 
    procedure Create_Pages
      (Notebook  : access Gtk_Notebook_Record'Class;
@@ -95,7 +74,7 @@ package body Create_Notebook is
    --  Show all pages
 
    procedure Change_Tabs_Display
-     (Combo    : access Gtk_Combo_Box_Record'Class;
+     (Combo    : access Gtk_Combo_Box_Text_Record'Class;
       Notebook : Gtk_Notebook);
    --  Change notebook to be displayed without tabs, with scrollable tabs or
    --  with the standard tabs.
@@ -104,11 +83,6 @@ package body Create_Notebook is
      (Button   : access Gtk_Check_Button_Record'Class;
       Notebook : Gtk_Notebook);
    --  Allow popup window to switch from a page to another
-
-   procedure Homogeneous
-     (Button   : access Gtk_Check_Button_Record'Class;
-      Notebook : Gtk_Notebook);
-   --  Set tabs homogeneous
 
    procedure Set_Tabs_Detachable
      (Button   : access Gtk_Check_Button_Record'Class;
@@ -138,38 +112,6 @@ package body Create_Notebook is
         & " the ""page_switch"" signal.";
    end Help;
 
-   --------------
-   -- Tab_Fill --
-   --------------
-
-   procedure Tab_Fill
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame)
-   is
-      Expand, Fill : Boolean;
-      Typ          : Gtk_Pack_Type;
-   begin
-      Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
-      Set_Tab_Label_Packing
-        (Notebook, Child, Expand, Get_Active (Button), Typ);
-   end Tab_Fill;
-
-   ----------------
-   -- Tab_Expand --
-   ----------------
-
-   procedure Tab_Expand
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame)
-   is
-      Expand, Fill : Boolean;
-      Typ          : Gtk_Pack_Type;
-   begin
-      Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
-      Set_Tab_Label_Packing
-        (Notebook, Child, Get_Active (Button), Fill, Typ);
-   end Tab_Expand;
-
    ----------
    -- Hide --
    ----------
@@ -197,27 +139,6 @@ package body Create_Notebook is
       Gtk.Notebook.Prev_Page (Notebook);
    end Prev_Page;
 
-   --------------
-   -- Tab_Pack --
-   --------------
-
-   procedure Tab_Pack
-     (Button : access Gtk_Check_Button_Record'Class;
-      Child  : in Gtk_Frame)
-   is
-      Expand, Fill : Boolean;
-      Typ          : Gtk_Pack_Type;
-   begin
-      Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
-      if Get_Active (Button) then
-         Set_Tab_Label_Packing
-           (Notebook, Child, Expand, Fill, Pack_Start);
-      else
-         Set_Tab_Label_Packing
-           (Notebook, Child, Expand, Fill, Pack_End);
-      end if;
-   end Tab_Pack;
-
    ------------------
    -- Create_Pages --
    ------------------
@@ -234,7 +155,6 @@ package body Create_Notebook is
       Label     : Gtk_Label;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
-      Check     : Gtk_Check_Button;
       Button    : Gtk_Button;
 
    begin
@@ -249,30 +169,6 @@ package body Create_Notebook is
          Gtk_New_Hbox (Hbox, True, 0);
          Pack_Start (Vbox, Hbox, False, True, 5);
 
-         Gtk_New (Check, "Fill tab");
-         Pack_Start (Hbox, Check, True, True, 5);
-         Set_Active (Check, True);
-         Frame_Cb.Connect
-           (Check, "toggled",
-            Frame_Cb.To_Marshaller (Tab_Fill'Access),
-            Child);
-
-         Gtk_New (Check, "Expand tab");
-         Pack_Start (Hbox, Check, True, True, 5);
-         Set_Active (Check, True);
-         Frame_Cb.Connect
-           (Check, "toggled",
-            Frame_Cb.To_Marshaller (Tab_Expand'Access),
-            Child);
-
-         Gtk_New (Check, "Pack end");
-         Pack_Start (Hbox, Check, True, True, 5);
-         Set_Active (Check, True);
-         Frame_Cb.Connect
-           (Check, "toggled",
-            Frame_Cb.To_Marshaller (Tab_Pack'Access),
-            Child);
-
          Gtk_New (Button, "Hide page");
          Pack_Start (Vbox, Button, True, True, 5);
          Widget_Handler.Object_Connect
@@ -282,7 +178,7 @@ package body Create_Notebook is
 
          Show_All (Child);
          Gtk_New_Hbox (Label_Box, False, 0);
-         Gtk_New (Pixmap, Book_Closed, Book_Closed_Mask);
+         Gtk_New (Pixmap, Book_Closed);
          Pack_Start (Label_Box, Pixmap, False, True, 0);
          Set_Padding (Pixmap, 3, 1);
 
@@ -291,7 +187,7 @@ package body Create_Notebook is
          Show_All (Label_Box);
 
          Gtk_New_Vbox (Menu_Box, False, 0);
-         Gtk_New (Pixmap, Book_Closed, Book_Closed_Mask);
+         Gtk_New (Pixmap, Book_Closed);
          Pack_Start (Menu_Box, Pixmap, False, True, 0);
          Set_Padding (Pixmap, 3, 1);
 
@@ -330,7 +226,7 @@ package body Create_Notebook is
    -------------------------
 
    procedure Change_Tabs_Display
-     (Combo    : access Gtk_Combo_Box_Record'Class;
+     (Combo    : access Gtk_Combo_Box_Text_Record'Class;
       Notebook : Gtk_Notebook)
    is
       Active_Text : constant String := Get_Active_Text (Combo);
@@ -373,18 +269,6 @@ package body Create_Notebook is
          Popup_Disable (Notebook);
       end if;
    end Notebook_Popup;
-
-   -----------------
-   -- Homogeneous --
-   -----------------
-
-   procedure Homogeneous
-     (Button   : access Gtk_Check_Button_Record'Class;
-      Notebook : Gtk_Notebook) is
-   begin
-      Set_Property
-        (Notebook, Gtk.Notebook.Homogeneous_Property, Get_Active (Button));
-   end Homogeneous;
 
    --------------------------
    -- Set_Pages_Detachable --
@@ -431,19 +315,20 @@ package body Create_Notebook is
       Widget := Get_Nth_Page (Notebook, Page_Num);
       Pixmap := Gtk_Image
         (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
-      Set (Pixmap, Book_Open, Book_Open_Mask);
+      Pixmap.Set (Book_Open);
+
       Pixmap := Gtk_Image
         (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
-      Set (Pixmap, Book_Open, Book_Open_Mask);
+      Pixmap.Set (Book_Open);
 
       if Old_Page >= 0 then
          Widget := Get_Nth_Page (Notebook, Old_Page);
          Pixmap := Gtk_Image
            (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
-         Set (Pixmap, Book_Closed, Book_Closed_Mask);
+         Pixmap.Set (Book_Closed);
          Pixmap := Gtk_Image
            (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
-         Set (Pixmap, Book_Closed, Book_Closed_Mask);
+         Pixmap.Set (Book_Closed);
       end if;
    end Page_Switch;
 
@@ -454,7 +339,7 @@ package body Create_Notebook is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
-      Combo     : Gtk_Combo_Box;
+      Combo     : Gtk_Combo_Box_Text;
       Button    : Gtk_Check_Button;
       Button2   : Gtk_Button;
       Label     : Gtk_Label;
@@ -475,16 +360,8 @@ package body Create_Notebook is
       Set_Border_Width (Notebook, 10);
       Realize (Notebook);
 
-      Create_From_Xpm_D
-        (Book_Open,
-         Get_Window (Notebook),
-         Book_Open_Mask, Null_Color,
-         Book_Open_Xpm);
-      Create_From_Xpm_D
-        (Book_Closed,
-         Get_Window (Notebook),
-         Book_Closed_Mask, Null_Color,
-         Book_Closed_Xpm);
+      Book_Open := Gdk_New_From_Xpm_Data (Book_Open_Xpm);
+      Book_Closed := Gdk_New_From_Xpm_Data (Book_Closed_Xpm);
 
       Create_Pages (Notebook, 1, 5);
 
@@ -499,12 +376,6 @@ package body Create_Notebook is
       Button_Cb.Connect
         (Button, "clicked",
          Button_Cb.To_Marshaller (Notebook_Popup'Access), Notebook);
-
-      Gtk_New (Button, "homogeneous tabs");
-      Pack_Start (Box2, Button, True, False, 0);
-      Button_Cb.Connect
-        (Button, "clicked",
-         Button_Cb.To_Marshaller (Homogeneous'Access), Notebook);
 
       Gtk_New (Button, "reorderable tabs");
       Pack_Start (Box2, Button, True, False, 0);
@@ -525,7 +396,7 @@ package body Create_Notebook is
       Gtk_New (Label, "Notebook Style :");
       Pack_Start (Box2, Label, False, True, 0);
 
-      Gtk_New_Text (Combo);
+      Gtk_New (Combo);
       Append_Text (Combo, "Standard");
       Append_Text (Combo, "w/o tabs");
       Append_Text (Combo, "Scrollable");

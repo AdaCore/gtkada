@@ -429,6 +429,9 @@ Gtk.Notebook
 
 Get_Children has been removed: call Gtk.Container.Get_Children instead.
 
+Set_Tab_Label_Packing has been removed (this is left under control of the
+theme).
+
 Gtk.List
 ========
 

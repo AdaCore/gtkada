@@ -702,6 +702,7 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
       <method id="gtk_notebook_set_show_border">
          <parameter name="show_border" default="True" />
       </method>
+      <method id="gtk_notebook_append_page_menu" return="void" />
       <method id="gtk_notebook_set_show_tabs">
          <parameter name="show_tabs" default="True" />
       </method>

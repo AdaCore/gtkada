@@ -108,20 +108,20 @@ package body Gtk.Notebook is
    -- Append_Page_Menu --
    ----------------------
 
-   function Append_Page_Menu
+   procedure Append_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      function Internal
+      procedure Internal
          (Notebook   : System.Address;
           Child      : System.Address;
           Tab_Label  : System.Address;
-          Menu_Label : System.Address) return Gint;
+          Menu_Label : System.Address);
       pragma Import (C, Internal, "gtk_notebook_append_page_menu");
    begin
-      return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Get_Object_Or_Null (GObject (Menu_Label)));
+      Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Get_Object_Or_Null (GObject (Menu_Label)));
    end Append_Page_Menu;
 
    -----------------------
