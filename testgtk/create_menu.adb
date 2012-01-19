@@ -23,25 +23,16 @@
 
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
-
 with Gdk.Color;   use Gdk.Color;
-
 with Gtk;                   use Gtk;
 with Gtkada.Handlers;       use Gtkada.Handlers;
-
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
+with Gtk.Combo_Box_Text;    use Gtk.Combo_Box_Text;
 with Gtk.Menu;              use Gtk.Menu;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
 with Gtk.Menu_Item;         use Gtk.Menu_Item;
-
---  Gtk.Option_Menu is obsolescent, but we would still like to test it.
---  Deactivate obsolencence warning.
-pragma Warnings (Off);
-with Gtk.Option_Menu;       use Gtk.Option_Menu;
-pragma Warnings (On);
-
 with Gtk.Spin_Button;       use Gtk.Spin_Button;
 with Gtk.Radio_Menu_Item;   use Gtk.Radio_Menu_Item;
 with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
@@ -192,13 +183,7 @@ package body Create_Menu is
         & " or other widget next to the menu text. A @bGtk_Menu_Item can have"
         & " a submenu, which is simply a @bGtk_Menu@B to pop up when the menu"
         & " item is selected. Typically, all menu items in a menu bar have"
-        & " submenus."
-        & ASCII.LF
-        & "The @bGtk_Option_Menu@B widget is a button that pops up a"
-        & " @bGtk_Menu@B when clicked. It's used inside dialogs and such."
-        & " This is different from the @bGtk_Combo_Box@B that you can see"
-        & " in the @bEntry@B demo, since a @bGtk_Option_Menu@B does not have"
-        & " any editable entry associated with it.";
+        & " submenus.";
    end Help;
 
    -----------------
@@ -259,13 +244,12 @@ package body Create_Menu is
       Menu_Bar  : Gtk_Menu_Bar;
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
-      Option_Menu : Gtk_Option_Menu;
+      Combo : Gtk_Combo_Box_Text;
 
       Button : Gtk_Button;
       Spin   : Gtk_Spin_Button;
 
    begin
-
       Set_Label (Frame, "Menus");
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
@@ -286,17 +270,17 @@ package body Create_Menu is
       Gtk_New (Menu_Item, "bar");
       Set_Submenu (Menu_Item, Create_Menu (4, True));
 
-      Set_Right_Justified (Menu_Item, True);
       Append (Menu_Bar, Menu_Item);
 
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
       Pack_Start (Box1, Box2, False, False, 0);
 
-      Gtk_New (Option_Menu);
-      Set_Menu (Option_Menu, Create_Menu (1, False));
-      Set_History (Option_Menu, 3);
-      Pack_Start (Box2, Option_Menu, False, False, 0);
+      Gtk_New (Combo);
+      for J in 0 .. 5 loop
+         Combo.Append_Text ("Item" & Integer'Image (J));
+      end loop;
+      Pack_Start (Box2, Combo, False, False, 0);
 
       Gtk_New (Button, "Popup at 0,0 coordinates");
       Pack_Start (Box1, Button, False, False, 3);

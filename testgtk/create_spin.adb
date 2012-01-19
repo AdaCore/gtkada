@@ -171,7 +171,7 @@ package body Create_Spin is
       Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
-      Set_USize (Spinner, 55, 0);
+      Set_Size_Request (Spinner, 55, 0);
       Pack_Start (Vbox2, Spinner, False, False, 0);
 
       Gtk_New (Frame2, "Accelerated");
@@ -192,7 +192,7 @@ package body Create_Spin is
       Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
       Gtk_New (Spinner1, Adj, 1.0, 2);
       Set_Wrap (Spinner1, True);
-      Set_USize (Spinner1, 100, 0);
+      Set_Size_Request (Spinner1, 100, 0);
       Set_Update_Policy (Spinner1, Update_Always);
       Pack_Start (Vbox2, Spinner1, False, False, 0);
 

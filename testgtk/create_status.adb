@@ -21,15 +21,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Text_IO;
 with Glib;           use Glib;
 with Gtk.Box;        use Gtk.Box;
 with Gtk.Button;     use Gtk.Button;
 with Gtk.Handlers;   use Gtk.Handlers;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk;            use Gtk;
-
-with Ada.Text_IO;
-with Interfaces.C.Strings;
 
 package body Create_Status is
 
@@ -76,18 +74,6 @@ package body Create_Status is
       Pop (Status, 1);
    end Pop;
 
-   ------------
-   -- Popped --
-   ------------
-
-   procedure Popped (Status : access Gtk_Status_Bar_Record'Class) is
-      use type Messages_List.GSlist;
-   begin
-      if Get_Messages (Status) = Messages_List.Null_List then
-         Counter := 1;
-      end if;
-   end Popped;
-
    -----------
    -- Steal --
    -----------
@@ -130,29 +116,6 @@ package body Create_Status is
                                           (Status, "hit the mouse2")));
    end Contexts;
 
-   ----------
-   -- Dump --
-   ----------
-
-   procedure Dump (Status : access Gtk_Status_Bar_Record'Class) is
-      List : Messages_List.GSlist := Get_Messages (Status);
-      use type Messages_List.GSlist;
-   begin
-      while List /= Messages_List.Null_List loop
-         declare
-            Msg : constant Status_Bar_Msg := Messages_List.Get_Data (List);
-         begin
-            Ada.Text_IO.Put_Line ("Context Id = "
-                                  & Context_Id'Image (Msg.Context)
-                                  & " Message_Id = "
-                                  & Message_Id'Image (Msg.Message)
-                                  & " Text = "
-                                  & Interfaces.C.Strings.Value (Msg.Text));
-         end;
-         List := Messages_List.Next (List);
-      end loop;
-   end Dump;
-
    ---------
    -- Run --
    ---------
@@ -175,9 +138,6 @@ package body Create_Status is
 
       Gtk_New (Status);
       Pack_End (Box1, Status, False, False, 0);
-      Status_Cb.Object_Connect (Status, "text_popped",
-                                Status_Cb.To_Marshaller (Popped'Access),
-                                Slot_Object => Status);
 
       Gtk_New (Button, "Push Something");
       Pack_Start (Box2, Button, False, False, 0);
@@ -195,12 +155,6 @@ package body Create_Status is
       Pack_Start (Box2, Button, False, False, 0);
       Status_Cb.Object_Connect (Button, "clicked",
                                 Status_Cb.To_Marshaller (Steal'Access),
-                                Slot_Object => Status);
-
-      Gtk_New (Button, "Dump stack");
-      Pack_Start (Box2, Button, False, False, 0);
-      Status_Cb.Object_Connect (Button, "clicked",
-                                Status_Cb.To_Marshaller (Dump'Access),
                                 Slot_Object => Status);
 
       Gtk_New (Button, "Test contexts");

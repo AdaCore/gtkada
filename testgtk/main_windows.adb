@@ -104,7 +104,6 @@ with Create_Radio_Button;
 with Create_Range;
 with Create_Reparent;
 with Create_Scrolled;
-with Create_Scroll_Test;
 with Create_Selection;
 with Create_Size_Groups;
 --  with Create_Sheet;
@@ -340,8 +339,6 @@ package body Main_Windows is
                                          Create_Test_Idle.Help'Access),
       (NS ("test mainloop"),    Misc,    Create_Main_Loop.Run'Access,
                                          Create_Main_Loop.Help'Access),
-      (NS ("test scrolling"),   Misc,    Create_Scroll_Test.Run'Access,
-                                         Create_Scroll_Test.Help'Access),
       (NS ("test selection"),   Misc,    null, null),
       (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access,
                                          Create_Test_Timeout.Help'Access),
