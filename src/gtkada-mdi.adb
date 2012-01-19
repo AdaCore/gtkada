@@ -2743,11 +2743,11 @@ package body Gtkada.MDI is
 
       if Realized_Is_Set (Child) then
          --  Force a refresh of the title bar
-         Draw
+         Queue_Draw_Area
            (Child,
-            (0, 0,
-             Get_Allocation_Width (Child),
-             Get_Allocation_Height (Child.Title_Box)));
+            0, 0,
+            Get_Allocation_Width (Child),
+            Get_Allocation_Height (Child.Title_Box));
       end if;
 
       Update_Menu_Item (Child);

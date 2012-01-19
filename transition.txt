@@ -57,6 +57,12 @@ Gdk.Bitmap
 This package has been removed: Cairo packages should be used for drawing, and
 Gdk.Pixbuf for representing image data in memory.
 
+Gdk.Color
+=========
+
+Alloc no longer exists, and is not necessary since all drawing is now done
+internally using Cairo which directly manipulates red/green/blue.
+
 Gdk.Cursor
 ==========
 
@@ -597,7 +603,11 @@ This widget has been removed without any replacement.
 Gtk.Widget
 ==========
 
-Function Get_Snapshot has been removed without a replacement.
+The old Draw function no longer exists, and should be replaced with calls
+to Queue_Draw_Area. However, a new Draw function was added with a different
+profile and different semantic.
+
+Function Get_Snapshot has been removed. Draw should be used instead.
 
 Hide_All has been removed: use Hide instead.
 

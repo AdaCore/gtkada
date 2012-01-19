@@ -26,6 +26,7 @@ with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings;        use Interfaces.C.Strings;
 with System;                      use System;
 
+with Cairo;                       use Cairo;
 with Glib.Values;                 use Glib.Values;
 with Gdk.Color;                   use Gdk.Color;
 with Gdk.Types;                   use Gdk.Types;
@@ -379,23 +380,13 @@ package body Gtk.Widget is
    ----------
 
    procedure Draw
-     (Widget : access Gtk_Widget_Record;
-      Area   : Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area)
+     (Widget : not null access Gtk_Widget_Record;
+      Cr     : Cairo.Cairo_Context)
    is
-      procedure Internal
-        (Widget : System.Address; Area : Gdk.Rectangle.Gdk_Rectangle);
-      procedure Internal (Widget : System.Address; Area : System.Address);
+      procedure Internal (Widget : System.Address; Cr : Cairo_Context);
       pragma Import (C, Internal, "gtk_widget_draw");
-
-      use type Gdk.Rectangle.Gdk_Rectangle;
-
    begin
-      if Area = Gdk.Rectangle.Full_Area then
-         --  Redraw the whole widget
-         Internal (Get_Object (Widget), System.Null_Address);
-      else
-         Internal (Get_Object (Widget), Area);
-      end if;
+      Internal (Get_Object (Widget), Cr);
    end Draw;
 
    ---------------------

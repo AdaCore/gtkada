@@ -21,9 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.Bitmap;         use Gdk.Bitmap;
+with Ada.Text_IO;        use Ada.Text_IO;
+with Cairo.PDF;
+with Cairo;              use Cairo;
 with Gdk.Color;          use Gdk.Color;
-with Gdk.Pixmap;         use Gdk.Pixmap;
+with Glib;               use Glib;
 with Glib.Xml_Int;       use Glib.Xml_Int;
 with Gtk;                use Gtk;
 with Gtk.Accel_Group;    use Gtk.Accel_Group;
@@ -39,8 +41,6 @@ with Gtkada.Handlers;    use Gtkada.Handlers;
 with Gtk.Toggle_Tool_Button;  use Gtk.Toggle_Tool_Button;
 with Gtk.Tool_Button;    use Gtk.Tool_Button;
 with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Window;         use Gtk.Window;
-with Gtk.Image;          use Gtk.Image;
 
 package body Create_MDI is
 
@@ -127,7 +127,10 @@ package body Create_MDI is
         & " or the user can drag a window outside of the MDI to float it"
         & ASCII.LF
         & "A contextual menu exists in the notebook tabs to close windows,"
-        & " or change the location of tabs.";
+        & " or change the location of tabs."
+        & ASCII.LF
+        & "The button Screenshot is independent of the MDI, and shows how"
+        & " to do a screenshot of a widget into a PDF file (screenshot.pdf).";
    end Help;
 
    ------------------
@@ -138,14 +141,8 @@ package body Create_MDI is
       Bg_Color, Title_Color, Focus_Color : Gdk_Color;
    begin
       Bg_Color := Parse ("#8A8A8A");
-      Alloc (Get_Colormap (MDI), Bg_Color);
-
       Title_Color := Parse ("#7D7D7D");
-      Alloc (Get_Colormap (MDI), Title_Color);
-
       Focus_Color := Parse ("#5894FA");
-      Alloc (Get_Colormap (MDI), Focus_Color);
-
       Configure (MDI,
                  Background_Color  => Bg_Color,
                  Title_Bar_Color   => Title_Color,
@@ -176,9 +173,10 @@ package body Create_MDI is
    procedure On_Snapshot (Button : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
       Child : MDI_Child;
-      Pixmap : Gdk_Pixmap;
-      Window : Gtk_Window;
-      Image  : Gtk_Image;
+      Context : Cairo_Context;
+      Width, Height : Gint;
+      Pdf : Cairo_Surface;
+
    begin
       Child := Get (Iterator);
 
@@ -189,14 +187,18 @@ package body Create_MDI is
          Next (Iterator);
       end if;
 
-      Pixmap := Get_Snapshot (Child, null);
+      --  Take a snapshot of the widget
 
-      Gtk_New (Window);
-      Set_Default_Size (Window, 800, 600);
+      Width  := Get_Allocation_Width (Child);
+      Height := Get_Allocation_Height (Child);
+      Pdf := Cairo.PDF.Create (
+         "snapshot.pdf", Gdouble (Width), Gdouble (Height));
+      Context := Cairo.Create (Pdf);
+      Child.Draw (Cr => Context);
+      Destroy (Context);
+      Surface_Destroy (Pdf);
 
-      Gtk_New (Image, Pixmap, Null_Bitmap);
-      Add (Window, Image);
-      Show_All (Window);
+      Put_Line ("Screenshot created in snapshot.pdf");
    end On_Snapshot;
 
    ---------------------

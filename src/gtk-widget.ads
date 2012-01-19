@@ -22,6 +22,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
+
 --  <description>
 --
 --  This widget is the base of the tree for displayable objects.
@@ -324,6 +326,30 @@ package Gtk.Widget is
    --  internationalization, and should be the preferred way to display text,
    --  rather than Gdk.Drawable.Draw_Text
    --  Text must be a valid Utf8 text, see Glib.Convert.
+
+   procedure Draw
+     (Widget : not null access Gtk_Widget_Record;
+      Cr     : Cairo.Cairo_Context);
+   --  Draws Widget to Cr. The top left corner of the widget will be
+   --  drawn to the currently set origin point of Cr.
+   --
+   --  You should pass a cairo context as Cr argument that is in an
+   --  original state. Otherwise the resulting drawing is undefined. For
+   --  example changing the operator using cairo_set_operator() or the
+   --  line width using cairo_set_line_width() might have unwanted side
+   --  effects.
+   --  You may however change the context's transform matrix - like with
+   --  cairo_scale(), cairo_translate() or cairo_set_matrix() and clip
+   --  region with cairo_clip() prior to calling this function. Also, it
+   --  is fine to modify the context with cairo_save() and
+   --  cairo_push_group() prior to calling this function.
+   --
+   --  Special purpose widgets may contain special code for
+   --  rendering to the screen and might appear differently on screen
+   --  and when rendered using gtk_widget_draw().
+   --
+   --  This can be used to take snapshots of widgets, as a replacement
+   --  for Get_Snapshot that existed in gtk2
 
    -----------------------
    -- Size and position --
@@ -1360,25 +1386,6 @@ package Gtk.Widget is
    function Get_Allocation
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
    --  Convert a value into a Gtk_Allocation_Access.
-
-   -----------------
-   -- Obsolescent --
-   -----------------
-   --  All subprograms below are now obsolescent in gtk+. They might be removed
-   --  from future versions of gtk+ (and therefore GtkAda).
-   --  To find out whether your code uses any of these, we recommend compiling
-   --  with the -gnatwj switch
-   --  <doc_ignore>
-
-   procedure Draw
-     (Widget : access Gtk_Widget_Record;
-      Area   : Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
-   pragma Obsolescent;  --  Draw
-   --  Emit a "draw" signal for a specific area of the widget.
-   --  The visual aspect might be different whether the widget has the focus
-   --  or not.
-
-   --  </doc_ignore>
 
    ----------------
    -- Properties --

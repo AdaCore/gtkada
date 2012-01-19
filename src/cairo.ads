@@ -321,11 +321,16 @@ package Cairo is
    --  Return value: the referenced Cairo_Context.
 
    procedure Destroy (Cr : Cairo_Context);
+   pragma Import (C, Destroy, "cairo_destroy");
    --  Cr: a Cairo_Context
    --
    --  Decreases the reference count on cr by one. If the result
    --  is zero, then cr and all associated resources are freed.
    --  See Reference.
+
+   procedure Surface_Destroy (Surface : Cairo_Surface);
+   pragma Import (C, Surface_Destroy, "cairo_surface_destroy");
+   --  Free the memory used by the surface
 
    function Get_Reference_Count (Cr : Cairo_Context) return Guint;
    --  Cr: a Cairo_Context
@@ -2692,7 +2697,6 @@ private
      Cairo_Font_Options (System.Null_Address);
    pragma Import (C, Create, "cairo_create");
    pragma Import (C, Reference, "cairo_reference");
-   pragma Import (C, Destroy, "cairo_destroy");
    pragma Import (C, Get_Reference_Count, "cairo_get_reference_count");
    pragma Import (C, Get_User_Data, "cairo_get_user_data");
    pragma Import (C, Set_User_Data, "cairo_set_user_data");

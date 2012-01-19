@@ -3138,6 +3138,7 @@ package body Gtkada.Canvas is
       Mask                           : Gdk_Modifier_Type;
       W                              : Gdk_Window;
       X_Scroll, Y_Scroll             : Gdouble;
+      Cr                             : Cairo_Context;
    begin
       if Traces then
          Put_Line ("Scrolling timeout");
@@ -3163,7 +3164,10 @@ package body Gtkada.Canvas is
          --  Force an immediate draw, since Queue_Draw would only redraw in
          --  an idle event, and thus might not happen before the next timeout.
          --  With lots of items, this would break the scrolling.
-         Draw (Canvas);
+
+         Cr := Create (Canvas);
+         Draw_All (Canvas, Cr);
+         Destroy (Cr);
          return True;
       else
          Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
