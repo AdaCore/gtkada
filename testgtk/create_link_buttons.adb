@@ -32,22 +32,17 @@ with Gtk.Widget;      use Gtk.Widget;
 
 package body Create_Link_Buttons is
 
-   package Reset_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
-   package Uri_Hook is new Generic_Uri_Hook (Integer);
-   --  Integer is just a dummy type, we don't actually pass any user data.
+   package Link_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
 
    ----------------------------
    -- On_Link_Button_Clicked --
    ----------------------------
 
    procedure On_Link_Button_Clicked
-     (Button : access Gtk_Link_Button_Record'Class;
-      Link   : UTF8_String;
-      Data   : Integer)
+     (Button : access Gtk_Link_Button_Record'Class)
    is
-      pragma Unreferenced (Button, Data);
    begin
-      Put_Line ("Link_Button clicked: " & Link);
+      Put_Line ("Link_Button clicked: " & Button.Get_Uri);
    end On_Link_Button_Clicked;
 
    -----------------------------
@@ -82,8 +77,6 @@ package body Create_Link_Buttons is
       Box1         : Gtk_Box;
       Link_Button1 : Gtk_Link_Button;
       Reset_Button : Gtk_Button;
-      Tmp          : Uri_Func;
-      pragma Unreferenced (Tmp);
    begin
       Gtk.Frame.Set_Label (Frame, "Link_Buttons");
 
@@ -92,20 +85,18 @@ package body Create_Link_Buttons is
 
       Gtk_New_With_Label
         (Widget => Link_Button1,
-         Uri    => "http://www.example.com/",
+         URI    => "http://www.example.com/",
          Label  => "Click me.");
-      Uri_Hook.Set_Uri_Hook
-        (Handler   => On_Link_Button_Clicked'Access,
-         User_Data => 0,
-         Destroy   => null);
+      Link_Button_Cb.Connect
+         (Link_Button1, Signal_Activate_Link, On_Link_Button_Clicked'Access);
       Pack_Start
         (Box1, Link_Button1, Expand => False, Fill => False, Padding => 0);
 
       Gtk_New (Reset_Button, "Reset Link_Button's ""visited"" state");
-      Reset_Button_Cb.Object_Connect
+      Link_Button_Cb.Object_Connect
         (Reset_Button,
          "clicked",
-         Reset_Button_Cb.To_Marshaller (On_Reset_Button_Clicked'Access),
+         On_Reset_Button_Clicked'Access,
          Link_Button1);
       Pack_Start
         (Box1, Reset_Button, Expand => False, Fill => False, Padding => 0);

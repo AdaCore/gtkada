@@ -61,22 +61,22 @@ package Gtk.Link_Button is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Link_Button; URI : UTF8_String);
+   procedure Gtk_New (Widget : out Gtk_Link_Button; URI : UTF8_String);
    procedure Initialize
-      (Self : access Gtk_Link_Button_Record'Class;
-       URI  : UTF8_String);
+      (Widget : access Gtk_Link_Button_Record'Class;
+       URI    : UTF8_String);
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
    procedure Gtk_New_With_Label
-      (Self  : out Gtk_Link_Button;
-       URI   : UTF8_String;
-       Label : UTF8_String);
+      (Widget : out Gtk_Link_Button;
+       URI    : UTF8_String;
+       Label  : UTF8_String);
    procedure Initialize_With_Label
-      (Self  : access Gtk_Link_Button_Record'Class;
-       URI   : UTF8_String;
-       Label : UTF8_String);
+      (Widget : access Gtk_Link_Button_Record'Class;
+       URI    : UTF8_String;
+       Label  : UTF8_String);
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
@@ -90,19 +90,19 @@ package Gtk.Link_Button is
    -------------
 
    function Get_Uri
-      (Self : not null access Gtk_Link_Button_Record) return UTF8_String;
+      (Widget : not null access Gtk_Link_Button_Record) return UTF8_String;
    procedure Set_Uri
-      (Self : not null access Gtk_Link_Button_Record;
-       URI  : UTF8_String);
+      (Widget : not null access Gtk_Link_Button_Record;
+       URI    : UTF8_String);
    --  Sets Uri as the URI where the Gtk.Link_Button.Gtk_Link_Button points.
    --  As a side-effect this unsets the 'visited' state of the button.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
    function Get_Visited
-      (Self : not null access Gtk_Link_Button_Record) return Boolean;
+      (Widget : not null access Gtk_Link_Button_Record) return Boolean;
    procedure Set_Visited
-      (Self    : not null access Gtk_Link_Button_Record;
+      (Widget  : not null access Gtk_Link_Button_Record;
        Visited : Boolean);
    --  Sets the 'visited' state of the URI where the
    --  Gtk.Link_Button.Gtk_Link_Button points. See Gtk.Link_Button.Get_Visited

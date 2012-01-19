@@ -37,10 +37,10 @@ package body Gtk.Link_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Self : out Gtk_Link_Button; URI : UTF8_String) is
+   procedure Gtk_New (Widget : out Gtk_Link_Button; URI : UTF8_String) is
    begin
-      Self := new Gtk_Link_Button_Record;
-      Gtk.Link_Button.Initialize (Self, URI);
+      Widget := new Gtk_Link_Button_Record;
+      Gtk.Link_Button.Initialize (Widget, URI);
    end Gtk_New;
 
    ------------------------
@@ -48,13 +48,13 @@ package body Gtk.Link_Button is
    ------------------------
 
    procedure Gtk_New_With_Label
-      (Self  : out Gtk_Link_Button;
-       URI   : UTF8_String;
-       Label : UTF8_String)
+      (Widget : out Gtk_Link_Button;
+       URI    : UTF8_String;
+       Label  : UTF8_String)
    is
    begin
-      Self := new Gtk_Link_Button_Record;
-      Gtk.Link_Button.Initialize_With_Label (Self, URI, Label);
+      Widget := new Gtk_Link_Button_Record;
+      Gtk.Link_Button.Initialize_With_Label (Widget, URI, Label);
    end Gtk_New_With_Label;
 
    ----------------
@@ -62,8 +62,8 @@ package body Gtk.Link_Button is
    ----------------
 
    procedure Initialize
-      (Self : access Gtk_Link_Button_Record'Class;
-       URI  : UTF8_String)
+      (Widget : access Gtk_Link_Button_Record'Class;
+       URI    : UTF8_String)
    is
       function Internal
          (URI : Interfaces.C.Strings.chars_ptr) return System.Address;
@@ -73,7 +73,7 @@ package body Gtk.Link_Button is
    begin
       Tmp_Return := Internal (Tmp_URI);
       Free (Tmp_URI);
-      Set_Object (Self, Tmp_Return);
+      Set_Object (Widget, Tmp_Return);
    end Initialize;
 
    ---------------------------
@@ -81,9 +81,9 @@ package body Gtk.Link_Button is
    ---------------------------
 
    procedure Initialize_With_Label
-      (Self  : access Gtk_Link_Button_Record'Class;
-       URI   : UTF8_String;
-       Label : UTF8_String)
+      (Widget : access Gtk_Link_Button_Record'Class;
+       URI    : UTF8_String;
+       Label  : UTF8_String)
    is
       function Internal
          (URI   : Interfaces.C.Strings.chars_ptr;
@@ -96,7 +96,7 @@ package body Gtk.Link_Button is
       Tmp_Return := Internal (Tmp_URI, Tmp_Label);
       Free (Tmp_URI);
       Free (Tmp_Label);
-      Set_Object (Self, Tmp_Return);
+      Set_Object (Widget, Tmp_Return);
    end Initialize_With_Label;
 
    -------------
@@ -104,13 +104,13 @@ package body Gtk.Link_Button is
    -------------
 
    function Get_Uri
-      (Self : not null access Gtk_Link_Button_Record) return UTF8_String
+      (Widget : not null access Gtk_Link_Button_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_link_button_get_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
    end Get_Uri;
 
    -----------------
@@ -118,12 +118,12 @@ package body Gtk.Link_Button is
    -----------------
 
    function Get_Visited
-      (Self : not null access Gtk_Link_Button_Record) return Boolean
+      (Widget : not null access Gtk_Link_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_link_button_get_visited");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Boolean'Val (Internal (Get_Object (Widget)));
    end Get_Visited;
 
    -------------
@@ -131,16 +131,16 @@ package body Gtk.Link_Button is
    -------------
 
    procedure Set_Uri
-      (Self : not null access Gtk_Link_Button_Record;
-       URI  : UTF8_String)
+      (Widget : not null access Gtk_Link_Button_Record;
+       URI    : UTF8_String)
    is
       procedure Internal
-         (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr);
+         (Widget : System.Address;
+          URI    : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_link_button_set_uri");
       Tmp_URI : Interfaces.C.Strings.chars_ptr := New_String (URI);
    begin
-      Internal (Get_Object (Self), Tmp_URI);
+      Internal (Get_Object (Widget), Tmp_URI);
       Free (Tmp_URI);
    end Set_Uri;
 
@@ -149,13 +149,13 @@ package body Gtk.Link_Button is
    -----------------
 
    procedure Set_Visited
-      (Self    : not null access Gtk_Link_Button_Record;
+      (Widget  : not null access Gtk_Link_Button_Record;
        Visited : Boolean)
    is
-      procedure Internal (Self : System.Address; Visited : Integer);
+      procedure Internal (Widget : System.Address; Visited : Integer);
       pragma Import (C, Internal, "gtk_link_button_set_visited");
    begin
-      Internal (Get_Object (Self), Boolean'Pos (Visited));
+      Internal (Get_Object (Widget), Boolean'Pos (Visited));
    end Set_Visited;
 
    ---------------------------

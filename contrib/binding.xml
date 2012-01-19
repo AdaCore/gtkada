@@ -1912,6 +1912,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
 
   <package id="Gtk.Link_Button">
      <doc group="Buttons and Toggles"/>
+     <parameter name="self" ada="Widget" />
   </package>
 
   <package id="Gtk.File_Filter">
