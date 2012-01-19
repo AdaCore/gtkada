@@ -2045,7 +2045,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
       <!-- ??? inclusion of below method is pending on L117-038 -->
       <method id="gtk_status_icon_get_geometry" bind="False"/>
 
-      <method id="gtk_status_icon_position_menu">
+      <method id="gtk_status_icon_position_menu" convention="C">
          <!-- The purpose of this method is to provide a canned
               implementation of a menu position function for use with
               Gtk.Menu.  Pass all parameters through unchanged.

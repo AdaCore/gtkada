@@ -65,27 +65,11 @@ package body Create_Status_Icons is
    package Status_Icon_Handler is
      new Gtk.Handlers.Callback (Gtk_Status_Icon_Record);
 
-   procedure Blink_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class);
    procedure Change_Icon_Cb (Button : access Gtk_Button_Record'Class);
    procedure Popup_Menu_Cb (Status_Icon : access Gtk_Status_Icon_Record'Class);
    procedure Show_Icon_Cb
      (Check_Button : access Gtk_Check_Button_Record'Class);
    --  Callback procedures
-
-   -------------------
-   -- Blink_Icon_Cb --
-   -------------------
-
-   procedure Blink_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class)
-   is
-      Blink : constant Boolean := Get_Active (Check_Button);
-   begin
-      for I in 1 .. Num_Displays loop
-         Set_Blinking (Icons (I), Blink);
-      end loop;
-   end Blink_Icon_Cb;
 
    -----------------
    -- Change_Icon --
@@ -212,7 +196,6 @@ package body Create_Status_Icons is
          Set_From_Icon_Name (Icons (I), Stock_Dialog_Info);
          Set_Tooltip_Text (Icons (I), "Some Information ...");
          Set_Visible (Icons (I), True);
-         Set_Blinking (Icons (I), False);
       end loop;
 
       Gtk.Frame.Set_Label (Frame, "Status_Icons");
@@ -228,11 +211,6 @@ package body Create_Status_Icons is
       Gtk_New (Check_Button1, "Show Icon");
       Check_Handler.Connect (Check_Button1, "clicked", Show_Icon_Cb'Access);
       Set_Active (Check_Button1, True);
-      Pack_Start (Box1, Check_Button1, False, False, 0);
-
-      Gtk_New (Check_Button1, "Blink Icon");
-      Check_Handler.Connect (Check_Button1, "clicked", Blink_Icon_Cb'Access);
-      Set_Active (Check_Button1, False);
       Pack_Start (Box1, Check_Button1, False, False, 0);
 
       Gtk_New (Button1, "Change Icon (Info/Warning/Error)");

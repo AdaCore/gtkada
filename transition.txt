@@ -400,6 +400,13 @@ Gtk.List_Item
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
+Gtk.Menu
+========
+
+The version of Popup was took an access to C_Gtk_Menu_Positon_Func has
+been removed. If you need to pass User_Data to the callback, you need to
+instantiate the package User_Menu_Popup.
+
 Gtk.Menu_Item
 =============
 

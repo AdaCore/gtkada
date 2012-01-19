@@ -432,6 +432,7 @@ class SubprogramProfile(object):
                 doc=self.doc,
                 local_vars=local_vars,
                 code=code)
+        subp.convention = self.gtkmethod.convention()
 
         if name != "":
             depr = self.node.get("deprecated")

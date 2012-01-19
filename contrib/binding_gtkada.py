@@ -367,6 +367,11 @@ class GtkAdaMethod(object):
             return self.node.get("obsolescent", "False").lower() == "true"
         return False
 
+    def convention(self):
+        if self.node is not None:
+            return self.node.get("convention", None)
+        return None
+
     def return_as_param(self):
         if self.node is not None:
             return self.node.get("return_as_param", None)

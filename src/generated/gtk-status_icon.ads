@@ -322,6 +322,7 @@ package Gtk.Status_Icon is
        Y         : out Gint;
        Push_In   : out gboolean;
        User_Data : System.Address);
+   pragma Convention (C, Position_Menu);
    --  Menu positioning function to use with gtk_menu_popup to position Menu
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10

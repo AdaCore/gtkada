@@ -77,7 +77,7 @@ package body Create_Spin is
    -----------------
 
    procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record'Class;
-                          Spin : in Gtk_Spin_Button) is
+                          Spin : Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Get_Active (Widget));
    end Toggle_Snap;
@@ -87,7 +87,7 @@ package body Create_Spin is
    --------------------
 
    procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record'Class;
-                             Spin : in Gtk_Spin_Button) is
+                             Spin : Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Get_Active (Widget));
    end Toggle_Numeric;
@@ -97,7 +97,7 @@ package body Create_Spin is
    ---------------
 
    procedure Get_Value (Widget : access My_Button_Record'Class;
-                        Data   : in Gint)
+                        Data   : Gint)
    is
       Spin  : constant Gtk_Spin_Button := Spinner1;
    begin
@@ -253,13 +253,3 @@ package body Create_Spin is
    end Run;
 
 end Create_Spin;
-
-
-
-
-
-
-
-
-
-
