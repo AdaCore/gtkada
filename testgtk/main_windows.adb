@@ -95,7 +95,6 @@ with Create_Notebook;
 with Create_Opacity;
 with Create_Paned;
 with Create_Pixbuf;
-with Create_Pixmap;
 with Create_Plot;
 with Create_Plot_3D;
 with Create_Plot_Realtime;
@@ -298,8 +297,6 @@ package body Main_Windows is
                                          Create_Opacity.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
-      (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
-                                         Create_Pixmap.Help'Access),
       (NS ("plot"),             Complex, Create_Plot.Run'Access,
                                          Create_Plot.Help'Access),
       (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,

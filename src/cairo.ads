@@ -54,7 +54,8 @@
 --
 --  In addition to drawing on on-screen widgets, drawing can also be done using
 --  the same Cairo calls to pixbufs (see Gdk.Cairo) to memory
---  (see Cairo.Image_Surface), and to PNG files (see Cairo.Png).
+--  (see Cairo.Image_Surface), and to PNG or PDF files (see Cairo.Png and
+--  Cairo.Pdf).
 --
 --  Code samples demonstrating how to use various functionalities of Cairo
 --  can be found in the testcairo example, shipped with GtkAda.

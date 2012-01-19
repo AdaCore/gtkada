@@ -88,25 +88,24 @@ package body Create_Paned is
       Gtk_New (Button, "not Resize, not Shrink, minWidth=60");
       Add (Frame2, Button);
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_USize (Frame2, 60, 60);
+      Set_Size_Request (Frame2, 60, 60);
       Pack1 (HPaned, Frame2, False, False);
 
       Gtk_New (Frame2);
       Gtk_New (Button, "Resize, Shrink");
       Add (Frame2, Button);
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_USize (Frame2, 80, 60);
+      Set_Size_Request (Frame2, 80, 60);
       Pack2 (HPaned, Frame2, Resize => True, Shrink => True);
 
       Gtk_New (Frame2);
       Gtk_New (Button, "not Resize, not Shrink, minHeight=280");
       Add (Frame2, Button);
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_USize (Frame2, 60, 280);
+      Set_Size_Request (Frame2, 60, 280);
       Pack2 (VPaned, Frame2, Resize => False, Shrink => False);
 
       Show_All (Frame);
-
    end Run;
 
 end Create_Paned;

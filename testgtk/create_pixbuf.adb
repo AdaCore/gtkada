@@ -21,9 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Cairo;            use Cairo;
 with Glib;             use Glib;
 with Glib.Error;       use Glib.Error;
 with Glib.Main;        use Glib.Main;
+with Gdk.Cairo;        use Gdk.Cairo;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
@@ -31,7 +33,6 @@ with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Image;        use Gtk.Image;
 with Gtk.Label;        use Gtk.Label;
-with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtkada.Handlers;  use Gtkada.Handlers;
 
@@ -134,6 +135,8 @@ package body Create_Pixbuf is
       W         : Gint := Get_Area (Event).Width;
       H         : Gint := Get_Area (Event).Height;
 
+      Context   : constant Cairo_Context := Create (Widget.Get_Window);
+
    begin
       --  The following tests handle the cases where we try to redraw the area
       --  outside of the background image.
@@ -149,18 +152,12 @@ package body Create_Pixbuf is
          return True;
       end if;
 
-      Render_To_Drawable (Pixbuf   => Frame,
-                          Drawable => Get_Window (Widget),
-                          GC       => Get_Black_GC (Get_Style (Widget)),
-                          Src_X    => X,
-                          Src_Y    => Y,
-                          Dest_X   => 0,
-                          Dest_Y   => 0,
-                          Width    => W,
-                          Height   => H,
-                          Dither   => Dither_Normal,
-                          X_Dither => X,
-                          Y_Dither => Y);
+      Set_Source_Pixbuf (Context,
+                         Pixbuf => Frame,
+                         Pixbuf_X => Gdouble (X),
+                         Pixbuf_Y => Gdouble (Y));
+      Cairo.Paint (Context);
+      Destroy (Context);
       return True;
    end Expose_Cb;
 
