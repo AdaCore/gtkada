@@ -178,7 +178,7 @@ package body Gtk.Recent_Filter is
       ----------------
 
       procedure Add_Custom
-         (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
+         (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class;
           Needed       : Gtk.Recent_Filter.Gtk_Recent_Filter_Flags;
           Func         : Gtk_Recent_Filter_Func;
           Data         : User_Data_Type;

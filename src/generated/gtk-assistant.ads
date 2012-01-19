@@ -319,7 +319,7 @@ package Gtk.Assistant is
       --  "data": user data.
 
       procedure Set_Forward_Page_Func
-         (Assistant : not null access Gtk.Assistant.Gtk_Assistant_Record;
+         (Assistant : not null access Gtk.Assistant.Gtk_Assistant_Record'Class;
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type);
       --  Sets the page forwarding function to be Page_Func.

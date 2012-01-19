@@ -26,8 +26,6 @@ with Ada.Text_IO;         use Ada.Text_IO;
 with Glib;                use Glib;
 with Glib.Main;           use Glib.Main;
 
-with Gdk.Pixbuf;          use Gdk.Pixbuf;
-
 with Gtk;                 use Gtk;
 with Gtk.Alignment;       use Gtk.Alignment;
 with Gtk.Assistant;       use Gtk.Assistant;
@@ -408,11 +406,7 @@ package body Create_Assistant is
    --------------------------------------
 
    function Nonlinear_Assistant_Forward_Page
-     (Current_Page : Gint;
-      Assistant    : Gtk_Assistant)
-      return Gint
-   is
-      pragma Unreferenced (Assistant);
+     (Current_Page : Gint) return Gint is
    begin
       case Current_Page is
          when 0 =>
@@ -452,8 +446,8 @@ package body Create_Assistant is
          Assistant_Cb.Connect (Assistant, "apply",   Apply_Callback'Access);
          Assistant_Cb.Connect (Assistant, "prepare", Prepare_Callback'Access);
 
-         Set_Forward_Page_Func
-           (Assistant, Nonlinear_Assistant_Forward_Page'Access, null);
+         Assistant.Set_Forward_Page_Func
+           (Nonlinear_Assistant_Forward_Page'Access);
 
          Gtk_New_Vbox (Page, False, 6);
 
@@ -555,7 +549,7 @@ package body Create_Assistant is
          Assistant_Cb.Connect (Assistant, "apply",   Apply_Callback'Access);
          Assistant_Cb.Connect (Assistant, "prepare", Prepare_Callback'Access);
 
-         Set_Forward_Page_Func
+         Forward_Page_Functions.Set_Forward_Page_Func
            (Assistant, Looping_Assistant_Forward_Page'Access, Assistant);
 
          Gtk_New (Label, "Introduction");
@@ -609,7 +603,6 @@ package body Create_Assistant is
       Assistant : Gtk_Assistant renames All_Assistants (Full_Featured);
       Button    : Gtk_Button;
       Label     : Gtk_Label;
-      Pixbuf    : Gdk_Pixbuf;
       Tmp       : Gint;
       pragma Unreferenced (Widget);
       pragma Warnings (Off, Tmp);
@@ -633,14 +626,6 @@ package body Create_Assistant is
          Set_Page_Title (Assistant, Label, "Page 1");
          Set_Page_Complete (Assistant, Label, True);
 
-         --  Set a side image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Warning, Icon_Size_Dialog);
-         Set_Page_Side_Image (Assistant, Label, Pixbuf);
-
-         --  Set a header image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Info, Icon_Size_Dialog);
-         Set_Page_Header_Image (Assistant, Label, Pixbuf);
-
          Gtk_New (Label, "Invisible page");
          Tmp := Append_Page (Assistant, Label);
 
@@ -650,10 +635,6 @@ package body Create_Assistant is
          Set_Page_Title (Assistant, Label, "Page 3");
          Set_Page_Type (Assistant, Label, Gtk_Assistant_Page_Confirm);
          Set_Page_Complete (Assistant, Label, True);
-
-         --  Set a header image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Info, Icon_Size_Dialog);
-         Set_Page_Header_Image (Assistant, Label, Pixbuf);
       end if;
 
       if not Visible_Is_Set (Assistant) then

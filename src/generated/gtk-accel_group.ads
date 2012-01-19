@@ -202,7 +202,7 @@ package Gtk.Accel_Group is
       --  Since: gtk+ 2.2
 
       function Find
-         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record;
+         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func

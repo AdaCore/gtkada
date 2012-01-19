@@ -223,7 +223,7 @@ package Gtk.Calendar is
       --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
 
       procedure Set_Detail_Func
-         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record;
+         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
           Func     : Gtk_Calendar_Detail_Func;
           Data     : User_Data_Type);
       --  Installs a function which provides Pango markup with detail

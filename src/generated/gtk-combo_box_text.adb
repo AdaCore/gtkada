@@ -350,7 +350,7 @@ package body Gtk.Combo_Box_Text is
       ------------------------
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record;
+         (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record'Class;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type)

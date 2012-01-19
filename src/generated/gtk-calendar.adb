@@ -301,7 +301,7 @@ package body Gtk.Calendar is
       ---------------------
 
       procedure Set_Detail_Func
-         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record;
+         (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
           Func     : Gtk_Calendar_Detail_Func;
           Data     : User_Data_Type)
       is

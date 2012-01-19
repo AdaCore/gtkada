@@ -164,7 +164,7 @@ package Gtk.File_Filter is
       --  "data": user data passed to Gtk.File_Filter.Add_Custom
 
       procedure Add_Custom
-         (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record;
+         (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
           Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
           Data   : User_Data_Type;

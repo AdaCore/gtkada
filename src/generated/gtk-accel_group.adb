@@ -217,7 +217,7 @@ package body Gtk.Accel_Group is
       ----------
 
       function Find
-         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record;
+         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key
       is

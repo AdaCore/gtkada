@@ -378,8 +378,8 @@ class SubprogramProfile(object):
         """This profile is not for a primitive operation, but for a class-wide
            operation.
         """
-        if self.params[0].type.param.endswith("_Record"):
-            self.params[0].type.param += "'Class"
+        if isinstance(self.params[0].type, GObject):
+            self.params[0].type.classwide = True
 
     def add_param(self, pos, param):
         """Add a new parameter in the list, at the given position"""
@@ -814,7 +814,8 @@ class GIRClass(object):
         section.add(subp)
 
         # Now create a generic package that will provide access to
-        # user_data
+        # user_data. The function can no longer be a primitive operation of the
+        # object, since it is in a nested package.
 
         self.pkg.add_with("Glib.Object", do_use=False, specs=False)
 

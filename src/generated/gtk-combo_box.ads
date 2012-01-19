@@ -367,7 +367,7 @@ package Gtk.Combo_Box is
       --  "data": user data
 
       procedure Set_Row_Separator_Func
-         (Combo_Box : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record;
+         (Combo_Box : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record'Class;
           Func      : Gtk_Tree_View_Row_Separator_Func;
           Data      : User_Data_Type);
       --  Sets the row separator function, which is used to determine whether
@@ -413,7 +413,7 @@ package Gtk.Combo_Box is
       --  "data": user data passed to Gtk.Combo_Box.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record;
+         (Cell_Layout : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record'Class;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);

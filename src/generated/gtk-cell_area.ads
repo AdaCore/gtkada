@@ -591,7 +591,7 @@ package Gtk.Cell_Area is
       --  "data": user-supplied data
 
       procedure Foreach
-         (Self          : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record;
+         (Self          : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
           Callback      : Gtk_Cell_Callback;
           Callback_Data : User_Data_Type);
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in
@@ -641,7 +641,7 @@ package Gtk.Cell_Area is
       --  "data": user-supplied data
 
       procedure Foreach_Alloc
-         (Self            : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record;
+         (Self            : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
           Context         : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
           Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
@@ -996,7 +996,7 @@ package Gtk.Cell_Area is
       --  "data": user data passed to Gtk.Cell_Area.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record;
+         (Cell_Layout : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);

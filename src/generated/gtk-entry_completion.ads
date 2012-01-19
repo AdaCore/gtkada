@@ -332,7 +332,7 @@ package Gtk.Entry_Completion is
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
-         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
           Func       : Gtk_Entry_Completion_Match_Func;
           Func_Data  : User_Data_Type);
       --  Sets the match function for Completion to be Func. The match
@@ -378,7 +378,7 @@ package Gtk.Entry_Completion is
       --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
-         (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+         (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func        : Cell_Data_Func;
           Func_Data   : User_Data_Type);

@@ -203,7 +203,7 @@ package Gtk.Recent_Filter is
       --  "user_data": user data passed to Gtk.Recent_Filter.Add_Custom
 
       procedure Add_Custom
-         (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
+         (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class;
           Needed       : Gtk.Recent_Filter.Gtk_Recent_Filter_Flags;
           Func         : Gtk_Recent_Filter_Func;
           Data         : User_Data_Type;
