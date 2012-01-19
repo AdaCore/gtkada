@@ -21,6 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Cairo;             use Cairo;
+with Gdk.Cairo;         use Gdk.Cairo;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Label;         use Gtk.Label;
 with Glib;              use Glib;
@@ -29,7 +31,6 @@ with Gtk.Box;           use Gtk.Box;
 with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
 
 package body Libart_Demo is
@@ -89,16 +90,11 @@ package body Libart_Demo is
    ------------
 
    function Expose (Draw : access Image_Drawing_Record'Class) return Boolean is
+      Context : constant Cairo_Context := Create (Draw.Area.Get_Window);
    begin
-      Render_To_Drawable
-        (Draw.Pix,
-         Get_Window (Draw.Area),
-         Gtk.Style.Get_Black_GC (Get_Style (Draw.Area)),
-         0, 0,
-         0, 0,
-         Get_Width (Draw.Pix), Get_Height (Draw.Pix),
-         Dither_Normal,
-         0, 0);
+      Set_Source_Pixbuf (Context, Draw.Pix, 0.0, 0.0);
+      Cairo.Paint (Context);
+      Destroy (Context);
       return False;
    end Expose;
 
@@ -125,7 +121,7 @@ package body Libart_Demo is
       Pack_Start (Draw, Label, Expand => False, Fill => False);
 
       Draw.Pix := Pixbuf;
-      Set_USize
+      Set_Size_Request
         (Draw,
          Get_Width (Draw.Pix),
          Get_Height (Draw.Pix) + Gint (Get_Allocation_Height (Label)));

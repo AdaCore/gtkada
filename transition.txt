@@ -8,6 +8,10 @@ package, and a cast to the interface type (with "-" and "+"). Instead,
 each package now contains the list of subprograms inherited from the
 various interfaces.
 
+The page at http://developer.gnome.org/gtk3/3.3/gtk-migrating-2-to-3.html
+provides a migration guide, from the gtk+ authors. The code examples are
+in C.
+
 Ada 2005
 ========
 

@@ -43,4 +43,10 @@ package Gdk.RGBA is
    end record;
    pragma Convention (C, Gdk_RGBA);
 
+   Null_RGBA : constant Gdk_RGBA;
+
+private
+   Null_RGBA : constant Gdk_RGBA :=
+      (Glib.Gdouble'First, Glib.Gdouble'First,
+       Glib.Gdouble'First, Glib.Gdouble'First);
 end Gdk.RGBA;

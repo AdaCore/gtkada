@@ -29,6 +29,7 @@ with System;                      use System;
 with Cairo;                       use Cairo;
 with Glib.Values;                 use Glib.Values;
 with Gdk.Color;                   use Gdk.Color;
+with Gdk.RGBA;                    use Gdk.RGBA;
 with Gdk.Types;                   use Gdk.Types;
 with Gdk.Visual;                  use Gdk.Visual;
 with Gtk.Enums;                   use Gtk.Enums;
@@ -1219,6 +1220,28 @@ package body Gtk.Widget is
 
       Internal (Get_Object (Widget), State_Type, Color_A);
    end Modify_Base;
+
+   -------------------------------
+   -- Override_Background_Color --
+   -------------------------------
+
+   procedure Override_Background_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Enums.Gtk_State_Type;
+       Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         State  : Enums.Gtk_State_Type;
+         Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_override_background_color");
+   begin
+      if Color = Null_RGBA then
+         Internal (Get_Object (Widget), State, System.Null_Address);
+      else
+         Internal (Get_Object (Widget), State, Color'Address);
+      end if;
+   end Override_Background_Color;
 
    ---------------
    -- Modify_Bg --

@@ -62,6 +62,7 @@ with Gdk.Cursor;              use Gdk.Cursor;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
@@ -3139,6 +3140,8 @@ package body Gtkada.MDI is
            and then Blue (A) = Blue (B);
       end Color_Equal;
 
+      RGBA : Gdk_RGBA;
+
    begin
       if Note /= null then
          if MDI_Child (Child) = Child.MDI.Focus_Child then
@@ -3157,7 +3160,10 @@ package body Gtkada.MDI is
             Modify_Bg (Note, State_Normal, Color);
             Label := Get_Tab_Label (Note, Child);
             if Label /= null then
-               Modify_Bg (Label, State_Normal, Color);
+               RGBA.Red   := Gdouble (Red (Color));
+               RGBA.Green := Gdouble (Green (Color));
+               RGBA.Blue  := Gdouble (Blue (Color));
+               Override_Background_Color (Label, State_Normal, RGBA);
             end if;
          end if;
       end if;

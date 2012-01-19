@@ -57,6 +57,7 @@ with Gdk.Color;
 with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Pixbuf;
+with Gdk.RGBA;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window;
@@ -756,11 +757,21 @@ package Gtk.Widget is
      (Widget     : access Gtk_Widget_Record;
       State_Type : Enums.Gtk_State_Type;
       Color      : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Modify_Bg);
    --  Sets the background color for a widget in a particular state.  All
    --  other style values are left untouched. This procedure has no effect
    --  when Widget has no physical window associated to it (for instance
    --  a Gtk_Label). In such cases, you must put widget inside a
    --  Gtk_Event_Box, and set the background color of the box itself.
+   --
+   --  Deprecated: use Override_Background_Color instead.
+
+   procedure Override_Background_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Enums.Gtk_State_Type;
+       Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA);
+   --  Sets the background color to use for a widget.
+   --  Set to Null_RGBA to undo the effect of a previous call.
 
    procedure Modify_Text
      (Widget     : access Gtk_Widget_Record;

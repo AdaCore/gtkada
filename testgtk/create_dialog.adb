@@ -179,7 +179,7 @@ package body Create_Dialog is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;
       RChooser : Gtk_Recent_Chooser;
-      Empty    : GNAT.Strings.String_List (1 .. 0) := (others => null);
+      Empty : constant GNAT.Strings.String_List (1 .. 0) := (others => null);
    begin
       --  Before we do anything, in case the system's recent list is empty,
       --  let's make sure we have something to show.
