@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib;          use Glib;
-with Gdk.Font;      use Gdk.Font;
+with Glib.Values;   use Glib.Values;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Dnd;       use Gtk.Dnd;
 with Gtk.Selection; use Gtk.Selection;
@@ -35,19 +35,12 @@ with Gtk.Handlers;  use Gtk.Handlers;
 with Gtk.Image;     use Gtk.Image;
 with Gtkada.Types;  use Gtkada.Types;
 with Gtk.Widget;    use Gtk.Widget;
-with Gtk.Arguments; use Gtk.Arguments;
 with Interfaces.C.Strings;
-with Gdk.Pixmap;    use Gdk.Pixmap;
-with Gdk.Bitmap;    use Gdk.Bitmap;
-with Gdk.Color;     use Gdk.Color;
+with Gdk.Dnd;       use Gdk.Dnd;
+with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
+with Gdk.Pixbuf;    use Gdk.Pixbuf;
 with Gdk.Window;    use Gdk.Window;
 with Gtk.Frame;     use Gtk.Frame;
-
-pragma Warnings (Off); --  Gtk.Text is obsolescent
-with Gtk.Text;      use Gtk.Text;
-pragma Warnings (On);
-
-with Gdk.Dnd;       use Gdk.Dnd;
 
 package body Create_Dnd is
 
@@ -314,17 +307,13 @@ package body Create_Dnd is
      + "                                                                "
      + "                                                                ";
 
-
    Have_Drag : Boolean := False;
 
-   Log : Gtk_Text;
+   Log : Gtk_Label;
 
-   Drag_Icon            : Gdk_Pixmap;
-   Drag_Mask            : Gdk_Bitmap;
-   Trashcan_Open        : Gdk_Pixmap;
-   Trashcan_Closed      : Gdk_Pixmap;
-   Trashcan_Open_Mask   : Gdk_Bitmap;
-   Trashcan_Closed_Mask : Gdk_Bitmap;
+   Drag_Icon            : Gdk_Pixbuf;
+   Trashcan_Open        : Gdk_Pixbuf;
+   Trashcan_Closed      : Gdk_Pixbuf;
 
    My_Target_String1  : constant Guint := 0;
    My_Target_String2  : constant Guint := 1;
@@ -409,18 +398,13 @@ package body Create_Dnd is
         & " clues for the user.";
    end Help;
 
-
    -------------
    -- Put_Log --
    -------------
 
    procedure Put_Log (Str : String) is
    begin
-      Insert (Log,
-              Gdk.Font.Null_Font,
-              Fore => Gdk.Color.Null_Color,
-              Back => Gdk.Color.Null_Color,
-              Chars => Str & ASCII.LF);
+      Log.Set_Text (Str);
    end Put_Log;
 
    ----------------------
@@ -439,24 +423,19 @@ package body Create_Dnd is
 
    function Target_Drag_Drop
      (Widget : access Gtk_Widget_Record'Class;
-      Args   : Gtk_Args) return Boolean
+      Args   : Glib.Values.GValues) return Boolean
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X       : Gint         := To_Gint (Args, 2);
-      Y       : Gint         := To_Gint (Args, 3);
-      Time    : Guint        := To_Guint (Args, 4);
-
-      pragma Warnings (Off, Context);
-      pragma Warnings (Off, X);
-      pragma Warnings (Off, Y);
-      pragma Warnings (Off, Time);
-
+      Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint  := Get_Int (Nth (Args, 2));
+      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+      Time    : constant Guint := Get_Uint (Nth (Args, 4));
+      pragma Unreferenced (Context, X, Y, Time);
       use type Guint_List.Glist;
 
    begin
       Have_Drag := False;
       Put_Log ("Drop");
-      Set (Gtk_Image (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
+      Gtk_Image (Widget).Set (Trashcan_Closed);
       return False;
    end Target_Drag_Drop;
 
@@ -470,19 +449,21 @@ package body Create_Dnd is
 
    procedure Target_Drag_Data_Received
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args   : in Gtk_Args)
+      Args   : Glib.Values.GValues)
    is
-      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X    : Gint := To_Gint (Args, 2);
-      Y    : Gint := To_Gint (Args, 3);
-      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
-      Info : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
-      Time : constant Guint := To_Guint (Args, 6);
+      Context : constant Drag_Context :=
+         Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint  := Get_Int (Nth (Args, 2));
+      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+      Data    : constant Selection_Data :=
+         Selection_Data (Get_Proxy (Nth (Args, 4)));
 
-      pragma Warnings (Off, Widget);
-      pragma Warnings (Off, X);
-      pragma Warnings (Off, Y);
-      pragma Warnings (Off, Info);
+      Info : constant Guint := Get_Uint (Nth (Args, 5));
+      --  third item of the Target_Entry
+
+      Time : constant Guint := Get_Uint (Nth (Args, 6));
+
+      pragma Unreferenced (Widget, X, Y, Info);
    begin
       if Get_Length (Data) >= 0
         and then Get_Format (Data) = 8
@@ -506,23 +487,21 @@ package body Create_Dnd is
    --  clues to the user.
    --  This is the general form for handlers of "drag_motion".
 
-   function Target_Drag_Motion  (Widget : access Gtk_Widget_Record'Class;
-                                 Args   : Gtk_Args)
-                                return Boolean
+   function Target_Drag_Motion
+      (Widget : access Gtk_Widget_Record'Class;
+       Args   : Glib.Values.GValues)
+      return Boolean
    is
-      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X       : Gint := To_Gint (Args, 2);
-      Y       : Gint := To_Gint (Args, 3);
-      Time    : constant Guint := To_Guint (Args, 4);
-
-      pragma Warnings (Off, X);
-      pragma Warnings (Off, Y);
-      Toto : Gtk_Image;
+      Context : constant Drag_Context :=
+         Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint  := Get_Int (Nth (Args, 2));
+      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+      Time    : constant Guint := Get_Uint (Nth (Args, 4));
+      pragma Unreferenced (X, Y);
    begin
       if not Have_Drag then
          Have_Drag := True;
-         Toto := Gtk_Image (Widget);
-         Set (Toto, Trashcan_Open, Trashcan_Open_Mask);
+         Gtk_Image (Widget).Set (Trashcan_Open);
       end if;
 
       Drag_Status (Context, Get_Suggested_Action (Context), Guint32 (Time));
@@ -541,18 +520,17 @@ package body Create_Dnd is
    --
    --  This is the general form of handlers for "drag_leave".
 
-   procedure Target_Drag_Leave (Widget : access Gtk_Widget_Record'Class;
-                                Args   : Gtk_Args)
+   procedure Target_Drag_Leave
+      (Widget : access Gtk_Widget_Record'Class;
+       Args   : Glib.Values.GValues)
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      Time    : Guint := To_Guint (Args, 2);
-
-      pragma Warnings (Off, Context);
-      pragma Warnings (Off, Time);
+      Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
+      Time    : constant Guint := Get_Uint (Nth (Args, 2));
+      pragma Unreferenced (Context, Time);
    begin
       Put_Log ("Leave");
       Have_Drag := False;
-      Set (Gtk_Image (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
+      Gtk_Image (Widget).Set (Trashcan_Closed);
    end Target_Drag_Leave;
 
    ------------------------------
@@ -565,29 +543,18 @@ package body Create_Dnd is
 
    procedure Label_Drag_Data_Received
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args   : in Gtk_Args)
+      Args   : Glib.Values.GValues)
    is
-      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X    : Gint := To_Gint (Args, 2);
-      Y    : Gint := To_Gint (Args, 3);
-      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
-      Info : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
-      Time : constant Guint := To_Guint (Args, 6);
-
-      pragma Warnings (Off, Widget);
-      pragma Warnings (Off, X);
-      pragma Warnings (Off, Y);
-      pragma Warnings (Off, Info);
+      Context : constant Drag_Context :=
+         Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint  := Get_Int (Nth (Args, 2));
+      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+      Data    : constant Selection_Data :=
+         Selection_Data (Get_Proxy (Nth (Args, 4)));
+      Info : constant Guint := Get_Uint (Nth (Args, 5));
+      Time : constant Guint := Get_Uint (Nth (Args, 6));
+      pragma Unreferenced (Widget, X, Y, Info);
    begin
-      --  Put_Log ("Selection=" & Atom_Name (Get_Selection (Data)));
-      --  Put_Log ("Target="    & Atom_Name (Get_Target (Data)));
-      --  Put_Log ("Type="      & Atom_Name (Get_Type (Data)));
-      --  Put_Log ("Source Actions="
-      --            & Drag_Action'Image (Get_Actions (Context)));
-      --  Put_Log ("Suggested Action="
-      --            & Drag_Action'Image (Get_Suggested_Action (Context)));
-      --  Put_Log ("Action="   & Drag_Action'Image (Get_Action (Context)));
-
       if Get_Length (Data) >= 0
         and then Get_Format (Data) = 8
       then
@@ -614,17 +581,15 @@ package body Create_Dnd is
 
    procedure Source_Drag_Data_Get
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args   : in Gtk_Args)
+      Args   : Glib.Values.GValues)
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 2));
-      Info : constant Guint := To_Guint (Args, 3);
-         --  third item of the Target_Entry
-      Time    : Guint := To_Guint (Args, 4);
-
-      pragma Warnings (Off, Widget);
-      pragma Warnings (Off, Context);
-      pragma Warnings (Off, Time);
+      Context : constant Drag_Context :=
+         Drag_Context (Get_Object (Nth (Args, 1)));
+      Data    : constant Selection_Data :=
+         Selection_Data (Get_Proxy (Nth (Args, 2)));
+      Info : constant Guint := Get_Uint (Nth (Args, 3));
+      Time : constant Guint := Get_Uint (Nth (Args, 4));
+      pragma Unreferenced (Widget, Context, Time);
    begin
       if Info = My_Target_Rootwin then
          Put_Log ("I was dropped on the root window");
@@ -650,12 +615,11 @@ package body Create_Dnd is
 
    procedure Source_Drag_Data_Delete
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args    : Gtk_Args)
+      Args    : Glib.Values.GValues)
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-
-      pragma Warnings (Off, Context);
-      pragma Warnings (Off, Widget);
+      Context : constant Drag_Context :=
+         Drag_Context (Get_Object (Nth (Args, 1)));
+      pragma Unreferenced (Context, Widget);
    begin
       Put_Log ("Delete the data!");
    end Source_Drag_Data_Delete;
@@ -679,24 +643,9 @@ package body Create_Dnd is
       Gtk_New (Table, 3, 3, False);
       Pack_Start (Box, Table);
 
-      Create_From_Xpm_D (Drag_Icon,
-                         Null_Window,
-                         Get_Colormap (Frame),
-                         Drag_Mask,
-                         Null_Color,
-                         Drag_Icon_Xpm);
-      Create_From_Xpm_D (Trashcan_Open,
-                         Null_Window,
-                         Get_Colormap (Frame),
-                         Trashcan_Open_Mask,
-                         Null_Color,
-                         Trashcan_Open_Xpm);
-      Create_From_Xpm_D (Trashcan_Closed,
-                         Null_Window,
-                         Get_Colormap (Frame),
-                         Trashcan_Closed_Mask,
-                         Null_Color,
-                         Trashcan_Closed_Xpm);
+      Drag_Icon := Gdk_New_From_Xpm_Data (Drag_Icon_Xpm);
+      Trashcan_Open := Gdk_New_From_Xpm_Data (Trashcan_Open_Xpm);
+      Trashcan_Closed := Gdk_New_From_Xpm_Data (Trashcan_Closed_Xpm);
 
       -----------------
       --  Drop sites --
@@ -759,9 +708,7 @@ package body Create_Dnd is
       Widget_Callback.Connect (Button, "drag_data_delete",
                                Source_Drag_Data_Delete'Access);
 
-      Gtk.Dnd.Source_Set_Icon (Button,
-                               Get_Colormap (Frame),
-                               Drag_Icon, Drag_Mask);
+      Gtk.Dnd.Source_Set_Icon_Pixbuf (Button, Drag_Icon);
 
       --  Second Drag site
 
@@ -794,7 +741,7 @@ package body Create_Dnd is
 
       --  Special drop site
 
-      Gtk_New (Pixmap, Trashcan_Closed, Trashcan_Closed_Mask);
+      Gtk_New (Pixmap, Trashcan_Closed);
       Gtk.Dnd.Dest_Set (Pixmap);
       Attach (Table, Pixmap, 0, 1, 2, 3);
 
@@ -806,7 +753,6 @@ package body Create_Dnd is
                                Target_Drag_Motion'Access);
       Widget_Callback.Connect (Pixmap, "drag_leave",
                                Target_Drag_Leave'Access);
-
 
       --  The log window
       Gtk_New (Log);

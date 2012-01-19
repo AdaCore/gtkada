@@ -40,12 +40,12 @@ package Gdk.Drag_Contexts is
    --  Used in Gdk.Drag_Contexts.Drag_Context to indicate what the destination
    --  should do with the dropped data.
 
-   Gdk_Action_Default : constant Gdk_Drag_Action := 1;
-   Gdk_Action_Copy : constant Gdk_Drag_Action := 2;
-   Gdk_Action_Move : constant Gdk_Drag_Action := 4;
-   Gdk_Action_Link : constant Gdk_Drag_Action := 8;
-   Gdk_Action_Private : constant Gdk_Drag_Action := 16;
-   Gdk_Action_Ask : constant Gdk_Drag_Action := 32;
+   Action_Default : constant Gdk_Drag_Action := 1;
+   Action_Copy : constant Gdk_Drag_Action := 2;
+   Action_Move : constant Gdk_Drag_Action := 4;
+   Action_Link : constant Gdk_Drag_Action := 8;
+   Action_Private : constant Gdk_Drag_Action := 16;
+   Action_Ask : constant Gdk_Drag_Action := 32;
 
    package Gdk_Drag_Action_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Drag_Action);
@@ -54,13 +54,13 @@ package Gdk.Drag_Contexts is
 
 
    type Gdk_Drag_Protocol is (
-      Gdk_Drag_Proto_None,
-      Gdk_Drag_Proto_Motif,
-      Gdk_Drag_Proto_Xdnd,
-      Gdk_Drag_Proto_Rootwin,
-      Gdk_Drag_Proto_Win32_Dropfiles,
-      Gdk_Drag_Proto_Ole2,
-      Gdk_Drag_Proto_Local);
+      Drag_Proto_None,
+      Drag_Proto_Motif,
+      Drag_Proto_Xdnd,
+      Drag_Proto_Rootwin,
+      Drag_Proto_Win32_Dropfiles,
+      Drag_Proto_Ole2,
+      Drag_Proto_Local);
    pragma Convention (C, Gdk_Drag_Protocol);
    --  Used in Gdk.Drag_Contexts.Drag_Context to indicate the protocol according
    --  to which DND is done.

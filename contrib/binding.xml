@@ -76,8 +76,8 @@
         ################################################-->
 
    <package id="Gdk.Drag_Contexts">
-      <enum ctype="GdkDragAction" />
-      <enum ctype="GdkDragProtocol" />
+      <enum ctype="GdkDragAction" prefix="GDK_"/>
+      <enum ctype="GdkDragProtocol" prefix="GDK_"/>
       <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
    </package>
 
