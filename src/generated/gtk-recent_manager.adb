@@ -36,8 +36,7 @@ package body Gtk.Recent_Manager is
 
    function Convert (R : System.Address) return Gtk.Recent_Info.Gtk_Recent_Info is
    begin
-      return From_Object(R);
-   end Convert;
+      return From_Object(R);end Convert;
 
    function Add_Full
      (Manager      : access Gtk_Recent_Manager_Record;

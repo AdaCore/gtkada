@@ -127,10 +127,10 @@ package Gtk.Image is
       Image_Icon_Name,
       Image_Gicon);
    pragma Convention (C, Gtk_Image_Type);
-   --  Describes the image data representation used by a Gtk.Image.Gtk_Image. If
-   --  you want to get the image from the widget, you can only get the
-   --  currently-stored representation. e.g. if the gtk_image_get_storage_type
-   --  returns GTK_IMAGE_PIXBUF, then you can call gtk_image_get_pixbuf but not
+   --  Describes the image data representation used by a Gtk.Image.Gtk_Image.
+   --  If you want to get the image from the widget, you can only get the
+   --  currently-stored representation. e.g. if the Gtk.Image.Get_Storage_Type
+   --  returns GTK_IMAGE_PIXBUF, then you can call Gtk.Image.Get but not
    --  gtk_image_get_stock. For empty images, you can request any storage type
    --  (call any of the "get" functions), but they will all return null values.
 

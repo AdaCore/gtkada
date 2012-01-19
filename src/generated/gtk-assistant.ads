@@ -81,13 +81,11 @@ package Gtk.Assistant is
    --  Gtk.Assistant.Gtk_Assistant_Page_Summary or
    --  Gtk.Assistant.Gtk_Assistant_Page_Progress to be correct.
    --  The Cancel button will only be shown if the page isn't "committed". See
-   --  gtk_assistant_commit for details.
+   --  Gtk.Assistant.Commit for details.
 
    package Gtk_Assistant_Page_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Assistant_Page_Type);
    type Property_Gtk_Assistant_Page_Type is new Gtk_Assistant_Page_Type_Properties.Property;
-
-
 
    type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
    --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is

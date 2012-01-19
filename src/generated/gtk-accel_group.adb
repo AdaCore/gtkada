@@ -203,6 +203,7 @@ package body Gtk.Accel_Group is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Accel_Group_Find_Func);
 

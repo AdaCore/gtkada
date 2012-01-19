@@ -115,7 +115,7 @@ binding = ("GdkDevice",
            "GtkVSeparator",
            "GtkViewport",
            "GtkVolumeButton",
-           "GtkWidget::merge",   # Partial binding
+           "GtkWidget",
           )
 
 # Handling of functions with user data. The names below are the likely names

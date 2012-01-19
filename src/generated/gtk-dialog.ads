@@ -168,7 +168,6 @@ package Gtk.Dialog is
    --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
    --     - No_Separator: No separator bar above the buttons.
 
-
    type Gtk_Response_Type is new Gint;
    --  Type used for Response_Id's.
    --  Positive values are totally user-interpreted.
@@ -202,7 +201,6 @@ package Gtk.Dialog is
    Gtk_Response_Help   : constant Gtk_Response_Type := -11;
    --  These are returned from dialogs, and you can also use them
    --  yourself if you like.
-
 
    type Response_Type_Array is array (Natural range <>) of Gtk_Response_Type;
 

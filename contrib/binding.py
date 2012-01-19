@@ -1133,9 +1133,12 @@ See Glib.Properties for more information on properties)""")
                 if p["doc"]:
                     section.add_comment("%s\n" % p["doc"])
 
+            section.add("\n".join(
+                    '   %(name)s_Property : constant %(ptype)s;' % p
+                    for p in adaprops))
+
             for p in adaprops:
                 d = '   %(name)s_Property : constant %(ptype)s' % p
-                section.add (d + ";")
                 self.pkg.add_private(
                     d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
 
@@ -1186,10 +1189,10 @@ See Glib.Properties for more information on properties)""")
                 if s["doc"]:
                     section.add_comment("  %s""" % s["doc"])
 
-            for s in adasignals:
-                section.add_code(
+            section.add("\n".join(
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                    naming.case(s["name"]), s["name"]))
+                        naming.case(s["name"]), s["name"])
+                    for s in adasignals))
 
     def _implements(self):
         """Bind the interfaces that a class implements"""
@@ -1315,8 +1318,7 @@ See Glib.Properties for more information on properties)""")
         decl += "end Convert;"
         section.add_code(decl, specs=False)
 
-
-    def record_binding(self, ctype, type, override_fields):
+    def record_binding(self, section, ctype, type, override_fields):
         """Create the binding for a <record> type.
            override_fields has the same format as returned by
            GtkAdaPackage.records()
@@ -1326,7 +1328,6 @@ See Glib.Properties for more information on properties)""")
         if "." in base:
             base = base[base.rfind(".") + 1:]
 
-        decl = "\ntype %s is record\n" % base
         node = gir.records[ctype]
 
         fields = []
@@ -1349,14 +1350,15 @@ See Glib.Properties for more information on properties)""")
 
                 fields.append((naming.case(name), ftype))
 
-        decl += "\n".join("%s : %s;" % f for f in fields)
-        decl += "\nend record;\npragma Convention (C, %s);\n" % base
-        decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n"
-        return decl
+        section.add(
+            "\ntype %s is record\n" % base
+            + "\n".join("%s : %s;" % f for f in fields)
+            + "\nend record;\npragma Convention (C, %s);\n" % base)
+        section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
-    def enumeration_binding(self, ctype, type, prefix):
-        """Return the Ada type definition for the <enumeration> ctype.
-           type is the corresponding instance of CType().
+    def enumeration_binding(self, section, ctype, type, prefix):
+        """Add to the section the Ada type definition for the <enumeration>
+           ctype. type is the corresponding instance of CType().
            This function also handles <bitfield> types.
            [prefix] is removed from the values to get the default Ada name,
            which can be overridden in data.cname_to_adaname.
@@ -1365,7 +1367,6 @@ See Glib.Properties for more information on properties)""")
         if "." in base:
             base = base[base.rfind(".") + 1:]
 
-        decl = "\ntype %s is " % base
         node = gir.enums[ctype]
 
         members = []
@@ -1389,26 +1390,33 @@ See Glib.Properties for more information on properties)""")
 
             members.append((m, member.get("value")))
 
+        decl = ""
+
         if node.tag == nenumeration:
-            decl += "(\n" + ",\n".join(m[0] for m in members) + ");\n"
-            decl += "pragma Convention (C, %s);\n" % base
-            decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n"
+            section.add(
+                "type %s is " % base
+                + "(\n" + ",\n".join(m[0] for m in members) + ");\n"
+                + "pragma Convention (C, %s);\n" % base)
+            section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
         elif node.tag == nbitfield:
-            decl += "mod 2 ** Integer'Size;\n";
-            decl += "pragma Convention (C, %s);\n" % base
-            decl += format_doc([node.findtext(ndoc, "")], indent="") + "\n\n"
+            section.add(
+                "\ntype %s is " % base
+                + "mod 2 ** Integer'Size;\n"
+                + "pragma Convention (C, %s);\n" % base)
+            section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
             for m, value in members:
                 decl += "%s : constant %s := %s;\n" % (m, base, value)
 
-        decl += "\npackage %s_Properties is\n" % base
-        decl += "   new Generic_Internal_Discrete_Property (%s);\n" % base
-        decl += "type Property_%s is new %s_Properties.Property;\n\n" % (
-            base, base)
+        section.add(
+           decl
+           + "\npackage %s_Properties is\n" % base
+           + "   new Generic_Internal_Discrete_Property (%s);\n" % base
+           + "type Property_%s is new %s_Properties.Property;\n\n" % (
+                        base, base))
 
         self.pkg.add_with("Glib.Generic_Properties")
-        return decl
 
     def generate(self, gir):
         if self._generated:
@@ -1475,6 +1483,8 @@ See Glib.Properties for more information on properties)""")
         self.pkg = gir.get_package(into or self.name, doc=girdoc)
         self.pkg.language_version = "pragma Ada_05;"
 
+        self.pkg.needs_merge = self.gtkpkg.needs_merge()
+
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)
 
@@ -1532,12 +1542,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
         for ctype, enum, prefix in self.gtkpkg.enumerations():
-            decl = self.enumeration_binding(ctype, enum, prefix)
-            section.add_code(decl)
+            self.enumeration_binding(section, ctype, enum, prefix)
 
         for ctype, enum, override_fields in self.gtkpkg.records():
-            decl = self.record_binding(ctype, enum, override_fields)
-            section.add_code(decl)
+            self.record_binding(section, ctype, enum, override_fields)
 
         for ada, ctype, single in self.gtkpkg.lists():
             self.add_list_binding(section, ada, ctype, single)
@@ -1685,14 +1693,7 @@ for name in interfaces:
     gir.interfaces[name].generate(gir)
 
 for the_ctype in binding:
-    needs_merge = "::merge" in the_ctype
-    if needs_merge:
-        the_ctype = the_ctype[:the_ctype.find("::merge")]
-    print the_ctype, needs_merge
-
-    cl = gir.classes[the_ctype]
-    cl.generate(gir)
-    cl.pkg.needs_merge = needs_merge
+    gir.classes[the_ctype].generate(gir)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

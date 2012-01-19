@@ -338,6 +338,8 @@ package Gtk.Box is
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
    Spacing_Property : constant Glib.Properties.Property_Int;
 
+
+
 private
    Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");

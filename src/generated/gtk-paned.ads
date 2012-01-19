@@ -279,6 +279,8 @@ package Gtk.Paned is
    Position_Property : constant Glib.Properties.Property_Int;
    Position_Set_Property : constant Glib.Properties.Property_Boolean;
 
+
+
    -------------
    -- Signals --
    -------------

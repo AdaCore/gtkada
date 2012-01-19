@@ -1217,6 +1217,39 @@ class Subprogram(object):
         return result
 
 
+class Code(object):
+    """Some text to insert in a package.
+       This can be either some code, or the comments for the code. In the latter case, the
+       comment will be automatically formatted (and C names substituted as appropriate).
+    """
+
+    def __init__(self, content, iscomment=False):
+        self.content = content
+        self.iscomment = iscomment
+
+    def format(self, indent=""):
+        """Return the code that should be written into a package"""
+        if self.iscomment:
+            return format_doc([self.content], indent=indent) + "\n"
+        else:
+            return indent_code(self.content, indent=len(indent), addnewlines=False)
+
+    @staticmethod
+    def formatlist(codelist, indent):
+        """Format a list of code objects. This properly associates a comment with the
+           previous code, with no blank line.
+        """
+
+        result = ""
+        for r in codelist:
+            f = r.format(indent=indent)
+            if result and not r.iscomment:
+                result += "\n"
+            result += f
+
+        return result
+
+
 class Section(object):
     """A group of types and subprograms in an Ada package.
        There is a single section with a given name in the package
@@ -1231,8 +1264,8 @@ class Section(object):
         self.name = name
         self.comment = ""
         self.__subprograms = []  # All subprograms  (in_spec, Subprogram())
-        self.spec_code = ""  # hard-coded code
-        self.body_code = ""  # hard-coded code
+        self.spec_code = []  # List of Code objects
+        self.body_code = []  # List of Code objects
 
     def add_comment(self, comment, fill=True):
         """If 'fill' is true, the comment is automatically split on several
@@ -1256,14 +1289,20 @@ class Section(object):
         elif isinstance(obj, Package):
             obj.isnested = True
             self.__subprograms.append((in_spec, obj))
-        elif isinstance(obj, str):
-            self.add_code(obj, specs=in_spec)
+        else:
+            if isinstance(obj, str):
+                obj = Code(obj)
+            elif not isinstance(obj, Code):
+                print "Unexpected type passed to add: %s" % type(obj)
+                raise Exception
+
+            if in_spec:
+                self.spec_code.append(obj)
+            else:
+                self.body_code.append(obj)
 
     def add_code(self, code, specs=True):
-        if specs:
-            self.spec_code += code + "\n"
-        else:
-            self.body_code += code + "\n"
+        self.add(code, specs)
 
     def _group_subprograms(self):
         """Returns a list of subprograms for the specs. In each nested list,
@@ -1322,9 +1361,9 @@ class Section(object):
             else:
                 result.append("")
 
-            if self.spec_code:
-                result.append(indent_code(self.spec_code, indent=len(indent),
-                                          addnewlines=False))
+            spec_code = Code.formatlist(self.spec_code, indent=indent)
+            if spec_code:
+                result.append(spec_code)
 
             for group in self._group_subprograms():
                 for s in group:
@@ -1342,8 +1381,9 @@ class Section(object):
     def body(self, pkg, indent):
         result = []
 
-        if self.body_code:
-            result.append(indent_code(self.body_code, indent=len(indent)))
+        body_code = Code.formatlist(self.body_code, indent=indent)
+        if body_code:
+            result.append(body_code)
 
         self.__subprograms.sort(lambda x, y: cmp(x[1].name, y[1].name))
 

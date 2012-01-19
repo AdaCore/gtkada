@@ -389,6 +389,7 @@ package body Gtk.Assistant is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Assistant_Page_Func);
 

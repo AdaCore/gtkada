@@ -365,8 +365,6 @@ package Gtk.File_Chooser is
       new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Action);
    type Property_Gtk_File_Chooser_Action is new Gtk_File_Chooser_Action_Properties.Property;
 
-
-
    type Gtk_File_Chooser_Confirmation is (
       Confirmation_Confirm,
       Confirmation_Accept_Filename,
@@ -374,15 +372,13 @@ package Gtk.File_Chooser is
    pragma Convention (C, Gtk_File_Chooser_Confirmation);
    --  Used as a return value of handlers for the
    --  Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal of a
-   --  Gtk.File_Chooser.Gtk_File_Chooser. This value determines whether the file
-   --  chooser will present the stock confirmation dialog, accept the user's
-   --  choice of a filename, or let the user choose another filename.
+   --  Gtk.File_Chooser.Gtk_File_Chooser. This value determines whether the
+   --  file chooser will present the stock confirmation dialog, accept the
+   --  user's choice of a filename, or let the user choose another filename.
 
    package Gtk_File_Chooser_Confirmation_Properties is
       new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Confirmation);
    type Property_Gtk_File_Chooser_Confirmation is new Gtk_File_Chooser_Confirmation_Properties.Property;
-
-
 
    type Gtk_File_Chooser_Error is (
       Error_Nonexistent,

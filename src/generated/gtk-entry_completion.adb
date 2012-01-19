@@ -421,6 +421,7 @@ package body Gtk.Entry_Completion is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 
@@ -519,6 +520,7 @@ package body Gtk.Entry_Completion is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Entry_Completion_Match_Func);
 

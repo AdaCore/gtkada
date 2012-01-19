@@ -35,10 +35,8 @@ package body Gtk.Cell_Renderer is
    end Convert;
 
    function Convert (R : System.Address) return Gtk.Cell_Renderer.Gtk_Cell_Renderer is
-      Stub : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-   begin
-      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Glib.Object.Get_User_Data (R, Stub));
-   end Convert;
+      Stub : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;begin
+         return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Glib.Object.Get_User_Data (R, Stub));end Convert;
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Cell_Renderer_Record);

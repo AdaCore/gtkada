@@ -329,6 +329,8 @@ package Gtk.Scale is
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
 
+
+
    -------------
    -- Signals --
    -------------

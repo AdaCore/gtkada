@@ -103,8 +103,6 @@ package Gtk.Recent_Filter is
       new Generic_Internal_Discrete_Property (Gtk_Recent_Filter_Flags);
    type Property_Gtk_Recent_Filter_Flags is new Gtk_Recent_Filter_Flags_Properties.Property;
 
-
-
    type Gtk_Recent_Filter_Info is record
       Contains : Gtk_Recent_Filter_Flags;
       URI : Interfaces.C.Strings.chars_ptr;
@@ -115,13 +113,12 @@ package Gtk.Recent_Filter is
       Age : Gint;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);
-   --  A GtkRecentFilterInfo struct is used to pass information about the tested
-   --  file to gtk_recent_filter_filter.
+   --  A GtkRecentFilterInfo struct is used to pass information about the
+   --  tested file to Gtk.Recent_Filter.Filter.
 
    function Convert (R : Gtk.Recent_Filter.Gtk_Recent_Filter) return System.Address;
    function Convert (R : System.Address) return Gtk.Recent_Filter.Gtk_Recent_Filter;
    package Gtk_Recent_Filter_List is new Generic_SList (Gtk.Recent_Filter.Gtk_Recent_Filter);
-
 
    type Gtk_Recent_Filter_Func is access function (Filter_Info : Gtk_Recent_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see

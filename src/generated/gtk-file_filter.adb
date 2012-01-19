@@ -116,6 +116,7 @@ package body Gtk.File_Filter is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_File_Filter_Func);
 

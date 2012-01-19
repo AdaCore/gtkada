@@ -93,8 +93,7 @@ package body Gdk.Screen is
       X       : Glib.Gint;
       Y       : Glib.Gint)
    is
-      procedure Internal (D, S : System.Address;
-         X, Y : Gint);
+      procedure Internal (D, S : System.Address; X, Y : Gint);
       pragma Import (C, Internal, "gdk_display_warp_pointer");
       --  External binding: gdk_display_warp_pointer
    begin

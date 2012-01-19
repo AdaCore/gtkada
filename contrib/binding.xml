@@ -2307,4 +2307,9 @@ While looking up a recently used file is as simple as using:
 
      <method id="gtk_recent_chooser_list_filters" return="RecentFilterList"/>
    </package>
+
+   <package id="Gtk.Widget" needs_merge="true">
+     <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
+     <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
+   </package>
 </GIR>

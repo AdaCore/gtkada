@@ -134,8 +134,8 @@ package Gtk.Recent_Manager is
       Is_Private : Boolean;
    end record;
    pragma Convention (C, Gtk_Recent_Data);
-   --  Meta-data to be passed to gtk_recent_manager_add_full when registering a
-   --  recently used resource.
+   --  Meta-data to be passed to gtk_recent_manager_add_full when registering
+   --  a recently used resource.
 
    function Convert (R : Gtk.Recent_Info.Gtk_Recent_Info) return System.Address;
    function Convert (R : System.Address) return Gtk.Recent_Info.Gtk_Recent_Info;

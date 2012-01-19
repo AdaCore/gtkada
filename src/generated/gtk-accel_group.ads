@@ -64,15 +64,12 @@ package Gtk.Accel_Group is
       new Generic_Internal_Discrete_Property (Gtk_Accel_Flags);
    type Property_Gtk_Accel_Flags is new Gtk_Accel_Flags_Properties.Property;
 
-
-
    type Gtk_Accel_Key is record
       Accel_Key : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Accel_Flags : Gtk_Accel_Flags;
    end record;
    pragma Convention (C, Gtk_Accel_Key);
-
 
 
    type Gtk_Accel_Group_Activate is access function
@@ -89,7 +86,6 @@ package Gtk.Accel_Group is
    pragma Convention (C, C_Gtk_Accel_Group_Activate);
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
-
 
    type Gtk_Accel_Group_Find_Func is access function
      (Key     : Gtk_Accel_Key;

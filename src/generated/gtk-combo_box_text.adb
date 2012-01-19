@@ -311,6 +311,7 @@ package body Gtk.Combo_Box_Text is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 

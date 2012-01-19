@@ -79,8 +79,9 @@ package Gtk.File_Filter is
 
    type Gtk_File_Filter_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_File_Filter_Flags);
-   --  These flags indicate what parts of a Gtk.File_Filter.Gtk_File_Filter_Info
-   --  struct are filled or need to be filled.
+   --  These flags indicate what parts of a
+   --  Gtk.File_Filter.Gtk_File_Filter_Info struct are filled or need to be
+   --  filled.
 
    File_Filter_Filename : constant Gtk_File_Filter_Flags := 1;
    File_Filter_Uri : constant Gtk_File_Filter_Flags := 2;
@@ -91,8 +92,6 @@ package Gtk.File_Filter is
       new Generic_Internal_Discrete_Property (Gtk_File_Filter_Flags);
    type Property_Gtk_File_Filter_Flags is new Gtk_File_Filter_Flags_Properties.Property;
 
-
-
    type Gtk_File_Filter_Info is record
       Contains : Gtk_File_Filter_Flags;
       Filename : Interfaces.C.Strings.chars_ptr;
@@ -101,9 +100,8 @@ package Gtk.File_Filter is
       Mime_Type : Interfaces.C.Strings.chars_ptr;
    end record;
    pragma Convention (C, Gtk_File_Filter_Info);
-   --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass information
-   --  about the tested file to gtk_file_filter_filter.
-
+   --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass
+   --  information about the tested file to Gtk.File_Filter.Filter.
 
    type Gtk_File_Filter_Func is access function (Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see

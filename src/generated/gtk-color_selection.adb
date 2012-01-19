@@ -38,8 +38,7 @@ package body Gtk.Color_Selection is
       use Color_Arrays;
       function Internal
         (Str : String;
-         Colors : access Unbounded_Array_Access;
-         N : access Gint)
+         Colors : access Unbounded_Array_Access; N : access Gint)
       return Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_palette_from_string");
 
@@ -70,7 +69,6 @@ package body Gtk.Color_Selection is
          return "";
       else
          Str := Internal (Colors (Colors'First)'Address, Colors'Length);
-
          declare
             Result : constant String := Value (Str);
          begin

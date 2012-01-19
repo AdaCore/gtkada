@@ -46,7 +46,6 @@ package Gtk.Recent_Info is
      (Object : Gtk_Recent_Info'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Recent_Info;
 
-
    subtype time_t is Long_Integer;
    --  Type to interface with C's time_t type.  To convert this to/from
    --  an Ada type, look at Ada.Calendar.Conversion_Operations and be

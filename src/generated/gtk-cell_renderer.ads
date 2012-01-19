@@ -90,8 +90,6 @@ package Gtk.Cell_Renderer is
       new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_State);
    type Property_Gtk_Cell_Renderer_State is new Gtk_Cell_Renderer_State_Properties.Property;
 
-
-
    type Gtk_Cell_Renderer_Mode is (
       Cell_Renderer_Mode_Inert,
       Cell_Renderer_Mode_Activatable,
@@ -102,7 +100,6 @@ package Gtk.Cell_Renderer is
    package Gtk_Cell_Renderer_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_Mode);
    type Property_Gtk_Cell_Renderer_Mode is new Gtk_Cell_Renderer_Mode_Properties.Property;
-
 
    function Convert (R : Gtk.Cell_Renderer.Gtk_Cell_Renderer) return System.Address;
    function Convert (R : System.Address) return Gtk.Cell_Renderer.Gtk_Cell_Renderer;

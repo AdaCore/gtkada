@@ -60,8 +60,6 @@ package Gtk.Recent_Chooser is
       new Generic_Internal_Discrete_Property (Gtk_Recent_Sort_Type);
    type Property_Gtk_Recent_Sort_Type is new Gtk_Recent_Sort_Type_Properties.Property;
 
-
-
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

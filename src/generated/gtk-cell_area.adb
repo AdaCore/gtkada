@@ -536,6 +536,7 @@ package body Gtk.Cell_Area is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Alloc_Callback);
 
@@ -592,6 +593,7 @@ package body Gtk.Cell_Area is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Callback);
 
@@ -1032,6 +1034,7 @@ package body Gtk.Cell_Area is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 

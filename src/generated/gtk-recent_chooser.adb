@@ -430,6 +430,7 @@ package body Gtk.Recent_Chooser is
 
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
+
       function To_Gtk_Recent_Sort_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Recent_Sort_Func);
 
