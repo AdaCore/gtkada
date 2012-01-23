@@ -181,7 +181,7 @@ package Gtk.Handle_Box is
    --  "child-attached"
    --     procedure Handler
    --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : Gtk.Widget.Gtk_Widget);
+   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "widget": the child widget of the handlebox. (this argument provides no
    --    --  extra information and is here only for backwards-compatibility)
    --  This signal is emitted when the contents of the handlebox are
@@ -190,7 +190,7 @@ package Gtk.Handle_Box is
    --  "child-detached"
    --     procedure Handler
    --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : Gtk.Widget.Gtk_Widget);
+   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "widget": the child widget of the handlebox. (this argument provides no
    --    --  extra information and is here only for backwards-compatibility)
    --  This signal is emitted when the contents of the handlebox are detached

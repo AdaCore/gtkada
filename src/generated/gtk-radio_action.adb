@@ -70,11 +70,26 @@ package body Gtk.Radio_Action is
           Value    : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_radio_action_new");
       Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Label    : Interfaces.C.Strings.chars_ptr := New_String (Label);
-      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr := New_String (Tooltip);
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Label    : Interfaces.C.Strings.chars_ptr;
+      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
       Tmp_Return   : System.Address;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
+      if Tooltip = "" then
+         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Tooltip := New_String (Tooltip);
+      end if;
+      if Stock_Id = "" then
+         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Stock_Id := New_String (Stock_Id);
+      end if;
       Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id, Value);
       Free (Tmp_Name);
       Free (Tmp_Label);

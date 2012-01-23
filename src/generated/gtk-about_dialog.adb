@@ -310,14 +310,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Comments
       (About    : not null access Gtk_About_Dialog_Record;
-       Comments : UTF8_String)
+       Comments : UTF8_String := "")
    is
       procedure Internal
          (About    : System.Address;
           Comments : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_comments");
-      Tmp_Comments : Interfaces.C.Strings.chars_ptr := New_String (Comments);
+      Tmp_Comments : Interfaces.C.Strings.chars_ptr;
    begin
+      if Comments = "" then
+         Tmp_Comments := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Comments := New_String (Comments);
+      end if;
       Internal (Get_Object (About), Tmp_Comments);
       Free (Tmp_Comments);
    end Set_Comments;
@@ -364,14 +369,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_License
       (About   : not null access Gtk_About_Dialog_Record;
-       License : UTF8_String)
+       License : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           License : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_license");
-      Tmp_License : Interfaces.C.Strings.chars_ptr := New_String (License);
+      Tmp_License : Interfaces.C.Strings.chars_ptr;
    begin
+      if License = "" then
+         Tmp_License := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_License := New_String (License);
+      end if;
       Internal (Get_Object (About), Tmp_License);
       Free (Tmp_License);
    end Set_License;
@@ -410,14 +420,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Logo_Icon_Name
       (About     : not null access Gtk_About_Dialog_Record;
-       Icon_Name : UTF8_String)
+       Icon_Name : UTF8_String := "")
    is
       procedure Internal
          (About     : System.Address;
           Icon_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Icon_Name = "" then
+         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Icon_Name := New_String (Icon_Name);
+      end if;
       Internal (Get_Object (About), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Logo_Icon_Name;
@@ -446,14 +461,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Translator_Credits
       (About              : not null access Gtk_About_Dialog_Record;
-       Translator_Credits : UTF8_String)
+       Translator_Credits : UTF8_String := "")
    is
       procedure Internal
          (About              : System.Address;
           Translator_Credits : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_translator_credits");
-      Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr := New_String (Translator_Credits);
+      Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr;
    begin
+      if Translator_Credits = "" then
+         Tmp_Translator_Credits := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Translator_Credits := New_String (Translator_Credits);
+      end if;
       Internal (Get_Object (About), Tmp_Translator_Credits);
       Free (Tmp_Translator_Credits);
    end Set_Translator_Credits;
@@ -464,14 +484,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Version
       (About   : not null access Gtk_About_Dialog_Record;
-       Version : UTF8_String)
+       Version : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           Version : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_version");
-      Tmp_Version : Interfaces.C.Strings.chars_ptr := New_String (Version);
+      Tmp_Version : Interfaces.C.Strings.chars_ptr;
    begin
+      if Version = "" then
+         Tmp_Version := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Version := New_String (Version);
+      end if;
       Internal (Get_Object (About), Tmp_Version);
       Free (Tmp_Version);
    end Set_Version;
@@ -482,14 +507,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Website
       (About   : not null access Gtk_About_Dialog_Record;
-       Website : UTF8_String)
+       Website : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           Website : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website");
-      Tmp_Website : Interfaces.C.Strings.chars_ptr := New_String (Website);
+      Tmp_Website : Interfaces.C.Strings.chars_ptr;
    begin
+      if Website = "" then
+         Tmp_Website := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Website := New_String (Website);
+      end if;
       Internal (Get_Object (About), Tmp_Website);
       Free (Tmp_Website);
    end Set_Website;

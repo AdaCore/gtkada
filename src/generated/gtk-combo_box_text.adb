@@ -137,7 +137,7 @@ package body Gtk.Combo_Box_Text is
 
    procedure Append
       (Self : not null access Gtk_Combo_Box_Text_Record;
-       Id   : UTF8_String;
+       Id   : UTF8_String := "";
        Text : UTF8_String)
    is
       procedure Internal
@@ -145,9 +145,14 @@ package body Gtk.Combo_Box_Text is
           Id   : Interfaces.C.Strings.chars_ptr;
           Text : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_append");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin
+      if Id = "" then
+         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Id := New_String (Id);
+      end if;
       Internal (Get_Object (Self), Tmp_Id, Tmp_Text);
       Free (Tmp_Id);
       Free (Tmp_Text);
@@ -192,7 +197,7 @@ package body Gtk.Combo_Box_Text is
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
-       Id       : UTF8_String;
+       Id       : UTF8_String := "";
        Text     : UTF8_String)
    is
       procedure Internal
@@ -201,9 +206,14 @@ package body Gtk.Combo_Box_Text is
           Id       : Interfaces.C.Strings.chars_ptr;
           Text     : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_insert");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin
+      if Id = "" then
+         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Id := New_String (Id);
+      end if;
       Internal (Get_Object (Self), Position, Tmp_Id, Tmp_Text);
       Free (Tmp_Id);
       Free (Tmp_Text);
@@ -235,7 +245,7 @@ package body Gtk.Combo_Box_Text is
 
    procedure Prepend
       (Self : not null access Gtk_Combo_Box_Text_Record;
-       Id   : UTF8_String;
+       Id   : UTF8_String := "";
        Text : UTF8_String)
    is
       procedure Internal
@@ -243,9 +253,14 @@ package body Gtk.Combo_Box_Text is
           Id   : Interfaces.C.Strings.chars_ptr;
           Text : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_prepend");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin
+      if Id = "" then
+         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Id := New_String (Id);
+      end if;
       Internal (Get_Object (Self), Tmp_Id, Tmp_Text);
       Free (Tmp_Id);
       Free (Tmp_Text);

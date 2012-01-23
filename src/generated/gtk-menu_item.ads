@@ -111,7 +111,7 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
    procedure Set_Accel_Path
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
-       Accel_Path : UTF8_String);
+       Accel_Path : UTF8_String := "");
    --  Set the accelerator path on Menu_Item, through which runtime changes of
    --  the menu item's accelerator caused by the user can be identified and
    --  saved to persistent storage (see gtk_accel_map_save on this). To set up

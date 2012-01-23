@@ -39,7 +39,7 @@ package body Gtk.Entry_Buffer is
 
    procedure Gtk_New
       (Self            : out Gtk_Entry_Buffer;
-       Initial_Chars   : UTF8_String;
+       Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint)
    is
    begin
@@ -53,16 +53,21 @@ package body Gtk.Entry_Buffer is
 
    procedure Initialize
       (Self            : access Gtk_Entry_Buffer_Record'Class;
-       Initial_Chars   : UTF8_String;
+       Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint)
    is
       function Internal
          (Initial_Chars   : Interfaces.C.Strings.chars_ptr;
           N_Initial_Chars : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_entry_buffer_new");
-      Tmp_Initial_Chars : Interfaces.C.Strings.chars_ptr := New_String (Initial_Chars);
+      Tmp_Initial_Chars : Interfaces.C.Strings.chars_ptr;
       Tmp_Return        : System.Address;
    begin
+      if Initial_Chars = "" then
+         Tmp_Initial_Chars := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Initial_Chars := New_String (Initial_Chars);
+      end if;
       Tmp_Return := Internal (Tmp_Initial_Chars, N_Initial_Chars);
       Free (Tmp_Initial_Chars);
       Set_Object (Self, Tmp_Return);

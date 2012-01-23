@@ -105,10 +105,10 @@ package Gtk.Expander is
 
    procedure Gtk_New_With_Mnemonic
       (Expander : out Gtk_Expander;
-       Label    : UTF8_String);
+       Label    : UTF8_String := "");
    procedure Initialize_With_Mnemonic
       (Expander : access Gtk_Expander_Record'Class;
-       Label    : UTF8_String);
+       Label    : UTF8_String := "");
    --  Creates a new expander using Label as the text of the label. If
    --  characters in Label are preceded by an underscore, they are underlined.
    --  If you need a literal underscore character in a label, use '__' (two
@@ -141,7 +141,7 @@ package Gtk.Expander is
       (Expander : not null access Gtk_Expander_Record) return UTF8_String;
    procedure Set_Label
       (Expander : not null access Gtk_Expander_Record;
-       Label    : UTF8_String);
+       Label    : UTF8_String := "");
    --  Sets the text of the label of the expander to Label.
    --  This will also clear any previously set labels.
    --  Since: gtk+ 2.4

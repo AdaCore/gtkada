@@ -67,7 +67,7 @@ package Gtk.Buildable is
       (Self     : Gtk_Buildable;
        Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child    : not null access Glib.Object.GObject_Record'Class;
-       The_Type : UTF8_String);
+       The_Type : UTF8_String := "");
    --  Adds a child to Buildable. Type is an optional string describing how
    --  the child should be added.
    --  Since: gtk+ 2.12

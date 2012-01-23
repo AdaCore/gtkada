@@ -229,11 +229,11 @@ class GlobalsBinder(object):
         return self.globals[id]
 
 
-def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
+def _get_type(node, allow_access=True, can_be_null=False, pkg=None):
     """Return the type of the GIR XML node.
        `allow_access' should be False if "access Type" parameters should
        not be allowed, and an explicit type is needed instead.
-       `empty_maps_to_null': see doc for CType.
+       `can_be_null': see doc for CType.
        `pkg' is used to add with statements, if specified
     """
     t = node.find(ntype)
@@ -242,8 +242,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
             return None
         return naming.type(name=t.get("name"),
                      cname=t.get(ctype_qname), allow_access=allow_access,
-                     empty_maps_to_null=empty_maps_to_null,
-                     pkg=pkg)
+                     can_be_null=can_be_null, pkg=pkg)
 
     a = node.find(narray)
     if a is not None:
@@ -257,7 +256,7 @@ def _get_type(node, allow_access=True, empty_maps_to_null=False, pkg=None):
             return naming.type(name="array_of_%s" % name,
                          cname=type,
                          pkg=pkg, isArray=True,
-                         empty_maps_to_null=empty_maps_to_null,
+                         can_be_null=can_be_null,
                          allow_access=allow_access)
 
     a = node.find(nvarargs)
@@ -471,11 +470,12 @@ class SubprogramProfile(object):
 
             default = gtkparam.get_default()
             allow_access=not default
+            allow_none = gtkparam.allow_none(default=p.get('allow-none', '0'))
 
             type = gtkparam.get_type(pkg=pkg) \
                 or _get_type(
                     p,
-                    empty_maps_to_null=gtkparam.empty_maps_to_null(),
+                    can_be_null=allow_none,
                     allow_access=allow_access,
                     pkg=pkg)
 
@@ -502,23 +502,24 @@ class SubprogramProfile(object):
             if doc:
                 doc = '"%s": %s' % (name, doc)
 
-            if not default \
-                    and p.get("allow-none", "0") == "1" \
-                    and isinstance(type, GObject):
+            if not default and allow_none:
 
-                # We cannot set a "null" default, since the following is not
-                # allowed in Ada05:
+                # We cannot set a "null" default for a GObject, since the
+                # following is not allowed in Ada05:
                 #    procedure P (A : access GObject_Record'Class := null);
                 # We need a named type instead, ie:
                 #    procedure P (A : GObject := null);
                 # but then this needs an extra cast in user code.
 
-                #default = "null"
-
                 type.can_be_null = True
+
+                if isinstance(type, UTF8):
+                    default = '""'
+
 
             elif default == "null":
                 type.can_be_null = True
+                type.userecord = False
 
             result.append(
                 Parameter(name=naming.case(name),
@@ -1111,6 +1112,7 @@ See Glib.Properties for more information on properties)""")
                 # (Property_Object).
 
                 tp = _get_type(p)
+                tp.userecord = False
                 ptype = tp.as_property()
                 if ptype:
                     pkg = ptype[:ptype.rfind(".")]

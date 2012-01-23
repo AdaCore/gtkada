@@ -53,7 +53,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "")
    is
    begin
@@ -81,7 +81,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String)
    is
    begin
@@ -121,7 +121,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -168,7 +168,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk_Radio_Button;
+       Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String)
    is
       function Internal

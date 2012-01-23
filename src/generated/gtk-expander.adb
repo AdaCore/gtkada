@@ -49,7 +49,7 @@ package body Gtk.Expander is
 
    procedure Gtk_New_With_Mnemonic
       (Expander : out Gtk_Expander;
-       Label    : UTF8_String)
+       Label    : UTF8_String := "")
    is
    begin
       Expander := new Gtk_Expander_Record;
@@ -81,14 +81,19 @@ package body Gtk.Expander is
 
    procedure Initialize_With_Mnemonic
       (Expander : access Gtk_Expander_Record'Class;
-       Label    : UTF8_String)
+       Label    : UTF8_String := "")
    is
       function Internal
          (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_expander_new_with_mnemonic");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Tmp_Return := Internal (Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Expander, Tmp_Return);
@@ -221,14 +226,19 @@ package body Gtk.Expander is
 
    procedure Set_Label
       (Expander : not null access Gtk_Expander_Record;
-       Label    : UTF8_String)
+       Label    : UTF8_String := "")
    is
       procedure Internal
          (Expander : System.Address;
           Label    : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_expander_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Interfaces.C.Strings.chars_ptr;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Internal (Get_Object (Expander), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;

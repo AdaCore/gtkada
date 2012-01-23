@@ -241,7 +241,7 @@ package Gtk.Status_Icon is
        return UTF8_String;
    procedure Set_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record;
-       Markup      : UTF8_String);
+       Markup      : UTF8_String := "");
    --  Sets Markup as the contents of the tooltip, which is marked up with the
    --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
    --  This function will take care of setting
@@ -515,7 +515,8 @@ package Gtk.Status_Icon is
    --        X             : Gint;
    --        Y             : Gint;
    --        Keyboard_Mode : Boolean;
-   --        Tooltip       : Gtk.Tooltip.Gtk_Tooltip) return Boolean;
+   --        Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   --        return Boolean;
    --    --  "x": the x coordinate of the cursor position where the request has been
    --    --  emitted, relative to Status_Icon
    --    --  "y": the y coordinate of the cursor position where the request has been

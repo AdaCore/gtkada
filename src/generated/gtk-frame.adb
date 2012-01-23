@@ -134,14 +134,19 @@ package body Gtk.Frame is
 
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
-       Label : UTF8_String)
+       Label : UTF8_String := "")
    is
       procedure Internal
          (Frame : System.Address;
           Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_frame_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Interfaces.C.Strings.chars_ptr;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Internal (Get_Object (Frame), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;

@@ -209,13 +209,39 @@ package body Gtk.Widget is
       return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_Pango_Context));
    end Create_Pango_Context;
 
+   -------------------------
+   -- Create_Pango_Layout --
+   -------------------------
+
+   function Create_Pango_Layout
+      (Widget : not null access Gtk_Widget_Record;
+       Text   : UTF8_String := "") return Pango.Layout.Pango_Layout
+   is
+      function Internal
+         (Widget : System.Address;
+          Text   : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_create_pango_layout");
+      Tmp_Text          : Interfaces.C.Strings.chars_ptr;
+      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
+      Tmp_Return        : System.Address;
+   begin
+      if Text = "" then
+         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Text := New_String (Text);
+      end if;
+      Tmp_Return := Internal (Get_Object (Widget), Tmp_Text);
+      Free (Tmp_Text);
+      return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_Pango_Layout));
+   end Create_Pango_Layout;
+
    ---------------
    -- Destroyed --
    ---------------
 
    procedure Destroyed
       (Widget         : not null access Gtk_Widget_Record;
-       Widget_Pointer : Gtk_Widget)
+       Widget_Pointer : not null access Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Widget         : System.Address;
@@ -2121,10 +2147,15 @@ package body Gtk.Widget is
           Detail   : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon");
       Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-      Tmp_Detail      : Interfaces.C.Strings.chars_ptr := New_String (Detail);
+      Tmp_Detail      : Interfaces.C.Strings.chars_ptr;
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
+      if Detail = "" then
+         Tmp_Detail := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Detail := New_String (Detail);
+      end if;
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Gtk.Enums.Gtk_Icon_Size'Pos (Size), Tmp_Detail);
       Free (Tmp_Stock_Id);
       Free (Tmp_Detail);
@@ -2230,7 +2261,7 @@ package body Gtk.Widget is
 
    procedure Set_Accel_Path
       (Widget      : not null access Gtk_Widget_Record;
-       Accel_Path  : UTF8_String;
+       Accel_Path  : UTF8_String := "";
        Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
    is
       procedure Internal
@@ -2238,8 +2269,13 @@ package body Gtk.Widget is
           Accel_Path  : Interfaces.C.Strings.chars_ptr;
           Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr;
    begin
+      if Accel_Path = "" then
+         Tmp_Accel_Path := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Accel_Path := New_String (Accel_Path);
+      end if;
       Internal (Get_Object (Widget), Tmp_Accel_Path, Get_Object_Or_Null (GObject (Accel_Group)));
       Free (Tmp_Accel_Path);
    end Set_Accel_Path;
@@ -2762,14 +2798,19 @@ package body Gtk.Widget is
 
    procedure Set_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record;
-       Markup : UTF8_String)
+       Markup : UTF8_String := "")
    is
       procedure Internal
          (Widget : System.Address;
           Markup : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_widget_set_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
    begin
+      if Markup = "" then
+         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Markup := New_String (Markup);
+      end if;
       Internal (Get_Object (Widget), Tmp_Markup);
       Free (Tmp_Markup);
    end Set_Tooltip_Markup;

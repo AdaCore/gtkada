@@ -53,11 +53,11 @@ package Gtk.Entry_Buffer is
 
    procedure Gtk_New
       (Self            : out Gtk_Entry_Buffer;
-       Initial_Chars   : UTF8_String;
+       Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint);
    procedure Initialize
       (Self            : access Gtk_Entry_Buffer_Record'Class;
-       Initial_Chars   : UTF8_String;
+       Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint);
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.

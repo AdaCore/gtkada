@@ -175,7 +175,7 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
    function Set_Active_Id
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Active_Id : UTF8_String) return Boolean;
+       Active_Id : UTF8_String := "") return Boolean;
    --  Changes the active row of Combo_Box to the one that has an ID equal to
    --  Active_Id, or unsets the active row if Active_Id is null. Rows having a
    --  null ID string cannot be made active by this function.

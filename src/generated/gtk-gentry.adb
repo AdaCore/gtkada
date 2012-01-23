@@ -776,15 +776,20 @@ package body Gtk.GEntry is
    procedure Set_Icon_From_Icon_Name
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Icon_Name : UTF8_String)
+       Icon_Name : UTF8_String := "")
    is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Integer;
           Icon_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Icon_Name = "" then
+         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Icon_Name := New_String (Icon_Name);
+      end if;
       Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Icon_From_Icon_Name;
@@ -814,15 +819,20 @@ package body Gtk.GEntry is
    procedure Set_Icon_From_Stock
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Stock_Id  : UTF8_String)
+       Stock_Id  : UTF8_String := "")
    is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Integer;
           Stock_Id  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
    begin
+      if Stock_Id = "" then
+         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Stock_Id := New_String (Stock_Id);
+      end if;
       Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
    end Set_Icon_From_Stock;
@@ -852,15 +862,20 @@ package body Gtk.GEntry is
    procedure Set_Icon_Tooltip_Markup
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Tooltip   : UTF8_String)
+       Tooltip   : UTF8_String := "")
    is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Integer;
           Tooltip   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_markup");
-      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr := New_String (Tooltip);
+      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
    begin
+      if Tooltip = "" then
+         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Tooltip := New_String (Tooltip);
+      end if;
       Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Markup;
@@ -872,15 +887,20 @@ package body Gtk.GEntry is
    procedure Set_Icon_Tooltip_Text
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Tooltip   : UTF8_String)
+       Tooltip   : UTF8_String := "")
    is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Integer;
           Tooltip   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_text");
-      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr := New_String (Tooltip);
+      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
    begin
+      if Tooltip = "" then
+         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Tooltip := New_String (Tooltip);
+      end if;
       Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Text;

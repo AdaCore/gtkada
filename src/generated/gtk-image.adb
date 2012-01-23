@@ -430,14 +430,19 @@ package body Gtk.Image is
 
    procedure Set
       (Image    : not null access Gtk_Image_Record;
-       Filename : UTF8_String)
+       Filename : UTF8_String := "")
    is
       procedure Internal
          (Image    : System.Address;
           Filename : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_image_set_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Interfaces.C.Strings.chars_ptr;
    begin
+      if Filename = "" then
+         Tmp_Filename := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Filename := New_String (Filename);
+      end if;
       Internal (Get_Object (Image), Tmp_Filename);
       Free (Tmp_Filename);
    end Set;

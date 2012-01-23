@@ -258,14 +258,19 @@ package body Gtk.File_Filter is
 
    procedure Set_Name
       (Self : not null access Gtk_File_Filter_Record;
-       Name : UTF8_String)
+       Name : UTF8_String := "")
    is
       procedure Internal
          (Self : System.Address;
           Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_file_filter_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Name = "" then
+         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Name := New_String (Name);
+      end if;
       Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);
    end Set_Name;

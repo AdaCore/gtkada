@@ -259,7 +259,7 @@ class GObject(CType):
         self.is_ptr = False
         self.can_be_null = False
         self.classwide = False  # Parameter should include "'Class"
-        self.userecord = False  # Parameter should be "access .._Record"
+        self.userecord = True  # Parameter should be "access .._Record"
 
         base = ada
         if "." in base:
@@ -297,7 +297,6 @@ class GObject(CType):
 
     def copy(self, **kwargs):
         result = CType.copy(self)
-        result.userecord =  "userecord" in kwargs and kwargs["userecord"]
         result.classwide = "useclass" not in kwargs or kwargs["useclass"]
         return result
 
@@ -314,18 +313,16 @@ class Tagged(GObject):
         return super(Tagged, self).as_ada_param(pkg)
 
 class UTF8(CType):
-    def __init__(self, empty_maps_to_null):
+    def __init__(self):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
         self.cparam = "Interfaces.C.Strings.chars_ptr"
-        self.empty_maps_to_null = empty_maps_to_null
-
         self.cleanup = "Free (%s);"
         self.returns = (
             self.param, self.cparam,
             "Interfaces.C.Strings.Value (%(var)s)", [])
 
     def convert(self):
-        if self.empty_maps_to_null:
+        if self.can_be_null:
             return 'if %(var)s = "" then %(tmp)s := Interfaces.C.Strings.Null_Ptr; else %(tmp)s := New_String (%(var)s); end if;'
         else:
             return "New_String (%(var)s)"
@@ -563,8 +560,7 @@ class AdaNaming(object):
                 Proxy(self.__camel_case_to_ada(girname))))
 
     def type(self, name="", cname=None, pkg=None, isArray=False,
-             allow_access=True, empty_maps_to_null=False,
-             useclass=True):
+             allow_access=True, can_be_null=False, useclass=True):
         """Build an instance of CType for the corresponding cname.
            A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
@@ -573,10 +569,9 @@ class AdaNaming(object):
            'allow_access' should be True if the parameter can be represented
            as 'access Type', rather than an explicit type, in the case of
            GObject descendants.
-           If `empty_maps_to_null' is True, then an empty string maps to a
+           If `can_be_null' is True, then an empty string maps to a
            NULL pointer in C, rather than an empty C string. For a GObject,
-           this means the parameter should not be passed with mode="access",
-           since the user is allowed to pass null.
+           the parameter is passed as "access" rather than "not null access".
         """
 
         if cname == "gchar**" or name == "array_of_utf8":
@@ -584,7 +579,7 @@ class AdaNaming(object):
         elif cname == "void":
             return None
         elif name == "utf8" or cname == "gchar*" or cname == "char*":
-            t = UTF8(empty_maps_to_null=empty_maps_to_null)
+            t = UTF8()
         elif cname:
             # Check whether the C type, including trailing "*", maps
             # directly to an Ada type.
@@ -613,12 +608,13 @@ class AdaNaming(object):
             t = self.__full_type_from_girname(name)
             t.is_ptr = cname and cname[-1] == '*'
 
-        t = t.copy(userecord=not empty_maps_to_null
+        t = t.copy(userecord=not can_be_null
                       and cname and allow_access
                       and not cname.endswith("**"),
                    useclass=useclass)
         t.add_with(pkg, specs=True)
         t.isArray = isArray
+        t.can_be_null = can_be_null
         return t
 
 
@@ -665,6 +661,11 @@ def fill_text(text, prefix, length, firstLineLength=0):
 def cleanup_doc(doc):
     """Replaces C features in the doc with appropriate Ada equivalents"""
 
+    def replace_type(x):
+        t = naming.type(x.group(1))
+        t.userecord = False
+        return t.ada
+
     doc = doc.replace("%NULL", "null")
     doc = doc.replace("%TRUE", "True")
     doc = doc.replace("%FALSE", "False")
@@ -678,7 +679,7 @@ def cleanup_doc(doc):
     doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
     types = re.compile("#([\w_]+)")
-    doc = types.sub(lambda x: naming.type(x.group(1)).ada, doc)
+    doc = types.sub(replace_type, doc)
 
     params = re.compile("@([\w_]+)")
     doc = params.sub(lambda x: x.group(1).title(), doc)

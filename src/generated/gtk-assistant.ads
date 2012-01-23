@@ -405,7 +405,7 @@ package Gtk.Assistant is
    --  "prepare"
    --     procedure Handler
    --       (Self : access Gtk_Assistant_Record'Class;
-   --        Page : Gtk.Widget.Gtk_Widget);
+   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "page": the current page
    --  The ::prepare signal is emitted when a new page is set as the
    --  assistant's current page, before making the new page visible.

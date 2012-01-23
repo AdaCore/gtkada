@@ -1157,7 +1157,7 @@ package Gtk.Cell_Area is
    --  "add-editable"
    --     procedure Handler
    --       (Self      : access Gtk_Cell_Area_Record'Class;
-   --        Renderer  : Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   --        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
    --        Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
    --        Cell_Area : cairo.Rectangle_Int;
    --        Path      : UTF8_String);
@@ -1174,7 +1174,7 @@ package Gtk.Cell_Area is
    --  "apply-attributes"
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Area_Record'Class;
-   --        Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Model       : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
    --        Iter        : Gtk.Tree_Iter.Gtk_Tree_Iter;
    --        Is_Expander : Boolean;
    --        Is_Expanded : Boolean);
@@ -1189,7 +1189,7 @@ package Gtk.Cell_Area is
    --  "focus-changed"
    --     procedure Handler
    --       (Self     : access Gtk_Cell_Area_Record'Class;
-   --        Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
    --        Path     : UTF8_String);
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
    --    --  "path": the current Gtk.Tree_Path.Gtk_Tree_Path string set for Area
@@ -1202,7 +1202,7 @@ package Gtk.Cell_Area is
    --  "remove-editable"
    --     procedure Handler
    --       (Self     : access Gtk_Cell_Area_Record'Class;
-   --        Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
    --        Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
    --    --  editeding

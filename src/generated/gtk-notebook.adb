@@ -592,14 +592,19 @@ package body Gtk.Notebook is
 
    procedure Set_Group_Name
       (Notebook   : not null access Gtk_Notebook_Record;
-       Group_Name : UTF8_String)
+       Group_Name : UTF8_String := "")
    is
       procedure Internal
          (Notebook   : System.Address;
           Group_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_notebook_set_group_name");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Group_Name = "" then
+         Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Group_Name := New_String (Group_Name);
+      end if;
       Internal (Get_Object (Notebook), Tmp_Group_Name);
       Free (Tmp_Group_Name);
    end Set_Group_Name;

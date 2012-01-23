@@ -50,7 +50,7 @@ package body Gtk.Link_Button is
    procedure Gtk_New_With_Label
       (Widget : out Gtk_Link_Button;
        URI    : UTF8_String;
-       Label  : UTF8_String)
+       Label  : UTF8_String := "")
    is
    begin
       Widget := new Gtk_Link_Button_Record;
@@ -83,16 +83,21 @@ package body Gtk.Link_Button is
    procedure Initialize_With_Label
       (Widget : access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String;
-       Label  : UTF8_String)
+       Label  : UTF8_String := "")
    is
       function Internal
          (URI   : Interfaces.C.Strings.chars_ptr;
           Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_link_button_new_with_label");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Tmp_Return := Internal (Tmp_URI, Tmp_Label);
       Free (Tmp_URI);
       Free (Tmp_Label);

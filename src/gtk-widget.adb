@@ -137,32 +137,6 @@ package body Gtk.Widget is
       return Gtk_Widget (Get_User_Data (W, Stub));
    end Convert;
 
-   -------------------------
-   -- Create_Pango_Layout --
-   -------------------------
-
-   function Create_Pango_Layout
-     (Widget : access Gtk_Widget_Record; Text : UTF8_String := "")
-      return Pango.Layout.Pango_Layout
-   is
-      function Internal (Widget : System.Address; Text : UTF8_String)
-         return System.Address;
-      pragma Import (C, Internal, "gtk_widget_create_pango_layout");
-
-      function Internal2 (Widget : System.Address; Text : System.Address)
-         return System.Address;
-      pragma Import (C, Internal2, "gtk_widget_create_pango_layout");
-      Stub : Pango_Layout_Record;
-   begin
-      if Text = "" then
-         return Pango_Layout (Get_User_Data_Fast
-           (Internal2 (Get_Object (Widget), System.Null_Address), Stub));
-      else
-         return Pango_Layout (Get_User_Data_Fast
-           (Internal (Get_Object (Widget), Text & ASCII.NUL), Stub));
-      end if;
-   end Create_Pango_Layout;
-
    ----------------
    -- Destroy_Cb --
    ----------------

@@ -39,7 +39,7 @@ package body Gtk.File_Chooser_Dialog is
 
    procedure Gtk_New
       (Dialog : out Gtk_File_Chooser_Dialog;
-       Title  : UTF8_String;
+       Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
@@ -54,7 +54,7 @@ package body Gtk.File_Chooser_Dialog is
 
    procedure Initialize
       (Dialog : access Gtk_File_Chooser_Dialog_Record'Class;
-       Title  : UTF8_String;
+       Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
@@ -63,9 +63,14 @@ package body Gtk.File_Chooser_Dialog is
           Parent : System.Address;
           Action : Integer) return System.Address;
       pragma Import (C, Internal, "ada_gtk_file_chooser_dialog_new");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
+      if Title = "" then
+         Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Title := New_String (Title);
+      end if;
       Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
       Free (Tmp_Title);
       Set_Object (Dialog, Tmp_Return);

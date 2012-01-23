@@ -552,7 +552,7 @@ package Gtk.Entry_Completion is
    --  "cursor-on-match"
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
    --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match
@@ -580,7 +580,7 @@ package Gtk.Entry_Completion is
    --  "match-selected"
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
    --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match

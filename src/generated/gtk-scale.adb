@@ -231,7 +231,7 @@ package body Gtk.Scale is
       (Scale    : not null access Gtk_Scale_Record;
        Value    : Gdouble;
        Position : Gtk.Enums.Gtk_Position_Type;
-       Markup   : UTF8_String)
+       Markup   : UTF8_String := "")
    is
       procedure Internal
          (Scale    : System.Address;
@@ -239,8 +239,13 @@ package body Gtk.Scale is
           Position : Integer;
           Markup   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_scale_add_mark");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
    begin
+      if Markup = "" then
+         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Markup := New_String (Markup);
+      end if;
       Internal (Get_Object (Scale), Value, Gtk.Enums.Gtk_Position_Type'Pos (Position), Tmp_Markup);
       Free (Tmp_Markup);
    end Add_Mark;

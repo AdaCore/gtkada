@@ -217,7 +217,7 @@
      <doc testgtk="create_frame.adb" group="Layout Containers"/>
      <parameter name="self" ada="Aspect_Frame"/>
      <method id="gtk_aspect_frame_new">
-       <parameter name="label" default='""' empty_maps_to_null="True" />
+       <parameter name="label" default='""' allow-none="1"/>
      </method>
    </package>
 
@@ -231,7 +231,7 @@
       <parameter name="self" ada="Button"/>
       <method id="gtk_button_new" bind="False"/>
       <method id="gtk_button_new_with_label" ada="Gtk_New" >
-         <parameter name="label" default='""' empty_maps_to_null="True"/>
+         <parameter name="label" default='""' allow-none="1"/>
       </method>
    </package>
 
@@ -624,7 +624,7 @@ widgets.
       <parameter name="self" ada="Frame"/>
 
       <method id="gtk_frame_new">
-         <parameter name="label" default='""' empty_maps_to_null="True" />
+         <parameter name="label" default='""' allow-none="1"/>
       </method>
    </package>
 
@@ -1577,7 +1577,7 @@ lower    value        value + page_size       upper
      <parameter name="self" ada="Check_Button"/>
      <method id="gtk_check_button_new" bind="False"/>
      <method id="gtk_check_button_new_with_label" ada="Gtk_New" >
-        <parameter name="label" default='""' empty_maps_to_null="True"/>
+        <parameter name="label" default='""' allow-none="1"/>
         <doc>Create a check button. if Label is null, then no widget is associated with the button, and any widget can be added to the button (with Gtk.Container.Add).</doc>
      </method>
   </package>
@@ -1591,7 +1591,7 @@ You should consider using a Gtk_Check_Button instead, since it looks nicer and p
      <method id="gtk_toggle_button_new" bind="False"/>
      <method id="gtk_toggle_button_new_with_label" ada="Gtk_New" >
         <doc>Initialize a button. If Label is "", then no label is created inside the button and you will have to provide your own child through a call to Gtk.Container.Add. This is the recommended way to put a pixmap inside a toggle button.</doc>
-        <parameter name="label" default='""' empty_maps_to_null="True"/>
+        <parameter name="label" default='""' allow-none="1"/>
      </method>
      <method id="gtk_toggle_button_set_active">
         <doc>Change the state of the button. When Is_Active is True, the button is drawn as a pressed button</doc>
@@ -1677,18 +1677,18 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      <method id="gtk_radio_button_new_with_label" ada="Gtk_New" >
         <doc>Creates or initializes a new radio button, belonging to Group. If Label is left as the empty string, then the button will not have any child and you are free to put any thing you want in it, including a pixmap. To initialize the group (when creating the first button), leave Group to the Null_List. You can later get the new group that is created with a call to the Group subprogram below.</doc>
         <parameter name="group" default="Widget_SList.Null_List" ctype="WidgetSList"/>
-        <parameter name="label" default='""' empty_maps_to_null="True"/>
+        <parameter name="label" default='""' allow-none="1"/>
      </method>
      <method id="gtk_radio_button_new_with_label_from_widget" ada="Gtk_New" >
-        <parameter name="radio_group_member" empty_maps_to_null="True"/>
-        <parameter name="label" default='""' empty_maps_to_null="True"/>
+        <parameter name="radio_group_member" allow-none="1"/>
+        <parameter name="label" default='""' allow-none="1"/>
      </method>
      <method id="gtk_radio_button_new_with_mnemonic">
         <parameter name="group" default="Widget_SList.Null_List" ctype="WidgetSList"/>
      </method>
      <method id="gtk_radio_button_new_with_mnemonic_from_widget" ada="Gtk_New_With_Mnemonic">
         <doc extend="true">To initialize a new group (when creating the first button), you should pass it null or a button that has not been created with Gtk_New, as in the example below.</doc>
-        <parameter name="radio_group_member" empty_maps_to_null="True"/>
+        <parameter name="radio_group_member" allow-none="1"/>
      </method>
      <method id="gtk_radio_button_get_group" return="WidgetSList"/>
      <method id="gtk_radio_button_set_group">
@@ -2342,6 +2342,10 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_render_icon">
        <parameter name="Detail" default='""'/>
      </method>
+     <method id="gtk_widget_create_pango_layout">
+       <parameter name="Text" allow-none="1"/>
+     </method>
+
      <extra>
        <with_spec pkg="Gdk.Rectangle"/>
        <type>
@@ -2358,11 +2362,6 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_class_path" bind="False" />
      <method id="gtk_widget_get_path" bind="False"/>
      <method id="gtk_widget_path" bind="False"/>
-
-     <!-- Need different binding if no parameter is provided. Could be automatic if
-          we do not call New_String when the parameter is a string and has allow-none.
-     -->
-     <method id="gtk_widget_create_pango_layout" bind="False"/>
 
      <!-- Need GtkAda-custom binding -->
      <method id="gtk_widget_destroy" bind="False"/>

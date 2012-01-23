@@ -231,14 +231,19 @@ package body Gtk.Progress_Bar is
 
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
-       Text         : UTF8_String)
+       Text         : UTF8_String := "")
    is
       procedure Internal
          (Progress_Bar : System.Address;
           Text         : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_progress_bar_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Interfaces.C.Strings.chars_ptr;
    begin
+      if Text = "" then
+         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Text := New_String (Text);
+      end if;
       Internal (Get_Object (Progress_Bar), Tmp_Text);
       Free (Tmp_Text);
    end Set_Text;

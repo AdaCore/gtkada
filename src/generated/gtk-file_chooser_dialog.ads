@@ -175,12 +175,12 @@ package Gtk.File_Chooser_Dialog is
 
    procedure Gtk_New
       (Dialog : out Gtk_File_Chooser_Dialog;
-       Title  : UTF8_String;
+       Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
       (Dialog : access Gtk_File_Chooser_Dialog_Record'Class;
-       Title  : UTF8_String;
+       Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This

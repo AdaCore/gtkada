@@ -189,7 +189,7 @@ package Gtk.Radio_Action is
    --  "changed"
    --     procedure Handler
    --       (Self    : access Gtk_Radio_Action_Record'Class;
-   --        Current : Gtk_Radio_Action);
+   --        Current : not null access Gtk_Radio_Action_Record'Class);
    --    --  "current": the member of Action<!-- -->s group which has just been
    --    --  activated
    --  The ::changed signal is emitted on every member of a radio group when

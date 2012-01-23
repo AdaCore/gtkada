@@ -157,7 +157,7 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record) return UTF8_String;
    procedure Set_Group_Name
       (Notebook   : not null access Gtk_Notebook_Record;
-       Group_Name : UTF8_String);
+       Group_Name : UTF8_String := "");
    --  Sets a group name for Notebook.
    --  Notebooks with the same name will be able to exchange tabs via drag and
    --  drop. A notebook with a null group name will not be able to exchange
@@ -519,7 +519,7 @@ package Gtk.Notebook is
    --  "create-window"
    --     function Handler
    --       (Self : access Gtk_Notebook_Record'Class;
-   --        Page : Gtk.Widget.Gtk_Widget;
+   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        X    : Gint;
    --        Y    : Gint) return Gtk_Notebook;
    --    --  "page": the tab of Notebook that is being detached
@@ -547,7 +547,7 @@ package Gtk.Notebook is
    --  "page-added"
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : Gtk.Widget.Gtk_Widget;
+   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
@@ -557,7 +557,7 @@ package Gtk.Notebook is
    --  "page-removed"
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : Gtk.Widget.Gtk_Widget;
+   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the Child page number
@@ -567,7 +567,7 @@ package Gtk.Notebook is
    --  "page-reordered"
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : Gtk.Widget.Gtk_Widget;
+   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
@@ -588,7 +588,7 @@ package Gtk.Notebook is
    --  "switch-page"
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Page     : Gtk.Widget.Gtk_Widget;
+   --        Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "page": the new current page
    --    --  "page_num": the index of the page

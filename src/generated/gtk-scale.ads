@@ -185,7 +185,7 @@ package Gtk.Scale is
       (Scale    : not null access Gtk_Scale_Record;
        Value    : Gdouble;
        Position : Gtk.Enums.Gtk_Position_Type;
-       Markup   : UTF8_String);
+       Markup   : UTF8_String := "");
    --  Adds a mark at Value.
    --  A mark is indicated visually by drawing a tick mark next to the scale,
    --  and GTK+ makes it easy for the user to position the scale exactly at the

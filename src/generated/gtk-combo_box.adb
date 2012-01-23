@@ -545,15 +545,20 @@ package body Gtk.Combo_Box is
 
    function Set_Active_Id
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Active_Id : UTF8_String) return Boolean
+       Active_Id : UTF8_String := "") return Boolean
    is
       function Internal
          (Combo_Box : System.Address;
           Active_Id : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_combo_box_set_active_id");
-      Tmp_Active_Id : Interfaces.C.Strings.chars_ptr := New_String (Active_Id);
+      Tmp_Active_Id : Interfaces.C.Strings.chars_ptr;
       Tmp_Return    : Integer;
    begin
+      if Active_Id = "" then
+         Tmp_Active_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Active_Id := New_String (Active_Id);
+      end if;
       Tmp_Return := Internal (Get_Object (Combo_Box), Tmp_Active_Id);
       Free (Tmp_Active_Id);
       return Boolean'Val (Tmp_Return);

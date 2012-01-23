@@ -328,7 +328,7 @@ package Gtk.GEntry is
    procedure Set_Icon_Tooltip_Markup
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Tooltip   : UTF8_String);
+       Tooltip   : UTF8_String := "");
    --  Sets Tooltip as the contents of the tooltip for the icon at the
    --  specified position. Tooltip is assumed to be marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>.
@@ -345,7 +345,7 @@ package Gtk.GEntry is
    procedure Set_Icon_Tooltip_Text
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Tooltip   : UTF8_String);
+       Tooltip   : UTF8_String := "");
    --  Sets Tooltip as the contents of the tooltip for the icon at the
    --  specified position.
    --  Use null for Tooltip to remove an existing tooltip.
@@ -610,7 +610,7 @@ package Gtk.GEntry is
    procedure Set_Icon_From_Icon_Name
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Icon_Name : UTF8_String);
+       Icon_Name : UTF8_String := "");
    --  Sets the icon shown in the entry at the specified position from the
    --  current icon theme.
    --  If the icon name isn't known, a "broken image" icon will be displayed
@@ -633,7 +633,7 @@ package Gtk.GEntry is
    procedure Set_Icon_From_Stock
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
-       Stock_Id  : UTF8_String);
+       Stock_Id  : UTF8_String := "");
    --  Sets the icon shown in the entry at the specified position from a stock
    --  image.
    --  If Stock_Id is null, no icon will be shown in the specified position.
@@ -1182,7 +1182,7 @@ package Gtk.GEntry is
    --  "populate-popup"
    --     procedure Handler
    --       (Self : access Gtk_Entry_Record'Class;
-   --        Menu : Gtk.Menu.Gtk_Menu);
+   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
    --    --  "menu": the menu that is being populated
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the entry.

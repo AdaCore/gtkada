@@ -257,6 +257,7 @@ with Gtk.Selection;     use Gtk.Selection;
 with Gtk.Style;         use Gtk.Style;
 with Gtk.Style_Context; use Gtk.Style_Context;
 with Pango.Context;     use Pango.Context;
+with Pango.Layout;      use Pango.Layout;
 
 package Gtk.Widget is
 
@@ -419,9 +420,21 @@ package Gtk.Widget is
    --  map, font description, and base direction for drawing text for this
    --  widget. See also Gtk.Widget.Get_Pango_Context.
 
+   function Create_Pango_Layout
+      (Widget : not null access Gtk_Widget_Record;
+       Text   : UTF8_String := "") return Pango.Layout.Pango_Layout;
+   --  Creates a new Pango.Layout.Pango_Layout with the appropriate font map,
+   --  font description, and base direction for drawing text for this widget.
+   --  If you keep a Pango.Layout.Pango_Layout created in this way around, in
+   --  order to notify the layout of changes to the base direction or font of
+   --  this widget, you must call pango_layout_context_changed in response to
+   --  the Gtk.Widget.Gtk_Widget::style-updated and
+   --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
+   --  "text": text to set on the layout (can be null)
+
    procedure Destroyed
       (Widget         : not null access Gtk_Widget_Record;
-       Widget_Pointer : Gtk_Widget);
+       Widget_Pointer : not null access Gtk_Widget_Record'Class);
    --  This function sets *Widget_Pointer to null if Widget_Pointer != null.
    --  It's intended to be used as a callback connected to the "destroy" signal
    --  of a widget. You connect Gtk.Widget.Destroyed as a signal handler, and
@@ -2081,7 +2094,7 @@ package Gtk.Widget is
 
    procedure Set_Accel_Path
       (Widget      : not null access Gtk_Widget_Record;
-       Accel_Path  : UTF8_String;
+       Accel_Path  : UTF8_String := "";
        Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Given an accelerator group, Accel_Group, and an accelerator path,
    --  Accel_Path, sets up an accelerator in Accel_Group so whenever the key
@@ -2124,7 +2137,7 @@ package Gtk.Widget is
 
    procedure Set_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record;
-       Markup : UTF8_String);
+       Markup : UTF8_String := "");
    --  Sets Markup as the contents of the tooltip, which is marked up with the
    --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
    --  This function will take care of setting
@@ -2993,7 +3006,7 @@ package Gtk.Widget is
    --  "hierarchy-changed"
    --     procedure Handler
    --       (Self              : access Gtk_Widget_Record'Class;
-   --        Previous_Toplevel : Gtk_Widget);
+   --        Previous_Toplevel : access Gtk_Widget_Record'Class);
    --    --  "previous_toplevel": the previous toplevel ancestor, or null if the
    --    --  widget was previously unanchored
    --  The ::hierarchy-changed signal is emitted when the anchored state of a
@@ -3093,7 +3106,7 @@ package Gtk.Widget is
    --  "parent-set"
    --     procedure Handler
    --       (Self       : access Gtk_Widget_Record'Class;
-   --        Old_Parent : Gtk_Widget);
+   --        Old_Parent : access Gtk_Widget_Record'Class);
    --    --  "old_parent": the previous parent, or null if the widget just got its
    --    --  initial parent.
    --  The ::parent-set signal is emitted when a new parent has been set on a
@@ -3151,7 +3164,8 @@ package Gtk.Widget is
    --        X             : Gint;
    --        Y             : Gint;
    --        Keyboard_Mode : Boolean;
-   --        Tooltip       : Gtk.Tooltip.Gtk_Tooltip) return Boolean;
+   --        Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   --        return Boolean;
    --    --  "x": the x coordinate of the cursor position where the request has been
    --    --  emitted, relative to Widget's left side
    --    --  "y": the y coordinate of the cursor position where the request has been
@@ -3269,7 +3283,7 @@ package Gtk.Widget is
    --  "style-set"
    --     procedure Handler
    --       (Self           : access Gtk_Widget_Record'Class;
-   --        Previous_Style : Gtk.Style.Gtk_Style);
+   --        Previous_Style : access Gtk.Style.Gtk_Style_Record'Class);
    --    --  "previous_style": the previous style, or null if the widget just got
    --    --  its initial style
    --  The ::style-set signal is emitted when a new style has been set on a

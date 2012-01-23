@@ -720,7 +720,7 @@ package Gtk.Label is
    --  "populate-popup"
    --     procedure Handler
    --       (Self : access Gtk_Label_Record'Class;
-   --        Menu : Gtk.Menu.Gtk_Menu);
+   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
    --    --  "menu": the menu that is being populated
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the label. Note that only selectable labels have context menus.

@@ -47,15 +47,20 @@ package body Gtk.Recent_Info is
 
    function Create_App_Info
       (Self     : Gtk_Recent_Info;
-       App_Name : UTF8_String) return Glib.GApp_Info
+       App_Name : UTF8_String := "") return Glib.GApp_Info
    is
       function Internal
          (Self     : System.Address;
           App_Name : Interfaces.C.Strings.chars_ptr) return Glib.GApp_Info;
       pragma Import (C, Internal, "gtk_recent_info_create_app_info");
-      Tmp_App_Name : Interfaces.C.Strings.chars_ptr := New_String (App_Name);
+      Tmp_App_Name : Interfaces.C.Strings.chars_ptr;
       Tmp_Return   : Glib.GApp_Info;
    begin
+      if App_Name = "" then
+         Tmp_App_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_App_Name := New_String (App_Name);
+      end if;
       Tmp_Return := Internal (Get_Object (Self), Tmp_App_Name);
       Free (Tmp_App_Name);
       return Tmp_Return;

@@ -568,14 +568,19 @@ package body Gtk.Status_Icon is
 
    procedure Set_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record;
-       Markup      : UTF8_String)
+       Markup      : UTF8_String := "")
    is
       procedure Internal
          (Status_Icon : System.Address;
           Markup      : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
    begin
+      if Markup = "" then
+         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Markup := New_String (Markup);
+      end if;
       Internal (Get_Object (Status_Icon), Tmp_Markup);
       Free (Tmp_Markup);
    end Set_Tooltip_Markup;

@@ -99,7 +99,7 @@ package Gtk.Frame is
       (Frame : not null access Gtk_Frame_Record) return UTF8_String;
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
-       Label : UTF8_String);
+       Label : UTF8_String := "");
    --  Sets the text of the label. If Label is null, the current label is
    --  removed.
    --  "label": the text to use as the label of the frame

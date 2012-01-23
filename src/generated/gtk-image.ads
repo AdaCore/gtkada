@@ -317,7 +317,7 @@ package Gtk.Image is
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
    procedure Set
       (Image    : not null access Gtk_Image_Record;
-       Filename : UTF8_String);
+       Filename : UTF8_String := "");
    procedure Set
       (Image : not null access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;

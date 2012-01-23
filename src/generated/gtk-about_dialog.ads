@@ -136,7 +136,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Comments
       (About    : not null access Gtk_About_Dialog_Record;
-       Comments : UTF8_String);
+       Comments : UTF8_String := "");
    --  Sets the comments string to display in the about dialog. This should be
    --  a short string of one or two lines.
    --  Since: gtk+ 2.6
@@ -167,7 +167,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_License
       (About   : not null access Gtk_About_Dialog_Record;
-       License : UTF8_String);
+       License : UTF8_String := "");
    --  Sets the license information to be displayed in the secondary license
    --  dialog. If License is null, the license button is hidden.
    --  Since: gtk+ 2.6
@@ -201,7 +201,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Logo_Icon_Name
       (About     : not null access Gtk_About_Dialog_Record;
-       Icon_Name : UTF8_String);
+       Icon_Name : UTF8_String := "");
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
    --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
    --  be used.
@@ -222,7 +222,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Translator_Credits
       (About              : not null access Gtk_About_Dialog_Record;
-       Translator_Credits : UTF8_String);
+       Translator_Credits : UTF8_String := "");
    --  Sets the translator credits string which is displayed in the
    --  translators tab of the secondary credits dialog.
    --  The intended use for this string is to display the translator of the
@@ -241,7 +241,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Version
       (About   : not null access Gtk_About_Dialog_Record;
-       Version : UTF8_String);
+       Version : UTF8_String := "");
    --  Sets the version string to display in the about dialog.
    --  Since: gtk+ 2.6
    --  "version": the version string
@@ -250,7 +250,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    procedure Set_Website
       (About   : not null access Gtk_About_Dialog_Record;
-       Website : UTF8_String);
+       Website : UTF8_String := "");
    --  Sets the URL to use for the website link.
    --  Since: gtk+ 2.6
    --  "website": a URL string starting with "http://"

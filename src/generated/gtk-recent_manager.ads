@@ -209,7 +209,7 @@ package Gtk.Recent_Manager is
    function Move_Item
       (Self    : not null access Gtk_Recent_Manager_Record;
        URI     : UTF8_String;
-       New_Uri : UTF8_String) return Boolean;
+       New_Uri : UTF8_String := "") return Boolean;
    --  Changes the location of a recently used resource from Uri to New_Uri.
    --  Please note that this function will not affect the resource pointed by
    --  the URIs, but only the URI used in the recently used resources list.

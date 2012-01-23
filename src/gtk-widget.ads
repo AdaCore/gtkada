@@ -51,14 +51,6 @@ package Gtk.Widget is
       --  </doc_ignore>
    end Realize_Handling;
 
-   ----------------------
-   -- Drawing a widget --
-   ----------------------
-
-   function Create_Pango_Layout
-     (Widget : access Gtk_Widget_Record; Text : UTF8_String := "")
-      return Pango.Layout.Pango_Layout;
-
    -----------
    -- Styles --
    ------------

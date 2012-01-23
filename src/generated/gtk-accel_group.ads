@@ -344,7 +344,7 @@ package Gtk.Accel_Group is
    --  "accel-activate"
    --     function Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
-   --        Acceleratable : Glib.Object.GObject;
+   --        Acceleratable : not null access Glib.Object.GObject_Record'Class;
    --        Keyval        : Guint;
    --        Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --    --  "acceleratable": the object on which the accelerator was activated

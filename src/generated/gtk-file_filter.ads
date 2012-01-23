@@ -218,7 +218,7 @@ package Gtk.File_Filter is
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
    procedure Set_Name
       (Self : not null access Gtk_File_Filter_Record;
-       Name : UTF8_String);
+       Name : UTF8_String := "");
    --  Sets the human-readable name of the filter; this is the string that
    --  will be displayed in the file selector user interface if there is a
    --  selectable list of filters.

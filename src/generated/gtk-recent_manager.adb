@@ -223,7 +223,7 @@ package body Gtk.Recent_Manager is
    function Move_Item
       (Self    : not null access Gtk_Recent_Manager_Record;
        URI     : UTF8_String;
-       New_Uri : UTF8_String) return Boolean
+       New_Uri : UTF8_String := "") return Boolean
    is
       function Internal
          (Self    : System.Address;
@@ -231,9 +231,14 @@ package body Gtk.Recent_Manager is
           New_Uri : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gtk_recent_manager_move_item");
       Tmp_URI     : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_New_Uri : Interfaces.C.Strings.chars_ptr := New_String (New_Uri);
+      Tmp_New_Uri : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : Integer;
    begin
+      if New_Uri = "" then
+         Tmp_New_Uri := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_New_Uri := New_String (New_Uri);
+      end if;
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI, Tmp_New_Uri);
       Free (Tmp_URI);
       Free (Tmp_New_Uri);

@@ -36,7 +36,7 @@ package body Gtk.Buildable is
       (Self     : Gtk_Buildable;
        Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child    : not null access Glib.Object.GObject_Record'Class;
-       The_Type : UTF8_String)
+       The_Type : UTF8_String := "")
    is
       procedure Internal
          (Self     : Gtk_Buildable;
@@ -44,8 +44,13 @@ package body Gtk.Buildable is
           Child    : System.Address;
           The_Type : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_buildable_add_child");
-      Tmp_The_Type : Interfaces.C.Strings.chars_ptr := New_String (The_Type);
+      Tmp_The_Type : Interfaces.C.Strings.chars_ptr;
    begin
+      if The_Type = "" then
+         Tmp_The_Type := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_The_Type := New_String (The_Type);
+      end if;
       Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_The_Type);
       Free (Tmp_The_Type);
    end Add_Child;

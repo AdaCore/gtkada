@@ -145,7 +145,7 @@ package Gtk.Progress_Bar is
        return UTF8_String;
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
-       Text         : UTF8_String);
+       Text         : UTF8_String := "");
    --  Causes the given Text to appear superimposed on the progress bar.
    --  If Text is null and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is True,
    --  the current value of Gtk.Progress_Bar.Gtk_Progress_Bar:fraction will be

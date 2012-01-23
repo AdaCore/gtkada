@@ -118,7 +118,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Append
       (Self : not null access Gtk_Combo_Box_Text_Record;
-       Id   : UTF8_String;
+       Id   : UTF8_String := "";
        Text : UTF8_String);
    --  Appends Text to the list of strings stored in Combo_Box. If Id is
    --  non-null then it is used as the ID of the row.
@@ -148,7 +148,7 @@ package Gtk.Combo_Box_Text is
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Gint;
-       Id       : UTF8_String;
+       Id       : UTF8_String := "";
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box. If
    --  Id is non-null then it is used as the ID of the row. See
@@ -173,7 +173,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Prepend
       (Self : not null access Gtk_Combo_Box_Text_Record;
-       Id   : UTF8_String;
+       Id   : UTF8_String := "";
        Text : UTF8_String);
    --  Prepends Text to the list of strings stored in Combo_Box. If Id is
    --  non-null then it is used as the ID of the row.

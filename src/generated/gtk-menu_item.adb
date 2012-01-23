@@ -239,14 +239,19 @@ package body Gtk.Menu_Item is
 
    procedure Set_Accel_Path
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
-       Accel_Path : UTF8_String)
+       Accel_Path : UTF8_String := "")
    is
       procedure Internal
          (Menu_Item  : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_menu_item_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr;
    begin
+      if Accel_Path = "" then
+         Tmp_Accel_Path := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Accel_Path := New_String (Accel_Path);
+      end if;
       Internal (Get_Object (Menu_Item), Tmp_Accel_Path);
       Free (Tmp_Accel_Path);
    end Set_Accel_Path;

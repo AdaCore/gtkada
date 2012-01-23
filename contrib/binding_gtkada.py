@@ -73,9 +73,8 @@ Where the package node is defined as follows:
             ctype="..."    <!-- Override C type (to better qualify it) -->
             default="..."  <!-- optional, the default value for the param-->
             direction=".." <!-- optional, "in", "out" or "inout" -->
-            empty_maps_to_null="False"  <!--  If true, an empty string is
-                           mapped to a null pointer in C, rather than an empty
-                           C string -->
+            allow-none="0" <!-- If C accepts a NULL value (an empty string
+                                is mapped to the null pointer -->
          />
          <body>...</body>  <!-- optional, body of subprogram including
                                 profile -->
@@ -447,10 +446,11 @@ class GtkAdaParameter(object):
 
         return type
 
-    def empty_maps_to_null(self):
+    def allow_none(self, default):
         if self.node is not None:
-            return self.node.get("empty_maps_to_null", "F").lower() == "true"
-        return False
+            return self.node.get('allow-none', default) == '1'
+        else:
+            return default == '1'
 
 class GtkAdaType(object):
     def __init__(self, node):

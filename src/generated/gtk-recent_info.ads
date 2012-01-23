@@ -65,7 +65,7 @@ package Gtk.Recent_Info is
 
    function Create_App_Info
       (Self     : Gtk_Recent_Info;
-       App_Name : UTF8_String) return Glib.GApp_Info;
+       App_Name : UTF8_String := "") return Glib.GApp_Info;
    --  Creates a Glib.GApp_Info for the specified
    --  Gtk.Recent_Info.Gtk_Recent_Info
    --  In case of error, Error will be set either with a
