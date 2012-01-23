@@ -661,6 +661,50 @@ The signal "expose_event" no longer exists. It has been replaced with the
 "draw" signal which provides a preconfigured Cairo_Context suitable for
 the drawing (including the clip area that is used to speed up the rendering).
 
+Activate is now a function.
+
+Child_Focus: removed default value for Direction parameter
+(was Dir_Tab_Forward)
+
+Get_Allocation_Height and Get_Allocation_Width are now named
+Get_Allocated_Height and Get_Allocated_Width.
+
+Get_Allocation_X and Get_Allocation_Y were removed, and can be accessed
+through Get_Allocation.X and Get_Allocation.Y instead.
+
+A lot of flags (Can_Focus, Can_Default,...) now have explicit setters and
+getters. This removed a number of subprograms, like:
+   Double_Buffered_Is_Set (see Get_Double_Buffered)
+   Can_Focus_Is_Set (see Get_Can_Focus)
+   Mapped_Is_Set (see Get_Mapped)
+   Realized_Is_Set (see Get_Realized)
+   Has_Default_Is_Set (see Has_Default)
+   Has_Focus_Is_Set (see Has_Focus)
+   Has_Grab_Is_Set (see Has_Grab)
+   Rc_Style_Is_Set (see Has_Rc_Style)
+   In_Destruction_Is_Set (see In_Destruction)
+   Drawable_Is_Set (see Is_Drawable)
+
+Size_Allocate now takes an "in out" parameter for the allocation
+
+Set_Flags was renamed Set_State_Flags
+Unset_Flags was renamed Unset_State_Flags
+Flags and Flag_Is_Set must be replaced with a call to Get_State_Flags
+
+Get_Child_Requisition is now a procedure with an in out parameter. It is
+obsolescent.
+
+Default_Motion_Notify_Event was removed.
+
+Has_Default_Motion_Notify_Handler was removed.
+
+Get_Default_Visual was removed.
+
+Restore_Default_Style was removed (use Set_Style with a null parameter
+instead).
+
+Class_Install_Style_Property was removed.
+
 Gtk.Window
 ==========
 

@@ -712,44 +712,6 @@ ada_gnode_first_child (GNode * node)
 
 /*
  *
- * Widget macros
- *
- */
-
-gint
-ada_widget_allocation_height (GtkWidget* widget)
-{
-  GtkAllocation allocation;
-  gtk_widget_get_allocation (widget, &allocation);
-  return allocation.height;
-}
-
-gint
-ada_widget_allocation_width (GtkWidget* widget)
-{
-  GtkAllocation allocation;
-  gtk_widget_get_allocation (widget, &allocation);
-  return allocation.width;
-}
-
-gint
-ada_widget_allocation_x (GtkWidget* widget)
-{
-  GtkAllocation allocation;
-  gtk_widget_get_allocation (widget, &allocation);
-  return (gint) allocation.x;
-}
-
-gint
-ada_widget_allocation_y (GtkWidget* widget)
-{
-  GtkAllocation allocation;
-  gtk_widget_get_allocation (widget, &allocation);
-  return (gint) allocation.y;
-}
-
-/*
- *
  * radio_menu_item
  *
  */
@@ -2255,23 +2217,6 @@ int
 ada_c_gtk_text_iter_size ()
 {
   return sizeof (GtkTextIter);
-}
-
-/********************************************
- ** Functions for Widget
- ********************************************/
-
-gint
-ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
-{
-  return (GTK_WIDGET_GET_CLASS (widget)
-	  ->motion_notify_event)(widget, (GdkEventMotion*)event);
-}
-
-gint
-ada_widget_has_default_motion_notify (GtkWidget* widget)
-{
-  return (GTK_WIDGET_GET_CLASS (widget)->motion_notify_event) != 0;
 }
 
 /**********************************************

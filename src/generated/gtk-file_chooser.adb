@@ -336,11 +336,11 @@ package body Gtk.File_Chooser is
    ------------------
 
    function List_Filters
-      (Chooser : Gtk_File_Chooser) return Glib.Object.Object_List.GSList
+      (Chooser : Gtk_File_Chooser) return Glib.Object.Object_List.GSlist
    is
       function Internal (Chooser : Gtk_File_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_list_filters");
-      Tmp_Return : Glib.Object.Object_List.GSList;
+      Tmp_Return : Glib.Object.Object_List.GSlist;
    begin
       Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Chooser));
       return Tmp_Return;

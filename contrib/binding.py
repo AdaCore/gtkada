@@ -563,6 +563,8 @@ class GIRClass(object):
         self.is_interface = is_interface
         self.callbacks = set() # The callback functions
 
+        self.conversions = dict() # List of Convert(...) functions that were implemented
+
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
         cname = c.get(cidentifier)
@@ -1285,10 +1287,38 @@ See Glib.Properties for more information on properties)""")
     def add_list_binding(self, section, adaname, ctype, singleList):
         """Generate a list instantiation"""
 
-        decl = "function Convert (R : %s) return System.Address;\n" % (
-            ctype.ada)
-        decl += "function Convert (R : System.Address) return %s;\n" % (
-            ctype.ada)
+        conv = "%s->Address" % ctype.ada
+        decl = ""
+        body = ""
+
+        if conv not in self.conversions:
+            self.conversions[conv] = True
+
+            decl += "function Convert (R : %s) return System.Address;\n" % (
+                ctype.ada)
+            body += "function Convert (R : %s) return System.Address is\n" % (
+                ctype.ada)
+            body += "begin\nreturn Get_Object (R);\nend Convert;\n\n"
+
+
+        conv = "Address->%s" % ctype.ada
+        if conv not in self.conversions:
+            self.conversions[conv] = True
+
+            decl += "function Convert (R : System.Address) return %s;\n" % (
+                ctype.ada)
+            body += "function Convert (R : System.Address) return %s is\n" % (
+                ctype.ada)
+
+            if isinstance(ctype, Tagged):
+                # Not a GObject ?
+                body += "begin\nreturn From_Object(R);"
+            else:
+                body += "Stub : %s_Record;" % ctype.ada
+                body += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
+                    ctype.ada)
+
+            body += "end Convert;"
 
         if singleList:
             pkg = "GSlist"
@@ -1301,25 +1331,7 @@ See Glib.Properties for more information on properties)""")
 
         decl += "package %s is new %s (%s);\n" % (adaname, generic, ctype.ada)
         section.add_code(decl)
-
-        decl = "function Convert (R : %s) return System.Address is\n" % (
-            ctype.ada)
-        decl += "begin\nreturn Get_Object (R);\nend Convert;\n\n"
-
-        decl += "function Convert (R : System.Address) return %s is\n" % (
-            ctype.ada)
-
-        if isinstance(ctype, Tagged):
-            # Not a GObject ?
-            decl += "begin\nreturn From_Object(R);"
-
-        else:
-            decl += "Stub : %s_Record;" % ctype.ada
-            decl += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
-                ctype.ada)
-
-        decl += "end Convert;"
-        section.add_code(decl, specs=False)
+        section.add_code(body, specs=False)
 
     def record_binding(self, section, ctype, type, override_fields):
         """Create the binding for a <record> type.

@@ -102,11 +102,11 @@ package body Gtk.Radio_Action is
 
    function Get_Group
       (Action : not null access Gtk_Radio_Action_Record)
-       return Gtk.Widget.Widget_SList.GSList
+       return Gtk.Widget.Widget_SList.GSlist
    is
       function Internal (Action : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_radio_action_get_group");
-      Tmp_Return : Gtk.Widget.Widget_SList.GSList;
+      Tmp_Return : Gtk.Widget.Widget_SList.GSlist;
    begin
       Gtk.Widget.Widget_SList.Set_Object (Tmp_Return, Internal (Get_Object (Action)));
       return Tmp_Return;
@@ -148,7 +148,7 @@ package body Gtk.Radio_Action is
 
    procedure Set_Group
       (Action : not null access Gtk_Radio_Action_Record;
-       Group  : Gtk.Widget.Widget_SList.GSList)
+       Group  : Gtk.Widget.Widget_SList.GSlist)
    is
       procedure Internal (Action : System.Address; Group : System.Address);
       pragma Import (C, Internal, "gtk_radio_action_set_group");

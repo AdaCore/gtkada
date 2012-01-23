@@ -2303,12 +2303,84 @@ While looking up a recently used file is as simple as using:
      <!-- These functions return the length separately, not needed in Ada-->
      <method id="gtk_recent_chooser_get_uris" bind="False" />
 
-     <method id="gtk_recent_chooser_list_filters" return="RecentFilterList"/>
+     <method id="gtk_recent_chooser_list_filters" return="RecentFilterSList"/>
    </package>
 
-   <package id="Gtk.Widget" needs_merge="true">
+   <package id="Gtk.Widget" needs_merge="false">
+     <parameter name="self" ada="Widget" />
+     <record ctype="GtkRequisition"/>
+     <list ada="Widget_List" ctype="Widget"/>
+     <slist ada="Widget_SList" ctype="Widget"/>
+
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
+     <method id="gtk_widget_get_accessible" bind="False"/> <!-- Requires ATK -->
+     <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
+     <method id="gtk_widget_get_settings" bind="False"/><!-- in Gtk.Settings -->
+     <method id="gtk_widget_modify_style" bind="False"/><!-- in Gtk.RC -->
+     <method id="gtk_widget_set_sensitive">
+       <parameter name="Sensitive" default="True"/>
+     </method>
+     <method id="gtk_widget_add_accelerator">
+       <parameter name="Accel_Key" ctype="GtkAccelKey" />
+     </method>
+     <method id="gtk_widget_remove_accelerator">
+       <parameter name="Accel_Key" ctype="GtkAccelKey" />
+     </method>
+     <method id="gtk_widget_add_events">
+       <parameter name="Events" ctype="GdkEventMask"/>
+     </method>
+     <method id="gtk_widget_set_events">
+       <parameter name="Events" ctype="GdkEventMask"/>
+     </method>
+     <method id="gtk_widget_get_events" return="GdkEventMask"/>
+     <method id="gtk_widget_get_tooltip_window" return="GtkWidget*" />
+     <method id="gtk_widget_set_tooltip_window">
+       <parameter name="Custom_Window" ctype="GtkWidget*"/>
+     </method>
+     <method id="gtk_widget_list_mnemonic_labels" return="WidgetList" />
+     <method id="gtk_widget_render_icon">
+       <parameter name="Detail" default='""'/>
+     </method>
+     <extra>
+       <with_spec pkg="Gdk.Rectangle"/>
+       <type>
+   subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
+
+   type Gtk_Requisition_Access is access all Gtk_Requisition;
+   type Gtk_Allocation_Access is access all Gtk_Allocation;
+   pragma Convention (C, Gtk_Requisition_Access);
+   pragma Convention (C, Gtk_Allocation_Access);
+       </type>
+     </extra>
+
+     <!-- Need to review the binding -->
+     <method id="gtk_widget_class_path" bind="False" />
+     <method id="gtk_widget_get_path" bind="False"/>
+     <method id="gtk_widget_path" bind="False"/>
+
+     <!-- Need different binding if no parameter is provided. Could be automatic if
+          we do not call New_String when the parameter is a string and has allow-none.
+     -->
+     <method id="gtk_widget_create_pango_layout" bind="False"/>
+
+     <!-- Need GtkAda-custom binding -->
+     <method id="gtk_widget_destroy" bind="False"/>
+     <method id="gtk_widget_get_tooltip_markup" bind="False"/><!-- Need to free returned value-->
+     <method id="gtk_widget_get_tooltip_text" bind="False"/><!-- Need to free returned value-->
+     <method id="gtk_widget_intersect" bind="False"/><!-- Need out parameter-->
+     <method id="gtk_widget_list_accel_closures" bind="False"/>
+     <method id="gtk_widget_modify_base" bind="False"/> <!-- Mapping of Null_Color, missing pragma Obsolescent -->
+     <method id="gtk_widget_modify_bg" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_modify_fg" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_modify_text" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_override_background_color" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_override_color" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_override_cursor" bind="False"/> <!-- Mapping of Null_Color -->
+     <method id="gtk_widget_region_intersect" bind="False"> <!-- Wrong mode -->
+       <parameter name="Region" direction="in"/>
+     </method>
+     <method id="gtk_widget_translate_coordinates" bind="False"/><!-- function with out param -->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
@@ -2316,12 +2388,10 @@ While looking up a recently used file is as simple as using:
         No file is generated from them.
    -->
 
-   <package id="Gtk.Menu" needs_merge="true">
-   </package>
-   <package id="Gtk.Tooltip" needs_merge="true">
-   </package>
-   <package id="Gtk.Text_View" needs_merge="true">
-   </package>
+   <package id="Gtk.Menu" needs_merge="true"/>
+   <package id="Gtk.Tooltip" needs_merge="true"/>
+   <package id="Gtk.Text_View" needs_merge="true"/>
+   <package id="Gtk.Rc_Style" needs_merge="true"/>
    <package id="Gtk.Container" needs_merge="true">
      <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
      <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->

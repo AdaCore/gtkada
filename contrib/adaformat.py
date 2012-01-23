@@ -372,8 +372,11 @@ class Proxy(CType):
         will be defined.
         """
 
-        ada = ada or naming.type(name="", cname=ctype).ada
-        full_name = "%s.%s" % (pkg, ada)
+        adaname = ada or naming.type(name="", cname=ctype).ada
+        if "." in adaname:
+            adaname = adaname[adaname.rfind(".") + 1:]
+
+        full_name = "%s.%s" % (pkg, adaname)
         t = Proxy(full_name)
         naming.add_type_exception(cname="%s*" % ctype, type=t)
         naming.add_type_exception(cname=ctype, type=t)
@@ -415,13 +418,15 @@ class List(CType):
     @staticmethod
     def register_ada_list(pkg, ada, ctype, single=False):
         """Register a list of GObject instantiated in Ada"""
-        listCname = "%sList" % ctype  # Default list name
-        ada = ada or naming.type(cname=listCname).ada
-
         if single:
             gtype = "GSlist"
+            name  = "SList"
         else:
             gtype = "Glist"
+            name = "List"
+
+        listCname = "%s%s" % (ctype, name)  # Default list name
+        ada = ada or naming.type(cname=listCname).ada
 
         t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)

@@ -401,11 +401,11 @@ package body Gtk.Accel_Group is
 
    function From_Object
       (Object : not null access Glib.Object.GObject_Record'Class)
-       return Glib.Object.Object_List.GSList
+       return Glib.Object.Object_List.GSlist
    is
       function Internal (Object : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_accel_groups_from_object");
-      Tmp_Return : Glib.Object.Object_List.GSList;
+      Tmp_Return : Glib.Object.Object_List.GSlist;
    begin
       Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Get_Object (Object)));
       return Tmp_Return;

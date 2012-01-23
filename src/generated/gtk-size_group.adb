@@ -108,11 +108,11 @@ package body Gtk.Size_Group is
 
    function Get_Widgets
       (Size_Group : not null access Gtk_Size_Group_Record)
-       return Gtk.Widget.Widget_SList.GSList
+       return Gtk.Widget.Widget_SList.GSlist
    is
       function Internal (Size_Group : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_size_group_get_widgets");
-      Tmp_Return : Gtk.Widget.Widget_SList.GSList;
+      Tmp_Return : Gtk.Widget.Widget_SList.GSlist;
    begin
       Gtk.Widget.Widget_SList.Set_Object (Tmp_Return, Internal (Get_Object (Size_Group)));
       return Tmp_Return;

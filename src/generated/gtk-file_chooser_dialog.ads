@@ -337,7 +337,7 @@ package Gtk.File_Chooser_Dialog is
 
    function List_Filters
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
-       return Glib.Object.Object_List.GSList;
+       return Glib.Object.Object_List.GSlist;
 
    function List_Shortcut_Folder_Uris
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)

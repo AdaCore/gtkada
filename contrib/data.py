@@ -123,6 +123,7 @@ binding = ("GdkDevice",
            # names in the docs. No code is generated for them yet
            "GtkContainer", # Partial
            "GtkMenu",      # Partial
+           "GtkRcStyle",   # Partial
            "GtkTextView",  # Partial
            "GtkTooltip",   # Partial
            "GtkWidget",    # Partial
@@ -227,16 +228,14 @@ naming.type_exceptions = {
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
     "cairo_t":               DirectBinding("Cairo.Cairo_Context"),
+    "cairo_region_t":        DirectBinding("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  DirectBinding("Cairo.Cairo_Font_Options"),
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
+    "PangoContext":      GObject("Pango.Context.Pango_Context"),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
-
-    # The following are defined as <record> in GIR, so they would result in
-    # tagged types in Ada. However, we do not need that for now.
-    "GtkRequisition":    Proxy("Gtk.Widget.Gtk_Requisition"),
 
     "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 
@@ -244,14 +243,13 @@ naming.type_exceptions = {
     "GClosure*":         Proxy("System.Address", ""),
     "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),
     "GValue":            Proxy("Glib.Values.GValue", ""),
+    "GdkEventMask":      Enum("Gdk.Event.Gdk_Event_Mask"),
 
     # Specific to this binding generator (referenced from binding.xml)
     "WindowList":  List("Gdk.Window.Gdk_Window_List.GList"),
     "VisualList":  List("Gdk.Visual.Gdk_Visual_List.GList"),
-    "WidgetSList": List("Gtk.Widget.Widget_SList.GSList"),
-    "WidgetList":  List("Gtk.Widget.Widget_List.GList"),
     "ObjectList":  List("Glib.Object.Object_Simple_List.GList"),
-    "ObjectSList": List("Glib.Object.Object_List.GSList"),
+    "ObjectSList": List("Glib.Object.Object_List.GSlist"),
     "StringList":  List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
 
@@ -287,6 +285,7 @@ naming.type_exceptions = {
     "GtkSizeRequestMode": Enum("Gtk.Enums.Gtk_Size_Request_Mode"),
     "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
     "GtkStateFlags":      Enum("Gtk.Enums.Gtk_State_Flags"),
+    "GtkStateType":       Enum("Gtk.Enums.Gtk_State_Type"),
     "GtkToolbarStyle":    Enum("Gtk.Enums.Gtk_Toolbar_Style"),
     "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
 
@@ -297,7 +296,7 @@ naming.type_exceptions = {
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
-
+    
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
     "GtkCellLayoutDataFunc":

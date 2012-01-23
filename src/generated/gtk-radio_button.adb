@@ -39,7 +39,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "")
    is
    begin
@@ -67,7 +67,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String)
    is
    begin
@@ -95,7 +95,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -147,7 +147,7 @@ package body Gtk.Radio_Button is
 
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String)
    is
       function Internal
@@ -189,12 +189,12 @@ package body Gtk.Radio_Button is
 
    function Get_Group
       (Radio_Button : not null access Gtk_Radio_Button_Record)
-       return Gtk.Widget.Widget_SList.GSList
+       return Gtk.Widget.Widget_SList.GSlist
    is
       function Internal
          (Radio_Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_radio_button_get_group");
-      Tmp_Return : Gtk.Widget.Widget_SList.GSList;
+      Tmp_Return : Gtk.Widget.Widget_SList.GSlist;
    begin
       Gtk.Widget.Widget_SList.Set_Object (Tmp_Return, Internal (Get_Object (Radio_Button)));
       return Tmp_Return;
@@ -222,7 +222,7 @@ package body Gtk.Radio_Button is
 
    procedure Set_Group
       (Radio_Button : not null access Gtk_Radio_Button_Record;
-       Group        : Gtk.Widget.Widget_SList.GSList)
+       Group        : Gtk.Widget.Widget_SList.GSlist)
    is
       procedure Internal
          (Radio_Button : System.Address;

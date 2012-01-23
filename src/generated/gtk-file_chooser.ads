@@ -709,7 +709,7 @@ package Gtk.File_Chooser is
    --  previewed file
 
    function List_Filters
-      (Chooser : Gtk_File_Chooser) return Glib.Object.Object_List.GSList;
+      (Chooser : Gtk_File_Chooser) return Glib.Object.Object_List.GSlist;
    --  Lists the current set of user-selectable filters; see
    --  Gtk.File_Chooser_Widget.Add_Filter,
    --  Gtk.File_Chooser_Widget.Remove_Filter.

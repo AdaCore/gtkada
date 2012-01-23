@@ -411,11 +411,11 @@ package body Gtk.File_Chooser_Dialog is
 
    function List_Filters
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
-       return Glib.Object.Object_List.GSList
+       return Glib.Object.Object_List.GSlist
    is
       function Internal (Chooser : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_list_filters");
-      Tmp_Return : Glib.Object.Object_List.GSList;
+      Tmp_Return : Glib.Object.Object_List.GSlist;
    begin
       Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Get_Object (Chooser)));
       return Tmp_Return;

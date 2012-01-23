@@ -260,7 +260,7 @@ package Gtk.Accel_Group is
 
    function From_Object
       (Object : not null access Glib.Object.GObject_Record'Class)
-       return Glib.Object.Object_List.GSList;
+       return Glib.Object.Object_List.GSlist;
    --  Gets a list of all accel groups which are attached to Object.
    --  all accel groups which are attached to Object
    --  "object": a Glib.Object.GObject, usually a Gtk.Window.Gtk_Window

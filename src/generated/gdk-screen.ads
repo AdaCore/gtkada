@@ -94,7 +94,7 @@ package Gdk.Screen is
       (Screen  : not null access Gdk_Screen_Record;
        Options : in out Cairo.Cairo_Font_Options);
    --  Sets the default font options for the screen. These options will be set
-   --  on any Pango_Context's newly created with
+   --  on any Pango.Context.Pango_Context's newly created with
    --  gdk_pango_context_get_for_screen. Changing the default set of font
    --  options does not affect contexts that have already been created.
    --  Since: gtk+ 2.10
