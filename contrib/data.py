@@ -221,6 +221,7 @@ naming.type_exceptions = {
     "gboolean":          Enum("Boolean",
                               "Glib.Properties.Property_Boolean"),
     "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
+    "int":      Proxy("Gint",    "Glib.Properties.Property_Int"),
     "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
     "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
@@ -236,6 +237,7 @@ naming.type_exceptions = {
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoContext":      GObject("Pango.Context.Pango_Context"),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
+    "PangoFontDescription": Proxy("Pango.Font.Pango_Font_Description"),
 
     "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 
@@ -244,6 +246,7 @@ naming.type_exceptions = {
     "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),
     "GValue":            Proxy("Glib.Values.GValue", ""),
     "GdkEventMask":      Enum("Gdk.Event.Gdk_Event_Mask"),
+    "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
 
     # Specific to this binding generator (referenced from binding.xml)
     "WindowList":  List("Gdk.Window.Gdk_Window_List.GList"),
@@ -264,6 +267,7 @@ naming.type_exceptions = {
     "GtkIconSet*":     Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
     "GtkTargetList*":  Proxy ("Gtk.Selection.Target_List"),
     "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
+    "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 
     "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
     "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
@@ -296,6 +300,8 @@ naming.type_exceptions = {
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
+
+    "GtkRcStyle":      GObject("Gtk.Rc.Gtk_Rc_Style"),
     
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),

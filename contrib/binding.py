@@ -1367,10 +1367,16 @@ See Glib.Properties for more information on properties)""")
 
                 fields.append((naming.case(name), ftype))
 
-        section.add(
-            "\ntype %s is record\n" % base
-            + "\n".join("%s : %s;" % f for f in fields)
-            + "\nend record;\npragma Convention (C, %s);\n" % base)
+        if fields:
+            section.add(
+                "\ntype %s is record\n" % base
+                + "\n".join("%s : %s;" % f for f in fields)
+                + "\nend record;\npragma Convention (C, %s);\n" % base)
+        else:
+            section.add(
+                "\ntype %s is new Glib.C_Proxy;\n" % base
+                + "pragma Convention (C, %s);\n" % base)
+
         section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
     def enumeration_binding(self, section, ctype, type, prefix):

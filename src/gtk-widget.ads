@@ -86,10 +86,6 @@ package Gtk.Widget is
    -- Widgets' tree --
    -------------------
 
-   function Path          (Widget : access Gtk_Widget_Record) return String;
-
-   function Class_Path (Widget : access Gtk_Widget_Record) return String;
-
    procedure Translate_Coordinates
      (Src_Widget  : Gtk_Widget;
       Dest_Widget : Gtk_Widget;

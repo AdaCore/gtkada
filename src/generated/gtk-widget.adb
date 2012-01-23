@@ -359,15 +359,15 @@ package body Gtk.Widget is
    function Drag_Dest_Find_Target
       (Widget      : not null access Gtk_Widget_Record;
        Context     : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target_List : Gtk.Selection.Target_List) return Gdk.Atom.Gdk_Atom
+       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
    is
       function Internal
          (Widget      : System.Address;
           Context     : System.Address;
-          Target_List : Gtk.Selection.Target_List) return System.Address;
+          Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
-      return From_Object (Internal (Get_Object (Widget), Get_Object (Context), Target_List));
+      return Internal (Get_Object (Widget), Get_Object (Context), Target_List);
    end Drag_Dest_Find_Target;
 
    -------------------------------
@@ -397,28 +397,6 @@ package body Gtk.Widget is
    begin
       return Boolean'Val (Internal (Get_Object (Widget)));
    end Drag_Dest_Get_Track_Motion;
-
-   -------------------
-   -- Drag_Dest_Set --
-   -------------------
-
-   procedure Drag_Dest_Set
-      (Widget    : not null access Gtk_Widget_Record;
-       Flags     : Gtk_Dest_Defaults;
-       Targets   : array_of_Gtk_Target_Entry;
-       N_Targets : Gint;
-       Actions   : Gdk.Drag_Contexts.Gdk_Drag_Action)
-   is
-      procedure Internal
-         (Widget    : System.Address;
-          Flags     : Gtk_Dest_Defaults;
-          Targets   : array_of_Gtk_Target_Entry;
-          N_Targets : Gint;
-          Actions   : Integer);
-      pragma Import (C, Internal, "gtk_drag_dest_set");
-   begin
-      Internal (Get_Object (Widget), Flags, Targets, N_Targets, Gdk.Drag_Contexts.Gdk_Drag_Action'Pos (Actions));
-   end Drag_Dest_Set;
 
    -------------------------
    -- Drag_Dest_Set_Proxy --
@@ -488,17 +466,17 @@ package body Gtk.Widget is
    procedure Drag_Get_Data
       (Widget  : not null access Gtk_Widget_Record;
        Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target  : Gdk.Atom.Gdk_Atom;
+       Target  : Gdk.Types.Gdk_Atom;
        Time    : guint32)
    is
       procedure Internal
          (Widget  : System.Address;
           Context : System.Address;
-          Target  : System.Address;
+          Target  : Gdk.Types.Gdk_Atom;
           Time    : guint32);
       pragma Import (C, Internal, "gtk_drag_get_data");
    begin
-      Internal (Get_Object (Widget), Get_Object (Context), Get_Object (Target), Time);
+      Internal (Get_Object (Widget), Get_Object (Context), Target, Time);
    end Drag_Get_Data;
 
    --------------------
@@ -565,28 +543,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Drag_Source_Get_Target_List;
-
-   ---------------------
-   -- Drag_Source_Set --
-   ---------------------
-
-   procedure Drag_Source_Set
-      (Widget            : not null access Gtk_Widget_Record;
-       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-       Targets           : array_of_Gtk_Target_Entry;
-       N_Targets         : Gint;
-       Actions           : Gdk.Drag_Contexts.Gdk_Drag_Action)
-   is
-      procedure Internal
-         (Widget            : System.Address;
-          Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-          Targets           : array_of_Gtk_Target_Entry;
-          N_Targets         : Gint;
-          Actions           : Integer);
-      pragma Import (C, Internal, "gtk_drag_source_set");
-   begin
-      Internal (Get_Object (Widget), Start_Button_Mask, Targets, N_Targets, Gdk.Drag_Contexts.Gdk_Drag_Action'Pos (Actions));
-   end Drag_Source_Set;
 
    --------------------------------
    -- Drag_Source_Set_Icon_Gicon --
@@ -764,9 +720,9 @@ package body Gtk.Widget is
    --------------------------
 
    function Get_Allocated_Height
-      (Widget : not null access Gtk_Widget_Record) return int
+      (Widget : not null access Gtk_Widget_Record) return Gint
    is
-      function Internal (Widget : System.Address) return int;
+      function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_widget_get_allocated_height");
    begin
       return Internal (Get_Object (Widget));
@@ -777,9 +733,9 @@ package body Gtk.Widget is
    -------------------------
 
    function Get_Allocated_Width
-      (Widget : not null access Gtk_Widget_Record) return int
+      (Widget : not null access Gtk_Widget_Record) return Gint
    is
-      function Internal (Widget : System.Address) return int;
+      function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_widget_get_allocated_width");
    begin
       return Internal (Get_Object (Widget));
@@ -996,10 +952,10 @@ package body Gtk.Widget is
    function Get_Halign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align
    is
-      function Internal (Widget : System.Address) return Gtk_Align;
+      function Internal (Widget : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_widget_get_halign");
    begin
-      return Internal (Get_Object (Widget));
+      return Gtk.Widget.Gtk_Align'Val (Internal (Get_Object (Widget)));
    end Get_Halign;
 
    ---------------------
@@ -1125,13 +1081,13 @@ package body Gtk.Widget is
 
    function Get_Modifier_Style
       (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Rc_Style.Gtk_Rc_Style
+       return Gtk.Rc.Gtk_Rc_Style
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_modifier_style");
-      Stub_Gtk_Rc_Style : Gtk.Rc_Style.Gtk_Rc_Style_Record;
+      Stub_Gtk_Rc_Style : Gtk.Rc.Gtk_Rc_Style_Record;
    begin
-      return Gtk.Rc_Style.Gtk_Rc_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Rc_Style));
+      return Gtk.Rc.Gtk_Rc_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Rc_Style));
    end Get_Modifier_Style;
 
    --------------
@@ -1204,6 +1160,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Parent_Window;
+
+   --------------
+   -- Get_Path --
+   --------------
+
+   function Get_Path
+      (Widget : not null access Gtk_Widget_Record) return Gtk_Widget_Path
+   is
+      function Internal (Widget : System.Address) return Gtk_Widget_Path;
+      pragma Import (C, Internal, "gtk_widget_get_path");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Path;
 
    -----------------
    -- Get_Pointer --
@@ -1477,21 +1446,6 @@ package body Gtk.Widget is
       return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Style));
    end Get_Style;
 
-   -----------------------
-   -- Get_Style_Context --
-   -----------------------
-
-   function Get_Style_Context
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Style_Context.Gtk_Style_Context
-   is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_style_context");
-      Stub_Gtk_Style_Context : Gtk.Style_Context.Gtk_Style_Context_Record;
-   begin
-      return Gtk.Style_Context.Gtk_Style_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Style_Context));
-   end Get_Style_Context;
-
    -----------------------------
    -- Get_Support_Multidevice --
    -----------------------------
@@ -1504,6 +1458,20 @@ package body Gtk.Widget is
    begin
       return Boolean'Val (Internal (Get_Object (Widget)));
    end Get_Support_Multidevice;
+
+   ------------------------
+   -- Get_Tooltip_Markup --
+   ------------------------
+
+   function Get_Tooltip_Markup
+      (Widget : not null access Gtk_Widget_Record) return UTF8_String
+   is
+      function Internal
+         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_tooltip_markup");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+   end Get_Tooltip_Markup;
 
    ------------------------
    -- Get_Tooltip_Window --
@@ -1540,10 +1508,10 @@ package body Gtk.Widget is
    function Get_Valign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align
    is
-      function Internal (Widget : System.Address) return Gtk_Align;
+      function Internal (Widget : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_widget_get_valign");
    begin
-      return Internal (Get_Object (Widget));
+      return Gtk.Widget.Gtk_Align'Val (Internal (Get_Object (Widget)));
    end Get_Valign;
 
    -----------------
@@ -1953,11 +1921,11 @@ package body Gtk.Widget is
 
    procedure Modify_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango_Font_Description)
+       Font_Desc : in out Pango.Font.Pango_Font_Description)
    is
       procedure Internal
          (Widget    : System.Address;
-          Font_Desc : in out Pango_Font_Description);
+          Font_Desc : in out Pango.Font.Pango_Font_Description);
       pragma Import (C, Internal, "gtk_widget_modify_font");
    begin
       Internal (Get_Object (Widget), Font_Desc);
@@ -1969,11 +1937,11 @@ package body Gtk.Widget is
 
    procedure Override_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango_Font_Description)
+       Font_Desc : in out Pango.Font.Pango_Font_Description)
    is
       procedure Internal
          (Widget    : System.Address;
-          Font_Desc : in out Pango_Font_Description);
+          Font_Desc : in out Pango.Font.Pango_Font_Description);
       pragma Import (C, Internal, "gtk_widget_override_font");
    begin
       Internal (Get_Object (Widget), Font_Desc);
@@ -2458,10 +2426,10 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Gtk_Align);
+      procedure Internal (Widget : System.Address; Align : Integer);
       pragma Import (C, Internal, "gtk_widget_set_halign");
    begin
-      Internal (Get_Object (Widget), Align);
+      Internal (Get_Object (Widget), Gtk.Widget.Gtk_Align'Pos (Align));
    end Set_Halign;
 
    ---------------------
@@ -2857,10 +2825,10 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Gtk_Align);
+      procedure Internal (Widget : System.Address; Align : Integer);
       pragma Import (C, Internal, "gtk_widget_set_valign");
    begin
-      Internal (Get_Object (Widget), Align);
+      Internal (Get_Object (Widget), Gtk.Widget.Gtk_Align'Pos (Align));
    end Set_Valign;
 
    -----------------
@@ -3048,26 +3016,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
    end Style_Get_Property;
-
-   ----------------------
-   -- Style_Get_Valist --
-   ----------------------
-
-   procedure Style_Get_Valist
-      (Widget              : not null access Gtk_Widget_Record;
-       First_Property_Name : UTF8_String;
-       Var_Args            : va_list)
-   is
-      procedure Internal
-         (Widget              : System.Address;
-          First_Property_Name : Interfaces.C.Strings.chars_ptr;
-          Var_Args            : va_list);
-      pragma Import (C, Internal, "gtk_widget_style_get_valist");
-      Tmp_First_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (First_Property_Name);
-   begin
-      Internal (Get_Object (Widget), Tmp_First_Property_Name, Var_Args);
-      Free (Tmp_First_Property_Name);
-   end Style_Get_Valist;
 
    -----------------------
    -- Thaw_Child_Notify --

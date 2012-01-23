@@ -173,7 +173,7 @@ pragma Ada_05;
 --  for a widget class, gtk_widget_class_find_style_property or
 --  gtk_widget_class_list_style_properties to get information about existing
 --  style properties and Gtk.Widget.Style_Get_Property, gtk_widget_style_get or
---  Gtk.Widget.Style_Get_Valist to obtain the value of a style property.
+--  gtk_widget_style_get_valist to obtain the value of a style property.
 --
 --  == GtkWidget as GtkBuildable ==
 --
@@ -226,43 +226,64 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;             use Cairo;
-with Cairo.Region;      use Cairo.Region;
-with Gdk.Atom;          use Gdk.Atom;
-with Gdk.Color;         use Gdk.Color;
-with Gdk.Device;        use Gdk.Device;
-with Gdk.Display;       use Gdk.Display;
-with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
-with Gdk.Event;         use Gdk.Event;
-with Gdk.Pixbuf;        use Gdk.Pixbuf;
-with Gdk.RGBA;          use Gdk.RGBA;
-with Gdk.Rectangle;     use Gdk.Rectangle;
-with Gdk.Screen;        use Gdk.Screen;
-with Gdk.Types;         use Gdk.Types;
-with Gdk.Visual;        use Gdk.Visual;
-with Gdk.Window;        use Gdk.Window;
-with Glib;              use Glib;
-with Glib.GSlist;       use Glib.GSlist;
-with Glib.G_Icon;       use Glib.G_Icon;
-with Glib.Glist;        use Glib.Glist;
-with Glib.Object;       use Glib.Object;
-with Glib.Properties;   use Glib.Properties;
-with Glib.Types;        use Glib.Types;
-with Glib.Values;       use Glib.Values;
-with Gtk.Accel_Group;   use Gtk.Accel_Group;
-with Gtk.Buildable;     use Gtk.Buildable;
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Rc_Style;      use Gtk.Rc_Style;
-with Gtk.Selection;     use Gtk.Selection;
-with Gtk.Style;         use Gtk.Style;
-with Gtk.Style_Context; use Gtk.Style_Context;
-with Pango.Context;     use Pango.Context;
-with Pango.Layout;      use Pango.Layout;
+with Cairo;                   use Cairo;
+with Cairo.Region;            use Cairo.Region;
+with Gdk.Color;               use Gdk.Color;
+with Gdk.Device;              use Gdk.Device;
+with Gdk.Display;             use Gdk.Display;
+with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;
+with Gdk.Event;               use Gdk.Event;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Gdk.RGBA;                use Gdk.RGBA;
+with Gdk.Rectangle;           use Gdk.Rectangle;
+with Gdk.Screen;              use Gdk.Screen;
+with Gdk.Types;               use Gdk.Types;
+with Gdk.Visual;              use Gdk.Visual;
+with Gdk.Window;              use Gdk.Window;
+with Glib;                    use Glib;
+with Glib.GSlist;             use Glib.GSlist;
+with Glib.G_Icon;             use Glib.G_Icon;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Glib.Values;             use Glib.Values;
+with Gtk.Accel_Group;         use Gtk.Accel_Group;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Rc;                  use Gtk.Rc;
+with Gtk.Selection;           use Gtk.Selection;
+with Gtk.Style;               use Gtk.Style;
+with Pango.Context;           use Pango.Context;
+with Pango.Font;              use Pango.Font;
+with Pango.Layout;            use Pango.Layout;
 
 package Gtk.Widget is
 
    type Gtk_Widget_Record is new GObject_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
+
+   type Gtk_Align is (
+      Align_Fill,
+      Align_Start,
+      Align_End,
+      Align_Center);
+   pragma Convention (C, Gtk_Align);
+   --  Controls how a widget deals with extra space in a single (x or y)
+   --  dimension.
+   --  Alignment only matters if the widget receives a "too large" allocation,
+   --  for example if you packed the widget with the
+   --  Gtk.Widget.Gtk_Widget:expand flag inside a Gtk.Box.Gtk_Box, then the
+   --  widget might get extra space. If you have for example a 16x16 icon
+   --  inside a 32x32 space, the icon could be scaled and stretched, it could
+   --  be centered, or it could be positioned to one side of the space.
+   --  Note that in horizontal context Gtk_Align_Start and Gtk_Align_End are
+   --  interpreted relative to text direction.
+
+   package Gtk_Align_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Align);
+   type Property_Gtk_Align is new Gtk_Align_Properties.Property;
 
    type Gtk_Requisition is record
       Width : Gint;
@@ -272,6 +293,37 @@ package Gtk.Widget is
    --  A <structname>GtkRequisition</structname> represents the desired size
    --  of a widget. See <xref linkend="geometry-management"/> for more
    --  information.
+
+   type Gtk_Widget_Path is new Glib.C_Proxy;
+   pragma Convention (C, Gtk_Widget_Path);
+   --  GtkWidgetPath is a boxed type that represents a widget hierarchy from
+   --  the topmost widget, typically a toplevel, to any child. This widget path
+   --  abstraction is used in Gtk.Style_Context.Gtk_Style_Context on behalf of
+   --  the real widget in order to query style information.
+   --  If you are using GTK+ widgets, you probably will not need to use this
+   --  API directly, as there is Gtk.Widget.Get_Path, and the style context
+   --  returned by gtk_widget_get_style_context will be automatically updated
+   --  on widget hierarchy changes.
+   --  The widget path generation is generally simple: <example>
+   --  <title>Defining a button within a window</title> <programlisting> {
+   --  GtkWidgetPath *path;
+   --  path = gtk_widget_path_new (); gtk_widget_path_append_type (path,
+   --  GTK_TYPE_WINDOW); gtk_widget_path_append_type (path, GTK_TYPE_BUTTON); }
+   --  </programlisting> </example>
+   --  Although more complex information, such as widget names, or different
+   --  classes (property that may be used by other widget types) and
+   --  intermediate regions may be included:
+   --  <example> <title>Defining the first tab widget in a notebook</title>
+   --  <programlisting> { GtkWidgetPath *path; guint pos;
+   --  path = gtk_widget_path_new ();
+   --  pos = gtk_widget_path_append_type (path, GTK_TYPE_NOTEBOOK);
+   --  gtk_widget_path_iter_add_region (path, pos, "tab", GTK_REGION_EVEN |
+   --  GTK_REGION_FIRST);
+   --  pos = gtk_widget_path_append_type (path, GTK_TYPE_LABEL);
+   --  gtk_widget_path_iter_set_name (path, pos, "first tab label"); }
+   --  </programlisting> </example>
+   --  All this information will be used to match the style information that
+   --  applies to the described widget.
 
    function Convert (R : Gtk.Widget.Gtk_Widget) return System.Address;
    function Convert (R : System.Address) return Gtk.Widget.Gtk_Widget;
@@ -463,7 +515,7 @@ package Gtk.Widget is
        Event   : Gdk.Event.Gdk_Event) return Gdk.Drag_Contexts.Drag_Context;
    --  Initiates a drag on the source side. The function only needs to be used
    --  when the application is starting drags itself, and is not needed when
-   --  Gtk.Widget.Drag_Source_Set is used.
+   --  gtk_drag_source_set is used.
    --  The Event is used to retrieve the timestamp that will be used internally
    --  to grab the pointer. If Event is NULL, then GDK_CURRENT_TIME will be
    --  used. However, you should try to pass a real event in all cases, since
@@ -531,7 +583,7 @@ package Gtk.Widget is
    function Drag_Dest_Find_Target
       (Widget      : not null access Gtk_Widget_Record;
        Context     : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target_List : Gtk.Selection.Target_List) return Gdk.Atom.Gdk_Atom;
+       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
    --  Looks for a match between the supported targets of Context and the
    --  Dest_Target_List, returning the first matching target, otherwise
    --  returning GDK_NONE. Dest_Target_List should usually be the return value
@@ -552,7 +604,7 @@ package Gtk.Widget is
        Target_List : Gtk.Selection.Target_List);
    --  Sets the target types that this widget can accept from drag-and-drop.
    --  The widget must first be made into a drag destination with
-   --  Gtk.Widget.Drag_Dest_Set.
+   --  gtk_drag_dest_set.
    --  "target_list": list of droppable targets, or null for none
 
    function Drag_Dest_Get_Track_Motion
@@ -568,50 +620,6 @@ package Gtk.Widget is
    --  Since: gtk+ 2.10
    --  "track_motion": whether to accept all targets
 
-   procedure Drag_Dest_Set
-      (Widget    : not null access Gtk_Widget_Record;
-       Flags     : Gtk_Dest_Defaults;
-       Targets   : array_of_Gtk_Target_Entry;
-       N_Targets : Gint;
-       Actions   : Gdk.Drag_Contexts.Gdk_Drag_Action);
-   --  Sets a widget as a potential drop destination, and adds default
-   --  behaviors.
-   --  The default behaviors listed in Flags have an effect similar to
-   --  installing default handlers for the widget's drag-and-drop signals
-   --  (Gtk.Widget.Gtk_Widget::drag-motion, Gtk.Widget.Gtk_Widget::drag-drop,
-   --  ...). They all exist for convenience. When passing GTK_DEST_DEFAULT_ALL
-   --  for instance it is sufficient to connect to the widget's
-   --  Gtk.Widget.Gtk_Widget::drag-data-received signal to get primitive, but
-   --  consistent drag-and-drop support.
-   --  Things become more complicated when you try to preview the dragged data,
-   --  as described in the documentation for
-   --  Gtk.Widget.Gtk_Widget::drag-motion. The default behaviors described by
-   --  Flags make some assumptions, that can conflict with your own signal
-   --  handlers. For instance GTK_DEST_DEFAULT_DROP causes invokations of
-   --  gdk_drag_status in the context of Gtk.Widget.Gtk_Widget::drag-motion,
-   --  and invokations of gtk_drag_finish in
-   --  Gtk.Widget.Gtk_Widget::drag-data-received. Especially the later is
-   --  dramatic, when your own Gtk.Widget.Gtk_Widget::drag-motion handler calls
-   --  Gtk.Widget.Drag_Get_Data to inspect the dragged data.
-   --  There's no way to set a default action here, you can use the
-   --  Gtk.Widget.Gtk_Widget::drag-motion callback for that. Here's an example
-   --  which selects the action to use depending on whether the control key is
-   --  pressed or not: |[ static void drag_motion (GtkWidget *widget,
-   --  GdkDragContext *context, gint x, gint y, guint time) { GdkModifierType
-   --  mask;
-   --  gdk_window_get_pointer (gtk_widget_get_window (widget), NULL, NULL,
-   --  &mask); if (mask & GDK_CONTROL_MASK) gdk_drag_status (context,
-   --  GDK_ACTION_COPY, time); else gdk_drag_status (context, GDK_ACTION_MOVE,
-   --  time); } ]|
-   --  "flags": which types of default drag behavior to use
-   --  "targets": a pointer to an array of
-   --  Gtk.Target_Entry.Gtk_Target_Entry<!-- -->s indicating the drop types
-   --  that this Widget will accept, or null. Later you can access the list
-   --  with Gtk.Widget.Drag_Dest_Get_Target_List and
-   --  Gtk.Widget.Drag_Dest_Find_Target.
-   --  "n_targets": the number of entries in Targets
-   --  "actions": a bitmask of possible actions for a drop onto this Widget.
-
    procedure Drag_Dest_Set_Proxy
       (Widget          : not null access Gtk_Widget_Record;
        Proxy_Window    : Gdk.Window.Gdk_Window;
@@ -625,14 +633,13 @@ package Gtk.Widget is
    --  destination, because it is an embedded subwindow.
 
    procedure Drag_Dest_Unset (Widget : not null access Gtk_Widget_Record);
-   --  Clears information about a drop destination set with
-   --  Gtk.Widget.Drag_Dest_Set. The widget will no longer receive notification
-   --  of drags.
+   --  Clears information about a drop destination set with gtk_drag_dest_set.
+   --  The widget will no longer receive notification of drags.
 
    procedure Drag_Get_Data
       (Widget  : not null access Gtk_Widget_Record;
        Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target  : Gdk.Atom.Gdk_Atom;
+       Target  : Gdk.Types.Gdk_Atom;
        Time    : guint32);
    --  Gets the data associated with a drag. When the data is received or the
    --  retrieval fails, GTK+ will emit a
@@ -683,23 +690,9 @@ package Gtk.Widget is
       (Widget      : not null access Gtk_Widget_Record;
        Target_List : Gtk.Selection.Target_List);
    --  Changes the target types that this widget offers for drag-and-drop. The
-   --  widget must first be made into a drag source with
-   --  Gtk.Widget.Drag_Source_Set.
+   --  widget must first be made into a drag source with gtk_drag_source_set.
    --  Since: gtk+ 2.4
    --  "target_list": list of draggable targets, or null for none
-
-   procedure Drag_Source_Set
-      (Widget            : not null access Gtk_Widget_Record;
-       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-       Targets           : array_of_Gtk_Target_Entry;
-       N_Targets         : Gint;
-       Actions           : Gdk.Drag_Contexts.Gdk_Drag_Action);
-   --  Sets up a widget so that GTK+ will start a drag operation when the user
-   --  clicks and drags on the widget. The widget must have a window.
-   --  "start_button_mask": the bitmask of buttons that can start the drag
-   --  "targets": the table of targets that the drag will support, may be null
-   --  "n_targets": the number of items in Targets
-   --  "actions": the bitmask of possible actions for a drag from this widget
 
    procedure Drag_Source_Set_Icon_Gicon
       (Widget : not null access Gtk_Widget_Record;
@@ -734,7 +727,7 @@ package Gtk.Widget is
    --  "stock_id": the ID of the stock icon to use
 
    procedure Drag_Source_Unset (Widget : not null access Gtk_Widget_Record);
-   --  Undoes the effects of Gtk.Widget.Drag_Source_Set.
+   --  Undoes the effects of gtk_drag_source_set.
 
    procedure Drag_Unhighlight (Widget : not null access Gtk_Widget_Record);
    --  Removes a highlight set by Gtk.Widget.Drag_Highlight from a widget.
@@ -795,13 +788,13 @@ package Gtk.Widget is
    --  This is the analogue of g_object_freeze_notify for child properties.
 
    function Get_Allocated_Height
-      (Widget : not null access Gtk_Widget_Record) return int;
+      (Widget : not null access Gtk_Widget_Record) return Gint;
    --  Returns the height that has currently been allocated to Widget. This
    --  function is intended to be used when implementing handlers for the
    --  Gtk.Widget.Gtk_Widget::draw function.
 
    function Get_Allocated_Width
-      (Widget : not null access Gtk_Widget_Record) return int;
+      (Widget : not null access Gtk_Widget_Record) return Gint;
    --  Returns the width that has currently been allocated to Widget. This
    --  function is intended to be used when implementing handlers for the
    --  Gtk.Widget.Gtk_Widget::draw function.
@@ -1162,13 +1155,13 @@ package Gtk.Widget is
 
    function Get_Modifier_Style
       (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Rc_Style.Gtk_Rc_Style;
+       return Gtk.Rc.Gtk_Rc_Style;
    --  Returns the current modifier style for the widget. (As set by
    --  gtk_widget_modify_style.) If no style has previously set, a new
-   --  Gtk.Rc_Style.Gtk_Rc_Style will be created with all values unset, and set
-   --  as the modifier style for the widget. If you make changes to this rc
-   --  style, you must call gtk_widget_modify_style, passing in the returned rc
-   --  style, to make sure that your changes take effect.
+   --  Gtk.Rc.Gtk_Rc_Style will be created with all values unset, and set as
+   --  the modifier style for the widget. If you make changes to this rc style,
+   --  you must call gtk_widget_modify_style, passing in the returned rc style,
+   --  to make sure that your changes take effect.
    --  Caution: passing the style back to gtk_widget_modify_style will normally
    --  end up destroying it, because gtk_widget_modify_style copies the
    --  passed-in style and sets the copy as the new modifier style, thus
@@ -1246,6 +1239,12 @@ package Gtk.Widget is
    --   Note: For GtkWindow classes, this needs to be called before the window
    --  is realized.
    --  "parent_window": the new parent window.
+
+   function Get_Path
+      (Widget : not null access Gtk_Widget_Record) return Gtk_Widget_Path;
+   --  Returns the Gtk.Widget_Path.Gtk_Widget_Path representing Widget, if the
+   --  widget is not connected to a toplevel widget, a partial path will be
+   --  created.
 
    procedure Get_Pointer
       (Widget : not null access Gtk_Widget_Record;
@@ -1499,12 +1498,6 @@ package Gtk.Widget is
    --  "style": a Gtk.Style.Gtk_Style, or null to remove the effect of a
    --  previous call to Gtk.Widget.Set_Style and go back to the default style
 
-   function Get_Style_Context
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Style_Context.Gtk_Style_Context;
-   --  Returns the style context associated to Widget.
-   --  must not be freed.
-
    function Get_Support_Multidevice
       (Widget : not null access Gtk_Widget_Record) return Boolean;
    procedure Set_Support_Multidevice
@@ -1517,6 +1510,21 @@ package Gtk.Widget is
    --  will have to be called manually on them.
    --  Since: gtk+ 3.0
    --  "support_multidevice": True to support input from multiple devices.
+
+   function Get_Tooltip_Markup
+      (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   procedure Set_Tooltip_Markup
+      (Widget : not null access Gtk_Widget_Record;
+       Markup : UTF8_String := "");
+   --  Sets Markup as the contents of the tooltip, which is marked up with the
+   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  This function will take care of setting
+   --  Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default handler for
+   --  the Gtk.Widget.Gtk_Widget::query-tooltip signal.
+   --  See also the Gtk.Widget.Gtk_Widget:tooltip-markup property and
+   --  Gtk.Tooltip.Set_Markup.
+   --  Since: gtk+ 2.12
+   --  "markup": the contents of the tooltip for Widget, or null
 
    function Get_Tooltip_Window
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
@@ -1865,7 +1873,7 @@ package Gtk.Widget is
 
    procedure Modify_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango_Font_Description);
+       Font_Desc : in out Pango.Font.Pango_Font_Description);
    --  Sets the font to use for a widget.
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
@@ -1875,7 +1883,7 @@ package Gtk.Widget is
 
    procedure Override_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango_Font_Description);
+       Font_Desc : in out Pango.Font.Pango_Font_Description);
    --  Sets the font to use for a widget. All other style values are left
    --  untouched. See gtk_widget_override_color.
    --  Since: gtk+ 3.0
@@ -2135,19 +2143,6 @@ package Gtk.Widget is
    --  it is allocated to a new size. Otherwise, only the new portion of the
    --  widget will be redrawn.
 
-   procedure Set_Tooltip_Markup
-      (Widget : not null access Gtk_Widget_Record;
-       Markup : UTF8_String := "");
-   --  Sets Markup as the contents of the tooltip, which is marked up with the
-   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
-   --  This function will take care of setting
-   --  Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default handler for
-   --  the Gtk.Widget.Gtk_Widget::query-tooltip signal.
-   --  See also the Gtk.Widget.Gtk_Widget:tooltip-markup property and
-   --  Gtk.Tooltip.Set_Markup.
-   --  Since: gtk+ 2.12
-   --  "markup": the contents of the tooltip for Widget, or null
-
    procedure Set_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record;
        Text   : UTF8_String);
@@ -2222,17 +2217,6 @@ package Gtk.Widget is
    --  Gets the value of a style property of Widget.
    --  "property_name": the name of a style property
    --  "value": location to return the property value
-
-   procedure Style_Get_Valist
-      (Widget              : not null access Gtk_Widget_Record;
-       First_Property_Name : UTF8_String;
-       Var_Args            : va_list);
-   --  Non-vararg variant of gtk_widget_style_get. Used primarily by language
-   --  bindings.
-   --  "first_property_name": the name of the first property to get
-   --  "var_args": a <type>va_list</type> of pairs of property names and
-   --  locations to return the property values, starting with the location for
-   --  First_Property_Name.
 
    procedure Thaw_Child_Notify (Widget : not null access Gtk_Widget_Record);
    --  Reverts the effect of a previous call to
@@ -2369,10 +2353,10 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget:hexpand and Gtk.Widget.Gtk_Widget:vexpand
    --
    --  Name: Halign_Property
-   --  Type: Align
+   --  Type: Gtk_Align
    --  Flags: read-write
    --  How to distribute horizontal space if widget gets extra space, see
-   --  Gtk_Align
+   --  Gtk.Widget.Gtk_Align
    --
    --  Name: Has_Default_Property
    --  Type: Boolean
@@ -2500,10 +2484,10 @@ package Gtk.Widget is
    --  default signal handler.
    --
    --  Name: Valign_Property
-   --  Type: Align
+   --  Type: Gtk_Align
    --  Flags: read-write
    --  How to distribute vertical space if widget gets extra space, see
-   --  Gtk_Align
+   --  Gtk.Widget.Gtk_Align
    --
    --  Name: Vexpand_Property
    --  Type: Boolean
@@ -2536,7 +2520,7 @@ package Gtk.Widget is
    Double_Buffered_Property : constant Glib.Properties.Property_Boolean;
    Events_Property : constant Glib.Properties.Property_Boxed;
    Expand_Property : constant Glib.Properties.Property_Boolean;
-   Halign_Property : constant Glib.Properties.Property_Boxed;
+   Halign_Property : constant Gtk.Widget.Property_Gtk_Align;
    Has_Default_Property : constant Glib.Properties.Property_Boolean;
    Has_Focus_Property : constant Glib.Properties.Property_Boolean;
    Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
@@ -2557,7 +2541,7 @@ package Gtk.Widget is
    Style_Property : constant Glib.Properties.Property_Object;
    Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    Tooltip_Text_Property : constant Glib.Properties.Property_String;
-   Valign_Property : constant Glib.Properties.Property_Boxed;
+   Valign_Property : constant Gtk.Widget.Property_Gtk_Align;
    Vexpand_Property : constant Glib.Properties.Property_Boolean;
    Vexpand_Set_Property : constant Glib.Properties.Property_Boolean;
    Visible_Property : constant Glib.Properties.Property_Boolean;
@@ -2855,8 +2839,8 @@ package Gtk.Widget is
    --  and defer the gdk_drag_status call to the
    --  Gtk.Widget.Gtk_Widget::drag-data-received handler. Note that you cannot
    --  not pass GTK_DEST_DEFAULT_DROP, GTK_DEST_DEFAULT_MOTION or
-   --  GTK_DEST_DEFAULT_ALL to Gtk.Widget.Drag_Dest_Set when using the
-   --  drag-motion signal that way.
+   --  GTK_DEST_DEFAULT_ALL to gtk_drag_dest_set when using the drag-motion
+   --  signal that way.
    --  Also note that there is no drag-enter signal. The drag receiver has to
    --  keep track of whether he has received any drag-motion signals since the
    --  last Gtk.Widget.Gtk_Widget::drag-leave and if not, treat the drag-motion
@@ -3430,8 +3414,8 @@ private
      Glib.Properties.Build ("events");
    Expand_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("expand");
-   Halign_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("halign");
+   Halign_Property : constant Gtk.Widget.Property_Gtk_Align :=
+     Gtk.Widget.Build ("halign");
    Has_Default_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-default");
    Has_Focus_Property : constant Glib.Properties.Property_Boolean :=
@@ -3472,8 +3456,8 @@ private
      Glib.Properties.Build ("tooltip-markup");
    Tooltip_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("tooltip-text");
-   Valign_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("valign");
+   Valign_Property : constant Gtk.Widget.Property_Gtk_Align :=
+     Gtk.Widget.Build ("valign");
    Vexpand_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("vexpand");
    Vexpand_Set_Property : constant Glib.Properties.Property_Boolean :=

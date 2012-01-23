@@ -77,9 +77,10 @@ class CType(object):
         self.is_ptr = False
         self.param = ada     # type as parameter
         self.cparam = ada    # type for Ada subprograms binding to C
-        self.returns = (self.param, self.cparam, "%(var)s", [])
+        self.returns = (self.param, self.cparam, "%(var)s", [], "")
                              # third: converts from C to Ada value
                              # fourth: list of needed temporary variables
+                             # fifth: extra cleanup to perform, if specified
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
@@ -88,7 +89,7 @@ class CType(object):
         self.can_be_null = False # for GObject, marks whether the parameter can
                                  # be "null".
 
-    def convert(self):
+    def convert_to_c(self):
         """How to convert from Ada parameter to C parameter If it uses %(tmp)s,
            we assume the converter sets the value of the temporary variable
            itself.
@@ -100,7 +101,7 @@ class CType(object):
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
-        return self.convert() == "%(var)s"
+        return self.convert_to_c() == "%(var)s"
 
     def as_property(self):
         """The type to use for the property"""
@@ -114,7 +115,8 @@ class CType(object):
             return (self.returns[0].replace("%s." % pkg.name, ""),
                     self.returns[1].replace("%s." % pkg.name, ""),
                     self.returns[2],
-                    self.returns[3])
+                    self.returns[3],
+                    self.returns[4])
         else:
             return self.returns
 
@@ -160,43 +162,49 @@ class CType(object):
 
         elif lang == "ada->c":
             ret = self.returns and self.returns[2]
+            ret_cleanup = ""
+            if self.returns:
+                ret_cleanup = self.returns[4]
+            
             if ret and ret != "%(var)s" and mode != "in":
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos (Param)) is invalid
                 tmp = "Tmp_%s" % name
-                return VariableCall(
+                call = VariableCall(
                     call=wrapper % tmp,
                     precall="",
-                    postcall='%s := %s;' % (name, ret % {"var":tmp}),
+                    postcall='%s := %s;%s' % (name, ret % {"var":tmp}, ret_cleanup),
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
-            elif "%(tmp)" in self.convert():
+            elif "%(tmp)" in self.convert_to_c():
                 # The conversion sets the temporary variable itself
                 tmp = "Tmp_%s" % name
-                return VariableCall(
+                call = VariableCall(
                     call=wrapper % tmp,
-                    precall=self.convert() % {"var":name, "tmp":tmp},
-                    postcall=self.cleanup % tmp,
+                    precall=self.convert_to_c() % {"var":name, "tmp":tmp},
+                    postcall=self.cleanup % tmp + ret_cleanup,
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
             elif self.cleanup:
                 tmp = "Tmp_%s" % name
-                conv = self.convert() % {"var":name}
+                conv = self.convert_to_c() % {"var":name}
 
                 # Initialize the temporary variable with a default value, in case
                 # it is an unconstrained type (a chars_ptr_array for instance)
-                return VariableCall(
+                call = VariableCall(
                     call=wrapper % tmp,
                     precall='',
-                    postcall=self.cleanup % tmp,
+                    postcall=self.cleanup % tmp + ret_cleanup,
                     tmpvars=[Local_Var(
                         name=tmp, type=AdaType(self.cparam), default=conv)])
 
             else:
-                conv = self.convert() % {"var":name}
-                return VariableCall(
+                conv = self.convert_to_c() % {"var":name}
+                call = VariableCall(
                     call=wrapper % conv,
-                    precall='', postcall='', tmpvars=[])
+                    precall='', postcall=ret_cleanup, tmpvars=[])
+
+            return call
 
         elif lang == "c->ada":
             ret = self.returns
@@ -225,9 +233,9 @@ class Enum(CType):
             CType.__init__(self, ada, property)
 
         self.cparam = "Integer"
-        self.returns = (ada, self.cparam, "%s'Val (%%(var)s)" % ada, [])
+        self.returns = (self.param, self.cparam, "%s'Val (%%(var)s)" % ada, [], "")
 
-    def convert(self):
+    def convert_to_c(self):
         return "%s'Pos (%%(var)s)" % self.ada
 
     def record_field_type(self, pkg=None):
@@ -273,9 +281,10 @@ class GObject(CType):
 
         self.returns = (
             self.param, self.cparam, conv,
-            [Local_Var(stub, AdaType("%s_Record" % ada, in_spec=False))])
+            [Local_Var(stub, AdaType("%s_Record" % ada, in_spec=False))],
+            "")
 
-    def convert(self):
+    def convert_to_c(self):
         if self.can_be_null:
             return "Get_Object_Or_Null (GObject (%(var)s))"
         else:
@@ -306,7 +315,7 @@ class Tagged(GObject):
     def __init__(self, ada):
         GObject.__init__(self, ada)
         self.returns = (
-            self.param, self.cparam, "From_Object (%(var)s)", [])
+            self.param, self.cparam, "From_Object (%(var)s)", [], "")
 
     def as_ada_param(self, pkg):
         self.userecord = False
@@ -317,11 +326,15 @@ class UTF8(CType):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
         self.cparam = "Interfaces.C.Strings.chars_ptr"
         self.cleanup = "Free (%s);"
-        self.returns = (
-            self.param, self.cparam,
-            "Interfaces.C.Strings.Value (%(var)s)", [])
+        self.returns = (self.param, self.cparam,
+                        "Interfaces.C.Strings.Value (%(var)s)", [], "")
+        #self.returns = (  # MANU
+        #    self.param, self.cparam,
+        #    "C_Return := %(var)s; %(tmp)s := Interfaces.C.Strings.Value (C_Return)",
+        #    [Local_Var("C_Return", self.cparam)],
+        #    "Free (C_Return);")
 
-    def convert(self):
+    def convert_to_c(self):
         if self.can_be_null:
             return 'if %(var)s = "" then %(tmp)s := Interfaces.C.Strings.Null_Ptr; else %(tmp)s := New_String (%(var)s); end if;'
         else:
@@ -339,12 +352,12 @@ class UTF8_List(CType):
         self.cleanup = "GtkAda.Types.Free (%s);"
         self.returns = (
             self.param, "chars_ptr_array_access",
-            "To_String_List (%(var)s.all)", [])
+            "To_String_List (%(var)s.all)", [], "")
 
     def record_field_type(self, pkg=None):
         return "Interfaces.C.Strings.char_array_access"
 
-    def convert(self):
+    def convert_to_c(self):
         return "From_String_List (%(var)s)"
 
     def add_with(self, pkg=None, specs=True):
@@ -387,10 +400,9 @@ class Callback(CType):
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user
         # callback.
-        self.returns = ("", "", "", [])
         self.returns = None
 
-    def convert(self):
+    def convert_to_c(self):
         return "%(var)s'Address"
 
 
@@ -399,7 +411,7 @@ class Interface(CType):
         CType.__init__(self, ada, "")
         self.cparam = ada
         self.is_ptr = False
-        self.returns = (self.param, self.cparam, "%(var)s", [])
+        self.returns = (self.param, self.cparam, "%(var)s", [], "")
 
 
 class List(CType):
@@ -410,7 +422,7 @@ class List(CType):
         self.is_ptr = False
         self.returns = (   # Use %(tmp)s so forces the use of temporary var.
            self.param, self.cparam,
-            "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
+            "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [], "")
 
     @staticmethod
     def register_ada_list(pkg, ada, ctype, single=False):
@@ -428,7 +440,7 @@ class List(CType):
         t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)
 
-    def convert(self):
+    def convert_to_c(self):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
     def add_with(self, pkg=None, specs=True):
@@ -453,7 +465,7 @@ class AdaType(CType):
         CType.__init__(self, adatype, "")
         self.param   = adatype
         self.cparam  = ctype or adatype
-        self.returns = (self.param, self.cparam, "%(var)s", [])
+        self.returns = (self.param, self.cparam, "%(var)s", [], "")
         self.__convert = convert
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
@@ -461,7 +473,7 @@ class AdaType(CType):
         if pkg:
             self.add_with(pkg, specs=in_spec)
 
-    def convert(self):
+    def convert_to_c(self):
         return self.__convert
 
 
@@ -470,7 +482,7 @@ class DirectBinding(CType):
         CType.__init__(self, ada, "")
         self.cparam = ada
         self.is_ptr = False
-        self.returns = (self.param, self.cparam, "%(var)s", [])
+        self.returns = (self.param, self.cparam, "%(var)s", [], "")
 
 
 class AdaNaming(object):
@@ -741,6 +753,7 @@ def indent_code(code, indent=3, addnewlines=True):
         body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
         body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
         body = re.sub("declare", "\ndeclare", body)
+        body = re.sub(r"\bdo\b", "do\n", body)
         body = re.sub("\n\s*\n+", "\n\n", body)
 
     parent_count = 0
@@ -794,6 +807,7 @@ def indent_code(code, indent=3, addnewlines=True):
            or l.endswith("{") \
            or l.endswith("record") \
            or l.endswith("is") \
+           or l.endswith("do") \
            or l.endswith("declare"):
             indent += 3
 
@@ -938,6 +952,9 @@ class Subprogram(object):
         self._nested = []  # nested subprograms
         self._deprecated = (False, "") # True if deprecated
         self._manual_body = None  # Written by user explicitly
+
+        self.transfer_ownership = True # True if the value returned from C needs to
+                             # be freed by the user.
 
         self.lang = "ada"  # Language for the types of parameters
 
@@ -1172,18 +1189,27 @@ class Subprogram(object):
                     # Result of Internal is used to create a temp. variable,
                     # which is then returned. This variable has the same type
                     # as the Ada type (not necessarily same as Internal)
-                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
                     call = returns[2] % {"var":call, "tmp":"Tmp_Return"}
+
+                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
                     return ("%s%s;%s" % (precall, call, postcall),
                             "Tmp_Return",
                             tmpvars)
 
-                elif postcall:
+                elif postcall:# or self.transfer_ownership:
                     tmpvars.append(Local_Var("Tmp_Return", returns[1]))
                     call = "Tmp_Return := %s" % call
+
+                    #if postcall:
+                    #    return ("%sreturn Tmp_Return : %s := %s do %send return;"
+                    #            % (precall, returns[0], call, postcall),
+                    #            returns[2] % {"var": "Tmp_Return"},
+                    #            tmpvars)
+                    #else:
                     return ("%s%s;%s" % (precall, call, postcall),
-                            returns[2] % {"var":"Tmp_Return"},
+                            returns[2] % {"var": "Tmp_Return"},
                             tmpvars)
+
                 else:
                     # No need for a temporary variable
                     return (precall, returns[2] % {"var":call}, tmpvars)
@@ -1217,7 +1243,7 @@ class Subprogram(object):
                 # The return value (Ada) needs to be converted back to C (this
                 # is the returned value from a callback, for instance)
                 result += "return %s" % (
-                    self.returns.convert() % {"var": call[1]})
+                    self.returns.convert_to_c() % {"var": call[1]})
             else:
                 result += "return %s" % call[1]
         return result

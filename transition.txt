@@ -703,7 +703,11 @@ Get_Default_Visual was removed.
 Restore_Default_Style was removed (use Set_Style with a null parameter
 instead).
 
-Class_Install_Style_Property was removed.
+Class_Find_Style_Property, Class_List_Style_Properties and
+Class_Install_Style_Property were removed. They are mostly of interest
+when writting theme engines.
+
+Class_Path and Path were replaced with Get_Path.
 
 Gtk.Window
 ==========

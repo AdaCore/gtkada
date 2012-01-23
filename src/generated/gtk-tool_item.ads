@@ -216,8 +216,8 @@ package Gtk.Tool_Item is
       (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean);
    --  Sets whether Tool_Item has a drag window. When True the toolitem can be
-   --  used as a drag source through Gtk.Widget.Drag_Source_Set. When Tool_Item
-   --  has a drag window it will intercept all events, even those that would
+   --  used as a drag source through gtk_drag_source_set. When Tool_Item has a
+   --  drag window it will intercept all events, even those that would
    --  otherwise be sent to a child of Tool_Item.
    --  Since: gtk+ 2.4
    --  "use_drag_window": Whether Tool_Item has a drag window.

@@ -2308,16 +2308,21 @@ While looking up a recently used file is as simple as using:
 
    <package id="Gtk.Widget" needs_merge="false">
      <parameter name="self" ada="Widget" />
+     <enum ctype="GtkAlign"/>
      <record ctype="GtkRequisition"/>
+     <record ctype="GtkWidgetPath"/>
      <list ada="Widget_List" ctype="Widget"/>
      <slist ada="Widget_SList" ctype="Widget"/>
 
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
+     <method id="gtk_widget_style_get_valist" bind="False"/><!-- varargs -->
      <method id="gtk_widget_get_accessible" bind="False"/> <!-- Requires ATK -->
      <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
      <method id="gtk_widget_get_settings" bind="False"/><!-- in Gtk.Settings -->
      <method id="gtk_widget_modify_style" bind="False"/><!-- in Gtk.RC -->
+     <method id="gtk_widget_class_path" bind="False"/><!-- deprecated -->
+     <method id="gtk_widget_path" bind="False"/><!-- deprecated -->
      <method id="gtk_widget_set_sensitive">
        <parameter name="Sensitive" default="True"/>
      </method>
@@ -2358,14 +2363,9 @@ While looking up a recently used file is as simple as using:
        </type>
      </extra>
 
-     <!-- Need to review the binding -->
-     <method id="gtk_widget_class_path" bind="False" />
-     <method id="gtk_widget_get_path" bind="False"/>
-     <method id="gtk_widget_path" bind="False"/>
-
      <!-- Need GtkAda-custom binding -->
      <method id="gtk_widget_destroy" bind="False"/>
-     <method id="gtk_widget_get_tooltip_markup" bind="False"/><!-- Need to free returned value-->
+     <method id="gtk_widget_get_tooltip_markup" bind="True"/><!-- Need to free returned value-->
      <method id="gtk_widget_get_tooltip_text" bind="False"/><!-- Need to free returned value-->
      <method id="gtk_widget_intersect" bind="False"/><!-- Need out parameter-->
      <method id="gtk_widget_list_accel_closures" bind="False"/>
@@ -2380,6 +2380,9 @@ While looking up a recently used file is as simple as using:
        <parameter name="Region" direction="in"/>
      </method>
      <method id="gtk_widget_translate_coordinates" bind="False"/><!-- function with out param -->
+     <method id="gtk_widget_get_style_context" bind="False"/><!-- Needs Gtk.Style_Context-->
+     <method id="gtk_drag_dest_set" bind="False"/><!-- Needs Gtk_Dest_Defaults-->
+     <method id="gtk_drag_source_set" bind="False"/><!-- Needs Gtk_Dest_Defaults-->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
