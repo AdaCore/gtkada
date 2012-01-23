@@ -23,8 +23,11 @@ interfaces = ("Activatable",
               "ToolShell",
               #"TreeDragDest",
               #"TreeDragSource",
-              #"TreeModel",
               #"TreeSortable"
+
+              # Only parsed to get the names right in the documentation, no
+              # code is generated
+              "TreeModel", # Partial
              )
 
 # List of widgets to bind.
@@ -115,7 +118,14 @@ binding = ("GdkDevice",
            "GtkVSeparator",
            "GtkViewport",
            "GtkVolumeButton",
-           "GtkWidget",
+
+           # The following widgets are only parsed to get the matching Ada
+           # names in the docs. No code is generated for them yet
+           "GtkContainer", # Partial
+           "GtkMenu",      # Partial
+           "GtkTextView",  # Partial
+           "GtkTooltip",   # Partial
+           "GtkWidget",    # Partial
           )
 
 # Handling of functions with user data. The names below are the likely names

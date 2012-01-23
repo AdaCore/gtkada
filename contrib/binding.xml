@@ -2063,9 +2063,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
 
    <package id="Gtk.File_Chooser_Dialog">
       <parameter name="self" ada="Dialog"/>
-
-      <!-- method below has varargs -->
-      <method id="gtk_file_chooser_dialog_new" bind="False"/>
+      <method id="gtk_file_chooser_dialog_new" ada="Gtk_New" bind="False"/> <!-- varargs -->
 
       <extra>
          <gir:constructor name="new"
@@ -2312,4 +2310,25 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
    </package>
+
+   <!-- Below were added just for the sake of parsing the files to get information
+        on their symbols, and properly substitute them in the docs.
+        No file is generated from them.
+   -->
+
+   <package id="Gtk.Menu" needs_merge="true">
+   </package>
+   <package id="Gtk.Tooltip" needs_merge="true">
+   </package>
+   <package id="Gtk.Text_View" needs_merge="true">
+   </package>
+   <package id="Gtk.Container" needs_merge="true">
+     <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
+     <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->
+     <method id="gtk_container_child_set" bind="False"/> <!-- varargs -->
+   </package>
+   <package id="Gtk.Tree_Model" needs_merge="true">
+     <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
+   </package>
+
 </GIR>

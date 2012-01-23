@@ -248,7 +248,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
    --  handler for the Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal.
    --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-markup property and
-   --  gtk_tooltip_set_markup.
+   --  Gtk.Tooltip.Set_Markup.
    --  Since: gtk+ 2.16
    --  "markup": the contents of the tooltip for Status_Icon, or null
 
@@ -263,7 +263,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
    --  handler for the Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal.
    --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text property and
-   --  gtk_tooltip_set_text.
+   --  Gtk.Tooltip.Set_Text.
    --  Since: gtk+ 2.16
    --  "text": the contents of the tooltip for Status_Icon
 
@@ -323,7 +323,7 @@ package Gtk.Status_Icon is
        Push_In   : out gboolean;
        User_Data : System.Address);
    pragma Convention (C, Position_Menu);
-   --  Menu positioning function to use with gtk_menu_popup to position Menu
+   --  Menu positioning function to use with Gtk.Menu.Popup to position Menu
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10
    --  "menu": the Gtk.Menu.Gtk_Menu

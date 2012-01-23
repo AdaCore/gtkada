@@ -580,7 +580,8 @@ class GIRClass(object):
                 showdoc=showdoc,
                 ismethod=ismethod)
         else:
-            naming.add_cmethod(cname, cname)  # Avoid warning later on.
+            naming.add_cmethod(
+                cname, gtkmethod.ada_name() or cname)  # Avoid warning later on.
 
     def _func_is_direct_import(self, profile):
         """Whether a function with this profile
@@ -878,6 +879,8 @@ class GIRClass(object):
             cname = c.get(cidentifier)
             gtkmethod = self.gtkpkg.get_method(cname=cname)
             if not gtkmethod.bind():
+                naming.add_cmethod(
+                    cname, gtkmethod.ada_name() or cname)  # Avoid warning
                 continue
 
             profile = SubprogramProfile.parse(

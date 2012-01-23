@@ -130,9 +130,9 @@ package Gtk.Image is
    --  Describes the image data representation used by a Gtk.Image.Gtk_Image.
    --  If you want to get the image from the widget, you can only get the
    --  currently-stored representation. e.g. if the Gtk.Image.Get_Storage_Type
-   --  returns GTK_IMAGE_PIXBUF, then you can call Gtk.Image.Get but not
-   --  gtk_image_get_stock. For empty images, you can request any storage type
-   --  (call any of the "get" functions), but they will all return null values.
+   --  returns GTK_IMAGE_PIXBUF, then you can call Gtk.Image.Get but not Get.
+   --  For empty images, you can request any storage type (call any of the
+   --  "get" functions), but they will all return null values.
 
    package Gtk_Image_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Image_Type);

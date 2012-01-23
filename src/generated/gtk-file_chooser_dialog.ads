@@ -118,7 +118,7 @@ pragma Ada_05;
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog inherits from
 --  Gtk.Dialog.Gtk_Dialog, so buttons that go in its action area have response
 --  codes such as GTK_RESPONSE_ACCEPT and GTK_RESPONSE_CANCEL. For example, you
---  could call gtk_file_chooser_dialog_new as follows:
+--  could call Gtk_New as follows:
 --
 --    GtkWidget *dialog;
 --    dialog = gtk_file_chooser_dialog_new ("Open File",
