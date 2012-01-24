@@ -26,6 +26,8 @@ with Glib;                 use Glib;
 with GNAT.Strings;         use GNAT.Strings;
 with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gdk.Color;
+with Gdk.RGBA;
 
 package body Gtkada.Bindings is
 
@@ -113,6 +115,13 @@ package body Gtkada.Bindings is
       end;
    end To_Chars_Ptr;
 
+   generic
+      type T is private;
+      Null_T : T;
+   function Generic_To_Address_Or_Null
+     (Val : System.Address) return System.Address;
+   --  Val should be an access to T
+
    --------------------------------
    -- Generic_To_Address_Or_Null --
    --------------------------------
@@ -131,6 +140,28 @@ package body Gtkada.Bindings is
          return Val;
       end if;
    end Generic_To_Address_Or_Null;
+
+   -----------------------
+   -- Gdk_Color_Or_Null --
+   -----------------------
+
+   function Gdk_Color_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Generic_To_Address_Or_Null
+        (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color);
+   begin
+      return Internal (Val);
+   end Gdk_Color_Or_Null;
+
+   ----------------------
+   -- Gdk_RGBA_Or_Null --
+   ----------------------
+
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Generic_To_Address_Or_Null
+        (Gdk.RGBA.Gdk_RGBA, Gdk.RGBA.Null_RGBA);
+   begin
+      return Internal (Val);
+   end Gdk_RGBA_Or_Null;
 
    -----------------------------------
    -- To_Gint_Array_Zero_Terminated --

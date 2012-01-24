@@ -2420,6 +2420,34 @@ While looking up a recently used file is as simple as using:
    function Get_Allocation
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
    --  Convert values received as callback parameters
+
+   type Size_Allocate_Handler is access procedure
+     (Widget : System.Address; Allocation : Gtk_Allocation);
+   pragma Convention (C, Size_Allocate_Handler);
+   --  Widget is the gtk+ C widget, that needs to be converted to Ada through
+   --  a call to:
+   --    declare
+   --       Stub : Gtk_Widget_Record; --  or the exact type you expect
+   --    begin
+   --       My_Widget := Gtk_Widget (Glib.Object.Get_User_Data (Widget, Stub);
+   --    end;
+
+   procedure Set_Default_Size_Allocate_Handler
+     (Klass   : Glib.Object.GObject_Class;
+      Handler : Size_Allocate_Handler);
+   pragma Import (C, Set_Default_Size_Allocate_Handler,
+                  "ada_gtk_widget_set_default_size_allocate_handler");
+   --  Override the default size_allocate handler for this class. This handler
+   --  is automatically called in several cases (when a widget is dynamically
+   --  resized for instance), not through a signal. Thus, if you need to
+   --  override the default behavior provided by one of the standard
+   --  containers, you can not simply use Gtk.Handlers.Emit_Stop_By_Name, and
+   --  you must override the default handler. Note also that this handler
+   --  is automatically inherited by children of this class.
+   --
+   --  This function is not needed unless you are writting your own
+   --  widgets, and should be reserved for advanced customization of the
+   --  standard widgets.
        </spec>
        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
        <body>
