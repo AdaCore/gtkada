@@ -228,9 +228,9 @@ naming.type_exceptions = {
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
-    "cairo_t":               DirectBinding("Cairo.Cairo_Context"),
-    "cairo_region_t":        DirectBinding("Cairo.Region.Cairo_Region"),
-    "cairo_font_options_t":  DirectBinding("Cairo.Cairo_Font_Options"),
+    "cairo_t":               Proxy("Cairo.Cairo_Context"),
+    "cairo_region_t":        Proxy("Cairo.Region.Cairo_Region"),
+    "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
@@ -302,13 +302,13 @@ naming.type_exceptions = {
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
 
     "GtkRcStyle":      GObject("Gtk.Rc.Gtk_Rc_Style"),
-    
+
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
     "GtkCellLayoutDataFunc":
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
 
-    "GdkColor*":          DirectBinding("Gdk.Color.Gdk_Color"),
+    "GdkColor*":          Proxy("Gdk.Color.Gdk_Color"),
     "GdkDragContext":     GObject("Gdk.Drag_Contexts.Drag_Context"),
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),

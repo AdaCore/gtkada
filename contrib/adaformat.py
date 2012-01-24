@@ -165,7 +165,7 @@ class CType(object):
             ret_cleanup = ""
             if self.returns:
                 ret_cleanup = self.returns[4]
-            
+
             if ret and ret != "%(var)s" and mode != "in":
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos (Param)) is invalid
@@ -475,14 +475,6 @@ class AdaType(CType):
 
     def convert_to_c(self):
         return self.__convert
-
-
-class DirectBinding(CType):
-    def __init__(self, ada):
-        CType.__init__(self, ada, "")
-        self.cparam = ada
-        self.is_ptr = False
-        self.returns = (self.param, self.cparam, "%(var)s", [], "")
 
 
 class AdaNaming(object):
