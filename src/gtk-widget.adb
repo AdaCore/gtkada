@@ -77,40 +77,4 @@ package body Gtk.Widget is
 
    end Realize_Handling;
 
-   ---------------------------
-   -- Translate_Coordinates --
-   ---------------------------
-
-   procedure Translate_Coordinates
-     (Src_Widget  : Gtk_Widget;
-      Dest_Widget : Gtk_Widget;
-      Src_X       : Gint;
-      Src_Y       : Gint;
-      Dest_X      : out Gint;
-      Dest_Y      : out Gint;
-      Result      : out Boolean)
-   is
-      function Internal
-        (Src_Widget  : System.Address;
-         Dest_Widget : System.Address;
-         Src_X       : Gint;
-         Src_Y       : Gint;
-         Dest_X      : access Gint;
-         Dest_Y      : access Gint) return Gboolean;
-      pragma Import (C, Internal, "gtk_widget_translate_coordinates");
-
-      X, Y : aliased Gint;
-
-   begin
-      Result := Boolean'Val (Internal
-        (Get_Object (Src_Widget),
-         Get_Object (Dest_Widget),
-         Src_X, Src_Y, X'Access, Y'Access));
-
-      if Result then
-         Dest_X := X;
-         Dest_Y := Y;
-      end if;
-   end Translate_Coordinates;
-
 end Gtk.Widget;

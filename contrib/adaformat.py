@@ -1266,7 +1266,7 @@ class Subprogram(object):
                 # The return value (Ada) needs to be converted back to C (this
                 # is the returned value from a callback, for instance)
                 result += "return %s" % (
-                    self.returns.convert_to_c() % {"var": call[1]})
+                    self.returns.convert_to_c() % {"var": call[1]}, )
             else:
                 result += "return %s" % call[1]
         return result

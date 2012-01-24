@@ -3163,6 +3163,37 @@ package body Gtk.Widget is
    end Thaw_Child_Notify;
 
    ---------------------------
+   -- Translate_Coordinates --
+   ---------------------------
+
+   procedure Translate_Coordinates
+      (Widget      : not null access Gtk_Widget_Record;
+       Dest_Widget : not null access Gtk_Widget_Record'Class;
+       Src_X       : Gint;
+       Src_Y       : Gint;
+       Dest_X      : out Gint;
+       Dest_Y      : out Gint;
+       Result      : out Boolean)
+   is
+      function Internal
+         (Widget      : System.Address;
+          Dest_Widget : System.Address;
+          Src_X       : Gint;
+          Src_Y       : Gint;
+          Acc_Dest_X  : access Gint;
+          Acc_Dest_Y  : access Gint) return Integer;
+      pragma Import (C, Internal, "gtk_widget_translate_coordinates");
+      Acc_Dest_X : aliased Gint;
+      Acc_Dest_Y : aliased Gint;
+      Tmp_Return : Integer;
+   begin
+      Tmp_Return := Internal (Get_Object (Widget), Get_Object (Dest_Widget), Src_X, Src_Y, Acc_Dest_X'Access, Acc_Dest_Y'Access);
+      Dest_X := Acc_Dest_X;
+      Dest_Y := Acc_Dest_Y;
+      Result := Boolean'Val (Tmp_Return);
+   end Translate_Coordinates;
+
+   ---------------------------
    -- Trigger_Tooltip_Query --
    ---------------------------
 

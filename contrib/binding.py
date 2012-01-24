@@ -17,6 +17,7 @@
 
 from xml.etree.cElementTree import parse, QName, tostring, fromstring
 from adaformat import *
+import copy
 from binding_gtkada import GtkAda
 from data import interfaces, binding, user_data_params, destroy_data_params
 
@@ -448,6 +449,7 @@ class SubprogramProfile(object):
 
     def subprogram(self, name, showdoc=True, local_vars=[], code=[]):
         """Return an instance of Subprogram with the corresponding profile"""
+
         subp = Subprogram(
                 name=name,
                 plist=self.params,

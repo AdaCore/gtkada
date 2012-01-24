@@ -2368,6 +2368,7 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_intersect">
        <parameter name="Intersection" direction="access"/>
      </method>
+     <method id="gtk_widget_translate_coordinates" return_as_param="Result"/>
      <method id="gtk_widget_destroy">
        <body>
    procedure Destroy (Widget : not null access Gtk_Widget_Record) is
@@ -2447,9 +2448,6 @@ While looking up a recently used file is as simple as using:
    end Get_Requisition;
        </body>
      </extra>
-
-     <!-- Need GtkAda-custom binding -->
-     <method id="gtk_widget_translate_coordinates" bind="False"/><!-- function with out param -->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

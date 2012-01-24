@@ -2316,6 +2316,26 @@ package Gtk.Widget is
    --  Gtk.Widget.Freeze_Child_Notify. This causes all queued
    --  Gtk.Widget.Gtk_Widget::child-notify signals on Widget to be emitted.
 
+   procedure Translate_Coordinates
+      (Widget      : not null access Gtk_Widget_Record;
+       Dest_Widget : not null access Gtk_Widget_Record'Class;
+       Src_X       : Gint;
+       Src_Y       : Gint;
+       Dest_X      : out Gint;
+       Dest_Y      : out Gint;
+       Result      : out Boolean);
+   --  Translate coordinates relative to Src_Widget's allocation to
+   --  coordinates relative to Dest_Widget's allocations. In order to perform
+   --  this operation, both widgets must be realized, and must share a common
+   --  toplevel.
+   --  was no common ancestor. In this case, nothing is stored in *Dest_X and
+   --  *Dest_Y. Otherwise True.
+   --  "dest_widget": a Gtk.Widget.Gtk_Widget
+   --  "src_x": X position relative to Src_Widget
+   --  "src_y": Y position relative to Src_Widget
+   --  "dest_x": location to store X position relative to Dest_Widget
+   --  "dest_y": location to store Y position relative to Dest_Widget
+
    procedure Trigger_Tooltip_Query
       (Widget : not null access Gtk_Widget_Record);
    --  Triggers a tooltip query on the display where the toplevel of Widget is
