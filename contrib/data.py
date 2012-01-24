@@ -237,7 +237,7 @@ naming.type_exceptions = {
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoContext":      GObject("Pango.Context.Pango_Context"),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
-    "PangoFontDescription": Proxy("Pango.Font.Pango_Font_Description"),
+    "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description"),
 
     "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 

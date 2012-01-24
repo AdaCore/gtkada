@@ -29,6 +29,7 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
+pragma Ada_05;
 with Glib;       use Glib;
 with Gdk.Cursor;
 with Gtk.Enums;

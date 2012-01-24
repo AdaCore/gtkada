@@ -30,6 +30,7 @@
 --  </description>
 --  <group>Miscellaneous</group>
 
+pragma Ada_05;
 with Glib.Object;
 with Gtk.Widget;
 

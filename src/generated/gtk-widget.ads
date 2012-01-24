@@ -1882,11 +1882,13 @@ package Gtk.Widget is
 
    procedure Modify_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango.Font.Pango_Font_Description);
+       Font_Desc : Pango.Font.Pango_Font_Description);
+   pragma Obsolescent (Modify_Font);
    --  Sets the font to use for a widget.
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
    --  Deprecated:3.0: Use Gtk.Widget.Override_Font instead
+   --  Deprecated
    --  "font_desc": the font description to use, or null to undo the effect of
    --  previous calls to Gtk.Widget.Modify_Font
 
@@ -1965,7 +1967,7 @@ package Gtk.Widget is
 
    procedure Override_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango.Font.Pango_Font_Description);
+       Font_Desc : Pango.Font.Pango_Font_Description);
    --  Sets the font to use for a widget. All other style values are left
    --  untouched. See Gtk.Widget.Override_Color.
    --  Since: gtk+ 3.0

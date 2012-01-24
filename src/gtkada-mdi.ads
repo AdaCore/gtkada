@@ -28,6 +28,7 @@
 --  </description>
 --  <group>Layout containers</group>
 
+pragma Ada_05;
 with Ada.Tags;
 with GNAT.Strings;
 with Glib;        use Glib;
@@ -777,7 +778,7 @@ package Gtkada.MDI is
         is access all Perspective_Menu_Item_Record'Class;
 
       procedure Change_Perspective
-        (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+        (Item : not null access Gtk.Widget.Gtk_Widget_Record'Class);
       CP_Access : constant
         Gtkada.Handlers.Widget_Callback.Marshallers.Marshaller :=
         Gtkada.Handlers.Widget_Callback.To_Marshaller
@@ -785,7 +786,7 @@ package Gtkada.MDI is
       --  Internal, but needed so that we can have a 'Access on a callback
 
       procedure Create_Perspective_CB
-        (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+        (Item : not null access Gtk.Widget.Gtk_Widget_Record'Class);
       CreateP_Access : constant
         Gtkada.Handlers.Widget_Callback.Marshallers.Marshaller :=
         Gtkada.Handlers.Widget_Callback.To_Marshaller

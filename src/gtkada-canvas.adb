@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 with Ada.Numerics;                       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
@@ -56,8 +57,6 @@ with Gtk.Arguments;                      use Gtk.Arguments;
 with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;
-with Gtk.Main;                           use Gtk.Main;
-pragma Elaborate_All (Gtk.Main);
 with Gtk.Style;                          use Gtk.Style;
 with Gtk.Widget;                         use Gtk.Widget;
 
@@ -128,38 +127,39 @@ package body Gtkada.Canvas is
      new Glib.Main.Generic_Sources (Interactive_Canvas);
 
    function Expose
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event) return Boolean;
    --  Handle the expose events for a canvas.
 
-   procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class);
+   procedure Canvas_Destroyed
+      (Canvas : not null access Gtk_Widget_Record'Class);
    --  Called when the canvas is being destroyed. All the items and links
    --  are removed, and the double-buffer is freed
 
    procedure Size_Allocate
-     (Canv : access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (Canv : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  When the item is resized.
 
    function Button_Pressed
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has pressed the mouse button in the canvas.
    --  This tests whether an item was selected.
 
    function Button_Release
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has released the mouse button.
    --  If an item was selected, this refreshed the canvas.
 
    function Button_Motion
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
    function Key_Press
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Handle key events, to provide scrolling through Page Up, Page Down, and
    --  arrow keys.
@@ -251,11 +251,11 @@ package body Gtkada.Canvas is
    --  should already include zoom processing.
 
    procedure Set_Scroll_Adjustments
-     (Canvas : access Gtk_Widget_Record'Class;
+     (Canvas : not null access Gtk_Widget_Record'Class;
       Args   : GValues);
    --  Change the two adjustments used for the canvas (in a callback)
 
-   procedure Scrolled (Canvas : access Gtk_Widget_Record'Class);
+   procedure Scrolled (Canvas : not null access Gtk_Widget_Record'Class);
    --  Called everytime the value of one of the adjustments is changed.
 
    procedure Get_Bounding_Box
@@ -544,7 +544,7 @@ package body Gtkada.Canvas is
            or Button_Release_Mask
            or Key_Press_Mask
            or Key_Release_Mask);
-      Set_Flags (Canvas, Can_Focus);
+      Canvas.Set_Can_Focus (True);
 
       --  Configure with default values
       Configure (Canvas);
@@ -576,7 +576,9 @@ package body Gtkada.Canvas is
    -- Canvas_Destroyed --
    ----------------------
 
-   procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class) is
+   procedure Canvas_Destroyed
+      (Canvas : not null access Gtk_Widget_Record'Class)
+   is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       if C.Scrolling_Timeout_Id /= 0 then
@@ -596,7 +598,7 @@ package body Gtkada.Canvas is
    ----------------------------
 
    procedure Set_Scroll_Adjustments
-     (Canvas : access Gtk_Widget_Record'Class;
+     (Canvas : not null access Gtk_Widget_Record'Class;
       Args   : GValues)
    is
       Hadj : constant System.Address := Get_Address (Nth (Args, 1));
@@ -674,7 +676,7 @@ package body Gtkada.Canvas is
    -------------------
 
    procedure Size_Allocate
-     (Canv : access Gtk_Widget_Record'Class;
+     (Canv : not null access Gtk_Widget_Record'Class;
       Args : Gtk_Args)
    is
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -844,8 +846,8 @@ package body Gtkada.Canvas is
 
    begin
       --  If the canvas was properly initialized
-      if Realized_Is_Set (Canvas)
-        and then Get_Allocation_Width (Canvas) /= 1
+      if Get_Realized (Canvas)
+        and then Get_Allocated_Width (Canvas) /= 1
       then
          Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
          --  Add some space around this bounding box
@@ -857,10 +859,10 @@ package body Gtkada.Canvas is
 
          Update_Axis
            (Canvas.Hadj, X_Min, X_Max,
-            Gdouble (Get_Allocation_Width (Canvas)) / Canvas.Zoom);
+            Gdouble (Get_Allocated_Width (Canvas)) / Canvas.Zoom);
          Update_Axis
            (Canvas.Vadj, Y_Min, Y_Max,
-            Gdouble (Get_Allocation_Height (Canvas)) / Canvas.Zoom);
+            Gdouble (Get_Allocated_Height (Canvas)) / Canvas.Zoom);
       end if;
    end Update_Adjustments;
 
@@ -1572,8 +1574,8 @@ package body Gtkada.Canvas is
       --  If no size was allocated yet, memorize the item for later (see
       --  the callback for size_allocate)
 
-      if Get_Allocation_Width (Canvas) = 1
-        or else Get_Allocation_Height (Canvas) = 1
+      if Get_Allocated_Width (Canvas) = 1
+        or else Get_Allocated_Height (Canvas) = 1
       then
          Canvas.Show_Item     := Canvas_Item (Item);
          Canvas.Show_Canvas_X := Canvas_X;
@@ -2377,7 +2379,7 @@ package body Gtkada.Canvas is
    is
       Cr     : Cairo_Context;
    begin
-      if not Realized_Is_Set (Canvas) then
+      if not Get_Realized (Canvas) then
          return;
       end if;
 
@@ -2403,7 +2405,7 @@ package body Gtkada.Canvas is
    begin
       --  If the GC was not created, do not do anything
 
-      if not Realized_Is_Set (Canvas) then
+      if not Get_Realized (Canvas) then
          return;
       end if;
 
@@ -2485,7 +2487,7 @@ package body Gtkada.Canvas is
    ------------
 
    function Expose
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event) return Boolean
    is
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2574,7 +2576,7 @@ package body Gtkada.Canvas is
    ---------------
 
    function Key_Press
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas    : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2761,7 +2763,7 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Pressed
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas  : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2774,7 +2776,6 @@ package body Gtkada.Canvas is
       end if;
 
       Grab_Focus (Canvas);
-      Set_Flags (Canvas, Has_Focus);
 
       To_World_Coordinates
         (Canvas, Event, Canvas.World_X_At_Click, Canvas.World_Y_At_Click);
@@ -2858,7 +2859,7 @@ package body Gtkada.Canvas is
       --  Make sure that no other widget steals the events while we are
       --  moving an item.
 
-      Grab_Add (Canvas);
+      Canvas.Grab_Add;
 
       return False;
 
@@ -2872,7 +2873,7 @@ package body Gtkada.Canvas is
    -------------------
 
    function Button_Motion
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas             : constant Interactive_Canvas :=
@@ -2949,7 +2950,7 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Release
-     (Canv  : access Gtk_Widget_Record'Class;
+     (Canv  : not null access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas       : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2959,7 +2960,7 @@ package body Gtkada.Canvas is
       Handled      : Boolean;
 
    begin
-      Grab_Remove (Canvas);
+      Canvas.Grab_Remove;
 
       --  Restore the standard cursor
       Set_Cursor (Get_Window (Canvas), null);
@@ -3102,7 +3103,7 @@ package body Gtkada.Canvas is
       if Mouse_X_In_Canvas < Scrolling_Margin then
          X_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
       elsif Mouse_X_In_Canvas >
-        Gint (Get_Allocation_Width (Canvas)) - Scrolling_Margin
+        Get_Allocated_Width (Canvas) - Scrolling_Margin
       then
          X_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
       else
@@ -3112,7 +3113,7 @@ package body Gtkada.Canvas is
       if Mouse_Y_In_Canvas < Scrolling_Margin then
          Y_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
       elsif Mouse_Y_In_Canvas >
-        Gint (Get_Allocation_Height (Canvas)) - Scrolling_Margin
+        Get_Allocated_Height (Canvas) - Scrolling_Margin
       then
          Y_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
       else
@@ -3587,7 +3588,7 @@ package body Gtkada.Canvas is
       if Item.Selected then
          Canvas.Selected_Count := Canvas.Selected_Count - 1;
          Item.Selected := False;
-         if not In_Destruction_Is_Set (Canvas) then
+         if not Canvas.In_Destruction then
             Selected (Item, Canvas, Is_Selected => False);
          end if;
 
@@ -3811,10 +3812,10 @@ package body Gtkada.Canvas is
       Canvas.Initial_Zoom := Canvas.Zoom;
       Canvas.Zoom_X :=
         Canvas.World_X +
-        Gdouble (Get_Allocation_Width (Canvas)) / Canvas.Zoom / 2.0;
+        Gdouble (Get_Allocated_Width (Canvas)) / Canvas.Zoom / 2.0;
       Canvas.Zoom_Y :=
         Canvas.World_Y +
-          Gdouble (Get_Allocation_Height (Canvas)) / Canvas.Zoom / 2.0;
+          Gdouble (Get_Allocated_Height (Canvas)) / Canvas.Zoom / 2.0;
       Canvas.Zoom_Start := Ada.Calendar.Clock;
 
       --  Do we want smooth scrolling ?
@@ -3843,7 +3844,7 @@ package body Gtkada.Canvas is
    -- Scrolled --
    --------------
 
-   procedure Scrolled (Canvas : access Gtk_Widget_Record'Class) is
+   procedure Scrolled (Canvas : not null access Gtk_Widget_Record'Class) is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       C.World_X := Get_Value (C.Hadj);

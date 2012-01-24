@@ -1918,11 +1918,11 @@ package body Gtk.Widget is
 
    procedure Modify_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango.Font.Pango_Font_Description)
+       Font_Desc : Pango.Font.Pango_Font_Description)
    is
       procedure Internal
          (Widget    : System.Address;
-          Font_Desc : in out Pango.Font.Pango_Font_Description);
+          Font_Desc : Pango.Font.Pango_Font_Description);
       pragma Import (C, Internal, "gtk_widget_modify_font");
    begin
       Internal (Get_Object (Widget), Font_Desc);
@@ -2006,11 +2006,11 @@ package body Gtk.Widget is
 
    procedure Override_Font
       (Widget    : not null access Gtk_Widget_Record;
-       Font_Desc : in out Pango.Font.Pango_Font_Description)
+       Font_Desc : Pango.Font.Pango_Font_Description)
    is
       procedure Internal
          (Widget    : System.Address;
-          Font_Desc : in out Pango.Font.Pango_Font_Description);
+          Font_Desc : Pango.Font.Pango_Font_Description);
       pragma Import (C, Internal, "gtk_widget_override_font");
    begin
       Internal (Get_Object (Widget), Font_Desc);

@@ -102,7 +102,7 @@ package body Gtkada.Dialogs is
 
    begin
       if Parent = null
-         or else not Realized_Is_Set (Parent)
+         or else not Get_Realized (Parent)
       then
          Set_Position (Dialog, Win_Pos_Mouse);
 

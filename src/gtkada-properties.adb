@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 with Gdk.Color;                use Gdk.Color;
 with Gdk.Event;                use Gdk.Event;
 with Gdk.Main;                 use Gdk.Main;
@@ -76,7 +77,7 @@ package body Gtkada.Properties is
 
    type Property_Type is (Property_Standard, Property_Child, Property_Style);
 
-   procedure Editor_Delete (Editor : access GObject_Record'Class);
+   procedure Editor_Delete (Editor : not null access GObject_Record'Class);
    --  Called when the properties editor Editor is destroyed
 
    procedure Gtk_New (Editor : out Properties_Editor);
@@ -90,9 +91,9 @@ package body Gtkada.Properties is
      (Container : access Gtk_Container_Record'Class);
    --  Remove all children from a container
 
-   procedure Pick_Widget (Editor : access Gtk_Widget_Record'Class);
+   procedure Pick_Widget (Editor : not null access Gtk_Widget_Record'Class);
    function Widget_Picked
-     (Editor : access Gtk_Widget_Record'Class) return Boolean;
+     (Editor : not null access Gtk_Widget_Record'Class) return Boolean;
    --  Start picking a new object to examine. When one is clicked on,
    --  Widget_Picked is called.
 
@@ -739,7 +740,7 @@ package body Gtkada.Properties is
    -- Editor_Delete --
    -------------------
 
-   procedure Editor_Delete (Editor : access GObject_Record'Class) is
+   procedure Editor_Delete (Editor : not null access GObject_Record'Class) is
       Ed : constant Properties_Editor := Properties_Editor (Editor);
    begin
       if Global_Editor = Ed then
@@ -752,7 +753,7 @@ package body Gtkada.Properties is
    -------------------
 
    function Widget_Picked
-     (Editor : access Gtk_Widget_Record'Class) return Boolean
+     (Editor : not null access Gtk_Widget_Record'Class) return Boolean
    is
       Ed  : constant Properties_Editor := Properties_Editor (Editor);
       W   : Gtk_Widget;
@@ -775,7 +776,7 @@ package body Gtkada.Properties is
    -- Pick_Widget --
    -----------------
 
-   procedure Pick_Widget (Editor : access Gtk_Widget_Record'Class) is
+   procedure Pick_Widget (Editor : not null access Gtk_Widget_Record'Class) is
       Ed  : constant Properties_Editor := Properties_Editor (Editor);
       Tmp : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
@@ -830,7 +831,7 @@ package body Gtkada.Properties is
       Add_With_Viewport (Scrolled, Editor.Table);
       Set_Col_Spacing  (Editor.Table, 0, 5);
       Set_Row_Spacings (Editor.Table, 0);
-      Modify_Font (Editor.Table, From_String ("Sans 8"));
+      Editor.Table.Override_Font (From_String ("Sans 8"));
 
       --  Page 2: Child properties
 
@@ -1012,7 +1013,7 @@ package body Gtkada.Properties is
    is
       T : GType;
    begin
-      if not In_Destruction_Is_Set (Editor) then
+      if not Editor.In_Destruction then
          if Editor.Object /= null then
             Weak_Unref
               (Editor.Object, Object_Destroyed'Access, Get_Object (Editor));
@@ -1067,22 +1068,6 @@ package body Gtkada.Properties is
                   T := Parent (T);
                end loop;
             end if;
-
-            --  Show the style properties
-
-            if Object.all in Gtk_Widget_Record'Class then
-               T := Get_Type (Object);
-               while T /= GType_Invalid loop
-                  Show_Properties
-                    (Editor        => Editor,
-                     Table         => Editor.Style_Table,
-                     Prop_Type     => Property_Style,
-                     T             => T,
-                     Properties    => Class_List_Style_Properties
-                       (GObject_Class (Class_Peek (T))));
-                  T := Parent (T);
-               end loop;
-            end if;
          end if;
 
          Show_All (Editor);
@@ -1121,16 +1106,18 @@ package body Gtkada.Properties is
       X0, Y0, X1, Y1, X2, Y2 : Gint;
       Tmp, Children : Widget_List.Glist;
       Child : Gtk_Widget;
+      Alloc : Gtk_Allocation;
    begin
-      if Visible_Is_Set (Top)
+      if Top.Get_Visible
         and then Get_Child_Visible (Top)
       then
          if not Is_A (Get_Type (Top), Gtk.Container.Get_Type) then
             return Gtk_Widget (Top);
          else
-            if No_Window_Is_Set (Top) then
-               X0 := Get_Allocation_X (Top);
-               Y0 := Get_Allocation_Y (Top);
+            if not Top.Get_Has_Window then
+               Top.Get_Allocation (Alloc);
+               X0 := Alloc.X;
+               Y0 := Alloc.Y;
             else
                X0 := 0;
                Y0 := 0;
@@ -1143,13 +1130,14 @@ package body Gtkada.Properties is
                Tmp := Next (Tmp);
 
                if Child /= null
-                 and then Visible_Is_Set (Child)
+                 and then Child.Get_Visible
                  and then Get_Child_Visible (Child)
                then
-                  X1 := Get_Allocation_X (Child) - X0;
-                  X2 := X1 + Get_Allocation_Width (Child);
-                  Y1 := Get_Allocation_Y (Child) - Y0;
-                  Y2 := Y1 + Get_Allocation_Height (Child);
+                  Child.Get_Allocation (Alloc);
+                  X1 := Alloc.X - X0;
+                  X2 := X1 + Alloc.Width;
+                  Y1 := Alloc.Y - Y0;
+                  Y2 := Y1 + Alloc.Height;
                   if X1 <= X and then X <= X2
                     and then Y1 <= Y and then Y <= Y2
                   then
