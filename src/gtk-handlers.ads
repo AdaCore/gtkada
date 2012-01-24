@@ -166,6 +166,7 @@ pragma Ada_05;
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
+with Cairo;
 with Glib.Values;
 with Gdk.Event;
 with Glib.Object;
@@ -320,12 +321,19 @@ package Gtk.Handlers is
         (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
+      package Context_Marshaller is new Marshallers.Generic_Marshaller
+        (Cairo.Cairo_Context, Cairo.Get_Context);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
          return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Context_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Context_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Guint_Marshaller.Handler)

@@ -70,6 +70,7 @@ with System;
 with Interfaces.C.Strings;
 
 with Glib; use Glib;
+with Glib.Values;
 
 package Cairo is
 
@@ -83,6 +84,10 @@ package Cairo is
    --
    --  Memory management of Cairo_Context is done with subprograms
    --  Reference and Destroy, see below.
+
+   function Get_Context
+      (Value : Glib.Values.GValue) return Cairo_Context;
+   --  Support for callbacks that receive a Cairo_Context as parameter.
 
    type Cairo_Surface is private;
    --  A Cairo_Surface represents an image, either as the destination

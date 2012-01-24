@@ -261,7 +261,8 @@ package body Gtkada.MDI is
    --  Called when the Menu associated with a MDI is destroyed
 
    function Draw_Child
-     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget : not null access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
       return Boolean;
    --  Draw the child (and the title bar)
 
@@ -1665,16 +1666,14 @@ package body Gtkada.MDI is
    ----------------
 
    function Draw_Child
-     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget : not null access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
       return Boolean
    is
-      pragma Unreferenced (Event);
-
       Child            : constant MDI_Child := MDI_Child (Widget);
       Border_Thickness : constant Gint :=
                            Gint (Get_Border_Width (Child.Main_Box));
       Color : Gdk_Color := Child.MDI.Title_Bar_Color;
-      Cr    : Cairo_Context;
       W, H  : Gint;
       X     : Gint := 1;
    begin
@@ -1690,8 +1689,6 @@ package body Gtkada.MDI is
       Update_Tab_Color (Child);
 
       if Child.Title_Box.Get_Realized then
-         Cr := Create (Get_Window (Child.Title_Box));
-
          Set_Source_Color (Cr, Color);
          Cairo.Rectangle
            (Cr,
@@ -1739,8 +1736,6 @@ package body Gtkada.MDI is
                Width       => Get_Allocated_Width (Child),
                Height      => Get_Allocated_Height (Child));
          end if;
-
-         Destroy (Cr);
       end if;
 
       return False;
@@ -2486,7 +2481,7 @@ package body Gtkada.MDI is
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
       Return_Callback.Object_Connect
-        (Child.Title_Box, Signal_Expose_Event,
+        (Child.Title_Box, Signal_Draw,
          Return_Callback.To_Marshaller (Draw_Child'Access),
          Slot_Object => Child);
 
@@ -3126,23 +3121,7 @@ package body Gtkada.MDI is
       Color : Gdk_Color := Get_Bg (Get_Default_Style, State_Normal);
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
-
-      function Color_Equal (A, B : Gdk_Color) return Boolean;
-      --  Coloc comparison not taking into account the Pixel value.
-
-      -----------------
-      -- Color_Equal --
-      -----------------
-
-      function Color_Equal (A, B : Gdk_Color) return Boolean is
-      begin
-         return Red (A) = Red (B)
-           and then Green (A) = Green (B)
-           and then Blue (A) = Blue (B);
-      end Color_Equal;
-
-      RGBA : Gdk_RGBA;
-
+      RGBA  : Gdk_RGBA;
    begin
       if Note /= null then
          if MDI_Child (Child) = Child.MDI.Focus_Child then

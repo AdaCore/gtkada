@@ -23,6 +23,16 @@
 
 package body Cairo is
 
+   -----------------
+   -- Get_Context --
+   -----------------
+
+   function Get_Context
+      (Value : Glib.Values.GValue) return Cairo_Context is
+   begin
+      return Cairo_Context (Glib.Values.Get_Address (Value));
+   end Get_Context;
+
    --------------
    -- Set_Dash --
    --------------

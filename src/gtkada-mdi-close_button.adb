@@ -23,7 +23,7 @@
 
 pragma Ada_05;
 with Ada.Numerics;    use Ada.Numerics;
-with Cairo.Pattern;   use Cairo.Pattern;
+with Cairo.Pattern;   use Cairo, Cairo.Pattern;
 with Glib;            use Glib;
 
 separate (Gtkada.MDI)
@@ -38,7 +38,8 @@ package body Close_Button is
       Value : Gdouble) return Cairo_Color;
 
    function On_Draw
-     (Widget : not null access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget  : not null access Gtk_Widget_Record'Class;
+      Cr      : Cairo.Cairo_Context)
       return Boolean;
    --  draws the close button upon expose event
 
@@ -126,7 +127,7 @@ package body Close_Button is
            Button_Press_Mask or Button_Release_Mask or
            Enter_Notify_Mask or Leave_Notify_Mask);
       Return_Callback.Connect
-        (Button, Signal_Expose_Event,
+        (Button, Signal_Draw,
          Return_Callback.To_Marshaller (On_Draw'Access));
       Return_Callback.Connect
         (Button, Signal_Enter_Notify_Event,
@@ -155,14 +156,12 @@ package body Close_Button is
    -------------
 
    function On_Draw
-     (Widget : not null access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget : not null access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
       return Boolean
    is
-      pragma Unreferenced (Event);
-
       Button  : constant Gtkada_MDI_Close_Button :=
                   Gtkada_MDI_Close_Button (Widget);
-      Cr      : Cairo_Context;
       Alpha   : Gdouble;
       X, Y    : Gint;
       Width   : Gint;
@@ -208,8 +207,6 @@ package body Close_Button is
 
          X := X + Width - Gint (dW);
          Y := Y + (Height - Gint (dW)) / 2;
-
-         Cr := Create (Get_Window (Button));
 
          Cairo.Set_Line_Width (Cr, 1.0);
          Cairo.Translate (Cr, Gdouble (X), Gdouble (Y));
@@ -279,8 +276,6 @@ package body Close_Button is
          Cairo.Set_Source_Rgba (Cr, Lo.R, Lo.G, Lo.B, Alpha);
          Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 1.0, 2.5);
          Cairo.Stroke (Cr);
-
-         Cairo.Destroy (Cr);
       end if;
 
       return True;
