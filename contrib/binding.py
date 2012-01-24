@@ -388,7 +388,11 @@ class SubprogramProfile(object):
                     name="Acc_%s" % p.name,
                     aliased=True,
                     type=t))
-                code.append("%s := Acc_%s;" % (p.name, p.name))
+
+                if p.mode == "access":
+                    code.append("%s.all := Acc_%s;" % (p.name, p.name))
+                else:
+                    code.append("%s := Acc_%s;" % (p.name, p.name))
 
             result.append(Parameter(name=n, mode=m, type=t))
 

@@ -229,7 +229,7 @@ naming.type_exceptions = {
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
     "cairo_t":               Proxy("Cairo.Cairo_Context"),
-    "cairo_region_t":        Proxy("Cairo.Region.Cairo_Region"),
+    "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),

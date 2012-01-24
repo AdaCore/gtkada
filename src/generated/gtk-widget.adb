@@ -24,6 +24,7 @@
 pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -1715,15 +1716,38 @@ package body Gtk.Widget is
 
    procedure Input_Shape_Combine_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region)
+       Region : Cairo.Region.Cairo_Region)
    is
       procedure Internal
          (Widget : System.Address;
-          Region : in out Cairo.Region.Cairo_Region);
+          Region : Cairo.Region.Cairo_Region);
       pragma Import (C, Internal, "gtk_widget_input_shape_combine_region");
    begin
       Internal (Get_Object (Widget), Region);
    end Input_Shape_Combine_Region;
+
+   ---------------
+   -- Intersect --
+   ---------------
+
+   function Intersect
+      (Widget       : not null access Gtk_Widget_Record;
+       Area         : Gdk.Rectangle.Gdk_Rectangle;
+       Intersection : access Gdk.Rectangle.Gdk_Rectangle) return Boolean
+   is
+      function Internal
+         (Widget           : System.Address;
+          Area             : Gdk.Rectangle.Gdk_Rectangle;
+          Acc_Intersection : access Gdk.Rectangle.Gdk_Rectangle)
+          return Integer;
+      pragma Import (C, Internal, "gtk_widget_intersect");
+      Acc_Intersection : aliased Gdk.Rectangle.Gdk_Rectangle;
+      Tmp_Return       : Integer;
+   begin
+      Tmp_Return := Internal (Get_Object (Widget), Area, Acc_Intersection'Access);
+      Intersection.all := Acc_Intersection;
+      return Boolean'Val (Tmp_Return);
+   end Intersect;
 
    -----------------
    -- Is_Ancestor --
@@ -2112,11 +2136,11 @@ package body Gtk.Widget is
 
    procedure Queue_Draw_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region)
+       Region : Cairo.Region.Cairo_Region)
    is
       procedure Internal
          (Widget : System.Address;
-          Region : in out Cairo.Region.Cairo_Region);
+          Region : Cairo.Region.Cairo_Region);
       pragma Import (C, Internal, "gtk_widget_queue_draw_region");
    begin
       Internal (Get_Object (Widget), Region);
@@ -2156,6 +2180,23 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Realize;
+
+   ----------------------
+   -- Region_Intersect --
+   ----------------------
+
+   function Region_Intersect
+      (Widget : not null access Gtk_Widget_Record;
+       Region : Cairo.Region.Cairo_Region) return Cairo.Region.Cairo_Region
+   is
+      function Internal
+         (Widget : System.Address;
+          Region : Cairo.Region.Cairo_Region)
+          return Cairo.Region.Cairo_Region;
+      pragma Import (C, Internal, "gtk_widget_region_intersect");
+   begin
+      return Internal (Get_Object (Widget), Region);
+   end Region_Intersect;
 
    ------------------------
    -- Remove_Accelerator --
@@ -3004,11 +3045,11 @@ package body Gtk.Widget is
 
    procedure Shape_Combine_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region)
+       Region : Cairo.Region.Cairo_Region)
    is
       procedure Internal
          (Widget : System.Address;
-          Region : in out Cairo.Region.Cairo_Region);
+          Region : Cairo.Region.Cairo_Region);
       pragma Import (C, Internal, "gtk_widget_shape_combine_region");
    begin
       Internal (Get_Object (Widget), Region);

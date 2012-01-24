@@ -1684,12 +1684,23 @@ package Gtk.Widget is
 
    procedure Input_Shape_Combine_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region);
+       Region : Cairo.Region.Cairo_Region);
    --  Sets an input shape for this widget's GDK window. This allows for
    --  windows which react to mouse click in a nonrectangular region, see
    --  gdk_window_input_shape_combine_region for more information.
    --  Since: gtk+ 3.0
    --  "region": shape to be added, or null to remove an existing shape
+
+   function Intersect
+      (Widget       : not null access Gtk_Widget_Record;
+       Area         : Gdk.Rectangle.Gdk_Rectangle;
+       Intersection : access Gdk.Rectangle.Gdk_Rectangle) return Boolean;
+   --  Computes the intersection of a Widget's area and Area, storing the
+   --  intersection in Intersection, and returns True if there was an
+   --  intersection. Intersection may be null if you're only interested in
+   --  whether there was an intersection.
+   --  "area": a rectangle
+   --  "intersection": rectangle to store intersection of Widget and Area
 
    function Is_Ancestor
       (Widget   : not null access Gtk_Widget_Record;
@@ -2013,7 +2024,7 @@ package Gtk.Widget is
 
    procedure Queue_Draw_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region);
+       Region : Cairo.Region.Cairo_Region);
    --  Invalidates the rectangular area of Widget defined by Region by calling
    --  gdk_window_invalidate_region on the widget's window and all its child
    --  windows. Once the main loop becomes idle (after the current batch of
@@ -2058,6 +2069,20 @@ package Gtk.Widget is
    --  widget is realized automatically, such as Gtk.Widget.Gtk_Widget::draw.
    --  Or simply g_signal_connect () to the Gtk.Widget.Gtk_Widget::realize
    --  signal.
+
+   function Region_Intersect
+      (Widget : not null access Gtk_Widget_Record;
+       Region : Cairo.Region.Cairo_Region) return Cairo.Region.Cairo_Region;
+   --  Computes the intersection of a Widget's area and Region, returning the
+   --  intersection. The result may be empty, use cairo_region_is_empty to
+   --  check.
+   --  and Region. The coordinates of the return value are relative to
+   --  Widget->window for NO_WINDOW widgets, and relative to the parent window
+   --  of Widget->window for widgets with their own window.
+   --  "region": a cairo_region_t, in the same coordinate system as
+   --  Widget->allocation. That is, relative to Widget->window for NO_WINDOW
+   --  widgets; relative to the parent window of Widget->window for widgets
+   --  with their own window.
 
    function Remove_Accelerator
       (Widget      : not null access Gtk_Widget_Record;
@@ -2224,7 +2249,7 @@ package Gtk.Widget is
 
    procedure Shape_Combine_Region
       (Widget : not null access Gtk_Widget_Record;
-       Region : in out Cairo.Region.Cairo_Region);
+       Region : Cairo.Region.Cairo_Region);
    --  Sets a shape for this widget's GDK window. This allows for transparent
    --  windows etc., see gdk_window_shape_combine_region for more information.
    --  Since: gtk+ 3.0

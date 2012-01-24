@@ -2317,6 +2317,7 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get_valist" bind="False"/><!-- varargs -->
+     <method id="gtk_widget_list_accel_closures" bind="False"/><!-- We do not expose Closures-->
      <method id="gtk_widget_get_style_context" bind="False"/><!-- Needs Gtk.Style_Context-->
      <method id="gtk_widget_get_accessible" bind="False"/> <!-- Requires ATK -->
      <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
@@ -2363,6 +2364,9 @@ While looking up a recently used file is as simple as using:
      </method>
      <method id="gtk_widget_create_pango_layout">
        <parameter name="Text" allow-none="1"/>
+     </method>
+     <method id="gtk_widget_intersect">
+       <parameter name="Intersection" direction="access"/>
      </method>
      <method id="gtk_widget_destroy">
        <body>
@@ -2416,6 +2420,7 @@ While looking up a recently used file is as simple as using:
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
    --  Convert values received as callback parameters
        </spec>
+       <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
        <body>
    function Get_Allocation
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access
@@ -2444,11 +2449,6 @@ While looking up a recently used file is as simple as using:
      </extra>
 
      <!-- Need GtkAda-custom binding -->
-     <method id="gtk_widget_intersect" bind="False"/><!-- Need out parameter-->
-     <method id="gtk_widget_list_accel_closures" bind="False"/>
-     <method id="gtk_widget_region_intersect" bind="False"> <!-- Wrong mode -->
-       <parameter name="Region" direction="in"/>
-     </method>
      <method id="gtk_widget_translate_coordinates" bind="False"/><!-- function with out param -->
    </package>
 
