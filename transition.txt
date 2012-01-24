@@ -718,6 +718,10 @@ these special-purpose subprograms have been removed without replacement.
 Get_Gravity, Set_Gravity: these have been removed, use the property
 Gravity_Property instead.
 
+Resize no longer accepts parameters set to -1 to indicate the preferred
+size of the window. This was a GtkAda extension, which can be achieved
+using Get_Preferred_Size and passing the result to Size.
+
 Gnome.App_Bar
 =============
 

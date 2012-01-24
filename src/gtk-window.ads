@@ -639,7 +639,7 @@ package Gtk.Window is
 
    procedure Resize
      (Window : access Gtk_Window_Record;
-      Width, Height : Gint);
+      Width, Height : Guint);
    --  Resize the window as if the user had done so, obeying geometry
    --  constraints. The default geometry constraint is that windows may
    --  not be smaller than their size request; to override this
@@ -649,9 +649,7 @@ package Gtk.Window is
    --  If Resize is called before showing a window for the -- first time, it
    --  overrides any default size set with -- Set_Default_Size.
    --
-   --  Windows may not be resized smaller than 1 by 1 pixels. However, as a
-   --  special case, if both Width and Height are set to -1, the best requested
-   --  size is recomputed for the window, and used.
+   --  Windows may not be resized smaller than 1 by 1 pixels.
 
    procedure Get_Size
      (Window        : access Gtk_Window_Record;
