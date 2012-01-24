@@ -247,13 +247,10 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
-with Glib.Types;              use Glib.Types;
 with Glib.Values;             use Glib.Values;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
-with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Rc;                  use Gtk.Rc;
-with Gtk.Selection;           use Gtk.Selection;
 with Gtk.Style;               use Gtk.Style;
 with Pango.Context;           use Pango.Context;
 with Pango.Font;              use Pango.Font;
@@ -295,7 +292,6 @@ package Gtk.Widget is
    --  information.
 
    type Gtk_Widget_Path is new Glib.C_Proxy;
-   pragma Convention (C, Gtk_Widget_Path);
    --  GtkWidgetPath is a boxed type that represents a widget hierarchy from
    --  the topmost widget, typically a toplevel, to any child. This widget path
    --  abstraction is used in Gtk.Style_Context.Gtk_Style_Context on behalf of
@@ -507,41 +503,6 @@ package Gtk.Widget is
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
 
-   function Drag_Begin
-      (Widget  : not null access Gtk_Widget_Record;
-       Targets : Gtk.Selection.Target_List;
-       Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
-       Button  : Gint;
-       Event   : Gdk.Event.Gdk_Event) return Gdk.Drag_Contexts.Drag_Context;
-   --  Initiates a drag on the source side. The function only needs to be used
-   --  when the application is starting drags itself, and is not needed when
-   --  gtk_drag_source_set is used.
-   --  The Event is used to retrieve the timestamp that will be used internally
-   --  to grab the pointer. If Event is NULL, then GDK_CURRENT_TIME will be
-   --  used. However, you should try to pass a real event in all cases, since
-   --  that can be used by GTK+ to get information about the start position of
-   --  the drag, for example if the Event is a GDK_MOTION_NOTIFY.
-   --  Generally there are three cases when you want to start a drag by hand by
-   --  calling this function:
-   --  1. During a Gtk.Widget.Gtk_Widget::button-press-event handler, if you
-   --  want to start a drag immediately when the user presses the mouse button.
-   --  Pass the Event that you have in your
-   --  Gtk.Widget.Gtk_Widget::button-press-event handler.
-   --  2. During a Gtk.Widget.Gtk_Widget::motion-notify-event handler, if you
-   --  want to start a drag when the mouse moves past a certain threshold
-   --  distance after a button-press. Pass the Event that you have in your
-   --  Gtk.Widget.Gtk_Widget::motion-notify-event handler.
-   --  3. During a timeout handler, if you want to start a drag after the mouse
-   --  button is held down for some time. Try to save the last event that you
-   --  got from the mouse, using gdk_event_copy, and pass it to this function
-   --  (remember to free the event with gdk_event_free when you are done). If
-   --  you can really not pass a real event, pass NULL instead.
-   --  "targets": The targets (data formats) in which the source can provide
-   --  the data.
-   --  "actions": A bitmask of the allowed drag actions for this drag.
-   --  "button": The button the user clicked to start the drag.
-   --  "event": The event that triggered the start of the drag.
-
    function Drag_Check_Threshold
       (Widget    : not null access Gtk_Widget_Record;
        Start_X   : Gint;
@@ -561,7 +522,7 @@ package Gtk.Widget is
    --  Add the image targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
    --  another value, use gtk_target_list_add_image_targets and
-   --  Gtk.Widget.Drag_Dest_Set_Target_List.
+   --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
 
    procedure Drag_Dest_Add_Text_Targets
@@ -569,7 +530,7 @@ package Gtk.Widget is
    --  Add the text targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
    --  another value, use gtk_target_list_add_text_targets and
-   --  Gtk.Widget.Drag_Dest_Set_Target_List.
+   --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
 
    procedure Drag_Dest_Add_Uri_Targets
@@ -577,35 +538,8 @@ package Gtk.Widget is
    --  Add the URI targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
    --  another value, use gtk_target_list_add_uri_targets and
-   --  Gtk.Widget.Drag_Dest_Set_Target_List.
+   --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
-
-   function Drag_Dest_Find_Target
-      (Widget      : not null access Gtk_Widget_Record;
-       Context     : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
-   --  Looks for a match between the supported targets of Context and the
-   --  Dest_Target_List, returning the first matching target, otherwise
-   --  returning GDK_NONE. Dest_Target_List should usually be the return value
-   --  from Gtk.Widget.Drag_Dest_Get_Target_List, but some widgets may have
-   --  different valid targets for different parts of the widget; in that case,
-   --  they will have to implement a drag_motion handler that passes the
-   --  correct target list to this function.
-   --  and the dest can accept, or GDK_NONE
-   --  "context": drag context
-   --  "target_list": list of droppable targets, or null to use
-   --  gtk_drag_dest_get_target_list (Widget).
-
-   function Drag_Dest_Get_Target_List
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Selection.Target_List;
-   procedure Drag_Dest_Set_Target_List
-      (Widget      : not null access Gtk_Widget_Record;
-       Target_List : Gtk.Selection.Target_List);
-   --  Sets the target types that this widget can accept from drag-and-drop.
-   --  The widget must first be made into a drag destination with
-   --  gtk_drag_dest_set.
-   --  "target_list": list of droppable targets, or null for none
 
    function Drag_Dest_Get_Track_Motion
       (Widget : not null access Gtk_Widget_Record) return Boolean;
@@ -664,7 +598,7 @@ package Gtk.Widget is
    --  Add the writable image targets supported by Gtk_Selection to the target
    --  list of the drag source. The targets are added with Info = 0. If you
    --  need another value, use gtk_target_list_add_image_targets and
-   --  Gtk.Widget.Drag_Source_Set_Target_List.
+   --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
    procedure Drag_Source_Add_Text_Targets
@@ -672,7 +606,7 @@ package Gtk.Widget is
    --  Add the text targets supported by Gtk_Selection to the target list of
    --  the drag source. The targets are added with Info = 0. If you need
    --  another value, use gtk_target_list_add_text_targets and
-   --  Gtk.Widget.Drag_Source_Set_Target_List.
+   --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
    procedure Drag_Source_Add_Uri_Targets
@@ -680,19 +614,8 @@ package Gtk.Widget is
    --  Add the URI targets supported by Gtk_Selection to the target list of
    --  the drag source. The targets are added with Info = 0. If you need
    --  another value, use gtk_target_list_add_uri_targets and
-   --  Gtk.Widget.Drag_Source_Set_Target_List.
+   --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
-
-   function Drag_Source_Get_Target_List
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Selection.Target_List;
-   procedure Drag_Source_Set_Target_List
-      (Widget      : not null access Gtk_Widget_Record;
-       Target_List : Gtk.Selection.Target_List);
-   --  Changes the target types that this widget offers for drag-and-drop. The
-   --  widget must first be made into a drag source with gtk_drag_source_set.
-   --  Since: gtk+ 2.4
-   --  "target_list": list of draggable targets, or null for none
 
    procedure Drag_Source_Set_Icon_Gicon
       (Widget : not null access Gtk_Widget_Record;
@@ -2289,31 +2212,6 @@ package Gtk.Widget is
    --  gtk_widget_pop_composite_child (); gtk_widget_set_parent
    --  (scrolled_window->hscrollbar, GTK_WIDGET (scrolled_window));
    --  g_object_ref (scrolled_window->hscrollbar); ]|
-
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Widget_Record, Gtk_Widget);
-   function "+"
-     (Widget : access Gtk_Widget_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Widget
-   renames Implements_Buildable.To_Object;
 
    ----------------
    -- Properties --

@@ -1374,8 +1374,7 @@ See Glib.Properties for more information on properties)""")
                 + "\nend record;\npragma Convention (C, %s);\n" % base)
         else:
             section.add(
-                "\ntype %s is new Glib.C_Proxy;\n" % base
-                + "pragma Convention (C, %s);\n" % base)
+                "\ntype %s is new Glib.C_Proxy;\n" % base)
 
         section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
@@ -1609,7 +1608,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._globals()
         self._fields()
 
-        if not into:
+        if not into and self.name != "Gtk.Widget":
             self._implements()
         self._properties()
         self._signals()

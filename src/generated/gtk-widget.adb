@@ -268,29 +268,6 @@ package body Gtk.Widget is
       return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Device)));
    end Device_Is_Shadowed;
 
-   ----------------
-   -- Drag_Begin --
-   ----------------
-
-   function Drag_Begin
-      (Widget  : not null access Gtk_Widget_Record;
-       Targets : Gtk.Selection.Target_List;
-       Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
-       Button  : Gint;
-       Event   : Gdk.Event.Gdk_Event) return Gdk.Drag_Contexts.Drag_Context
-   is
-      function Internal
-         (Widget  : System.Address;
-          Targets : Gtk.Selection.Target_List;
-          Actions : Integer;
-          Button  : Gint;
-          Event   : Gdk.Event.Gdk_Event) return System.Address;
-      pragma Import (C, Internal, "gtk_drag_begin");
-      Stub_Drag_Context : Gdk.Drag_Contexts.Drag_Context_Record;
-   begin
-      return Gdk.Drag_Contexts.Drag_Context (Get_User_Data (Internal (Get_Object (Widget), Targets, Gdk.Drag_Contexts.Gdk_Drag_Action'Pos (Actions), Button, Event), Stub_Drag_Context));
-   end Drag_Begin;
-
    --------------------------
    -- Drag_Check_Threshold --
    --------------------------
@@ -352,39 +329,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Drag_Dest_Add_Uri_Targets;
 
-   ---------------------------
-   -- Drag_Dest_Find_Target --
-   ---------------------------
-
-   function Drag_Dest_Find_Target
-      (Widget      : not null access Gtk_Widget_Record;
-       Context     : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-       Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
-   is
-      function Internal
-         (Widget      : System.Address;
-          Context     : System.Address;
-          Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
-      pragma Import (C, Internal, "gtk_drag_dest_find_target");
-   begin
-      return Internal (Get_Object (Widget), Get_Object (Context), Target_List);
-   end Drag_Dest_Find_Target;
-
-   -------------------------------
-   -- Drag_Dest_Get_Target_List --
-   -------------------------------
-
-   function Drag_Dest_Get_Target_List
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Selection.Target_List
-   is
-      function Internal
-         (Widget : System.Address) return Gtk.Selection.Target_List;
-      pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
-   begin
-      return Internal (Get_Object (Widget));
-   end Drag_Dest_Get_Target_List;
-
    --------------------------------
    -- Drag_Dest_Get_Track_Motion --
    --------------------------------
@@ -417,22 +361,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Proxy_Window, Gdk.Drag_Contexts.Gdk_Drag_Protocol'Pos (Protocol), Boolean'Pos (Use_Coordinates));
    end Drag_Dest_Set_Proxy;
-
-   -------------------------------
-   -- Drag_Dest_Set_Target_List --
-   -------------------------------
-
-   procedure Drag_Dest_Set_Target_List
-      (Widget      : not null access Gtk_Widget_Record;
-       Target_List : Gtk.Selection.Target_List)
-   is
-      procedure Internal
-         (Widget      : System.Address;
-          Target_List : Gtk.Selection.Target_List);
-      pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
-   begin
-      Internal (Get_Object (Widget), Target_List);
-   end Drag_Dest_Set_Target_List;
 
    --------------------------------
    -- Drag_Dest_Set_Track_Motion --
@@ -529,21 +457,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Uri_Targets;
 
-   ---------------------------------
-   -- Drag_Source_Get_Target_List --
-   ---------------------------------
-
-   function Drag_Source_Get_Target_List
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Selection.Target_List
-   is
-      function Internal
-         (Widget : System.Address) return Gtk.Selection.Target_List;
-      pragma Import (C, Internal, "gtk_drag_source_get_target_list");
-   begin
-      return Internal (Get_Object (Widget));
-   end Drag_Source_Get_Target_List;
-
    --------------------------------
    -- Drag_Source_Set_Icon_Gicon --
    --------------------------------
@@ -609,22 +522,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
    end Drag_Source_Set_Icon_Stock;
-
-   ---------------------------------
-   -- Drag_Source_Set_Target_List --
-   ---------------------------------
-
-   procedure Drag_Source_Set_Target_List
-      (Widget      : not null access Gtk_Widget_Record;
-       Target_List : Gtk.Selection.Target_List)
-   is
-      procedure Internal
-         (Widget      : System.Address;
-          Target_List : Gtk.Selection.Target_List);
-      pragma Import (C, Internal, "gtk_drag_source_set_target_list");
-   begin
-      Internal (Get_Object (Widget), Target_List);
-   end Drag_Source_Set_Target_List;
 
    -----------------------
    -- Drag_Source_Unset --
