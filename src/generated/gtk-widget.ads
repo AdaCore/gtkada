@@ -480,6 +480,20 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
    --  "text": text to set on the layout (can be null)
 
+   procedure Destroy (Widget : not null access Gtk_Widget_Record);
+   --  Destroys a widget.
+   --  When a widget is destroyed, it will break any references it holds to
+   --  other objects. If the widget is inside a container, the widget will be
+   --  removed from the container. If the widget is a toplevel (derived from
+   --  Gtk.Window.Gtk_Window), it will be removed from the list of toplevels,
+   --  and the reference GTK+ holds to it will be removed. Removing a widget
+   --  from its container or the list of toplevels results in the widget being
+   --  finalized, unless you've added additional references to the widget with
+   --  g_object_ref.
+   --  In most cases, only toplevel widgets (windows) require explicit
+   --  destruction, because when you destroy a toplevel its children will be
+   --  destroyed as well.
+
    procedure Destroyed
       (Widget         : not null access Gtk_Widget_Record;
        Widget_Pointer : not null access Gtk_Widget_Record'Class);
@@ -1449,6 +1463,19 @@ package Gtk.Widget is
    --  Since: gtk+ 2.12
    --  "markup": the contents of the tooltip for Widget, or null
 
+   function Get_Tooltip_Text
+      (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   procedure Set_Tooltip_Text
+      (Widget : not null access Gtk_Widget_Record;
+       Text   : UTF8_String);
+   --  Sets Text as the contents of the tooltip. This function will take care
+   --  of setting Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default
+   --  handler for the Gtk.Widget.Gtk_Widget::query-tooltip signal.
+   --  See also the Gtk.Widget.Gtk_Widget:tooltip-text property and
+   --  Gtk.Tooltip.Set_Text.
+   --  Since: gtk+ 2.12
+   --  "text": the contents of the tooltip for Widget
+
    function Get_Tooltip_Window
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    procedure Set_Tooltip_Window
@@ -2197,17 +2224,6 @@ package Gtk.Widget is
    --  "redraw_on_allocate": if True, the entire widget will be redrawn when
    --  it is allocated to a new size. Otherwise, only the new portion of the
    --  widget will be redrawn.
-
-   procedure Set_Tooltip_Text
-      (Widget : not null access Gtk_Widget_Record;
-       Text   : UTF8_String);
-   --  Sets Text as the contents of the tooltip. This function will take care
-   --  of setting Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default
-   --  handler for the Gtk.Widget.Gtk_Widget::query-tooltip signal.
-   --  See also the Gtk.Widget.Gtk_Widget:tooltip-text property and
-   --  Gtk.Tooltip.Set_Text.
-   --  Since: gtk+ 2.12
-   --  "text": the contents of the tooltip for Widget
 
    procedure Shape_Combine_Region
       (Widget : not null access Gtk_Widget_Record;

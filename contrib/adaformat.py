@@ -109,7 +109,7 @@ class CType(object):
 
         if self.allow_none and self.val_or_null:
             self.cparam = "System.Address"
-            return "%s (%%(var)s'Unchecked_Access)" % self.val_or_null
+            return "%s (%%(var)s'Address)" % self.val_or_null
         else:
             return "%(var)s"
 

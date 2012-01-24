@@ -43,7 +43,9 @@ package Gtkada.Bindings is
    generic
       type T is private;
       Null_T : T;
-   function Generic_To_Address_Or_Null (Val : access T) return System.Address;
+   function Generic_To_Address_Or_Null
+     (Val : System.Address) return System.Address;
+   --  Val should be an access to T
 
    function Gdk_Color_Or_Null is new Generic_To_Address_Or_Null
      (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color);

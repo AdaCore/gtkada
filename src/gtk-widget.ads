@@ -3,32 +3,6 @@ package Gtk.Widget is
    pragma Import (C, Requisition_Get_Type, "gtk_requisition_get_type");
    --  Return the internal type for a Gtk_Requisition
 
-   -------------------------
-   -- Widgets' life cycle --
-   -------------------------
-
-   procedure Destroy (Widget : access Gtk_Widget_Record);
-   --  Destroy the widget.
-   --  This emits a "destroy" signal, calls all your handlers, and then
-   --  unconnects them all. The object is then unref-ed, and if its reference
-   --  count goes down to 0, the memory associated with the object and its
-   --  user data is freed.
-   --  Note that when you destroy handlers are called, the user_data is still
-   --  available.
-   --
-   --  When a widget is destroyed, it will break any references it holds to
-   --  other objects. If the widget is inside a container, the widget will be
-   --  removed from the container. If the widget is a toplevel (derived from
-   --  Gtk_Window), it will be removed from the list of toplevels, and the
-   --  reference GTK+ holds to it will be removed. Removing widget from its
-   --  container or the list of toplevels results in the widget being
-   --  finalized, unless you've added additional references to the widget with
-   --  Ref.
-   --
-   --  In most cases, only toplevel widgets (windows) require explicit
-   --  destruction, because when you destroy a toplevel its children will be
-   --  destroyed as well.
-
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
    --  This function should be used as a callback to destroy a widget.
    --  All it does is call Destroy on its argument, but its profile is
@@ -51,20 +25,6 @@ package Gtk.Widget is
       --  </doc_ignore>
    end Realize_Handling;
 
-   -----------
-   -- Styles --
-   ------------
-
-   procedure Modify_Bg
-     (Widget     : access Gtk_Widget_Record;
-      State_Type : Enums.Gtk_State_Type;
-      Color      : Gdk.Color.Gdk_Color);
-   pragma Obsolescent (Modify_Bg);
-
-   -------------------
-   -- Widgets' tree --
-   -------------------
-
    procedure Translate_Coordinates
      (Src_Widget  : Gtk_Widget;
       Dest_Widget : Gtk_Widget;
@@ -81,10 +41,6 @@ package Gtk.Widget is
    --  Result is set to False if either widget was not realized, or there
    --  was no common ancestor. In this case, nothing is stored in Dest_X and
    --  Dest_Y. Otherwise True.
-
-   --------------------
-   -- Misc functions --
-   --------------------
 
    function Intersect
      (Widget       : access Gtk_Widget_Record;
@@ -105,15 +61,6 @@ package Gtk.Widget is
    --  Computes the intersection of a Widget's area and Region, returning
    --  the intersection. The result may be empty, use gdk.region.empty to
    --  check.
-
-   --------------
-   -- Tooltips --
-   --------------
-
-   function Get_Tooltip_Text
-     (Widget : access Gtk_Widget_Record) return UTF8_String;
-   function Get_Tooltip_Markup
-     (Widget : access Gtk_Widget_Record) return UTF8_String;
 
    --------------------------
    -- Creating new widgets --

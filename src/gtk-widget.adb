@@ -278,39 +278,4 @@ package body Gtk.Widget is
       end if;
    end Translate_Coordinates;
 
-   -------------
-   -- Destroy --
-   -------------
-
-   procedure Destroy (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_destroy");
-
-      procedure Unref_Internal (Widget : System.Address);
-      pragma Import (C, Unref_Internal, "g_object_unref");
-      --  External binding: g_object_unref
-
-      Ptr : constant System.Address := Get_Object (Widget);
-
-      use type System.Address;
-   begin
-      --  Keep a reference on the object, so that the Ada structure is
-      --  never automatically deleted when the C object is.
-      --  We can't reset the content of Widget to System.Null_Address before
-      --  calling the C function, because we want the user's destroy
-      --  callbacks to be called with the appropriate object.
-      Ref (Widget);
-      Internal (Ptr);
-
-      --  We then can make sure that the object won't be referenced any
-      --  more, (The Ada structure won't be free before the ref count goes
-      --  down to 0, and we don't want the user to use a deleted object...).
-      Set_Object (Widget, System.Null_Address);
-
-      --  Free the reference we had. In most cases, this results in the
-      --  object being freed. We can't use directly Unref, since the Ptr
-      --  field for Object is Null_Address.
-      Unref_Internal (Ptr);
-   end Destroy;
-
 end Gtk.Widget;

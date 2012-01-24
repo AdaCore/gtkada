@@ -236,6 +236,37 @@ package body Gtk.Widget is
       return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_Pango_Layout));
    end Create_Pango_Layout;
 
+   procedure Destroy (Widget : not null access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_destroy");
+
+      procedure Unref_Internal (Widget : System.Address);
+      pragma Import (C, Unref_Internal, "g_object_unref");
+      --  External binding: g_object_unref
+
+      Ptr : constant System.Address := Get_Object (Widget);
+
+      use type System.Address;
+   begin
+      --  Keep a reference on the object, so that the Ada structure is
+      --  never automatically deleted when the C object is.
+      --  We can't reset the content of Widget to System.Null_Address before
+      --  calling the C function, because we want the user's destroy
+      --  callbacks to be called with the appropriate object.
+      Ref (Widget);
+      Internal (Ptr);
+
+      --  We then can make sure that the object won't be referenced any
+      --  more, (The Ada structure won't be free before the ref count goes
+      --  down to 0, and we don't want the user to use a deleted object...).
+      Set_Object (Widget, System.Null_Address);
+
+      --  Free the reference we had. In most cases, this results in the
+      --  object being freed. We can't use directly Unref, since the Ptr
+      --  field for Object is Null_Address.
+      Unref_Internal (Ptr);
+   end Destroy;
+
    ---------------
    -- Destroyed --
    ---------------
@@ -1371,6 +1402,20 @@ package body Gtk.Widget is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
    end Get_Tooltip_Markup;
 
+   ----------------------
+   -- Get_Tooltip_Text --
+   ----------------------
+
+   function Get_Tooltip_Text
+      (Widget : not null access Gtk_Widget_Record) return UTF8_String
+   is
+      function Internal
+         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_tooltip_text");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+   end Get_Tooltip_Text;
+
    ------------------------
    -- Get_Tooltip_Window --
    ------------------------
@@ -1810,7 +1855,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_base");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Address));
    end Modify_Base;
 
    ---------------
@@ -1828,7 +1873,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_bg");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Address));
    end Modify_Bg;
 
    -------------------
@@ -1864,7 +1909,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_fg");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Address));
    end Modify_Fg;
 
    -----------------
@@ -1898,7 +1943,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_text");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Address));
    end Modify_Text;
 
    -------------------------------
@@ -1916,7 +1961,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_background_color");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Address));
    end Override_Background_Color;
 
    --------------------
@@ -1934,7 +1979,7 @@ package body Gtk.Widget is
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_color");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Address));
    end Override_Color;
 
    ---------------------
@@ -1952,7 +1997,7 @@ package body Gtk.Widget is
           Secondary_Cursor : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_cursor");
    begin
-      Internal (Get_Object (Widget), Gtkada.Bindings.Gdk_RGBA_Or_Null (Cursor'Unchecked_Access), Gtkada.Bindings.Gdk_RGBA_Or_Null (Secondary_Cursor'Unchecked_Access));
+      Internal (Get_Object (Widget), Gtkada.Bindings.Gdk_RGBA_Or_Null (Cursor'Address), Gtkada.Bindings.Gdk_RGBA_Or_Null (Secondary_Cursor'Address));
    end Override_Cursor;
 
    -------------------
@@ -1987,7 +2032,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_override_symbolic_color");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Get_Object (Widget), Tmp_Name, Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
+      Internal (Get_Object (Widget), Tmp_Name, Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Address));
       Free (Tmp_Name);
    end Override_Symbolic_Color;
 

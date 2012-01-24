@@ -2362,6 +2362,40 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_create_pango_layout">
        <parameter name="Text" allow-none="1"/>
      </method>
+     <method id="gtk_widget_destroy">
+       <body>
+   procedure Destroy (Widget : not null access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_destroy");
+
+      procedure Unref_Internal (Widget : System.Address);
+      pragma Import (C, Unref_Internal, "g_object_unref");
+      --  External binding: g_object_unref
+
+      Ptr : constant System.Address := Get_Object (Widget);
+
+      use type System.Address;
+   begin
+      --  Keep a reference on the object, so that the Ada structure is
+      --  never automatically deleted when the C object is.
+      --  We can't reset the content of Widget to System.Null_Address before
+      --  calling the C function, because we want the user's destroy
+      --  callbacks to be called with the appropriate object.
+      Ref (Widget);
+      Internal (Ptr);
+
+      --  We then can make sure that the object won't be referenced any
+      --  more, (The Ada structure won't be free before the ref count goes
+      --  down to 0, and we don't want the user to use a deleted object...).
+      Set_Object (Widget, System.Null_Address);
+
+      --  Free the reference we had. In most cases, this results in the
+      --  object being freed. We can't use directly Unref, since the Ptr
+      --  field for Object is Null_Address.
+      Unref_Internal (Ptr);
+   end Destroy;
+       </body>
+     </method>
 
      <extra>
        <with_spec pkg="Gdk.Rectangle"/>
@@ -2376,9 +2410,6 @@ While looking up a recently used file is as simple as using:
      </extra>
 
      <!-- Need GtkAda-custom binding -->
-     <method id="gtk_widget_destroy" bind="False"/>
-     <method id="gtk_widget_get_tooltip_markup" bind="True"/><!-- Need to free returned value-->
-     <method id="gtk_widget_get_tooltip_text" bind="False"/><!-- Need to free returned value-->
      <method id="gtk_widget_intersect" bind="False"/><!-- Need out parameter-->
      <method id="gtk_widget_list_accel_closures" bind="False"/>
      <method id="gtk_widget_region_intersect" bind="False"> <!-- Wrong mode -->

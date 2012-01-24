@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with Glib;                 use Glib;
 with GNAT.Strings;         use GNAT.Strings;
 with Interfaces.C;         use Interfaces.C;
@@ -116,12 +117,18 @@ package body Gtkada.Bindings is
    -- Generic_To_Address_Or_Null --
    --------------------------------
 
-   function Generic_To_Address_Or_Null (Val : access T) return System.Address is
+   function Generic_To_Address_Or_Null
+     (Val : System.Address) return System.Address
+   is
+      type T_Access is access all T;
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, T_Access);
+
    begin
-      if Val.all = Null_T then
+      if Convert (Val).all = Null_T then
          return System.Null_Address;
       else
-         return Val.all'Address;
+         return Val;
       end if;
    end Generic_To_Address_Or_Null;
 
