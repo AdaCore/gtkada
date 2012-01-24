@@ -229,44 +229,64 @@ class GlobalsBinder(object):
         return self.globals[id]
 
 
-def _get_type(node, allow_access=True, can_be_null=False, pkg=None):
+def _get_type(nodeOrType, allow_access=True, allow_none=False,
+              userecord=True, pkg=None):
     """Return the type of the GIR XML node.
+       nodeOrType can be one of:
+          * a string, given the name of the C type
+          * an instance of CType, which is returned as is.
+          * An XML node from which the information is gathered.
+
        `allow_access' should be False if "access Type" parameters should
        not be allowed, and an explicit type is needed instead.
-       `can_be_null': see doc for CType.
+       `allow_none': see doc for CType.
        `pkg' is used to add with statements, if specified
     """
-    t = node.find(ntype)
-    if t is not None:
-        if t.get("name") == "none":
+    if isinstance(nodeOrType, CType):
+        return nodeOrType
+
+    elif isinstance(nodeOrType, str):
+        return naming.type(name=nodeOrType,
+                           cname=nodeOrType,
+                           userecord=userecord,
+                           allow_access=allow_access,
+                           allow_none=allow_none, pkg=pkg)
+
+    else:
+        t = nodeOrType.find(ntype)
+        if t is not None:
+            if t.get("name") == "none":
+                return None
+            return naming.type(name=t.get("name"),
+                               cname=t.get(ctype_qname),
+                               userecord=userecord,
+                               allow_access=allow_access,
+                               allow_none=allow_none, pkg=pkg)
+
+        a = nodeOrType.find(narray)
+        if a is not None:
+            t = a.find(ntype)
+            if a:
+                type = t.get(ctype_qname)
+                name = t.get("name") or type  # Sometimes name is not set
+                if type:
+                    type = "array_of_%s" % type
+
+                return naming.type(name="array_of_%s" % name,
+                                   cname=type,
+                                   pkg=pkg, isArray=True,
+                                   allow_none=allow_none,
+                                   userecord=userecord,
+                                   allow_access=allow_access)
+
+        a = nodeOrType.find(nvarargs)
+        if a is not None:
+            # A function with multiple arguments cannot be bound
+            # No need for an error message, we will already let the user know
+            # that the function is not bound.
             return None
-        return naming.type(name=t.get("name"),
-                     cname=t.get(ctype_qname), allow_access=allow_access,
-                     can_be_null=can_be_null, pkg=pkg)
 
-    a = node.find(narray)
-    if a is not None:
-        t = a.find(ntype)
-        if a:
-            type = t.get(ctype_qname)
-            name = t.get("name") or type  # Sometimes name is not set
-            if type:
-                type = "array_of_%s" % type
-
-            return naming.type(name="array_of_%s" % name,
-                         cname=type,
-                         pkg=pkg, isArray=True,
-                         can_be_null=can_be_null,
-                         allow_access=allow_access)
-
-    a = node.find(nvarargs)
-    if a is not None:
-        # A function with multiple arguments cannot be bound
-        # No need for an error message, we will already let the user know
-        # that the function is not bound.
-        return None
-
-    print "Error: XML Node has unknown type\n", node
+    print "Error: XML Node has unknown type\n", nodeOrType
     return None
 
 
@@ -470,17 +490,27 @@ class SubprogramProfile(object):
 
             default = gtkparam.get_default()
             allow_access=not default
-            allow_none = gtkparam.allow_none(default=p.get('allow-none', '0'))
+            allow_none = gtkparam.allow_none(girnode=p) or default == 'null'
 
-            type = gtkparam.get_type(pkg=pkg) \
-                or _get_type(
-                    p,
-                    can_be_null=allow_none,
-                    allow_access=allow_access,
-                    pkg=pkg)
+            type = _get_type(
+                nodeOrType=gtkparam.get_type(pkg=pkg) or p,
+                allow_none=allow_none,
+                userecord=default != 'null',
+                allow_access=allow_access,
+                pkg=pkg)
 
             if type is None:
                 return None
+
+            if not default and allow_none and isinstance(type, UTF8):
+                # We cannot set a "null" default for a GObject, since the
+                # following is not allowed in Ada05:
+                #    procedure P (A : access GObject_Record'Class := null);
+                # We need a named type instead, ie:
+                #    procedure P (A : GObject := null);
+                # but then this needs an extra cast in user code.
+
+                default = '""'
 
             if p.get("scope", "") in ("notified", "call"):  # "async" ?
                 self.callback_param = len(result)
@@ -501,25 +531,6 @@ class SubprogramProfile(object):
             doc = p.findtext(ndoc, "")
             if doc:
                 doc = '"%s": %s' % (name, doc)
-
-            if not default and allow_none:
-
-                # We cannot set a "null" default for a GObject, since the
-                # following is not allowed in Ada05:
-                #    procedure P (A : access GObject_Record'Class := null);
-                # We need a named type instead, ie:
-                #    procedure P (A : GObject := null);
-                # but then this needs an extra cast in user code.
-
-                type.can_be_null = True
-
-                if isinstance(type, UTF8):
-                    default = '""'
-
-
-            elif default == "null":
-                type.can_be_null = True
-                type.userecord = False
 
             result.append(
                 Parameter(name=naming.case(name),

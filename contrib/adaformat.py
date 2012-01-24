@@ -86,8 +86,13 @@ class CType(object):
                              # free by calling this cleanup. Use "%s" as the
                              # name of the variable.
         self.isArray = False
-        self.can_be_null = False # for GObject, marks whether the parameter can
-                                 # be "null".
+
+        # In some cases, Ada provides a special value for a parameter that
+        # indicates that NULL should be passed to C. Such a test is only done
+        # when allow_none is True. We then test whether the value is equal
+        # to null_value.
+        self.allow_none = False
+        self.null_value = None
 
     def convert_to_c(self):
         """How to convert from Ada parameter to C parameter If it uses %(tmp)s,
@@ -97,7 +102,19 @@ class CType(object):
            parameter.
            Otherwise, it is used as " Tmp := <convert>"
         """
-        return "%(var)s"
+
+        if self.allow_none and self.null_value is not None:
+            "Tmp : aliased %s := %%(var)s;" % self.ada \
+                + "Tmp_A : System.Address := Tmp'Address;" \
+                + "if Tmp = %s then " % self.null_value \
+                + "   Tmp_A := System.Null_Address;" \
+                + "end if;"
+
+            self.cparam = "System.Address"
+            return "Tmp_A";
+
+        else:
+            return "%(var)s"
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
@@ -217,10 +234,8 @@ class CType(object):
         if pkg and "." in self.ada:
             pkg.add_with(self.ada[0:self.ada.rfind(".")], specs=specs)
 
-    def copy(self, **kwargs):
-        """Return a copy of self, possibly modifying some properties.
-           kwargs is interpreted by each child class.
-        """
+    def copy(self):
+        """Return a copy of self, possibly modifying some properties."""
         return copy.deepcopy(self)
 
 
@@ -265,7 +280,7 @@ class GObject(CType):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
         self.is_ptr = False
-        self.can_be_null = False
+        self.null_value = "null"
         self.classwide = False  # Parameter should include "'Class"
         self.userecord = True  # Parameter should be "access .._Record"
 
@@ -285,14 +300,14 @@ class GObject(CType):
             "")
 
     def convert_to_c(self):
-        if self.can_be_null:
+        if self.allow_none:
             return "Get_Object_Or_Null (GObject (%(var)s))"
         else:
             return "Get_Object (%(var)s)"
 
     def as_ada_param(self, pkg):
         if self.userecord:
-            if self.can_be_null:
+            if self.allow_none:
                 prefix = ""
             else:
                 prefix = "not null "
@@ -304,9 +319,8 @@ class GObject(CType):
 
         return super(GObject, self).as_ada_param(pkg)
 
-    def copy(self, **kwargs):
+    def copy(self):
         result = CType.copy(self)
-        result.classwide = "useclass" not in kwargs or kwargs["useclass"]
         return result
 
 class Tagged(GObject):
@@ -335,7 +349,7 @@ class UTF8(CType):
         #    "Free (C_Return);")
 
     def convert_to_c(self):
-        if self.can_be_null:
+        if self.allow_none:
             return 'if %(var)s = "" then %(tmp)s := Interfaces.C.Strings.Null_Ptr; else %(tmp)s := New_String (%(var)s); end if;'
         else:
             return "New_String (%(var)s)"
@@ -369,11 +383,18 @@ class UTF8_List(CType):
 
 
 class Proxy(CType):
-    def __init__(self, ada, property=None):
+    def __init__(self, ada, property=None, null_value=None):
+        """[null_value] is used when GIR indicates the parameter has
+           allow-none=1, and is used to test whether we should pass NULL
+           to C or a pointer to the Ada data.
+        """
+
         if property is None:
             CType.__init__(self, ada, "Glib.Properties.Property_Boxed")
         else:
             CType.__init__(self, ada, property)
+
+        self.null_value = null_value
 
     @staticmethod
     def register_ada_record(pkg, ctype, ada=None):
@@ -564,7 +585,7 @@ class AdaNaming(object):
                 Proxy(self.__camel_case_to_ada(girname))))
 
     def type(self, name="", cname=None, pkg=None, isArray=False,
-             allow_access=True, can_be_null=False, useclass=True):
+             allow_access=True, allow_none=False, userecord=True, useclass=True):
         """Build an instance of CType for the corresponding cname.
            A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
@@ -573,9 +594,10 @@ class AdaNaming(object):
            'allow_access' should be True if the parameter can be represented
            as 'access Type', rather than an explicit type, in the case of
            GObject descendants.
-           If `can_be_null' is True, then an empty string maps to a
+           If `allow_none' is True, then an empty string maps to a
            NULL pointer in C, rather than an empty C string. For a GObject,
            the parameter is passed as "access" rather than "not null access".
+           'use_record' is only used for GObject types.
         """
 
         if cname == "gchar**" or name == "array_of_utf8":
@@ -612,13 +634,12 @@ class AdaNaming(object):
             t = self.__full_type_from_girname(name)
             t.is_ptr = cname and cname[-1] == '*'
 
-        t = t.copy(userecord=not can_be_null
-                      and cname and allow_access
-                      and not cname.endswith("**"),
-                   useclass=useclass)
+        t = t.copy()
         t.add_with(pkg, specs=True)
         t.isArray = isArray
-        t.can_be_null = can_be_null
+        t.classwide = useclass
+        t.allow_none = allow_none
+        t.userecord = userecord
         return t
 
 

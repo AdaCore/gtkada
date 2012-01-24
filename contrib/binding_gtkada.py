@@ -428,25 +428,30 @@ class GtkAdaParameter(object):
         return name
 
     def get_type(self, pkg):
-        """pkg is used to set the with statements"""
-        type = None
+        """pkg is used to set the with statements.
+           This returned the locally overridden type, or the one from the
+           default node for this parameter, or None if the type isn't
+           overridden.
+        """
+
+        if self.node is not None:
+            t = self.node.get("type", None)
+            if t:
+                return AdaType(t, pkg=pkg)  # An instance of CType
+
+            t = self.node.get("ctype", None)
+            if t:
+                return t   # An XML node
+
         if self.default is not None:
             t = self.default.get("type", None)
             if t:
-                type = AdaType(t, pkg=pkg)
-        if type is None and self.node is not None:
-            t = self.node.get("type", None)
-            if t:
-                type = AdaType(t, pkg=pkg)
+                return AdaType(t, pkg=pkg)
 
-            if type is None:
-                t = self.node.get("ctype", None)
-                if t:
-                    type = naming.type(name=t, cname=t, pkg=pkg)
+        return None
 
-        return type
-
-    def allow_none(self, default):
+    def allow_none(self, girnode):
+        default = girnode.get('allow-none', '0')
         if self.node is not None:
             return self.node.get('allow-none', default) == '1'
         else:

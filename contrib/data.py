@@ -308,7 +308,7 @@ naming.type_exceptions = {
     "GtkCellLayoutDataFunc":
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
 
-    "GdkColor*":          Proxy("Gdk.Color.Gdk_Color"),
+    "GdkColor*": Proxy("Gdk.Color.Gdk_Color", None, "Gdk.Color.Null_Color"),
     "GdkDragContext":     GObject("Gdk.Drag_Contexts.Drag_Context"),
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
@@ -323,7 +323,7 @@ naming.type_exceptions = {
     "GdkScreen":          GObject("Gdk.Screen.Gdk_Screen"),
     # ??? The above should not be needed, we should infer it from the Gir.
     # we need it to generate the "Stub" object in Gdk.Device.Get_Position
-    "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA"),
+    "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA", None, "Gdk.RGBA.Null_RGBA"),
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),

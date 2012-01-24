@@ -1853,14 +1853,15 @@ package body Gtk.Widget is
        Name   : UTF8_String;
        Color  : Gdk.RGBA.Gdk_RGBA)
    is
+      pragma Unreferenced (Color);
       procedure Internal
          (Widget : System.Address;
           Name   : Interfaces.C.Strings.chars_ptr;
-          Color  : Gdk.RGBA.Gdk_RGBA);
+          Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_symbolic_color");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Get_Object (Widget), Tmp_Name, Color);
+      Internal (Get_Object (Widget), Tmp_Name, Tmp_A);
       Free (Tmp_Name);
    end Override_Symbolic_Color;
 
