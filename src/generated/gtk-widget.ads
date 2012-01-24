@@ -1775,6 +1775,51 @@ package Gtk.Widget is
    --  True.
    --  "group_cycling": True if there are other widgets with the same mnemonic
 
+   procedure Modify_Base
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Modify_Base);
+   --  Sets the base color for a widget in a particular state. All other style
+   --  values are left untouched. The base color is the background color used
+   --  along with the text color (see Gtk.Widget.Modify_Text) for widgets such
+   --  as Gtk.GEntry.Gtk_Entry and Gtk.Text_View.Gtk_Text_View. See also
+   --  gtk_widget_modify_style.
+   --   Note: Note that "no window" widgets (which have the GTK_NO_WINDOW flag
+   --  set) draw on their parent container's window and thus may not draw any
+   --  background themselves. This is the case for e.g. Gtk.Label.Gtk_Label.
+   --  To modify the background of such widgets, you have to set the base color
+   --  on their parent; if you want to set the background of a rectangular area
+   --  around a label, try placing the label in a Gtk.Event_Box.Gtk_Event_Box
+   --  widget and setting the base color on that.
+   --   Deprecated:3.0: Use Gtk.Widget.Override_Background_Color instead
+   --  Deprecated
+   --  "state": the state for which to set the base color
+   --  "color": the color to assign (does not need to be allocated), or null
+   --  to undo the effect of previous calls to of Gtk.Widget.Modify_Base.
+
+   procedure Modify_Bg
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Modify_Bg);
+   --  Sets the background color for a widget in a particular state.
+   --  All other style values are left untouched. See also
+   --  gtk_widget_modify_style.
+   --   Note: Note that "no window" widgets (which have the GTK_NO_WINDOW flag
+   --  set) draw on their parent container's window and thus may not draw any
+   --  background themselves. This is the case for e.g. Gtk.Label.Gtk_Label.
+   --  To modify the background of such widgets, you have to set the background
+   --  color on their parent; if you want to set the background of a
+   --  rectangular area around a label, try placing the label in a
+   --  Gtk.Event_Box.Gtk_Event_Box widget and setting the background color on
+   --  that.
+   --   Deprecated:3.0: Use Gtk.Widget.Override_Background_Color instead
+   --  Deprecated
+   --  "state": the state for which to set the background color
+   --  "color": the color to assign (does not need to be allocated), or null
+   --  to undo the effect of previous calls to of Gtk.Widget.Modify_Bg.
+
    procedure Modify_Cursor
       (Widget    : not null access Gtk_Widget_Record;
        Primary   : Gdk.Color.Gdk_Color;
@@ -1786,13 +1831,27 @@ package Gtk.Widget is
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
    --  Since: gtk+ 2.12
-   --  Deprecated since None, 3.0. Use gtk_widget_override_cursor instead.
+   --  Deprecated since None, 3.0. Use Gtk.Widget.Override_Cursor instead.
    --  "primary": the color to use for primary cursor (does not need to be
    --  allocated), or null to undo the effect of previous calls to of
    --  Gtk.Widget.Modify_Cursor.
    --  "secondary": the color to use for secondary cursor (does not need to be
    --  allocated), or null to undo the effect of previous calls to of
    --  Gtk.Widget.Modify_Cursor.
+
+   procedure Modify_Fg
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Modify_Fg);
+   --  Sets the foreground color for a widget in a particular state.
+   --  All other style values are left untouched. See also
+   --  gtk_widget_modify_style.
+   --  Deprecated:3.0: Use Gtk.Widget.Override_Color instead
+   --  Deprecated
+   --  "state": the state for which to set the foreground color
+   --  "color": the color to assign (does not need to be allocated), or null
+   --  to undo the effect of previous calls to of Gtk.Widget.Modify_Fg.
 
    procedure Modify_Font
       (Widget    : not null access Gtk_Widget_Record;
@@ -1804,11 +1863,84 @@ package Gtk.Widget is
    --  "font_desc": the font description to use, or null to undo the effect of
    --  previous calls to Gtk.Widget.Modify_Font
 
+   procedure Modify_Text
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Modify_Text);
+   --  Sets the text color for a widget in a particular state.
+   --  All other style values are left untouched. The text color is the
+   --  foreground color used along with the base color (see
+   --  Gtk.Widget.Modify_Base) for widgets such as Gtk.GEntry.Gtk_Entry and
+   --  Gtk.Text_View.Gtk_Text_View. See also gtk_widget_modify_style.
+   --  Deprecated:3.0: Use Gtk.Widget.Override_Color instead
+   --  Deprecated
+   --  "state": the state for which to set the text color
+   --  "color": the color to assign (does not need to be allocated), or null
+   --  to undo the effect of previous calls to of Gtk.Widget.Modify_Text.
+
+   procedure Override_Background_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Flags;
+       Color  : Gdk.RGBA.Gdk_RGBA);
+   --  Sets the background color to use for a widget.
+   --  All other style values are left untouched. See
+   --  Gtk.Widget.Override_Color.
+   --  Since: gtk+ 3.0
+   --  "state": the state for which to set the background color
+   --  "color": the color to assign, or null to undo the effect of previous
+   --  calls to Gtk.Widget.Override_Background_Color
+
+   procedure Override_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Flags;
+       Color  : Gdk.RGBA.Gdk_RGBA);
+   --  Sets the color to use for a widget.
+   --  All other style values are left untouched.
+   --   Note: This API is mostly meant as a quick way for applications to
+   --  change a widget appearance. If you are developing a widgets library and
+   --  intend this change to be themeable, it is better done by setting
+   --  meaningful CSS classes and regions in your widget/container
+   --  implementation through gtk_style_context_add_class and
+   --  gtk_style_context_add_region.
+   --  This way, your widget library can install a
+   --  Gtk.Css_Provider.Gtk_Css_Provider with the
+   --  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK priority in order to provide a
+   --  default styling for those widgets that need so, and this theming may
+   --  fully overridden by the user's theme.
+   --   Note: Note that for complex widgets this may bring in undesired results
+   --  (such as uniform background color everywhere), in these cases it is
+   --  better to fully style such widgets through a
+   --  Gtk.Css_Provider.Gtk_Css_Provider with the
+   --  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION priority.
+   --  Since: gtk+ 3.0
+   --  "state": the state for which to set the color
+   --  "color": the color to assign, or null to undo the effect of previous
+   --  calls to Gtk.Widget.Override_Color
+
+   procedure Override_Cursor
+      (Widget           : not null access Gtk_Widget_Record;
+       Cursor           : Gdk.RGBA.Gdk_RGBA;
+       Secondary_Cursor : Gdk.RGBA.Gdk_RGBA);
+   --  Sets the cursor color to use in a widget, overriding the
+   --  Gtk.Widget.Gtk_Widget:cursor-color and
+   --  Gtk.Widget.Gtk_Widget:secondary-cursor-color style properties. All other
+   --  style values are left untouched. See also gtk_widget_modify_style.
+   --  Note that the underlying properties have the Gdk.Color.Gdk_Color type,
+   --  so the alpha value in Primary and Secondary will be ignored.
+   --  Since: gtk+ 3.0
+   --  "cursor": the color to use for primary cursor (does not need to be
+   --  allocated), or null to undo the effect of previous calls to of
+   --  Gtk.Widget.Override_Cursor.
+   --  "secondary_cursor": the color to use for secondary cursor (does not
+   --  need to be allocated), or null to undo the effect of previous calls to
+   --  of Gtk.Widget.Override_Cursor.
+
    procedure Override_Font
       (Widget    : not null access Gtk_Widget_Record;
        Font_Desc : in out Pango.Font.Pango_Font_Description);
    --  Sets the font to use for a widget. All other style values are left
-   --  untouched. See gtk_widget_override_color.
+   --  untouched. See Gtk.Widget.Override_Color.
    --  Since: gtk+ 3.0
    --  "font_desc": the font descriptiong to use, or null to undo the effect
    --  of previous calls to Gtk.Widget.Override_Font
@@ -1818,7 +1950,7 @@ package Gtk.Widget is
        Name   : UTF8_String;
        Color  : Gdk.RGBA.Gdk_RGBA);
    --  Sets a symbolic color for a widget.
-   --  All other style values are left untouched. See gtk_widget_override_color
+   --  All other style values are left untouched. See Gtk.Widget.Override_Color
    --  for overriding the foreground or background color.
    --  Since: gtk+ 3.0
    --  "name": the name of the symbolic color to modify
@@ -3169,7 +3301,7 @@ package Gtk.Widget is
    --    --  "previous_style": the previous style, or null if the widget just got
    --    --  its initial style
    --  The ::style-set signal is emitted when a new style has been set on a
-   --  widget. Note that style-modifying functions like gtk_widget_modify_base
+   --  widget. Note that style-modifying functions like Gtk.Widget.Modify_Base
    --  also cause this signal to be emitted.
    --  Note that this signal is emitted for changes to the deprecated
    --  Gtk.Style.Gtk_Style. To track changes to the
@@ -3181,7 +3313,7 @@ package Gtk.Widget is
    --     procedure Handler (Self : access Gtk_Widget_Record'Class);
    --  The ::style-updated signal is emitted when the
    --  Gtk.Style_Context.Gtk_Style_Context of a widget is changed. Note that
-   --  style-modifying functions like gtk_widget_override_color also cause this
+   --  style-modifying functions like Gtk.Widget.Override_Color also cause this
    --  signal to be emitted.
    --
    --  "unmap"

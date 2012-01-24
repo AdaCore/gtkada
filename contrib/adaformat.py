@@ -89,30 +89,27 @@ class CType(object):
 
         # In some cases, Ada provides a special value for a parameter that
         # indicates that NULL should be passed to C. Such a test is only done
-        # when allow_none is True. We then test whether the value is equal
-        # to null_value.
+        # when allow_none is True. val_or_null is then a function in charge
+        # of converting the value to a System.Address unless it is equal to
+        # a specific null value.
+
         self.allow_none = False
-        self.null_value = None
+        self.val_or_null = None
 
     def convert_to_c(self):
-        """How to convert from Ada parameter to C parameter If it uses %(tmp)s,
+        """How to convert from Ada parameter to C parameter. If it uses %(tmp)s,
            we assume the converter sets the value of the temporary variable
            itself.
            It can also use %(var)s which will be substituted by the name of the
            parameter.
-           Otherwise, it is used as " Tmp := <convert>"
+           Otherwise, it is used as " Tmp := <convert>".
+           It might be necessary to also override add_with() to add the necessary
+           with statements.
         """
 
-        if self.allow_none and self.null_value is not None:
-            "Tmp : aliased %s := %%(var)s;" % self.ada \
-                + "Tmp_A : System.Address := Tmp'Address;" \
-                + "if Tmp = %s then " % self.null_value \
-                + "   Tmp_A := System.Null_Address;" \
-                + "end if;"
-
+        if self.allow_none and self.val_or_null:
             self.cparam = "System.Address"
-            return "Tmp_A";
-
+            return "%s (%%(var)s'Unchecked_Access)" % self.val_or_null
         else:
             return "%(var)s"
 
@@ -229,10 +226,15 @@ class CType(object):
                 call=wrapper % (ret[2] % {"var": name}),
                 precall='', postcall='', tmpvars=ret[3])
 
-    def add_with(self, pkg=None, specs=True):
+    def add_with(self, pkg=None):
         """Add required withs for this type"""
         if pkg and "." in self.ada:
-            pkg.add_with(self.ada[0:self.ada.rfind(".")], specs=specs)
+            pkg.add_with(self.ada[:self.ada.rfind(".")])
+
+        if pkg and self.allow_none and self.val_or_null:
+            base = self.val_or_null
+            if "." in base:
+                pkg.add_with(base[:base.rfind(".")], specs=False)
 
     def copy(self):
         """Return a copy of self, possibly modifying some properties."""
@@ -280,7 +282,6 @@ class GObject(CType):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
         self.is_ptr = False
-        self.null_value = "null"
         self.classwide = False  # Parameter should include "'Class"
         self.userecord = True  # Parameter should be "access .._Record"
 
@@ -335,6 +336,7 @@ class Tagged(GObject):
         self.userecord = False
         return super(Tagged, self).as_ada_param(pkg)
 
+
 class UTF8(CType):
     def __init__(self):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
@@ -354,7 +356,8 @@ class UTF8(CType):
         else:
             return "New_String (%(var)s)"
 
-    def add_with(self, pkg=None, specs=True):
+    def add_with(self, pkg=None):
+        super(UTF8, self).add_with(pkg=pkg)
         if pkg:
             pkg.add_with("Interfaces.C.Strings", specs=False)
 
@@ -374,16 +377,17 @@ class UTF8_List(CType):
     def convert_to_c(self):
         return "From_String_List (%(var)s)"
 
-    def add_with(self, pkg=None, specs=True):
+    def add_with(self, pkg=None):
+        super(UTF8_List, self).add_with(pkg=pkg)
         if pkg:
-            pkg.add_with("GNAT.Strings", specs=specs)
+            pkg.add_with("GNAT.Strings", specs=True)
             pkg.add_with("Gtkada.Types", specs=False)
             pkg.add_with("Interfaces.C.Strings", specs=False)
             pkg.add_with("Gtkada.Bindings", specs=False)
 
 
 class Proxy(CType):
-    def __init__(self, ada, property=None, null_value=None):
+    def __init__(self, ada, property=None, val_or_null=None):
         """[null_value] is used when GIR indicates the parameter has
            allow-none=1, and is used to test whether we should pass NULL
            to C or a pointer to the Ada data.
@@ -394,7 +398,7 @@ class Proxy(CType):
         else:
             CType.__init__(self, ada, property)
 
-        self.null_value = null_value
+        self.val_or_null = val_or_null
 
     @staticmethod
     def register_ada_record(pkg, ctype, ada=None):
@@ -464,7 +468,7 @@ class List(CType):
     def convert_to_c(self):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
-    def add_with(self, pkg=None, specs=True):
+    def add_with(self, pkg=None):
         # A list comes from an instantiation (pkg.instance.glist), so we need
         # to skip backward two "."
         if pkg:
@@ -472,7 +476,7 @@ class List(CType):
             if p != -1:
                 p = self.ada[:p].rfind(".")
                 if p != -1:
-                    pkg.add_with(self.ada[:p], specs=specs)
+                    pkg.add_with(self.ada[:p], specs=True)
 
 
 class AdaType(CType):
@@ -491,8 +495,9 @@ class AdaType(CType):
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
 
+        # ??? Why do we need to call this explicitly ?
         if pkg:
-            self.add_with(pkg, specs=in_spec)
+            self.add_with(pkg)
 
     def convert_to_c(self):
         return self.__convert
@@ -635,11 +640,16 @@ class AdaNaming(object):
             t.is_ptr = cname and cname[-1] == '*'
 
         t = t.copy()
-        t.add_with(pkg, specs=True)
         t.isArray = isArray
         t.classwide = useclass
         t.allow_none = allow_none
         t.userecord = userecord
+
+        # Needs to be called last, since the output might depend on all the
+        # attributes set above
+
+        t.add_with(pkg)
+
         return t
 
 

@@ -55,32 +55,11 @@ package Gtk.Widget is
    -- Styles --
    ------------
 
-   procedure Modify_Fg
-     (Widget     : access Gtk_Widget_Record;
-      State_Type : Enums.Gtk_State_Type;
-      Color      : Gdk.Color.Gdk_Color);
    procedure Modify_Bg
      (Widget     : access Gtk_Widget_Record;
       State_Type : Enums.Gtk_State_Type;
       Color      : Gdk.Color.Gdk_Color);
    pragma Obsolescent (Modify_Bg);
-
-   procedure Override_Background_Color
-      (Widget : not null access Gtk_Widget_Record;
-       State  : Enums.Gtk_State_Type;
-       Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA);
-   --  Sets the background color to use for a widget.
-   --  Set to Null_RGBA to undo the effect of a previous call.
-
-   procedure Modify_Text
-     (Widget     : access Gtk_Widget_Record;
-      State_Type : Enums.Gtk_State_Type;
-      Color      : Gdk.Color.Gdk_Color);
-
-   procedure Modify_Base
-     (Widget     : access Gtk_Widget_Record;
-      State_Type : Enums.Gtk_State_Type;
-      Color      : Gdk.Color.Gdk_Color);
 
    -------------------
    -- Widgets' tree --

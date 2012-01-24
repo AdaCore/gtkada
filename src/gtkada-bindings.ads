@@ -27,16 +27,31 @@
 --  release to release.
 --  See also Gtkada.Types
 
---  with Gdk.Color;
+with Gdk.Color;
+with Gdk.RGBA;
 --  with Gdk.Types;
 with Glib;
 --  with Glib.Object;
 with Gtkada.C;
 with GNAT.Strings;
 with Interfaces.C.Strings;
+with System;
 
 package Gtkada.Bindings is
    package ICS renames Interfaces.C.Strings;
+
+   generic
+      type T is private;
+      Null_T : T;
+   function Generic_To_Address_Or_Null (Val : access T) return System.Address;
+
+   function Gdk_Color_Or_Null is new Generic_To_Address_Or_Null
+     (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color);
+   function Gdk_RGBA_Or_Null is new Generic_To_Address_Or_Null
+     (Gdk.RGBA.Gdk_RGBA, Gdk.RGBA.Null_RGBA);
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In Ada2012, these could be replaced with expression functions instead.
 
    -------------
    -- Strings --
@@ -166,6 +181,5 @@ package Gtkada.Bindings is
 --       (System.Address, Unbounded_Color_Array_Access);
 
 private
---   pragma Import (C, g_free, "g_free");
    pragma Import (C, g_strfreev, "g_strfreev");
 end Gtkada.Bindings;

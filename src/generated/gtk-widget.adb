@@ -25,6 +25,7 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Widget is
@@ -1794,6 +1795,42 @@ package body Gtk.Widget is
       return Boolean'Val (Internal (Get_Object (Widget), Boolean'Pos (Group_Cycling)));
    end Mnemonic_Activate;
 
+   -----------------
+   -- Modify_Base --
+   -----------------
+
+   procedure Modify_Base
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_base");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+   end Modify_Base;
+
+   ---------------
+   -- Modify_Bg --
+   ---------------
+
+   procedure Modify_Bg
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_bg");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+   end Modify_Bg;
+
    -------------------
    -- Modify_Cursor --
    -------------------
@@ -1812,6 +1849,24 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Primary, Secondary);
    end Modify_Cursor;
 
+   ---------------
+   -- Modify_Fg --
+   ---------------
+
+   procedure Modify_Fg
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_fg");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+   end Modify_Fg;
+
    -----------------
    -- Modify_Font --
    -----------------
@@ -1827,6 +1882,78 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Font_Desc);
    end Modify_Font;
+
+   -----------------
+   -- Modify_Text --
+   -----------------
+
+   procedure Modify_Text
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Type;
+       Color  : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_text");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gtkada.Bindings.Gdk_Color_Or_Null (Color'Unchecked_Access));
+   end Modify_Text;
+
+   -------------------------------
+   -- Override_Background_Color --
+   -------------------------------
+
+   procedure Override_Background_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Flags;
+       Color  : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_override_background_color");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
+   end Override_Background_Color;
+
+   --------------------
+   -- Override_Color --
+   --------------------
+
+   procedure Override_Color
+      (Widget : not null access Gtk_Widget_Record;
+       State  : Gtk.Enums.Gtk_State_Flags;
+       Color  : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          State  : Integer;
+          Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_override_color");
+   begin
+      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
+   end Override_Color;
+
+   ---------------------
+   -- Override_Cursor --
+   ---------------------
+
+   procedure Override_Cursor
+      (Widget           : not null access Gtk_Widget_Record;
+       Cursor           : Gdk.RGBA.Gdk_RGBA;
+       Secondary_Cursor : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Widget           : System.Address;
+          Cursor           : System.Address;
+          Secondary_Cursor : System.Address);
+      pragma Import (C, Internal, "gtk_widget_override_cursor");
+   begin
+      Internal (Get_Object (Widget), Gtkada.Bindings.Gdk_RGBA_Or_Null (Cursor'Unchecked_Access), Gtkada.Bindings.Gdk_RGBA_Or_Null (Secondary_Cursor'Unchecked_Access));
+   end Override_Cursor;
 
    -------------------
    -- Override_Font --
@@ -1853,7 +1980,6 @@ package body Gtk.Widget is
        Name   : UTF8_String;
        Color  : Gdk.RGBA.Gdk_RGBA)
    is
-      pragma Unreferenced (Color);
       procedure Internal
          (Widget : System.Address;
           Name   : Interfaces.C.Strings.chars_ptr;
@@ -1861,7 +1987,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_override_symbolic_color");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
-      Internal (Get_Object (Widget), Tmp_Name, Tmp_A);
+      Internal (Get_Object (Widget), Tmp_Name, Gtkada.Bindings.Gdk_RGBA_Or_Null (Color'Unchecked_Access));
       Free (Tmp_Name);
    end Override_Symbolic_Color;
 

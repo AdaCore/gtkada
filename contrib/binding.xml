@@ -2331,6 +2331,10 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_drag_dest_set_target_list" bind="False"/><!-- in Gtk.Dnd-->
      <method id="gtk_drag_dest_set" bind="False"/><!-- in Gtk.Dnd -->
      <method id="gtk_drag_source_set" bind="False"/><!-- in Gtk.Dnd -->
+     <method id="gtk_widget_modify_base" obsolescent="True"/>
+     <method id="gtk_widget_modify_fg" obsolescent="True"/>
+     <method id="gtk_widget_modify_bg" obsolescent="True"/>
+     <method id="gtk_widget_modify_text" obsolescent="True"/>
      <method id="gtk_widget_set_sensitive">
        <parameter name="Sensitive" default="True"/>
      </method>
@@ -2377,13 +2381,6 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_get_tooltip_text" bind="False"/><!-- Need to free returned value-->
      <method id="gtk_widget_intersect" bind="False"/><!-- Need out parameter-->
      <method id="gtk_widget_list_accel_closures" bind="False"/>
-     <method id="gtk_widget_modify_base" bind="False"/> <!-- Mapping of Null_Color, missing pragma Obsolescent -->
-     <method id="gtk_widget_modify_bg" bind="False"/> <!-- Mapping of Null_Color -->
-     <method id="gtk_widget_modify_fg" bind="False"/> <!-- Mapping of Null_Color -->
-     <method id="gtk_widget_modify_text" bind="False"/> <!-- Mapping of Null_Color -->
-     <method id="gtk_widget_override_background_color" bind="False"/> <!-- Mapping of Null_Color -->
-     <method id="gtk_widget_override_color" bind="False"/> <!-- Mapping of Null_Color -->
-     <method id="gtk_widget_override_cursor" bind="False"/> <!-- Mapping of Null_Color -->
      <method id="gtk_widget_region_intersect" bind="False"> <!-- Wrong mode -->
        <parameter name="Region" direction="in"/>
      </method>

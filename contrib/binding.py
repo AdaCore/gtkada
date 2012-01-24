@@ -519,10 +519,8 @@ class SubprogramProfile(object):
 
             direction = gtkparam.get_direction() or p.get("direction", "in")
 
-            if direction == "out":
-                mode = "out"
-            elif direction == "access":
-                mode = "access"
+            if direction in ("out", "access"):
+                mode = direction
             elif type.is_ptr:
                 mode = "in out"
             else:

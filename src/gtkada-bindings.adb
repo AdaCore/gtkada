@@ -112,27 +112,18 @@ package body Gtkada.Bindings is
       end;
    end To_Chars_Ptr;
 
-   -------------------
-   -- To_Gint_Array --
-   -------------------
+   --------------------------------
+   -- Generic_To_Address_Or_Null --
+   --------------------------------
 
---     function To_Gint_Array
---       (Arr : Unbounded_Gint_Array_Access; N : Gint) return Glib.Gint_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => 0);
---        else
---           declare
---              Result : Glib.Gint_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Gint_Array;
+   function Generic_To_Address_Or_Null (Val : access T) return System.Address is
+   begin
+      if Val.all = Null_T then
+         return System.Null_Address;
+      else
+         return Val.all'Address;
+      end if;
+   end Generic_To_Address_Or_Null;
 
    -----------------------------------
    -- To_Gint_Array_Zero_Terminated --
@@ -157,142 +148,5 @@ package body Gtkada.Bindings is
       end;
    end To_Gint_Array_Zero_Terminated;
 
-   --------------------
-   -- To_Point_Array --
-   --------------------
-
---     function To_Point_Array
---       (Arr : Unbounded_Points_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Points_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => (0, 0));
---        else
---           declare
---              Result : Gdk_Points_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Point_Array;
-
-   -------------------
-   -- To_Atom_Array --
-   -------------------
-
---     function To_Atom_Array
---       (Arr : Unbounded_Atom_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Atom_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Gdk.Types.Gdk_None);
---        else
---           declare
---              Result : Gdk_Atom_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Atom_Array;
-
-   --------------------
-   -- To_Color_Array --
-   --------------------
-
---     function To_Color_Array
---       (Arr : Unbounded_Color_Array_Access; N : Glib.Gint)
---        return Gdk.Color.Gdk_Color_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Null_Color);
---        else
---           declare
---              Result : Gdk_Color_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Color_Array;
-
-   --------------------
-   -- To_Pspec_Array --
-   --------------------
-
---     function To_Pspec_Array
---       (Arr : Unbounded_Pspec_Array_Access; N : Glib.Gint)
---        return Glib.Param_Spec_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => null);
---        else
---           declare
---              Result : Param_Spec_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Pspec_Array;
-
-   ------------------------
-   -- To_Signal_Id_Array --
-   ------------------------
-
---     function To_Signal_Id_Array
---       (Arr : Unbounded_Signal_Id_Array_Access; N : Glib.Guint)
---        return Glib.Object.Signal_Id_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Null_Signal_Id);
---        else
---           declare
---              Result : Signal_Id_Array (1 .. N);
---           begin
---              for R in 0 .. N - 1 loop
---                 Result (R + 1) := Arr (Natural (R));
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Signal_Id_Array;
-
-   --------------------
-   -- To_GType_Array --
-   --------------------
-
---     function To_GType_Array
---       (Arr : Unbounded_GType_Array_Access; N : Glib.Guint)
---        return Glib.GType_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => GType_Invalid);
---        else
---           declare
---              Result : GType_Array (1 .. N);
---           begin
---              for R in 0 .. N - 1 loop
---                 Result (R + 1) := Arr (Natural (R));
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_GType_Array;
 
 end Gtkada.Bindings;
