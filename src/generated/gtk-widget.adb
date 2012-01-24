@@ -40,6 +40,30 @@ package body Gtk.Widget is
          return Gtk.Widget.Gtk_Widget (Glib.Object.Get_User_Data (R, Stub));end Convert;
 
 
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Allocation is new
+      Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
+      pragma Warnings (On);
+   begin
+      return To_Allocation (Glib.Values.Get_Address (Value));
+   end Get_Allocation;
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Requisition is new
+      Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
+      pragma Warnings (On);
+   begin
+      return To_Requisition (Glib.Values.Get_Address (Value));
+   end Get_Requisition;
+
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Widget_Record);
    pragma Unreferenced (Type_Conversion);

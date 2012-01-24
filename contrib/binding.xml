@@ -2317,6 +2317,7 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get_valist" bind="False"/><!-- varargs -->
+     <method id="gtk_widget_get_style_context" bind="False"/><!-- Needs Gtk.Style_Context-->
      <method id="gtk_widget_get_accessible" bind="False"/> <!-- Requires ATK -->
      <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
      <method id="gtk_widget_get_settings" bind="False"/><!-- in Gtk.Settings -->
@@ -2402,12 +2403,44 @@ While looking up a recently used file is as simple as using:
        <with_spec pkg="Gdk.Rectangle"/>
        <type>
    subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
-
+       </type>
+       <spec>
    type Gtk_Requisition_Access is access all Gtk_Requisition;
    type Gtk_Allocation_Access is access all Gtk_Allocation;
    pragma Convention (C, Gtk_Requisition_Access);
    pragma Convention (C, Gtk_Allocation_Access);
-       </type>
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
+   --  Convert values received as callback parameters
+       </spec>
+       <body>
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Allocation is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
+      pragma Warnings (On);
+   begin
+      return To_Allocation (Glib.Values.Get_Address (Value));
+   end Get_Allocation;
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Requisition is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
+      pragma Warnings (On);
+   begin
+      return To_Requisition (Glib.Values.Get_Address (Value));
+   end Get_Requisition;
+       </body>
      </extra>
 
      <!-- Need GtkAda-custom binding -->
@@ -2417,7 +2450,6 @@ While looking up a recently used file is as simple as using:
        <parameter name="Region" direction="in"/>
      </method>
      <method id="gtk_widget_translate_coordinates" bind="False"/><!-- function with out param -->
-     <method id="gtk_widget_get_style_context" bind="False"/><!-- Needs Gtk.Style_Context-->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

@@ -329,11 +329,6 @@ package Gtk.Widget is
 
    subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
 
-   type Gtk_Requisition_Access is access all Gtk_Requisition;
-   type Gtk_Allocation_Access is access all Gtk_Allocation;
-   pragma Convention (C, Gtk_Requisition_Access);
-   pragma Convention (C, Gtk_Allocation_Access);
-
    ------------------
    -- Constructors --
    ------------------
@@ -2324,6 +2319,21 @@ package Gtk.Widget is
    --  Gtk.Widget.Set_State_Flags.
    --  Since: gtk+ 3.0
    --  "flags": State flags to turn off
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   type Gtk_Requisition_Access is access all Gtk_Requisition;
+   type Gtk_Allocation_Access is access all Gtk_Allocation;
+   pragma Convention (C, Gtk_Requisition_Access);
+   pragma Convention (C, Gtk_Allocation_Access);
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
+   --  Convert values received as callback parameters
 
    ---------------
    -- Functions --

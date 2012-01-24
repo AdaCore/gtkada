@@ -96,24 +96,4 @@ package Gtk.Widget is
    --  you must override the default handler. Note also that this handler
    --  is automatically inherited by children of this class.
 
-   procedure Set_Allocation
-     (Widget : access Gtk_Widget_Record'Class; Alloc : Gtk_Allocation);
-   --  Modifies directly the internal field of Widget to register the new
-   --  allocation.
-   --  Beware that the only use of this method is inside a callback set
-   --  by Set_Default_Size_Allocate_Handler. If you simply want to resize
-   --  or reposition a widget, use Size_Allocate instead.
-
-   --------------------
-   -- GValue support --
-   --------------------
-
-   function Get_Requisition
-     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
-   --  Convert a value into a Gtk_Requisition_Access.
-
-   function Get_Allocation
-     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
-   --  Convert a value into a Gtk_Allocation_Access.
-
 end Gtk.Widget;
