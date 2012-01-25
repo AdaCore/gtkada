@@ -53,6 +53,8 @@ Where the package node is defined as follows:
            obsolescent=".." <!--  Whether this method is obsolete" -->
            into="..."      <!-- optional, name of C class in which to
                                 add the bindings -->
+           transfer-ownership='none'  <!-- set to 'full' to indicate the return
+                                value must be freed by the caller -->
            return_as_param="..." <!-- optional, replace return parameter with
                                 an out parameter with this name -->
            return="..."    <!-- Override C type for the returned value, or
@@ -374,6 +376,16 @@ class GtkAdaMethod(object):
         if self.node is not None:
             return self.node.get("return_as_param", None)
         return None
+
+    def transfer_ownership(self, girnode):
+        """Whether the value returned by this method needs to be free by the
+           caller.
+        """
+        default = girnode.get('transfer-ownership', 'none')
+        if self.node is not None:
+            return self.node.get('transfer-ownership', default) == 'full'
+        else:
+            return default == 'full'
 
     def get_body(self):
         if self.node is not None:

@@ -48,6 +48,10 @@ package Gtkada.Bindings is
    --  In all cases, Val is supposed to be an access to T.
    --  In Ada2012, these could be replaced with expression functions instead.
 
+   function Value_And_Free
+     (Str : Interfaces.C.Strings.chars_ptr) return String;
+   --  Returns the value stored in Str, and free the memory occupied by Str.
+
    -------------
    -- Strings --
    -------------

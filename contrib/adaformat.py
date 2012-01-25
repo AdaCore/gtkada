@@ -77,10 +77,6 @@ class CType(object):
         self.is_ptr = False
         self.param = ada     # type as parameter
         self.cparam = ada    # type for Ada subprograms binding to C
-        self.returns = (self.param, self.cparam, "%(var)s", [], "")
-                             # third: converts from C to Ada value
-                             # fourth: list of needed temporary variables
-                             # fifth: extra cleanup to perform, if specified
         self.cleanup = None  # If set, a tmp variable is created to hold the
                              # result of convert during the call, and is then
                              # free by calling this cleanup. Use "%s" as the
@@ -95,6 +91,23 @@ class CType(object):
 
         self.allow_none = False
         self.val_or_null = None
+
+        # If True, the value returned from C must be freed by the caller
+
+        self.transfer_ownership = False
+
+    def returns_from_c(self):
+        """How to convert the value returned from C to Ada.
+           This function returns a tuple:
+              [0] = name of the Ada type
+              [1] = name of the C type
+              [2] = Conversion from C type to Ada type. The value is read
+                    from "%(var)s". It can also use "%(tmp)s" if a temporary
+                    variable is needed.
+              [3] = List of needed temporary variables (except for the one
+                    corresponding to "%(tmp)s".
+        """
+        return (self.param, self.cparam, "%(var)s", [])
 
     def convert_to_c(self):
         """How to convert from Ada parameter to C parameter. If it uses %(tmp)s,
@@ -124,15 +137,16 @@ class CType(object):
     def as_return(self, pkg=None):
         """See CType documentation for a description of the returned tuple"""
 
-        if self.returns and pkg:
+        returns = self.returns_from_c()
+
+        if returns and pkg:
             p = self.ada[:self.ada.rfind(".")]
-            return (self.returns[0].replace("%s." % pkg.name, ""),
-                    self.returns[1].replace("%s." % pkg.name, ""),
-                    self.returns[2],
-                    self.returns[3],
-                    self.returns[4])
+            return (returns[0].replace("%s." % pkg.name, ""),
+                    returns[1].replace("%s." % pkg.name, ""),
+                    returns[2],
+                    returns[3])
         else:
-            return self.returns
+            return returns
 
     def record_field_type(self, pkg=None):
         """The type to use when self is used in a record.
@@ -175,10 +189,8 @@ class CType(object):
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
         elif lang == "ada->c":
-            ret = self.returns and self.returns[2]
-            ret_cleanup = ""
-            if self.returns:
-                ret_cleanup = self.returns[4]
+            returns = self.returns_from_c()
+            ret = returns and returns[2]
 
             if ret and ret != "%(var)s" and mode != "in":
                 # An "out" parameter for an enumeration requires a temporary
@@ -187,7 +199,7 @@ class CType(object):
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall="",
-                    postcall='%s := %s;%s' % (name, ret % {"var":tmp}, ret_cleanup),
+                    postcall='%s := %s;' % (name, ret % {"var":tmp}),
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
             elif "%(tmp)" in self.convert_to_c():
@@ -196,7 +208,7 @@ class CType(object):
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall=self.convert_to_c() % {"var":name, "tmp":tmp},
-                    postcall=self.cleanup % tmp + ret_cleanup,
+                    postcall=self.cleanup % tmp,
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)])
 
             elif self.cleanup:
@@ -208,20 +220,19 @@ class CType(object):
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall='',
-                    postcall=self.cleanup % tmp + ret_cleanup,
+                    postcall=self.cleanup % tmp,
                     tmpvars=[Local_Var(
                         name=tmp, type=AdaType(self.cparam), default=conv)])
 
             else:
                 conv = self.convert_to_c() % {"var":name}
                 call = VariableCall(
-                    call=wrapper % conv,
-                    precall='', postcall=ret_cleanup, tmpvars=[])
+                    call=wrapper % conv, precall='', postcall="", tmpvars=[])
 
             return call
 
         elif lang == "c->ada":
-            ret = self.returns
+            ret = self.returns_from_c()
             return VariableCall(
                 call=wrapper % (ret[2] % {"var": name}),
                 precall='', postcall='', tmpvars=ret[3])
@@ -250,7 +261,9 @@ class Enum(CType):
             CType.__init__(self, ada, property)
 
         self.cparam = "Integer"
-        self.returns = (self.param, self.cparam, "%s'Val (%%(var)s)" % ada, [], "")
+
+    def returns_from_c(self):
+        return (self.param, self.cparam, "%s'Val (%%(var)s)" % self.ada, [])
 
     def convert_to_c(self):
         return "%s'Pos (%%(var)s)" % self.ada
@@ -285,20 +298,20 @@ class GObject(CType):
         self.classwide = False  # Parameter should include "'Class"
         self.userecord = True  # Parameter should be "access .._Record"
 
-        base = ada
+    def returns_from_c(self):
+        base = self.ada
         if "." in base:
             base = base[base.rfind(".")+1:]
         stub = "Stub_%s" % base
 
-        if ada == "Glib.Object.GObject":
+        if self.ada == "Glib.Object.GObject":
             conv = "Get_User_Data (%%(var)s, %s)" % stub
         else:
-            conv = "%s (Get_User_Data (%%(var)s, %s))" % (ada, stub)
+            conv = "%s (Get_User_Data (%%(var)s, %s))" % (self.ada, stub)
 
-        self.returns = (
-            self.param, self.cparam, conv,
-            [Local_Var(stub, AdaType("%s_Record" % ada, in_spec=False))],
-            "")
+        return (self.param, self.cparam, conv,
+                [Local_Var(
+                    stub, AdaType("%s_Record" % self.ada, in_spec=False))])
 
     def convert_to_c(self):
         if self.allow_none:
@@ -327,10 +340,8 @@ class GObject(CType):
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
-    def __init__(self, ada):
-        GObject.__init__(self, ada)
-        self.returns = (
-            self.param, self.cparam, "From_Object (%(var)s)", [], "")
+    def returns_from_c(self):
+        return (self.param, self.cparam, "From_Object (%(var)s)", [])
 
     def as_ada_param(self, pkg):
         self.userecord = False
@@ -342,13 +353,10 @@ class UTF8(CType):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
         self.cparam = "Interfaces.C.Strings.chars_ptr"
         self.cleanup = "Free (%s);"
-        self.returns = (self.param, self.cparam,
-                        "Interfaces.C.Strings.Value (%(var)s)", [], "")
-        #self.returns = (  # MANU
-        #    self.param, self.cparam,
-        #    "C_Return := %(var)s; %(tmp)s := Interfaces.C.Strings.Value (C_Return)",
-        #    [Local_Var("C_Return", self.cparam)],
-        #    "Free (C_Return);")
+
+    def returns_from_c(self):
+        return (self.param, self.cparam,
+                "Interfaces.C.Strings.Value (%(var)s)", [])
 
     def convert_to_c(self):
         if self.allow_none:
@@ -367,9 +375,10 @@ class UTF8_List(CType):
         CType.__init__(self, "GNAT.Strings.String_List", "")
         self.cparam = "Interfaces.C.Strings.chars_ptr_array"
         self.cleanup = "GtkAda.Types.Free (%s);"
-        self.returns = (
-            self.param, "chars_ptr_array_access",
-            "To_String_List (%(var)s.all)", [], "")
+
+    def returns_from_c(self):
+        return (self.param, "chars_ptr_array_access",
+                "To_String_List (%(var)s.all)", [])
 
     def record_field_type(self, pkg=None):
         return "Interfaces.C.Strings.char_array_access"
@@ -422,10 +431,11 @@ class Callback(CType):
         CType.__init__(self, ada, "")
         self.cparam = "System.Address"
 
+    def returns_from_c(self):
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user
         # callback.
-        self.returns = None
+        return None
 
     def convert_to_c(self):
         return "%(var)s'Address"
@@ -436,7 +446,6 @@ class Interface(CType):
         CType.__init__(self, ada, "")
         self.cparam = ada
         self.is_ptr = False
-        self.returns = (self.param, self.cparam, "%(var)s", [], "")
 
 
 class List(CType):
@@ -445,9 +454,11 @@ class List(CType):
         self.__adapkg = ada[:ada.rfind(".")]
         self.cparam = "System.Address"
         self.is_ptr = False
-        self.returns = (   # Use %(tmp)s so forces the use of temporary var.
-           self.param, self.cparam,
-            "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [], "")
+
+    def returns_from_c(self):
+        return (   # Use %(tmp)s so forces the use of temporary var.
+            self.param, self.cparam,
+            "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
 
     @staticmethod
     def register_ada_list(pkg, ada, ctype, single=False):
@@ -490,7 +501,6 @@ class AdaType(CType):
         CType.__init__(self, adatype, "")
         self.param   = adatype
         self.cparam  = ctype or adatype
-        self.returns = (self.param, self.cparam, "%(var)s", [], "")
         self.__convert = convert
         self.cleanup = None
         self.is_ptr  = adatype.startswith("access ")
@@ -590,7 +600,8 @@ class AdaNaming(object):
                 Proxy(self.__camel_case_to_ada(girname))))
 
     def type(self, name="", cname=None, pkg=None, isArray=False,
-             allow_access=True, allow_none=False, userecord=True, useclass=True):
+             allow_access=True, allow_none=False, userecord=True, useclass=True,
+             transfer_ownership=False):
         """Build an instance of CType for the corresponding cname.
            A type a described in a .gir file
            'pkg' is an instance of Package, to which extra
@@ -644,6 +655,7 @@ class AdaNaming(object):
         t.classwide = useclass
         t.allow_none = allow_none
         t.userecord = userecord
+        t.transfer_ownership = transfer_ownership
 
         # Needs to be called last, since the output might depend on all the
         # attributes set above
@@ -976,9 +988,6 @@ class Subprogram(object):
         self._deprecated = (False, "") # True if deprecated
         self._manual_body = None  # Written by user explicitly
 
-        self.transfer_ownership = True # True if the value returned from C needs to
-                             # be freed by the user.
-
         self.lang = "ada"  # Language for the types of parameters
 
         if code and code[-1] != ";":
@@ -1219,16 +1228,9 @@ class Subprogram(object):
                             "Tmp_Return",
                             tmpvars)
 
-                elif postcall:# or self.transfer_ownership:
+                elif postcall:
                     tmpvars.append(Local_Var("Tmp_Return", returns[1]))
                     call = "Tmp_Return := %s" % call
-
-                    #if postcall:
-                    #    return ("%sreturn Tmp_Return : %s := %s do %send return;"
-                    #            % (precall, returns[0], call, postcall),
-                    #            returns[2] % {"var": "Tmp_Return"},
-                    #            tmpvars)
-                    #else:
                     return ("%s%s;%s" % (precall, call, postcall),
                             returns[2] % {"var": "Tmp_Return"},
                             tmpvars)

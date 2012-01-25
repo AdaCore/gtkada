@@ -155,5 +155,18 @@ package body Gtkada.Bindings is
       end;
    end To_Gint_Array_Zero_Terminated;
 
+   --------------------
+   -- Value_And_Free --
+   --------------------
+
+   function Value_And_Free
+     (Str : Interfaces.C.Strings.chars_ptr) return String
+   is
+      Val : constant String := Value (Str);
+      Tmp : chars_ptr := Str;
+   begin
+      Free (Tmp);
+      return Val;
+   end Value_And_Free;
 
 end Gtkada.Bindings;
