@@ -650,6 +650,9 @@ instance Gtk.Window.Move, should be used for top-level widgets.
 
 Set_USize has been removed: use Set_Size_Request instead.
 
+Size_Request is now obsolescent. The recommend replacement is to use
+Get_Preferred_Width and Get_Preferred_Height.
+
 Set_Default_Colormap, Get_Default_Colormap, Push_Colormap and Pop_Colormap were
 removed. They are no longer needed, since all drawing is done through Cairo
 which doesn't use a colormap but directly the red/green/blue components.
