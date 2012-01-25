@@ -9,7 +9,9 @@ project Shared is
    type Boolean_Type is ("True", "False");
    Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
    Build_Opengl : Boolean_Type := external ("OPENGL", "True");
-   Build_Extra  : Boolean_Type := external ("EXTRA",  "True");
+
+   type Yes_No is ("yes", "no");
+   Build_Extra  : Yes_No := external ("EXTRA",  "no");
 
    for Source_Files use ();
 

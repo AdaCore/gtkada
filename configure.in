@@ -32,6 +32,17 @@ AM_PANGO_UNDERLINE_ERROR
 ALL_LINGUAS="fr"
 AM_GNU_GETTEXT
 
+# Should we compile with gtkextra ?
+AC_MSG_CHECKING(for gtkextra)
+AC_ARG_ENABLE(gtkextra,
+  [AC_HELP_STRING(
+    [--enable-gtkextra],
+    [Build the gtkextra widgets])],
+  HAVE_GTKEXTRA=$enableval,
+  HAVE_GTKEXTRA=no)
+AC_MSG_RESULT($HAVE_GTKEXTRA)
+AC_SUBST(HAVE_GTKEXTRA)
+
 # try to find OpenGL if present
 AM_CHECK_OPENGL
 
