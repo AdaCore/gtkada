@@ -1,0 +1,678 @@
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
+pragma Ada_05;
+
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.GSlist;             use Glib.GSlist;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
+
+package Gtk.Enums is
+
+   type Gtk_Arrow_Type is (
+      Arrow_Up,
+      Arrow_Down,
+      Arrow_Left,
+      Arrow_Right,
+      Arrow_None);
+   pragma Convention (C, Gtk_Arrow_Type);
+   --  Used to indicate the direction in which a Gtk.Arrow.Gtk_Arrow should
+   --  point.
+
+   type Gtk_Attach_Options is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Attach_Options);
+   --  Denotes the expansion properties that a widget will have when it (or
+   --  its parent) is resized.
+
+   Expand : constant Gtk_Attach_Options := 1;
+   Shrink : constant Gtk_Attach_Options := 2;
+   Fill : constant Gtk_Attach_Options := 4;
+
+   type Gtk_Button_Box_Style is (
+      Buttonbox_Spread,
+      Buttonbox_Edge,
+      Buttonbox_Start,
+      Buttonbox_End,
+      Buttonbox_Center);
+   pragma Convention (C, Gtk_Button_Box_Style);
+   --  Used to dictate the style that a Gtk.Button_Box.Gtk_Button_Box uses to
+   --  layout the buttons it contains. (See also:
+   --  Gtk.Vbutton_Box.Gtk_Vbutton_Box and Gtk.Hbutton_Box.Gtk_Hbutton_Box).
+
+   for Gtk_Button_Box_Style use (
+      Buttonbox_Spread => 1,
+      Buttonbox_Edge => 2,
+      Buttonbox_Start => 3,
+      Buttonbox_End => 4,
+      Buttonbox_Center => 5);
+
+   type Gtk_Corner_Type is (
+      Corner_Top_Left,
+      Corner_Bottom_Left,
+      Corner_Top_Right,
+      Corner_Bottom_Right);
+   pragma Convention (C, Gtk_Corner_Type);
+   --  Specifies which corner a child widget should be placed in when packed
+   --  into a Gtk.Scrolled_Window.Gtk_Scrolled_Window. This is effectively the
+   --  opposite of where the scroll bars are placed.
+
+   type Gtk_Delete_Type is (
+      Delete_Chars,
+      Delete_Word_Ends,
+      Delete_Words,
+      Delete_Display_Lines,
+      Delete_Display_Line_Ends,
+      Delete_Paragraph_Ends,
+      Delete_Paragraphs,
+      Delete_Whitespace);
+   pragma Convention (C, Gtk_Delete_Type);
+
+
+   type Gtk_Direction_Type is (
+      Dir_Tab_Forward,
+      Dir_Tab_Backward,
+      Dir_Up,
+      Dir_Down,
+      Dir_Left,
+      Dir_Right);
+   pragma Convention (C, Gtk_Direction_Type);
+
+
+   type Gtk_Expander_Style is (
+      Expander_Collapsed,
+      Expander_Semi_Collapsed,
+      Expander_Semi_Expanded,
+      Expander_Expanded);
+   pragma Convention (C, Gtk_Expander_Style);
+   --  Used to specify the style of the expanders drawn by a
+   --  Gtk.Tree_View.Gtk_Tree_View.
+
+   type Gtk_Icon_Size is (
+      Icon_Size_Invalid,
+      Icon_Size_Menu,
+      Icon_Size_Small_Toolbar,
+      Icon_Size_Large_Toolbar,
+      Icon_Size_Button,
+      Icon_Size_Dnd,
+      Icon_Size_Dialog);
+   pragma Convention (C, Gtk_Icon_Size);
+
+
+   type Gtk_Justification is (
+      Justify_Left,
+      Justify_Right,
+      Justify_Center,
+      Justify_Fill);
+   pragma Convention (C, Gtk_Justification);
+   --  Used for justifying the text inside a Gtk.Label.Gtk_Label widget. (See
+   --  also Gtk.Alignment.Gtk_Alignment).
+
+   type Gtk_Menu_Direction_Type is (
+      Menu_Dir_Parent,
+      Menu_Dir_Child,
+      Menu_Dir_Next,
+      Menu_Dir_Prev);
+   pragma Convention (C, Gtk_Menu_Direction_Type);
+   --  An enumeration representing directional movements within a menu.
+
+   type Gtk_Movement_Step is (
+      Movement_Logical_Positions,
+      Movement_Visual_Positions,
+      Movement_Words,
+      Movement_Display_Lines,
+      Movement_Display_Line_Ends,
+      Movement_Paragraphs,
+      Movement_Paragraph_Ends,
+      Movement_Pages,
+      Movement_Buffer_Ends,
+      Movement_Horizontal_Pages);
+   pragma Convention (C, Gtk_Movement_Step);
+
+
+   type Gtk_Number_Up_Layout is (
+      Left_To_Right_Top_To_Bottom,
+      Left_To_Right_Bottom_To_Top,
+      Right_To_Left_Top_To_Bottom,
+      Right_To_Left_Bottom_To_Top,
+      Top_To_Bottom_Left_To_Right,
+      Top_To_Bottom_Right_To_Left,
+      Bottom_To_Top_Left_To_Right,
+      Bottom_To_Top_Right_To_Left);
+   pragma Convention (C, Gtk_Number_Up_Layout);
+   --  Used to determine the layout of pages on a sheet when printing multiple
+   --  pages per sheet.
+
+   type Gtk_Orientation is (
+      Orientation_Horizontal,
+      Orientation_Vertical);
+   pragma Convention (C, Gtk_Orientation);
+   --  Represents the orientation of widgets which can be switched between
+   --  horizontal and vertical orientation on the fly, like
+   --  Gtk.Toolbar.Gtk_Toolbar.
+
+   type Gtk_Pack_Direction is (
+      Pack_Direction_Ltr,
+      Pack_Direction_Rtl,
+      Pack_Direction_Ttb,
+      Pack_Direction_Btt);
+   pragma Convention (C, Gtk_Pack_Direction);
+   --  Determines how widgets should be packed insided menubars and menuitems
+   --  contained in menubars.
+
+   type Gtk_Pack_Type is (
+      Pack_Start,
+      Pack_End);
+   pragma Convention (C, Gtk_Pack_Type);
+   --  Represents the packing location Gtk.Box.Gtk_Box children. (See:
+   --  Gtk.Box.Gtk_Vbox, Gtk.Box.Gtk_Hbox, and Gtk.Button_Box.Gtk_Button_Box).
+
+   type Gtk_Page_Orientation is (
+      Page_Orientation_Portrait,
+      Page_Orientation_Landscape,
+      Page_Orientation_Reverse_Portrait,
+      Page_Orientation_Reverse_Landscape);
+   pragma Convention (C, Gtk_Page_Orientation);
+
+
+   type Gtk_Page_Set is (
+      Page_Set_All,
+      Page_Set_Even,
+      Page_Set_Odd);
+   pragma Convention (C, Gtk_Page_Set);
+
+
+   type Gtk_Path_Priority_Type is (
+      Path_Prio_Lowest,
+      Path_Prio_Gtk,
+      Path_Prio_Application,
+      Path_Prio_Theme,
+      Path_Prio_Rc,
+      Path_Prio_Highest);
+   pragma Convention (C, Gtk_Path_Priority_Type);
+
+
+   for Gtk_Path_Priority_Type use (
+      Path_Prio_Lowest => 0,
+      Path_Prio_Gtk => 4,
+      Path_Prio_Application => 8,
+      Path_Prio_Theme => 10,
+      Path_Prio_Rc => 12,
+      Path_Prio_Highest => 15);
+
+   type Gtk_Path_Type is (
+      Path_Widget,
+      Path_Widget_Class,
+      Path_Class);
+   pragma Convention (C, Gtk_Path_Type);
+
+
+   type Gtk_Policy_Type is (
+      Policy_Always,
+      Policy_Automatic,
+      Policy_Never);
+   pragma Convention (C, Gtk_Policy_Type);
+   --  Determines when a scroll bar will be visible.
+
+   type Gtk_Position_Type is (
+      Pos_Left,
+      Pos_Right,
+      Pos_Top,
+      Pos_Bottom);
+   pragma Convention (C, Gtk_Position_Type);
+   --  Describes which edge of a widget a certain feature is positioned at,
+   --  e.g. the tabs of a Gtk.Notebook.Gtk_Notebook, the handle of a
+   --  Gtk.Handle_Box.Gtk_Handle_Box or the label of a Gtk.Scale.Gtk_Scale.
+
+   type Gtk_Print_Duplex is (
+      Print_Duplex_Simplex,
+      Print_Duplex_Horizontal,
+      Print_Duplex_Vertical);
+   pragma Convention (C, Gtk_Print_Duplex);
+
+
+   type Gtk_Print_Pages is (
+      Print_Pages_All,
+      Print_Pages_Current,
+      Print_Pages_Ranges,
+      Print_Pages_Selection);
+   pragma Convention (C, Gtk_Print_Pages);
+
+
+   type Gtk_Print_Quality is (
+      Print_Quality_Low,
+      Print_Quality_Normal,
+      Print_Quality_High,
+      Print_Quality_Draft);
+   pragma Convention (C, Gtk_Print_Quality);
+
+
+   type Gtk_Relief_Style is (
+      Relief_Normal,
+      Relief_Half,
+      Relief_None);
+   pragma Convention (C, Gtk_Relief_Style);
+   --  Indicated the relief to be drawn around a Gtk.Button.Gtk_Button.
+
+   type Gtk_Resize_Mode is (
+      Resize_Parent,
+      Resize_Queue,
+      Resize_Immediate);
+   pragma Convention (C, Gtk_Resize_Mode);
+
+
+   type Gtk_Scroll_Step is (
+      Scroll_Steps,
+      Scroll_Pages,
+      Scroll_Ends,
+      Scroll_Horizontal_Steps,
+      Scroll_Horizontal_Pages,
+      Scroll_Horizontal_Ends);
+   pragma Convention (C, Gtk_Scroll_Step);
+
+
+   type Gtk_Scroll_Type is (
+      Scroll_None,
+      Scroll_Jump,
+      Scroll_Step_Backward,
+      Scroll_Step_Forward,
+      Scroll_Page_Backward,
+      Scroll_Page_Forward,
+      Scroll_Step_Up,
+      Scroll_Step_Down,
+      Scroll_Page_Up,
+      Scroll_Page_Down,
+      Scroll_Step_Left,
+      Scroll_Step_Right,
+      Scroll_Page_Left,
+      Scroll_Page_Right,
+      Scroll_Start,
+      Scroll_End);
+   pragma Convention (C, Gtk_Scroll_Type);
+
+
+   type Gtk_Scrollable_Policy is (
+      Scroll_Minimum,
+      Scroll_Natural);
+   pragma Convention (C, Gtk_Scrollable_Policy);
+   --  Defines the policy to be used in a scrollable widget when updating the
+   --  scrolled window adjustments in a given orientation.
+
+   type Gtk_Selection_Mode is (
+      Selection_None,
+      Selection_Single,
+      Selection_Browse,
+      Selection_Multiple);
+   pragma Convention (C, Gtk_Selection_Mode);
+   --  Used to control what selections users are allowed to make.
+
+   type Gtk_Sensitivity_Type is (
+      Sensitivity_Auto,
+      Sensitivity_On,
+      Sensitivity_Off);
+   pragma Convention (C, Gtk_Sensitivity_Type);
+   --  Determines how GTK+ handles the sensitivity of stepper arrows at the
+   --  end of range widgets.
+
+   type Gtk_Shadow_Type is (
+      Shadow_None,
+      Shadow_In,
+      Shadow_Out,
+      Shadow_Etched_In,
+      Shadow_Etched_Out);
+   pragma Convention (C, Gtk_Shadow_Type);
+   --  Used to change the appearance of an outline typically provided by a
+   --  Gtk.Frame.Gtk_Frame.
+
+   type Gtk_Size_Request_Mode is (
+      Height_For_Width,
+      Width_For_Height,
+      Constant_Size);
+   pragma Convention (C, Gtk_Size_Request_Mode);
+   --  Specifies a preference for height-for-width or width-for-height
+   --  geometry management.
+
+   type Gtk_Sort_Type is (
+      Sort_Ascending,
+      Sort_Descending);
+   pragma Convention (C, Gtk_Sort_Type);
+   --  Determines the direction of a sort.
+
+   type Gtk_State_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_State_Flags);
+   --  Describes a widget state.
+
+   Gtk_State_Flag_Normal : constant Gtk_State_Flags := 0;
+   Gtk_State_Flag_Active : constant Gtk_State_Flags := 1;
+   Gtk_State_Flag_Prelight : constant Gtk_State_Flags := 2;
+   Gtk_State_Flag_Selected : constant Gtk_State_Flags := 4;
+   Gtk_State_Flag_Insensitive : constant Gtk_State_Flags := 8;
+   Gtk_State_Flag_Inconsistent : constant Gtk_State_Flags := 16;
+   Gtk_State_Flag_Focused : constant Gtk_State_Flags := 32;
+
+   type Gtk_State_Type is (
+      State_Normal,
+      State_Active,
+      State_Prelight,
+      State_Selected,
+      State_Insensitive,
+      State_Inconsistent,
+      State_Focused);
+   pragma Convention (C, Gtk_State_Type);
+   --  This type indicates the current state of a widget; the state determines
+   --  how the widget is drawn. The Gtk.Enums.Gtk_State_Type enumeration is
+   --  also used to identify different colors in a Gtk.Style.Gtk_Style for
+   --  drawing, so states can be used for subparts of a widget as well as
+   --  entire widgets.
+
+   type Gtk_Text_Direction is (
+      Text_Dir_None,
+      Text_Dir_Ltr,
+      Text_Dir_Rtl);
+   pragma Convention (C, Gtk_Text_Direction);
+
+
+   type Gtk_Text_Window_Type is (
+      Text_Window_Private,
+      Text_Window_Widget,
+      Text_Window_Text,
+      Text_Window_Left,
+      Text_Window_Right,
+      Text_Window_Top,
+      Text_Window_Bottom);
+   pragma Convention (C, Gtk_Text_Window_Type);
+
+
+   type Gtk_Tree_View_Grid_Lines is (
+      Grid_Lines_None,
+      Grid_Lines_Horizontal,
+      Grid_Lines_Vertical,
+      Grid_Lines_Both);
+   pragma Convention (C, Gtk_Tree_View_Grid_Lines);
+   --  Used to indicate which grid lines to draw in a tree view.
+
+   type Gtk_Toolbar_Space_Style is (
+      Toolbar_Space_Empty,
+      Toolbar_Space_Line);
+   pragma Convention (C, Gtk_Toolbar_Space_Style);
+
+
+   type Gtk_Toolbar_Style is (
+      Toolbar_Icons,
+      Toolbar_Text,
+      Toolbar_Both,
+      Toolbar_Both_Horiz);
+   pragma Convention (C, Gtk_Toolbar_Style);
+   --  Used to customize the appearance of a Gtk.Toolbar.Gtk_Toolbar. Note
+   --  that setting the toolbar style overrides the user's preferences for the
+   --  default toolbar style. Note that if the button has only a label set and
+   --  GTK_TOOLBAR_ICONS is used, the label will be visible, and vice versa.
+
+   type Gtk_Unit is (
+      Pixel,
+      Points,
+      Inch,
+      Mm);
+   pragma Convention (C, Gtk_Unit);
+
+
+   type Gtk_Window_Position is (
+      Win_Pos_None,
+      Win_Pos_Center,
+      Win_Pos_Mouse,
+      Win_Pos_Center_Always,
+      Win_Pos_Center_On_Parent);
+   pragma Convention (C, Gtk_Window_Position);
+   --  Window placement can be influenced using this enumeration. Note that
+   --  using GTK_WIN_POS_CENTER_ALWAYS is almost always a bad idea. It won't
+   --  necessarily work well with all window managers or on all windowing
+   --  systems.
+
+   type Gtk_Window_Type is (
+      Window_Toplevel,
+      Window_Popup);
+   pragma Convention (C, Gtk_Window_Type);
+   --  A Gtk.Window.Gtk_Window can be one of these types. Most things you'd
+   --  consider a "window" should have type GTK_WINDOW_TOPLEVEL; windows with
+   --  this type are managed by the window manager and have a frame by default
+   --  (call gtk_window_set_decorated to toggle the frame). Windows with type
+   --  GTK_WINDOW_POPUP are ignored by the window manager; window manager
+   --  keybindings won't work on them, the window manager won't decorate the
+   --  window with a frame, many GTK+ features that rely on the window manager
+   --  will not work (e.g. resize grips and maximization/minimization).
+   --  GTK_WINDOW_POPUP is used to implement widgets such as Gtk.Menu.Gtk_Menu
+   --  or tooltips that you normally don't think of as windows per se. Nearly
+   --  all windows should be GTK_WINDOW_TOPLEVEL. In particular, do not use
+   --  GTK_WINDOW_POPUP just to turn off the window borders; use
+   --  gtk_window_set_decorated for that.
+
+   type Gtk_Wrap_Mode is (
+      Wrap_None,
+      Wrap_Char,
+      Wrap_Word,
+      Wrap_Word_Char);
+   pragma Convention (C, Gtk_Wrap_Mode);
+   --  Describes a type of line wrapping.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Arrow_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Arrow_Type);
+   type Property_Gtk_Arrow_Type is new Gtk_Arrow_Type_Properties.Property;
+
+   package Gtk_Attach_Options_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Attach_Options);
+   type Property_Gtk_Attach_Options is new Gtk_Attach_Options_Properties.Property;
+
+   package Gtk_Button_Box_Style_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
+   type Property_Gtk_Button_Box_Style is new Gtk_Button_Box_Style_Properties.Property;
+
+   package Gtk_Corner_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Corner_Type);
+   type Property_Gtk_Corner_Type is new Gtk_Corner_Type_Properties.Property;
+
+   package Gtk_Delete_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Delete_Type);
+   type Property_Gtk_Delete_Type is new Gtk_Delete_Type_Properties.Property;
+
+   package Gtk_Direction_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Direction_Type);
+   type Property_Gtk_Direction_Type is new Gtk_Direction_Type_Properties.Property;
+
+   package Gtk_Expander_Style_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Expander_Style);
+   type Property_Gtk_Expander_Style is new Gtk_Expander_Style_Properties.Property;
+
+   package Gtk_Icon_Size_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Icon_Size);
+   type Property_Gtk_Icon_Size is new Gtk_Icon_Size_Properties.Property;
+
+   package Gtk_Justification_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Justification);
+   type Property_Gtk_Justification is new Gtk_Justification_Properties.Property;
+
+   package Gtk_Menu_Direction_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Menu_Direction_Type);
+   type Property_Gtk_Menu_Direction_Type is new Gtk_Menu_Direction_Type_Properties.Property;
+
+   package Gtk_Movement_Step_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Movement_Step);
+   type Property_Gtk_Movement_Step is new Gtk_Movement_Step_Properties.Property;
+
+   package Gtk_Number_Up_Layout_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Number_Up_Layout);
+   type Property_Gtk_Number_Up_Layout is new Gtk_Number_Up_Layout_Properties.Property;
+
+   package Gtk_Orientation_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Orientation);
+   type Property_Gtk_Orientation is new Gtk_Orientation_Properties.Property;
+
+   package Gtk_Pack_Direction_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Pack_Direction);
+   type Property_Gtk_Pack_Direction is new Gtk_Pack_Direction_Properties.Property;
+
+   package Gtk_Pack_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Pack_Type);
+   type Property_Gtk_Pack_Type is new Gtk_Pack_Type_Properties.Property;
+
+   package Gtk_Page_Orientation_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Page_Orientation);
+   type Property_Gtk_Page_Orientation is new Gtk_Page_Orientation_Properties.Property;
+
+   package Gtk_Page_Set_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Page_Set);
+   type Property_Gtk_Page_Set is new Gtk_Page_Set_Properties.Property;
+
+   package Gtk_Path_Priority_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Path_Priority_Type);
+   type Property_Gtk_Path_Priority_Type is new Gtk_Path_Priority_Type_Properties.Property;
+
+   package Gtk_Path_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Path_Type);
+   type Property_Gtk_Path_Type is new Gtk_Path_Type_Properties.Property;
+
+   package Gtk_Policy_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Policy_Type);
+   type Property_Gtk_Policy_Type is new Gtk_Policy_Type_Properties.Property;
+
+   package Gtk_Position_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Position_Type);
+   type Property_Gtk_Position_Type is new Gtk_Position_Type_Properties.Property;
+
+   package Gtk_Print_Duplex_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Print_Duplex);
+   type Property_Gtk_Print_Duplex is new Gtk_Print_Duplex_Properties.Property;
+
+   package Gtk_Print_Pages_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Print_Pages);
+   type Property_Gtk_Print_Pages is new Gtk_Print_Pages_Properties.Property;
+
+   package Gtk_Print_Quality_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Print_Quality);
+   type Property_Gtk_Print_Quality is new Gtk_Print_Quality_Properties.Property;
+
+   package Gtk_Relief_Style_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Relief_Style);
+   type Property_Gtk_Relief_Style is new Gtk_Relief_Style_Properties.Property;
+
+   package Gtk_Resize_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Resize_Mode);
+   type Property_Gtk_Resize_Mode is new Gtk_Resize_Mode_Properties.Property;
+
+   package Gtk_Scroll_Step_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Scroll_Step);
+   type Property_Gtk_Scroll_Step is new Gtk_Scroll_Step_Properties.Property;
+
+   package Gtk_Scroll_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Scroll_Type);
+   type Property_Gtk_Scroll_Type is new Gtk_Scroll_Type_Properties.Property;
+
+   package Gtk_Scrollable_Policy_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Scrollable_Policy);
+   type Property_Gtk_Scrollable_Policy is new Gtk_Scrollable_Policy_Properties.Property;
+
+   package Gtk_Selection_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Selection_Mode);
+   type Property_Gtk_Selection_Mode is new Gtk_Selection_Mode_Properties.Property;
+
+   package Gtk_Sensitivity_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Sensitivity_Type);
+   type Property_Gtk_Sensitivity_Type is new Gtk_Sensitivity_Type_Properties.Property;
+
+   package Gtk_Shadow_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Shadow_Type);
+   type Property_Gtk_Shadow_Type is new Gtk_Shadow_Type_Properties.Property;
+
+   package Gtk_Size_Request_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Size_Request_Mode);
+   type Property_Gtk_Size_Request_Mode is new Gtk_Size_Request_Mode_Properties.Property;
+
+   package Gtk_Sort_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Sort_Type);
+   type Property_Gtk_Sort_Type is new Gtk_Sort_Type_Properties.Property;
+
+   package Gtk_State_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_State_Flags);
+   type Property_Gtk_State_Flags is new Gtk_State_Flags_Properties.Property;
+
+   package Gtk_State_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_State_Type);
+   type Property_Gtk_State_Type is new Gtk_State_Type_Properties.Property;
+
+   package Gtk_Text_Direction_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Text_Direction);
+   type Property_Gtk_Text_Direction is new Gtk_Text_Direction_Properties.Property;
+
+   package Gtk_Text_Window_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Text_Window_Type);
+   type Property_Gtk_Text_Window_Type is new Gtk_Text_Window_Type_Properties.Property;
+
+   package Gtk_Tree_View_Grid_Lines_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Tree_View_Grid_Lines);
+   type Property_Gtk_Tree_View_Grid_Lines is new Gtk_Tree_View_Grid_Lines_Properties.Property;
+
+   package Gtk_Toolbar_Space_Style_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Toolbar_Space_Style);
+   type Property_Gtk_Toolbar_Space_Style is new Gtk_Toolbar_Space_Style_Properties.Property;
+
+   package Gtk_Toolbar_Style_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Toolbar_Style);
+   type Property_Gtk_Toolbar_Style is new Gtk_Toolbar_Style_Properties.Property;
+
+   package Gtk_Unit_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Unit);
+   type Property_Gtk_Unit is new Gtk_Unit_Properties.Property;
+
+   package Gtk_Window_Position_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Window_Position);
+   type Property_Gtk_Window_Position is new Gtk_Window_Position_Properties.Property;
+
+   package Gtk_Window_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Window_Type);
+   type Property_Gtk_Window_Type is new Gtk_Window_Type_Properties.Property;
+
+   package Gtk_Wrap_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Wrap_Mode);
+   type Property_Gtk_Wrap_Mode is new Gtk_Wrap_Mode_Properties.Property;
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   package String_List is new Glib.Glist.Generic_List (UTF8_String);
+   package String_SList is new Glib.GSlist.Generic_SList (UTF8_String);
+   --  Warning: when you create this list, new memory gets allocated for
+   --  all the strings. You should use the function Free_String_List
+   --  instead of Glib.Glist.Free to be sure to free this memory.
+
+   procedure Free_String_List (List : in out String_List.Glist);
+   procedure Free_String_List (List : in out String_SList.GSlist);
+   --  Free the memory occupied by all the strings in the list, as well
+   --  as the memory occupied by the list itself.
+
+end Gtk.Enums;

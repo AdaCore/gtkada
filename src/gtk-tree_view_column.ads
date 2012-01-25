@@ -574,7 +574,7 @@ package Gtk.Tree_View_Column is
    Resizable_Property      : constant Glib.Properties.Property_Boolean;
    Sizing_Property         : constant Property_Column_Sizing;
    Sort_Indicator_Property : constant Glib.Properties.Property_Boolean;
-   Sort_Order_Property     : constant Gtk.Enums.Property_Sort_Type;
+   Sort_Order_Property     : constant Gtk.Enums.Property_Gtk_Sort_Type;
    Spacing_Property        : constant Glib.Properties.Property_Int;
    Title_Property          : constant Glib.Properties.Property_String;
    Visible_Property        : constant Glib.Properties.Property_Boolean;
@@ -617,7 +617,7 @@ private
      Build ("sizing");
    Sort_Indicator_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("sort-indicator");
-   Sort_Order_Property : constant Gtk.Enums.Property_Sort_Type :=
+   Sort_Order_Property : constant Gtk.Enums.Property_Gtk_Sort_Type :=
      Gtk.Enums.Build ("sort-order");
    Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("spacing");

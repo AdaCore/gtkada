@@ -15,7 +15,7 @@
 #     SOLVE: we could point to the corresponding Set_* and Get_* subprograms,
 #            or simply ignore the missing doc
 
-from xml.etree.cElementTree import parse, QName, tostring, fromstring
+from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
@@ -571,7 +571,9 @@ class SubprogramProfile(object):
 class GIRClass(object):
     """Represents a gtk class"""
 
-    def __init__(self, gir, rootNode, node, is_interface):
+    def __init__(self, gir, rootNode, node, is_interface, has_toplevel_type=True):
+        """If has_toplevel_type is False, no widget type is generated"""
+
         self.gir = gir
         self.node = node
         self.rootNode = rootNode
@@ -581,6 +583,7 @@ class GIRClass(object):
         self._generated = False
         self.implements = dict() # Implemented interfaces
         self.is_interface = is_interface
+        self.has_toplevel_type = has_toplevel_type
         self.callbacks = set() # The callback functions
         self.pkg = None  # Instance of Package(), that we are generating
 
@@ -1546,7 +1549,9 @@ See Glib.Properties for more information on properties)""")
 
         self.is_gobject = True
 
-        if self.is_interface:
+        if not self.has_toplevel_type:
+            pass
+        elif self.is_interface:
             self.pkg.add_with("Glib.Types")
             section.add_code(
 "type %(typename)s is new Glib.Types.GType_Interface;" % self._subst)
@@ -1742,7 +1747,18 @@ for name in interfaces:
     gir.interfaces[name].generate(gir)
 
 for the_ctype in binding:
-    gir.classes[the_ctype].generate(gir)
+    if "::ada" in the_ctype:
+        the_ctype = the_ctype.replace("::ada", "")
+        node = Element(
+            nclass,
+            {ctype_qname: the_ctype})
+        root = Element(nclass)
+
+        cl = GIRClass(gir, rootNode=root, node=node, is_interface=False,
+                      has_toplevel_type=False)
+        cl.generate(gir)
+    else:
+        gir.classes[the_ctype].generate(gir)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

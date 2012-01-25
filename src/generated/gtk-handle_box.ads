@@ -41,7 +41,7 @@ pragma Ada_05;
 --  handlebox is packed at the bottom of a VBox, then when the handlebox is
 --  detached, the bottom edge of the handlebox's allocation will remain fixed
 --  as the height of the handlebox shrinks, so the snap edge should be set to
---  GTK_POS_BOTTOM.
+--  Gtk.Enums.Pos_Bottom.
 --
 --  </description>
 
@@ -110,9 +110,9 @@ package Gtk.Handle_Box is
    --  window. Usually, the snap edge should be chosen so that it stays in the
    --  same place on the screen when the handlebox is torn off.
    --  If the snap edge is not set, then an appropriate value will be guessed
-   --  from the handle position. If the handle position is GTK_POS_RIGHT or
-   --  GTK_POS_LEFT, then the snap edge will be GTK_POS_TOP, otherwise it will
-   --  be GTK_POS_LEFT.
+   --  from the handle position. If the handle position is Gtk.Enums.Pos_Right
+   --  or Gtk.Enums.Pos_Left, then the snap edge will be Gtk.Enums.Pos_Top,
+   --  otherwise it will be Gtk.Enums.Pos_Left.
    --  "edge": the snap edge, or -1 to unset the value; in which case GTK+
    --  will try to guess an appropriate value in the future.
 

@@ -1111,9 +1111,9 @@ package Gtk.GEntry is
    --  "delete-from-cursor"
    --     procedure Handler
    --       (Self     : access Gtk_Entry_Record'Class;
-   --        The_Type : Delete_Type;
+   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
    --        Count    : Gint);
-   --    --  "type": the granularity of the deletion, as a Gtk_Delete_Type
+   --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
    --  The ::delete-from-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
@@ -1155,10 +1155,10 @@ package Gtk.GEntry is
    --  "move-cursor"
    --     procedure Handler
    --       (Self             : access Gtk_Entry_Record'Class;
-   --        Step             : Movement_Step;
+   --        Step             : Gtk.Enums.Gtk_Movement_Step;
    --        Count            : Gint;
    --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a Gtk_Movement_Step
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
    --  The ::move-cursor signal is a <link

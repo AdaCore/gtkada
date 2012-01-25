@@ -203,8 +203,9 @@ package Gtk.Combo_Box is
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
    --  Sets whether the dropdown button of the combo box should be always
-   --  sensitive (GTK_SENSITIVITY_ON), never sensitive (GTK_SENSITIVITY_OFF) or
-   --  only if there is at least one item to display (GTK_SENSITIVITY_AUTO).
+   --  sensitive (Gtk.Enums.Sensitivity_On), never sensitive
+   --  (Gtk.Enums.Sensitivity_Off) or only if there is at least one item to
+   --  display (Gtk.Enums.Sensitivity_Auto).
    --  Since: gtk+ 2.14
    --  "sensitivity": specify the sensitivity of the dropdown button
 

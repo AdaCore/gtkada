@@ -202,10 +202,11 @@ package body Gtk.Tree_View is
    --------------------
 
    function Get_Grid_Lines
-     (Tree_View : access Gtk_Tree_View_Record) return Gtk.Enums.Gtk_Grid_Lines
+     (Tree_View : access Gtk_Tree_View_Record)
+     return Gtk.Enums.Gtk_Tree_View_Grid_Lines
    is
       function Internal
-        (Tree_View : System.Address) return Gtk.Enums.Gtk_Grid_Lines;
+        (Tree_View : System.Address) return Gtk.Enums.Gtk_Tree_View_Grid_Lines;
       pragma Import (C, Internal, "gtk_tree_view_get_grid_lines");
    begin
       return Internal (Get_Object (Tree_View));
@@ -217,11 +218,11 @@ package body Gtk.Tree_View is
 
    procedure Set_Grid_Lines
      (Tree_View  : access Gtk_Tree_View_Record;
-      Grid_Lines : Gtk.Enums.Gtk_Grid_Lines)
+      Grid_Lines : Gtk.Enums.Gtk_Tree_View_Grid_Lines)
    is
       procedure Internal
         (Tree_View  : System.Address;
-         Grid_Lines : Gtk.Enums.Gtk_Grid_Lines);
+         Grid_Lines : Gtk.Enums.Gtk_Tree_View_Grid_Lines);
       pragma Import (C, Internal, "gtk_tree_view_set_grid_lines");
    begin
       Internal (Get_Object (Tree_View), Grid_Lines);

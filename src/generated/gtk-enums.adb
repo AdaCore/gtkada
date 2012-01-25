@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2012, AdaCore                     --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,40 +21,33 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Unchecked_Conversion;
+pragma Ada_05;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings;
 
 package body Gtk.Enums is
 
-   -------------
-   -- Convert --
-   -------------
-
    function Convert (S : String) return System.Address is
       function Internal is new
-        Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
+      Ada.Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
    begin
       return Internal (Interfaces.C.Strings.New_String (S));
    end Convert;
 
    function Convert_Chars_Ptr is new
-     Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
+   Ada.Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
 
    function Convert (S : System.Address) return String is
    begin
       return Interfaces.C.Strings.Value (Convert_Chars_Ptr (S));
    end Convert;
 
-   ----------------------
-   -- Free_String_List --
-   ----------------------
-
    procedure Free_String_List (List : in out String_List.Glist) is
       use type String_List.Glist;
-
       Tmp   : String_List.Glist := List;
       Chars : Interfaces.C.Strings.chars_ptr;
-
    begin
       while Tmp /= String_List.Null_List loop
          Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
@@ -66,10 +58,6 @@ package body Gtk.Enums is
       String_List.Free (List);
       List := String_List.Null_List;
    end Free_String_List;
-
-   ----------------------
-   -- Free_String_List --
-   ----------------------
 
    procedure Free_String_List (List : in out String_SList.GSlist) is
       use type String_SList.GSlist;

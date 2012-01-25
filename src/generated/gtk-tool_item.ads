@@ -123,9 +123,9 @@ package Gtk.Tool_Item is
    --  Sets whether Tool_Item should be considered important. The
    --  Gtk.Tool_Button.Gtk_Tool_Button class uses this property to determine
    --  whether to show or hide its label when the toolbar style is
-   --  GTK_TOOLBAR_BOTH_HORIZ. The result is that only tool buttons with the
-   --  "is_important" property set have labels, an effect known as "priority
-   --  text"
+   --  Gtk.Enums.Toolbar_Both_Horiz. The result is that only tool buttons with
+   --  the "is_important" property set have labels, an effect known as
+   --  "priority text"
    --  Since: gtk+ 2.4
    --  "is_important": whether the tool item should be considered important
 

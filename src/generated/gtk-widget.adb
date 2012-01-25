@@ -851,9 +851,11 @@ package body Gtk.Widget is
    -------------------
 
    function Get_Direction
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Text_Direction
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Text_Direction
    is
-      function Internal (Widget : System.Address) return Gtk_Text_Direction;
+      function Internal
+         (Widget : System.Address) return Gtk.Enums.Gtk_Text_Direction;
       pragma Import (C, Internal, "gtk_widget_get_direction");
    begin
       return Internal (Get_Object (Widget));
@@ -2505,9 +2507,11 @@ package body Gtk.Widget is
 
    procedure Set_Direction
       (Widget : not null access Gtk_Widget_Record;
-       Dir    : Gtk_Text_Direction)
+       Dir    : Gtk.Enums.Gtk_Text_Direction)
    is
-      procedure Internal (Widget : System.Address; Dir : Gtk_Text_Direction);
+      procedure Internal
+         (Widget : System.Address;
+          Dir    : Gtk.Enums.Gtk_Text_Direction);
       pragma Import (C, Internal, "gtk_widget_set_direction");
    begin
       Internal (Get_Object (Widget), Dir);
@@ -3254,8 +3258,8 @@ package body Gtk.Widget is
    -- Get_Default_Direction --
    ---------------------------
 
-   function Get_Default_Direction return Gtk_Text_Direction is
-      function Internal return Gtk_Text_Direction;
+   function Get_Default_Direction return Gtk.Enums.Gtk_Text_Direction is
+      function Internal return Gtk.Enums.Gtk_Text_Direction;
       pragma Import (C, Internal, "gtk_widget_get_default_direction");
    begin
       return Internal;
@@ -3299,8 +3303,8 @@ package body Gtk.Widget is
    -- Set_Default_Direction --
    ---------------------------
 
-   procedure Set_Default_Direction (Dir : Gtk_Text_Direction) is
-      procedure Internal (Dir : Gtk_Text_Direction);
+   procedure Set_Default_Direction (Dir : Gtk.Enums.Gtk_Text_Direction) is
+      procedure Internal (Dir : Gtk.Enums.Gtk_Text_Direction);
       pragma Import (C, Internal, "gtk_widget_set_default_direction");
    begin
       Internal (Dir);

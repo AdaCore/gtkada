@@ -283,8 +283,8 @@ package Gtk.Label is
       (Label : not null access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification);
    --  Sets the alignment of the lines in the text of the label relative to
-   --  each other. GTK_JUSTIFY_LEFT is the default value when the widget is
-   --  first created with Gtk.Label.Gtk_New. If you instead want to set the
+   --  each other. Gtk.Enums.Justify_Left is the default value when the widget
+   --  is first created with Gtk.Label.Gtk_New. If you instead want to set the
    --  alignment of the label as a whole, use Gtk.Misc.Set_Alignment instead.
    --  Gtk.Label.Set_Justify has no effect on labels containing only a single
    --  line.
@@ -696,10 +696,10 @@ package Gtk.Label is
    --  "move-cursor"
    --     procedure Handler
    --       (Self             : access Gtk_Label_Record'Class;
-   --        Step             : Movement_Step;
+   --        Step             : Gtk.Enums.Gtk_Movement_Step;
    --        Count            : Gint;
    --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a Gtk_Movement_Step
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
    --  The ::move-cursor signal is a <link

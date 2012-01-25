@@ -52,8 +52,8 @@ pragma Ada_05;
 --  sizes it is generally done in two initial passes in the
 --  Gtk.Enums.Gtk_Size_Request_Mode chosen by the toplevel.
 --
---  For example, when queried in the normal GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH
---  mode: First, the default minimum and natural width for each widget in the
+--  For example, when queried in the normal Gtk.Enums.Height_For_Width mode:
+--  First, the default minimum and natural width for each widget in the
 --  interface will be computed using Gtk.Widget.Get_Preferred_Width. Because
 --  the preferred widths for each container depend on the preferred widths of
 --  their children, this information propagates up the hierarchy, and finally a
@@ -96,7 +96,7 @@ pragma Ada_05;
 --  requests will always be allocated at least enough space to fit its own
 --  content.
 --
---  Here are some examples of how a GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH widget
+--  Here are some examples of how a Gtk.Enums.Height_For_Width widget
 --  generally deals with width-for-height requests, for
 --  Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height it will do:
 --
@@ -891,10 +891,11 @@ package Gtk.Widget is
    --  "events": event mask
 
    function Get_Direction
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Text_Direction;
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Text_Direction;
    procedure Set_Direction
       (Widget : not null access Gtk_Widget_Record;
-       Dir    : Gtk_Text_Direction);
+       Dir    : Gtk.Enums.Gtk_Text_Direction);
    --  Sets the reading direction on a particular widget. This direction
    --  controls the primary direction for widgets containing text, and also the
    --  direction in which the children of a container are packed. The ability
@@ -904,8 +905,8 @@ package Gtk.Widget is
    --  except for containers where the containers are arranged in an order that
    --  is explicitely visual rather than logical (such as buttons for text
    --  justification).
-   --  If the direction is set to GTK_TEXT_DIR_NONE, then the value set by
-   --  Gtk.Widget.Set_Default_Direction will be used.
+   --  If the direction is set to Gtk.Enums.Text_Dir_None, then the value set
+   --  by Gtk.Widget.Set_Default_Direction will be used.
    --  "dir": the new direction
 
    function Get_Display
@@ -1392,12 +1393,12 @@ package Gtk.Widget is
    --  This function is for use in widget implementations. Turns on flag
    --  values in the current widget state (insensitive, prelighted, etc.).
    --  It is worth mentioning that any other state than
-   --  GTK_STATE_FLAG_INSENSITIVE, will be propagated down to all non-internal
-   --  children if Widget is a Gtk.Container.Gtk_Container, while
-   --  GTK_STATE_FLAG_INSENSITIVE itself will be propagated down to all
-   --  Gtk.Container.Gtk_Container children by different means than turning on
-   --  the state flag down the hierarchy, both Gtk.Widget.Get_State_Flags and
-   --  Gtk.Widget.Is_Sensitive will make use of these.
+   --  Gtk.Enums.Gtk_State_Flag_Insensitive, will be propagated down to all
+   --  non-internal children if Widget is a Gtk.Container.Gtk_Container, while
+   --  Gtk.Enums.Gtk_State_Flag_Insensitive itself will be propagated down to
+   --  all Gtk.Container.Gtk_Container children by different means than turning
+   --  on the state flag down the hierarchy, both Gtk.Widget.Get_State_Flags
+   --  and Gtk.Widget.Is_Sensitive will make use of these.
    --  Since: gtk+ 3.0
    --  "flags": State flags to turn on
    --  "clear": Whether to clear state before turning on Flags
@@ -1746,9 +1747,9 @@ package Gtk.Widget is
    --  When False is returned, the caller should continue with keyboard
    --  navigation outside the widget, e.g. by calling Gtk.Widget.Child_Focus on
    --  the widget's toplevel.
-   --  The default ::keynav-failed handler returns True for GTK_DIR_TAB_FORWARD
-   --  and GTK_DIR_TAB_BACKWARD. For the other values of
-   --  Gtk.Enums.Gtk_Direction_Type, it looks at the
+   --  The default ::keynav-failed handler returns True for
+   --  Gtk.Enums.Dir_Tab_Forward and Gtk.Enums.Dir_Tab_Backward. For the other
+   --  values of Gtk.Enums.Gtk_Direction_Type, it looks at the
    --  Gtk.Settings.Gtk_Settings:gtk-keynav-cursor-only setting and returns
    --  False if the setting is True. This way the entire user interface becomes
    --  cursor-navigatable on input devices such as mobile phones which only
@@ -2396,11 +2397,12 @@ package Gtk.Widget is
    -- Functions --
    ---------------
 
-   function Get_Default_Direction return Gtk_Text_Direction;
-   procedure Set_Default_Direction (Dir : Gtk_Text_Direction);
+   function Get_Default_Direction return Gtk.Enums.Gtk_Text_Direction;
+   procedure Set_Default_Direction (Dir : Gtk.Enums.Gtk_Text_Direction);
    --  Sets the default reading direction for widgets where the direction has
    --  not been explicitly set by Gtk.Widget.Set_Direction.
-   --  "dir": the new default direction. This cannot be GTK_TEXT_DIR_NONE.
+   --  "dir": the new default direction. This cannot be
+   --  Gtk.Enums.Text_Dir_None.
 
    function Get_Default_Style return Gtk.Style.Gtk_Style;
    --  Returns the default style used by all widgets initially.
@@ -2784,7 +2786,7 @@ package Gtk.Widget is
    --  "direction-changed"
    --     procedure Handler
    --       (Self               : access Gtk_Widget_Record'Class;
-   --        Previous_Direction : Text_Direction);
+   --        Previous_Direction : Gtk.Enums.Gtk_Text_Direction);
    --    --  "previous_direction": the previous text direction of Widget
    --  The ::direction-changed signal is emitted when the text direction of a
    --  widget changes.

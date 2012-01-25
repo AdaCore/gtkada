@@ -36,9 +36,9 @@ pragma Ada_05;
 --  handle that the user can drag to adjust the division. It does not draw any
 --  relief around the children or around the separator. (The space in which the
 --  separator is called the gutter.) Often, it is useful to put each child
---  inside a Gtk.Frame.Gtk_Frame with the shadow type set to GTK_SHADOW_IN so
---  that the gutter appears as a ridge. No separator is drawn if one of the
---  children is missing.
+--  inside a Gtk.Frame.Gtk_Frame with the shadow type set to
+--  Gtk.Enums.Shadow_In so that the gutter appears as a ridge. No separator is
+--  drawn if one of the children is missing.
 --
 --  Each child has two options that can be set, Resize and Shrink. If Resize
 --  is true, then when the Gtk.Paned.Gtk_Paned is resized, that child will

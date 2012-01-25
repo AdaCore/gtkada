@@ -1362,7 +1362,8 @@ class Section(object):
     # Only one doc will be displayed for the two, and no separation line
     # will be output.
 
-    def __init__(self, name):
+    def __init__(self, pkg, name):
+        self.pkg = pkg  # The instance of Package in which the section is
         self.name = name
         self.comment = ""
         self.__subprograms = []  # All subprograms  (in_spec, Subprogram())
@@ -1539,7 +1540,7 @@ class Package(object):
             if s.name == name:
                 return s
 
-        s = Section(name)
+        s = Section(self, name)
         self.sections.append(s)
         return s
 

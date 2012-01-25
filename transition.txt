@@ -326,6 +326,23 @@ Gtk.File_Chooser_Widget
 Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
 removed: use Gtk_New and Initialize instead.
 
+Gtk.Enums
+=========
+
+The following types were removed:
+  GtkAnchorType
+  GtkCurveType
+  GtkMetricType
+  GtkGridLines
+  GtkUpdateType
+  GtkVisibility
+  GtkSideType
+  GtkMatchType
+  GtkPreviewType
+  GtkSubmenuDirection
+  GtkSubmenuPlacement
+  GtkTreeViewMode
+
 Gtk.File_Selection
 ==================
 

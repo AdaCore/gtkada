@@ -196,9 +196,9 @@ package Gtk.Scale is
    --  "value": the value at which the mark is placed, must be between the
    --  lower and upper limits of the scales' adjustment
    --  "position": where to draw the mark. For a horizontal scale, GTK_POS_TOP
-   --  and GTK_POS_LEFT are drawn above the scale, anything else below. For a
-   --  vertical scale, GTK_POS_LEFT and GTK_POS_TOP are drawn to the left of
-   --  the scale, anything else to the right.
+   --  and Gtk.Enums.Pos_Left are drawn above the scale, anything else below.
+   --  For a vertical scale, GTK_POS_LEFT and Gtk.Enums.Pos_Top are drawn to
+   --  the left of the scale, anything else to the right.
    --  "markup": Text to be shown at the mark, using <link
    --  linkend="PangoMarkupFormat">Pango markup</link>, or null
 

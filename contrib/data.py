@@ -116,6 +116,9 @@ binding = ("GdkDevice",
            "GtkViewport",
            "GtkVolumeButton",
            "GtkWidget",
+
+           # Custom GtkAda packages
+           "Gtk.Enums.GtkEnums::ada",
           )
 
 # Handling of functions with user data. The names below are the likely names
@@ -257,30 +260,6 @@ naming.type_exceptions = {
     "GtkTargetList*":  Proxy ("Gtk.Selection.Target_List"),
     "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
-
-    "GtkArrowType":       Enum("Gtk.Enums.Gtk_Arrow_Type"),
-    "GtkAttachOptions":   Enum("Gtk.Enums.Gtk_Attach_Options"),
-    "GtkButtonBoxStyle":  Enum("Gtk.Enums.Gtk_Button_Box_Style"),
-    "GtkCurveType":       Enum("Gtk.Enums.Gtk_Curve_Type"),
-    "GtkDirectionType":   Enum("Gtk.Enums.Gtk_Direction_Type"),
-    "GtkIconSize":        Enum("Gtk.Enums.Gtk_Icon_Size"),
-    "GtkJustification":   Enum("Gtk.Enums.Gtk_Justification"),
-    "GtkMetricType":      Enum("Gtk.Enums.Gtk_Metric_Type",
-                               "Gtk.Enums.Property_Metric_Type"),
-    "GtkOrientation":     Enum("Gtk.Enums.Gtk_Orientation"),
-    "GtkPackType":        Enum("Gtk.Enums.Gtk_Pack_Type"),
-    "GtkPositionType":    Enum("Gtk.Enums.Gtk_Position_Type"),
-    "GtkReliefStyle":     Enum("Gtk.Enums.Gtk_Relief_Style"),
-    "GtkScrollType":      Enum("Gtk.Enums.Gtk_Scroll_Type"),
-    "GtkScrollablePolicy": Enum("Gtk.Enums.Gtk_Scrollable_Policy"),
-    "GtkSelectionMode":   Enum("Gtk.Enums.Gtk_Selection_Mode"),
-    "GtkSensitivityType": Enum("Gtk.Enums.Gtk_Sensitivity_Type"),
-    "GtkSizeRequestMode": Enum("Gtk.Enums.Gtk_Size_Request_Mode"),
-    "GtkShadowType":      Enum("Gtk.Enums.Gtk_Shadow_Type"),
-    "GtkStateFlags":      Enum("Gtk.Enums.Gtk_State_Flags"),
-    "GtkStateType":       Enum("Gtk.Enums.Gtk_State_Type"),
-    "GtkToolbarStyle":    Enum("Gtk.Enums.Gtk_Toolbar_Style"),
-    "GtkUpdateType":      Enum("Gtk.Enums.Gtk_Update_Type"),
 
     "GtkEntry":        GObject("Gtk.GEntry.Gtk_Entry"),
     "GtkFileFilter":   GObject("Gtk.File_Filter.Gtk_File_Filter"),

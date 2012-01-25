@@ -101,10 +101,11 @@ package Gtk.Tree_View is
    --  This does not have any visible effects for lists.
 
    function Get_Grid_Lines
-     (Tree_View : access Gtk_Tree_View_Record) return Gtk.Enums.Gtk_Grid_Lines;
+     (Tree_View : access Gtk_Tree_View_Record)
+     return Gtk.Enums.Gtk_Tree_View_Grid_Lines;
    procedure Set_Grid_Lines
      (Tree_View  : access Gtk_Tree_View_Record;
-      Grid_Lines : Gtk.Enums.Gtk_Grid_Lines);
+      Grid_Lines : Gtk.Enums.Gtk_Tree_View_Grid_Lines);
    --  Which grid lines to draw in Tree_View.
 
    function Get_Level_Indentation

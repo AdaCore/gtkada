@@ -84,8 +84,9 @@ package Gtk.Menu_Bar is
    --  Descr: The pack direction of the menubar
    --  </properties>
 
-   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction;
-   Pack_Direction_Property       : constant Gtk.Enums.Property_Pack_Direction;
+   Child_Pack_Direction_Property :
+       constant Gtk.Enums.Property_Gtk_Pack_Direction;
+   Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
 
    ----------------------
    -- Style Properties --
@@ -111,9 +112,10 @@ private
    type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
 
-   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction
+   Child_Pack_Direction_Property :
+     constant Gtk.Enums.Property_Gtk_Pack_Direction
      := Gtk.Enums.Build ("child-pack-direction");
-   Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction :=
+   Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=
      Gtk.Enums.Build ("pack-direction");
 
    Internal_Padding_Property : constant Glib.Properties.Property_Int :=

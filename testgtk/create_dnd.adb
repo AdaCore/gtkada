@@ -430,8 +430,6 @@ package body Create_Dnd is
       Y       : constant Gint  := Get_Int (Nth (Args, 3));
       Time    : constant Guint := Get_Uint (Nth (Args, 4));
       pragma Unreferenced (Context, X, Y, Time);
-      use type Guint_List.Glist;
-
    begin
       Have_Drag := False;
       Put_Log ("Drop");

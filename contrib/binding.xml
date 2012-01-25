@@ -2479,6 +2479,122 @@ While looking up a recently used file is as simple as using:
      </extra>
    </package>
 
+   <package id="Gtk.Enums">
+     <enum ctype="GtkArrowType"/>
+     <enum ctype="GtkAttachOptions"/>
+     <enum ctype="GtkButtonBoxStyle"/>
+     <enum ctype="GtkCornerType"/>
+     <enum ctype="GtkDeleteType"/>
+     <enum ctype="GtkDirectionType"/>
+     <enum ctype="GtkExpanderStyle"/>
+     <enum ctype="GtkIconSize"/>
+     <enum ctype="GtkJustification"/>
+     <enum ctype="GtkMenuDirectionType"/>
+     <enum ctype="GtkMovementStep"/>
+     <enum ctype="GtkNumberUpLayout" prefix="GTK_NUMBER_UP_LAYOUT_"/>
+     <enum ctype="GtkOrientation"/>
+     <enum ctype="GtkPackDirection"/>
+     <enum ctype="GtkPackType"/>
+     <enum ctype="GtkPageOrientation"/>
+     <enum ctype="GtkPageSet"/>
+     <enum ctype="GtkPathPriorityType"/>
+     <enum ctype="GtkPathType"/>
+     <enum ctype="GtkPolicyType"/>
+     <enum ctype="GtkPositionType"/>
+     <enum ctype="GtkPrintDuplex"/>
+     <enum ctype="GtkPrintPages"/>
+     <enum ctype="GtkPrintQuality"/>
+     <enum ctype="GtkReliefStyle"/>
+     <enum ctype="GtkResizeMode"/>
+     <enum ctype="GtkScrollStep"/>
+     <enum ctype="GtkScrollType"/>
+     <enum ctype="GtkScrollablePolicy"/>
+     <enum ctype="GtkSelectionMode"/>
+     <enum ctype="GtkSensitivityType"/>
+     <enum ctype="GtkShadowType"/>
+     <enum ctype="GtkSizeRequestMode" prefix="GTK_SIZE_REQUEST_"/>
+     <enum ctype="GtkSortType"/>
+     <enum ctype="GtkStateFlags" prefix=""/>
+     <enum ctype="GtkStateType"/>
+     <enum ctype="GtkTextDirection"/>
+     <enum ctype="GtkTextWindowType"/>
+     <enum ctype="GtkTreeViewGridLines" prefix="GTK_TREE_VIEW_"/>
+     <enum ctype="GtkToolbarSpaceStyle"/>
+     <enum ctype="GtkToolbarStyle"/>
+     <enum ctype="GtkUnit" prefix="GTK_UNIT_"/>
+     <enum ctype="GtkWindowPosition"/>
+     <enum ctype="GtkWindowType"/>
+     <enum ctype="GtkWrapMode"/>
+
+     <extra>
+       <with_spec pkg="Glib.Glist"/>
+       <with_spec pkg="Glib.GSlist"/>
+       <spec>
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   package String_List is new Glib.Glist.Generic_List (UTF8_String);
+   package String_SList is new Glib.GSlist.Generic_SList (UTF8_String);
+   --  Warning: when you create this list, new memory gets allocated for
+   --  all the strings. You should use the function Free_String_List
+   --  instead of Glib.Glist.Free to be sure to free this memory.
+
+   procedure Free_String_List (List : in out String_List.Glist);
+   procedure Free_String_List (List : in out String_SList.GSlist);
+   --  Free the memory occupied by all the strings in the list, as well
+   --  as the memory occupied by the list itself.
+       </spec>
+       <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
+       <with_body pkg="Interfaces.C.Strings" use="False"/>
+       <body>
+   function Convert (S : String) return System.Address is
+      function Internal is new
+        Ada.Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
+   begin
+      return Internal (Interfaces.C.Strings.New_String (S));
+   end Convert;
+
+   function Convert_Chars_Ptr is new
+     Ada.Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
+
+   function Convert (S : System.Address) return String is
+   begin
+      return Interfaces.C.Strings.Value (Convert_Chars_Ptr (S));
+   end Convert;
+
+   procedure Free_String_List (List : in out String_List.Glist) is
+      use type String_List.Glist;
+      Tmp   : String_List.Glist := List;
+      Chars : Interfaces.C.Strings.chars_ptr;
+   begin
+      while Tmp /= String_List.Null_List loop
+         Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
+         Interfaces.C.Strings.Free (Chars);
+         Tmp := String_List.Next (Tmp);
+      end loop;
+
+      String_List.Free (List);
+      List := String_List.Null_List;
+   end Free_String_List;
+
+   procedure Free_String_List (List : in out String_SList.GSlist) is
+      use type String_SList.GSlist;
+
+      Tmp   : String_SList.GSlist := List;
+      Chars : Interfaces.C.Strings.chars_ptr;
+   begin
+      while Tmp /= String_SList.Null_List loop
+         Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
+         Interfaces.C.Strings.Free (Chars);
+         Tmp := String_SList.Next (Tmp);
+      end loop;
+
+      String_SList.Free (List);
+      List := String_SList.Null_List;
+   end Free_String_List;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
