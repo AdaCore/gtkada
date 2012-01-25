@@ -203,11 +203,10 @@ class GIR(object):
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
         for pkg in self.packages.itervalues():
-            if not getattr(pkg, "needs_merge", False):
-                out.write(pkg.spec())
-                out.write("\n")
-                out.write(pkg.body())
-                out.write("\n")
+            out.write(pkg.spec())
+            out.write("\n")
+            out.write(pkg.body())
+            out.write("\n")
 
         cout.write(self.ccode)
 
@@ -1519,8 +1518,6 @@ See Glib.Properties for more information on properties)""")
 
         self.pkg = gir.get_package(into or self.name, doc=girdoc)
         self.pkg.language_version = "pragma Ada_05;"
-
-        self.pkg.needs_merge = self.gtkpkg.needs_merge()
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)

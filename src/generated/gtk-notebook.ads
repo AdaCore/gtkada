@@ -135,7 +135,7 @@ package Gtk.Notebook is
    --  Gtk.Box.Gtk_Box if you need to pack more than one widget on the same
    --  side.
    --  Note that action widgets are "internal" children of the notebook and
-   --  thus not included in the list returned from Gtk.Container.Foreach.
+   --  thus not included in the list returned from gtk_container_foreach.
    --  Since: gtk+ 2.20
    --  "widget": a Gtk.Widget.Gtk_Widget
    --  "pack_type": pack type of the action widget

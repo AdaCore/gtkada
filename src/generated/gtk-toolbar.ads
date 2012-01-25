@@ -28,7 +28,7 @@ pragma Ada_05;
 --  A toolbar can contain instances of a subclass of
 --  Gtk.Tool_Item.Gtk_Tool_Item. To add a Gtk.Tool_Item.Gtk_Tool_Item to the a
 --  toolbar, use Gtk.Toolbar.Insert. To remove an item from the toolbar use
---  Gtk.Container.Remove. To add a button to the toolbar, add an instance of
+--  gtk_container_remove. To add a button to the toolbar, add an instance of
 --  Gtk.Tool_Button.Gtk_Tool_Button.
 --
 --  Toolbar items can be visually grouped by adding instances of

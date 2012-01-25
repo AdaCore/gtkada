@@ -2483,16 +2483,12 @@ While looking up a recently used file is as simple as using:
         No file is generated from them.
    -->
 
-   <package id="Gtk.Menu" needs_merge="true"/>
-   <package id="Gtk.Tooltip" needs_merge="true"/>
-   <package id="Gtk.Text_View" needs_merge="true"/>
-   <package id="Gtk.Rc_Style" needs_merge="true"/>
-   <package id="Gtk.Container" needs_merge="true">
+   <package id="Gtk.Container">
      <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
      <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->
      <method id="gtk_container_child_set" bind="False"/> <!-- varargs -->
    </package>
-   <package id="Gtk.Tree_Model" needs_merge="true">
+   <package id="Gtk.Tree_Model">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
    </package>
 

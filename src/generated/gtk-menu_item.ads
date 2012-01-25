@@ -117,13 +117,13 @@ package Gtk.Menu_Item is
    --  saved to persistent storage (see gtk_accel_map_save on this). To set up
    --  a default accelerator for this menu item, call Gtk.Accel_Map.Add_Entry
    --  with the same Accel_Path. See also Gtk.Accel_Map.Add_Entry on the
-   --  specifics of accelerator paths, and Gtk.Menu.Set_Accel_Path for a more
+   --  specifics of accelerator paths, and gtk_menu_set_accel_path for a more
    --  convenient variant of this function.
    --  This function is basically a convenience wrapper that handles calling
    --  Gtk.Widget.Set_Accel_Path with the appropriate accelerator group for the
    --  menu item.
    --  Note that you do need to set an accelerator on the parent menu with
-   --  Gtk.Menu.Set_Accel_Group for this to work.
+   --  gtk_menu_set_accel_group for this to work.
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.

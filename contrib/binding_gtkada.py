@@ -10,8 +10,6 @@ The syntax of that file is as follows:
 Where the package node is defined as follows:
     <package id="..."       <!-- mandatory -->
              obsolescent="..." <!--  Whether this package is obsolete -->
-             needs_merge="false" <!--  True if a partial binding is generating,
-                                       that is then merged into a *.tmpl file -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -183,10 +181,6 @@ class GtkAdaPackage(object):
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None),
                     single=True)
-
-    def needs_merge(self):
-        return self.node is not None \
-            and self.node.get("needs_merge", "").lower() == "true"
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the
