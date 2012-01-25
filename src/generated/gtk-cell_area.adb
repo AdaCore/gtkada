@@ -258,11 +258,11 @@ package body Gtk.Cell_Area is
           Context   : System.Address;
           Widget    : System.Address;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Integer;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
           Edit_Only : Integer) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags), Boolean'Pos (Edit_Only)));
+      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)));
    end Activate;
 
    -------------------
@@ -283,10 +283,11 @@ package body Gtk.Cell_Area is
           Renderer  : System.Address;
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Integer) return Integer;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+          return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate_cell");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags)));
+      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Flags));
    end Activate_Cell;
 
    ---------
@@ -482,10 +483,10 @@ package body Gtk.Cell_Area is
           Widget    : System.Address;
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Integer) return Gint;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Gint;
       pragma Import (C, Internal, "gtk_cell_area_event");
    begin
-      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Event, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags));
+      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Event, Cell_Area, Flags);
    end Event;
 
    -----------
@@ -498,10 +499,10 @@ package body Gtk.Cell_Area is
    is
       function Internal
          (Self      : System.Address;
-          Direction : Integer) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Gtk.Enums.Gtk_Direction_Type'Pos (Direction)));
+      return Boolean'Val (Internal (Get_Object (Self), Direction));
    end Focus;
 
    -------------
@@ -854,10 +855,11 @@ package body Gtk.Cell_Area is
       (Self : not null access Gtk_Cell_Area_Record)
        return Gtk.Enums.Gtk_Size_Request_Mode
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Size_Request_Mode;
       pragma Import (C, Internal, "gtk_cell_area_get_request_mode");
    begin
-      return Gtk.Enums.Gtk_Size_Request_Mode'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Request_Mode;
 
    ------------------
@@ -984,11 +986,11 @@ package body Gtk.Cell_Area is
           Cr              : in out Cairo.Cairo_Context;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Integer;
+          Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
           Paint_Focus     : Integer);
       pragma Import (C, Internal, "gtk_cell_area_render");
    begin
-      Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cr, Background_Area, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags), Boolean'Pos (Paint_Focus));
+      Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cr, Background_Area, Cell_Area, Flags, Boolean'Pos (Paint_Focus));
    end Render;
 
    ----------------------
@@ -1007,14 +1009,14 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Self         : System.Address;
           Renderer     : System.Address;
-          Orientation  : Integer;
+          Orientation  : Gtk.Enums.Gtk_Orientation;
           Widget       : System.Address;
           For_Size     : Gint;
           Minimum_Size : out Gint;
           Natural_Size : out Gint);
       pragma Import (C, Internal, "gtk_cell_area_request_renderer");
    begin
-      Internal (Get_Object (Self), Get_Object (Renderer), Gtk.Enums.Gtk_Orientation'Pos (Orientation), Get_Object (Widget), For_Size, Minimum_Size, Natural_Size);
+      Internal (Get_Object (Self), Get_Object (Renderer), Orientation, Get_Object (Widget), For_Size, Minimum_Size, Natural_Size);
    end Request_Renderer;
 
    ------------------------

@@ -91,10 +91,10 @@ package body Gdk.Device is
    function Get_Device_Type
       (Self : not null access Gdk_Device_Record) return Gdk_Device_Type
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gdk_Device_Type;
       pragma Import (C, Internal, "gdk_device_get_device_type");
    begin
-      return Gdk.Device.Gdk_Device_Type'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Device_Type;
 
    -----------------

@@ -134,11 +134,11 @@ package body Gtk.Notebook is
    is
       function Internal
          (Notebook  : System.Address;
-          Pack_Type : Integer) return System.Address;
+          Pack_Type : Gtk.Enums.Gtk_Pack_Type) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_action_widget");
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Pack_Type), Stub_Gtk_Widget));
    end Get_Action_Widget;
 
    ----------------------
@@ -345,10 +345,11 @@ package body Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record)
        return Gtk.Enums.Gtk_Position_Type
    is
-      function Internal (Notebook : System.Address) return Integer;
+      function Internal
+         (Notebook : System.Address) return Gtk.Enums.Gtk_Position_Type;
       pragma Import (C, Internal, "gtk_notebook_get_tab_pos");
    begin
-      return Gtk.Enums.Gtk_Position_Type'Val (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook));
    end Get_Tab_Pos;
 
    -------------------------
@@ -566,10 +567,10 @@ package body Gtk.Notebook is
       procedure Internal
          (Notebook  : System.Address;
           Widget    : System.Address;
-          Pack_Type : Integer);
+          Pack_Type : Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_notebook_set_action_widget");
    begin
-      Internal (Get_Object (Notebook), Get_Object (Widget), Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
+      Internal (Get_Object (Notebook), Get_Object (Widget), Pack_Type);
    end Set_Action_Widget;
 
    ----------------------
@@ -753,10 +754,12 @@ package body Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Pos      : Gtk.Enums.Gtk_Position_Type)
    is
-      procedure Internal (Notebook : System.Address; Pos : Integer);
+      procedure Internal
+         (Notebook : System.Address;
+          Pos      : Gtk.Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_notebook_set_tab_pos");
    begin
-      Internal (Get_Object (Notebook), Gtk.Enums.Gtk_Position_Type'Pos (Pos));
+      Internal (Get_Object (Notebook), Pos);
    end Set_Tab_Pos;
 
    -------------------------

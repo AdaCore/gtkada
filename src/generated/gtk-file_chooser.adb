@@ -86,19 +86,6 @@ package body Gtk.File_Chooser is
       return Boolean'Val (Tmp_Return);
    end Add_Shortcut_Folder_Uri;
 
-   ----------------
-   -- Get_Action --
-   ----------------
-
-   function Get_Action
-      (Chooser : Gtk_File_Chooser) return Gtk_File_Chooser_Action
-   is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
-      pragma Import (C, Internal, "gtk_file_chooser_get_action");
-   begin
-      return Gtk.File_Chooser.Gtk_File_Chooser_Action'Val (Internal (Chooser));
-   end Get_Action;
-
    ------------------------
    -- Get_Create_Folders --
    ------------------------
@@ -473,20 +460,6 @@ package body Gtk.File_Chooser is
       Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Select_Uri;
-
-   ----------------
-   -- Set_Action --
-   ----------------
-
-   procedure Set_Action
-      (Chooser : Gtk_File_Chooser;
-       Action  : Gtk_File_Chooser_Action)
-   is
-      procedure Internal (Chooser : Gtk_File_Chooser; Action : Integer);
-      pragma Import (C, Internal, "gtk_file_chooser_set_action");
-   begin
-      Internal (Chooser, Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
-   end Set_Action;
 
    ------------------------
    -- Set_Create_Folders --

@@ -217,19 +217,6 @@ package body Gtk.Recent_Chooser is
       return Boolean'Val (Internal (Chooser));
    end Get_Show_Tips;
 
-   -------------------
-   -- Get_Sort_Type --
-   -------------------
-
-   function Get_Sort_Type
-      (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type
-   is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
-      pragma Import (C, Internal, "gtk_recent_chooser_get_sort_type");
-   begin
-      return Gtk.Recent_Chooser.Gtk_Recent_Sort_Type'Val (Internal (Chooser));
-   end Get_Sort_Type;
-
    ------------------
    -- List_Filters --
    ------------------
@@ -469,20 +456,6 @@ package body Gtk.Recent_Chooser is
       end Set_Sort_Func;
 
    end Set_Sort_Func_User_Data;
-
-   -------------------
-   -- Set_Sort_Type --
-   -------------------
-
-   procedure Set_Sort_Type
-      (Chooser   : Gtk_Recent_Chooser;
-       Sort_Type : Gtk_Recent_Sort_Type)
-   is
-      procedure Internal (Chooser : Gtk_Recent_Chooser; Sort_Type : Integer);
-      pragma Import (C, Internal, "gtk_recent_chooser_set_sort_type");
-   begin
-      Internal (Chooser, Gtk.Recent_Chooser.Gtk_Recent_Sort_Type'Pos (Sort_Type));
-   end Set_Sort_Type;
 
    ------------------
    -- Unselect_Uri --

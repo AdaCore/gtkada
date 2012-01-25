@@ -122,10 +122,11 @@ package body Gtk.Frame is
       (Frame : not null access Gtk_Frame_Record)
        return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Frame : System.Address) return Integer;
+      function Internal
+         (Frame : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
       pragma Import (C, Internal, "gtk_frame_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Frame)));
+      return Internal (Get_Object (Frame));
    end Get_Shadow_Type;
 
    ---------------
@@ -193,10 +194,12 @@ package body Gtk.Frame is
       (Frame    : not null access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Frame : System.Address; The_Type : Integer);
+      procedure Internal
+         (Frame    : System.Address;
+          The_Type : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_frame_set_shadow_type");
    begin
-      Internal (Get_Object (Frame), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Frame), The_Type);
    end Set_Shadow_Type;
 
 end Gtk.Frame;

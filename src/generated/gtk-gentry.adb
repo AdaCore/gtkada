@@ -200,10 +200,10 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_icon_activatable");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Boolean'Val (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Activatable;
 
    -------------------
@@ -217,11 +217,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Icon_Area : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_entry_get_icon_area");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Icon_Area);
+      Internal (Get_Object (The_Entry), Icon_Pos, Icon_Area);
    end Get_Icon_Area;
 
    ---------------------
@@ -252,10 +252,10 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Glib.G_Icon.G_Icon;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.G_Icon.G_Icon;
       pragma Import (C, Internal, "gtk_entry_get_icon_gicon");
    begin
-      return Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos));
+      return Internal (Get_Object (The_Entry), Icon_Pos);
    end Get_Icon_Gicon;
 
    -------------------
@@ -268,10 +268,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Name;
 
    ---------------------
@@ -284,11 +285,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return System.Address;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_icon_pixbuf");
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (The_Entry), Icon_Pos), Stub_Gdk_Pixbuf));
    end Get_Icon_Pixbuf;
 
    ------------------------
@@ -301,10 +302,10 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_icon_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Boolean'Val (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Sensitive;
 
    --------------------
@@ -317,10 +318,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_stock");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Stock;
 
    ---------------------------
@@ -333,10 +335,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position)
+          return Gtk.Image.Gtk_Image_Type;
       pragma Import (C, Internal, "gtk_entry_get_icon_storage_type");
    begin
-      return Gtk.Image.Gtk_Image_Type'Val (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Internal (Get_Object (The_Entry), Icon_Pos);
    end Get_Icon_Storage_Type;
 
    -----------------------------
@@ -349,10 +352,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_markup");
    begin
-      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Tooltip_Markup;
 
    ---------------------------
@@ -365,10 +369,11 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_text");
    begin
-      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Tooltip_Text;
 
    ----------------------
@@ -725,11 +730,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry   : System.Address;
-          Icon_Pos    : Integer;
+          Icon_Pos    : Gtk_Entry_Icon_Position;
           Activatable : Integer);
       pragma Import (C, Internal, "gtk_entry_set_icon_activatable");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Boolean'Pos (Activatable));
+      Internal (Get_Object (The_Entry), Icon_Pos, Boolean'Pos (Activatable));
    end Set_Icon_Activatable;
 
    --------------------------
@@ -744,12 +749,12 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry   : System.Address;
-          Icon_Pos    : Integer;
+          Icon_Pos    : Gtk_Entry_Icon_Position;
           Target_List : Gtk.Selection.Target_List;
-          Actions     : Integer);
+          Actions     : Gdk.Drag_Contexts.Gdk_Drag_Action);
       pragma Import (C, Internal, "gtk_entry_set_icon_drag_source");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Target_List, Gdk.Drag_Contexts.Gdk_Drag_Action'Pos (Actions));
+      Internal (Get_Object (The_Entry), Icon_Pos, Target_List, Actions);
    end Set_Icon_Drag_Source;
 
    -------------------------
@@ -763,11 +768,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Icon      : Glib.G_Icon.G_Icon);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_gicon");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Icon);
+      Internal (Get_Object (The_Entry), Icon_Pos, Icon);
    end Set_Icon_From_Gicon;
 
    -----------------------------
@@ -781,7 +786,7 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Icon_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_icon_name");
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
@@ -791,7 +796,7 @@ package body Gtk.GEntry is
       else
          Tmp_Icon_Name := New_String (Icon_Name);
       end if;
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Icon_Name);
+      Internal (Get_Object (The_Entry), Icon_Pos, Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Icon_From_Icon_Name;
 
@@ -806,11 +811,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_pixbuf");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Get_Object_Or_Null (GObject (Pixbuf)));
+      Internal (Get_Object (The_Entry), Icon_Pos, Get_Object_Or_Null (GObject (Pixbuf)));
    end Set_Icon_From_Pixbuf;
 
    -------------------------
@@ -824,7 +829,7 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Stock_Id  : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_stock");
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
@@ -834,7 +839,7 @@ package body Gtk.GEntry is
       else
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Stock_Id);
+      Internal (Get_Object (The_Entry), Icon_Pos, Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
    end Set_Icon_From_Stock;
 
@@ -849,11 +854,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Sensitive : Integer);
       pragma Import (C, Internal, "gtk_entry_set_icon_sensitive");
    begin
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Boolean'Pos (Sensitive));
+      Internal (Get_Object (The_Entry), Icon_Pos, Boolean'Pos (Sensitive));
    end Set_Icon_Sensitive;
 
    -----------------------------
@@ -867,7 +872,7 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Tooltip   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_markup");
       Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
@@ -877,7 +882,7 @@ package body Gtk.GEntry is
       else
          Tmp_Tooltip := New_String (Tooltip);
       end if;
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Tooltip);
+      Internal (Get_Object (The_Entry), Icon_Pos, Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Markup;
 
@@ -892,7 +897,7 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position;
           Tooltip   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_text");
       Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
@@ -902,7 +907,7 @@ package body Gtk.GEntry is
       else
          Tmp_Tooltip := New_String (Tooltip);
       end if;
-      Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos), Tmp_Tooltip);
+      Internal (Get_Object (The_Entry), Icon_Pos, Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Text;
 

@@ -73,10 +73,11 @@ package body Gtk.Separator is
       (Separator   : access Gtk_Separator_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      function Internal (Orientation : Integer) return System.Address;
+      function Internal
+         (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_separator_new");
    begin
-      Set_Object (Separator, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation)));
+      Set_Object (Separator, Internal (Orientation));
    end Initialize;
 
    ---------------------------
@@ -113,10 +114,11 @@ package body Gtk.Separator is
       (Self : not null access Gtk_Separator_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -127,10 +129,12 @@ package body Gtk.Separator is
       (Self        : not null access Gtk_Separator_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Separator;

@@ -56,11 +56,11 @@ package body Gtk.Arrow is
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
       function Internal
-         (Arrow_Type  : Integer;
-          Shadow_Type : Integer) return System.Address;
+         (Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+          Shadow_Type : Gtk.Enums.Gtk_Shadow_Type) return System.Address;
       pragma Import (C, Internal, "gtk_arrow_new");
    begin
-      Set_Object (Arrow, Internal (Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type)));
+      Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
    end Initialize;
 
    ---------
@@ -74,11 +74,11 @@ package body Gtk.Arrow is
    is
       procedure Internal
          (Arrow       : System.Address;
-          Arrow_Type  : Integer;
-          Shadow_Type : Integer);
+          Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+          Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_arrow_set");
    begin
-      Internal (Get_Object (Arrow), Gtk.Enums.Gtk_Arrow_Type'Pos (Arrow_Type), Gtk.Enums.Gtk_Shadow_Type'Pos (Shadow_Type));
+      Internal (Get_Object (Arrow), Arrow_Type, Shadow_Type);
    end Set;
 
 end Gtk.Arrow;

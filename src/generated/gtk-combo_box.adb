@@ -351,10 +351,11 @@ package body Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type
    is
-      function Internal (Combo_Box : System.Address) return Integer;
+      function Internal
+         (Combo_Box : System.Address) return Gtk.Enums.Gtk_Sensitivity_Type;
       pragma Import (C, Internal, "gtk_combo_box_get_button_sensitivity");
    begin
-      return Gtk.Enums.Gtk_Sensitivity_Type'Val (Internal (Get_Object (Combo_Box)));
+      return Internal (Get_Object (Combo_Box));
    end Get_Button_Sensitivity;
 
    ----------------------------
@@ -604,10 +605,12 @@ package body Gtk.Combo_Box is
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
    is
-      procedure Internal (Combo_Box : System.Address; Sensitivity : Integer);
+      procedure Internal
+         (Combo_Box   : System.Address;
+          Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
       pragma Import (C, Internal, "gtk_combo_box_set_button_sensitivity");
    begin
-      Internal (Get_Object (Combo_Box), Gtk.Enums.Gtk_Sensitivity_Type'Pos (Sensitivity));
+      Internal (Get_Object (Combo_Box), Sensitivity);
    end Set_Button_Sensitivity;
 
    ------------------------

@@ -43,7 +43,7 @@ package body Gtk.Recent_Filter is
 
    procedure C_Gtk_Recent_Filter_Add_Custom
       (Filter       : System.Address;
-       Needed       : Integer;
+       Needed       : Gtk_Recent_Filter_Flags;
        Func         : System.Address;
        Data         : System.Address;
        Data_Destroy : Glib.G_Destroy_Notify_Address);
@@ -152,7 +152,7 @@ package body Gtk.Recent_Filter is
        Data_Destroy : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Gtk.Recent_Filter.Gtk_Recent_Filter_Flags'Pos (Needed), Internal_Gtk_Recent_Filter_Func'Address, Func'Address, Data_Destroy);
+      C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Gtk_Recent_Filter_Func'Address, Func'Address, Data_Destroy);
    end Add_Custom;
 
    package body Add_Custom_User_Data is
@@ -185,7 +185,7 @@ package body Gtk.Recent_Filter is
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Gtk.Recent_Filter.Gtk_Recent_Filter_Flags'Pos (Needed), Internal_Cb'Address, Users.Build (Func'Address, Data), Data_Destroy);
+         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (Func'Address, Data), Data_Destroy);
       end Add_Custom;
 
       -----------------
@@ -308,10 +308,11 @@ package body Gtk.Recent_Filter is
       (Filter : not null access Gtk_Recent_Filter_Record)
        return Gtk_Recent_Filter_Flags
    is
-      function Internal (Filter : System.Address) return Integer;
+      function Internal
+         (Filter : System.Address) return Gtk_Recent_Filter_Flags;
       pragma Import (C, Internal, "gtk_recent_filter_get_needed");
    begin
-      return Gtk.Recent_Filter.Gtk_Recent_Filter_Flags'Val (Internal (Get_Object (Filter)));
+      return Internal (Get_Object (Filter));
    end Get_Needed;
 
    --------------

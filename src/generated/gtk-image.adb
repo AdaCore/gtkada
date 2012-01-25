@@ -402,10 +402,10 @@ package body Gtk.Image is
    function Get_Storage_Type
       (Image : not null access Gtk_Image_Record) return Gtk_Image_Type
    is
-      function Internal (Image : System.Address) return Integer;
+      function Internal (Image : System.Address) return Gtk_Image_Type;
       pragma Import (C, Internal, "gtk_image_get_storage_type");
    begin
-      return Gtk.Image.Gtk_Image_Type'Val (Internal (Get_Object (Image)));
+      return Internal (Get_Object (Image));
    end Get_Storage_Type;
 
    ---------

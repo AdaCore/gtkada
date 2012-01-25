@@ -40,7 +40,7 @@ pragma Ada_05;
 --  Gtk.Size_Group.Gtk_Size_Group to actually be the same size, you need to
 --  pack them in such a way that they get the size they request and not more.
 --  For example, if you are packing your widgets into a table, you would not
---  include the GTK_FILL flag.
+--  include the Gtk.Enums.Fill flag.
 --
 --  Gtk.Size_Group.Gtk_Size_Group objects are referenced by each widget in the
 --  size group, so once you have added all widgets to a

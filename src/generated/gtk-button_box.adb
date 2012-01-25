@@ -53,10 +53,11 @@ package body Gtk.Button_Box is
       (Widget      : access Gtk_Button_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      function Internal (Orientation : Integer) return System.Address;
+      function Internal
+         (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_button_box_new");
    begin
-      Set_Object (Widget, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation)));
+      Set_Object (Widget, Internal (Orientation));
    end Initialize;
 
    -------------------------------
@@ -101,10 +102,11 @@ package body Gtk.Button_Box is
       (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal
+         (Widget : System.Address) return Gtk.Enums.Gtk_Button_Box_Style;
       pragma Import (C, Internal, "gtk_button_box_get_layout");
    begin
-      return Gtk.Enums.Gtk_Button_Box_Style'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Layout;
 
    -------------------------------
@@ -151,10 +153,12 @@ package body Gtk.Button_Box is
       (Widget       : not null access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style)
    is
-      procedure Internal (Widget : System.Address; Layout_Style : Integer);
+      procedure Internal
+         (Widget       : System.Address;
+          Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
       pragma Import (C, Internal, "gtk_button_box_set_layout");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
+      Internal (Get_Object (Widget), Layout_Style);
    end Set_Layout;
 
    ---------------------
@@ -165,10 +169,11 @@ package body Gtk.Button_Box is
       (Self : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -179,10 +184,12 @@ package body Gtk.Button_Box is
       (Self        : not null access Gtk_Button_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Button_Box;

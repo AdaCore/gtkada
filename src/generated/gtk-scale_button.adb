@@ -65,7 +65,7 @@ package body Gtk.Scale_Button is
        Icons  : GNAT.Strings.String_List)
    is
       function Internal
-         (Size  : Integer;
+         (Size  : Gtk.Enums.Gtk_Icon_Size;
           Min   : Gdouble;
           Max   : Gdouble;
           Step  : Gdouble;
@@ -75,7 +75,7 @@ package body Gtk.Scale_Button is
       Tmp_Icons  : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icons);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Gtk.Enums.Gtk_Icon_Size'Pos (Size), Min, Max, Step, Tmp_Icons);
+      Tmp_Return := Internal (Size, Min, Max, Step, Tmp_Icons);
       GtkAda.Types.Free (Tmp_Icons);
       Set_Object (Button, Tmp_Return);
    end Initialize;
@@ -224,10 +224,11 @@ package body Gtk.Scale_Button is
       (Self : not null access Gtk_Scale_Button_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ------------------------
@@ -266,10 +267,12 @@ package body Gtk.Scale_Button is
       (Self        : not null access Gtk_Scale_Button_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
    ------------------------

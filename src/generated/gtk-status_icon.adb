@@ -316,10 +316,11 @@ package body Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gtk.Image.Gtk_Image_Type
    is
-      function Internal (Status_Icon : System.Address) return Integer;
+      function Internal
+         (Status_Icon : System.Address) return Gtk.Image.Gtk_Image_Type;
       pragma Import (C, Internal, "gtk_status_icon_get_storage_type");
    begin
-      return Gtk.Image.Gtk_Image_Type'Val (Internal (Get_Object (Status_Icon)));
+      return Internal (Get_Object (Status_Icon));
    end Get_Storage_Type;
 
    ---------------

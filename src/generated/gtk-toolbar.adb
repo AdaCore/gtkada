@@ -79,10 +79,11 @@ package body Gtk.Toolbar is
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Icon_Size
    is
-      function Internal (Toolbar : System.Address) return Integer;
+      function Internal
+         (Toolbar : System.Address) return Gtk.Enums.Gtk_Icon_Size;
       pragma Import (C, Internal, "gtk_toolbar_get_icon_size");
    begin
-      return Gtk.Enums.Gtk_Icon_Size'Val (Internal (Get_Object (Toolbar)));
+      return Internal (Get_Object (Toolbar));
    end Get_Icon_Size;
 
    --------------------
@@ -140,10 +141,11 @@ package body Gtk.Toolbar is
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Relief_Style
    is
-      function Internal (Toolbar : System.Address) return Integer;
+      function Internal
+         (Toolbar : System.Address) return Gtk.Enums.Gtk_Relief_Style;
       pragma Import (C, Internal, "gtk_toolbar_get_relief_style");
    begin
-      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Toolbar)));
+      return Internal (Get_Object (Toolbar));
    end Get_Relief_Style;
 
    --------------------
@@ -167,10 +169,11 @@ package body Gtk.Toolbar is
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Toolbar_Style
    is
-      function Internal (Toolbar : System.Address) return Integer;
+      function Internal
+         (Toolbar : System.Address) return Gtk.Enums.Gtk_Toolbar_Style;
       pragma Import (C, Internal, "gtk_toolbar_get_style");
    begin
-      return Gtk.Enums.Gtk_Toolbar_Style'Val (Internal (Get_Object (Toolbar)));
+      return Internal (Get_Object (Toolbar));
    end Get_Style;
 
    ------------
@@ -217,10 +220,12 @@ package body Gtk.Toolbar is
       (Toolbar   : not null access Gtk_Toolbar_Record;
        Icon_Size : Gtk.Enums.Gtk_Icon_Size)
    is
-      procedure Internal (Toolbar : System.Address; Icon_Size : Integer);
+      procedure Internal
+         (Toolbar   : System.Address;
+          Icon_Size : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_toolbar_set_icon_size");
    begin
-      Internal (Get_Object (Toolbar), Gtk.Enums.Gtk_Icon_Size'Pos (Icon_Size));
+      Internal (Get_Object (Toolbar), Icon_Size);
    end Set_Icon_Size;
 
    --------------------
@@ -245,10 +250,12 @@ package body Gtk.Toolbar is
       (Toolbar : not null access Gtk_Toolbar_Record;
        Style   : Gtk.Enums.Gtk_Toolbar_Style)
    is
-      procedure Internal (Toolbar : System.Address; Style : Integer);
+      procedure Internal
+         (Toolbar : System.Address;
+          Style   : Gtk.Enums.Gtk_Toolbar_Style);
       pragma Import (C, Internal, "gtk_toolbar_set_style");
    begin
-      Internal (Get_Object (Toolbar), Gtk.Enums.Gtk_Toolbar_Style'Pos (Style));
+      Internal (Get_Object (Toolbar), Style);
    end Set_Style;
 
    ---------------------
@@ -281,10 +288,11 @@ package body Gtk.Toolbar is
       (Self : not null access Gtk_Toolbar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Pango.Layout.Pango_Ellipsize_Mode;
       pragma Import (C, Internal, "gtk_tool_shell_get_ellipsize_mode");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Ellipsize_Mode;
 
    ---------------------
@@ -295,10 +303,11 @@ package body Gtk.Toolbar is
       (Self : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ------------------------
@@ -322,10 +331,11 @@ package body Gtk.Toolbar is
       (Self : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_tool_shell_get_text_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Text_Orientation;
 
    -------------------------
@@ -362,10 +372,12 @@ package body Gtk.Toolbar is
       (Self        : not null access Gtk_Toolbar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Toolbar;

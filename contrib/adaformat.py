@@ -266,13 +266,25 @@ class Enum(CType):
         else:
             CType.__init__(self, ada, property)
 
-        self.cparam = "Integer"
+        if self.ada.lower() == "boolean":
+            self.cparam = "Integer"
+        else:
+            # Do not convert enumerations to integers. We want to pass the
+            # associated literal in case the enumeration in C does not start
+            # at 0, or as holes in the series.
+            self.cparam = self.ada
 
     def convert_from_c(self):
-        return (self.param, self.cparam, "%s'Val (%%(var)s)" % self.ada, [])
+        if self.ada.lower() == "boolean":
+            return (self.param, self.cparam, "%s'Val (%%(var)s)" % self.ada, [])
+        else:
+            return super(Enum, self).convert_from_c()
 
     def convert_to_c(self):
-        return "%s'Pos (%%(var)s)" % self.ada
+        if self.ada.lower() == "boolean":
+            return "%s'Pos (%%(var)s)" % self.ada
+        else:
+            return super(Enum, self).convert_to_c()
 
     def record_field_type(self, pkg=None):
         if pkg:

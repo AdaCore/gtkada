@@ -57,9 +57,11 @@ package Gtk.Orientable is
 
    function Get_Orientation
       (Self : Gtk_Orientable) return Gtk.Enums.Gtk_Orientation;
+   pragma Import (C, Get_Orientation, "gtk_orientable_get_orientation");
    procedure Set_Orientation
       (Self        : Gtk_Orientable;
        Orientation : Gtk.Enums.Gtk_Orientation);
+   pragma Import (C, Set_Orientation, "gtk_orientable_set_orientation");
    --  Sets the orientation of the Orientable.
    --  Since: gtk+ 2.16
    --  "orientation": the orientable's new orientation.

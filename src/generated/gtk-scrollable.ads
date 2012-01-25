@@ -99,9 +99,11 @@ package Gtk.Scrollable is
 
    function Get_Hscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
+   pragma Import (C, Get_Hscroll_Policy, "gtk_scrollable_get_hscroll_policy");
    procedure Set_Hscroll_Policy
       (Self   : Gtk_Scrollable;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+   pragma Import (C, Set_Hscroll_Policy, "gtk_scrollable_set_hscroll_policy");
    --  Sets the Gtk.Enums.Gtk_Scrollable_Policy to determine whether
    --  horizontal scrolling should start below the minimum width or below the
    --  natural width.
@@ -119,9 +121,11 @@ package Gtk.Scrollable is
 
    function Get_Vscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
+   pragma Import (C, Get_Vscroll_Policy, "gtk_scrollable_get_vscroll_policy");
    procedure Set_Vscroll_Policy
       (Self   : Gtk_Scrollable;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+   pragma Import (C, Set_Vscroll_Policy, "gtk_scrollable_set_vscroll_policy");
    --  Sets the Gtk.Enums.Gtk_Scrollable_Policy to determine whether vertical
    --  scrolling should start below the minimum height or below the natural
    --  height.

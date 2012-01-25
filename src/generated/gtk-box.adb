@@ -84,11 +84,11 @@ package body Gtk.Box is
        Spacing     : Gint)
    is
       function Internal
-         (Orientation : Integer;
+         (Orientation : Gtk.Enums.Gtk_Orientation;
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_box_new");
    begin
-      Set_Object (Box, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Spacing));
+      Set_Object (Box, Internal (Orientation, Spacing));
    end Initialize;
 
    ---------------------
@@ -228,16 +228,14 @@ package body Gtk.Box is
           Expand    : out Integer;
           Fill      : out Integer;
           Padding   : out Guint;
-          Pack_Type : out Integer);
+          Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_box_query_child_packing");
-      Tmp_Expand    : Integer;
-      Tmp_Fill      : Integer;
-      Tmp_Pack_Type : Integer;
+      Tmp_Expand : Integer;
+      Tmp_Fill   : Integer;
    begin
-      Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Tmp_Pack_Type);
+      Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Pack_Type);
       Expand := Boolean'Val (Tmp_Expand);
       Fill := Boolean'Val (Tmp_Fill);
-      Pack_Type := Gtk.Enums.Gtk_Pack_Type'Val (Tmp_Pack_Type);
    end Query_Child_Packing;
 
    -------------------
@@ -276,10 +274,10 @@ package body Gtk.Box is
           Expand    : Integer;
           Fill      : Integer;
           Padding   : Guint;
-          Pack_Type : Integer);
+          Pack_Type : Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_box_set_child_packing");
    begin
-      Internal (Get_Object (Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Gtk.Enums.Gtk_Pack_Type'Pos (Pack_Type));
+      Internal (Get_Object (Box), Get_Object (Child), Boolean'Pos (Expand), Boolean'Pos (Fill), Padding, Pack_Type);
    end Set_Child_Packing;
 
    ---------------------
@@ -318,10 +316,11 @@ package body Gtk.Box is
       (Self : not null access Gtk_Box_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -332,10 +331,12 @@ package body Gtk.Box is
       (Self        : not null access Gtk_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Box;

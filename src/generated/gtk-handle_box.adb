@@ -74,10 +74,11 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Position_Type
    is
-      function Internal (Handle_Box : System.Address) return Integer;
+      function Internal
+         (Handle_Box : System.Address) return Gtk.Enums.Gtk_Position_Type;
       pragma Import (C, Internal, "gtk_handle_box_get_handle_position");
    begin
-      return Gtk.Enums.Gtk_Position_Type'Val (Internal (Get_Object (Handle_Box)));
+      return Internal (Get_Object (Handle_Box));
    end Get_Handle_Position;
 
    ---------------------
@@ -88,10 +89,11 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Handle_Box : System.Address) return Integer;
+      function Internal
+         (Handle_Box : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
       pragma Import (C, Internal, "gtk_handle_box_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Handle_Box)));
+      return Internal (Get_Object (Handle_Box));
    end Get_Shadow_Type;
 
    -------------------
@@ -102,10 +104,11 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Position_Type
    is
-      function Internal (Handle_Box : System.Address) return Integer;
+      function Internal
+         (Handle_Box : System.Address) return Gtk.Enums.Gtk_Position_Type;
       pragma Import (C, Internal, "gtk_handle_box_get_snap_edge");
    begin
-      return Gtk.Enums.Gtk_Position_Type'Val (Internal (Get_Object (Handle_Box)));
+      return Internal (Get_Object (Handle_Box));
    end Get_Snap_Edge;
 
    -------------------------
@@ -116,10 +119,12 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        Position   : Gtk.Enums.Gtk_Position_Type)
    is
-      procedure Internal (Handle_Box : System.Address; Position : Integer);
+      procedure Internal
+         (Handle_Box : System.Address;
+          Position   : Gtk.Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_handle_position");
    begin
-      Internal (Get_Object (Handle_Box), Gtk.Enums.Gtk_Position_Type'Pos (Position));
+      Internal (Get_Object (Handle_Box), Position);
    end Set_Handle_Position;
 
    ---------------------
@@ -130,10 +135,12 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        The_Type   : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Handle_Box : System.Address; The_Type : Integer);
+      procedure Internal
+         (Handle_Box : System.Address;
+          The_Type   : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_shadow_type");
    begin
-      Internal (Get_Object (Handle_Box), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Handle_Box), The_Type);
    end Set_Shadow_Type;
 
    -------------------
@@ -144,10 +151,12 @@ package body Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        Edge       : Gtk.Enums.Gtk_Position_Type)
    is
-      procedure Internal (Handle_Box : System.Address; Edge : Integer);
+      procedure Internal
+         (Handle_Box : System.Address;
+          Edge       : Gtk.Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_snap_edge");
    begin
-      Internal (Get_Object (Handle_Box), Gtk.Enums.Gtk_Position_Type'Pos (Edge));
+      Internal (Get_Object (Handle_Box), Edge);
    end Set_Snap_Edge;
 
 end Gtk.Handle_Box;

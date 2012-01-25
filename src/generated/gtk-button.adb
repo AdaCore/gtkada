@@ -222,10 +222,11 @@ package body Gtk.Button is
       (Button : not null access Gtk_Button_Record)
        return Gtk.Enums.Gtk_Position_Type
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal
+         (Button : System.Address) return Gtk.Enums.Gtk_Position_Type;
       pragma Import (C, Internal, "gtk_button_get_image_position");
    begin
-      return Gtk.Enums.Gtk_Position_Type'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button));
    end Get_Image_Position;
 
    ---------------
@@ -250,10 +251,11 @@ package body Gtk.Button is
       (Button : not null access Gtk_Button_Record)
        return Gtk.Enums.Gtk_Relief_Style
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal
+         (Button : System.Address) return Gtk.Enums.Gtk_Relief_Style;
       pragma Import (C, Internal, "gtk_button_get_relief");
    begin
-      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button));
    end Get_Relief;
 
    -------------------
@@ -369,10 +371,12 @@ package body Gtk.Button is
       (Button   : not null access Gtk_Button_Record;
        Position : Gtk.Enums.Gtk_Position_Type)
    is
-      procedure Internal (Button : System.Address; Position : Integer);
+      procedure Internal
+         (Button   : System.Address;
+          Position : Gtk.Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_button_set_image_position");
    begin
-      Internal (Get_Object (Button), Gtk.Enums.Gtk_Position_Type'Pos (Position));
+      Internal (Get_Object (Button), Position);
    end Set_Image_Position;
 
    ---------------
@@ -401,10 +405,12 @@ package body Gtk.Button is
       (Button   : not null access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style)
    is
-      procedure Internal (Button : System.Address; Newstyle : Integer);
+      procedure Internal
+         (Button   : System.Address;
+          Newstyle : Gtk.Enums.Gtk_Relief_Style);
       pragma Import (C, Internal, "gtk_button_set_relief");
    begin
-      Internal (Get_Object (Button), Gtk.Enums.Gtk_Relief_Style'Pos (Newstyle));
+      Internal (Get_Object (Button), Newstyle);
    end Set_Relief;
 
    -------------------

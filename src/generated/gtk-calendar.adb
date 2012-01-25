@@ -191,10 +191,11 @@ package body Gtk.Calendar is
       (Calendar : not null access Gtk_Calendar_Record)
        return Gtk_Calendar_Display_Options
    is
-      function Internal (Calendar : System.Address) return Integer;
+      function Internal
+         (Calendar : System.Address) return Gtk_Calendar_Display_Options;
       pragma Import (C, Internal, "gtk_calendar_get_display_options");
    begin
-      return Gtk.Calendar.Gtk_Calendar_Display_Options'Val (Internal (Get_Object (Calendar)));
+      return Internal (Get_Object (Calendar));
    end Get_Display_Options;
 
    --------------
@@ -348,10 +349,12 @@ package body Gtk.Calendar is
       (Calendar : not null access Gtk_Calendar_Record;
        Flags    : Gtk_Calendar_Display_Options)
    is
-      procedure Internal (Calendar : System.Address; Flags : Integer);
+      procedure Internal
+         (Calendar : System.Address;
+          Flags    : Gtk_Calendar_Display_Options);
       pragma Import (C, Internal, "gtk_calendar_set_display_options");
    begin
-      Internal (Get_Object (Calendar), Gtk.Calendar.Gtk_Calendar_Display_Options'Pos (Flags));
+      Internal (Get_Object (Calendar), Flags);
    end Set_Display_Options;
 
    ----------------

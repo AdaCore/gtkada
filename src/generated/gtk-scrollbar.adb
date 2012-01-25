@@ -82,11 +82,11 @@ package body Gtk.Scrollbar is
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       function Internal
-         (Orientation : Integer;
+         (Orientation : Gtk.Enums.Gtk_Orientation;
           Adjustment  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollbar_new");
    begin
-      Set_Object (Scrollbar, Internal (Gtk.Enums.Gtk_Orientation'Pos (Orientation), Get_Object_Or_Null (GObject (Adjustment))));
+      Set_Object (Scrollbar, Internal (Orientation, Get_Object_Or_Null (GObject (Adjustment))));
    end Initialize;
 
    ---------------------------
@@ -125,10 +125,11 @@ package body Gtk.Scrollbar is
       (Self : not null access Gtk_Scrollbar_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -139,10 +140,12 @@ package body Gtk.Scrollbar is
       (Self        : not null access Gtk_Scrollbar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Scrollbar;

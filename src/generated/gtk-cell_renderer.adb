@@ -62,12 +62,12 @@ package body Gtk.Cell_Renderer is
           Path            : Interfaces.C.Strings.chars_ptr;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Integer) return Integer;
+          Flags           : Gtk_Cell_Renderer_State) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_activate");
       Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags));
+      Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
       Free (Tmp_Path);
       return Boolean'Val (Tmp_Return);
    end Activate;
@@ -86,12 +86,12 @@ package body Gtk.Cell_Renderer is
       procedure Internal
          (Cell         : System.Address;
           Widget       : System.Address;
-          Flags        : Integer;
+          Flags        : Gtk_Cell_Renderer_State;
           Cell_Area    : Gdk.Rectangle.Gdk_Rectangle;
           Aligned_Area : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_cell_renderer_get_aligned_area");
    begin
-      Internal (Get_Object (Cell), Get_Object (Widget), Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags), Cell_Area, Aligned_Area);
+      Internal (Get_Object (Cell), Get_Object (Widget), Flags, Cell_Area, Aligned_Area);
    end Get_Aligned_Area;
 
    -------------------
@@ -260,10 +260,11 @@ package body Gtk.Cell_Renderer is
       (Cell : not null access Gtk_Cell_Renderer_Record)
        return Gtk.Enums.Gtk_Size_Request_Mode
    is
-      function Internal (Cell : System.Address) return Integer;
+      function Internal
+         (Cell : System.Address) return Gtk.Enums.Gtk_Size_Request_Mode;
       pragma Import (C, Internal, "gtk_cell_renderer_get_request_mode");
    begin
-      return Gtk.Enums.Gtk_Size_Request_Mode'Val (Internal (Get_Object (Cell)));
+      return Internal (Get_Object (Cell));
    end Get_Request_Mode;
 
    -------------------
@@ -318,10 +319,11 @@ package body Gtk.Cell_Renderer is
       function Internal
          (Cell       : System.Address;
           Widget     : System.Address;
-          Cell_State : Integer) return Integer;
+          Cell_State : Gtk_Cell_Renderer_State)
+          return Gtk.Enums.Gtk_State_Flags;
       pragma Import (C, Internal, "gtk_cell_renderer_get_state");
    begin
-      return Gtk.Enums.Gtk_State_Flags'Val (Internal (Get_Object (Cell), Get_Object (Widget), Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Cell_State)));
+      return Internal (Get_Object (Cell), Get_Object (Widget), Cell_State);
    end Get_State;
 
    -----------------
@@ -368,10 +370,10 @@ package body Gtk.Cell_Renderer is
           Widget          : System.Address;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Integer);
+          Flags           : Gtk_Cell_Renderer_State);
       pragma Import (C, Internal, "gtk_cell_renderer_render");
    begin
-      Internal (Get_Object (Cell), Cr, Get_Object (Widget), Background_Area, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags));
+      Internal (Get_Object (Cell), Cr, Get_Object (Widget), Background_Area, Cell_Area, Flags);
    end Render;
 
    -------------------
@@ -474,13 +476,13 @@ package body Gtk.Cell_Renderer is
           Path            : Interfaces.C.Strings.chars_ptr;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Integer)
+          Flags           : Gtk_Cell_Renderer_State)
           return Gtk.Cell_Editable.Gtk_Cell_Editable;
       pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
       Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
       Tmp_Return : Gtk.Cell_Editable.Gtk_Cell_Editable;
    begin
-      Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Gtk.Cell_Renderer.Gtk_Cell_Renderer_State'Pos (Flags));
+      Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
       Free (Tmp_Path);
       return Tmp_Return;
    end Start_Editing;

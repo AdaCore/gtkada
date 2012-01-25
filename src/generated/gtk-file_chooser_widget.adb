@@ -55,10 +55,12 @@ package body Gtk.File_Chooser_Widget is
       (Self   : access Gtk_File_Chooser_Widget_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
-      function Internal (Action : Integer) return System.Address;
+      function Internal
+         (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+          return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new");
    begin
-      Set_Object (Self, Internal (Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action)));
+      Set_Object (Self, Internal (Action));
    end Initialize;
 
    ----------------
@@ -124,10 +126,12 @@ package body Gtk.File_Chooser_Widget is
       (Chooser : not null access Gtk_File_Chooser_Widget_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal
+         (Chooser : System.Address)
+          return Gtk.File_Chooser.Gtk_File_Chooser_Action;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
    begin
-      return Gtk.File_Chooser.Gtk_File_Chooser_Action'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser));
    end Get_Action;
 
    ------------------------
@@ -271,10 +275,11 @@ package body Gtk.File_Chooser_Widget is
       (Self : not null access Gtk_File_Chooser_Widget_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    --------------------------
@@ -573,10 +578,12 @@ package body Gtk.File_Chooser_Widget is
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
-      procedure Internal (Chooser : System.Address; Action : Integer);
+      procedure Internal
+         (Chooser : System.Address;
+          Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
    begin
-      Internal (Get_Object (Chooser), Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
+      Internal (Get_Object (Chooser), Action);
    end Set_Action;
 
    ------------------------
@@ -742,10 +749,12 @@ package body Gtk.File_Chooser_Widget is
       (Self        : not null access Gtk_File_Chooser_Widget_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
    ------------------------

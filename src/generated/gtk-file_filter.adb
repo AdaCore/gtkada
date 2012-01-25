@@ -34,7 +34,7 @@ package body Gtk.File_Filter is
 
    procedure C_Gtk_File_Filter_Add_Custom
       (Self   : System.Address;
-       Needed : Integer;
+       Needed : Gtk_File_Filter_Flags;
        Func   : System.Address;
        Data   : System.Address;
        Notify : Glib.G_Destroy_Notify_Address);
@@ -109,7 +109,7 @@ package body Gtk.File_Filter is
        Notify : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.File_Filter.Gtk_File_Filter_Flags'Pos (Needed), Internal_Gtk_File_Filter_Func'Address, Func'Address, Notify);
+      C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Gtk_File_Filter_Func'Address, Func'Address, Notify);
    end Add_Custom;
 
    package body Add_Custom_User_Data is
@@ -141,7 +141,7 @@ package body Gtk.File_Filter is
           Notify : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Gtk.File_Filter.Gtk_File_Filter_Flags'Pos (Needed), Internal_Cb'Address, Users.Build (Func'Address, Data), Notify);
+         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, Users.Build (Func'Address, Data), Notify);
       end Add_Custom;
 
       -----------------
@@ -246,10 +246,10 @@ package body Gtk.File_Filter is
       (Self : not null access Gtk_File_Filter_Record)
        return Gtk_File_Filter_Flags
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gtk_File_Filter_Flags;
       pragma Import (C, Internal, "gtk_file_filter_get_needed");
    begin
-      return Gtk.File_Filter.Gtk_File_Filter_Flags'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Needed;
 
    --------------

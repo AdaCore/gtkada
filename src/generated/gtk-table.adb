@@ -89,13 +89,13 @@ package body Gtk.Table is
           Right_Attach  : Guint;
           Top_Attach    : Guint;
           Bottom_Attach : Guint;
-          Xoptions      : Integer;
-          Yoptions      : Integer;
+          Xoptions      : Gtk.Enums.Gtk_Attach_Options;
+          Yoptions      : Gtk.Enums.Gtk_Attach_Options;
           Xpadding      : Guint;
           Ypadding      : Guint);
       pragma Import (C, Internal, "gtk_table_attach");
    begin
-      Internal (Get_Object (Table), Get_Object (Child), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach, Gtk.Enums.Gtk_Attach_Options'Pos (Xoptions), Gtk.Enums.Gtk_Attach_Options'Pos (Yoptions), Xpadding, Ypadding);
+      Internal (Get_Object (Table), Get_Object (Child), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach, Xoptions, Yoptions, Xpadding, Ypadding);
    end Attach;
 
    ---------------------

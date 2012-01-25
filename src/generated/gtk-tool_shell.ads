@@ -53,6 +53,7 @@ package Gtk.Tool_Shell is
 
    function Get_Ellipsize_Mode
       (Self : Gtk_Tool_Shell) return Pango.Layout.Pango_Ellipsize_Mode;
+   pragma Import (C, Get_Ellipsize_Mode, "gtk_tool_shell_get_ellipsize_mode");
    --  Retrieves the current ellipsize mode for the tool shell. Tool items
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Ellipsize_Mode instead.
@@ -60,12 +61,14 @@ package Gtk.Tool_Shell is
 
    function Get_Icon_Size
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
+   pragma Import (C, Get_Icon_Size, "gtk_tool_shell_get_icon_size");
    --  Retrieves the icon size for the tool shell. Tool items must not call
    --  this function directly, but rely on Gtk.Tool_Item.Get_Icon_Size instead.
    --  Since: gtk+ 2.14
 
    function Get_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
+   pragma Import (C, Get_Orientation, "gtk_tool_shell_get_orientation");
    --  Retrieves the current orientation for the tool shell. Tool items must
    --  not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Orientation instead.
@@ -73,6 +76,7 @@ package Gtk.Tool_Shell is
 
    function Get_Relief_Style
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
+   pragma Import (C, Get_Relief_Style, "gtk_tool_shell_get_relief_style");
    --  Returns the relief style of buttons on Shell. Tool items must not call
    --  this function directly, but rely on Gtk.Tool_Item.Get_Relief_Style
    --  instead.
@@ -80,6 +84,7 @@ package Gtk.Tool_Shell is
 
    function Get_Style
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style;
+   pragma Import (C, Get_Style, "gtk_tool_shell_get_style");
    --  Retrieves whether the tool shell has text, icons, or both. Tool items
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Toolbar_Style instead.
@@ -94,6 +99,7 @@ package Gtk.Tool_Shell is
 
    function Get_Text_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
+   pragma Import (C, Get_Text_Orientation, "gtk_tool_shell_get_text_orientation");
    --  Retrieves the current text orientation for the tool shell. Tool items
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Text_Orientation instead.

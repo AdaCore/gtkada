@@ -41,19 +41,6 @@ package body Gtk.Scrollable is
       return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
-   ------------------------
-   -- Get_Hscroll_Policy --
-   ------------------------
-
-   function Get_Hscroll_Policy
-      (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy
-   is
-      function Internal (Self : Gtk_Scrollable) return Integer;
-      pragma Import (C, Internal, "gtk_scrollable_get_hscroll_policy");
-   begin
-      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Self));
-   end Get_Hscroll_Policy;
-
    ---------------------
    -- Get_Vadjustment --
    ---------------------
@@ -67,19 +54,6 @@ package body Gtk.Scrollable is
    begin
       return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
-
-   ------------------------
-   -- Get_Vscroll_Policy --
-   ------------------------
-
-   function Get_Vscroll_Policy
-      (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy
-   is
-      function Internal (Self : Gtk_Scrollable) return Integer;
-      pragma Import (C, Internal, "gtk_scrollable_get_vscroll_policy");
-   begin
-      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Self));
-   end Get_Vscroll_Policy;
 
    ---------------------
    -- Set_Hadjustment --
@@ -97,20 +71,6 @@ package body Gtk.Scrollable is
       Internal (Self, Get_Object_Or_Null (GObject (Hadjustment)));
    end Set_Hadjustment;
 
-   ------------------------
-   -- Set_Hscroll_Policy --
-   ------------------------
-
-   procedure Set_Hscroll_Policy
-      (Self   : Gtk_Scrollable;
-       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
-   is
-      procedure Internal (Self : Gtk_Scrollable; Policy : Integer);
-      pragma Import (C, Internal, "gtk_scrollable_set_hscroll_policy");
-   begin
-      Internal (Self, Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
-   end Set_Hscroll_Policy;
-
    ---------------------
    -- Set_Vadjustment --
    ---------------------
@@ -126,19 +86,5 @@ package body Gtk.Scrollable is
    begin
       Internal (Self, Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
-
-   ------------------------
-   -- Set_Vscroll_Policy --
-   ------------------------
-
-   procedure Set_Vscroll_Policy
-      (Self   : Gtk_Scrollable;
-       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
-   is
-      procedure Internal (Self : Gtk_Scrollable; Policy : Integer);
-      pragma Import (C, Internal, "gtk_scrollable_set_vscroll_policy");
-   begin
-      Internal (Self, Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
-   end Set_Vscroll_Policy;
 
 end Gtk.Scrollable;

@@ -39,10 +39,10 @@ package body Gdk.Drag_Contexts is
    function Get_Actions
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gdk_Drag_Action;
       pragma Import (C, Internal, "gdk_drag_context_get_actions");
    begin
-      return Gdk.Drag_Contexts.Gdk_Drag_Action'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Actions;
 
    ---------------------
@@ -81,10 +81,10 @@ package body Gdk.Drag_Contexts is
    function Get_Protocol
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Protocol
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gdk_Drag_Protocol;
       pragma Import (C, Internal, "gdk_drag_context_get_protocol");
    begin
-      return Gdk.Drag_Contexts.Gdk_Drag_Protocol'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Protocol;
 
    -------------------------
@@ -94,10 +94,10 @@ package body Gdk.Drag_Contexts is
    function Get_Selected_Action
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gdk_Drag_Action;
       pragma Import (C, Internal, "gdk_drag_context_get_selected_action");
    begin
-      return Gdk.Drag_Contexts.Gdk_Drag_Action'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Selected_Action;
 
    -----------------------
@@ -121,10 +121,10 @@ package body Gdk.Drag_Contexts is
    function Get_Suggested_Action
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Gdk_Drag_Action;
       pragma Import (C, Internal, "gdk_drag_context_get_suggested_action");
    begin
-      return Gdk.Drag_Contexts.Gdk_Drag_Action'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Suggested_Action;
 
    ----------------

@@ -64,10 +64,12 @@ package body Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Progress_Bar : System.Address) return Integer;
+      function Internal
+         (Progress_Bar : System.Address)
+          return Pango.Layout.Pango_Ellipsize_Mode;
       pragma Import (C, Internal, "gtk_progress_bar_get_ellipsize");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Progress_Bar)));
+      return Internal (Get_Object (Progress_Bar));
    end Get_Ellipsize;
 
    ------------------
@@ -161,10 +163,12 @@ package body Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Mode         : Pango.Layout.Pango_Ellipsize_Mode)
    is
-      procedure Internal (Progress_Bar : System.Address; Mode : Integer);
+      procedure Internal
+         (Progress_Bar : System.Address;
+          Mode         : Pango.Layout.Pango_Ellipsize_Mode);
       pragma Import (C, Internal, "gtk_progress_bar_set_ellipsize");
    begin
-      Internal (Get_Object (Progress_Bar), Pango.Layout.Pango_Ellipsize_Mode'Pos (Mode));
+      Internal (Get_Object (Progress_Bar), Mode);
    end Set_Ellipsize;
 
    ------------------
@@ -256,10 +260,11 @@ package body Gtk.Progress_Bar is
       (Self : not null access Gtk_Progress_Bar_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -270,10 +275,12 @@ package body Gtk.Progress_Bar is
       (Self        : not null access Gtk_Progress_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.Progress_Bar;

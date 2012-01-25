@@ -62,7 +62,8 @@ package body Gtk.File_Chooser_Dialog is
       function Internal
          (Title  : Interfaces.C.Strings.chars_ptr;
           Parent : System.Address;
-          Action : Integer) return System.Address;
+          Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+          return System.Address;
       pragma Import (C, Internal, "ada_gtk_file_chooser_dialog_new");
       Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
@@ -72,7 +73,7 @@ package body Gtk.File_Chooser_Dialog is
       else
          Tmp_Title := New_String (Title);
       end if;
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
+      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Action);
       Free (Tmp_Title);
       Set_Object (Dialog, Tmp_Return);
    end Initialize;
@@ -140,10 +141,12 @@ package body Gtk.File_Chooser_Dialog is
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal
+         (Chooser : System.Address)
+          return Gtk.File_Chooser.Gtk_File_Chooser_Action;
       pragma Import (C, Internal, "gtk_file_chooser_get_action");
    begin
-      return Gtk.File_Chooser.Gtk_File_Chooser_Action'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser));
    end Get_Action;
 
    ------------------------
@@ -575,10 +578,12 @@ package body Gtk.File_Chooser_Dialog is
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
-      procedure Internal (Chooser : System.Address; Action : Integer);
+      procedure Internal
+         (Chooser : System.Address;
+          Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
       pragma Import (C, Internal, "gtk_file_chooser_set_action");
    begin
-      Internal (Get_Object (Chooser), Gtk.File_Chooser.Gtk_File_Chooser_Action'Pos (Action));
+      Internal (Get_Object (Chooser), Action);
    end Set_Action;
 
    ------------------------

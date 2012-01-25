@@ -192,9 +192,11 @@ package Gtk.Recent_Chooser is
 
    function Get_Sort_Type
       (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type;
+   pragma Import (C, Get_Sort_Type, "gtk_recent_chooser_get_sort_type");
    procedure Set_Sort_Type
       (Chooser   : Gtk_Recent_Chooser;
        Sort_Type : Gtk_Recent_Sort_Type);
+   pragma Import (C, Set_Sort_Type, "gtk_recent_chooser_set_sort_type");
    --  Changes the sorting order of the recently used resources list displayed
    --  by Chooser.
    --  Since: gtk+ 2.10

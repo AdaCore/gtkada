@@ -100,11 +100,11 @@ package body Gtk.Widget is
           Accel_Group  : System.Address;
           Accel_Key    : Gtk.Accel_Group.Gtk_Accel_Key;
           Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
-          Accel_Flags  : Integer);
+          Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
       Tmp_Accel_Signal : Interfaces.C.Strings.chars_ptr := New_String (Accel_Signal);
    begin
-      Internal (Get_Object (Widget), Tmp_Accel_Signal, Get_Object (Accel_Group), Accel_Key, Accel_Mods, Gtk.Accel_Group.Gtk_Accel_Flags'Pos (Accel_Flags));
+      Internal (Get_Object (Widget), Tmp_Accel_Signal, Get_Object (Accel_Group), Accel_Key, Accel_Mods, Accel_Flags);
       Free (Tmp_Accel_Signal);
    end Add_Accelerator;
 
@@ -120,10 +120,10 @@ package body Gtk.Widget is
       procedure Internal
          (Widget : System.Address;
           Device : System.Address;
-          Events : Integer);
+          Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_add_device_events");
    begin
-      Internal (Get_Object (Widget), Get_Object (Device), Gdk.Event.Gdk_Event_Mask'Pos (Events));
+      Internal (Get_Object (Widget), Get_Object (Device), Events);
    end Add_Device_Events;
 
    ----------------
@@ -134,10 +134,12 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Events : Gdk.Event.Gdk_Event_Mask)
    is
-      procedure Internal (Widget : System.Address; Events : Integer);
+      procedure Internal
+         (Widget : System.Address;
+          Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_add_events");
    begin
-      Internal (Get_Object (Widget), Gdk.Event.Gdk_Event_Mask'Pos (Events));
+      Internal (Get_Object (Widget), Events);
    end Add_Events;
 
    ------------------------
@@ -180,10 +182,10 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget    : System.Address;
-          Direction : Integer) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
       pragma Import (C, Internal, "gtk_widget_child_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Gtk.Enums.Gtk_Direction_Type'Pos (Direction)));
+      return Boolean'Val (Internal (Get_Object (Widget), Direction));
    end Child_Focus;
 
    ------------------
@@ -214,10 +216,10 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget      : System.Address;
-          Orientation : Integer) return Integer;
+          Orientation : Gtk.Enums.Gtk_Orientation) return Integer;
       pragma Import (C, Internal, "gtk_widget_compute_expand");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Gtk.Enums.Gtk_Orientation'Pos (Orientation)));
+      return Boolean'Val (Internal (Get_Object (Widget), Orientation));
    end Compute_Expand;
 
    --------------------------
@@ -412,11 +414,11 @@ package body Gtk.Widget is
       procedure Internal
          (Widget          : System.Address;
           Proxy_Window    : Gdk.Window.Gdk_Window;
-          Protocol        : Integer;
+          Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
           Use_Coordinates : Integer);
       pragma Import (C, Internal, "gtk_drag_dest_set_proxy");
    begin
-      Internal (Get_Object (Widget), Proxy_Window, Gdk.Drag_Contexts.Gdk_Drag_Protocol'Pos (Protocol), Boolean'Pos (Use_Coordinates));
+      Internal (Get_Object (Widget), Proxy_Window, Protocol, Boolean'Pos (Use_Coordinates));
    end Drag_Dest_Set_Proxy;
 
    --------------------------------
@@ -838,10 +840,10 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Device : System.Address) return Integer;
+          Device : System.Address) return Gdk.Event.Gdk_Event_Mask;
       pragma Import (C, Internal, "gtk_widget_get_device_events");
    begin
-      return Gdk.Event.Gdk_Event_Mask'Val (Internal (Get_Object (Widget), Get_Object (Device)));
+      return Internal (Get_Object (Widget), Get_Object (Device));
    end Get_Device_Events;
 
    -------------------
@@ -893,10 +895,11 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record)
        return Gdk.Event.Gdk_Event_Mask
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal
+         (Widget : System.Address) return Gdk.Event.Gdk_Event_Mask;
       pragma Import (C, Internal, "gtk_widget_get_events");
    begin
-      return Gdk.Event.Gdk_Event_Mask'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Events;
 
    ----------------
@@ -906,10 +909,10 @@ package body Gtk.Widget is
    function Get_Halign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Gtk_Align;
       pragma Import (C, Internal, "gtk_widget_get_halign");
    begin
-      return Gtk.Widget.Gtk_Align'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Halign;
 
    ---------------------
@@ -1259,10 +1262,11 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_Size_Request_Mode
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal
+         (Widget : System.Address) return Gtk.Enums.Gtk_Size_Request_Mode;
       pragma Import (C, Internal, "gtk_widget_get_request_mode");
    begin
-      return Gtk.Enums.Gtk_Size_Request_Mode'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Request_Mode;
 
    ---------------------
@@ -1350,10 +1354,11 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_State_Type
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal
+         (Widget : System.Address) return Gtk.Enums.Gtk_State_Type;
       pragma Import (C, Internal, "gtk_widget_get_state");
    begin
-      return Gtk.Enums.Gtk_State_Type'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_State;
 
    ---------------------
@@ -1364,10 +1369,11 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_State_Flags
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal
+         (Widget : System.Address) return Gtk.Enums.Gtk_State_Flags;
       pragma Import (C, Internal, "gtk_widget_get_state_flags");
    begin
-      return Gtk.Enums.Gtk_State_Flags'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_State_Flags;
 
    ---------------
@@ -1461,10 +1467,10 @@ package body Gtk.Widget is
    function Get_Valign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Gtk_Align;
       pragma Import (C, Internal, "gtk_widget_get_valign");
    begin
-      return Gtk.Widget.Gtk_Align'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Valign;
 
    -----------------
@@ -1825,10 +1831,10 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget    : System.Address;
-          Direction : Integer) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
       pragma Import (C, Internal, "gtk_widget_keynav_failed");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Gtk.Enums.Gtk_Direction_Type'Pos (Direction)));
+      return Boolean'Val (Internal (Get_Object (Widget), Direction));
    end Keynav_Failed;
 
    --------------------------
@@ -1884,11 +1890,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Type;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_base");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gdk.Color.Gdk_Color_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.Color.Gdk_Color_Or_Null (Color'Address));
    end Modify_Base;
 
    ---------------
@@ -1902,11 +1908,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Type;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_bg");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gdk.Color.Gdk_Color_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.Color.Gdk_Color_Or_Null (Color'Address));
    end Modify_Bg;
 
    -------------------
@@ -1938,11 +1944,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Type;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_fg");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gdk.Color.Gdk_Color_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.Color.Gdk_Color_Or_Null (Color'Address));
    end Modify_Fg;
 
    -----------------
@@ -1972,11 +1978,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Type;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_text");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State), Gdk.Color.Gdk_Color_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.Color.Gdk_Color_Or_Null (Color'Address));
    end Modify_Text;
 
    -------------------------------
@@ -1990,11 +1996,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Flags;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_background_color");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
    end Override_Background_Color;
 
    --------------------
@@ -2008,11 +2014,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          State  : Integer;
+          State  : Gtk.Enums.Gtk_State_Flags;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_color");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (State), Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
+      Internal (Get_Object (Widget), State, Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
    end Override_Color;
 
    ---------------------
@@ -2230,7 +2236,7 @@ package body Gtk.Widget is
       function Internal
          (Widget   : System.Address;
           Stock_Id : Interfaces.C.Strings.chars_ptr;
-          Size     : Integer;
+          Size     : Gtk.Enums.Gtk_Icon_Size;
           Detail   : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon");
       Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
@@ -2243,7 +2249,7 @@ package body Gtk.Widget is
       else
          Tmp_Detail := New_String (Detail);
       end if;
-      Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Gtk.Enums.Gtk_Icon_Size'Pos (Size), Tmp_Detail);
+      Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Size, Tmp_Detail);
       Free (Tmp_Stock_Id);
       Free (Tmp_Detail);
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
@@ -2261,13 +2267,13 @@ package body Gtk.Widget is
       function Internal
          (Widget   : System.Address;
           Stock_Id : Interfaces.C.Strings.chars_ptr;
-          Size     : Integer) return System.Address;
+          Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon_pixbuf");
       Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Gtk.Enums.Gtk_Icon_Size'Pos (Size));
+      Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Size);
       Free (Tmp_Stock_Id);
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Render_Icon_Pixbuf;
@@ -2487,10 +2493,10 @@ package body Gtk.Widget is
       procedure Internal
          (Widget : System.Address;
           Device : System.Address;
-          Events : Integer);
+          Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_set_device_events");
    begin
-      Internal (Get_Object (Widget), Get_Object (Device), Gdk.Event.Gdk_Event_Mask'Pos (Events));
+      Internal (Get_Object (Widget), Get_Object (Device), Events);
    end Set_Device_Events;
 
    -------------------
@@ -2531,10 +2537,12 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Events : Gdk.Event.Gdk_Event_Mask)
    is
-      procedure Internal (Widget : System.Address; Events : Integer);
+      procedure Internal
+         (Widget : System.Address;
+          Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_set_events");
    begin
-      Internal (Get_Object (Widget), Gdk.Event.Gdk_Event_Mask'Pos (Events));
+      Internal (Get_Object (Widget), Events);
    end Set_Events;
 
    ----------------
@@ -2545,10 +2553,10 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Integer);
+      procedure Internal (Widget : System.Address; Align : Gtk_Align);
       pragma Import (C, Internal, "gtk_widget_set_halign");
    begin
-      Internal (Get_Object (Widget), Gtk.Widget.Gtk_Align'Pos (Align));
+      Internal (Get_Object (Widget), Align);
    end Set_Halign;
 
    ---------------------
@@ -2825,10 +2833,12 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        State  : Gtk.Enums.Gtk_State_Type)
    is
-      procedure Internal (Widget : System.Address; State : Integer);
+      procedure Internal
+         (Widget : System.Address;
+          State  : Gtk.Enums.Gtk_State_Type);
       pragma Import (C, Internal, "gtk_widget_set_state");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Type'Pos (State));
+      Internal (Get_Object (Widget), State);
    end Set_State;
 
    ---------------------
@@ -2842,11 +2852,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Flags  : Integer;
+          Flags  : Gtk.Enums.Gtk_State_Flags;
           Clear  : Integer);
       pragma Import (C, Internal, "gtk_widget_set_state_flags");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (Flags), Boolean'Pos (Clear));
+      Internal (Get_Object (Widget), Flags, Boolean'Pos (Clear));
    end Set_State_Flags;
 
    ---------------
@@ -2944,10 +2954,10 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Integer);
+      procedure Internal (Widget : System.Address; Align : Gtk_Align);
       pragma Import (C, Internal, "gtk_widget_set_valign");
    begin
-      Internal (Get_Object (Widget), Gtk.Widget.Gtk_Align'Pos (Align));
+      Internal (Get_Object (Widget), Align);
    end Set_Valign;
 
    -----------------
@@ -3232,10 +3242,12 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Flags  : Gtk.Enums.Gtk_State_Flags)
    is
-      procedure Internal (Widget : System.Address; Flags : Integer);
+      procedure Internal
+         (Widget : System.Address;
+          Flags  : Gtk.Enums.Gtk_State_Flags);
       pragma Import (C, Internal, "gtk_widget_unset_state_flags");
    begin
-      Internal (Get_Object (Widget), Gtk.Enums.Gtk_State_Flags'Pos (Flags));
+      Internal (Get_Object (Widget), Flags);
    end Unset_State_Flags;
 
    ---------------------------

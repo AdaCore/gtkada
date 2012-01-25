@@ -440,9 +440,11 @@ package Gtk.File_Chooser is
 
    function Get_Action
       (Chooser : Gtk_File_Chooser) return Gtk_File_Chooser_Action;
+   pragma Import (C, Get_Action, "gtk_file_chooser_get_action");
    procedure Set_Action
       (Chooser : Gtk_File_Chooser;
        Action  : Gtk_File_Chooser_Action);
+   pragma Import (C, Set_Action, "gtk_file_chooser_set_action");
    --  Sets the type of operation that the chooser is performing; the user
    --  interface is adapted to suit the selected action. For example, an option
    --  to create a new folder might be shown if the action is

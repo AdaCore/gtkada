@@ -264,10 +264,10 @@ package body Gtk.Assistant is
    is
       function Internal
          (Assistant : System.Address;
-          Page      : System.Address) return Integer;
+          Page      : System.Address) return Gtk_Assistant_Page_Type;
       pragma Import (C, Internal, "gtk_assistant_get_page_type");
    begin
-      return Gtk.Assistant.Gtk_Assistant_Page_Type'Val (Internal (Get_Object (Assistant), Get_Object (Page)));
+      return Internal (Get_Object (Assistant), Get_Object (Page));
    end Get_Page_Type;
 
    -----------------
@@ -517,10 +517,10 @@ package body Gtk.Assistant is
       procedure Internal
          (Assistant : System.Address;
           Page      : System.Address;
-          The_Type  : Integer);
+          The_Type  : Gtk_Assistant_Page_Type);
       pragma Import (C, Internal, "gtk_assistant_set_page_type");
    begin
-      Internal (Get_Object (Assistant), Get_Object (Page), Gtk.Assistant.Gtk_Assistant_Page_Type'Pos (The_Type));
+      Internal (Get_Object (Assistant), Get_Object (Page), The_Type);
    end Set_Page_Type;
 
    --------------------------

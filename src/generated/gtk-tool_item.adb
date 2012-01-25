@@ -62,10 +62,12 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address)
+          return Pango.Layout.Pango_Ellipsize_Mode;
       pragma Import (C, Internal, "gtk_tool_item_get_ellipsize_mode");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Ellipsize_Mode;
 
    ----------------
@@ -102,10 +104,11 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Icon_Size
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address) return Gtk.Enums.Gtk_Icon_Size;
       pragma Import (C, Internal, "gtk_tool_item_get_icon_size");
    begin
-      return Gtk.Enums.Gtk_Icon_Size'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Icon_Size;
 
    ----------------------
@@ -129,10 +132,11 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_tool_item_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Orientation;
 
    -------------------------
@@ -165,10 +169,11 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Relief_Style
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address) return Gtk.Enums.Gtk_Relief_Style;
       pragma Import (C, Internal, "gtk_tool_item_get_relief_style");
    begin
-      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Relief_Style;
 
    ------------------------
@@ -192,10 +197,11 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_tool_item_get_text_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Text_Orientation;
 
    -------------------------
@@ -221,10 +227,11 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Toolbar_Style
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal
+         (Tool_Item : System.Address) return Gtk.Enums.Gtk_Toolbar_Style;
       pragma Import (C, Internal, "gtk_tool_item_get_toolbar_style");
    begin
-      return Gtk.Enums.Gtk_Toolbar_Style'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item));
    end Get_Toolbar_Style;
 
    -------------------------

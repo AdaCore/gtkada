@@ -86,10 +86,11 @@ package body Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Viewport : System.Address) return Integer;
+      function Internal
+         (Viewport : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
       pragma Import (C, Internal, "gtk_viewport_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Viewport)));
+      return Internal (Get_Object (Viewport));
    end Get_Shadow_Type;
 
    ---------------------
@@ -115,10 +116,12 @@ package body Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Viewport : System.Address; The_Type : Integer);
+      procedure Internal
+         (Viewport : System.Address;
+          The_Type : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_viewport_set_shadow_type");
    begin
-      Internal (Get_Object (Viewport), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Viewport), The_Type);
    end Set_Shadow_Type;
 
    ---------------------
@@ -144,10 +147,11 @@ package body Gtk.Viewport is
       (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
       pragma Import (C, Internal, "gtk_scrollable_get_hscroll_policy");
    begin
-      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Hscroll_Policy;
 
    ---------------------
@@ -173,10 +177,11 @@ package body Gtk.Viewport is
       (Self : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
       pragma Import (C, Internal, "gtk_scrollable_get_vscroll_policy");
    begin
-      return Gtk.Enums.Gtk_Scrollable_Policy'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Vscroll_Policy;
 
    ---------------------
@@ -203,10 +208,12 @@ package body Gtk.Viewport is
       (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
-      procedure Internal (Self : System.Address; Policy : Integer);
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
       pragma Import (C, Internal, "gtk_scrollable_set_hscroll_policy");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
+      Internal (Get_Object (Self), Policy);
    end Set_Hscroll_Policy;
 
    ---------------------
@@ -233,10 +240,12 @@ package body Gtk.Viewport is
       (Self   : not null access Gtk_Viewport_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy)
    is
-      procedure Internal (Self : System.Address; Policy : Integer);
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
       pragma Import (C, Internal, "gtk_scrollable_set_vscroll_policy");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Scrollable_Policy'Pos (Policy));
+      Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
 
 end Gtk.Viewport;

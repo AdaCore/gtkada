@@ -144,10 +144,11 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Pango.Layout.Pango_Ellipsize_Mode;
       pragma Import (C, Internal, "gtk_label_get_ellipsize");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Ellipsize;
 
    -----------------
@@ -158,10 +159,11 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record)
        return Gtk.Enums.Gtk_Justification
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Gtk.Enums.Gtk_Justification;
       pragma Import (C, Internal, "gtk_label_get_justify");
    begin
-      return Gtk.Enums.Gtk_Justification'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Justify;
 
    ---------------
@@ -232,10 +234,11 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record)
        return Pango.Layout.Pango_Wrap_Mode
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Pango.Layout.Pango_Wrap_Mode;
       pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
    begin
-      return Pango.Layout.Pango_Wrap_Mode'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Line_Wrap_Mode;
 
    -------------------------
@@ -452,10 +455,12 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record;
        Mode  : Pango.Layout.Pango_Ellipsize_Mode)
    is
-      procedure Internal (Label : System.Address; Mode : Integer);
+      procedure Internal
+         (Label : System.Address;
+          Mode  : Pango.Layout.Pango_Ellipsize_Mode);
       pragma Import (C, Internal, "gtk_label_set_ellipsize");
    begin
-      Internal (Get_Object (Label), Pango.Layout.Pango_Ellipsize_Mode'Pos (Mode));
+      Internal (Get_Object (Label), Mode);
    end Set_Ellipsize;
 
    -----------------
@@ -466,10 +471,12 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Label : System.Address; Jtype : Integer);
+      procedure Internal
+         (Label : System.Address;
+          Jtype : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");
    begin
-      Internal (Get_Object (Label), Gtk.Enums.Gtk_Justification'Pos (Jtype));
+      Internal (Get_Object (Label), Jtype);
    end Set_Justify;
 
    ---------------
@@ -512,10 +519,12 @@ package body Gtk.Label is
       (Label     : not null access Gtk_Label_Record;
        Wrap_Mode : Pango.Layout.Pango_Wrap_Mode)
    is
-      procedure Internal (Label : System.Address; Wrap_Mode : Integer);
+      procedure Internal
+         (Label     : System.Address;
+          Wrap_Mode : Pango.Layout.Pango_Wrap_Mode);
       pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
    begin
-      Internal (Get_Object (Label), Pango.Layout.Pango_Wrap_Mode'Pos (Wrap_Mode));
+      Internal (Get_Object (Label), Wrap_Mode);
    end Set_Line_Wrap_Mode;
 
    ----------------

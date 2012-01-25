@@ -94,10 +94,11 @@ package body Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal
+         (The_Range : System.Address) return Gtk.Enums.Gtk_Sensitivity_Type;
       pragma Import (C, Internal, "gtk_range_get_lower_stepper_sensitivity");
    begin
-      return Gtk.Enums.Gtk_Sensitivity_Type'Val (Internal (Get_Object (The_Range)));
+      return Internal (Get_Object (The_Range));
    end Get_Lower_Stepper_Sensitivity;
 
    -------------------------
@@ -207,10 +208,11 @@ package body Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal
+         (The_Range : System.Address) return Gtk.Enums.Gtk_Sensitivity_Type;
       pragma Import (C, Internal, "gtk_range_get_upper_stepper_sensitivity");
    begin
-      return Gtk.Enums.Gtk_Sensitivity_Type'Val (Internal (Get_Object (The_Range)));
+      return Internal (Get_Object (The_Range));
    end Get_Upper_Stepper_Sensitivity;
 
    ---------------
@@ -311,10 +313,12 @@ package body Gtk.GRange is
       (The_Range   : not null access Gtk_Range_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
    is
-      procedure Internal (The_Range : System.Address; Sensitivity : Integer);
+      procedure Internal
+         (The_Range   : System.Address;
+          Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
       pragma Import (C, Internal, "gtk_range_set_lower_stepper_sensitivity");
    begin
-      Internal (Get_Object (The_Range), Gtk.Enums.Gtk_Sensitivity_Type'Pos (Sensitivity));
+      Internal (Get_Object (The_Range), Sensitivity);
    end Set_Lower_Stepper_Sensitivity;
 
    -------------------------
@@ -417,10 +421,12 @@ package body Gtk.GRange is
       (The_Range   : not null access Gtk_Range_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
    is
-      procedure Internal (The_Range : System.Address; Sensitivity : Integer);
+      procedure Internal
+         (The_Range   : System.Address;
+          Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
       pragma Import (C, Internal, "gtk_range_set_upper_stepper_sensitivity");
    begin
-      Internal (Get_Object (The_Range), Gtk.Enums.Gtk_Sensitivity_Type'Pos (Sensitivity));
+      Internal (Get_Object (The_Range), Sensitivity);
    end Set_Upper_Stepper_Sensitivity;
 
    ---------------
@@ -445,10 +451,11 @@ package body Gtk.GRange is
       (Self : not null access Gtk_Range_Record)
        return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -459,10 +466,12 @@ package body Gtk.GRange is
       (Self        : not null access Gtk_Range_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
 end Gtk.GRange;
