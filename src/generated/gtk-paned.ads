@@ -269,17 +269,11 @@ package Gtk.Paned is
    --  Name: Position_Set_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
 
    Max_Position_Property : constant Glib.Properties.Property_Int;
    Min_Position_Property : constant Glib.Properties.Property_Int;
    Position_Property : constant Glib.Properties.Property_Int;
    Position_Set_Property : constant Glib.Properties.Property_Boolean;
-
-
 
    -------------
    -- Signals --

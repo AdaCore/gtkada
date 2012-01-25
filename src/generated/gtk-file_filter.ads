@@ -262,10 +262,4 @@ package Gtk.File_Filter is
    return Gtk_File_Filter
    renames Implements_Buildable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.File_Filter;

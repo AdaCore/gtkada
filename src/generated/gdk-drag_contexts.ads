@@ -121,10 +121,4 @@ package Gdk.Drag_Contexts is
    --  Determines the suggested drag action of the context.
    --  Since: gtk+ 2.22
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gdk.Drag_Contexts;

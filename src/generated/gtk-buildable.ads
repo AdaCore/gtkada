@@ -150,10 +150,4 @@ package Gtk.Buildable is
    --  "name": name of property
    --  "value": value of property
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Buildable;

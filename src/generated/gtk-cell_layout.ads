@@ -290,10 +290,4 @@ package Gtk.Cell_Layout is
 
    end Set_Cell_Data_Func_User_Data;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Cell_Layout;

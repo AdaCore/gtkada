@@ -115,10 +115,4 @@ package Gtk.Separator_Menu_Item is
    return Gtk_Separator_Menu_Item
    renames Implements_Buildable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Separator_Menu_Item;

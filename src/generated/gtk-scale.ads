@@ -320,16 +320,10 @@ package Gtk.Scale is
    --  Name: Value_Pos_Property
    --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
 
    Number_Of_Digits_Property : constant Glib.Properties.Property_Int;
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
-
-
 
    -------------
    -- Signals --

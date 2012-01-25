@@ -129,14 +129,4 @@ package Gtk.Separator is
    return Gtk_Separator
    renames Implements_Orientable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Separator;

@@ -185,12 +185,6 @@ package Gtk.Status_Bar is
    return Gtk_Status_Bar
    renames Implements_Orientable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
    -------------
    -- Signals --
    -------------

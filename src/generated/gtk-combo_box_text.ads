@@ -346,10 +346,4 @@ package Gtk.Combo_Box_Text is
    return Gtk_Combo_Box_Text
    renames Implements_CellLayout.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Combo_Box_Text;

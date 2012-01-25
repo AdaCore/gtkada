@@ -1116,11 +1116,6 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
         props = list(self.node.findall(n.text))
         if props is not None:
             adaprops = []
-            section = self.pkg.section("Properties")
-            section.add_comment(
-                """The following properties are defined for this widget.
-See Glib.Properties for more information on properties)""")
-
             for p in props:
                 flags = []
                 if p.get("readable", "1") != "0":
@@ -1152,24 +1147,30 @@ See Glib.Properties for more information on properties)""")
                     "ptype": ptype,
                     "type": tp.as_ada_param(self.pkg)})
 
-            adaprops.sort(lambda x,y: x["name"] <> y["name"])
+            if adaprops:
+                section = self.pkg.section("Properties")
+                section.add_comment(
+                    """The following properties are defined for this widget.
+See Glib.Properties for more information on properties)""")
 
-            for p in adaprops:
-                section.add_comment("")
-                section.add_comment("Name:  %(name)s_Property" % p)
-                section.add_comment("Type:  %(type)s" % p)
-                section.add_comment("Flags: %(flags)s" % p)
-                if p["doc"]:
-                    section.add_comment("%s\n" % p["doc"])
+                adaprops.sort(lambda x,y: x["name"] <> y["name"])
 
-            section.add("\n".join(
-                    '   %(name)s_Property : constant %(ptype)s;' % p
-                    for p in adaprops))
+                for p in adaprops:
+                    section.add_comment("")
+                    section.add_comment("Name:  %(name)s_Property" % p)
+                    section.add_comment("Type:  %(type)s" % p)
+                    section.add_comment("Flags: %(flags)s" % p)
+                    if p["doc"]:
+                        section.add_comment("%s\n" % p["doc"])
 
-            for p in adaprops:
-                d = '   %(name)s_Property : constant %(ptype)s' % p
-                self.pkg.add_private(
-                    d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
+                section.add("\n".join(
+                        '   %(name)s_Property : constant %(ptype)s;' % p
+                        for p in adaprops))
+
+                for p in adaprops:
+                    d = '   %(name)s_Property : constant %(ptype)s' % p
+                    self.pkg.add_private(
+                        d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
 
     def _signals(self):
         signals = list(self.node.findall(gsignal))
@@ -1458,7 +1459,7 @@ See Glib.Properties for more information on properties)""")
         if self._generated:
             return
 
-        classtype = naming.type(self.ctype)
+        classtype = naming.type(name=self.ctype)
 
         typename = classtype.ada   # The type we are mapping
 

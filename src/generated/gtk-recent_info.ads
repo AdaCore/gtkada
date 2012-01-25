@@ -202,10 +202,4 @@ package Gtk.Recent_Info is
    --  reaches zero, Info is deallocated, and the memory freed.
    --  Since: gtk+ 2.10
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Recent_Info;

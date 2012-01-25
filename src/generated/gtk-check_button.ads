@@ -140,10 +140,4 @@ package Gtk.Check_Button is
    return Gtk_Check_Button
    renames Implements_Buildable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
 end Gtk.Check_Button;
