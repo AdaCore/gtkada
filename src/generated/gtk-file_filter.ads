@@ -88,10 +88,6 @@ package Gtk.File_Filter is
    File_Filter_Display_Name : constant Gtk_File_Filter_Flags := 4;
    File_Filter_Mime_Type : constant Gtk_File_Filter_Flags := 8;
 
-   package Gtk_File_Filter_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_File_Filter_Flags);
-   type Property_Gtk_File_Filter_Flags is new Gtk_File_Filter_Flags_Properties.Property;
-
    type Gtk_File_Filter_Info is record
       Contains : Gtk_File_Filter_Flags;
       Filename : Interfaces.C.Strings.chars_ptr;
@@ -108,6 +104,14 @@ package Gtk.File_Filter is
    --  Gtk.File_Filter.Add_Custom.
    --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
    --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_File_Filter_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Filter_Flags);
+   type Property_Gtk_File_Filter_Flags is new Gtk_File_Filter_Flags_Properties.Property;
 
    ------------------
    -- Constructors --

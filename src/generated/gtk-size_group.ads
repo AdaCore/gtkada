@@ -117,6 +117,10 @@ package Gtk.Size_Group is
    --  The mode of the size group determines the directions in which the size
    --  group affects the requested sizes of its component widgets.
 
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
    package Size_Group_Mode_Properties is
       new Generic_Internal_Discrete_Property (Size_Group_Mode);
    type Property_Size_Group_Mode is new Size_Group_Mode_Properties.Property;

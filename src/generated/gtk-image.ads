@@ -134,6 +134,10 @@ package Gtk.Image is
    --  For empty images, you can request any storage type (call any of the
    --  "get" functions), but they will all return null values.
 
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
    package Gtk_Image_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Image_Type);
    type Property_Gtk_Image_Type is new Gtk_Image_Type_Properties.Property;

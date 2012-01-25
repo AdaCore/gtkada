@@ -56,6 +56,10 @@ package Gdk.Device is
    --  linkend="GdkDeviceManager.description">above</link> for more information
    --  about the meaning of these device types.
 
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
    package Gdk_Device_Type_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Device_Type);
    type Property_Gdk_Device_Type is new Gdk_Device_Type_Properties.Property;

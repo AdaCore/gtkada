@@ -361,10 +361,6 @@ package Gtk.File_Chooser is
    --  Describes whether a Gtk.File_Chooser.Gtk_File_Chooser is being used to
    --  open existing files or to save to a possibly new file.
 
-   package Gtk_File_Chooser_Action_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Action);
-   type Property_Gtk_File_Chooser_Action is new Gtk_File_Chooser_Action_Properties.Property;
-
    type Gtk_File_Chooser_Confirmation is (
       Confirmation_Confirm,
       Confirmation_Accept_Filename,
@@ -376,10 +372,6 @@ package Gtk.File_Chooser is
    --  file chooser will present the stock confirmation dialog, accept the
    --  user's choice of a filename, or let the user choose another filename.
 
-   package Gtk_File_Chooser_Confirmation_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Confirmation);
-   type Property_Gtk_File_Chooser_Confirmation is new Gtk_File_Chooser_Confirmation_Properties.Property;
-
    type Gtk_File_Chooser_Error is (
       Error_Nonexistent,
       Error_Bad_Filename,
@@ -388,6 +380,18 @@ package Gtk.File_Chooser is
    pragma Convention (C, Gtk_File_Chooser_Error);
    --  These identify the various errors that can occur while calling
    --  Gtk.File_Chooser.Gtk_File_Chooser functions.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_File_Chooser_Action_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Action);
+   type Property_Gtk_File_Chooser_Action is new Gtk_File_Chooser_Action_Properties.Property;
+
+   package Gtk_File_Chooser_Confirmation_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Confirmation);
+   type Property_Gtk_File_Chooser_Confirmation is new Gtk_File_Chooser_Confirmation_Properties.Property;
 
    package Gtk_File_Chooser_Error_Properties is
       new Generic_Internal_Discrete_Property (Gtk_File_Chooser_Error);

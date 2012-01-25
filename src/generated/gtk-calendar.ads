@@ -73,10 +73,6 @@ package Gtk.Calendar is
    Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 8;
    Show_Details : constant Gtk_Calendar_Display_Options := 32;
 
-   package Gtk_Calendar_Display_Options_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Calendar_Display_Options);
-   type Property_Gtk_Calendar_Display_Options is new Gtk_Calendar_Display_Options_Properties.Property;
-
    type Gtk_Calendar_Detail_Func is access function
      (Calendar : not null access Gtk_Calendar_Record'Class;
       Year     : Guint;
@@ -92,6 +88,14 @@ package Gtk.Calendar is
    --  "year": the year for which details are needed.
    --  "month": the month for which details are needed.
    --  "day": the day of Month for which details are needed.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Calendar_Display_Options_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Calendar_Display_Options);
+   type Property_Gtk_Calendar_Display_Options is new Gtk_Calendar_Display_Options_Properties.Property;
 
    ------------------
    -- Constructors --

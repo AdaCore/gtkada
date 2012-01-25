@@ -99,10 +99,6 @@ package Gtk.Recent_Filter is
    Recent_Filter_Group : constant Gtk_Recent_Filter_Flags := 16;
    Recent_Filter_Age : constant Gtk_Recent_Filter_Flags := 32;
 
-   package Gtk_Recent_Filter_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Recent_Filter_Flags);
-   type Property_Gtk_Recent_Filter_Flags is new Gtk_Recent_Filter_Flags_Properties.Property;
-
    type Gtk_Recent_Filter_Info is record
       Contains : Gtk_Recent_Filter_Flags;
       URI : Interfaces.C.Strings.chars_ptr;
@@ -126,6 +122,14 @@ package Gtk.Recent_Filter is
    --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
    --  filled according to the Needed flags passed to
    --  Gtk.Recent_Filter.Add_Custom
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Recent_Filter_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Recent_Filter_Flags);
+   type Property_Gtk_Recent_Filter_Flags is new Gtk_Recent_Filter_Flags_Properties.Property;
 
    ------------------
    -- Constructors --

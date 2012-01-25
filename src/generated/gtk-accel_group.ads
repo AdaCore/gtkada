@@ -60,10 +60,6 @@ package Gtk.Accel_Group is
    Accel_Locked : constant Gtk_Accel_Flags := 2;
    Accel_Mask : constant Gtk_Accel_Flags := 7;
 
-   package Gtk_Accel_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Accel_Flags);
-   type Property_Gtk_Accel_Flags is new Gtk_Accel_Flags_Properties.Property;
-
    type Gtk_Accel_Key is record
       Accel_Key : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
@@ -91,6 +87,14 @@ package Gtk.Accel_Group is
      (Key     : Gtk_Accel_Key;
       Closure : System.Address) return Boolean;
    --  Since: gtk+ 2.2
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Accel_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Accel_Flags);
+   type Property_Gtk_Accel_Flags is new Gtk_Accel_Flags_Properties.Property;
 
    ------------------
    -- Constructors --

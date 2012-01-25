@@ -83,16 +83,20 @@ package Gtk.Assistant is
    --  The Cancel button will only be shown if the page isn't "committed". See
    --  Gtk.Assistant.Commit for details.
 
-   package Gtk_Assistant_Page_Type_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Assistant_Page_Type);
-   type Property_Gtk_Assistant_Page_Type is new Gtk_Assistant_Page_Type_Properties.Property;
-
    type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
    --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
    --  the next page given a current one. It's called both for computing the
    --  next page when the user presses the "forward" button and for handling
    --  the behavior of the "last" button.
    --  "current_page": The page number used to calculate the next page.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Assistant_Page_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Assistant_Page_Type);
+   type Property_Gtk_Assistant_Page_Type is new Gtk_Assistant_Page_Type_Properties.Property;
 
    ------------------
    -- Constructors --

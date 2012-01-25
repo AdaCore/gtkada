@@ -277,10 +277,6 @@ package Gtk.Widget is
    --  Note that in horizontal context Gtk_Align_Start and Gtk_Align_End are
    --  interpreted relative to text direction.
 
-   package Gtk_Align_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Align);
-   type Property_Gtk_Align is new Gtk_Align_Properties.Property;
-
    type Gtk_Requisition is record
       Width : Gint;
       Height : Gint;
@@ -327,6 +323,14 @@ package Gtk.Widget is
    package Widget_SList is new Generic_SList (Gtk.Widget.Gtk_Widget);
 
    subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Align_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Align);
+   type Property_Gtk_Align is new Gtk_Align_Properties.Property;
 
    ------------------
    -- Constructors --

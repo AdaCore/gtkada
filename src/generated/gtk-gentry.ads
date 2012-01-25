@@ -104,6 +104,10 @@ package Gtk.GEntry is
    pragma Convention (C, Gtk_Entry_Icon_Position);
    --  Specifies the side of the entry at which an icon is placed.
 
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
    package Gtk_Entry_Icon_Position_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Entry_Icon_Position);
    type Property_Gtk_Entry_Icon_Position is new Gtk_Entry_Icon_Position_Properties.Property;

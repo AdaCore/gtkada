@@ -86,10 +86,6 @@ package Gtk.Cell_Renderer is
    Cell_Renderer_Sorted : constant Gtk_Cell_Renderer_State := 8;
    Cell_Renderer_Focused : constant Gtk_Cell_Renderer_State := 16;
 
-   package Gtk_Cell_Renderer_State_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_State);
-   type Property_Gtk_Cell_Renderer_State is new Gtk_Cell_Renderer_State_Properties.Property;
-
    type Gtk_Cell_Renderer_Mode is (
       Cell_Renderer_Mode_Inert,
       Cell_Renderer_Mode_Activatable,
@@ -97,13 +93,21 @@ package Gtk.Cell_Renderer is
    pragma Convention (C, Gtk_Cell_Renderer_Mode);
    --  Identifies how the user can interact with a particular cell.
 
-   package Gtk_Cell_Renderer_Mode_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_Mode);
-   type Property_Gtk_Cell_Renderer_Mode is new Gtk_Cell_Renderer_Mode_Properties.Property;
-
    function Convert (R : Gtk.Cell_Renderer.Gtk_Cell_Renderer) return System.Address;
    function Convert (R : System.Address) return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
    package Cell_Renderer_List is new Generic_List (Gtk.Cell_Renderer.Gtk_Cell_Renderer);
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Cell_Renderer_State_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_State);
+   type Property_Gtk_Cell_Renderer_State is new Gtk_Cell_Renderer_State_Properties.Property;
+
+   package Gtk_Cell_Renderer_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_Mode);
+   type Property_Gtk_Cell_Renderer_Mode is new Gtk_Cell_Renderer_Mode_Properties.Property;
 
    ------------------
    -- Constructors --

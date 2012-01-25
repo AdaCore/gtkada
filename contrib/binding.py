@@ -1406,6 +1406,9 @@ See Glib.Properties for more information on properties)""")
         base = base_name(type.ada)
         node = gir.enums[ctype]
 
+        current = 0
+        is_default_representation = True
+
         members = []
 
         for member in node.findall(nmember):
@@ -1425,7 +1428,12 @@ See Glib.Properties for more information on properties)""")
                 cname=cname,
                 adaname="%s.%s" % (self.name, m))
 
-            members.append((m, member.get("value")))
+            value = int(member.get("value"))
+            if value != current:
+                is_default_representation = False
+            current += 1
+
+            members.append((m, value))
 
         decl = ""
 
@@ -1436,6 +1444,12 @@ See Glib.Properties for more information on properties)""")
                 + "pragma Convention (C, %s);\n" % base)
             section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
+            if not is_default_representation:
+                repr = ("   for %s use (\n" % base
+                        + ",\n".join("      %s => %s" % m for m in members)
+                        + ");\n")
+                section.add(repr)
+
         elif node.tag == nbitfield:
             section.add(
                 "\ntype %s is " % base
@@ -1445,10 +1459,10 @@ See Glib.Properties for more information on properties)""")
 
             for m, value in members:
                 decl += "%s : constant %s := %s;\n" % (m, base, value)
+            section.add(decl)
 
-        section.add(
-           decl
-           + "\npackage %s_Properties is\n" % base
+        section.pkg.section("Enumeration Properties").add(
+           "package %s_Properties is\n" % base
            + "   new Generic_Internal_Discrete_Property (%s);\n" % base
            + "type Property_%s is new %s_Properties.Property;\n\n" % (
                         base, base))

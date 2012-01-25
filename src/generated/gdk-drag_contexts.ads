@@ -47,10 +47,6 @@ package Gdk.Drag_Contexts is
    Action_Private : constant Gdk_Drag_Action := 16;
    Action_Ask : constant Gdk_Drag_Action := 32;
 
-   package Gdk_Drag_Action_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Drag_Action);
-   type Property_Gdk_Drag_Action is new Gdk_Drag_Action_Properties.Property;
-
    type Gdk_Drag_Protocol is (
       Drag_Proto_None,
       Drag_Proto_Motif,
@@ -62,6 +58,14 @@ package Gdk.Drag_Contexts is
    pragma Convention (C, Gdk_Drag_Protocol);
    --  Used in Gdk.Drag_Contexts.Drag_Context to indicate the protocol
    --  according to which DND is done.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gdk_Drag_Action_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Drag_Action);
+   type Property_Gdk_Drag_Action is new Gdk_Drag_Action_Properties.Property;
 
    package Gdk_Drag_Protocol_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Drag_Protocol);

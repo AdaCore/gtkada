@@ -90,6 +90,10 @@ package Gtk.About_Dialog is
    --  The type of license for an application.
    --  This enumeration can be expanded at later date.
 
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
    package Gtk_License_Properties is
       new Generic_Internal_Discrete_Property (Gtk_License);
    type Property_Gtk_License is new Gtk_License_Properties.Property;
