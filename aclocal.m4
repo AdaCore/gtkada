@@ -516,43 +516,6 @@ AC_DEFUN(AM_CHECK_OPENGL,
 
 #############################################################
 #
-#  Checking for gnome2
-#
-#############################################################
-
-AC_DEFUN(AM_CHECK_GNOME,
-[   
-  AC_MSG_CHECKING(for gnome2)
-  GNOME_CFLAGS=""
-  GNOME_LIBS=""
-  GNOME_STATIC_LIBS=""
-
-  if test "$PKG_CONFIG" = "no" ; then
-    AC_MSG_RESULT(no)
-    HAVE_GNOME="False"
-  else
-    GNOMEUI="libgnomeui-2.0"
-    GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
-    if test "x$GNOME_PREFIX" = "x"; then
-      HAVE_GNOME="False"
-      AC_MSG_RESULT(no)
-    else
-      AC_MSG_RESULT(yes)
-      HAVE_GNOME="True"
-      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags`
-      GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
-      GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a" 
-    fi
-  fi
-
-  AC_SUBST(GNOME_CFLAGS)
-  AC_SUBST(GNOME_LIBS)
-  AC_SUBST(GNOME_STATIC_LIBS)
-  AC_SUBST(HAVE_GNOME)
-])
-
-#############################################################
-#
 #  A small macro to create a file after preprocessing it using gnatprep
 #
 #############################################################

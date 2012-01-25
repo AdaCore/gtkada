@@ -46,9 +46,6 @@ AC_SUBST(HAVE_GTKEXTRA)
 # try to find OpenGL if present
 AM_CHECK_OPENGL
 
-# try to find gnome if present
-AM_CHECK_GNOME
-
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)
 AC_SUBST(GTKADA_MAJOR_VERSION)

@@ -56,13 +56,13 @@ endif
 ifeq ($(BUILD_STATIC),yes)
 libs: ${OBJ_DIR}/${ARCHIVENAME}
 endif
-libs: ${opengl_libs} gnome
+libs: ${opengl_libs}
 
 ifeq (${HAVE_GTKEXTRA},yes)
 libs: gtkextra
 endif
 
-opengl gtkextra gnome tools: force
+opengl gtkextra tools: force
 	$(MAKE) -C $@
 
 ## Private targets
@@ -119,7 +119,6 @@ install: force
 	      $(CP) $(OBJ_DIR)/cairo*.ali "${DESTDIR}$(alidir)/static"; \
 	   fi; \
            $(MAKE) -C opengl install; \
-           $(MAKE) -C gnome install; \
            $(MAKE) -C tools install; \
            $(MAKE) -C gtkextra install; \
 	   if [ ${BUILD_STATIC} = yes ]; then \
@@ -136,14 +135,12 @@ clean:
 	-${RM} .\#*
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
-	$(MAKE) -C gnome clean
 	$(MAKE) -C tools clean
 
 distclean: force
 	-${RM} Makefile
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
-	$(MAKE) -C gnome distclean
 	$(MAKE) -C tools distclean
 	-$(RM) Makefile.common
 

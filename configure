@@ -272,7 +272,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="src/glib.ads"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os DEFAULT_LIBRARY_TYPE OS_SPECIFIC_LINK_OPTIONS BUILD_STATIC BUILD_SHARED SO_EXT SO_OPTS FPIC TARGET_LFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GNATMAKE PERL SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RANLIB ac_ct_RANLIB PKG_CONFIG GTK_PREFIX GTK_CFLAGS GTK_LIBS DEFINE_UNDERLINE_ERROR USE_NLS GETTEXT_INTL HAVE_GETTEXT HAVE_GTKEXTRA GL_LIBS GL_CFLAGS HAVE_OPENGL GNOME_CFLAGS GNOME_LIBS GNOME_STATIC_LIBS HAVE_GNOME GTKADA_VERSION GTKADA_MAJOR_VERSION GTKADA_MINOR_VERSION GTKADA_MICRO_VERSION BUILD_TYPE EXEC_PREFIX LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os DEFAULT_LIBRARY_TYPE OS_SPECIFIC_LINK_OPTIONS BUILD_STATIC BUILD_SHARED SO_EXT SO_OPTS FPIC TARGET_LFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GNATMAKE PERL SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RANLIB ac_ct_RANLIB PKG_CONFIG GTK_PREFIX GTK_CFLAGS GTK_LIBS DEFINE_UNDERLINE_ERROR USE_NLS GETTEXT_INTL HAVE_GETTEXT HAVE_GTKEXTRA GL_LIBS GL_CFLAGS HAVE_OPENGL GTKADA_VERSION GTKADA_MAJOR_VERSION GTKADA_MINOR_VERSION GTKADA_MICRO_VERSION BUILD_TYPE EXEC_PREFIX LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -3475,41 +3475,6 @@ echo "${ECHO_T}*** OpenGL support will not be integrated into GtkAda ***" >&6
 
 
 
-# try to find gnome if present
-
-  echo "$as_me:$LINENO: checking for gnome2" >&5
-echo $ECHO_N "checking for gnome2... $ECHO_C" >&6
-  GNOME_CFLAGS=""
-  GNOME_LIBS=""
-  GNOME_STATIC_LIBS=""
-
-  if test "$PKG_CONFIG" = "no" ; then
-    echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    HAVE_GNOME="False"
-  else
-    GNOMEUI="libgnomeui-2.0"
-    GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
-    if test "x$GNOME_PREFIX" = "x"; then
-      HAVE_GNOME="False"
-      echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    else
-      echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-      HAVE_GNOME="True"
-      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags`
-      GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
-      GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a"
-    fi
-  fi
-
-
-
-
-
-
-
 # Set the version number of GtkAda
 
 
@@ -4217,10 +4182,6 @@ s,@HAVE_GTKEXTRA@,$HAVE_GTKEXTRA,;t t
 s,@GL_LIBS@,$GL_LIBS,;t t
 s,@GL_CFLAGS@,$GL_CFLAGS,;t t
 s,@HAVE_OPENGL@,$HAVE_OPENGL,;t t
-s,@GNOME_CFLAGS@,$GNOME_CFLAGS,;t t
-s,@GNOME_LIBS@,$GNOME_LIBS,;t t
-s,@GNOME_STATIC_LIBS@,$GNOME_STATIC_LIBS,;t t
-s,@HAVE_GNOME@,$HAVE_GNOME,;t t
 s,@GTKADA_VERSION@,$GTKADA_VERSION,;t t
 s,@GTKADA_MAJOR_VERSION@,$GTKADA_MAJOR_VERSION,;t t
 s,@GTKADA_MINOR_VERSION@,$GTKADA_MINOR_VERSION,;t t

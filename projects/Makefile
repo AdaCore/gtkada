@@ -19,10 +19,6 @@ ifeq ($(HAVE_OPENGL), True)
 	./generate_prj.sh GtkAda_GL "${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} opengl
 	${CP} gtkada_gl.gpr "${DESTDIR}${prefix}/lib/gnat/"
 endif	
-ifeq ($(HAVE_GNOME), True)
-	./generate_prj.sh GtkAda_Gnome "${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} ""
-	${CP} gtkada_gnome.gpr "${DESTDIR}${prefix}/lib/gnat/"
-endif	
 ifeq ($(OS),Windows_NT)
 	${CP} gtkada_install_*.gpr "${DESTDIR}${prefix}/include/gtkada"
 endif
