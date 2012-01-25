@@ -21,42 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  The #GdkRGBA struct is a convenient way to pass rgba colors around.
---  It's based on cairo's way to deal with colors and mirrors its behavior.
---  All values are in the range from 0.0 to 1.0 inclusive. So the color
---  (0.0, 0.0, 0.0, 0.0) represents transparent black and
---  (1.0, 1.0, 1.0, 1.0) is opaque white. Other values will be clamped
---  to this range when drawing.
---  </description>
---  <group>Gdk, the low-level API</group>
+with Gtkada.Bindings;
 
-with Glib;
+package body Gdk.RGBA is
 
-package Gdk.RGBA is
+   ----------------------
+   -- Gdk_RGBA_Or_Null --
+   ----------------------
 
-   type Gdk_RGBA is record
-      Red   : Glib.Gdouble;
-      Green : Glib.Gdouble;
-      Blue  : Glib.Gdouble;
-      Alpha : Glib.Gdouble;
-   end record;
-   pragma Convention (C, Gdk_RGBA);
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
+        (Gdk_RGBA, Null_RGBA);
+   begin
+      return Internal (Val);
+   end Gdk_RGBA_Or_Null;
 
-   Null_RGBA : constant Gdk_RGBA;
-
-   --  <doc_ignore>
-   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address;
-   --  Used for the GtkAda binding itself.
-   --  Return either a Null_Address or a pointer to Val, depending on
-   --  whether Val is the null value for the type.
-   --  In all cases, Val is supposed to be an access to the type mentioned in
-   --  the name of the subprogram.
-   --  In Ada2012, these could be replaced with expression functions instead.
-   --  </doc_ignore>
-
-private
-   Null_RGBA : constant Gdk_RGBA :=
-      (Glib.Gdouble'First, Glib.Gdouble'First,
-       Glib.Gdouble'First, Glib.Gdouble'First);
 end Gdk.RGBA;

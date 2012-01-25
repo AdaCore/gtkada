@@ -25,6 +25,7 @@
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
+with Gtkada.Bindings;
 
 package body Gdk.Color is
 
@@ -214,4 +215,16 @@ package body Gdk.Color is
       end loop;
       return Result;
    end To_Array;
+
+   -----------------------
+   -- Gdk_Color_Or_Null --
+   -----------------------
+
+   function Gdk_Color_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
+        (Gdk_Color, Null_Color);
+   begin
+      return Internal (Val);
+   end Gdk_Color_Or_Null;
+
 end Gdk.Color;

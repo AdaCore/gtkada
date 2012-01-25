@@ -184,6 +184,16 @@ package Gdk.Color is
 
    --  </doc_ignore>
 
+   --  <doc_ignore>
+   function Gdk_Color_Or_Null (Val : System.Address) return System.Address;
+   --  Used for the GtkAda binding itself.
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In all cases, Val is supposed to be an access to the type mentioned in
+   --  the name of the subprogram.
+   --  In Ada2012, these could be replaced with expression functions instead.
+   --  </doc_ignore>
+
 private
    Null_Colormap : constant Gdk_Colormap := null;
 
