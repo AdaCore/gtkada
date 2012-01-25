@@ -142,9 +142,9 @@ package body Gtkada.Multi_Paned is
    --  of the handle associated with Child. This handle's position must
    --  have been changed before calling this subprogram.
 
-   function Expose_Paned
+   function On_Draw
      (Paned : not null access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
+      Cr    : Cairo_Context) return Boolean;
    --  Redraw all the handles
 
    procedure Move_Handle
@@ -530,8 +530,8 @@ package body Gtkada.Multi_Paned is
         (Win, "realize",
          Widget_Callback.To_Marshaller (Realize_Paned'Access));
       Return_Callback.Connect
-        (Win, "expose_event",
-         Return_Callback.To_Marshaller (Expose_Paned'Access));
+        (Win, Signal_Draw,
+         Return_Callback.To_Marshaller (On_Draw'Access));
       Return_Callback.Connect
         (Win, "button_press_event",
          Return_Callback.To_Marshaller (Button_Pressed'Access));
@@ -781,7 +781,7 @@ package body Gtkada.Multi_Paned is
    begin
       if not Split.Opaque_Resizing then
          --  ??? Transition to Gtk3: We used to draw in Xor mode.
-         --  We probably need to adapt to this and draw in reaction to expose.
+         --  We probably need to adapt this.
          Cr := Create (Get_Window (Split));
          New_Path (Cr);
          Move_To (Cr,
@@ -1136,20 +1136,23 @@ package body Gtkada.Multi_Paned is
       return True;
    end Is_Last_Visible;
 
-   -----------------------
-   -- Expose_Paned --
-   -----------------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Paned
+   function On_Draw
      (Paned : not null access Gtk_Widget_Record'Class;
-      Event      : Gdk_Event) return Boolean
+      Cr    : Cairo_Context) return Boolean
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Area  : constant Gdk_Rectangle := Get_Area (Event);
       Iter        : Child_Iterator := Start (Split);
+      Area        : Gdk_Rectangle;
       Current     : Child_Description_Access;
       Orientation : Gtk_Orientation;
+      X1, Y1, X2, Y2 : Gdouble;
    begin
+      Clip_Extents (Cr, X1, Y1, X2, Y2);
+
       loop
          Current := Get (Iter);
          exit when Current = null;
@@ -1163,6 +1166,8 @@ package body Gtkada.Multi_Paned is
                when Orientation_Horizontal =>
                   Orientation := Orientation_Vertical;
             end case;
+
+            Area := (Gint (X1), Gint (Y1), Gint (X2 - X1), Gint (Y2 - Y1));
 
             Paint_Box
               (Get_Style (Split),
@@ -1202,11 +1207,7 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       return True;
-      --  ??? Removed in the transition to Gtk3
---        return Default_Expose_Event_Handler
---          (Glib.Object.GObject_Class (Class_Ref (Parent (Get_Type (Split)))))
---            (Get_Object (Split), Event);
-   end Expose_Paned;
+   end On_Draw;
 
    ------------------------
    -- Realize_Paned --

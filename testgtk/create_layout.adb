@@ -57,7 +57,7 @@ package body Create_Layout is
         & " @bGtk_Scrolled_Window@B widget, as is the case in this demo."
         & ASCII.LF
         & "In this demo, the background is painted by a callback on the"
-        & " expose_event, and thus does not occupy any memory."
+        & " draw event, and thus does not occupy any memory."
         & " The Layout has a size of 1600 by 128000.";
    end Help;
 
@@ -75,7 +75,7 @@ package body Create_Layout is
       Xmin, Xmax : Gint;
       Ymin, Ymax : Gint;
    begin
-      Clip_Extents (Cr, Imin, Imax, Jmin, Jmax);
+      Clip_Extents (Cr, Imin, Jmin, Imax, Jmax);
       Xmin := Gint (Imin / 10.0);
       Xmax := Gint ((Imax + 9.0) / 10.0);
       Ymin := Gint (Jmin / 10.0);

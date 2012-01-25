@@ -36,7 +36,7 @@ package body Gdk.Event is
    -------------------
 
    --  It is often useful to create events directly from Ada code, for instance
-   --  when you want to send such an event (expose, ...) to a widget.
+   --  when you want to send such an event (draw, ...) to a widget.
    --  One requirement for this package is thus to be able to create such types
    --  from Ada.
    --  On the other hand, C events have to be converted to Ada objects before

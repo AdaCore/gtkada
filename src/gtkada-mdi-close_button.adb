@@ -41,7 +41,7 @@ package body Close_Button is
      (Widget  : not null access Gtk_Widget_Record'Class;
       Cr      : Cairo.Cairo_Context)
       return Boolean;
-   --  draws the close button upon expose event
+   --  draws the close button upon "draw" event
 
    procedure Rounded_Rectangle
      (Cr         : Cairo_Context;

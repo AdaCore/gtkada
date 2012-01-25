@@ -126,10 +126,10 @@ package body Gtkada.Canvas is
    package Canvas_Timeout is
      new Glib.Main.Generic_Sources (Interactive_Canvas);
 
-   function Expose
+   function On_Draw
      (Canv  : not null access Gtk_Widget_Record'Class;
-      Event : Gdk.Event.Gdk_Event) return Boolean;
-   --  Handle the expose events for a canvas.
+      Cr    : Cairo_Context) return Boolean;
+   --  Handle the "draw" events for a canvas.
 
    procedure Canvas_Destroyed
       (Canvas : not null access Gtk_Widget_Record'Class);
@@ -506,8 +506,8 @@ package body Gtkada.Canvas is
       --        (Class_Record, "set_scroll_adjustments");
 
       Return_Callback.Connect
-        (Canvas, "expose_event",
-         Return_Callback.To_Marshaller (Expose'Access));
+        (Canvas, Signal_Draw,
+         Return_Callback.To_Marshaller (On_Draw'Access));
       Return_Callback.Connect
         (Canvas, "button_press_event",
          Return_Callback.To_Marshaller (Button_Pressed'Access));
@@ -2482,30 +2482,29 @@ package body Gtkada.Canvas is
       end if;
    end Draw_Area;
 
-   ------------
-   -- Expose --
-   ------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose
+   function On_Draw
      (Canv  : not null access Gtk_Widget_Record'Class;
-      Event : Gdk.Event.Gdk_Event) return Boolean
+      Cr    : Cairo_Context) return Boolean
    is
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
-      Rect   : Cairo_Rectangle_Int renames Get_Area (Event);
+      X1, X2, Y1, Y2 : Gdouble;
       X_W, Y_W : Gdouble;
    begin
-      To_World_Coordinates
-        (Canvas, Rect.X, Rect.Y, X_W, Y_W);
-
+      Clip_Extents (Cr, X1, Y1, X2, Y2);
+      To_World_Coordinates (Canvas, Gint (X1), Gint (Y1), X_W, Y_W);
       Draw_Area
         (Canvas,
          (X      => Gint (X_W),
           Y      => Gint (Y_W),
-          Width  => Gint (Gdouble (Rect.Width) / Canvas.Zoom),
-          Height => Gint (Gdouble (Rect.Height) / Canvas.Zoom)));
+          Width  => Gint (Gdouble (X2 - X1) / Canvas.Zoom),
+          Height => Gint (Gdouble (Y2 - Y1) / Canvas.Zoom)));
 
       return False;
-   end Expose;
+   end On_Draw;
 
    ---------------------
    -- Set_Screen_Size --

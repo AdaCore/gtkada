@@ -31,8 +31,6 @@ with Glib.Object; use Glib.Object;
 
 with Cairo;         use Cairo;
 
-with Gdk.Cairo;    use Gdk.Cairo;
-with Gdk.Event;    use Gdk.Event;
 with Gdk.Window;   use Gdk.Window;
 
 with Gtk.Main;
@@ -84,9 +82,9 @@ procedure Testcairo is
    function Pretty (T : Test_Type) return String;
    --  Pretty print T
 
-   function Expose_Cb (Area  : not null access Gtk_Drawing_Area_Record'Class;
-                       Event : Gdk_Event) return Boolean;
-   --  Callback on an expose event on Win
+   function On_Draw (Area  : not null access Gtk_Drawing_Area_Record'Class;
+                     Cr    : Cairo_Context) return Boolean;
+   --  Callback on an draw event on Win
 
    procedure On_Print_Cb  (Widget : not null access Gtk_Button_Record'Class);
    --  Callback on a click on the "Print" button
@@ -111,22 +109,18 @@ procedure Testcairo is
       Clip_And_Paint  => -"Painting and clipping",
       Surface_And_Png => -"Using surfaces and saving to PNG");
 
-   ---------------
-   -- Expose_Cb --
-   ---------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Cb (Area  : not null access Gtk_Drawing_Area_Record'Class;
-                       Event : Gdk_Event) return Boolean
+   function On_Draw (Area  : not null access Gtk_Drawing_Area_Record'Class;
+                     Cr    : Cairo_Context) return Boolean
    is
-      pragma Unreferenced (Event);
-      Cr : Cairo_Context;
-
+      pragma Unreferenced (Area);
    begin
-      Cr := Create (Get_Window (Area));
       Draw_On_Context (Cr, Gtk_Widget (Win), Test);
-      Destroy (Cr);
       return False;
-   end Expose_Cb;
+   end On_Draw;
 
    Tree    : Gtk_Tree_View;
    Model   : Gtk_Tree_Store;
@@ -274,10 +268,8 @@ begin
 
    Box.Pack_Start (Vbox, True, True, 3);
 
-   --  Connect to the "expose" event.
-
-   Event_Cb.Connect (Area, "expose_event",
-                     Event_Cb.To_Marshaller (Expose_Cb'Access));
+   Event_Cb.Connect (Area, Signal_Draw,
+                     Event_Cb.To_Marshaller (On_Draw'Access));
 
    Show_All (Win);
    Gtk.Main.Main;
