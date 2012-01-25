@@ -25,6 +25,7 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Font_Selection_Dialog is
@@ -92,7 +93,7 @@ package body Gtk.Font_Selection_Dialog is
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Dialog)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Dialog)));
    end Get_Font_Name;
 
    ------------------------

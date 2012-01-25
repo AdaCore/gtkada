@@ -26,6 +26,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Widget is
@@ -806,7 +807,7 @@ package body Gtk.Widget is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_widget_get_composite_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
    end Get_Composite_Name;
 
    ------------------------
@@ -1027,21 +1028,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Margin_Top;
-
-   ------------------------
-   -- Get_Modifier_Style --
-   ------------------------
-
-   function Get_Modifier_Style
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Rc.Gtk_Rc_Style
-   is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_modifier_style");
-      Stub_Gtk_Rc_Style : Gtk.Rc.Gtk_Rc_Style_Record;
-   begin
-      return Gtk.Rc.Gtk_Rc_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Rc_Style));
-   end Get_Modifier_Style;
 
    --------------
    -- Get_Name --
@@ -1423,7 +1409,7 @@ package body Gtk.Widget is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_markup");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
    end Get_Tooltip_Markup;
 
    ----------------------
@@ -1437,7 +1423,7 @@ package body Gtk.Widget is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
    end Get_Tooltip_Text;
 
    ------------------------

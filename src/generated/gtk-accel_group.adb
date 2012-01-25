@@ -26,6 +26,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Accel_Group is
@@ -324,7 +325,7 @@ package body Gtk.Accel_Group is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_accelerator_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Accelerator_Key, Accelerator_Mods));
+      return Gtkada.Bindings.Value_And_Free (Internal (Accelerator_Key, Accelerator_Mods));
    end Accelerator_Get_Label;
 
    ----------------------
@@ -341,7 +342,7 @@ package body Gtk.Accel_Group is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_accelerator_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Accelerator_Key, Accelerator_Mods));
+      return Gtkada.Bindings.Value_And_Free (Internal (Accelerator_Key, Accelerator_Mods));
    end Accelerator_Name;
 
    -----------------------

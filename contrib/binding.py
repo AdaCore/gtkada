@@ -230,7 +230,7 @@ class GlobalsBinder(object):
 
 
 def _get_type(nodeOrType, allow_access=True, allow_none=False,
-              userecord=True, pkg=None):
+              transfer_ownership=False, userecord=True, pkg=None):
     """Return the type of the GIR XML node.
        nodeOrType can be one of:
           * a string, given the name of the C type
@@ -249,6 +249,7 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
         return naming.type(name=nodeOrType,
                            cname=nodeOrType,
                            userecord=userecord,
+                           transfer_ownership=transfer_ownership,
                            allow_access=allow_access,
                            allow_none=allow_none, pkg=pkg)
 
@@ -260,6 +261,7 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
             return naming.type(name=t.get("name"),
                                cname=t.get(ctype_qname),
                                userecord=userecord,
+                               transfer_ownership=transfer_ownership,
                                allow_access=allow_access,
                                allow_none=allow_none, pkg=pkg)
 
@@ -275,6 +277,7 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
                 return naming.type(name="array_of_%s" % name,
                                    cname=type,
                                    pkg=pkg, isArray=True,
+                                   transfer_ownership=transfer_ownership,
                                    allow_none=allow_none,
                                    userecord=userecord,
                                    allow_access=allow_access)
@@ -558,7 +561,9 @@ class SubprogramProfile(object):
                 self.returns_doc = ret.findtext(ndoc, "")
                 if self.returns_doc:
                     self.returns_doc = "Returns %s" % self.returns_doc
-            return _get_type(ret, allow_access=False, pkg=pkg)
+
+            return _get_type(ret, allow_access=False, pkg=pkg,
+                             transfer_ownership=gtkmethod.transfer_ownership(ret))
         else:
             return naming.type(name=None, cname=returns, pkg=pkg)
 
@@ -577,6 +582,7 @@ class GIRClass(object):
         self.implements = dict() # Implemented interfaces
         self.is_interface = is_interface
         self.callbacks = set() # The callback functions
+        self.pkg = None  # Instance of Package(), that we are generating
 
         self.conversions = dict() # List of Convert(...) functions that were implemented
 
@@ -671,7 +677,8 @@ class GIRClass(object):
             internal.set_param_lang("c")
 
             ret = gtkmethod.return_as_param()
-            execute = internal.call(extra_postcall="".join(call))
+            execute = internal.call(
+                in_pkg=self.pkg, extra_postcall="".join(call))
 
             if ret is not None:
                 # Ada return value goes into an "out" parameter
@@ -736,9 +743,7 @@ class GIRClass(object):
 
         # Compute the name of the Ada type representing the user callback
 
-        funcname = naming.type(name=cb.type.ada, cname=cbname).ada
-        if "." in funcname:
-            funcname = funcname[funcname.rfind(".") + 1:]
+        funcname = base_name(naming.type(name=cb.type.ada, cname=cbname).ada)
 
         user_data = profile.callback_user_data()
         destroy   = profile.find_param(destroy_data_params)
@@ -805,7 +810,7 @@ class GIRClass(object):
 
             ada_func = copy.deepcopy(subp)
             ada_func.name = "Func"
-            ada_func_call = ada_func.call(lang="c->ada")
+            ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
             body_cb = cb_profile.subprogram(
                 name="Internal_%s" % funcname,
                 local_vars=[Local_Var("Func", "constant %s" % funcname,
@@ -829,7 +834,8 @@ class GIRClass(object):
         subp = nouser_profile.subprogram(
             name=adaname, local_vars=local_vars,
             code=gtk_func.call_to_string(
-                gtk_func.call(extra_postcall="".join(call), values=values),
+                gtk_func.call(in_pkg=self.pkg,
+                              extra_postcall="".join(call), values=values),
                 lang="ada->c"))
         section.add(subp)
 
@@ -868,7 +874,8 @@ class GIRClass(object):
             local_vars=[Local_Var("D", "constant Users.Internal_Data_Access",
                                   "Users.Convert (%s)" % user_data2)],
             code=user_cb.call_to_string(
-                user_cb.call(extra_postcall="".join(call), values=values)))
+                user_cb.call(in_pkg=self.pkg,
+                             extra_postcall="".join(call), values=values)))
         sect2.add(internal_cb, in_spec=False)
 
         values = {destroy: "Users.Free_Data'Address",
@@ -884,7 +891,8 @@ class GIRClass(object):
         subp2 = full_profile.subprogram(
             name=adaname,
             code=gtk_func.call_to_string(
-                gtk_func.call(extra_postcall="".join(call), values=values),
+                gtk_func.call(in_pkg=self.pkg,
+                              extra_postcall="".join(call), values=values),
                 lang="ada->c"))
         sect2.add(subp2)
 
@@ -935,7 +943,7 @@ class GIRClass(object):
             returns=profile.returns).import_c(cname)
         internal.set_param_lang("c")
 
-        call = internal.call()
+        call = internal.call(in_pkg=self.pkg)
         assert(call[1] is not None)   # A function
 
         adaname = gtkmethod.ada_name() or "Gtk_%s" % name
@@ -951,7 +959,7 @@ class GIRClass(object):
             type=AdaType(selftype, pkg=self.pkg, in_spec=True),
             mode="access")] + profile.params
         initialize = Subprogram(
-            name=adaname.replace("Gtk_New", "Initialize"),
+            name=adaname.replace("Gtk_New", "%s.Initialize" % self.pkg.name),
             plist=initialize_params,
             local_vars=local_vars + call[2],
             doc=profile.doc,
@@ -1355,10 +1363,7 @@ See Glib.Properties for more information on properties)""")
            GtkAdaPackage.records()
         """
 
-        base = type.ada
-        if "." in base:
-            base = base[base.rfind(".") + 1:]
-
+        base = base_name(type.ada)
         node = gir.records[ctype]
 
         fields = []
@@ -1375,9 +1380,7 @@ See Glib.Properties for more information on properties)""")
                         name="", cname=type[0].get(ctype_qname))
 
                 ftype = ftype.record_field_type(pkg=self.pkg)
-
-                if "." in ftype:
-                    self.pkg.add_with(ftype[:ftype.rfind(".")])
+                self.pkg.add_with(package_name(ftype))
 
                 fields.append((naming.case(name), ftype))
 
@@ -1399,10 +1402,7 @@ See Glib.Properties for more information on properties)""")
            [prefix] is removed from the values to get the default Ada name,
            which can be overridden in data.cname_to_adaname.
         """
-        base = type.ada
-        if "." in base:
-            base = base[base.rfind(".") + 1:]
-
+        base = base_name(type.ada)
         node = gir.enums[ctype]
 
         members = []
@@ -1416,8 +1416,8 @@ See Glib.Properties for more information on properties)""")
                 # Gtk prefix, and capitalize the value)
                 m = cname.replace(prefix, "").title()
 
-            elif "." in m:
-                m = m[m.rfind(".") + 1:]
+            else:
+                m = base_name(m)
 
             # For proper substitution in docs
             naming.add_cmethod(

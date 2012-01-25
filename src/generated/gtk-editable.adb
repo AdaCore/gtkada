@@ -24,6 +24,7 @@
 pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Editable is
@@ -52,7 +53,7 @@ package body Gtk.Editable is
           End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
-      return Interfaces.C.Strings.Value (Internal (Editable, Start_Pos, End_Pos));
+      return Gtkada.Bindings.Value_And_Free (Internal (Editable, Start_Pos, End_Pos));
    end Get_Chars;
 
    ------------------

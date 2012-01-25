@@ -2323,6 +2323,7 @@ While looking up a recently used file is as simple as using:
      <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
      <method id="gtk_widget_get_settings" bind="False"/><!-- in Gtk.Settings -->
      <method id="gtk_widget_modify_style" bind="False"/><!-- in Gtk.RC -->
+     <method id="gtk_widget_get_modifier_style" bind="False"/><!-- in Gtk.RC -->
      <method id="gtk_widget_class_path" bind="False"/><!-- deprecated -->
      <method id="gtk_widget_path" bind="False"/><!-- deprecated -->
      <method id="gtk_drag_source_get_target_list" bind="False"/><!-- in Gtk.Dnd -->

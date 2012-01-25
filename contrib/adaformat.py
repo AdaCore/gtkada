@@ -96,7 +96,7 @@ class CType(object):
 
         self.transfer_ownership = False
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         """How to convert the value returned from C to Ada.
            This function returns a tuple:
               [0] = name of the Ada type
@@ -108,6 +108,12 @@ class CType(object):
                     corresponding to "%(tmp)s".
         """
         return (self.param, self.cparam, "%(var)s", [])
+
+    def convert_from_c_add_with(self, pkg):
+        """Add the "with" statements needed to do the conversion stated
+           in convert_from_c().
+        """
+        pass
 
     def convert_to_c(self):
         """How to convert from Ada parameter to C parameter. If it uses %(tmp)s,
@@ -137,10 +143,10 @@ class CType(object):
     def as_return(self, pkg=None):
         """See CType documentation for a description of the returned tuple"""
 
-        returns = self.returns_from_c()
+        returns = self.convert_from_c()
 
         if returns and pkg:
-            p = self.ada[:self.ada.rfind(".")]
+            # Avoid full dotted notation when inside the package itself
             return (returns[0].replace("%s." % pkg.name, ""),
                     returns[1].replace("%s." % pkg.name, ""),
                     returns[2],
@@ -175,8 +181,9 @@ class CType(object):
             return self.cparam
 
     def as_call(
-        self, name, wrapper="%s", lang="ada->ada", mode="in", value=None):
+        self, name, pkg, wrapper="%s", lang="ada->ada", mode="in", value=None):
         """'name' represents a parameter of type 'self'.
+           'pkg' is the Package instance in which the call occurs.
            'wrapper' is used in the call itself, and %s is replaced by the
               name of the variable (or the temporary variable).
            Returns an instance of VariableCall.
@@ -189,7 +196,7 @@ class CType(object):
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
         elif lang == "ada->c":
-            returns = self.returns_from_c()
+            returns = self.convert_from_c()
             ret = returns and returns[2]
 
             if ret and ret != "%(var)s" and mode != "in":
@@ -232,20 +239,19 @@ class CType(object):
             return call
 
         elif lang == "c->ada":
-            ret = self.returns_from_c()
+            ret = self.convert_from_c()
             return VariableCall(
                 call=wrapper % (ret[2] % {"var": name}),
                 precall='', postcall='', tmpvars=ret[3])
 
     def add_with(self, pkg=None):
         """Add required withs for this type"""
-        if pkg and "." in self.ada:
-            pkg.add_with(self.ada[:self.ada.rfind(".")])
+        if pkg:
+            pkg.add_with(package_name(self.ada))
 
         if pkg and self.allow_none and self.val_or_null:
             base = self.val_or_null
-            if "." in base:
-                pkg.add_with(base[:base.rfind(".")], specs=False)
+            pkg.add_with(package_name(base), specs=False)
 
     def copy(self):
         """Return a copy of self, possibly modifying some properties."""
@@ -262,7 +268,7 @@ class Enum(CType):
 
         self.cparam = "Integer"
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         return (self.param, self.cparam, "%s'Val (%%(var)s)" % self.ada, [])
 
     def convert_to_c(self):
@@ -298,11 +304,8 @@ class GObject(CType):
         self.classwide = False  # Parameter should include "'Class"
         self.userecord = True  # Parameter should be "access .._Record"
 
-    def returns_from_c(self):
-        base = self.ada
-        if "." in base:
-            base = base[base.rfind(".")+1:]
-        stub = "Stub_%s" % base
+    def convert_from_c(self):
+        stub = "Stub_%s" % base_name(self.ada)
 
         if self.ada == "Glib.Object.GObject":
             conv = "Get_User_Data (%%(var)s, %s)" % stub
@@ -340,7 +343,7 @@ class GObject(CType):
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         return (self.param, self.cparam, "From_Object (%(var)s)", [])
 
     def as_ada_param(self, pkg):
@@ -354,18 +357,28 @@ class UTF8(CType):
         self.cparam = "Interfaces.C.Strings.chars_ptr"
         self.cleanup = "Free (%s);"
 
-    def returns_from_c(self):
-        return (self.param, self.cparam,
-                "Interfaces.C.Strings.Value (%(var)s)", [])
+    def convert_from_c(self):
+        if self.transfer_ownership:
+            return (self.param, self.cparam,
+                    "Gtkada.Bindings.Value_And_Free (%(var)s)", [])
+        else:
+            return (self.param, self.cparam,
+                    "Interfaces.C.Strings.Value (%(var)s)", [])
+
+    def convert_from_c_add_with(self, pkg):
+        if self.transfer_ownership and pkg:
+            pkg.add_with("Gtkada.Bindings", specs=False)
 
     def convert_to_c(self):
         if self.allow_none:
-            return 'if %(var)s = "" then %(tmp)s := Interfaces.C.Strings.Null_Ptr; else %(tmp)s := New_String (%(var)s); end if;'
+            return 'if %(var)s = "" then %(tmp)s :=' \
+                + ' Interfaces.C.Strings.Null_Ptr; else'\
+                + ' %(tmp)s := New_String (%(var)s); end if;'
         else:
             return "New_String (%(var)s)"
 
-    def add_with(self, pkg=None):
-        super(UTF8, self).add_with(pkg=pkg)
+    def add_with(self, pkg):
+        super(UTF8, self).add_with(pkg)
         if pkg:
             pkg.add_with("Interfaces.C.Strings", specs=False)
 
@@ -376,7 +389,7 @@ class UTF8_List(CType):
         self.cparam = "Interfaces.C.Strings.chars_ptr_array"
         self.cleanup = "GtkAda.Types.Free (%s);"
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         return (self.param, "chars_ptr_array_access",
                 "To_String_List (%(var)s.all)", [])
 
@@ -416,10 +429,7 @@ class Proxy(CType):
         will be defined.
         """
 
-        adaname = ada or naming.type(name="", cname=ctype).ada
-        if "." in adaname:
-            adaname = adaname[adaname.rfind(".") + 1:]
-
+        adaname = base_name(ada or naming.type(name="", cname=ctype).ada)
         full_name = "%s.%s" % (pkg, adaname)
         t = Proxy(full_name)
         naming.add_type_exception(cname="%s*" % ctype, type=t)
@@ -431,7 +441,7 @@ class Callback(CType):
         CType.__init__(self, ada, "")
         self.cparam = "System.Address"
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user
         # callback.
@@ -455,7 +465,7 @@ class List(CType):
         self.cparam = "System.Address"
         self.is_ptr = False
 
-    def returns_from_c(self):
+    def convert_from_c(self):
         return (   # Use %(tmp)s so forces the use of temporary var.
             self.param, self.cparam,
             "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
@@ -911,10 +921,11 @@ class Local_Var(object):
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
-    def as_call(self, lang="ada->ada", mode="in", value=None):
+    def as_call(self, pkg, lang="ada->ada", mode="in", value=None):
         """Pass self (or the value) as a parameter to an Ada subprogram call,
            implemented in the given language. See comments at the beginning
            of this package for valid values of LANG.
+           'pkg' is the instance of Package in which the call occurs.
         """
         assert(lang in ("ada->ada", "c->ada", "ada->c"))
 
@@ -925,7 +936,8 @@ class Local_Var(object):
             wrapper="%s'Access"
 
         if isinstance(self.type, CType):
-            return self.type.as_call(n, lang=lang, mode=mode, wrapper=wrapper)
+            return self.type.as_call(
+                name=n, pkg=pkg, lang=lang, mode=mode, wrapper=wrapper)
         else:
             return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
@@ -951,13 +963,35 @@ class Parameter(Local_Var):
             return "%s %s" % (mode, t)
         return t
 
-    def as_call(self, lang="ada->ada", value=None):
+    def as_call(self, pkg, lang="ada->ada", value=None):
+        """'pkg' is the package instance in which the call occurs."""
         return super(Parameter, self).as_call(
-            lang, mode=self.mode, value=value)
+            pkg=pkg, lang=lang, mode=self.mode, value=value)
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
         return self.type.direct_cmap()
+
+
+def base_name(qname):
+    """Return the basename for a fully qualified name:
+        Pkg.Name  => Name
+    """
+    if "." in qname:
+        return qname[qname.rfind(".") + 1:]
+    else:
+        return qname
+
+
+def package_name(qname):
+    """Return the package part of a fully qualified name:
+       Pkg.Child.Name  => Pkg.Child
+       Name      => ""
+    """
+    if "." in qname:
+        return qname[:qname.rfind(".")]
+    else:
+        return ""
 
 
 max_profile_length = 79 - len(" is")
@@ -1047,7 +1081,7 @@ class Subprogram(object):
             suffix = ""
 
         if self.name:
-            prefix = indent + prefix + " " + self.name
+            prefix = indent + prefix + " " + base_name(self.name)
         else:
             prefix = "access %s" % prefix
 
@@ -1132,7 +1166,7 @@ class Subprogram(object):
         if not self.code:
             return ""
 
-        result = box(self.name, indent=indent) + "\n\n"
+        result = box(base_name(self.name), indent=indent) + "\n\n"
         profile = self._profile(pkg=pkg, lang=self.lang, indent=indent)
         result += profile
 
@@ -1151,16 +1185,15 @@ class Subprogram(object):
         result += local
         result += indent + "begin\n"
         result += indent_code(self.code, indent=len(indent) + 3)
-        return result + indent + "end %s;\n" % self.name
+        return result + indent + "end %s;\n" % base_name(self.name)
 
-    def call(self, in_pkg="", extra_postcall="", values=dict(), lang=None):
+    def call(self, in_pkg=None, extra_postcall="", values=dict(), lang=None):
         """A call to 'self'.
            The parameters that are passed to self are assumed to have the
            same name as in self's declaration. When 'self' is implemented
            as a pragma Import, proper conversions are done.
            'in_pkg' is used to fully qualify the name of the subprogram, to
-           avoid ambiguities. This is optional. This can be either a string
-           or an instance of Package.
+           avoid ambiguities. This is optional. This is an instance of Package.
 
            Returned value is a tuple:
                ("code", "variable_for_return", tmpvars=[])
@@ -1179,6 +1212,9 @@ class Subprogram(object):
            See comments at the beginning of this package for valid LANG values.
         """
 
+        assert(in_pkg is not None)
+        assert(isinstance(in_pkg, Package))
+
         if lang:
             pass
         elif self._import:
@@ -1195,7 +1231,8 @@ class Subprogram(object):
 
         for arg in self.plist:
             c = arg.as_call(
-                lang,   # An instance of VariableCall
+                pkg=in_pkg,
+                lang=lang,   # An instance of VariableCall
                 value=values.get(arg.name.lower(), None))
             params.append(c.call)
             tmpvars.extend(c.tmpvars)
@@ -1207,15 +1244,11 @@ class Subprogram(object):
         else:
             call = self.name
 
-        if in_pkg:
-            if isinstance(in_pkg, Package):
-                call = "%s.%s" % (in_pkg.name, call)
-            else:
-                call = "%s.%s" % (in_pkg, call)
-
-        returns = self.returns and self.returns.as_return()
+        returns = self.returns and self.returns.as_return(pkg=in_pkg)
         if returns is not None:
             if lang == "ada->c":
+                self.returns.convert_from_c_add_with(pkg=in_pkg)
+
                 tmpvars.extend(returns[3])
                 if "%(tmp)s" in returns[2]:
                     # Result of Internal is used to create a temp. variable,
@@ -1379,19 +1412,19 @@ class Section(object):
                 if not in_spec:
                     continue
 
-                name = s.name.replace("Get_", "") \
+                name = base_name(s.name).replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
                         .replace("Initialize", "") \
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
-                if s.name == "Gtk_New":
+                if base_name(s.name) == "Gtk_New":
                     # Always create a new group for Gtk_New, since they all
                     # have different parameters. But we still want to group
                     # Gtk_New and Initialize.
                     t = tmp["Gtk_New%d" % gtk_new_index] = [s]
                     result.append(t)
-                elif s.name == "Initialize":
+                elif base_name(s.name) == "Initialize":
                     tmp["Gtk_New%d" % gtk_new_index].append(s)
                     gtk_new_index += 1
                 elif name in tmp:
@@ -1442,7 +1475,7 @@ class Section(object):
         if body_code:
             result.append(body_code)
 
-        self.__subprograms.sort(lambda x, y: cmp(x[1].name, y[1].name))
+        self.__subprograms.sort(lambda x, y: cmp(base_name(x[1].name), base_name(y[1].name)))
 
         # First output for the subprograms only defined in the body
 
@@ -1503,7 +1536,7 @@ class Package(object):
            Automatic casing is performed. If specs is True, the withs are
            added to the specs of the package, otherwise to the body
         """
-        if pkg == "System":
+        if pkg in ("", "System"):
             return   # Not needed, already done in gtk.ads
 
         if type(pkg) == str:

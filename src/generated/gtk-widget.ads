@@ -250,7 +250,6 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Values;             use Glib.Values;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
 with Gtk.Enums;               use Gtk.Enums;
-with Gtk.Rc;                  use Gtk.Rc;
 with Gtk.Style;               use Gtk.Style;
 with Pango.Context;           use Pango.Context;
 with Pango.Font;              use Pango.Font;
@@ -1084,25 +1083,6 @@ package Gtk.Widget is
    --  property.
    --  Since: gtk+ 3.0
    --  "margin": the top margin
-
-   function Get_Modifier_Style
-      (Widget : not null access Gtk_Widget_Record)
-       return Gtk.Rc.Gtk_Rc_Style;
-   --  Returns the current modifier style for the widget. (As set by
-   --  gtk_widget_modify_style.) If no style has previously set, a new
-   --  Gtk.Rc.Gtk_Rc_Style will be created with all values unset, and set as
-   --  the modifier style for the widget. If you make changes to this rc style,
-   --  you must call gtk_widget_modify_style, passing in the returned rc style,
-   --  to make sure that your changes take effect.
-   --  Caution: passing the style back to gtk_widget_modify_style will normally
-   --  end up destroying it, because gtk_widget_modify_style copies the
-   --  passed-in style and sets the copy as the new modifier style, thus
-   --  dropping any reference to the old modifier style. Add a reference to the
-   --  modifier style if you want to keep it alive.
-   --  This rc style is owned by the widget. If you want to keep a pointer to
-   --  value this around, you must add a refcount using g_object_ref.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context with a custom
-   --  Gtk.Style_Provider.Gtk_Style_Provider instead
 
    function Get_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;

@@ -25,6 +25,7 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.File_Chooser_Widget is
@@ -155,7 +156,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_current_folder");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Current_Folder;
 
    ----------------------------
@@ -170,7 +171,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_current_folder_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Current_Folder_Uri;
 
    -----------------------------------
@@ -214,7 +215,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_filename");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Filename;
 
    -------------------
@@ -288,7 +289,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_filename");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Preview_Filename;
 
    ---------------------
@@ -303,7 +304,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Preview_Uri;
 
    ------------------------
@@ -375,7 +376,7 @@ package body Gtk.File_Chooser_Widget is
          (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_get_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Chooser)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Uri;
 
    --------------

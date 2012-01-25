@@ -25,6 +25,7 @@ pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.GEntry is
@@ -351,7 +352,7 @@ package body Gtk.GEntry is
           Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_markup");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
    end Get_Icon_Tooltip_Markup;
 
    ---------------------------
@@ -367,7 +368,7 @@ package body Gtk.GEntry is
           Icon_Pos  : Integer) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Gtk.GEntry.Gtk_Entry_Icon_Position'Pos (Icon_Pos)));
    end Get_Icon_Tooltip_Text;
 
    ----------------------
@@ -1161,7 +1162,7 @@ package body Gtk.GEntry is
           End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Editable), Start_Pos, End_Pos));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
    end Get_Chars;
 
    ------------------

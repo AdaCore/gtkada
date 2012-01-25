@@ -26,6 +26,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
+with Gtkada.Bindings;          use Gtkada.Bindings;
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 
 package body Gtk.Recent_Chooser is
@@ -114,7 +115,7 @@ package body Gtk.Recent_Chooser is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Chooser));
+      return Gtkada.Bindings.Value_And_Free (Internal (Chooser));
    end Get_Current_Uri;
 
    ----------------

@@ -377,15 +377,17 @@ class GtkAdaMethod(object):
             return self.node.get("return_as_param", None)
         return None
 
-    def transfer_ownership(self, girnode):
+    def transfer_ownership(self, return_girnode):
         """Whether the value returned by this method needs to be free by the
            caller.
+           return_girnode is the XML node from the gir file for the return
+           value of the method.
         """
-        default = girnode.get('transfer-ownership', 'none')
+        default = return_girnode.get('transfer-ownership', 'none')
         if self.node is not None:
-            return self.node.get('transfer-ownership', default) == 'full'
+            return self.node.get('transfer-ownership', default) != 'none'
         else:
-            return default == 'full'
+            return default != 'none'
 
     def get_body(self):
         if self.node is not None:

@@ -24,6 +24,7 @@
 pragma Ada_05;
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Recent_Info is
@@ -194,7 +195,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_short_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
    end Get_Short_Name;
 
    -------------
@@ -218,7 +219,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_uri_display");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
    end Get_Uri_Display;
 
    -----------------
@@ -292,7 +293,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_last_application");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
    end Last_Application;
 
    -----------

@@ -24,10 +24,7 @@ interfaces = ("Activatable",
               #"TreeDragDest",
               #"TreeDragSource",
               #"TreeSortable"
-
-              # Only parsed to get the names right in the documentation, no
-              # code is generated
-              "TreeModel", # Partial
+              #"TreeModel",
              )
 
 # List of widgets to bind.

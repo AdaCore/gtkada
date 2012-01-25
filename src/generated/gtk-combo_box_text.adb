@@ -26,6 +26,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Combo_Box_Text is
@@ -187,7 +188,7 @@ package body Gtk.Combo_Box_Text is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_combo_box_text_get_active_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
    end Get_Active_Text;
 
    ------------
