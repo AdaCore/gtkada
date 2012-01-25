@@ -33,7 +33,7 @@ with Common;       use Common;
 
 package body Create_Buttons is
 
-   procedure Button_Window (Widget : access Gtk_Button_Record'Class);
+   procedure Button_Window (Widget : not null access Gtk_Button_Record'Class);
    --  Toggles the visibility of Widget
 
    ----------
@@ -51,7 +51,8 @@ package body Create_Buttons is
    -- Button_Window --
    -------------------
 
-   procedure Button_Window (Widget : access Gtk_Button_Record'Class) is
+   procedure Button_Window
+      (Widget : not null access Gtk_Button_Record'Class) is
    begin
       if Widget.Get_Visible then
          Hide (Widget);
@@ -93,8 +94,7 @@ package body Create_Buttons is
 
       for J in Button'Range loop
          Button_Handler.Object_Connect
-           (Button (J), "clicked",
-            Button_Handler.To_Marshaller (Button_Window'Access),
+           (Button (J), "clicked", Button_Window'Access,
             Button ((J + 1) mod Button'Length));
          Attach (Table, Button (J),
                  Left_A (J), Right_A (J),

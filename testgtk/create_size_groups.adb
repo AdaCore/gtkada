@@ -43,7 +43,7 @@ package body Create_Size_Groups is
    --  The option menu in that row is added to the group Group.
 
    procedure Toggle_Grouping
-     (Check_Button : access Gtk_Check_Button_Record'Class;
+     (Check_Button : not null access Gtk_Check_Button_Record'Class;
       Group        : Gtk_Size_Group);
    --  Toggle whether the size group is active.
 
@@ -113,7 +113,7 @@ package body Create_Size_Groups is
    ---------------------
 
    procedure Toggle_Grouping
-     (Check_Button : access Gtk_Check_Button_Record'Class;
+     (Check_Button : not null access Gtk_Check_Button_Record'Class;
       Group        : Gtk_Size_Group) is
    begin
       --  Note: we use both the properties and the directy function call only
@@ -173,9 +173,7 @@ package body Create_Size_Groups is
       Gtk_New (Toggle, "Enable grouping");
       Pack_Start (Vbox, Toggle, Expand => False, Fill => False);
       Set_Active (Toggle, True);
-      Toggle_Cb.Connect
-        (Toggle, "toggled",
-         Toggle_Cb.To_Marshaller (Toggle_Grouping'Access), Group);
+      Toggle_Cb.Connect (Toggle, "toggled", Toggle_Grouping'Access, Group);
 
       Show_All (Frame);
    end Run;

@@ -58,10 +58,10 @@ package body Create_Menu is
       Val  : access Gint);
    --  Position function at coordinates Val,Val.
 
-   procedure Popup_At_Position (Widget : access GObject_Record'Class);
+   procedure Popup_At_Position (Widget : not null access GObject_Record'Class);
    --  Callback for the "Popup at given coordinates" button
 
-   procedure Popup (Widget : access Gtk_Button_Record'Class);
+   procedure Popup (Widget : not null access Gtk_Button_Record'Class);
    --  Callback for the "Popup at 0,0 coordinates" button
 
    -------------------
@@ -99,7 +99,9 @@ package body Create_Menu is
    -- Popup_At_Position --
    -----------------------
 
-   procedure Popup_At_Position (Widget : access GObject_Record'Class) is
+   procedure Popup_At_Position
+      (Widget : not null access GObject_Record'Class)
+   is
       Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
@@ -126,7 +128,7 @@ package body Create_Menu is
    -- Popup --
    -----------
 
-   procedure Popup (Widget : access Gtk_Button_Record'Class) is
+   procedure Popup (Widget : not null access Gtk_Button_Record'Class) is
       pragma Unreferenced (Widget);
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
@@ -285,9 +287,7 @@ package body Create_Menu is
       Gtk_New (Button, "Popup at 0,0 coordinates");
       Pack_Start (Box1, Button, False, False, 3);
 
-      Button_Handler.Connect
-        (Button, "clicked",
-         Button_Handler.To_Marshaller (Popup'Access));
+      Button_Handler.Connect (Button, "clicked", Popup'Access);
 
       Gtk_New_Hbox (Box2, False, 10);
                Pack_Start (Box1, Box2, False, False, 0);

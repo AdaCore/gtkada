@@ -59,13 +59,13 @@ package body Create_Tree_View is
    --  if Parent is Null_Iter.
 
    procedure Edited_Callback
-     (Model  : access GObject_Record'Class;
+     (Model  : not null access GObject_Record'Class;
       Params : Glib.Values.GValues);
    --  Called when the user clicks on a toggle button. This is used to reflect
    --  (or not) the change in the model.
 
    procedure Text_Edited_Callback
-     (Model  : access GObject_Record'Class;
+     (Model  : not null access GObject_Record'Class;
       Params : Glib.Values.GValues);
    --  Same when a text cell is edited
 
@@ -172,7 +172,7 @@ package body Create_Tree_View is
    ---------------------
 
    procedure Edited_Callback
-     (Model  : access GObject_Record'Class;
+     (Model  : not null access GObject_Record'Class;
       Params : Glib.Values.GValues)
    is
       M           : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
@@ -190,7 +190,7 @@ package body Create_Tree_View is
    --------------------------
 
    procedure Text_Edited_Callback
-     (Model  : access GObject_Record'Class;
+     (Model  : not null access GObject_Record'Class;
       Params : Glib.Values.GValues)
    is
       M           : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);

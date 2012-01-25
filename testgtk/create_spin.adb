@@ -67,7 +67,8 @@ package body Create_Spin is
    -- Change_Digits --
    -------------------
 
-   procedure Change_Digits (Spin : access Gtk_Spin_Button_Record'Class) is
+   procedure Change_Digits
+      (Spin : not null access Gtk_Spin_Button_Record'Class) is
    begin
       Set_Digits (Spinner1, Guint (Get_Value_As_Int (Spin)));
    end Change_Digits;
@@ -76,8 +77,9 @@ package body Create_Spin is
    -- Toggle_Snap --
    -----------------
 
-   procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record'Class;
-                          Spin : Gtk_Spin_Button) is
+   procedure Toggle_Snap
+      (Widget : not null access Gtk_Toggle_Button_Record'Class;
+       Spin : Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Get_Active (Widget));
    end Toggle_Snap;
@@ -86,8 +88,9 @@ package body Create_Spin is
    -- Toggle_Numeric --
    --------------------
 
-   procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record'Class;
-                             Spin : Gtk_Spin_Button) is
+   procedure Toggle_Numeric
+      (Widget : not null access Gtk_Toggle_Button_Record'Class;
+       Spin   : Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Get_Active (Widget));
    end Toggle_Numeric;
@@ -96,7 +99,7 @@ package body Create_Spin is
    -- Get_Value --
    ---------------
 
-   procedure Get_Value (Widget : access My_Button_Record'Class;
+   procedure Get_Value (Widget : not null access My_Button_Record'Class;
                         Data   : Gint)
    is
       Spin  : constant Gtk_Spin_Button := Spinner1;
@@ -205,9 +208,7 @@ package body Create_Spin is
       Gtk_New (Spinner2, Adj, 0.0, 0);
       Set_Wrap (Spinner2, True);
       Spin_O_Cb.Object_Connect
-        (Adj, "value_changed",
-         Spin_O_Cb.To_Marshaller (Change_Digits'Access),
-         Slot_Object => Spinner2);
+        (Adj, "value_changed", Change_Digits'Access, Slot_Object => Spinner2);
 
       Pack_Start (Vbox2, Spinner2, False, False, 0);
 
@@ -215,16 +216,12 @@ package body Create_Spin is
       Pack_Start (VBox, Hbox, False, False, 5);
 
       Gtk_New (Check, "Snap to 0.5-ticks");
-      Spin_Cb.Connect
-        (Check, "clicked",
-         Spin_Cb.To_Marshaller (Toggle_Snap'Access), Spinner1);
+      Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access, Spinner1);
       Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Snap Numeric only input mode");
-      Spin_Cb.Connect
-        (Check, "clicked",
-         Spin_Cb.To_Marshaller (Toggle_Numeric'Access), Spinner1);
+      Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access, Spinner1);
       Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
@@ -235,15 +232,13 @@ package body Create_Spin is
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Int");
       Myb.Label := Label;
-      Button_Cb.Connect (Myb, "clicked",
-                         Button_Cb.To_Marshaller (Get_Value'Access), 1);
+      Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Float");
       Myb.Label := Label;
-      Button_Cb.Connect (Myb, "clicked",
-                         Button_Cb.To_Marshaller (Get_Value'Access), 2);
+      Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Pack_Start (VBox, Label, False, False, 0);

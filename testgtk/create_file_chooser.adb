@@ -36,7 +36,8 @@ with Gtk.Widget;                use Gtk.Widget;
 
 package body Create_File_Chooser is
 
-   procedure Show_Properties (Widget : access Gtk_Widget_Record'Class);
+   procedure Show_Properties
+      (Widget : not null access Gtk_Widget_Record'Class);
    --  Opens a properties editor for Widget
 
    -----------------
@@ -54,7 +55,8 @@ package body Create_File_Chooser is
    -- Show_Properties --
    ---------------------
 
-   procedure Show_Properties (Widget : access Gtk_Widget_Record'Class) is
+   procedure Show_Properties
+      (Widget : not null access Gtk_Widget_Record'Class) is
    begin
       Popup_Properties_Editor (Widget);
    end Show_Properties;

@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Ada_05;
 with Ada.Unchecked_Conversion;
 with System;      use System;
 with Glib.Values; use Glib.Values;
@@ -50,7 +51,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget : access Widget_Type'Class;
+           (Widget : not null access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type
          is
@@ -79,7 +80,7 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
@@ -109,7 +110,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          function Emit_By_Name_Generic
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
@@ -145,7 +146,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget : access Widget_Type'Class;
+           (Widget : not null access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type
          is
@@ -181,9 +182,9 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
-            Param  : access Base_Type'Class) return Return_Type
+            Param  : not null access Base_Type'Class) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
@@ -218,7 +219,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget : access Widget_Type'Class;
+           (Widget : not null access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type
          is
@@ -243,7 +244,7 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name) return Return_Type
          is
             procedure Internal
@@ -285,7 +286,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type
@@ -312,7 +313,7 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
@@ -342,7 +343,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          function Emit_By_Name_Generic
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
@@ -380,7 +381,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type
@@ -416,9 +417,9 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
-            Param  : access Base_Type'Class) return Return_Type
+            Param  : not null access Base_Type'Class) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
@@ -454,7 +455,7 @@ package body Gtk.Marshallers is
          ----------
 
          function Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type
@@ -480,7 +481,7 @@ package body Gtk.Marshallers is
          ------------------
 
          function Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name) return Return_Type
          is
             procedure Internal
@@ -522,7 +523,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget  : access Widget_Type'Class;
+           (Widget  : not null access Widget_Type'Class;
             Params  : Glib.Values.GValues;
             Cb      : General_Handler)
          is
@@ -548,7 +549,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
@@ -574,7 +575,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          procedure Emit_By_Name_Generic
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
@@ -607,7 +608,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget  : access Widget_Type'Class;
+           (Widget  : not null access Widget_Type'Class;
             Params  : Glib.Values.GValues;
             Cb      : General_Handler)
          is
@@ -636,7 +637,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object  : access Widget_Type'Class;
+           (Object  : not null access Widget_Type'Class;
             Name    : Glib.Signal_Name;
             Param_1 : Base_Type_1;
             Param_2 : Base_Type_2)
@@ -669,7 +670,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          procedure Emit_By_Name_Generic
-           (Object  : access Widget_Type'Class;
+           (Object  : not null access Widget_Type'Class;
             Name    : Glib.Signal_Name;
             Param_1 : Base_Type_1;
             Param_2 : Base_Type_2)
@@ -707,7 +708,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget : access Widget_Type'Class;
+           (Widget : not null access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler)
          is
@@ -743,9 +744,9 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
-            Param  : access Base_Type'Class)
+            Param  : not null access Base_Type'Class)
          is
             procedure Internal
               (Object : System.Address;
@@ -776,7 +777,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget : access Widget_Type'Class;
+           (Widget : not null access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler)
          is
@@ -801,7 +802,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name)
          is
             procedure Internal
@@ -839,7 +840,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type)
@@ -866,7 +867,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
@@ -892,7 +893,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          procedure Emit_By_Name_Generic
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
@@ -926,7 +927,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type)
@@ -957,7 +958,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object  : access Widget_Type'Class;
+           (Object  : not null access Widget_Type'Class;
             Name    : Glib.Signal_Name;
             Param_1 : Base_Type_1;
             Param_2 : Base_Type_2)
@@ -990,7 +991,7 @@ package body Gtk.Marshallers is
          --------------------------
 
          procedure Emit_By_Name_Generic
-           (Object  : access Widget_Type'Class;
+           (Object  : not null access Widget_Type'Class;
             Name    : Glib.Signal_Name;
             Param_1 : Base_Type_1;
             Param_2 : Base_Type_2)
@@ -1029,7 +1030,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type)
@@ -1066,9 +1067,9 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name;
-            Param  : access Base_Type'Class)
+            Param  : not null access Base_Type'Class)
          is
             procedure Internal
               (Object : System.Address;
@@ -1100,7 +1101,7 @@ package body Gtk.Marshallers is
          ----------
 
          procedure Call
-           (Widget    : access Widget_Type'Class;
+           (Widget    : not null access Widget_Type'Class;
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type)
@@ -1126,7 +1127,7 @@ package body Gtk.Marshallers is
          ------------------
 
          procedure Emit_By_Name
-           (Object : access Widget_Type'Class;
+           (Object : not null access Widget_Type'Class;
             Name   : Glib.Signal_Name)
          is
             procedure Internal

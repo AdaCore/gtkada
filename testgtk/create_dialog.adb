@@ -53,7 +53,7 @@ package body Create_Dialog is
    use Chooser_Interface_Implementation;
 
    procedure Destroyed
-     (Lab : access Gtk_Label_Record'Class;
+     (Lab : not null access Gtk_Label_Record'Class;
       Ptr : Gtk_Label_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
@@ -78,10 +78,10 @@ package body Create_Dialog is
    ---------------
 
    procedure Destroyed
-     (Lab : access Gtk_Label_Record'Class;
+     (Lab : not null access Gtk_Label_Record'Class;
       Ptr : Gtk_Label_Access)
    is
-      pragma Warnings (Off, Lab);
+      pragma Unreferenced (Lab);
    begin
       Ptr.all := null;
    end Destroyed;
@@ -90,15 +90,13 @@ package body Create_Dialog is
    -- Label_Toggle --
    ------------------
 
-   procedure Label_Toggle (Button : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Button);
+   procedure Label_Toggle (Button : not null access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Button);
    begin
       if Global_Label = null then
          Gtk_New (Global_Label, "Dialog Test");
          Label_Destroy.Connect
-           (Global_Label, "destroy",
-            Label_Destroy.To_Marshaller (Destroyed'Access),
-            Global_Label'Access);
+           (Global_Label, "destroy", Destroyed'Access, Global_Label'Access);
          Set_Padding (Global_Label, 10, 10);
          Pack_Start (Get_Content_Area (Dialog), Global_Label, True, True, 0);
          Show (Global_Label);
@@ -111,7 +109,7 @@ package body Create_Dialog is
    -- Basic_Dialog --
    ------------------
 
-   procedure Basic_Dialog (Widget : access Gtk_Widget_Record'Class) is
+   procedure Basic_Dialog (Widget : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
       Button : Gtk_Button;
    begin
@@ -132,9 +130,7 @@ package body Create_Dialog is
          Show (Button);
 
          Gtk_New (Button, "Toggle");
-         Widget_Handler.Connect
-           (Button, "clicked",
-            Widget_Handler.To_Marshaller (Label_Toggle'Access));
+         Widget_Handler.Connect (Button, "clicked", Label_Toggle'Access);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
          Show (Dialog);
@@ -147,7 +143,9 @@ package body Create_Dialog is
    -- Cancel_Recent_Dialog --
    --------------------------
 
-   procedure Cancel_Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
+   procedure Cancel_Recent_Dialog
+      (Widget : not null access Gtk_Widget_Record'Class)
+   is
       pragma Unreferenced (Widget);
    begin
       Put_Line ("Recent dialog cancelled.");
@@ -160,7 +158,7 @@ package body Create_Dialog is
    -- Open_File --
    ---------------
 
-   procedure Open_File (Widget : access Gtk_Widget_Record'Class) is
+   procedure Open_File (Widget : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
       RChooser : constant Gtk_Recent_Chooser :=
         Gtk_Recent_Chooser (To_Interface (RDialog));
@@ -175,7 +173,9 @@ package body Create_Dialog is
    -- Recent_Dialog --
    -------------------
 
-   procedure Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
+   procedure Recent_Dialog
+      (Widget : not null access Gtk_Widget_Record'Class)
+   is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;
       RChooser : Gtk_Recent_Chooser;
@@ -250,15 +250,11 @@ package body Create_Dialog is
       Add (Frame, Box1);
 
       Gtk_New (Button, "Simple Dialog");
-      Widget_Handler.Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Basic_Dialog'Access));
+      Widget_Handler.Connect (Button, "clicked", Basic_Dialog'Access);
       Pack_Start (Box1, Button, False, False, 10);
 
       Gtk_New (Button, "Recent Chooser Dialog");
-      Widget_Handler.Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Recent_Dialog'Access));
+      Widget_Handler.Connect (Button, "clicked", Recent_Dialog'Access);
       Pack_Start (Box1, Button, False, False, 10);
 
       Show_All (Frame);

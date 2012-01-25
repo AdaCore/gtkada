@@ -98,8 +98,10 @@ package body Create_Progress is
    -- Destroy_Progress --
    ----------------------
 
-   procedure Destroy_Progress (Window : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Window);
+   procedure Destroy_Progress
+      (Window : not null access Gtk_Widget_Record'Class)
+   is
+      pragma Unreferenced (Window);
    begin
       Remove (Pdata.Timer);
       Pdata.Omenu1_Group := Widget_SList.Null_List;
@@ -112,7 +114,9 @@ package body Create_Progress is
    -- Toggle_Inversion --
    ----------------------
 
-   procedure Toggle_Inversion (Widget : access Gtk_Widget_Record'Class) is
+   procedure Toggle_Inversion
+      (Widget : not null access Gtk_Widget_Record'Class)
+   is
       Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
       Current : constant UTF8_String := Combo.Get_Active_Text;
       Is_Inverted : constant Boolean := Current = "Inverted";
@@ -124,7 +128,9 @@ package body Create_Progress is
    -- Toggle_Orientation --
    ------------------------
 
-   procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
+   procedure Toggle_Orientation
+      (Widget : not null access Gtk_Widget_Record'Class)
+   is
       Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
       Current : constant UTF8_String := Combo.Get_Active_Text;
    begin
@@ -139,7 +145,8 @@ package body Create_Progress is
    -- Toggle_Show_Text --
    ----------------------
 
-   procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record'Class)
+   procedure Toggle_Show_Text
+      (Widget : not null access Gtk_Check_Button_Record'Class)
    is
    begin
       Set_Show_Text (Progress_Bar => Pdata.Pbar,
@@ -154,7 +161,7 @@ package body Create_Progress is
    --------------------------
 
    procedure Toggle_Activity_Mode
-     (Widget : access Gtk_Check_Button_Record'Class)
+     (Widget : not null access Gtk_Check_Button_Record'Class)
    is
    begin
       if Get_Active (Widget) then
@@ -174,8 +181,10 @@ package body Create_Progress is
    -- Entry_Changed --
    -------------------
 
-   procedure Entry_Changed (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
+   procedure Entry_Changed
+      (Widget : not null access Gtk_Widget_Record'Class)
+   is
+      pragma Unreferenced (Widget);
    begin
       --  ??? will text with control characters display as expected?
       Set_Text (Pdata.Pbar, Get_Text (Pdata.Gentry));
@@ -205,9 +214,7 @@ package body Create_Progress is
       Set_Border_Width (Vbox, 10);
       Add (Frame, Vbox);
 
-      Widget_Handler.Connect
-        (Vbox, "destroy",
-         Widget_Handler.To_Marshaller (Destroy_Progress'Access));
+      Widget_Handler.Connect (Vbox, "destroy", Destroy_Progress'Access);
 
       Gtk_New (Frame2, "Progress");
       Pack_Start (Vbox, Frame2, False, True, 0);
@@ -314,8 +321,7 @@ package body Create_Progress is
 
       Gtk_New (Pdata.Gentry);
       Widget_Handler.Object_Connect
-        (Pdata.Gentry, "changed",
-         Widget_Handler.To_Marshaller (Entry_Changed'Access),
+        (Pdata.Gentry, "changed", Entry_Changed'Access,
          Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
       Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
@@ -347,9 +353,7 @@ package body Create_Progress is
       --  Activity Mode
 
       Gtk_New (Check, "Activity mode");
-      Check_Handler.Connect
-        (Check, "clicked",
-         Check_Handler.To_Marshaller (Toggle_Activity_Mode'Access));
+      Check_Handler.Connect (Check, "clicked", Toggle_Activity_Mode'Access);
       Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
 

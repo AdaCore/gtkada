@@ -60,7 +60,9 @@ package body Create_Selection is
    -- On_Button_Click --
    ---------------------
 
-   procedure On_Button_Click (Button : access My_Button_Record'Class) is
+   procedure On_Button_Click
+      (Button : not null access My_Button_Record'Class)
+   is
       Text : constant String := Wait_For_Text (Gtk.Clipboard.Get);
       Iter : Gtk_Text_Iter;
    begin
@@ -86,9 +88,7 @@ package body Create_Selection is
       Button := new My_Button_Record;
       Initialize  (Button, "Paste the selection/clipboard");
       Pack_Start (Box, Button, Fill => False, Expand => False);
-      My_Button_Handler.Connect
-        (Button, "clicked",
-         My_Button_Handler.To_Marshaller (On_Button_Click'Access));
+      My_Button_Handler.Connect (Button, "clicked", On_Button_Click'Access);
 
       --  The text
 

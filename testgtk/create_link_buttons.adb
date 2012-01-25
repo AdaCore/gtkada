@@ -39,7 +39,7 @@ package body Create_Link_Buttons is
    ----------------------------
 
    procedure On_Link_Button_Clicked
-     (Button : access Gtk_Link_Button_Record'Class)
+     (Button : not null access Gtk_Link_Button_Record'Class)
    is
    begin
       Put_Line ("Link_Button clicked: " & Button.Get_Uri);
@@ -50,7 +50,7 @@ package body Create_Link_Buttons is
    -----------------------------
 
    procedure On_Reset_Button_Clicked
-     (Widget : access Gtk_Link_Button_Record'Class)
+     (Widget : not null access Gtk_Link_Button_Record'Class)
    is
    begin
       Set_Visited (Widget, False);

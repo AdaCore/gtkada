@@ -79,24 +79,24 @@ package body Libart_Demo is
    -- Destroy --
    -------------
 
-   procedure Destroy (Draw : access Image_Drawing_Record'Class) is
+   procedure Destroy (Draw : not null access Image_Drawing_Record'Class) is
    begin
       --  Destroy the associated image
       Unref (Draw.Pix);
    end Destroy;
 
-   ------------
-   -- Expose --
-   ------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose (Draw : access Image_Drawing_Record'Class) return Boolean is
-      Context : constant Cairo_Context := Create (Draw.Area.Get_Window);
+   function On_Draw
+      (Draw : not null access Image_Drawing_Record'Class;
+       Cr   : Cairo_Context) return Boolean is
    begin
-      Set_Source_Pixbuf (Context, Draw.Pix, 0.0, 0.0);
-      Cairo.Paint (Context);
-      Destroy (Context);
+      Set_Source_Pixbuf (Cr, Draw.Pix, 0.0, 0.0);
+      Cairo.Paint (Cr);
       return False;
-   end Expose;
+   end On_Draw;
 
    -------------
    -- Gtk_New --
@@ -125,8 +125,8 @@ package body Libart_Demo is
       Pack_Start (Draw, Draw.Area);
 
       Expose_Cb.Object_Connect
-        (Draw.Area, "expose_event",
-         Expose_Cb.To_Marshaller (Expose'Access),
+        (Draw.Area, Signal_Draw,
+         Expose_Cb.To_Marshaller (On_Draw'Access),
          Slot_Object => Draw);
       Destroy_Cb.Connect
         (Draw, "destroy",

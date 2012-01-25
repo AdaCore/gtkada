@@ -38,8 +38,8 @@ package body Create_Main_Loop is
    -- Loop_Destroy --
    ------------------
 
-   procedure Loop_Destroy (Win : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Win);
+   procedure Loop_Destroy (Win : not null access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Win);
    begin
       Main_Quit;
    end Loop_Destroy;
@@ -81,10 +81,7 @@ package body Create_Main_Loop is
 
       Gtk_New (Button, "Leave one instance of the main loop");
       Pack_Start (Box, Button, False, False, 0);
-      Widget_Handler.Object_Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Loop_Destroy'Access),
-         Slot_Object => Box);
+      Widget_Handler.Connect (Button, "clicked", Loop_Destroy'Access);
       Button.Set_Can_Default (True);
       Grab_Default (Button);
 

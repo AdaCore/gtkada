@@ -62,7 +62,7 @@ package body Create_Sources is
    function Convert is new Ada.Unchecked_Conversion
      (System.Address, Source_User_Data_Access);
 
-   procedure On_Destroy (Box : access Gtk_Widget_Record'Class);
+   procedure On_Destroy (Box : not null access Gtk_Widget_Record'Class);
    --  Called when this demo is closed.
 
    -------------
@@ -253,7 +253,7 @@ package body Create_Sources is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Box : access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Box : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Box);
    begin
       if Id /= 0 then

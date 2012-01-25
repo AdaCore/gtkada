@@ -101,10 +101,10 @@ package Gtkada.Builder is
    --  If a "User data" is present in the Glade-3, it will be ignored.
 
    type Builder_Handler is access procedure
-     (Builder : access Gtkada_Builder_Record'Class);
+     (Builder : not null access Gtkada_Builder_Record'Class);
 
    type Builder_Return_Handler is access function
-     (User_Data : access Gtkada_Builder_Record'Class) return Boolean;
+     (User_Data : not null access Gtkada_Builder_Record'Class) return Boolean;
 
    procedure Register_Handler
      (Builder      : access Gtkada_Builder_Record'Class;
@@ -126,10 +126,10 @@ package Gtkada.Builder is
    --  "User data" column in Glade-3.
 
    type Object_Handler is access procedure
-     (User_Data : access GObject_Record'Class);
+     (User_Data : not null access GObject_Record'Class);
 
    type Object_Return_Handler is access function
-     (User_Data : access GObject_Record'Class) return Boolean;
+     (User_Data : not null access GObject_Record'Class) return Boolean;
 
    procedure Register_Handler
      (Builder      : access Gtkada_Builder_Record'Class;

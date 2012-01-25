@@ -3510,11 +3510,11 @@ package body Gtkada.MDI is
    package Tab_Pos_Callback is new Gtk.Handlers.User_Callback
      (Gtk_Notebook_Record, Gtk.Enums.Gtk_Position_Type);
    procedure On_Tab_Pos
-     (Note : access Gtk_Notebook_Record'Class;
+     (Note : not null access Gtk_Notebook_Record'Class;
       Pos  : Gtk.Enums.Gtk_Position_Type);
 
    procedure On_Tab_Pos
-     (Note : access Gtk_Notebook_Record'Class;
+     (Note : not null access Gtk_Notebook_Record'Class;
       Pos  : Gtk.Enums.Gtk_Position_Type) is
    begin
       Set_Tab_Pos (Note, Pos);

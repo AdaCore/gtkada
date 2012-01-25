@@ -26,7 +26,6 @@ with Glib;             use Glib;
 with Glib.Error;       use Glib.Error;
 with Glib.Main;        use Glib.Main;
 with Gdk.Cairo;        use Gdk.Cairo;
-with Gdk.Event;        use Gdk.Event;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
@@ -83,15 +82,15 @@ package body Create_Pixbuf is
    --  Load the images for the demo.
    --  Return False if one of the pixmaps could not be loaded
 
-   function Expose_Cb
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
+   function On_Draw
+     (Widget : not null access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context) return Boolean;
    --  Expose callback for the drawing area
 
    function Timeout_Handler return Boolean;
    --  Timeout handler to regenerate the frame
 
-   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
+   procedure Destroy_Cb (Widget : not null access Gtk_Widget_Record'Class);
    --  Callback when the widget is destroyed
 
    ------------------
@@ -119,47 +118,23 @@ package body Create_Pixbuf is
       return True;
    end Load_Pixbufs;
 
-   ---------------
-   -- Expose_Cb --
-   ---------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Cb
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+   function On_Draw
+     (Widget : not null access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context) return Boolean
    is
-      --  Num_Bytes_Per_Pixel : constant := 3;
-      --  Number of bytes for each pixel (Red, Green, Blue)
-
-      X         : constant Gint := Get_Area (Event).X;
-      Y         : constant Gint := Get_Area (Event).Y;
-      W         : Gint := Get_Area (Event).Width;
-      H         : Gint := Get_Area (Event).Height;
-
-      Context   : constant Cairo_Context := Create (Widget.Get_Window);
-
+      pragma Unreferenced (Widget);
    begin
-      --  The following tests handle the cases where we try to redraw the area
-      --  outside of the background image.
-      if X + W > Back_Width then
-         W := Back_Width - X;
-      end if;
-
-      if Y + H > Back_Height then
-         H := Back_Height - Y;
-      end if;
-
-      if W <= 0 or else H <= 0 then
-         return True;
-      end if;
-
-      Set_Source_Pixbuf (Context,
+      Set_Source_Pixbuf (Cr,
                          Pixbuf => Frame,
-                         Pixbuf_X => Gdouble (X),
-                         Pixbuf_Y => Gdouble (Y));
-      Cairo.Paint (Context);
-      Destroy (Context);
+                         Pixbuf_X => 0.0,
+                         Pixbuf_Y => 0.0);
+      Cairo.Paint (Cr);
       return True;
-   end Expose_Cb;
+   end On_Draw;
 
    ---------------------
    -- Timeout_Handler --
@@ -254,8 +229,8 @@ package body Create_Pixbuf is
    -- Destroy_Cb --
    ----------------
 
-   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
+   procedure Destroy_Cb (Widget : not null access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
    begin
       Remove (Timeout_Id);
       Timeout_Id := 0;
@@ -284,10 +259,10 @@ package body Create_Pixbuf is
          Width           => Back_Width,
          Height          => Back_Height);
 
-      Widget_Callback.Connect
-        (Da, "destroy", Widget_Callback.To_Marshaller (Destroy_Cb'Access));
+      Widget_Callback.Connect (Da, "destroy", Destroy_Cb'Access);
       Return_Callback.Connect
-        (Da, "expose_event", Return_Callback.To_Marshaller (Expose_Cb'Access));
+        (Da, Signal_Draw,
+         Return_Callback.To_Marshaller (On_Draw'Access));
 
       Timeout_Id := Timeout_Add (Frame_Delay, Timeout_Handler'Access);
 

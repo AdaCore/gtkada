@@ -29,9 +29,11 @@ package body Common is
    -- Destroy_Window --
    --------------------
 
-   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
-                             Ptr : Gtk_Window_Access) is
-      pragma Warnings (Off, Win);
+   procedure Destroy_Window
+      (Win : not null access Gtk.Window.Gtk_Window_Record'Class;
+       Ptr : Gtk_Window_Access)
+   is
+      pragma Unreferenced (Win);
    begin
       Ptr.all := null;
    end Destroy_Window;
@@ -40,9 +42,11 @@ package body Common is
    -- Destroy_Dialog --
    --------------------
 
-   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record'Class;
-                             Ptr : Gtk_Dialog_Access) is
-      pragma Warnings (Off, Win);
+   procedure Destroy_Dialog
+      (Win : not null access Gtk.Dialog.Gtk_Dialog_Record'Class;
+       Ptr : Gtk_Dialog_Access)
+   is
+      pragma Unreferenced (Win);
    begin
       Ptr.all := null;
    end Destroy_Dialog;

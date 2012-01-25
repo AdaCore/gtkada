@@ -54,7 +54,7 @@ package body Create_Opacity is
    ----------------------
 
    procedure On_Value_Changed
-     (Adjustment : access Gtk_Adjustment_Record'Class)
+     (Adjustment : not null access Gtk_Adjustment_Record'Class)
    is
    begin
       Set_Opacity (Main_Window, Get_Value (Adjustment) / 100.0);
@@ -104,8 +104,7 @@ package body Create_Opacity is
       Pack_Start (Box2, Scale, True, True, 0);
 
       Adj_Handler.Connect
-        (Adjustment, "value_changed",
-         Adj_Handler.To_Marshaller (On_Value_Changed'Access));
+        (Adjustment, "value_changed", On_Value_Changed'Access);
 
       Show_All (Frame);
    end Run;

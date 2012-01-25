@@ -87,7 +87,7 @@ package body Create_Test_Idle is
    -- Destroy_Idle --
    ------------------
 
-   procedure Destroy_Idle (Window : access Gtk_Widget_Record'Class) is
+   procedure Destroy_Idle (Window : not null access Gtk_Widget_Record'Class) is
    begin
       Stop_Idle (Window);
    end Destroy_Idle;
@@ -96,7 +96,7 @@ package body Create_Test_Idle is
    -- Start_Idle --
    ----------------
 
-   procedure Start_Idle (Label : access Gtk_Label_Record'Class) is
+   procedure Start_Idle (Label : not null access Gtk_Label_Record'Class) is
    begin
       if Idle = 0 then
          Idle := Label_Idle.Idle_Add (Idle_Test'Access, Gtk_Label (Label));
@@ -107,8 +107,9 @@ package body Create_Test_Idle is
    -- Toggle_Container --
    ----------------------
 
-   procedure Toggle_Container (Button : access My_Button_Record'Class;
-                               Contain : in Gtk_Box) is
+   procedure Toggle_Container
+      (Button  : not null access My_Button_Record'Class;
+       Contain : in Gtk_Box) is
    begin
       Set_Resize_Mode (Contain, Button.Value);
    end Toggle_Container;
@@ -133,9 +134,7 @@ package body Create_Test_Idle is
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
       Add (Frame, Vbox);
 
-      Widget_Handler.Connect
-        (Vbox, "destroy",
-         Widget_Handler.To_Marshaller (Destroy_Idle'Access));
+      Widget_Handler.Connect (Vbox, "destroy", Destroy_Idle'Access);
 
       Gtk_New (Label, "count : " & Integer'Image (Count));
       Set_Padding (Label, 10, 10);
@@ -179,17 +178,13 @@ package body Create_Test_Idle is
 
       Gtk_New (Button, "start");
       Label_Handler.Object_Connect
-        (Button, "clicked",
-         Label_Handler.To_Marshaller (Start_Idle'Access),
-         Slot_Object => Label);
+        (Button, "clicked", Start_Idle'Access, Slot_Object => Label);
       Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
       Widget_Handler.Object_Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Destroy_Idle'Access),
-         Slot_Object => Vbox);
+        (Button, "clicked", Destroy_Idle'Access, Slot_Object => Vbox);
       Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 

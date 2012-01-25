@@ -154,13 +154,13 @@ package body Gtkada.Properties is
    package Handler_Id_User_Data is new Glib.Object.User_Data (Handler_Id);
 
    procedure Property_Modified
-     (Object : access GObject_Record'Class;
+     (Object : not null access GObject_Record'Class;
       Data   : Property_Modified_Data);
    --  Called when a property has been modified, and dispatch to the callback
    --  in Data.
 
    procedure Controller_Called
-     (Editor : access Gtk_Widget_Record'Class;
+     (Editor : not null access Gtk_Widget_Record'Class;
       Data   : Controller_Data);
    --  An editor has been modified by the user, call the appropriate controller
 
@@ -456,7 +456,7 @@ package body Gtkada.Properties is
    -----------------------
 
    procedure Property_Modified
-     (Object : access GObject_Record'Class;
+     (Object : not null access GObject_Record'Class;
       Data   : Property_Modified_Data)
    is
       Value : GValue;
@@ -508,7 +508,7 @@ package body Gtkada.Properties is
    -----------------------
 
    procedure Controller_Called
-     (Editor : access Gtk_Widget_Record'Class;
+     (Editor : not null access Gtk_Widget_Record'Class;
       Data   : Controller_Data)
    is
       Value : GValue;

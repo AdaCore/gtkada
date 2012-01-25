@@ -62,9 +62,10 @@ package body Create_Reparent is
    -- Set_Parent_Signal --
    -----------------------
 
-   procedure Set_Parent_Signal (Child      : access Gtk_Label_Record'Class;
-                                Old_Parent : access Gtk_Widget_Record'Class;
-                                Data       : in Gint)
+   procedure Set_Parent_Signal
+      (Child      : not null access Gtk_Label_Record'Class;
+       Old_Parent : not null access Gtk_Widget_Record'Class;
+       Data       : Gint)
    is
    begin
       Ada.Text_IO.Put ("Set_Parent for ");
@@ -92,8 +93,9 @@ package body Create_Reparent is
    -- Reparent_Label --
    --------------------
 
-   procedure Reparent_Label (Widget     : access My_Button_Record'Class;
-                             New_Parent : in Gtk_Box)
+   procedure Reparent_Label
+      (Widget     : not null access My_Button_Record'Class;
+       New_Parent : Gtk_Box)
    is
    begin
       Reparent (Widget.Label, New_Parent);
@@ -131,16 +133,14 @@ package body Create_Reparent is
 
       Myb := new My_Button_Record;
       Initialize (Myb, "switch");
-      Box_Cb.Connect (Myb, "clicked",
-                      Box_Cb.To_Marshaller (Reparent_Label'Access),
-                      Box3);
+      Box_Cb.Connect (Myb, "clicked", Reparent_Label'Access, Box3);
       Myb.Label := Label;
       Pack_Start (Box3, Myb, False, True, 0);
 
       Pack_Start (Box3, Label, False, True, 0);
-      Int_Cb.Connect (Label, "parent_set",
-                      Int_Cb.To_Marshaller (Set_Parent_Signal'Access),
-                      42);
+      Int_Cb.Connect
+         (Label, "parent_set",
+          Int_Cb.To_Marshaller (Set_Parent_Signal'Access), 42);
       Show (Label);
 
       Gtk_New (Frame2, "Frame 2");

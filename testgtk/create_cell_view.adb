@@ -43,8 +43,8 @@ package body Create_Cell_View is
 
    Path : Gtk_Tree_Path;
 
-   procedure Move_To_Previous (View : access Gtk_Widget_Record'Class);
-   procedure Move_To_Next (View : access Gtk_Widget_Record'Class);
+   procedure Move_To_Previous (View : not null access Gtk_Widget_Record'Class);
+   procedure Move_To_Next (View : not null access Gtk_Widget_Record'Class);
    --  Display the previous or next function in the cell view
 
    procedure Compute_Column_3
@@ -74,7 +74,8 @@ package body Create_Cell_View is
    -- Move_To_Previous --
    ----------------------
 
-   procedure Move_To_Previous (View : access Gtk_Widget_Record'Class) is
+   procedure Move_To_Previous
+      (View : not null access Gtk_Widget_Record'Class) is
    begin
       if Prev (Path) then
          Set_Displayed_Row (Gtk_Cell_View (View), Path);
@@ -85,7 +86,8 @@ package body Create_Cell_View is
    -- Move_To_Next --
    ------------------
 
-   procedure Move_To_Next (View : access Gtk_Widget_Record'Class) is
+   procedure Move_To_Next
+      (View : not null access Gtk_Widget_Record'Class) is
    begin
       Next (Path);
       Set_Displayed_Row (Gtk_Cell_View (View), Path);

@@ -65,10 +65,11 @@ package body Create_Status_Icons is
    package Status_Icon_Handler is
      new Gtk.Handlers.Callback (Gtk_Status_Icon_Record);
 
-   procedure Change_Icon_Cb (Button : access Gtk_Button_Record'Class);
-   procedure Popup_Menu_Cb (Status_Icon : access Gtk_Status_Icon_Record'Class);
+   procedure Change_Icon_Cb (Button : not null access Gtk_Button_Record'Class);
+   procedure Popup_Menu_Cb
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class);
    procedure Show_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class);
+     (Check_Button : not null access Gtk_Check_Button_Record'Class);
    --  Callback procedures
 
    -----------------
@@ -104,7 +105,9 @@ package body Create_Status_Icons is
    -- Change_Icon_Cb --
    --------------------
 
-   procedure Change_Icon_Cb (Button : access Gtk_Button_Record'Class) is
+   procedure Change_Icon_Cb
+      (Button : not null access Gtk_Button_Record'Class)
+   is
       pragma Unreferenced (Button);
    begin
       Change_Icon;
@@ -114,7 +117,9 @@ package body Create_Status_Icons is
    -- Change_Icon_Cb --
    --------------------
 
-   procedure Change_Icon_Cb (Menu_Item : access Gtk_Menu_Item_Record'Class) is
+   procedure Change_Icon_Cb
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class)
+   is
       pragma Unreferenced (Menu_Item);
    begin
       Change_Icon;
@@ -140,7 +145,7 @@ package body Create_Status_Icons is
    -------------------
 
    procedure Popup_Menu_Cb
-     (Status_Icon : access Gtk_Status_Icon_Record'Class)
+     (Status_Icon : not null access Gtk_Status_Icon_Record'Class)
    is
       Menu      : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
@@ -225,7 +230,7 @@ package body Create_Status_Icons is
    ------------------
 
    procedure Show_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class)
+     (Check_Button : not null access Gtk_Check_Button_Record'Class)
    is
       Show : constant Boolean := Get_Active (Check_Button);
    begin

@@ -37,13 +37,13 @@ package body Create_Splittable is
 
    function Create_Child
       (Bar : Gtk_Toolbar; Title : String) return Gtk_Widget;
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class);
-   procedure On_Toggle  (Button : access Gtk_Widget_Record'Class);
-   procedure On_Resize  (Button : access Gtk_Widget_Record'Class);
-   procedure On_Split_V (Button : access Gtk_Widget_Record'Class);
-   procedure On_Split_H (Button : access Gtk_Widget_Record'Class);
-   procedure On_Fixed   (Button : access Gtk_Widget_Record'Class);
-   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class);
+   procedure On_Destroy (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Toggle  (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Resize  (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Split_V (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Split_H (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Fixed   (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class);
 
    Pane   : Gtkada_Multi_Paned;
    Item   : Natural := 6;
@@ -63,7 +63,7 @@ package body Create_Splittable is
    -- On_Opaque --
    ---------------
 
-   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
    begin
       Opaque := not Opaque;
@@ -74,7 +74,7 @@ package body Create_Splittable is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Button : not null access Gtk_Widget_Record'Class) is
    begin
       Destroy (Button);
    end On_Destroy;
@@ -83,7 +83,7 @@ package body Create_Splittable is
    -- On_Toggle --
    ---------------
 
-   procedure On_Toggle (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Toggle (Button : not null access Gtk_Widget_Record'Class) is
    begin
       if Button.Get_Visible then
          Hide (Button);
@@ -96,7 +96,7 @@ package body Create_Splittable is
    -- On_Resize --
    ---------------
 
-   procedure On_Resize (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Resize (Button : not null access Gtk_Widget_Record'Class) is
    begin
       Set_Size (Pane, Button, 100, 100);
    end On_Resize;
@@ -105,7 +105,7 @@ package body Create_Splittable is
    -- On_Split_V --
    ----------------
 
-   procedure On_Split_V (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Split_V (Button : not null access Gtk_Widget_Record'Class) is
       Child : constant Gtk_Widget := Create_Child (null, Integer'Image (Item));
    begin
       Item := Item + 1;
@@ -116,7 +116,7 @@ package body Create_Splittable is
    -- On_Split_H --
    ----------------
 
-   procedure On_Split_H (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Split_H (Button : not null access Gtk_Widget_Record'Class) is
       Child : constant Gtk_Widget := Create_Child (null, Integer'Image (Item));
    begin
       Item := Item + 1;
@@ -127,7 +127,7 @@ package body Create_Splittable is
    -- On_Fixed --
    --------------
 
-   procedure On_Fixed (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Fixed (Button : not null access Gtk_Widget_Record'Class) is
    begin
       Set_Size (Pane, Button,
                 Get_Allocated_Width (Button),
@@ -156,37 +156,27 @@ package body Create_Splittable is
       Gtk_New (Button, "Destroy_" & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Destroy'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Destroy'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Resize_" & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Resize'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Resize'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Split_V " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Split_V'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Split_V'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Split_H " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Split_H'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Split_H'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Fixed_Size " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Fixed'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Fixed'Unrestricted_Access, Frame);
 
       if Bar /= null then
          Gtk_New (Item, "Toggle_" & Title);

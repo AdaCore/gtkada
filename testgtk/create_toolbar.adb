@@ -74,7 +74,8 @@ package body Create_Toolbar is
    -- Set_Horizontal --
    --------------------
 
-   procedure Set_Horizontal (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Horizontal
+      (Toolbar : not null access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Horizontal);
    end Set_Horizontal;
@@ -83,7 +84,8 @@ package body Create_Toolbar is
    -- Set_Vertical --
    ------------------
 
-   procedure Set_Vertical (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Vertical
+      (Toolbar : not null access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Vertical);
    end Set_Vertical;
@@ -92,7 +94,7 @@ package body Create_Toolbar is
    -- Set_Icons --
    ---------------
 
-   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Icons (Toolbar : not null access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Icons);
    end Set_Icons;
@@ -101,7 +103,7 @@ package body Create_Toolbar is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Text (Toolbar : not null access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Text);
    end Set_Text;
@@ -110,7 +112,7 @@ package body Create_Toolbar is
    -- Set_Both --
    --------------
 
-   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Both (Toolbar : not null access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Both);
    end Set_Both;
@@ -136,17 +138,13 @@ package body Create_Toolbar is
       Button.Set_Tooltip_Text ("Horizontal toolbar layout");
       Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Button, "clicked",
-         Toolbar_Cb.To_Marshaller (Set_Horizontal'Access),
-         Slot_Object => Toolbar);
+        (Button, "clicked", Set_Horizontal'Access, Slot_Object => Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Vertical");
       Button.Set_Tooltip_Text ("Vertical toolbar layout");
       Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Button, "clicked",
-         Toolbar_Cb.To_Marshaller (Set_Vertical'Access),
-         Slot_Object => Toolbar);
+        (Button, "clicked", Set_Vertical'Access, Slot_Object => Toolbar);
 
       Gtk_New (Separator);
       Insert (Toolbar, Separator);
@@ -155,25 +153,19 @@ package body Create_Toolbar is
       Button.Set_Tooltip_Text ("Only show toolbar icons");
       Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Button, "clicked",
-         Toolbar_Cb.To_Marshaller (Set_Icons'Access),
-         Slot_Object => Toolbar);
+        (Button, "clicked", Set_Icons'Access, Slot_Object => Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Text");
       Button.Set_Tooltip_Text ("Only show toolbar text");
       Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Button, "clicked",
-         Toolbar_Cb.To_Marshaller (Set_Text'Access),
-         Slot_Object => Toolbar);
+        (Button, "clicked", Set_Text'Access, Slot_Object => Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Both");
       Button.Set_Tooltip_Text ("Show toolbar icons and text");
       Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Button, "clicked",
-         Toolbar_Cb.To_Marshaller (Set_Both'Access),
-         Slot_Object => Toolbar);
+        (Button, "clicked", Set_Both'Access, Slot_Object => Toolbar);
 
       Gtk_New (Separator);
       Insert (Toolbar, Separator);

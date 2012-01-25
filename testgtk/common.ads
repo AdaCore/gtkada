@@ -53,13 +53,14 @@ package Common is
    type Gtk_Window_Access is access all Gtk_Window;
    package Destroy_Handler is new Handlers.User_Callback
      (Gtk_Window_Record, Gtk_Window_Access);
-   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
-                             Ptr : Gtk_Window_Access);
+   procedure Destroy_Window
+      (Win : not null access Gtk.Window.Gtk_Window_Record'Class;
+       Ptr : Gtk_Window_Access);
 
    type Gtk_Dialog_Access is access all Gtk_Dialog;
    package Destroy_Dialog_Handler is new Handlers.User_Callback
      (Gtk_Dialog_Record, Gtk_Dialog_Access);
-   procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
+   procedure Destroy_Dialog (Win : not null access Gtk_Dialog_Record'Class;
                              Ptr : Gtk_Dialog_Access);
 
    function Image_Of (I : Gint) return String;

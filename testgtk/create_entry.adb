@@ -66,7 +66,7 @@ package body Create_Entry is
    ---------------------
 
    procedure Toggle_Editable
-     (Button    : access Gtk_Check_Button_Record'Class;
+     (Button    : not null access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry) is
    begin
       The_Entry.Set_Editable (Button.Get_Active);
@@ -77,7 +77,7 @@ package body Create_Entry is
    ----------------------
 
    procedure Toggle_Overwrite
-     (Button    : access Gtk_Check_Button_Record'Class;
+     (Button    : not null access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -89,7 +89,7 @@ package body Create_Entry is
    ----------------------
 
    procedure Toggle_Sensitive
-     (Button    : access Gtk_Check_Button_Record'Class;
+     (Button    : not null access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -101,7 +101,7 @@ package body Create_Entry is
    -----------------------
 
    procedure Toggle_Visibility
-     (Button    : access Gtk_Check_Button_Record'Class;
+     (Button    : not null access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -138,7 +138,7 @@ package body Create_Entry is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Window : access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Window : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Window);
    begin
       Remove (Timer1);
@@ -164,8 +164,7 @@ package body Create_Entry is
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
 
-      Widget_Handler.Connect
-        (Box1, "destroy", Widget_Handler.To_Marshaller (On_Destroy'Access));
+      Widget_Handler.Connect (Box1, "destroy", On_Destroy'Access);
 
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
@@ -196,30 +195,22 @@ package body Create_Entry is
 
       Gtk_New (Check, "Editable");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Editable'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Editable'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Overwrite");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Overwrite'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Overwrite'Access, The_Entry);
       Set_Active (Check, False);
 
       Gtk_New (Check, "Visible");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Visibility'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Visibility'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Sensitive");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Sensitive'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New_Hseparator (Hsep);

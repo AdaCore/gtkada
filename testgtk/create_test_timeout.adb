@@ -63,8 +63,8 @@ package body Create_Test_Timeout is
    -- Stop_Timeout --
    ------------------
 
-   procedure Stop_Timeout (Object : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Object);
+   procedure Stop_Timeout (Object : not null access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Object);
    begin
       if Timeout /= 0 then
          Remove (Timeout);
@@ -77,7 +77,7 @@ package body Create_Test_Timeout is
    -- Start_Timeout --
    -------------------
 
-   procedure Start_Timeout (Label : access Gtk_Label_Record'Class) is
+   procedure Start_Timeout (Label : not null access Gtk_Label_Record'Class) is
    begin
       if Timeout = 0 then
          Timeout := Label_Timeout.Timeout_Add
@@ -105,22 +105,16 @@ package body Create_Test_Timeout is
 
       Gtk_New (Button, "start");
       Label_Handler.Object_Connect
-        (Button, "clicked",
-         Label_Handler.To_Marshaller (Start_Timeout'Access),
-         Slot_Object => Label);
+        (Button, "clicked", Start_Timeout'Access, Slot_Object => Label);
       Button.Set_Can_Default (True);
       Pack_Start (Box, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
       Widget_Handler.Object_Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Stop_Timeout'Access),
-         Slot_Object => Frame);
+        (Button, "clicked", Stop_Timeout'Access, Slot_Object => Frame);
       Pack_Start (Box, Button, False, False, 0);
 
-      Widget_Handler.Connect
-        (Box, "destroy",
-         Widget_Handler.To_Marshaller (Stop_Timeout'Access));
+      Widget_Handler.Connect (Box, "destroy", Stop_Timeout'Access);
 
       Show_All (Frame);
    end Run;

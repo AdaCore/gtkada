@@ -47,11 +47,12 @@ package body Create_MDI is
    package Desktops is new Gtkada.MDI.Desktop (Integer);
 
    function Create_Child (Index : Natural) return MDI_Child;
-   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class);
-   procedure On_Snapshot  (Button : access Gtk_Widget_Record'Class);
-   procedure Do_Configure (MDI : access MDI_Window_Record'Class);
+   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class);
+   procedure On_Snapshot  (Button : not null access Gtk_Widget_Record'Class);
+   procedure Do_Configure (MDI : not null access MDI_Window_Record'Class);
 
-   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class);
+   procedure On_Save_Desktop
+      (Button : not null access Gtk_Widget_Record'Class);
    procedure Load_Desktop;
    --  Load the desktop (and all known perspectives) from an external
    --  XML file. Or create that file from the current desktop.
@@ -137,7 +138,7 @@ package body Create_MDI is
    -- Do_Configure --
    ------------------
 
-   procedure Do_Configure (MDI : access MDI_Window_Record'Class) is
+   procedure Do_Configure (MDI : not null access MDI_Window_Record'Class) is
       Bg_Color, Title_Color, Focus_Color : Gdk_Color;
    begin
       Bg_Color := Parse ("#8A8A8A");
@@ -157,7 +158,7 @@ package body Create_MDI is
    -- On_Opaque --
    ---------------
 
-   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
    begin
       Opaque := not Opaque;
@@ -168,23 +169,16 @@ package body Create_MDI is
    -- On_Snapshot --
    -----------------
 
-   Iterator : Child_Iterator;
-
-   procedure On_Snapshot (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Snapshot (Button : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
-      Child : MDI_Child;
+      Child : MDI_Child := MDI.Get_Focus_Child;
       Context : Cairo_Context;
       Width, Height : Gint;
       Pdf : Cairo_Surface;
 
    begin
-      Child := Get (Iterator);
-
       if Child = null then
-         Iterator := First_Child (MDI);
-         Child := Get (Iterator);
-      else
-         Next (Iterator);
+         Child := Get (MDI.First_Child);
       end if;
 
       --  Take a snapshot of the widget
@@ -205,9 +199,10 @@ package body Create_MDI is
    -- On_Save_Desktop --
    ---------------------
 
-   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Save_Desktop
+      (Button : not null access Gtk_Widget_Record'Class)
+   is
       pragma Unreferenced (Button);
-
       Perspectives, Central : Node_Ptr;
    begin
       Desktops.Save_Desktop (MDI, 0, Perspectives, Central);

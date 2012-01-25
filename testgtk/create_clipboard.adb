@@ -50,10 +50,10 @@ with System;                 use System;
 
 package body Create_Clipboard is
 
-   procedure Refresh (Button : access Gtk_Widget_Record'Class);
+   procedure Refresh (Button : not null access Gtk_Widget_Record'Class);
    --  Refresh the window to show the current clipboard contents
 
-   procedure On_Select_Format (View : access Gtk_Widget_Record'Class);
+   procedure On_Select_Format (View : not null access Gtk_Widget_Record'Class);
    --  Called when a new format is selected
 
    procedure On_Image_Retrieved
@@ -116,7 +116,7 @@ package body Create_Clipboard is
    -- Refresh --
    -------------
 
-   procedure Refresh (Button : access Gtk_Widget_Record'Class) is
+   procedure Refresh (Button : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
       Clipboard : constant Gtk_Clipboard := Get;
       Targets   : constant Gdk_Atom_Array := Wait_For_Targets (Clipboard);
@@ -134,7 +134,9 @@ package body Create_Clipboard is
    -- On_Select_Format --
    ----------------------
 
-   procedure On_Select_Format (View : access Gtk_Widget_Record'Class) is
+   procedure On_Select_Format
+      (View : not null access Gtk_Widget_Record'Class)
+   is
       Clipboard : constant Gtk_Clipboard := Get;
       Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter;

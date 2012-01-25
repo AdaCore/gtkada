@@ -58,9 +58,10 @@ package body Create_Handle_Box is
    -- Child_Signal --
    ------------------
 
-   procedure Child_Signal (Handle : access Gtk_Handle_Box_Record'Class;
-                           Child  : access Gtk_Widget_Record'Class;
-                           Data   : String) is
+   procedure Child_Signal
+      (Handle : not null access Gtk_Handle_Box_Record'Class;
+       Child  : not null access Gtk_Widget_Record'Class;
+       Data   : String) is
    begin
       Ada.Text_IO.Put_Line ("In Child Signal");
       if Is_Created  (Child.all) then

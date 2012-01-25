@@ -57,7 +57,7 @@ package body Create_Status is
    -- Push --
    ----------
 
-   procedure Push (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Push (Status : not null access Gtk_Status_Bar_Record'Class) is
       Id : Message_Id;
       pragma Unreferenced (Id);
    begin
@@ -69,7 +69,7 @@ package body Create_Status is
    -- Pop --
    ---------
 
-   procedure Pop (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Pop (Status : not null access Gtk_Status_Bar_Record'Class) is
    begin
       Pop (Status, 1);
    end Pop;
@@ -78,7 +78,7 @@ package body Create_Status is
    -- Steal --
    -----------
 
-   procedure Steal (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Steal (Status : not null access Gtk_Status_Bar_Record'Class) is
    begin
       Remove (Status, 1, 4);
    end Steal;
@@ -87,7 +87,7 @@ package body Create_Status is
    -- Contexts --
    --------------
 
-   procedure Contexts (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Contexts (Status : not null access Gtk_Status_Bar_Record'Class) is
    begin
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "any context"
@@ -142,25 +142,25 @@ package body Create_Status is
       Gtk_New (Button, "Push Something");
       Pack_Start (Box2, Button, False, False, 0);
       Status_Cb.Object_Connect (Button, "clicked",
-                                Status_Cb.To_Marshaller (Push'Access),
+                                Push'Access,
                                 Slot_Object => Status);
 
       Gtk_New (Button, "Pop");
       Pack_Start (Box2, Button, False, False, 0);
       Status_Cb.Object_Connect (Button, "clicked",
-                                Status_Cb.To_Marshaller (Pop'Access),
+                                Pop'Access,
                                 Slot_Object => Status);
 
       Gtk_New (Button, "Steal Message_Id #4");
       Pack_Start (Box2, Button, False, False, 0);
       Status_Cb.Object_Connect (Button, "clicked",
-                                Status_Cb.To_Marshaller (Steal'Access),
+                                Steal'Access,
                                 Slot_Object => Status);
 
       Gtk_New (Button, "Test contexts");
       Pack_Start (Box2, Button, False, False, 0);
       Status_Cb.Object_Connect (Button, "clicked",
-                                Status_Cb.To_Marshaller (Contexts'Access),
+                                Contexts'Access,
                                 Slot_Object => Status);
 
       Show_All (Frame);

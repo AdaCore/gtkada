@@ -25,7 +25,6 @@ with Unchecked_Conversion;
 
 with Cairo;            use Cairo;
 with Glib;             use Glib;
-with Gdk.Cairo;        use Gdk.Cairo;
 with Gdk.Cursor;       use Gdk.Cursor;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Window;       use Gdk.Window;
@@ -53,7 +52,7 @@ package body Create_Cursors is
    package Spin3_Cb is new Handlers.User_Return_Callback
      (Gtk_Widget_Record, Gint, My_Spin_Button);
    package Da_Cb is new Handlers.Return_Callback
-     (Gtk_Drawing_Area_Record, Gint);
+     (Gtk_Drawing_Area_Record, Boolean);
 
    ----------
    -- Help --
@@ -69,39 +68,37 @@ package body Create_Cursors is
         & " @bGtk_Drawing_Area@B.";
    end Help;
 
-   -------------------------
-   -- Cursor_Expose_Event --
-   -------------------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record'Class)
-                                return Gint
+   function On_Draw
+      (Darea : not null access Gtk_Drawing_Area_Record'Class;
+       Cr    : Cairo_Context) return Boolean
    is
-      Context : constant Cairo_Context := Create (Darea.Get_Window);
       W       : constant Gdouble  := Gdouble (Get_Allocated_Width (Darea));
       H       : constant Gdouble  := Gdouble (Get_Allocated_Height (Darea));
 
    begin
-      Rectangle (Context, 0.0, 0.0, W, H / 2.0);
-      Set_Source_Rgb (Context, 1.0, 1.0, 1.0);
-      Cairo.Fill (Context);
+      Rectangle (Cr, 0.0, 0.0, W, H / 2.0);
+      Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
+      Cairo.Fill (Cr);
 
-      Rectangle (Context, 0.0, H / 2.0, W, H / 2.0);
-      Set_Source_Rgb (Context, 0.0, 0.0, 0.0);
-      Cairo.Fill (Context);
+      Rectangle (Cr, 0.0, H / 2.0, W, H / 2.0);
+      Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
+      Cairo.Fill (Cr);
 
-      Rectangle (Context, W / 3.0, H / 3.0, W / 3.0, H / 3.0);
-      Set_Source_Rgb (Context, 0.5, 0.5, 0.5);
-      Cairo.Fill (Context);
-
-      Destroy (Context);
-      return 0;
-   end Cursor_Expose_Event;
+      Rectangle (Cr, W / 3.0, H / 3.0, W / 3.0, H / 3.0);
+      Set_Source_Rgb (Cr, 0.5, 0.5, 0.5);
+      Cairo.Fill (Cr);
+      return False;
+   end On_Draw;
 
    ----------------
    -- Set_Cursor --
    ----------------
 
-   procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
+   procedure Set_Cursor (Spinner : not null access My_Spin_Button_Record'Class;
                          Widget  : Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
@@ -129,7 +126,7 @@ package body Create_Cursors is
    ------------------
 
    function Cursor_Event
-     (Darea   : access Gtk_Widget_Record'Class;
+     (Darea   : not null access Gtk_Widget_Record'Class;
       Event   : Gdk_Event;
       Spinner : My_Spin_Button) return Gint
    is
@@ -195,20 +192,14 @@ package body Create_Cursors is
       Gtk_New (Darea);
       Set_Size_Request (Darea, 80, 80);
       Add (Frame2, Darea);
-      Da_Cb.Object_Connect
-        (Darea, "expose_event",
-         Da_Cb.To_Marshaller (Cursor_Expose_Event'Access),
-         Darea);
+      Da_Cb.Connect (Darea, Signal_Draw, Da_Cb.To_Marshaller (On_Draw'Access));
 
       Unrealize (Darea); --  Required for the call to Set_Events
       Set_Events (Darea, Exposure_Mask or Button_Press_Mask);
 
       Spin3_Cb.Connect (Darea, "button_press_event",
-                        Spin3_Cb.To_Marshaller (Cursor_Event'Access),
-                        Spinner);
-      Spin2_Cb.Connect (Spinner, "changed",
-                        Spin2_Cb.To_Marshaller (Set_Cursor'Access),
-                        Darea);
+                        Spin3_Cb.To_Marshaller (Cursor_Event'Access), Spinner);
+      Spin2_Cb.Connect (Spinner, "changed", Set_Cursor'Access, Darea);
 
       Gtk_New (Spinner.Label, "XXX");
       Pack_Start (Vbox, Spinner.Label, False, False, 0);
