@@ -108,7 +108,7 @@ package body Create_Test_Timeout is
         (Button, "clicked",
          Label_Handler.To_Marshaller (Start_Timeout'Access),
          Slot_Object => Label);
-      Set_Flags (Button, Can_Default);
+      Button.Set_Can_Default (True);
       Pack_Start (Box, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
@@ -116,7 +116,6 @@ package body Create_Test_Timeout is
         (Button, "clicked",
          Widget_Handler.To_Marshaller (Stop_Timeout'Access),
          Slot_Object => Frame);
-      Set_Flags (Button, Can_Default);
       Pack_Start (Box, Button, False, False, 0);
 
       Widget_Handler.Connect

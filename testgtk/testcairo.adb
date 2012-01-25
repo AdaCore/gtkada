@@ -212,8 +212,8 @@ procedure Testcairo is
       Test := Test_Type'Val (Ind (0));
       Path_Free (Path);
 
-      W := Area.Get_Allocation_Width;
-      H := Area.Get_Allocation_Height;
+      W := Area.Get_Allocated_Width;
+      H := Area.Get_Allocated_Height;
 
       Invalidate_Rect (Get_Window (Area),
                        (0, 0, W, H), Invalidate_Children => False);

@@ -23,7 +23,7 @@
 
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
-with Gdk.Color;   use Gdk.Color;
+with Gdk.RGBA;    use Gdk.RGBA;
 with Gtk;                   use Gtk;
 with Gtkada.Handlers;       use Gtkada.Handlers;
 with Gtk.Box;               use Gtk.Box;
@@ -196,7 +196,7 @@ package body Create_Menu is
       Menu      : Gtk_Menu;
       Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
-      Red : constant Gdk_Color := Parse ("red");
+      Red : constant Gdk_RGBA := (Red => 1.0, Green | Blue | Alpha => 0.0);
    begin
       Gtk_New (Menu);
 
@@ -218,8 +218,8 @@ package body Create_Menu is
          Show (Menu_Item);
 
          if J = 1 then
-            for S in Gtk_State_Type'Range loop
-               Modify_Fg (Get_Child (Menu_Item), S, Red);
+            for S in Gtk_State_Flags'Range loop
+               Menu_Item.Get_Child.Override_Color (S, Red);
             end loop;
          end if;
 

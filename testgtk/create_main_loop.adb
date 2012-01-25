@@ -85,7 +85,7 @@ package body Create_Main_Loop is
         (Button, "clicked",
          Widget_Handler.To_Marshaller (Loop_Destroy'Access),
          Slot_Object => Box);
-      Set_Flags (Button, Can_Default);
+      Button.Set_Can_Default (True);
       Grab_Default (Button);
 
       Show_All (Frame);

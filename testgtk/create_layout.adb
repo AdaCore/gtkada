@@ -22,9 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Cairo;               use Cairo;
-with Gdk.Cairo;           use Gdk.Cairo;
 with Gdk.Event;           use Gdk.Event;
-with Gdk.Rectangle;       use Gdk.Rectangle;
 with Gdk.Window;          use Gdk.Window;
 with Glib;                use Glib;
 with Gtk.Adjustment;      use Gtk.Adjustment;
@@ -63,28 +61,30 @@ package body Create_Layout is
         & " The Layout has a size of 1600 by 128000.";
    end Help;
 
-   --------------------
-   -- Expose_Handler --
-   --------------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Handler (Layout : access Gtk_Layout_Record'Class;
-                            Event  : Gdk_Event_Expose)
-                           return Boolean
+   function On_Draw
+      (Layout : access Gtk_Layout_Record'Class;
+       Cr     : Cairo_Context) return Boolean
    is
-      Context : constant Cairo_Context := Create (Layout.Get_Bin_Window);
-      Area : constant Gdk_Rectangle := Get_Area (Event);
-      Imin, Imax : Guint;
-      Jmin, Jmax : Guint;
+      pragma Unreferenced (Layout);
+      Imin, Imax : Gdouble;
+      Jmin, Jmax : Gdouble;
+      Xmin, Xmax : Gint;
+      Ymin, Ymax : Gint;
    begin
-      Imin := Guint (Area.X) / 10;
-      Imax := (Guint (Area.X) + Guint (Area.Width) + 9) / 10;
-      Jmin := Guint (Area.Y) / 10;
-      Jmax := (Guint (Area.Y) + Guint (Area.Height) + 9) / 10;
+      Clip_Extents (Cr, Imin, Imax, Jmin, Jmax);
+      Xmin := Gint (Imin / 10.0);
+      Xmax := Gint ((Imax + 9.0) / 10.0);
+      Ymin := Gint (Jmin / 10.0);
+      Ymax := Gint ((Jmax + 9.0) / 10.0);
 
-      for I in Imin .. Imax - 1 loop
-         for J in Jmin .. Jmax - 1 loop
+      for I in Xmin .. Xmax - 1 loop
+         for J in Ymin .. Ymax - 1 loop
             if (I + J) mod 2 /= 0 then
-               Rectangle (Context,
+               Rectangle (Cr,
                           X      => Gdouble (10 * I),
                           Y      => Gdouble (10 * J),
                           Width  => Gdouble (1 + I mod 10),
@@ -93,12 +93,12 @@ package body Create_Layout is
          end loop;
       end loop;
 
-      Set_Source_Rgb (Context, Red => 0.0, Green => 0.0, Blue => 0.0);
-      Cairo.Fill (Context);
-      Cairo.Paint (Context);
+      Set_Source_Rgb (Cr, Red => 0.0, Green => 0.0, Blue => 0.0);
+      Cairo.Fill (Cr);
+      Cairo.Paint (Cr);
 
       return True;
-   end Expose_Handler;
+   end On_Draw;
 
    ---------
    -- Run --
@@ -123,8 +123,8 @@ package body Create_Layout is
       Set_Step_Increment (Get_Hadjustment (Layout), 10.0);
       Set_Step_Increment (Get_Vadjustment (Layout), 10.0);
 
-      Event_Cb.Connect (Layout, Signal_Expose_Event,
-                        Event_Cb.To_Marshaller (Expose_Handler'Access));
+      Event_Cb.Connect (Layout, Signal_Draw,
+                        Event_Cb.To_Marshaller (On_Draw'Access));
       Set_Size (Layout, 1600, 128000);
 
       for I in 0 .. Gint'(15) loop

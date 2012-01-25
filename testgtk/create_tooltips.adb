@@ -82,7 +82,7 @@ package body Create_Tooltips is
          Gtk_Window (Widget.Get_Tooltip_Window);
       Color  : constant Gdk_RGBA := (0.0, 0.0, 1.0, 0.5);
    begin
-      Window.Override_Background_Color (State_Normal, Color);
+      Window.Override_Background_Color (Gtk_State_Flag_Normal, Color);
       return True;
    end Query_Tooltip_Custom_Cb;
 

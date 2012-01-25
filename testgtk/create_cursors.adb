@@ -77,8 +77,8 @@ package body Create_Cursors is
                                 return Gint
    is
       Context : constant Cairo_Context := Create (Darea.Get_Window);
-      W       : constant Gdouble  := Gdouble (Get_Allocation_Width (Darea));
-      H       : constant Gdouble  := Gdouble (Get_Allocation_Height (Darea));
+      W       : constant Gdouble  := Gdouble (Get_Allocated_Width (Darea));
+      H       : constant Gdouble  := Gdouble (Get_Allocated_Height (Darea));
 
    begin
       Rectangle (Context, 0.0, 0.0, W, H / 2.0);

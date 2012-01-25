@@ -160,7 +160,8 @@ package body Main_Windows is
    type String_Access is access String;
    function NS (S : String) return String_Access;
 
-   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class);
+   procedure Tree_Select_Child
+      (View : access Gtk_Widget_Record'Class);
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
@@ -174,7 +175,8 @@ package body Main_Windows is
    procedure Destroy_Help (Button : access Gtk_Widget_Record'Class);
    function Opengl_Help return String;
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class);
+   procedure Switch_Page
+      (Notebook : access Gtk_Notebook_Record'Class);
    --  Called when a new notebook page is selected
 
    procedure Create_Demo_Frame
@@ -501,7 +503,7 @@ package body Main_Windows is
            (Close, "clicked",
             Widget_Handler.To_Marshaller (Destroy_Help'Access),
             Slot_Object => Help_Dialog);
-         Set_Flags (Close, Can_Default);
+         Close.Set_Can_Default (True);
          Grab_Default (Close);
 
          Blue_Tag := Create_Tag (Help_Text, "blue");
@@ -635,7 +637,9 @@ package body Main_Windows is
    -- Tree_Select_Child --
    -----------------------
 
-   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class) is
+   procedure Tree_Select_Child
+      (View : access Gtk_Widget_Record'Class)
+   is
       Model     : Gtk_Tree_Model;
       Iter      : Gtk_Tree_Iter;
       Demo_Num  : Integer;
@@ -695,7 +699,8 @@ package body Main_Windows is
    -- Switch_Page --
    -----------------
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class) is
+   procedure Switch_Page
+      (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       if Get_Current_Page (Notebook) = 3 then
          Set_Help (Opengl_Help'Access);

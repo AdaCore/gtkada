@@ -189,8 +189,8 @@ package body Create_MDI is
 
       --  Take a snapshot of the widget
 
-      Width  := Get_Allocation_Width (Child);
-      Height := Get_Allocation_Height (Child);
+      Width  := Get_Allocated_Width (Child);
+      Height := Get_Allocated_Height (Child);
       Pdf := Cairo.PDF.Create (
          "snapshot.pdf", Gdouble (Width), Gdouble (Height));
       Context := Cairo.Create (Pdf);

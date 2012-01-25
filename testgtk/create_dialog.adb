@@ -126,7 +126,7 @@ package body Create_Dialog is
          Set_Size_Request (Dialog, 200, 110);
 
          Gtk_New (Button, "OK");
-         Set_Flags (Button, Can_Default);
+         Button.Set_Can_Default (True);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Grab_Default (Button);
          Show (Button);

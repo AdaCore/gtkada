@@ -85,7 +85,7 @@ package body Create_Splittable is
 
    procedure On_Toggle (Button : access Gtk_Widget_Record'Class) is
    begin
-      if Visible_Is_Set (Button) then
+      if Button.Get_Visible then
          Hide (Button);
       else
          Show (Button);
@@ -130,8 +130,8 @@ package body Create_Splittable is
    procedure On_Fixed (Button : access Gtk_Widget_Record'Class) is
    begin
       Set_Size (Pane, Button,
-                Get_Allocation_Width (Button),
-                Get_Allocation_Height (Button),
+                Get_Allocated_Width (Button),
+                Get_Allocated_Height (Button),
                 Fixed_Size => True);
    end On_Fixed;
 

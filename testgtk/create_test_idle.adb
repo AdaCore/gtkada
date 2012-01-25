@@ -182,7 +182,7 @@ package body Create_Test_Idle is
         (Button, "clicked",
          Label_Handler.To_Marshaller (Start_Idle'Access),
          Slot_Object => Label);
-      Set_Flags (Button, Can_Default);
+      Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
@@ -190,7 +190,7 @@ package body Create_Test_Idle is
         (Button, "clicked",
          Widget_Handler.To_Marshaller (Destroy_Idle'Access),
          Slot_Object => Vbox);
-      Set_Flags (Button, Can_Default);
+      Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Show_All (Frame);

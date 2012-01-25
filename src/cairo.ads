@@ -1597,10 +1597,10 @@ package Cairo is
 
    procedure Clip_Extents
      (Cr : Cairo_Context;
-      X1 : access Gdouble;
-      Y1 : access Gdouble;
-      X2 : access Gdouble;
-      Y2 : access Gdouble);
+      X1 : out Gdouble;
+      Y1 : out Gdouble;
+      X2 : out Gdouble;
+      Y2 : out Gdouble);
    --  Cr: a cairo context
    --  X1: left of the resulting extents
    --  Y1: top of the resulting extents

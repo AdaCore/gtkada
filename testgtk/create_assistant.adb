@@ -273,7 +273,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Page, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -378,7 +378,7 @@ package body Create_Assistant is
 
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -487,7 +487,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Label, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -585,7 +585,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Label, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -637,7 +637,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Label, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);

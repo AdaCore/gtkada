@@ -119,7 +119,7 @@ package body Libart_Demo is
       Set_Size_Request
         (Draw,
          Get_Width (Draw.Pix),
-         Get_Height (Draw.Pix) + Gint (Get_Allocation_Height (Label)));
+         Get_Height (Draw.Pix) + Get_Allocated_Height (Label));
 
       Gtk_New (Draw.Area);
       Pack_Start (Draw, Draw.Area);

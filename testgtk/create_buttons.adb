@@ -53,7 +53,7 @@ package body Create_Buttons is
 
    procedure Button_Window (Widget : access Gtk_Button_Record'Class) is
    begin
-      if Visible_Is_Set (Widget) then
+      if Widget.Get_Visible then
          Hide (Widget);
       else
          Show (Widget);
