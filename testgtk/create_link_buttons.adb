@@ -33,16 +33,20 @@ with Gtk.Widget;      use Gtk.Widget;
 package body Create_Link_Buttons is
 
    package Link_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
+   package Link_Button_Return_Cb is new Handlers.Return_Callback
+     (Gtk_Link_Button_Record, Boolean);
 
    ----------------------------
    -- On_Link_Button_Clicked --
    ----------------------------
 
-   procedure On_Link_Button_Clicked
-     (Button : not null access Gtk_Link_Button_Record'Class)
+   function On_Link_Button_Clicked
+     (Button : not null access Gtk_Link_Button_Record'Class) return Boolean
    is
    begin
       Put_Line ("Link_Button clicked: " & Button.Get_Uri);
+      Set_Visited (Button, True);
+      return True;
    end On_Link_Button_Clicked;
 
    -----------------------------
@@ -87,7 +91,7 @@ package body Create_Link_Buttons is
         (Widget => Link_Button1,
          URI    => "http://www.example.com/",
          Label  => "Click me.");
-      Link_Button_Cb.Connect
+      Link_Button_Return_Cb.Connect
          (Link_Button1, Signal_Activate_Link, On_Link_Button_Clicked'Access);
       Pack_Start
         (Box1, Link_Button1, Expand => False, Fill => False, Padding => 0);
