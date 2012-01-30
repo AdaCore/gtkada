@@ -5415,8 +5415,8 @@ package body Gtkada.MDI is
          Notebook_Node : Node_Ptr;
          Width, Height : Gint;
 
-         Width_For_Children  : Gint := Parent_Width;
-         Height_For_Children : Gint := Parent_Height;
+         Width_For_Children  : Gint;
+         Height_For_Children : Gint;
 
       begin
          Compute_Size_From_Attributes
