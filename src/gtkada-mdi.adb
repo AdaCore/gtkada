@@ -79,7 +79,6 @@ with Gtk.Accel_Group;         use Gtk.Accel_Group;
 with Gtk.Accel_Label;         use Gtk.Accel_Label;
 with Gtk.Arguments;           use Gtk.Arguments;
 with Gtk.Box;                 use Gtk.Box;
-with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Container;           use Gtk.Container;
 with Gtk.Dialog;              use Gtk.Dialog;
