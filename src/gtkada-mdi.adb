@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2011, AdaCore                  --
+--                 Copyright (C) 2001-2012, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -4721,14 +4721,14 @@ package body Gtkada.MDI is
          Dialog : Gtk_Dialog;
          Label  : Gtk_Label;
          Ent    : Gtk_Entry;
-         Button : Gtk_Widget;
-         pragma Warnings (Off, Button);
+         Ignore : Gtk_Widget;
+         pragma Unreferenced (Ignore);
       begin
          Gtk_New (Dialog, Title => "Enter perspective name",
                   Parent => Gtk_Window (Get_Toplevel (Persp.MDI)),
                   Flags  => Modal and Destroy_With_Parent);
-         Button := Add_Button (Dialog, Stock_Ok, Gtk_Response_OK);
-         Button := Add_Button (Dialog, Stock_Cancel, Gtk_Response_Cancel);
+         Ignore := Add_Button (Dialog, Stock_Ok, Gtk_Response_OK);
+         Ignore := Add_Button (Dialog, Stock_Cancel, Gtk_Response_Cancel);
          Set_Default_Response (Dialog, Gtk_Response_OK);
 
          Gtk_New (Label, "Enter name of new perspective:");
