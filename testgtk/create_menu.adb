@@ -198,7 +198,10 @@ package body Create_Menu is
       Menu      : Gtk_Menu;
       Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
-      Red : constant Gdk_RGBA := (Red => 1.0, Green | Blue | Alpha => 0.0);
+      Red : constant Gdk_RGBA := (Red   => 1.0,
+                                  Green => 0.0,
+                                  Blue  => 0.0,
+                                  Alpha => 1.0);
    begin
       Gtk_New (Menu);
 
@@ -220,9 +223,7 @@ package body Create_Menu is
          Show (Menu_Item);
 
          if J = 1 then
-            for S in Gtk_State_Flags'Range loop
-               Menu_Item.Get_Child.Override_Color (S, Red);
-            end loop;
+            Menu_Item.Get_Child.Override_Color (0, Red);
          end if;
 
          if J = 3 then
