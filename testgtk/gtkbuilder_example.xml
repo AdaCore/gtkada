@@ -172,6 +172,23 @@
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkHBox" id="placeholder_hbox">
+            <property name="visible">True</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
