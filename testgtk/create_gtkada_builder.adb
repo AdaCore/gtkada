@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                 Copyright (C) 2011, AdaCore                       --
+--                 Copyright (C) 2011-2012, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,6 +70,41 @@ package body Create_Gtkada_Builder is
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
+   procedure Add_Custom_Widget (Box : Gtk_Hbox);
+   --  Add custom widgets from the file "gtkbuilder_custom_widget.xml"
+   --  to the given hbox
+
+   -----------------------
+   -- Add_Custom_Widget --
+   -----------------------
+
+   procedure Add_Custom_Widget (Box : Gtk_Hbox) is
+      Builder : Gtkada_Builder;
+      Error   : GError;
+   begin
+      --  Create a builder
+      Gtk_New (Builder);
+
+      --  Load the custom widget from the XML description
+      Error := Add_From_File (Builder, "gtkbuilder_custom_widget.xml");
+      if Error /= null then
+         Put_Line ("Error [Create_Builder.Add_Custom_Widget]: "
+                   & Get_Message (Error));
+         Error_Free (Error);
+         return;
+      end if;
+
+      --  Now get the widget...
+      declare
+         Custom_Widget : constant Gtk.Widget.Gtk_Widget :=
+           Get_Widget (Builder, "custom");
+      begin
+         --  ... And add it to our Box
+         Pack_Start (Box, Custom_Widget);
+         Gtk.Widget.Show_All (Custom_Widget);
+      end;
+   end Add_Custom_Widget;
+
    -------------------------
    -- On_Print_To_Console --
    -------------------------
@@ -130,6 +165,11 @@ package body Create_Gtkada_Builder is
          Handler      => On_Print_To_Console'Access);
 
       Do_Connect (Builder);
+
+      --  Add a custom widget 3 times to the placeholder hbox
+      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
+      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
+      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
 
       --  Find our main window, then display it and all of its children.
       Gtk.Widget.Show_All (Get_Widget (Builder, "window1"));
