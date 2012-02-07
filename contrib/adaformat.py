@@ -203,11 +203,25 @@ class CType(object):
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos (Param)) is invalid
                 tmp = "Tmp_%s" % name
+                tmpvars = [Local_Var(name=tmp, type=self.cparam)]
+
+                if "%(tmp)s" in ret:
+                    tmp2 = "Tmp2_%s" % name
+                    tmpvars += [Local_Var(name=tmp2, type=self.cparam)]
+                    postcall = "%s; %s := %s;" % (
+                        ret % {"var": tmp, "tmp": tmp2},
+                        name,
+                        tmp2)
+                else:
+                    postcall = "%s := %s;" % (
+                        name,
+                        ret % {"var": tmp})
+
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall="",
-                    postcall='%s := %s;' % (name, ret % {"var":tmp}),
-                    tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+                    postcall=postcall,
+                    tmpvars=tmpvars)
 
             elif "%(tmp)" in self.convert_to_c():
                 # The conversion sets the temporary variable itself

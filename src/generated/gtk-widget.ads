@@ -418,7 +418,7 @@ package Gtk.Widget is
        Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
    --  This function is used by custom widget implementations; if you're
    --  writing an app, you'd use Gtk.Widget.Grab_Focus to move the focus to a
-   --  particular widget, and gtk_container_set_focus_chain to change the focus
+   --  particular widget, and Gtk.Container.Set_Focus_Chain to change the focus
    --  tab order. So you may want to investigate those functions instead.
    --  Gtk.Widget.Child_Focus is called by containers as the user moves around
    --  the window using keyboard shortcuts. Direction indicates what kind of
@@ -441,7 +441,7 @@ package Gtk.Widget is
    --  linkend="child-properties">child property</link> Child_Property on
    --  Widget.
    --  This is the analogue of g_object_notify for child properties.
-   --  Also see gtk_container_child_notify.
+   --  Also see Gtk.Container.Child_Notify.
    --  "child_property": the name of a child property installed on the class
    --  of Widget<!-- -->'s parent
 
@@ -2150,7 +2150,7 @@ package Gtk.Widget is
    --  Updates the style context of Widget and all descendents by updating its
    --  widget path. Gtk.Container.Gtk_Container<!-- -->s may want to use this
    --  on a child when reordering it in a way that a different style might
-   --  apply to it. See also gtk_container_get_path_for_child.
+   --  apply to it. See also Gtk.Container.Get_Path_For_Child.
    --  Since: gtk+ 3.0
 
    function Send_Expose
@@ -2159,7 +2159,7 @@ package Gtk.Widget is
    --  Very rarely-used function. This function is used to emit an expose
    --  event on a widget. This function is not normally used directly. The only
    --  time it is used is when propagating an expose event to a child NO_WINDOW
-   --  widget, and that is normally done using gtk_container_propagate_draw.
+   --  widget, and that is normally done using Gtk.Container.Propagate_Draw.
    --  If you want to force an area of a window to be redrawn, use
    --  gdk_window_invalidate_rect or gdk_window_invalidate_region. To cause the
    --  redraw to be done immediately, follow that call with a call to
@@ -2422,7 +2422,7 @@ package Gtk.Widget is
    --  A composite child is a child that's an implementation detail of the
    --  container it's inside and should not be visible to people using the
    --  container. Composite children aren't treated differently by GTK (but see
-   --  gtk_container_foreach vs. gtk_container_forall), but e.g. GUI builders
+   --  Gtk.Container.Foreach vs. Gtk.Container.Forall), but e.g. GUI builders
    --  might want to treat them in a different way.
    --  Here is a simple example: |[ gtk_widget_push_composite_child ();
    --  scrolled_window->hscrollbar = gtk_scrollbar_new

@@ -234,6 +234,11 @@ Gtk.Container
 Procedure Propagate_Expose has been removed and will be replaced with
 Propagate_Draw.
 
+Class_Find_Child_Property, Class_list_Child_Properties and
+Class_Install_Child_Property are no longer bound.
+
+Children was removed (use Get_Children instead).
+
 Gtk.Color_Button
 ================
 

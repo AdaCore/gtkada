@@ -46,7 +46,7 @@ pragma Ada_05;
 --  Because GtkBox is a Gtk.Container.Gtk_Container, you may also use
 --  Gtk.Container.Add to insert widgets into the box, and they will be packed
 --  with the default values for Gtk.Box.Gtk_Box:expand and
---  Gtk.Box.Gtk_Box:fill. Use gtk_container_remove to remove widgets from the
+--  Gtk.Box.Gtk_Box:fill. Use Gtk.Container.Remove to remove widgets from the
 --  GtkBox.
 --
 --  Use Gtk.Box.Set_Homogeneous to specify whether or not all children of the

@@ -2595,16 +2595,32 @@ While looking up a recently used file is as simple as using:
      </extra>
    </package>
 
+   <package id="Gtk.Container">
+     <parameter name="self" ada="Container"/>
+     <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
+     <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->
+     <method id="gtk_container_child_get_valist" bind="False"/> <!-- varargs -->
+     <method id="gtk_container_child_set" bind="False"/> <!-- varargs -->
+     <method id="gtk_container_child_set_valist" bind="False"/> <!-- varargs -->
+     <method id="gtk_container_get_children" return="WidgetList"/>
+     <method id="gtk_container_set_focus_chain">
+       <parameter name="focusable_widgets" ctype="WidgetList"/>
+     </method>
+     <method id="gtk_container_child_set_property">
+       <parameter name="value" direction="in" ctype="GValue"/>
+     </method>
+
+     <!-- ??? Binding needs testing -->
+     <method id="gtk_container_get_focus_chain" return_as_param="Success" bind="false">
+       <parameter name="focusable_widgets" ctype="WidgetList*" direction="out"/> 
+     </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
    -->
 
-   <package id="Gtk.Container">
-     <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
-     <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->
-     <method id="gtk_container_child_set" bind="False"/> <!-- varargs -->
-   </package>
    <package id="Gtk.Tree_Model">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
    </package>

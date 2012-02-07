@@ -1051,23 +1051,23 @@ package body Gtkada.Properties is
             --  Show the child properties owned by the parent and that apply to
             --  the current object.
 
-            if Object.all in Gtk_Widget_Record'Class
-              and then Get_Parent (Gtk_Widget (Object)) /= null
-            then
-               T := Get_Type (Get_Parent (Gtk_Widget (Object)));
-               while T /= GType_Invalid loop
-                  if Is_A (T, Gtk.Container.Get_Type) then
-                     Show_Properties
-                       (Editor        => Editor,
-                        Table         => Editor.Child_Table,
-                        Prop_Type     => Property_Child,
-                        T             => T,
-                        Properties    => Class_List_Child_Properties
-                          (GObject_Class (Class_Peek (T))));
-                  end if;
-                  T := Parent (T);
-               end loop;
-            end if;
+            --  if Object.all in Gtk_Widget_Record'Class
+            --    and then Get_Parent (Gtk_Widget (Object)) /= null
+            --  then
+            --     T := Get_Type (Get_Parent (Gtk_Widget (Object)));
+            --     while T /= GType_Invalid loop
+            --        if Is_A (T, Gtk.Container.Get_Type) then
+            --           Show_Properties
+            --             (Editor        => Editor,
+            --              Table         => Editor.Child_Table,
+            --              Prop_Type     => Property_Child,
+            --              T             => T,
+            --              Properties    => Class_List_Child_Properties
+            --                (GObject_Class (Class_Peek (T))));
+            --        end if;
+            --        T := Parent (T);
+            --     end loop;
+            --  end if;
          end if;
 
          Show_All (Editor);
