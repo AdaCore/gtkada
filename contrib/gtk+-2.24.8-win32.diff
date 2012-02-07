@@ -286,9 +286,9 @@
  
    gdk_win32_handle_table_insert (&GDK_PIXMAP_HBITMAP (pixmap), pixmap);
  
---- gtk/gtkimcontextsimple.c.orig	2012-01-06 16:45:26.000000000 +0100
-+++ gtk/gtkimcontextsimple.c	2012-01-06 16:46:25.000000000 +0100
-@@ -877,7 +877,7 @@ gtk_im_context_simple_filter_keypress (G
+--- gtk/gtkimcontextsimple.c.orig	2012-02-07 11:41:01.000000000 +0100
++++ gtk/gtkimcontextsimple.c	2012-02-07 11:43:28.000000000 +0100
+@@ -877,7 +877,11 @@ gtk_im_context_simple_filter_keypress (G
  	    event->keyval == GDK_ISO_Enter ||
  	    event->keyval == GDK_KP_Enter)))
  	{
