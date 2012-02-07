@@ -293,7 +293,11 @@
  	    event->keyval == GDK_KP_Enter)))
  	{
 -	  return FALSE;
-+	  return no_sequence_matches (context_simple, n_compose, event);
++	  if ((event->state & GDK_MOD1_MASK) &&
++	      (event->state & GDK_CONTROL_MASK))
++	    return no_sequence_matches (context_simple, n_compose, event);
++	  else
++	    return FALSE;
  	}
      }
    
