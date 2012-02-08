@@ -95,7 +95,6 @@ package body Create_Layout is
 
       Set_Source_Rgb (Cr, Red => 0.0, Green => 0.0, Blue => 0.0);
       Cairo.Fill (Cr);
-      Cairo.Paint (Cr);
 
       return True;
    end On_Draw;
