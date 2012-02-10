@@ -28,6 +28,9 @@ with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Label;       use Gtk.Label;
 with Gtk.Spinner;     use Gtk.Spinner;
 with Gtk.Table;       use Gtk.Table;
+with Gtk.Widget;      use Gtk.Widget;
+
+with Common;          use Common;
 
 package body Create_Spinners is
 
@@ -36,6 +39,12 @@ package body Create_Spinners is
 
    --  Function passed to Time_Cb.Timeout_Add, to be invoked periodically.
    function Spinner_Timeout (Spinner : Gtk_Spinner) return Boolean;
+
+   --  A handle referencing our timeout
+   Timer : G_Source_Id := No_Source_Id;
+
+   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class);
+   --  Callback invoked when our spinner widget is destroyed.
 
    ----------
    -- Help --
@@ -58,8 +67,6 @@ package body Create_Spinners is
       Active_Spinner, Transition_Spinner, Inactive_Spinner : Gtk_Spinner;
       Active_Label,   Transition_Label,   Inactive_Label   : Gtk_Label;
       Table1 : Gtk_Table;
-      Timer  : G_Source_Id;
-      pragma Unreferenced (Timer);
 
    begin
       Set_Label (Frame, "Spinners");
@@ -101,6 +108,13 @@ package body Create_Spinners is
       Timer := Time_Cb.Timeout_Add
         (1_000, Spinner_Timeout'Access, Transition_Spinner);
 
+      --  Make sure to disengage the timer if the spinner is destroyed,
+      --  otherwise when Spinner_Timeout is called we'll raise an
+      --  exception.
+      Widget_Handler.Connect
+        (Transition_Spinner, "destroy",
+         Widget_Handler.To_Marshaller (Stop_Timeout'Access));
+
       Show_All (Frame);
    end Run;
 
@@ -117,5 +131,18 @@ package body Create_Spinners is
 
       return True;
    end Spinner_Timeout;
+
+   ------------------
+   -- Stop_Timeout --
+   ------------------
+
+   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
+   begin
+      if Timer /= No_Source_Id then
+         Remove (Timer);
+         Timer := No_Source_Id;
+      end if;
+   end Stop_Timeout;
 
 end Create_Spinners;
