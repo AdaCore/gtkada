@@ -1,6 +1,5 @@
 with "testgtk/testgtk";
 with "src/gtkada_src";
-with "src/gnome/gnome";
 with "src/opengl/opengl";
 with "src/tools/tools";
 with "shared";
