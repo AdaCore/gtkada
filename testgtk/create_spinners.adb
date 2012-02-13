@@ -43,7 +43,7 @@ package body Create_Spinners is
    --  A handle referencing our timeout
    Timer : G_Source_Id := No_Source_Id;
 
-   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class);
+   procedure Stop_Timeout (Widget : not null access Gtk_Widget_Record'Class);
    --  Callback invoked when our spinner widget is destroyed.
 
    ----------
@@ -136,7 +136,7 @@ package body Create_Spinners is
    -- Stop_Timeout --
    ------------------
 
-   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class) is
+   procedure Stop_Timeout (Widget : not null access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
    begin
       if Timer /= No_Source_Id then
