@@ -333,8 +333,8 @@
  
    return TRUE;
  }
---- gdkwindow-win32.c.orig	2012-02-13 19:46:48.000000000 +0100
-+++ gdkwindow-win32.c	2012-02-13 19:47:42.000000000 +0100
+--- gdk/win32/gdkwindow-win32.c.orig	2012-02-13 19:46:48.000000000 +0100
++++ gdk/win32/gdkwindow-win32.c	2012-02-13 19:47:42.000000000 +0100
 @@ -655,7 +655,7 @@ _gdk_window_impl_new (GdkWindow     *win
        /* A temp window is not necessarily a top level window */
        dwStyle = (_gdk_root == real_parent ? WS_POPUP : WS_CHILDWINDOW);
