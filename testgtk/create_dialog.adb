@@ -179,28 +179,32 @@ package body Create_Dialog is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;
       RChooser : Gtk_Recent_Chooser;
-      Empty : constant GNAT.Strings.String_List (1 .. 0) := (others => null);
+      Empty    : constant GNAT.Strings.String_List (1 .. 0) :=
+                  (others => null);
+
+      --  Content to add to the recent list.
+      URL      : constant String := "http://www.adacore.com/";
    begin
       --  Before we do anything, in case the system's recent list is empty,
       --  let's make sure we have something to show.
-      if Has_Item (RManager, "file://README") then
-         Put_Line ("No need to add README to recent list.");
+      if Has_Item (RManager, URL) then
+         Put_Line ("No need to add " & URL & " to recent list.");
       else
          if
            Add_Full
              (RManager,
-              Uri          => "file://README",
-              Display_Name => "./README",
-              Description  => "our README file",
+              Uri          => URL,
+              Display_Name => URL,
+              Description  => "AdaCore's web site",
               Mime_Type    => "text/plain",
               App_Name     => "testgtk",
               App_Exec     => "testgtk",
               Groups       => Empty,
               Is_Private   => True)
          then
-            Put_Line ("Successfuly added README to recent list.");
+            Put_Line ("Successfuly added " & URL & " to recent list.");
          else
-            Put_Line ("Problem adding README to recent list.");
+            Put_Line ("Problem adding " & URL & " to recent list.");
          end if;
       end if;
 
