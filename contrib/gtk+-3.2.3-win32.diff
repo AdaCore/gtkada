@@ -1,0 +1,26 @@
+2011-11-17	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/win32/gdkdnd-win32.c (resolve_link): Deactivate resolving of
+	dnd links for now, since CLSID_ShellLink and IID_IShellLinkW are
+	not found at link time for an unknown reason.
+	To be investigated.
+
+--- gdk/win32/gdkdnd-win32.c.orig	2011-11-17 14:59:18.578125000 +0100
++++ gdk/win32/gdkdnd-win32.c	2011-11-17 15:42:47.875000000 +0100
+@@ -1342,6 +1342,7 @@ resolve_link (HWND     hWnd,
+    * assumed that CoInitialize has been called.
+    */
+ 
++#if 0
+   hr = CoCreateInstance (&CLSID_ShellLink,
+ 			 NULL,
+ 			 CLSCTX_INPROC_SERVER,
+@@ -1388,6 +1389,8 @@ resolve_link (HWND     hWnd,
+     pslW->lpVtbl->Release (pslW);
+ 
+   return SUCCEEDED (hr);
++#endif
++  return FALSE;
+ }
+ 
+ #if 0
