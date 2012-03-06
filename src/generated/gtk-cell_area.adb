@@ -541,6 +541,9 @@ package body Gtk.Cell_Area is
       function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Alloc_Callback);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Cell_Alloc_Callback, System.Address);
+
       function Internal_Cb
          (Renderer        : System.Address;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
@@ -571,7 +574,7 @@ package body Gtk.Cell_Area is
           Callback_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
       end Foreach_Alloc;
 
       -----------------
@@ -600,6 +603,9 @@ package body Gtk.Cell_Area is
       function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Cell_Callback);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Cell_Callback, System.Address);
+
       function Internal_Cb
          (Renderer : System.Address;
           Data     : System.Address) return Integer;
@@ -620,7 +626,7 @@ package body Gtk.Cell_Area is
           Callback_Data : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
       end Foreach;
 
       -----------------
@@ -1044,6 +1050,9 @@ package body Gtk.Cell_Area is
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Cell_Data_Func, System.Address);
+
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
@@ -1089,7 +1098,7 @@ package body Gtk.Cell_Area is
           Func_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
       end Set_Cell_Data_Func;
 
    end Set_Cell_Data_Func_User_Data;

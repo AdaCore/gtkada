@@ -868,6 +868,10 @@ class GIRClass(object):
                 ("function To_%s is new Ada.Unchecked_Conversion\n"
                  + "   (System.Address, %s);\n") % (funcname, funcname),
                 specs=False)
+            sect2.add_code(
+                ("function To_Address is new Ada.Unchecked_Conversion\n"
+                 + "   (%s, System.Address);\n") % (funcname,),
+                specs=False)
 
             cb_profile2 = copy.deepcopy(cb_profile)
             cb_profile2.replace_param(user_data2, "User_Data_Type")
@@ -894,7 +898,7 @@ class GIRClass(object):
 
             values = {destroy: "Users.Free_Data'Address",
                       cb.name.lower(): "%s'Address" % internal_cb.name,
-                      user_data.lower(): "Users.Build (%s'Address, %s)" % (
+                      user_data.lower(): "Users.Build (To_Address (%s), %s)" % (
                     cb.name, user_data)}
 
             full_profile = copy.deepcopy(profile)

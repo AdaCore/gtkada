@@ -213,6 +213,9 @@ package body Gtk.Cell_Layout is
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Cell_Data_Func, System.Address);
+
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
@@ -258,7 +261,7 @@ package body Gtk.Cell_Layout is
           Func_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Cell_Layout, Get_Object (Cell), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Cell_Layout, Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
       end Set_Cell_Data_Func;
 
    end Set_Cell_Data_Func_User_Data;

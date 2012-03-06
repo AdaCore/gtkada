@@ -395,6 +395,9 @@ package body Gtk.Assistant is
       function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Assistant_Page_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Assistant_Page_Func, System.Address);
+
       function Internal_Cb
          (Current_Page : Gint;
           Data         : System.Address) return Gint;
@@ -429,7 +432,7 @@ package body Gtk.Assistant is
           Data      : User_Data_Type)
       is
       begin
-         C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Cb'Address, Users.Build (Page_Func'Address, Data), Users.Free_Data'Address);
+         C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Cb'Address, Users.Build (To_Address (Page_Func), Data), Users.Free_Data'Address);
       end Set_Forward_Page_Func;
 
    end Set_Forward_Page_Func_User_Data;

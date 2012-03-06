@@ -209,6 +209,9 @@ package body Gtk.Container is
       function To_Gtk_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Callback);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Callback, System.Address);
+
       procedure Internal_Cb (Widget : System.Address; Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
@@ -226,7 +229,7 @@ package body Gtk.Container is
           Callback_Data : User_Data_Type)
       is
       begin
-         C_Gtk_Container_Forall (Get_Object (Container), Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Container_Forall (Get_Object (Container), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
       end Forall;
 
       -----------------
@@ -262,6 +265,9 @@ package body Gtk.Container is
       function To_Gtk_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Callback);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Callback, System.Address);
+
       procedure Internal_Cb (Widget : System.Address; Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
@@ -279,7 +285,7 @@ package body Gtk.Container is
           Callback_Data : User_Data_Type)
       is
       begin
-         C_Gtk_Container_Foreach (Get_Object (Container), Internal_Cb'Address, Users.Build (Callback'Address, Callback_Data));
+         C_Gtk_Container_Foreach (Get_Object (Container), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
       end Foreach;
 
       -----------------

@@ -266,6 +266,9 @@ package body Gtk.Calendar is
       function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Calendar_Detail_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Calendar_Detail_Func, System.Address);
+
       function Internal_Cb
          (Calendar  : System.Address;
           Year      : Guint;
@@ -312,7 +315,7 @@ package body Gtk.Calendar is
           Data     : User_Data_Type)
       is
       begin
-         C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address);
+         C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
       end Set_Detail_Func;
 
    end Set_Detail_Func_User_Data;

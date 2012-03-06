@@ -165,6 +165,9 @@ package body Gtk.Recent_Filter is
       function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Recent_Filter_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Recent_Filter_Func, System.Address);
+
       function Internal_Cb
          (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
           User_Data   : System.Address) return Integer;
@@ -188,7 +191,7 @@ package body Gtk.Recent_Filter is
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (Func'Address, Data), Data_Destroy);
+         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Data_Destroy);
       end Add_Custom;
 
       -----------------

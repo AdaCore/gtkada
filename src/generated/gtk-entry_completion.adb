@@ -425,6 +425,9 @@ package body Gtk.Entry_Completion is
       function To_Cell_Data_Func is new Ada.Unchecked_Conversion
         (System.Address, Cell_Data_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Cell_Data_Func, System.Address);
+
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
@@ -470,7 +473,7 @@ package body Gtk.Entry_Completion is
           Func_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
       end Set_Cell_Data_Func;
 
    end Set_Cell_Data_Func_User_Data;
@@ -527,6 +530,9 @@ package body Gtk.Entry_Completion is
       function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Entry_Completion_Match_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Entry_Completion_Match_Func, System.Address);
+
       function Internal_Cb
          (Completion : System.Address;
           Key        : Interfaces.C.Strings.chars_ptr;
@@ -571,7 +577,7 @@ package body Gtk.Entry_Completion is
           Func_Data  : User_Data_Type)
       is
       begin
-         C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Cb'Address, Users.Build (Func'Address, Func_Data), Users.Free_Data'Address);
+         C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
       end Set_Match_Func;
 
    end Set_Match_Func_User_Data;

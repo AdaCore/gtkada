@@ -370,6 +370,9 @@ package body Gtk.Menu is
       function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Menu_Position_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Menu_Position_Func, System.Address);
+
       procedure Internal_Cb
          (Menu      : System.Address;
           X         : out Gint;
@@ -434,7 +437,7 @@ package body Gtk.Menu is
           Activate_Time     : guint32)
       is
       begin
-         C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (Func'Address, Data), Users.Free_Data'Address, Button, Activate_Time);
+         C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address, Button, Activate_Time);
       end Popup_For_Device;
 
    end Popup_For_Device_User_Data;
@@ -446,6 +449,9 @@ package body Gtk.Menu is
 
       function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Menu_Position_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Menu_Position_Func, System.Address);
 
       procedure Internal_Cb
          (Menu      : System.Address;
@@ -510,7 +516,7 @@ package body Gtk.Menu is
           Activate_Time     : guint32 := 0)
       is
       begin
-         C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (Func'Address, Data), Button, Activate_Time);
+         C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Button, Activate_Time);
       end Popup;
 
    end Popup_User_Data;

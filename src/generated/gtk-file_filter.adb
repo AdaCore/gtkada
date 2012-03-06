@@ -122,6 +122,9 @@ package body Gtk.File_Filter is
       function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
         (System.Address, Gtk_File_Filter_Func);
 
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_File_Filter_Func, System.Address);
+
       function Internal_Cb
          (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
           Data        : System.Address) return Integer;
@@ -144,7 +147,7 @@ package body Gtk.File_Filter is
           Notify : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, Users.Build (Func'Address, Data), Notify);
+         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Notify);
       end Add_Custom;
 
       -----------------
