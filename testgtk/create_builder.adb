@@ -38,6 +38,7 @@ with Gtk.GEntry;           use Gtk.GEntry;
 with Gtk.Frame;            use Gtk.Frame;
 with Gtk.Handlers;
 with Gtk.Text_Buffer;      use Gtk.Text_Buffer;
+with Gtk.Text_Iter;        use Gtk.Text_Iter;
 with Gtk.Text_View;        use Gtk.Text_View;
 with Gtk.Widget;
 
@@ -73,7 +74,8 @@ package body Create_Builder is
      (On_Window1_Delete_Event,
       On_Btn_Concatenate_Clicked,
       On_Window1_Destroy,
-      On_Btn_Console_Greeting_Clicked);
+      On_Btn_Console_Greeting_Clicked,
+      On_Print_To_Console);
    --  An easy way to make sure that all callback functions are referenced
    --  from within the Connect_Signals procedure and that no one has been
    --  overlooked. The names of the callback functions must match the
@@ -82,6 +84,8 @@ package body Create_Builder is
    procedure On_Btn_Concatenate_Clicked
      (Object : not null access Widget_Collection_Record'Class);
    procedure On_Btn_Console_Greeting_Clicked
+     (Object : not null access Widget_Collection_Record'Class);
+   procedure On_Print_To_Console_Clicked
      (Object : not null access Widget_Collection_Record'Class);
    function On_Window1_Delete_Event
      (Object : not null access Widget_Collection_Record'Class) return Boolean;
@@ -178,6 +182,15 @@ package body Create_Builder is
                Slot_Object => Widgets,
                After       => After);
 
+         when On_Print_To_Console =>
+            Widget_Collection_Cb.Object_Connect
+              (Widget      => Widget,
+               Name        => "clicked",
+               Marsh       => Widget_Collection_Cb.To_Marshaller
+                                (On_Print_To_Console_Clicked'Access),
+               Slot_Object => Widgets,
+               After       => After);
+
       end case;
    end Connect_Signals;
 
@@ -260,6 +273,22 @@ package body Create_Builder is
    begin
       Put_Line ("On_Btn_Console_Greeting_Clicked says: HELLO!!!");
    end On_Btn_Console_Greeting_Clicked;
+
+   ---------------------------------
+   -- On_Print_To_Console_Clicked --
+   ---------------------------------
+
+   procedure On_Print_To_Console_Clicked
+     (Object : not null access Widget_Collection_Record'Class)
+   is
+      Buffer : constant Gtk_Text_Buffer := Get_Buffer (Object.Text_Field);
+      Iter_Start, Iter_End : Gtk.Text_Iter.Gtk_Text_Iter;
+   begin
+      Get_Bounds (Buffer, Iter_Start, Iter_End);
+      Put_Line ("---[ Buffer Contents ]---");
+      Put_Line (Get_Text (Buffer, Iter_Start, Iter_End));
+      Put_Line ("---[ End Buffer ]---");
+   end On_Print_To_Console_Clicked;
 
    -----------------------------
    -- On_Window1_Delete_Event --
