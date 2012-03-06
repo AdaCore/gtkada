@@ -72,7 +72,7 @@ pragma Ada_05;
 --  available when GTK+ is compiled for the X11 platform and GDK_WINDOWING_X11
 --  is defined. They can only be used on a Gdk_X11_Display. To use
 --  Gtk.Plug.Gtk_Plug and Gtk.Socket.Gtk_Socket, you need to include the
---  <filename>gtk/gtkx.h</filename> header.
+--  'gtk/gtkx.h' header.
 --
 --  </description>
 

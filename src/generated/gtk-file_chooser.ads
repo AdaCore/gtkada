@@ -36,18 +36,25 @@ pragma Ada_05;
 --  in the filesystem. In the default implementation these are displayed in the
 --  left pane. It may be a bit confusing at first that these shortcuts come
 --  from various sources and in various flavours, so lets explain the
---  terminology here: <variablelist> <varlistentry> <term>Bookmarks</term> *
---  are created by the user, by dragging folders from the right pane to the
---  left pane, or by using the "Add". Bookmarks can be renamed and deleted by
---  the user.
+--  terminology here:
 --
---  </varlistentry> <varlistentry> <term>Shortcuts</term> * can be provided by
---  the application or by the underlying filesystem abstraction (e.g. both the
---  gnome-vfs and the Windows filesystems provide "Desktop" shortcuts).
---  Shortcuts cannot be modified by the user.
---  </varlistentry> <varlistentry> <term>Volumes</term> * are provided by the
---  underlying filesystem abstraction. They are the "roots" of the filesystem.
---  </varlistentry> </variablelist>
+--  'Bookmarks'
+--
+--     * are created by the user, by dragging folders from the right pane to
+--  the left pane, or by using the "Add". Bookmarks can be renamed and deleted
+--  by the user.
+--
+--  'Shortcuts'
+--
+--     * can be provided by the application or by the underlying filesystem
+--  abstraction (e.g. both the gnome-vfs and the Windows filesystems provide
+--  "Desktop" shortcuts). Shortcuts cannot be modified by the user.
+--
+--  'Volumes'
+--
+--     * are provided by the underlying filesystem abstraction. They are the
+--  "roots" of the filesystem.
+--
 --  == File Names and Encodings ==
 --
 --  When the user is finished selecting files in a
@@ -144,34 +151,41 @@ pragma Ada_05;
 --  The default keys that activate the key-binding signals in
 --  <classname>GtkFileChooserDefaultClass</classname> are as follows:
 --
---  <informaltable> <tgroup cols="2"> <tbody> <row> <entry>Signal name</entry>
---  <entry>Default key combinations</entry> </row> <row>
---  <entry>location-popup</entry> <entry>
---  <keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo> (empty
---  path); <keycap>/</keycap> (path of "/") <footnote> Both the individual
---  <keycap>/</keycap> key and the numeric keypad's "divide" key are supported.
---  </footnote>; <keycap>~</keycap> (path of "~") </entry> </row> <row>
---  <entry>up-folder</entry> <entry>
---  <keycombo><keycap>Alt</keycap><keycap>Up</keycap></keycombo>;
---  <keycombo><keycap>Alt</keycap><keycap>Shift</keycap><keycap>Up</keycap></keycombo>
---  <footnote> Both the individual Up key and the numeric keypad's Up key are
---  supported. </footnote>; <keycap>Backspace</keycap> </entry> </row> <row>
---  <entry>down-folder</entry> <entry>
---  <keycombo><keycap>Alt</keycap><keycap>Down</keycap></keycombo>;
---  <keycombo><keycap>Alt</keycap><keycap>Shift</keycap><keycap>Down</keycap></keycombo>
---  <footnote> Both the individual Down key and the numeric keypad's Down key
---  are supported. </footnote> </entry> </row> <row> <entry>home-folder</entry>
---  <entry><keycombo><keycap>Alt</keycap><keycap>Home</keycap></keycombo></entry>
---  </row> <row> <entry>desktop-folder</entry>
---  <entry><keycombo><keycap>Alt</keycap><keycap>D</keycap></keycombo></entry>
---  </row> <row> <entry>quick-bookmark</entry>
---  <entry><keycombo><keycap>Alt</keycap><keycap>1</keycap></keycombo> through
---  <keycombo><keycap>Alt</keycap><keycap>0</keycap></keycombo></entry> </row>
---  </tbody> </tgroup> </informaltable>
+--  Signal name
+--
+--  Default key combinations
+--
+--  location-popup
+--
+--  ['Control''L'] (empty path); '/' (path of "/") [ Both the individual '/'
+--  key and the numeric keypad's "divide" key are supported. ]; '~' (path of
+--  "~")
+--
+--  up-folder
+--
+--  ['Alt''Up']; ['Alt''Shift''Up'] [ Both the individual Up key and the
+--  numeric keypad's Up key are supported. ]; 'Backspace'
+--
+--  down-folder
+--
+--  ['Alt''Down']; ['Alt''Shift''Down'] [ Both the individual Down key and the
+--  numeric keypad's Down key are supported. ]
+--
+--  home-folder
+--
+--  ['Alt''Home']
+--
+--  desktop-folder
+--
+--  ['Alt''D']
+--
+--  quick-bookmark
+--
+--  ['Alt''1'] through ['Alt''0']
+--
 --  You can change these defaults to something else. For example, to add a
---  <keycap>Shift</keycap> modifier to a few of the default bindings, you can
---  include the following fragment in your
---  <filename>.config/gtk-3.0/gtk.css</filename> file:
+--  'Shift' modifier to a few of the default bindings, you can include the
+--  following fragment in your '.config/gtk-3.0/gtk.css' file:
 --
 --    @binding-set MyOwnFilechooserBindings
 --    {
@@ -184,7 +198,6 @@ pragma Ada_05;
 --       gtk-key-bindings: MyOwnFilechooserBindings
 --    }
 --
---  <refsect3 id="GtkFileChooserDefault-location-popup">
 --  == The &quot;GtkFileChooserDefault::location-popup&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
@@ -193,34 +206,32 @@ pragma Ada_05;
 --
 --  This is used to make the file chooser show a "Location" dialog which the
 --  user can use to manually type the name of the file he wishes to select. The
---  <parameter>path</parameter> argument is a string that gets put in the text
---  entry for the file name. By default this is bound to
---  <keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo> with a
---  <parameter>path</parameter> string of "" (the empty string). It is also
---  bound to <keycap>/</keycap> with a <parameter>path</parameter> string of
---  "'/'" (a slash): this lets you type <keycap>/</keycap> and immediately type
---  a path name. On Unix systems, this is bound to <keycap>~</keycap> (tilde)
---  with a <parameter>path</parameter> string of "~" itself for access to home
---  directories.
+--  'path' argument is a string that gets put in the text entry for the file
+--  name. By default this is bound to ['Control''L'] with a 'path' string of ""
+--  (the empty string). It is also bound to '/' with a 'path' string of "'/'"
+--  (a slash): this lets you type '/' and immediately type a path name. On Unix
+--  systems, this is bound to '~' (tilde) with a 'path' string of "~" itself
+--  for access to home directories.
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>path</parameter>&nbsp;:</term> * <simpara> default
---  contents for the text entry for the file name </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist>
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  path:
+--
+--     * default contents for the text entry for the file name
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
 --  Note: You can create your own bindings for the
---  Gtk_File_Chooser_Default::location-popup signal with custom
---  <parameter>path</parameter> strings, and have a crude form of
---  easily-to-type bookmarks. For example, say you access the path
---  <filename>/home/username/misc</filename> very frequently. You could then
---  create an <keycombo> <keycap>Alt</keycap> <keycap>M</keycap> </keycombo>
---  shortcut by including the following in your
---  <filename>.config/gtk-3.0/gtk.css</filename>:
+--  Gtk_File_Chooser_Default::location-popup signal with custom 'path' strings,
+--  and have a crude form of easily-to-type bookmarks. For example, say you
+--  access the path '/home/username/misc' very frequently. You could then
+--  create an [ 'Alt' 'M' ] shortcut by including the following in your
+--  '.config/gtk-3.0/gtk.css':
+--
 --    @binding-set MiscShortcut
 --    {
 --       bind "<Alt>M" { "location-popup" ("/home/username/misc") }
@@ -230,26 +241,24 @@ pragma Ada_05;
 --       gtk-key-bindings: MiscShortcut
 --    }
 --
---  </refsect3> <refsect3 id="GtkFileChooserDefault-up-folder">
+-- 
 --  == The &quot;GtkFileChooserDefault::up-folder&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
 --       <link linkend="gpointer">gpointer</link> user_data);
 --
 --  This is used to make the file chooser go to the parent of the current
---  folder in the file hierarchy. By default this is bound to
---  <keycap>Backspace</keycap> and
---  <keycombo><keycap>Alt</keycap><keycap>Up</keycap></keycombo> (the Up key in
---  the numeric keypad also works).
+--  folder in the file hierarchy. By default this is bound to 'Backspace' and
+--  ['Alt''Up'] (the Up key in the numeric keypad also works).
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist> </refsect3> <refsect3
---  id="GtkFileChooserDefault-down-folder">
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
 --  == The &quot;GtkFileChooserDefault::down-folder&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
@@ -259,53 +268,50 @@ pragma Ada_05;
 --  in the file hierarchy. The subfolder that will be used is displayed in the
 --  path bar widget of the file chooser. For example, if the path bar is
 --  showing "/foo/*bar/*baz", then this will cause the file chooser to switch
---  to the "baz" subfolder. By default this is bound to
---  <keycombo><keycap>Alt</keycap><keycap>Down</keycap></keycombo> (the Down
+--  to the "baz" subfolder. By default this is bound to ['Alt''Down'] (the Down
 --  key in the numeric keypad also works).
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist> </refsect3> <refsect3
---  id="GtkFileChooserDefault-home-folder">
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
 --  == The &quot;GtkFileChooserDefault::home-folder&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
 --       <link linkend="gpointer">gpointer</link> user_data);
 --
 --  This is used to make the file chooser show the user's home folder in the
---  file list. By default this is bound to
---  <keycombo><keycap>Alt</keycap><keycap>Home</keycap></keycombo> (the Home
---  key in the numeric keypad also works).
+--  file list. By default this is bound to ['Alt''Home'] (the Home key in the
+--  numeric keypad also works).
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist> </refsect3> <refsect3
---  id="GtkFileChooserDefault-desktop-folder">
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
 --  == The &quot;GtkFileChooserDefault::desktop-folder&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
 --       <link linkend="gpointer">gpointer</link> user_data);
 --
 --  This is used to make the file chooser show the user's Desktop folder in
---  the file list. By default this is bound to
---  <keycombo><keycap>Alt</keycap><keycap>D</keycap></keycombo>.
+--  the file list. By default this is bound to ['Alt''D'].
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist> </refsect3> <refsect3
---  id="GtkFileChooserDefault-quick-bookmark">
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
 --  == The &quot;GtkFileChooserDefault::quick-bookmark&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
@@ -313,28 +319,26 @@ pragma Ada_05;
 --       <link linkend="gpointer">gpointer</link> user_data);
 --
 --  This is used to make the file chooser switch to the bookmark specified in
---  the <parameter>bookmark_index</parameter> parameter. For example, if you
---  have three bookmarks, you can pass 0, 1, 2 to this signal to switch to each
---  of them, respectively. By default this is bound to
---  <keycombo><keycap>Alt</keycap><keycap>1</keycap></keycombo>,
---  <keycombo><keycap>Alt</keycap><keycap>2</keycap></keycombo>, etc. until
---  <keycombo><keycap>Alt</keycap><keycap>0</keycap></keycombo>. Note that in
---  the default binding, that
---  <keycombo><keycap>Alt</keycap><keycap>1</keycap></keycombo> is actually
---  defined to switch to the bookmark at index 0, and so on successively;
---  <keycombo><keycap>Alt</keycap><keycap>0</keycap></keycombo> is defined to
---  switch to the bookmark at index 10.
+--  the 'bookmark_index' parameter. For example, if you have three bookmarks,
+--  you can pass 0, 1, 2 to this signal to switch to each of them,
+--  respectively. By default this is bound to ['Alt''1'], ['Alt''2'], etc.
+--  until ['Alt''0']. Note that in the default binding, that ['Alt''1'] is
+--  actually defined to switch to the bookmark at index 0, and so on
+--  successively; ['Alt''0'] is defined to switch to the bookmark at index 10.
 --
---  <variablelist role="params"> <varlistentry>
---  <term><parameter>chooser</parameter>&nbsp;:</term> * <simpara> the object
---  which received the signal. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>bookmark_indes</parameter>&nbsp;:</term> * <simpara> index
---  of the bookmark to switch to; the indices start at 0. </simpara>
---  </varlistentry> <varlistentry>
---  <term><parameter>user_data</parameter>&nbsp;:</term> * <simpara> user data
---  set when the signal handler was connected. </simpara>
---  </varlistentry> </variablelist> </refsect3>
+--  chooser:
+--
+--     * the object which received the signal.
+--
+--  bookmark_indes:
+--
+--     * index of the bookmark to switch to; the indices start at 0.
+--
+--  user_data:
+--
+--     * user data set when the signal handler was connected.
+--
+--
 --  </description>
 --  <group></group>
 

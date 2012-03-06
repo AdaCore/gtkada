@@ -27,26 +27,18 @@ pragma Ada_05;
 --  user interface elements. It's essentially a blank widget; you can draw on
 --  it. After creating a drawing area, the application may want to connect to:
 --
---  *
+--     * Mouse and button press signals to respond to input from the user.
+--  (Use Gtk.Widget.Add_Events to enable events you wish to receive.)
 --
---  Mouse and button press signals to respond to input from the user. (Use
---  Gtk.Widget.Add_Events to enable events you wish to receive.)
+--     * The Gtk.Widget.Gtk_Widget::realize signal to take any necessary
+--  actions when the widget is instantiated on a particular display. (Create
+--  GDK resources in response to this signal.)
 --
---  *
+--     * The Gtk.Widget.Gtk_Widget::configure-event signal to take any
+--  necessary actions when the widget changes size.
 --
---  The Gtk.Widget.Gtk_Widget::realize signal to take any necessary actions
---  when the widget is instantiated on a particular display. (Create GDK
---  resources in response to this signal.)
---
---  *
---
---  The Gtk.Widget.Gtk_Widget::configure-event signal to take any necessary
---  actions when the widget changes size.
---
---  *
---
---  The Gtk.Widget.Gtk_Widget::draw signal to handle redrawing the contents of
---  the widget.
+--     * The Gtk.Widget.Gtk_Widget::draw signal to handle redrawing the
+--  contents of the widget.
 --
 --  The following code portion demonstrates using a drawing area to display a
 --  circle in the normal widget foreground color.

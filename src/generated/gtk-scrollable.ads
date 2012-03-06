@@ -34,31 +34,23 @@ pragma Ada_05;
 --
 --  All scrollable widgets should do the following.
 --
---  *
---
---  When a parent widget sets the scrollable child widget's adjustments, the
---  widget should populate the adjustments'
+--     * When a parent widget sets the scrollable child widget's adjustments,
+--  the widget should populate the adjustments'
 --  Gtk.Adjustment.Gtk_Adjustment:lower, Gtk.Adjustment.Gtk_Adjustment:upper,
 --  Gtk.Adjustment.Gtk_Adjustment:step-increment,
 --  Gtk.Adjustment.Gtk_Adjustment:page-increment and
 --  Gtk.Adjustment.Gtk_Adjustment:page-size properties and connect to the
 --  Gtk.Adjustment.Gtk_Adjustment::value-changed signal.
 --
---  *
---
---  Because its preferred size is the size for a fully expanded widget, the
---  scrollable widget must be able to cope with underallocations. This means
---  that it must accept any value passed to its
+--     * Because its preferred size is the size for a fully expanded widget,
+--  the scrollable widget must be able to cope with underallocations. This
+--  means that it must accept any value passed to its
 --  Gtk.Widget_Class.Gtk_Widget_Class.size_allocate function.
 --
---  *
+--     * When the parent allocates space to the scrollable child widget, the
+--  widget should update the adjustments' properties with new values.
 --
---  When the parent allocates space to the scrollable child widget, the widget
---  should update the adjustments' properties with new values.
---
---  *
---
---  When any of the adjustments emits the
+--     * When any of the adjustments emits the
 --  Gtk.Adjustment.Gtk_Adjustment::value-changed signal, the scrollable widget
 --  should scroll its contents.
 --

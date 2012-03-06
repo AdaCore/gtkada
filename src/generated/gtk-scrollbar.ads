@@ -38,7 +38,7 @@ pragma Ada_05;
 --  visible scrollable area. The Gtk.Adjustment.Gtk_Adjustment.step_increment
 --  and Gtk.Adjustment.Gtk_Adjustment.page_increment fields are used when the
 --  user asks to step down (using the small stepper arrows) or page down (using
---  for example the <keycap>PageDown</keycap> key).
+--  for example the 'PageDown' key).
 --
 --  </description>
 

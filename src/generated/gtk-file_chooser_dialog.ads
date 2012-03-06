@@ -84,20 +84,23 @@ pragma Ada_05;
 --  == Setting up a file chooser dialog ==
 --
 --  There are various cases in which you may need to use a
---  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog: *To select a file for
---  opening, as for a <guimenuitem>File/Open</guimenuitem> command. Use
+--  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog:
+--
+--     * To select a file for opening, as for a
+--  <guimenuitem>File/Open</guimenuitem> command. Use
 --  GTK_FILE_CHOOSER_ACTION_OPEN.
 --
---  *To save a file for the first time, as for a
+--     * To save a file for the first time, as for a
 --  <guimenuitem>File/Save</guimenuitem> command. Use
 --  GTK_FILE_CHOOSER_ACTION_SAVE, and suggest a name such as "Untitled" with
 --  Gtk.File_Chooser_Widget.Set_Current_Name.
 --
---  *To save a file under a different name, as for a <guimenuitem>File/Save
---  As</guimenuitem> command. Use GTK_FILE_CHOOSER_ACTION_SAVE, and set the
---  existing filename with Gtk.File_Chooser_Widget.Set_Filename.
+--     * To save a file under a different name, as for a
+--  <guimenuitem>File/Save As</guimenuitem> command. Use
+--  GTK_FILE_CHOOSER_ACTION_SAVE, and set the existing filename with
+--  Gtk.File_Chooser_Widget.Set_Filename.
 --
---  *To choose a folder instead of a file. Use
+--     * To choose a folder instead of a file. Use
 --  GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
 --
 --  Note:

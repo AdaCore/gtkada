@@ -38,11 +38,15 @@ pragma Ada_05;
 --  Height-for-width geometry management is implemented in GTK+ by way of five
 --  virtual methods:
 --
---  *Gtk.Widget_Class.Gtk_Widget_Class.get_request_mode
---  *Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width
---  *Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height
---  *Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height_for_width
---  *Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width_for_height
+--     * Gtk.Widget_Class.Gtk_Widget_Class.get_request_mode
+--
+--     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width
+--
+--     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height
+--
+--     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height_for_width
+--
+--     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width_for_height
 --
 --  There are some important things to keep in mind when implementing
 --  height-for-width and when using it in container implementations.

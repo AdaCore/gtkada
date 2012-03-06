@@ -720,7 +720,12 @@ def fill_text(text, prefix, length, firstLineLength=0):
     result = []
     maxLen = firstLineLength or length - len(prefix)
 
-    text=text.replace("\n\n", "\n<br>")
+    text = text.replace("\n\n", "\n<br>")
+
+    # Do we have a list item ? If yes, preserve the indentation
+
+    if text.lstrip().startswith("* "):
+        line += text[:text.find("*")]
 
     for w in text.split():  # for each word (this loses whitespaces)
         if w.startswith("<br>"):
@@ -738,6 +743,7 @@ def fill_text(text, prefix, length, firstLineLength=0):
 
     if line != "":
         result.append(line)
+
     return ("\n" + prefix).join(result)
 
 
