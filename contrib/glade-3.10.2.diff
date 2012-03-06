@@ -14,8 +14,8 @@
 	the user to set the prefix for icons through the GLADE_BASE_DIR environment
 	variable.
 
---- glade-app.c.orig	2012-03-06 17:48:58.000000000 +0100
-+++ glade-app.c	2012-03-06 17:49:04.000000000 +0100
+--- gladeui/glade-app.c.orig	2012-03-06 17:48:58.000000000 +0100
++++ gladeui/glade-app.c	2012-03-06 17:49:04.000000000 +0100
 @@ -41,6 +41,7 @@
  #include "glade-accumulators.h"
  
