@@ -74,7 +74,7 @@ package Gtk.Aspect_Frame is
    --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
    --  to 1.0 (right aligned)
    --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
+   --  "obey_child": If TRUE, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
 
    function Get_Type return Glib.GType;
@@ -98,7 +98,7 @@ package Gtk.Aspect_Frame is
    --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
    --  to 1.0 (right aligned)
    --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
+   --  "obey_child": If TRUE, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
 
    ---------------------------------------------

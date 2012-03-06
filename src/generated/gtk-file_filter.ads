@@ -60,8 +60,6 @@ pragma Ada_05;
 --    <pattern>*.png</pattern>
 --    </patterns>
 --    </object>
---
---
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -148,7 +146,7 @@ package Gtk.File_Filter is
    --  Since: gtk+ 2.4
    --  "needed": bitfield of flags indicating the information that the custom
    --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
+   --  "func": callback function; if the function returns TRUE, then the file
    --  will be displayed.
    --  "notify": function to call to free Data when it is no longer needed.
 
@@ -180,7 +178,7 @@ package Gtk.File_Filter is
       --  Since: gtk+ 2.4
       --  "needed": bitfield of flags indicating the information that the
       --  custom filter function needs.
-      --  "func": callback function; if the function returns True, then the
+      --  "func": callback function; if the function returns TRUE, then the
       --  file will be displayed.
       --  "data": data to pass to Func
       --  "notify": function to call to free Data when it is no longer needed.
@@ -212,8 +210,8 @@ package Gtk.File_Filter is
    --  Tests whether a file should be displayed according to Filter. The
    --  Gtk.File_Filter.Gtk_File_Filter_Info structure Filter_Info should
    --  include the fields returned from Gtk.File_Filter.Get_Needed.
-   --  This function will not typically be used by applications; it is intended
-   --  principally for use in the implementation of
+   --  This function will not typically be used by applications; it is
+   --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
    --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info structure
@@ -228,7 +226,7 @@ package Gtk.File_Filter is
    --  will be displayed in the file selector user interface if there is a
    --  selectable list of filters.
    --  Since: gtk+ 2.4
-   --  "name": the human-readable-name for the filter, or null to remove any
+   --  "name": the human-readable-name for the filter, or NULL to remove any
    --  existing name.
 
    function Get_Needed
@@ -236,8 +234,8 @@ package Gtk.File_Filter is
        return Gtk_File_Filter_Flags;
    --  Gets the fields that need to be filled in for the structure passed to
    --  Gtk.File_Filter.Filter
-   --  This function will not typically be used by applications; it is intended
-   --  principally for use in the implementation of
+   --  This function will not typically be used by applications; it is
+   --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  calling Gtk.File_Filter.Filter
    --  Since: gtk+ 2.4

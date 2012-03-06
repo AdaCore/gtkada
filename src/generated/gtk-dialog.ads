@@ -131,8 +131,6 @@ pragma Ada_05;
 --    <action-widget response="-5">button_cancel</action-widget>
 --    </action-widgets>
 --    </object>
---
---
 --  </description>
 --  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
@@ -286,7 +284,7 @@ package Gtk.Dialog is
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
-   --  Response_Id, or null.
+   --  Response_Id, or NULL.
    --  Since: gtk+ 2.20
    --  "response_id": the response ID used by the Dialog widget
 
@@ -320,16 +318,16 @@ package Gtk.Dialog is
    --  or not.
    --  After Gtk.Dialog.Run returns, you are responsible for hiding or
    --  destroying the dialog if you wish to do so.
-   --  Typical usage of this function might be: |[ gint result = gtk_dialog_run
-   --  (GTK_DIALOG (dialog)); switch (result) { case GTK_RESPONSE_ACCEPT:
-   --  do_application_specific_something (); break; default:
-   --  do_nothing_since_dialog_was_cancelled (); break; } gtk_widget_destroy
-   --  (dialog); ]|
+   --  Typical usage of this function might be: |[ gint result =
+   --  gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) { case
+   --  GTK_RESPONSE_ACCEPT: do_application_specific_something (); break;
+   --  default: do_nothing_since_dialog_was_cancelled (); break; }
+   --  gtk_widget_destroy (dialog); ]|
    --  Note that even though the recursive main loop gives the effect of a
    --  modal dialog (it prevents the user from interacting with other windows
    --  in the same window group while the dialog is run), callbacks such as
-   --  timeouts, IO channel watches, DND drops, etc, <emphasis>will</emphasis>
-   --  be triggered during a Gtk.Dialog.Run call.
+   --  timeouts, IO channel watches, DND drops, etc, *will* be triggered during
+   --  a Gtk.Dialog.Run call.
 
    procedure Set_Default_Response
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -343,11 +341,11 @@ package Gtk.Dialog is
       (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean);
-   --  Calls <literal>gtk_widget_set_sensitive (widget, Setting)</literal> for
-   --  each widget in the dialog's action area with the given Response_Id. A
-   --  convenient way to sensitize/desensitize dialog buttons.
+   --  Calls 'gtk_widget_set_sensitive (widget, Setting)' for each widget in
+   --  the dialog's action area with the given Response_Id. A convenient way to
+   --  sensitize/desensitize dialog buttons.
    --  "response_id": a response ID
-   --  "setting": True for sensitive
+   --  "setting": TRUE for sensitive
 
    ----------------------
    -- GtkAda additions --
@@ -417,6 +415,7 @@ package Gtk.Dialog is
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted when the user uses a keybinding to
    --  close the dialog.
+   --
    --  The default binding for this signal is the Escape key.
    --
    --  "response"

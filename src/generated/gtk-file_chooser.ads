@@ -64,6 +64,7 @@ pragma Ada_05;
 --  *always* returned in the character set specified by the
 --  <envar>G_FILENAME_ENCODING</envar> environment variable. Please see the
 --  Glib documentation for more details about this variable.
+--
 --  Note: This means that while you can pass the result of
 --  Gtk.File_Chooser_Widget.Get_Filename to <function>open(2)</function> or
 --  <function>fopen(3)</function>, you may not be able to directly set it as
@@ -187,7 +188,7 @@ pragma Ada_05;
 --  'Shift' modifier to a few of the default bindings, you can include the
 --  following fragment in your '.config/gtk-3.0/gtk.css' file:
 --
---    @binding-set MyOwnFilechooserBindings
+--    Binding-set MyOwnFilechooserBindings
 --    {
 --       bind "<Alt><Shift>Up" { "up-folder" () }
 --       bind "<Alt><Shift>Down" { "down-folder" () }
@@ -213,15 +214,15 @@ pragma Ada_05;
 --  systems, this is bound to '~' (tilde) with a 'path' string of "~" itself
 --  for access to home directories.
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  path:
+--  ''path' :'
 --
 --     * default contents for the text entry for the file name
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -232,7 +233,7 @@ pragma Ada_05;
 --  create an [ 'Alt' 'M' ] shortcut by including the following in your
 --  '.config/gtk-3.0/gtk.css':
 --
---    @binding-set MiscShortcut
+--    Binding-set MiscShortcut
 --    {
 --       bind "<Alt>M" { "location-popup" ("/home/username/misc") }
 --    }
@@ -241,7 +242,6 @@ pragma Ada_05;
 --       gtk-key-bindings: MiscShortcut
 --    }
 --
--- 
 --  == The &quot;GtkFileChooserDefault::up-folder&quot; signal ==
 --
 --    void user_function (GtkFileChooserDefault *chooser,
@@ -251,11 +251,11 @@ pragma Ada_05;
 --  folder in the file hierarchy. By default this is bound to 'Backspace' and
 --  ['Alt''Up'] (the Up key in the numeric keypad also works).
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -271,11 +271,11 @@ pragma Ada_05;
 --  to the "baz" subfolder. By default this is bound to ['Alt''Down'] (the Down
 --  key in the numeric keypad also works).
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -288,11 +288,11 @@ pragma Ada_05;
 --  file list. By default this is bound to ['Alt''Home'] (the Home key in the
 --  numeric keypad also works).
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -304,11 +304,11 @@ pragma Ada_05;
 --  This is used to make the file chooser show the user's Desktop folder in
 --  the file list. By default this is bound to ['Alt''D'].
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -326,15 +326,15 @@ pragma Ada_05;
 --  actually defined to switch to the bookmark at index 0, and so on
 --  successively; ['Alt''0'] is defined to switch to the bookmark at index 10.
 --
---  chooser:
+--  ''chooser' :'
 --
 --     * the object which received the signal.
 --
---  bookmark_indes:
+--  ''bookmark_indes' :'
 --
 --     * index of the bookmark to switch to; the indices start at 0.
 --
---  user_data:
+--  ''user_data' :'
 --
 --     * user data set when the signal handler was connected.
 --
@@ -468,7 +468,7 @@ package Gtk.File_Chooser is
    --  Sets whether file choser will offer to create new folders. This is only
    --  relevant if the action is not set to be Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.18
-   --  "create_folders": True if the New Folder button should be displayed
+   --  "create_folders": TRUE if the New Folder button should be displayed
 
    function Get_Current_Folder
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -506,12 +506,12 @@ package Gtk.File_Chooser is
        Do_Overwrite_Confirmation : Boolean);
    --  Sets whether a file chooser in Gtk.File_Chooser.Action_Save mode will
    --  present a confirmation dialog if the user types a file name that already
-   --  exists. This is False by default.
+   --  exists. This is FALSE by default.
    --  Regardless of this setting, the Chooser will emit the
    --  Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal when
    --  appropriate.
    --  If all you need is the stock confirmation dialog, set this property to
-   --  True. You can override the way confirmation is done by actually handling
+   --  TRUE. You can override the way confirmation is done by actually handling
    --  the Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal; please
    --  refer to its documentation for the details.
    --  Since: gtk+ 2.8
@@ -547,9 +547,9 @@ package Gtk.File_Chooser is
    --  don't have a file name already &mdash; for example, if the user just
    --  created a new file and is saving it for the first time, do not call this
    --  function. Instead, use something similar to this: |[ if
-   --  (document_is_new) { /&ast; the user just created a new document &ast;/
+   --  (document_is_new) { /* the user just created a new document */
    --  gtk_file_chooser_set_current_name (chooser, "Untitled document"); } else
-   --  { /&ast; the user edited an existing document &ast;/
+   --  { /* the user edited an existing document */
    --  gtk_file_chooser_set_filename (chooser, existing_filename); } ]|
    --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
@@ -588,14 +588,14 @@ package Gtk.File_Chooser is
       (Chooser    : Gtk_File_Chooser;
        Local_Only : Boolean);
    --  Sets whether only local files can be selected in the file selector. If
-   --  Local_Only is True (the default), then the selected file are files are
+   --  Local_Only is TRUE (the default), then the selected file are files are
    --  guaranteed to be accessible through the operating systems native file
    --  file system and therefore the application only needs to worry about the
    --  filename functions in Gtk.File_Chooser.Gtk_File_Chooser, like
    --  Gtk.File_Chooser_Widget.Get_Filename, rather than the URI functions like
    --  Gtk.File_Chooser_Widget.Get_Uri,
    --  Since: gtk+ 2.4
-   --  "local_only": True if only local files can be selected
+   --  "local_only": TRUE if only local files can be selected
 
    function Get_Preview_Filename
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -654,7 +654,7 @@ package Gtk.File_Chooser is
    --  is only relevant if the action is set to be Gtk.File_Chooser.Action_Open
    --  or Gtk.File_Chooser.Action_Select_Folder.
    --  Since: gtk+ 2.4
-   --  "select_multiple": True if multiple files can be selected.
+   --  "select_multiple": TRUE if multiple files can be selected.
 
    function Get_Show_Hidden (Chooser : Gtk_File_Chooser) return Boolean;
    procedure Set_Show_Hidden
@@ -663,7 +663,7 @@ package Gtk.File_Chooser is
    --  Sets whether hidden files and folders are displayed in the file
    --  selector.
    --  Since: gtk+ 2.6
-   --  "show_hidden": True if hidden files and folders should be displayed.
+   --  "show_hidden": TRUE if hidden files and folders should be displayed.
 
    function Get_Uri (Chooser : Gtk_File_Chooser) return UTF8_String;
    function Set_Uri
@@ -684,11 +684,11 @@ package Gtk.File_Chooser is
    --  don't have a file name already &mdash; for example, if the user just
    --  created a new file and is saving it for the first time, do not call this
    --  function. Instead, use something similar to this: |[ if
-   --  (document_is_new) { /&ast; the user just created a new document &ast;/
+   --  (document_is_new) { /* the user just created a new document */
    --  gtk_file_chooser_set_current_name (chooser, "Untitled document"); } else
-   --  { /&ast; the user edited an existing document &ast;/
-   --  gtk_file_chooser_set_uri (chooser, existing_uri); } ]|
-   --   In the first case, the file chooser will present the user with useful
+   --  { /* the user edited an existing document */ gtk_file_chooser_set_uri
+   --  (chooser, existing_uri); } ]|
+   --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
    --  file's existing location is already known, so the file chooser will use
    --  it.
@@ -709,9 +709,9 @@ package Gtk.File_Chooser is
       (Chooser   : Gtk_File_Chooser;
        Use_Label : Boolean);
    --  Sets whether the file chooser should display a stock label with the
-   --  name of the file that is being previewed; the default is True.
+   --  name of the file that is being previewed; the default is TRUE.
    --  Applications that want to draw the whole preview area themselves should
-   --  set this to False and display the name themselves in their preview
+   --  set this to FALSE and display the name themselves in their preview
    --  widget.
    --  See also: Gtk.File_Chooser_Widget.Set_Preview_Widget
    --  Since: gtk+ 2.4
@@ -732,7 +732,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
    --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder_Uri.
-   --  URIs, or null if there are no shortcut folders. Free the returned list
+   --  URIs, or NULL if there are no shortcut folders. Free the returned list
    --  with g_slist_free, and the URIs with g_free.
    --  Since: gtk+ 2.4
 
@@ -740,7 +740,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
    --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder.
-   --  folder filenames, or null if there are no shortcut folders. Free the
+   --  folder filenames, or NULL if there are no shortcut folders. Free the
    --  returned list with g_slist_free, and the filenames with g_free.
    --  Since: gtk+ 2.4
 
@@ -782,7 +782,7 @@ package Gtk.File_Chooser is
    --  Selects a filename. If the file name isn't in the current folder of
    --  Chooser, then the current folder of Chooser will be changed to the
    --  folder containing Filename.
-   --   See also: Gtk.File_Chooser_Widget.Set_Filename
+   --  See also: Gtk.File_Chooser_Widget.Set_Filename
    --  Since: gtk+ 2.4
    --  "filename": the filename to select
 
@@ -911,12 +911,14 @@ package Gtk.File_Chooser is
    --  confirmation dialog when the user has selected a file name that already
    --  exists. The signal only gets emitted when the file chooser is in
    --  Gtk.File_Chooser.Action_Save mode.
+   --
    --  Most applications just need to turn on the
    --  Gtk.File_Chooser.Gtk_File_Chooser:do-overwrite-confirmation property (or
    --  call the Gtk.File_Chooser.Set_Do_Overwrite_Confirmation function), and
    --  they will automatically get a stock confirmation dialog. Applications
    --  which need to customize this behavior should do that, and also connect
    --  to the Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal.
+   --
    --  A signal handler for this signal must return a
    --  Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value, which indicates
    --  the action to take. If the handler determines that the user wants to
@@ -927,24 +929,34 @@ package Gtk.File_Chooser is
    --  determines that the stock confirmation dialog should be used, it should
    --  return Gtk.File_Chooser.Confirmation_Confirm. The following example
    --  illustrates this. <example id="gtkfilechooser-confirmation">
-   --  <title>Custom confirmation</title> <programlisting> static
-   --  GtkFileChooserConfirmation confirm_overwrite_callback (GtkFileChooser
-   --  *chooser, gpointer data) { char *uri;
-   --  uri = gtk_file_chooser_get_uri (chooser);
-   --  if (is_uri_read_only (uri)) { if (user_wants_to_replace_read_only_file
-   --  (uri)) return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME; else return
-   --  GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN; } else return
-   --  GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM; // fall back to the default
-   --  dialog }
-   --  ...
-   --  chooser = gtk_file_chooser_dialog_new (...);
-   --  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER
-   --  (dialog), TRUE); g_signal_connect (chooser, "confirm-overwrite",
-   --  G_CALLBACK (confirm_overwrite_callback), NULL);
-   --  if (gtk_dialog_run (chooser) == GTK_RESPONSE_ACCEPT) save_to_file
-   --  (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
-   --  gtk_widget_destroy (chooser); </programlisting> </example>
+   --
+   --  == Custom confirmation ==
+   --
+   --    static GtkFileChooserConfirmation
+   --    confirm_overwrite_callback (GtkFileChooser *chooser, gpointer data)
+   --    {
+   --       char *uri;
+   --       uri = gtk_file_chooser_get_uri (chooser);
+   --       if (is_uri_read_only (uri))
+   --       {
+   --          if (user_wants_to_replace_read_only_file (uri))
+   --          return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
+   --       else
+   --          return GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN;
+   --       } else
+   --          return GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM; // fall back to the default dialog
+   --       }
+   --       ...
+   --       chooser = gtk_file_chooser_dialog_new (...);
+   --       gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+   --       g_signal_connect (chooser, "confirm-overwrite",
+   --          G_CALLBACK (confirm_overwrite_callback), NULL);
+   --       if (gtk_dialog_run (chooser) == GTK_RESPONSE_ACCEPT)
+   --       save_to_file (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+   --          gtk_widget_destroy (chooser);
+   --
    --  action to take after emitting the signal.
+   --
    --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that
    --  indicates which
    --
@@ -956,8 +968,10 @@ package Gtk.File_Chooser is
    --  bookmark or visiting a folder on the file list. It can also happen as a
    --  result of calling a function to explicitly change the current folder in
    --  a file chooser.
+   --
    --  Normally you do not need to connect to this signal, unless you need to
    --  keep track of which folder a file chooser is showing.
+   --
    --  See also: Gtk.File_Chooser.Set_Current_Folder,
    --  Gtk.File_Chooser.Get_Current_Folder,
    --  Gtk.File_Chooser.Set_Current_Folder_Uri,
@@ -967,12 +981,15 @@ package Gtk.File_Chooser is
    --     procedure Handler (Self : access Gtk_File_Chooser);
    --  This signal is emitted when the user "activates" a file in the file
    --  chooser. This can happen by double-clicking on a file in the file list,
-   --  or by pressing <keycap>Enter</keycap>.
+   --  or by pressing 'Enter'.
+   --
    --  Normally you do not need to connect to this signal. It is used
    --  internally by Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to know
    --  when to activate the default button in the dialog.
-   --  See also: Gtk.File_Chooser.Get_Filename, Gtk.File_Chooser.Get_Filenames,
-   --  Gtk.File_Chooser.Get_Uri, Gtk.File_Chooser.Get_Uris.
+   --
+   --  See also: Gtk.File_Chooser.Get_Filename,
+   --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Get_Uri,
+   --  Gtk.File_Chooser.Get_Uris.
    --
    --  "selection-changed"
    --     procedure Handler (Self : access Gtk_File_Chooser);
@@ -980,9 +997,11 @@ package Gtk.File_Chooser is
    --  files in a Gtk.File_Chooser.Gtk_File_Chooser. This can happen when the
    --  user modifies the selection with the mouse or the keyboard, or when
    --  explicitly calling functions to change the selection.
+   --
    --  Normally you do not need to connect to this signal, as it is easier to
    --  wait for the file chooser to finish running, and then to get the list of
    --  selected files using the functions mentioned below.
+   --
    --  See also: Gtk.File_Chooser.Select_Filename,
    --  Gtk.File_Chooser.Unselect_Filename, Gtk.File_Chooser.Get_Filename,
    --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Select_Uri,
@@ -995,6 +1014,7 @@ package Gtk.File_Chooser is
    --  regenerated. For example, this can happen when the currently selected
    --  file changes. You should use this signal if you want your file chooser
    --  to have a preview widget.
+   --
    --  Once you have installed a preview widget with
    --  Gtk.File_Chooser.Set_Preview_Widget, you should update it when this
    --  signal is emitted. You can use the functions
@@ -1003,7 +1023,10 @@ package Gtk.File_Chooser is
    --  Your widget may not be able to preview all kinds of files; your callback
    --  must call Gtk.File_Chooser.Set_Preview_Widget_Active to inform the file
    --  chooser about whether the preview was generated successfully or not.
-   --  Please see the example code in <xref linkend="gtkfilechooser-preview"/>.
+   --
+   --  Please see the example code in <xref
+   --  linkend="gtkfilechooser-preview"/>.
+   --
    --  See also: Gtk.File_Chooser.Set_Preview_Widget,
    --  Gtk.File_Chooser.Set_Preview_Widget_Active,
    --  Gtk.File_Chooser.Set_Use_Preview_Label,

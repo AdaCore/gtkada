@@ -132,7 +132,7 @@ package Gtk.Image is
    --  currently-stored representation. e.g. if the Gtk.Image.Get_Storage_Type
    --  returns GTK_IMAGE_PIXBUF, then you can call Gtk.Image.Get but not Get.
    --  For empty images, you can request any storage type (call any of the
-   --  "get" functions), but they will all return null values.
+   --  "get" functions), but they will all return NULL values.
 
    ----------------------------
    -- Enumeration Properties --
@@ -172,7 +172,7 @@ package Gtk.Image is
        Filename : UTF8_String);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
-   --  will display a "broken image" icon. This function never returns null, it
+   --  will display a "broken image" icon. This function never returns NULL, it
    --  always returns a valid Gtk.Image.Gtk_Image widget.
    --  If the file contains an animation, the image will contain an animation.
    --  If you need to detect failures to load the file, use
@@ -230,9 +230,9 @@ package Gtk.Image is
    --  factory, add the icon factory to the list of default factories with
    --  Gtk.Icon_Factory.Add_Default, and then use Gtk.Image.Gtk_New. This will
    --  allow themes to override the icon you ship with your application.
-   --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set; you
-   --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
-   --  add its own reference rather than adopting yours.
+   --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set;
+   --  you still need to unref it if you own references. Gtk.Image.Gtk_Image
+   --  will add its own reference rather than adopting yours.
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
    --  "size": a stock icon size
 
@@ -249,7 +249,7 @@ package Gtk.Image is
    --  Note that this function just creates an Gtk.Image.Gtk_Image from the
    --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
    --  Should you want that, you should use Gtk.Image.Gtk_New.
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or NULL
 
    procedure Gtk_New
       (Image    : out Gtk_Image;

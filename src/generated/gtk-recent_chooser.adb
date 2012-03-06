@@ -50,8 +50,8 @@ package body Gtk.Recent_Chooser is
    --  comes after the second.
    --  Since: gtk+ 2.10
    --  "sort_func": the comparison function
-   --  "sort_data": user data to pass to Sort_Func, or null
-   --  "data_destroy": destroy notifier for Sort_Data, or null
+   --  "sort_data": user data to pass to Sort_Func, or NULL
+   --  "data_destroy": destroy notifier for Sort_Data, or NULL
 
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;

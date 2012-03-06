@@ -411,7 +411,7 @@ package Gtk.Cell_Area is
    --  allocation
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State flags for Area
    --  for this row of data.
-   --  "edit_only": if True then only cell renderers that are
+   --  "edit_only": if TRUE then only cell renderers that are
    --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable will be activated.
 
    function Activate_Cell
@@ -729,7 +729,7 @@ package Gtk.Cell_Area is
    --  events, after determining the renderer at the event location it can then
    --  chose to activate the focus cell for which the event cell may have been
    --  a sibling.
-   --  is a sibling, or null.
+   --  is a sibling, or NULL.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer
 
@@ -759,8 +759,8 @@ package Gtk.Cell_Area is
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to perform
    --  this request with
    --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  "minimum_height": location to store the minimum height, or NULL
+   --  "natural_height": location to store the natural height, or NULL
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Record;
@@ -786,8 +786,8 @@ package Gtk.Cell_Area is
    --  already been requested for widths.
    --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
    --  "width": the width for which to check the height of this area
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  "minimum_height": location to store the minimum height, or NULL
+   --  "natural_height": location to store the natural height, or NULL
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -805,8 +805,8 @@ package Gtk.Cell_Area is
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to perform
    --  this request with
    --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  "minimum_width": location to store the minimum width, or NULL
+   --  "natural_width": location to store the natural width, or NULL
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -832,8 +832,8 @@ package Gtk.Cell_Area is
    --  already been requested for widths.
    --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
    --  "height": the height for which to check the width of this area
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  "minimum_width": location to store the minimum width, or NULL
+   --  "natural_width": location to store the natural width, or NULL
 
    function Get_Request_Mode
       (Self : not null access Gtk_Cell_Area_Record)
@@ -948,14 +948,14 @@ package Gtk.Cell_Area is
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
    --  "for_size": the allocation contextual size to request for, or -1 if the
    --  base request for the orientation is to be returned.
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  "minimum_size": location to store the minimum size, or NULL
+   --  "natural_size": location to store the natural size, or NULL
 
    procedure Stop_Editing
       (Self     : not null access Gtk_Cell_Area_Record;
        Canceled : Boolean);
    --  Explicitly stops the editing of the currently edited cell.
-   --  If Canceled is True, the currently edited cell renderer will emit the
+   --  If Canceled is TRUE, the currently edited cell renderer will emit the
    --  ::editing-canceled signal, otherwise the the ::editing-done signal will
    --  be emitted on the current edit widget.
    --  See Gtk.Cell_Area.Get_Edited_Cell and Gtk.Cell_Area.Get_Edit_Widget.
@@ -970,10 +970,10 @@ package Gtk.Cell_Area is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be null to remove a previously set function.
+   --  Func may be NULL to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
 
    generic
       type User_Data_Type (<>) is private;
@@ -1004,10 +1004,10 @@ package Gtk.Cell_Area is
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
-      --  Func may be null to remove a previously set function.
+      --  Func may be NULL to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
@@ -1138,6 +1138,7 @@ package Gtk.Cell_Area is
    --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  Flags: read-write
    --  The cell in the area that is currently edited
+   --
    --  This property is read-only and only changes as a result of a call
    --  Gtk.Cell_Area.Activate_Cell.
    --
@@ -1195,6 +1196,7 @@ package Gtk.Cell_Area is
    --    --  "path": the current Gtk.Tree_Path.Gtk_Tree_Path string set for Area
    --  Indicates that focus changed on this Area. This signal is emitted
    --  either as a result of focus handling or event handling.
+   --
    --  It's possible that the signal is emitted even if the currently focused
    --  renderer did not change, this is because focus may change to the same
    --  renderer in the same cell area for a different row of data.

@@ -43,8 +43,6 @@ pragma Ada_05;
 --    <object class="GtkMenu"/>
 --    </child>
 --    </object>
---
---
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -118,18 +116,18 @@ package Gtk.Menu_Item is
    --  saved to persistent storage (see gtk_accel_map_save on this). To set up
    --  a default accelerator for this menu item, call Gtk.Accel_Map.Add_Entry
    --  with the same Accel_Path. See also Gtk.Accel_Map.Add_Entry on the
-   --  specifics of accelerator paths, and gtk_menu_set_accel_path for a more
+   --  specifics of accelerator paths, and Gtk.Menu.Set_Accel_Path for a more
    --  convenient variant of this function.
    --  This function is basically a convenience wrapper that handles calling
    --  Gtk.Widget.Set_Accel_Path with the appropriate accelerator group for the
    --  menu item.
    --  Note that you do need to set an accelerator on the parent menu with
-   --  gtk_menu_set_accel_group for this to work.
+   --  Gtk.Menu.Set_Accel_Group for this to work.
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
    --  "accel_path": accelerator path, corresponding to this menu item's
-   --  functionality, or null to unset the current path.
+   --  functionality, or NULL to unset the current path.
 
    function Get_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
@@ -165,7 +163,7 @@ package Gtk.Menu_Item is
    --  appear at the left.)
    --  Gtk.Widget.Set_Hexpand and Gtk.Widget.Set_Halign.
    --  Deprecated since 3.2, If you insist on using it, use
-   --  "right_justified": if True the menu item will appear at the far right
+   --  "right_justified": if TRUE the menu item will appear at the far right
    --  if added to a menu bar
 
    function Get_Submenu
@@ -174,9 +172,9 @@ package Gtk.Menu_Item is
    procedure Set_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Submenu   : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets or replaces the menu item's submenu, or removes it when a null
+   --  Sets or replaces the menu item's submenu, or removes it when a NULL
    --  submenu is passed.
-   --  "submenu": the submenu, or null
+   --  "submenu": the submenu, or NULL
 
    function Get_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
@@ -186,7 +184,7 @@ package Gtk.Menu_Item is
    --  If true, an underline in the text indicates the next character should
    --  be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.16
-   --  "setting": True if underlines in the text indicate mnemonics
+   --  "setting": TRUE if underlines in the text indicate mnemonics
 
    procedure Gtk_Select (Menu_Item : not null access Gtk_Menu_Item_Record);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::select signal on the given item.
@@ -304,12 +302,12 @@ package Gtk.Menu_Item is
    --  Name: Submenu_Property
    --  Type: Gtk.Menu.Gtk_Menu
    --  Flags: read-write
-   --  The submenu attached to the menu item, or null if it has none.
+   --  The submenu attached to the menu item, or NULL if it has none.
    --
    --  Name: Use_Underline_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  True if underlines in the text indicate mnemonics.
+   --  TRUE if underlines in the text indicate mnemonics.
 
    Accel_Path_Property : constant Glib.Properties.Property_String;
    Label_Property : constant Glib.Properties.Property_String;

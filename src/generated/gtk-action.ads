@@ -64,7 +64,7 @@ pragma Ada_05;
 --  Gtk.Action.Gtk_Action:label, Gtk.Action.Gtk_Action:short-label and
 --  Gtk.Action.Gtk_Action:stock-id properties are only mirorred if proxy widget
 --  has Gtk.Activatable.Gtk_Activatable:use-action-appearance property set to
---  True.
+--  TRUE.
 --
 --  When the proxy is activated, it should activate its action.
 --
@@ -108,10 +108,10 @@ package Gtk.Action is
    --  linkend="XML-UI"/> for information on allowed action names.
    --  Since: gtk+ 2.4
    --  "name": A unique name for the action
-   --  "label": the label displayed in menu items and on buttons, or null
-   --  "tooltip": a tooltip for the action, or null
+   --  "label": the label displayed in menu items and on buttons, or NULL
+   --  "tooltip": a tooltip for the action, or NULL
    --  "stock_id": the stock icon to display in widgets representing the
-   --  action, or null
+   --  action, or NULL
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_action_get_type");
@@ -139,8 +139,8 @@ package Gtk.Action is
       (Action : not null access Gtk_Action_Record);
    --  Installs the accelerator for Action if Action has an accel path and
    --  group. See Gtk.Action.Set_Accel_Path and Gtk.Action.Set_Accel_Group
-   --  Since multiple proxies may independently trigger the installation of the
-   --  accelerator, the Action counts the number of times this function has
+   --  Since multiple proxies may independently trigger the installation of
+   --  the accelerator, the Action counts the number of times this function has
    --  been called and doesn't remove the accelerator until
    --  Gtk.Action.Disconnect_Accelerator has been called as many times.
    --  Since: gtk+ 2.4
@@ -159,7 +159,7 @@ package Gtk.Action is
    --  If Action provides a Gtk.Menu.Gtk_Menu widget as a submenu for the menu
    --  item or the toolbar item it creates, this function returns an instance
    --  of that menu.
-   --  action, or null.
+   --  action, or NULL.
    --  Since: gtk+ 2.12
 
    function Create_Menu_Item
@@ -204,7 +204,7 @@ package Gtk.Action is
    --  Use this if the menu item would be useless or hard to use without their
    --  image.
    --  Since: gtk+ 2.20
-   --  "always_show": True if menuitem proxies should always show their image
+   --  "always_show": TRUE if menuitem proxies should always show their image
 
    function Get_Gicon
       (Action : not null access Gtk_Action_Record) return Glib.G_Icon.G_Icon;
@@ -232,7 +232,7 @@ package Gtk.Action is
    --  Sets whether the action is important, this attribute is used primarily
    --  by toolbar items to decide whether to show a label or not.
    --  Since: gtk+ 2.16
-   --  "is_important": True to make the action important
+   --  "is_important": TRUE to make the action important
 
    function Get_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -266,7 +266,7 @@ package Gtk.Action is
    --  this doesn't necessarily mean effective sensitivity. See
    --  Gtk.Action.Is_Sensitive for that.
    --  Since: gtk+ 2.6
-   --  "sensitive": True to make the action sensitive
+   --  "sensitive": TRUE to make the action sensitive
 
    function Get_Short_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -304,7 +304,7 @@ package Gtk.Action is
    --  doesn't necessarily mean effective visibility. See Gtk.Action.Is_Visible
    --  for that.
    --  Since: gtk+ 2.6
-   --  "visible": True to make the action visible
+   --  "visible": TRUE to make the action visible
 
    function Get_Visible_Horizontal
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -342,7 +342,7 @@ package Gtk.Action is
    --  Sets the Gtk.Accel_Group.Gtk_Accel_Group in which the accelerator for
    --  this action will be installed.
    --  Since: gtk+ 2.4
-   --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group or null
+   --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group or NULL
 
    procedure Unblock_Activate (Action : not null access Gtk_Action_Record);
    --  Reenable activation signals from the action
@@ -386,9 +386,10 @@ package Gtk.Action is
    --  Name: Always_Show_Image_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  If True, the action's menu item proxies will ignore the
+   --  If TRUE, the action's menu item proxies will ignore the
    --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show their
    --  image, if available.
+   --
    --  Use this property if the menu item would be useless or hard to use
    --  without their image.
    --
@@ -396,11 +397,13 @@ package Gtk.Action is
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
    --  The GIcon displayed in the Gtk.Action.Gtk_Action.
+   --
    --  Note that the stock icon is preferred, if the
    --  Gtk.Action.Gtk_Action:stock-id property holds the id of an existing
    --  stock icon.
+   --
    --  This is an appearance property and thus only applies if
-   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is TRUE.
    --
    --  Name: Hide_If_Empty_Property
    --  Type: Boolean
@@ -410,12 +413,14 @@ package Gtk.Action is
    --  Type: UTF8_String
    --  Flags: read-write
    --  The name of the icon from the icon theme.
+   --
    --  Note that the stock icon is preferred, if the
    --  Gtk.Action.Gtk_Action:stock-id property holds the id of an existing
    --  stock icon, and the GIcon is preferred if the
    --  Gtk.Action.Gtk_Action:gicon property is set.
+   --
    --  This is an appearance property and thus only applies if
-   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is TRUE.
    --
    --  Name: Is_Important_Property
    --  Type: Boolean
@@ -425,10 +430,11 @@ package Gtk.Action is
    --  Type: UTF8_String
    --  Flags: read-write
    --  The label used for menu items and buttons that activate this action. If
-   --  the label is null, GTK+ uses the stock label specified via the stock-id
+   --  the label is NULL, GTK+ uses the stock label specified via the stock-id
    --  property.
+   --
    --  This is an appearance property and thus only applies if
-   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is TRUE.
    --
    --  Name: Name_Property
    --  Type: UTF8_String
@@ -442,15 +448,17 @@ package Gtk.Action is
    --  Type: UTF8_String
    --  Flags: read-write
    --  A shorter label that may be used on toolbar buttons.
+   --
    --  This is an appearance property and thus only applies if
-   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is TRUE.
    --
    --  Name: Stock_Id_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  The stock icon displayed in widgets representing this action.
+   --
    --  This is an appearance property and thus only applies if
-   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is TRUE.
    --
    --  Name: Tooltip_Property
    --  Type: UTF8_String
@@ -467,7 +475,7 @@ package Gtk.Action is
    --  Name: Visible_Overflown_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  When True, toolitem proxies for this action are represented in the
+   --  When TRUE, toolitem proxies for this action are represented in the
    --  toolbar overflow menu.
    --
    --  Name: Visible_Vertical_Property

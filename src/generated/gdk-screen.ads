@@ -74,8 +74,8 @@ package Gdk.Screen is
    --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
    --  Manager Hints</ulink>. If there is no currently currently active window,
    --  or the window manager does not support the _NET_ACTIVE_WINDOW hint, this
-   --  function returns null.
-   --  On other platforms, this function may return null, depending on whether
+   --  function returns NULL.
+   --  On other platforms, this function may return NULL, depending on whether
    --  it is implementable on that platform.
    --  The returned window should be unrefed using g_object_unref when no
    --  longer needed.
@@ -98,7 +98,7 @@ package Gdk.Screen is
    --  gdk_pango_context_get_for_screen. Changing the default set of font
    --  options does not affect contexts that have already been created.
    --  Since: gtk+ 2.10
-   --  "options": a Cairo.Cairo_Font_Options, or null to unset any previously
+   --  "options": a Cairo.Cairo_Font_Options, or NULL to unset any previously
    --  set default font options.
 
    function Get_Height
@@ -158,7 +158,7 @@ package Gdk.Screen is
        Monitor_Num : Gint) return UTF8_String;
    --  Returns the output name of the specified monitor. Usually something
    --  like VGA, DVI, or TV, not the actual product name of the display device.
-   --  or null if the name cannot be determined
+   --  or NULL if the name cannot be determined
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
@@ -211,7 +211,7 @@ package Gdk.Screen is
        return Gdk.Visual.Gdk_Visual;
    --  Gets a visual to use for creating windows with an alpha channel. The
    --  windowing system on which GTK+ is running may not support this
-   --  capability, in which case null will be returned. Even if a non-null
+   --  capability, in which case NULL will be returned. Even if a non-NULL
    --  value is returned, its possible that the window's alpha channel won't be
    --  honored when displaying the window on the screen: in particular, for X
    --  an appropriate windowing manager and compositing manager must be running
@@ -219,7 +219,7 @@ package Gdk.Screen is
    --  This functionality is not implemented in the Windows backend.
    --  For setting an overall opacity for a top-level window, see
    --  gdk_window_set_opacity.
-   --  alpha channel or null if the capability is not available.
+   --  alpha channel or NULL if the capability is not available.
    --  Since: gtk+ 2.8
 
    function Get_Root_Window
@@ -266,14 +266,14 @@ package Gdk.Screen is
    --  property on the root window, as described in the <ulink
    --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
    --  Manager Hints</ulink>. If the window manager does not support the
-   --  _NET_CLIENT_LIST_STACKING hint, this function returns null.
-   --  On other platforms, this function may return null, depending on whether
+   --  _NET_CLIENT_LIST_STACKING hint, this function returns NULL.
+   --  On other platforms, this function may return NULL, depending on whether
    --  it is implementable on that platform.
    --  The returned list is newly allocated and owns references to the windows
    --  it contains, so it should be freed using g_list_free and its windows
    --  unrefed using g_object_unref when no longer needed.
    --  a list of Gdk.Window.Gdk_Window<!-- -->s for the current window stack,
-   --  or null.
+   --  or NULL.
    --  Since: gtk+ 2.10
 
    function Is_Composited
@@ -400,6 +400,7 @@ package Gdk.Screen is
    --     procedure Handler (Self : access Gdk_Screen_Record'Class);
    --  The ::monitors-changed signal is emitted when the number, size or
    --  position of the monitors attached to the screen change.
+   --
    --  Only for X11 and OS X for now. A future implementation for Win32 may be
    --  a possibility.
    --

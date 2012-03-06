@@ -159,96 +159,7 @@ class GIR(object):
             pkg = self.packages[name.lower()]
 
         if doc:
-            # get_package might have been called before we had the XML node
-            # from the Gir file, and therefore no doc for the package. We can
-            # now override it, unless it came from binding.xml
-
-            doc = re.sub("<term><parameter>(.*?)</parameter>&nbsp;:</term>",
-                         r"\1:", doc)
-
-            doc = doc.replace("<emphasis>", "*") \
-                     .replace("</emphasis>", "*") \
-                     .replace("<literal>", "'") \
-                     .replace("</literal>", "'") \
-                     .replace("<firstterm>", "'") \
-                     .replace("</firstterm>", "'") \
-                     .replace("<![CDATA[", "") \
-                     .replace("]]>", "") \
-                     .replace("&nbsp;", " ") \
-                     .replace("<parameter>", "'") \
-                     .replace("</parameter>", "'") \
-                     .replace("<filename>", "'") \
-                     .replace("</filename>", "'") \
-                     .replace("<footnote>", "[") \
-                     .replace("</footnote>", "]") \
-                     .replace("<keycap>", "'") \
-                     .replace("</keycap>", "'") \
-                     .replace("<keycombo>", "[") \
-                     .replace("</keycombo>", "]") \
-                     .replace("<entry>", "\n\n") \
-                     .replace("</entry>", "") \
-                     .replace("<row>", "") \
-                     .replace("</row>", "") \
-                     .replace("<tbody>", "") \
-                     .replace("</tbody>", "") \
-                     .replace("</tgroup>", "") \
-                     .replace("<informaltable>", "") \
-                     .replace("</informaltable>", "")
-
-            doc = re.sub("<tgroup[^>]*>", "", doc)
-
-            # Lists
-
-            doc = re.sub("<listitem>(\n?<simpara>|\n?<para>)?", "\n\n   * ", doc)
-
-            doc = doc.replace("</para></listitem>", "") \
-                     .replace("</listitem>", "") \
-                     .replace("<simpara>", "") \
-                     .replace("</simpara>", "") \
-                     .replace("<para>", "\n\n") \
-                     .replace("</para>", "")
-
-            # Definition of terms (variablelists)
-
-            doc = doc.replace("<variablelist>", "") \
-                     .replace("</variablelist>", "") \
-                     .replace("<varlistentry>", "") \
-                     .replace("</varlistentry>", "") \
-                     .replace("<term>", "'") \
-                     .replace("</term>", "'")
-
-            doc = re.sub("<variablelist[^>]*>", "", doc)
-
-            doc = re.sub("<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
-            doc = re.sub("<refsect2 id=.*?>", "", doc).replace("<refsect2>", "")
-            doc = re.sub("</refsect2>", "", doc)
-            doc = re.sub("<refsect3 id=.*?>", "", doc).replace("<refsect3>", "")
-            doc = re.sub("</refsect3>", "", doc)
-            doc = doc.replace("<example>", "").replace("</example>", "")
-            doc = doc.replace("<informalexample>", "")
-            doc = doc.replace("</informalexample>", "")
-            doc = doc.replace("<itemizedlist>", "").replace("</itemizedlist>", "")
-            doc = doc.replace("<orderedlist>", "").replace("</orderedlist>", "")
-            doc = doc.replace("&percnt;", "%")
-            doc = doc.replace("&lt;", "<").replace("&gt;", ">")
-            doc = doc.replace("&ast;", "*");
-
-            doc = doc.replace("<programlisting>", "\n\n%PRE%<programlisting>")
-            doc = re.sub("<programlisting>(.*?)</programlisting>",
-                         lambda m: re.sub(
-                              "\n\n+", "\n", indent_code(m.group(1), addnewlines=False)),
-                         doc,
-                         flags=re.DOTALL or re.MULTILINE)
-
-            doc = re.sub("\n\n\n+", "\n\n", doc)
-
-            result = []
-            for paragraph in doc.split("\n\n"):
-                result.append(paragraph)
-
-            pkg.doc = ["<description>"] + \
-                result + \
-                ["</description>"] + pkg.doc
+            pkg.doc = ["<description>", doc, "</description>"] + pkg.doc
 
         return pkg
 
@@ -572,7 +483,9 @@ class SubprogramProfile(object):
 
                 default = '""'
 
-            if p.get("scope", "") in ("notified", "call"):  # "async" ?
+            if (p.get("scope", "") in ("notified", "call")  # "async" ?
+                or p.get("closure", "") != ""):  # gtk_menu_popup does not have scope
+
                 self.callback_param = len(result)
                 self.user_data_param = int(p.get("closure")) - 1
                 self.destroy_param = int(p.get("destroy", "-1")) - 1

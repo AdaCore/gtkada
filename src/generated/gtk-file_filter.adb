@@ -47,7 +47,7 @@ package body Gtk.File_Filter is
    --  Since: gtk+ 2.4
    --  "needed": bitfield of flags indicating the information that the custom
    --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
+   --  "func": callback function; if the function returns TRUE, then the file
    --  will be displayed.
    --  "data": data to pass to Func
    --  "notify": function to call to free Data when it is no longer needed.

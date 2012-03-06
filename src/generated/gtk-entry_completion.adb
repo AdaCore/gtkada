@@ -47,10 +47,10 @@ package body Gtk.Entry_Completion is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be null to remove a previously set function.
+   --  Func may be NULL to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 
@@ -533,8 +533,8 @@ package body Gtk.Entry_Completion is
       --  given Key, and should be displayed as a possible completion for Key.
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
       --  g_utf8_casefold). If this is not appropriate, match functions have
-      --  access to the unmodified key via <literal>gtk_entry_get_text
-      --  (GTK_ENTRY (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+      --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
+      --  (gtk_entry_completion_get_entry (<!-- -->)))'.
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded

@@ -71,7 +71,7 @@ package Gtk.Recent_Info is
    --  In case of error, Error will be set either with a
    --  GTK_RECENT_MANAGER_ERROR or a G_IO_ERROR
    --  "app_name": the name of the application that should be mapped to a
-   --  Glib.GApp_Info; if null is used then the default application for the
+   --  Glib.GApp_Info; if NULL is used then the default application for the
    --  MIME type is used
 
    function Exists (Self : Gtk_Recent_Info) return Boolean;
@@ -111,7 +111,7 @@ package Gtk.Recent_Info is
       (Self : Gtk_Recent_Info;
        Size : Gint) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Retrieves the icon of size Size associated to the resource MIME type.
-   --  or null. Use g_object_unref when finished using the icon.
+   --  or NULL. Use g_object_unref when finished using the icon.
    --  Since: gtk+ 2.10
    --  "size": the size of the icon in pixels
 
@@ -128,7 +128,7 @@ package Gtk.Recent_Info is
 
    function Get_Private_Hint (Self : Gtk_Recent_Info) return Boolean;
    --  Gets the value of the "private" flag. Resources in the recently used
-   --  list that have this flag set to True should only be displayed by the
+   --  list that have this flag set to TRUE should only be displayed by the
    --  applications that have registered them.
    --  Since: gtk+ 2.10
 
@@ -148,7 +148,7 @@ package Gtk.Recent_Info is
    --  Gets a displayable version of the resource's URI. If the resource is
    --  local, it returns a local path; if the resource is not local, it returns
    --  the UTF-8 encoded content of Gtk.Recent_Info.Get_Uri.
-   --  resource's URI or null. Use g_free when done using it.
+   --  resource's URI or NULL. Use g_free when done using it.
    --  Since: gtk+ 2.10
 
    function Get_Visited (Self : Gtk_Recent_Info) return time_t;
@@ -161,7 +161,7 @@ package Gtk.Recent_Info is
       (Self     : Gtk_Recent_Info;
        App_Name : UTF8_String) return Boolean;
    --  Checks whether an application registered this resource using App_Name.
-   --  False otherwise.
+   --  FALSE otherwise.
    --  Since: gtk+ 2.10
    --  "app_name": a string containing an application name
 
@@ -188,7 +188,7 @@ package Gtk.Recent_Info is
        Info_B : Gtk_Recent_Info) return Boolean;
    --  Checks whether two Gtk.Recent_Info.Gtk_Recent_Info structures point to
    --  the same resource.
-   --  resource, False otherwise.
+   --  resource, FALSE otherwise.
    --  Since: gtk+ 2.10
    --  "info_b": a Gtk.Recent_Info.Gtk_Recent_Info
 

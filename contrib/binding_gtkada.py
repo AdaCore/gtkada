@@ -63,7 +63,7 @@ Where the package node is defined as follows:
          <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
             ...            <!-- "\n" forces a newline, paragraphs are created
                                 on empty lines. A paragraph that starts with
-                                '%PRE%' will be displayed exactly as is, no
+                                '__PRE__' will be displayed exactly as is, no
                                 line wrapping is done.-->
          </doc>
          <parameter        <!-- repeated as needed -->
@@ -247,17 +247,11 @@ class GtkAdaPackage(object):
         if docnode is None:
             return []
 
-        text = docnode.text or ""
         doc = []
 
-        if text:
-            descr = []
-            for paragraph in text.split("\n\n"):
-                descr.append(paragraph)
-
-            doc = ["<description>\n"]
-            doc.extend(descr)
-            doc.append("</description>")
+        txt = docnode.text or ""
+        if txt:
+            doc = ["<description>", txt, "</description>"]
 
         n = docnode.get("screenshot")
         if n is not None:

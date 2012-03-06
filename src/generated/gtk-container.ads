@@ -189,7 +189,6 @@ pragma Ada_05;
 --    </packing>
 --    </child>
 --    </object>
---
 --  Since 2.16, child properties can also be marked as translatable using the
 --  same "translatable", "comments" and "context" attributes that are used for
 --  regular properties.
@@ -370,9 +369,8 @@ package Gtk.Container is
    --  create a Gtk.Alignment.Gtk_Alignment widget, call
    --  Gtk.Widget.Set_Size_Request to give it a size, and place it on the side
    --  of the container as a spacer.
-   --  "border_width": amount of blank space to leave
-   --  <emphasis>outside</emphasis> the container. Valid values are in the
-   --  range 0-65535 pixels.
+   --  "border_width": amount of blank space to leave *outside* the container.
+   --  Valid values are in the range 0-65535 pixels.
 
    function Get_Children
       (Container : not null access Gtk_Container_Record)
@@ -386,13 +384,14 @@ package Gtk.Container is
    procedure Set_Focus_Child
       (Container : not null access Gtk_Container_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets, or unsets if Child is null, the focused child of Container.
+   --  Sets, or unsets if Child is NULL, the focused child of Container.
    --  This function emits the GtkContainer::set_focus_child signal of
    --  Container. Implementations of Gtk.Container.Gtk_Container can override
    --  the default behaviour by overriding the class closure of this signal.
-   --  This is function is mostly meant to be used by widgets. Applications can
-   --  use Gtk.Widget.Grab_Focus to manualy set the focus to a specific widget.
-   --  "child": a Gtk.Widget.Gtk_Widget, or null
+   --  This is function is mostly meant to be used by widgets. Applications
+   --  can use Gtk.Widget.Grab_Focus to manualy set the focus to a specific
+   --  widget.
+   --  "child": a Gtk.Widget.Gtk_Widget, or NULL
 
    function Get_Focus_Hadjustment
       (Container : not null access Gtk_Container_Record)
@@ -460,8 +459,8 @@ package Gtk.Container is
    --  doing this. A container, when it receives a call to its
    --  Gtk.Widget.Gtk_Widget::draw function, calls Gtk.Container.Propagate_Draw
    --  once for each child, passing in the Cr the container received.
-   --  Gtk.Container.Propagate_Draw takes care of translating the origin of Cr,
-   --  and deciding whether the draw needs to be sent to the child. It is a
+   --  Gtk.Container.Propagate_Draw takes care of translating the origin of
+   --  Cr, and deciding whether the draw needs to be sent to the child. It is a
    --  convenient and optimized way of getting the same effect as calling
    --  Gtk.Widget.Draw on the child directly.
    --  In most cases, a container can simply either inherit the

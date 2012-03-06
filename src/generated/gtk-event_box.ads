@@ -72,7 +72,7 @@ package Gtk.Event_Box is
    --  its parents.
    --  The default is to keep the window below the child.
    --  Since: gtk+ 2.4
-   --  "above_child": True if the event box window is above its child
+   --  "above_child": TRUE if the event box window is above its child
 
    function Get_Visible_Window
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
@@ -93,9 +93,10 @@ package Gtk.Event_Box is
    --  gradients or pixmaps.
    --  The main reason to create a non input-only event box is if you want to
    --  set the background to a different color or draw on it.
-   --   Note: There is one unexpected issue for an invisible event box that has
-   --  its window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since
-   --  the input-only window is not an ancestor window of any windows that
+   --  Note:
+   --  There is one unexpected issue for an invisible event box that has its
+   --  window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since the
+   --  input-only window is not an ancestor window of any windows that
    --  descendent widgets of the event box create, events on these windows
    --  aren't propagated up by the windowing system, but only by GTK+. The
    --  practical effect of this is if an event isn't in the event mask for the
@@ -105,7 +106,7 @@ package Gtk.Event_Box is
    --  case, the event box window is actually the ancestor of the descendant
    --  windows, not just at the same place on the screen.
    --  Since: gtk+ 2.4
-   --  "visible_window": True to make the event box have a visible window
+   --  "visible_window": TRUE to make the event box have a visible window
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

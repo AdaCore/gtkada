@@ -205,8 +205,8 @@ package Gtk.Cell_Renderer is
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  "minimum_size": location to store the minimum size, or NULL
+   --  "natural_size": location to store the natural size, or NULL
 
    procedure Get_Preferred_Height_For_Width
       (Cell           : not null access Gtk_Cell_Renderer_Record;
@@ -219,8 +219,8 @@ package Gtk.Cell_Renderer is
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
    --  "width": the size which is available for allocation
-   --  "minimum_height": location for storing the minimum size, or null
-   --  "natural_height": location for storing the preferred size, or null
+   --  "minimum_height": location for storing the minimum size, or NULL
+   --  "natural_height": location for storing the preferred size, or NULL
 
    procedure Get_Preferred_Size
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -231,8 +231,8 @@ package Gtk.Cell_Renderer is
    --  the widget's preference for height-for-width management.
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location for storing the minimum size, or null
-   --  "natural_size": location for storing the natural size, or null
+   --  "minimum_size": location for storing the minimum size, or NULL
+   --  "natural_size": location for storing the natural size, or NULL
 
    procedure Get_Preferred_Width
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -242,8 +242,8 @@ package Gtk.Cell_Renderer is
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  "minimum_size": location to store the minimum size, or NULL
+   --  "natural_size": location to store the natural size, or NULL
 
    procedure Get_Preferred_Width_For_Height
       (Cell          : not null access Gtk_Cell_Renderer_Record;
@@ -256,8 +256,8 @@ package Gtk.Cell_Renderer is
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
    --  "height": the size which is available for allocation
-   --  "minimum_width": location for storing the minimum size, or null
-   --  "natural_width": location for storing the preferred size, or null
+   --  "minimum_width": location for storing the minimum size, or NULL
+   --  "natural_width": location for storing the preferred size, or NULL
 
    function Get_Request_Mode
       (Cell : not null access Gtk_Cell_Renderer_Record)
@@ -286,19 +286,19 @@ package Gtk.Cell_Renderer is
    pragma Obsolescent (Get_Size);
    --  Obtains the width and height needed to render the cell. Used by view
    --  widgets to determine the appropriate size for the cell_area passed to
-   --  Gtk.Cell_Renderer.Render. If Cell_Area is not null, fills in the x and y
+   --  Gtk.Cell_Renderer.Render. If Cell_Area is not NULL, fills in the x and y
    --  offsets (if set) of the cell relative to this location.
-   --  Please note that the values set in Width and Height, as well as those in
-   --  X_Offset and Y_Offset are inclusive of the xpad and ypad properties.
+   --  Please note that the values set in Width and Height, as well as those
+   --  in X_Offset and Y_Offset are inclusive of the xpad and ypad properties.
    --  Deprecated since 3.0, Use Gtk.Cell_Renderer.Get_Preferred_Size instead.
    --  "widget": the widget the renderer is rendering to
-   --  "cell_area": The area a cell will be allocated, or null
+   --  "cell_area": The area a cell will be allocated, or NULL
    --  "x_offset": location to return x offset of cell relative to Cell_Area,
-   --  or null
+   --  or NULL
    --  "y_offset": location to return y offset of cell relative to Cell_Area,
-   --  or null
-   --  "width": location to return width needed to render a cell, or null
-   --  "height": location to return height needed to render a cell, or null
+   --  or NULL
+   --  "width": location to return width needed to render a cell, or NULL
+   --  "height": location to return height needed to render a cell, or NULL
 
    function Get_State
       (Cell       : not null access Gtk_Cell_Renderer_Record;
@@ -309,7 +309,7 @@ package Gtk.Cell_Renderer is
    --  on the cell renderer and widget sensitivity, and the given
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer_State.
    --  Since: gtk+ 3.0
-   --  "widget": a Gtk.Widget.Gtk_Widget, or null
+   --  "widget": a Gtk.Widget.Gtk_Widget, or NULL
    --  "cell_state": cell renderer state
 
    function Get_Visible
@@ -372,13 +372,13 @@ package Gtk.Cell_Renderer is
       (Cell     : not null access Gtk_Cell_Renderer_Record;
        Canceled : Boolean);
    --  Informs the cell renderer that the editing is stopped. If Canceled is
-   --  True, the cell renderer will emit the
+   --  TRUE, the cell renderer will emit the
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer::editing-canceled signal.
    --  This function should be called by cell renderer implementations in
    --  response to the Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal
    --  of Gtk.Cell_Editable.Gtk_Cell_Editable.
    --  Since: gtk+ 2.6
-   --  "canceled": True if the editing has been canceled
+   --  "canceled": TRUE if the editing has been canceled
 
    ----------------
    -- Properties --
@@ -478,6 +478,7 @@ package Gtk.Cell_Renderer is
    --  This signal gets emitted when the user cancels the process of editing a
    --  cell. For example, an editable cell renderer could be written to cancel
    --  editing when the user presses Escape.
+   --
    --  See also: Gtk.Cell_Renderer.Stop_Editing.
    --
    --  "editing-started"
@@ -491,6 +492,7 @@ package Gtk.Cell_Renderer is
    --  use of this signal is to do special setup on Editable, e.g. adding a
    --  Gtk.Entry_Completion.Gtk_Entry_Completion or setting up additional
    --  columns in a Gtk.Combo_Box.Gtk_Combo_Box.
+   --
    --  Note that GTK+ doesn't guarantee that cell renderers will continue to
    --  use the same kind of widget for editing in future releases, therefore
    --  you should check the type of Editable before doing any specific setup,
@@ -498,7 +500,9 @@ package Gtk.Cell_Renderer is
    --  (GtkCellRenderer *cell, GtkCellEditable *editable, const gchar *path,
    --  gpointer data) { if (GTK_IS_ENTRY (editable)) { GtkEntry *entry =
    --  GTK_ENTRY (editable);
-   --  /&ast; ... create a GtkEntryCompletion &ast;/
+   --
+   --  /* ... create a GtkEntryCompletion */
+   --
    --  gtk_entry_set_completion (entry, completion); } } ]|
 
    Signal_Editing_Canceled : constant Glib.Signal_Name := "editing-canceled";

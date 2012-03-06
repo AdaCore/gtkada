@@ -103,8 +103,8 @@ package Gtk.Font_Selection is
    --  Note that the Fontsel needs to know the screen in which it will appear
    --  for this to work; this can be guaranteed by simply making sure that the
    --  Fontsel is inserted in a toplevel window before you call this function.
-   --  such font exists or if the Fontsel doesn't belong to a particular screen
-   --  yet.
+   --  such font exists or if the Fontsel doesn't belong to a particular
+   --  screen yet.
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 

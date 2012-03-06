@@ -181,7 +181,7 @@ package Gtk.Status_Icon is
    --  Makes Status_Icon display Pixbuf. See
    --  Gtk.Status_Icon.Gtk_New_From_Pixbuf for details.
    --  Since: gtk+ 2.10
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf or null
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf or NULL
 
    function Get_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -246,12 +246,12 @@ package Gtk.Status_Icon is
    --  Sets Markup as the contents of the tooltip, which is marked up with the
    --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
    --  This function will take care of setting
-   --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
+   --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to TRUE and of the default
    --  handler for the Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal.
-   --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-markup property and
-   --  gtk_tooltip_set_markup.
+   --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-markup property
+   --  and gtk_tooltip_set_markup.
    --  Since: gtk+ 2.16
-   --  "markup": the contents of the tooltip for Status_Icon, or null
+   --  "markup": the contents of the tooltip for Status_Icon, or NULL
 
    function Get_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -261,7 +261,7 @@ package Gtk.Status_Icon is
        Text        : UTF8_String);
    --  Sets Text as the contents of the tooltip.
    --  This function will take care of setting
-   --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
+   --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to TRUE and of the default
    --  handler for the Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal.
    --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text property and
    --  gtk_tooltip_set_text.
@@ -275,7 +275,7 @@ package Gtk.Status_Icon is
        Visible     : Boolean);
    --  Shows or hides a status icon.
    --  Since: gtk+ 2.10
-   --  "visible": True to show the status icon, False to hide it
+   --  "visible": TRUE to show the status icon, FALSE to hide it
 
    function Get_X11_Window_Id
       (Status_Icon : not null access Gtk_Status_Icon_Record) return guint32;
@@ -324,7 +324,7 @@ package Gtk.Status_Icon is
        Push_In   : out gboolean;
        User_Data : System.Address);
    pragma Convention (C, Position_Menu);
-   --  Menu positioning function to use with gtk_menu_popup to position Menu
+   --  Menu positioning function to use with Gtk.Menu.Popup to position Menu
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10
    --  "menu": the Gtk.Menu.Gtk_Menu
@@ -343,7 +343,7 @@ package Gtk.Status_Icon is
    --  Name: Embedded_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  True if the statusicon is embedded in a notification area.
+   --  TRUE if the statusicon is embedded in a notification area.
    --
    --  Name: File_Property
    --  Type: UTF8_String
@@ -360,16 +360,18 @@ package Gtk.Status_Icon is
    --  Flags: read-write
    --  Enables or disables the emission of
    --  Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip on Status_Icon. A value
-   --  of True indicates that Status_Icon can have a tooltip, in this case the
+   --  of TRUE indicates that Status_Icon can have a tooltip, in this case the
    --  status icon will be queried using
    --  Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip to determine whether it
    --  will provide a tooltip or not.
-   --  Note that setting this property to True for the first time will change
+   --
+   --  Note that setting this property to TRUE for the first time will change
    --  the event masks of the windows of this status icon to include
    --  leave-notify and motion-notify events. This will not be undone when the
-   --  property is set to False again.
-   --  Whether this property is respected is platform dependent. For plain text
-   --  tooltips, use Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text in
+   --  property is set to FALSE again.
+   --
+   --  Whether this property is respected is platform dependent. For plain
+   --  text tooltips, use Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text in
    --  preference.
    --
    --  Name: Icon_Name_Property
@@ -414,27 +416,32 @@ package Gtk.Status_Icon is
    --  Sets the text of tooltip to be the given string, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
    --  language</link>. Also see gtk_tooltip_set_markup.
+   --
    --  This is a convenience property which will take care of getting the
-   --  tooltip shown if the given string is not null.
+   --  tooltip shown if the given string is not NULL.
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip will automatically be set to
-   --  True and the default handler for the
+   --  TRUE and the default handler for the
    --  Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal will take care of
    --  displaying the tooltip.
+   --
    --  On some platforms, embedded markup will be ignored.
    --
    --  Name: Tooltip_Text_Property
    --  Type: UTF8_String
    --  Flags: read-write
    --  Sets the text of tooltip to be the given string.
+   --
    --  Also see gtk_tooltip_set_text.
+   --
    --  This is a convenience property which will take care of getting the
-   --  tooltip shown if the given string is not null.
+   --  tooltip shown if the given string is not NULL.
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip will automatically be set to
-   --  True and the default handler for the
+   --  TRUE and the default handler for the
    --  Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal will take care of
    --  displaying the tooltip.
-   --  Note that some platforms have limitations on the length of tooltips that
-   --  they allow on status icons, e.g. Windows only shows the first 64
+   --
+   --  Note that some platforms have limitations on the length of tooltips
+   --  that they allow on status icons, e.g. Windows only shows the first 64
    --  characters.
    --
    --  Name: Visible_Property
@@ -466,6 +473,7 @@ package Gtk.Status_Icon is
    --     procedure Handler (Self : access Gtk_Status_Icon_Record'Class);
    --  Gets emitted when the user activates the status icon. If and how status
    --  icons can activated is platform-dependent.
+   --
    --  Unlike most G_SIGNAL_ACTION signals, this signal is meant to be used by
    --  applications and should be wrapped by language bindings.
    --
@@ -476,10 +484,13 @@ package Gtk.Status_Icon is
    --    --  "event": the Gdk_Event_Button which triggered this signal
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
+   --
    --  Whether this event is emitted is platform-dependent. Use the ::activate
    --  and ::popup-menu signals in preference.
-   --  for the event. False to propagate the event further.
-   --  Returns True to stop other handlers from being invoked
+   --
+   --  for the event. FALSE to propagate the event further.
+   --
+   --  Returns TRUE to stop other handlers from being invoked
    --
    --  "button-release-event"
    --     function Handler
@@ -488,10 +499,13 @@ package Gtk.Status_Icon is
    --    --  "event": the Gdk_Event_Button which triggered this signal
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
+   --
    --  Whether this event is emitted is platform-dependent. Use the ::activate
    --  and ::popup-menu signals in preference.
-   --  for the event. False to propagate the event further.
-   --  Returns True to stop other handlers from being invoked
+   --
+   --  for the event. FALSE to propagate the event further.
+   --
+   --  Returns TRUE to stop other handlers from being invoked
    --
    --  "popup-menu"
    --     procedure Handler
@@ -505,8 +519,10 @@ package Gtk.Status_Icon is
    --  Gets emitted when the user brings up the context menu of the status
    --  icon. Whether status icons can have context menus and how these are
    --  activated is platform-dependent.
+   --
    --  The Button and Activate_Time parameters should be passed as the last to
-   --  arguments to gtk_menu_popup.
+   --  arguments to Gtk.Menu.Popup.
+   --
    --  Unlike most G_SIGNAL_ACTION signals, this signal is meant to be used by
    --  applications and should be wrapped by language bindings.
    --
@@ -522,21 +538,25 @@ package Gtk.Status_Icon is
    --    --  emitted, relative to Status_Icon
    --    --  "y": the y coordinate of the cursor position where the request has been
    --    --  emitted, relative to Status_Icon
-   --    --  "keyboard_mode": True if the tooltip was trigged using the keyboard
+   --    --  "keyboard_mode": TRUE if the tooltip was trigged using the keyboard
    --    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
    --  Emitted when the Gtk.Settings.Gtk_Settings:gtk-tooltip-timeout has
    --  expired with the cursor hovering above Status_Icon; or emitted when
    --  Status_Icon got focus in keyboard mode.
-   --  Using the given coordinates, the signal handler should determine whether
-   --  a tooltip should be shown for Status_Icon. If this is the case True
-   --  should be returned, False otherwise. Note that if Keyboard_Mode is True,
-   --  the values of X and Y are undefined and should not be used.
+   --
+   --  Using the given coordinates, the signal handler should determine
+   --  whether a tooltip should be shown for Status_Icon. If this is the case
+   --  TRUE should be returned, FALSE otherwise. Note that if Keyboard_Mode is
+   --  TRUE, the values of X and Y are undefined and should not be used.
+   --
    --  The signal handler is free to manipulate Tooltip with the therefore
    --  destined function calls.
+   --
    --  Whether this signal is emitted is platform-dependent. For plain text
    --  tooltips, use Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text in
    --  preference.
-   --  Returns True if Tooltip should be shown right now, False otherwise.
+   --
+   --  Returns TRUE if Tooltip should be shown right now, FALSE otherwise.
    --
    --  "scroll-event"
    --     function Handler
@@ -546,9 +566,12 @@ package Gtk.Status_Icon is
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
+   --
    --  Whether this event is emitted is platform-dependent.
-   --  False to propagate the event further.
-   --  Returns True to stop other handlers from being invoked for the event.
+   --
+   --  FALSE to propagate the event further.
+   --
+   --  Returns TRUE to stop other handlers from being invoked for the event.
    --
    --  "size-changed"
    --     function Handler
@@ -557,8 +580,10 @@ package Gtk.Status_Icon is
    --    --  "size": the new size
    --  Gets emitted when the size available for the image changes, e.g.
    --  because the notification area got resized.
+   --
    --  size. Otherwise, GTK+ will scale the icon as necessary.
-   --  Returns True if the icon was updated for the new
+   --
+   --  Returns TRUE if the icon was updated for the new
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
    Signal_Button_Press_Event : constant Glib.Signal_Name := "button-press-event";

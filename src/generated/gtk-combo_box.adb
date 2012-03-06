@@ -66,10 +66,10 @@ package body Gtk.Combo_Box is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be null to remove a previously set function.
+   --  Func may be NULL to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 
@@ -81,11 +81,11 @@ package body Gtk.Combo_Box is
    pragma Import (C, C_Gtk_Combo_Box_Set_Row_Separator_Func, "gtk_combo_box_set_row_separator_func");
    --  Sets the row separator function, which is used to determine whether a
    --  row should be drawn as a separator. If the row separator function is
-   --  null, no separators are drawn. This is the default value.
+   --  NULL, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
    --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-   --  "data": user data to pass to Func, or null
-   --  "destroy": destroy notifier for Data, or null
+   --  "data": user data to pass to Func, or NULL
+   --  "destroy": destroy notifier for Data, or NULL
 
    procedure Internal_Cell_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;

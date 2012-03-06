@@ -154,7 +154,7 @@ package Gtk.Spin_Button is
        The_Digits  : Guint := 0);
    --  Creates a new Gtk.Spin_Button.Gtk_Spin_Button.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment object that this spin
-   --  button should use, or null
+   --  button should use, or NULL
    --  "climb_rate": specifies how much the spin button changes when an arrow
    --  is clicked on
    --  "digits": the number of decimal places to display
@@ -483,23 +483,29 @@ package Gtk.Spin_Button is
    --  input into a double value. The signal handler is expected to use
    --  Gtk.GEntry.Get_Text to retrieve the text of the entry and set New_Value
    --  to the new value.
+   --
    --  The default conversion uses g_strtod.
+   --
    --  was not handled, and GTK_INPUT_ERROR if the conversion failed.
-   --  Returns True for a successful conversion, False if the input
+   --
+   --  Returns TRUE for a successful conversion, FALSE if the input
    --
    --  "output"
    --     function Handler
    --       (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
    --  The ::output signal can be used to change to formatting of the value
-   --  that is displayed in the spin buttons entry. |[ /&ast; show leading
-   --  zeros &ast;/ static gboolean on_output (GtkSpinButton *spin, gpointer
-   --  data) { GtkAdjustment *adjustment; gchar *text; int value;
+   --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
+   --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
+   --  GtkAdjustment *adjustment; gchar *text; int value;
+   --
    --  adjustment = gtk_spin_button_get_adjustment (spin); value =
    --  (int)gtk_adjustment_get_value (adjustment); text = g_strdup_printf
    --  ("%02d", value); gtk_entry_set_text (GTK_ENTRY (spin), text); g_free
    --  (text);
+   --
    --  return TRUE; } ]|
-   --  Returns True if the value has been displayed
+   --
+   --  Returns TRUE if the value has been displayed
    --
    --  "value-changed"
    --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);

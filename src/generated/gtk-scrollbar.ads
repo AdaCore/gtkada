@@ -78,7 +78,7 @@ package Gtk.Scrollbar is
    --  Creates a new scrollbar with the given orientation.
    --  Since: gtk+ 3.0
    --  "orientation": the scrollbar's orientation.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or NULL to
    --  create a new adjustment.
 
    function Get_Type return Glib.GType;
@@ -91,7 +91,7 @@ package Gtk.Scrollbar is
       (Scrollbar  : not null access Gtk_Hscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new horizontal scrollbar.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or NULL to
    --  create a new adjustment
 
    function Hscrollbar_Get_Type return Glib.GType;
@@ -104,7 +104,7 @@ package Gtk.Scrollbar is
       (Scrollbar  : not null access Gtk_Vscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new vertical scrollbar.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or NULL to
    --  create a new adjustment
 
    function Vscrollbar_Get_Type return Glib.GType;

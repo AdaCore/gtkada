@@ -120,9 +120,9 @@ package Gtk.Toolbar is
    function Get_Nth_Item
       (Toolbar : not null access Gtk_Toolbar_Record;
        N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
-   --  Returns the N<!-- -->'th item on Toolbar, or null if the toolbar does
+   --  Returns the N<!-- -->'th item on Toolbar, or NULL if the toolbar does
    --  not contain an N<!-- -->'th item.
-   --  or null if there isn't an N<!-- -->'th item.
+   --  or NULL if there isn't an N<!-- -->'th item.
    --  Since: gtk+ 2.4
    --  "n": A position on the toolbar
 
@@ -139,7 +139,7 @@ package Gtk.Toolbar is
       (Toolbar    : not null access Gtk_Toolbar_Record;
        Show_Arrow : Boolean := True);
    --  Sets whether to show an overflow menu when Toolbar doesn't have room
-   --  for all items on it. If True, items that there are not room are
+   --  for all items on it. If TRUE, items that there are not room are
    --  available through an overflow menu.
    --  Since: gtk+ 2.4
    --  "show_arrow": Whether to show an overflow menu
@@ -171,12 +171,12 @@ package Gtk.Toolbar is
        Index     : Gint);
    --  Highlights Toolbar to give an idea of what it would look like if Item
    --  was added to Toolbar at the position indicated by Index_. If Item is
-   --  null, highlighting is turned off. In that case Index_ is ignored.
+   --  NULL, highlighting is turned off. In that case Index_ is ignored.
    --  The Tool_Item passed to this function must not be part of any widget
    --  hierarchy. When an item is set as drop highlight item it can not added
    --  to any widget hierarchy or used as highlight item for another toolbar.
    --  Since: gtk+ 2.4
-   --  "tool_item": a Gtk.Tool_Item.Gtk_Tool_Item, or null to turn of
+   --  "tool_item": a Gtk.Tool_Item.Gtk_Tool_Item, or NULL to turn of
    --  highlighting
    --  "index_": a position on Toolbar
 
@@ -275,6 +275,7 @@ package Gtk.Toolbar is
    --  The size of the icons in a toolbar is normally determined by the
    --  toolbar-icon-size setting. When this property is set, it overrides the
    --  setting.
+   --
    --  This should only be used for special-purpose toolbars, normal
    --  application toolbars should respect the user preferences for the size of
    --  icons.
@@ -282,7 +283,7 @@ package Gtk.Toolbar is
    --  Name: Icon_Size_Set_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  Is True if the icon-size property has been set.
+   --  Is TRUE if the icon-size property has been set.
    --
    --  Name: Show_Arrow_Property
    --  Type: Boolean
@@ -306,10 +307,11 @@ package Gtk.Toolbar is
    --     function Handler
    --       (Self       : access Gtk_Toolbar_Record'Class;
    --        Focus_Home : Boolean) return Boolean;
-   --    --  "focus_home": True if the first item should be focused
+   --    --  "focus_home": TRUE if the first item should be focused
    --  A keybinding signal used internally by GTK+. This signal can't be used
    --  in application code
-   --  Returns True if the signal was handled, False if not
+   --
+   --  Returns TRUE if the signal was handled, FALSE if not
    --
    --  "orientation-changed"
    --     procedure Handler
@@ -329,12 +331,14 @@ package Gtk.Toolbar is
    --    --  "button": the mouse button the user pressed, or -1
    --  Emitted when the user right-clicks the toolbar or uses the keybinding
    --  to display a popup menu.
-   --  Application developers should handle this signal if they want to display
-   --  a context menu on the toolbar. The context-menu should appear at the
-   --  coordinates given by X and Y. The mouse button number is given by the
-   --  Button parameter. If the menu was popped up using the keybaord, Button
-   --  is -1.
-   --  Returns return True if the signal was handled, False if not
+   --
+   --  Application developers should handle this signal if they want to
+   --  display a context menu on the toolbar. The context-menu should appear at
+   --  the coordinates given by X and Y. The mouse button number is given by
+   --  the Button parameter. If the menu was popped up using the keybaord,
+   --  Button is -1.
+   --
+   --  Returns return TRUE if the signal was handled, FALSE if not
    --
    --  "style-changed"
    --     procedure Handler

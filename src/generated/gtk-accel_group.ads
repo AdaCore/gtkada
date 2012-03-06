@@ -169,8 +169,8 @@ package Gtk.Accel_Group is
        Closure     : C_Gtk_Accel_Group_Activate) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  Since 2.20 Closure can be null.
-   --  "closure": the closure to remove from this accelerator group, or null
+   --  Since 2.20 Closure can be NULL.
+   --  "closure": the closure to remove from this accelerator group, or NULL
    --  to remove all closures
 
    function Disconnect_Key
@@ -179,7 +179,7 @@ package Gtk.Accel_Group is
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  removed, False otherwise
+   --  removed, FALSE otherwise
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
 
@@ -187,7 +187,7 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
+   --  returns TRUE and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
 
@@ -207,7 +207,7 @@ package Gtk.Accel_Group is
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func
-      --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
+      --  returns TRUE and returns its Gtk.Accel_Group.Gtk_Accel_Key.
       --  Find_Func. The key is owned by GTK+ and must not be freed.
       --  "find_func": a function to filter the entries of Accel_Group with
       --  "data": data to pass to Find_Func
@@ -218,7 +218,7 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
    --  Gtk.Accel_Group.Unlock.
-   --  False otherwise.
+   --  FALSE otherwise.
    --  Since: gtk+ 2.14
 
    function Get_Modifier_Mask
@@ -247,7 +247,7 @@ package Gtk.Accel_Group is
       (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
-   --  is connected, or null
+   --  is connected, or NULL
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
@@ -285,26 +285,25 @@ package Gtk.Accel_Group is
        Accelerator_Key  : out Gdk.Types.Gdk_Key_Type;
        Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
    --  Parses a string representing an accelerator. The format looks like
-   --  "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1" or "&lt;Release&gt;z"
-   --  (the last one is for key release).
+   --  "<Control>a" or "<Shift><Alt>F1" or "<Release>z" (the last one is for
+   --  key release).
    --  The parser is fairly liberal and allows lower or upper case, and also
-   --  abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". Key names are
-   --  parsed using gdk_keyval_from_name. For character keys the name is not
-   --  the symbol, but the lowercase name, e.g. one would use
-   --  "&lt;Ctrl&gt;minus" instead of "&lt;Ctrl&gt;-".
+   --  abbreviations such as "<Ctl>" and "<Ctrl>". Key names are parsed using
+   --  gdk_keyval_from_name. For character keys the name is not the symbol, but
+   --  the lowercase name, e.g. one would use "<Ctrl>minus" instead of
+   --  "<Ctrl>-".
    --  If the parse fails, Accelerator_Key and Accelerator_Mods will be set to
    --  0 (zero).
    --  "accelerator": string representing an accelerator
-   --  "accelerator_key": return location for accelerator keyval, or null
-   --  "accelerator_mods": return location for accelerator modifier mask, null
+   --  "accelerator_key": return location for accelerator keyval, or NULL
+   --  "accelerator_mods": return location for accelerator modifier mask, NULL
 
    function Accelerator_Name
       (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
        Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return UTF8_String;
    --  Converts an accelerator keyval and modifier mask into a string
    --  parseable by Gtk.Accel_Group.Accelerator_Parse. For example, if you pass
-   --  in GDK_KEY_q and GDK_CONTROL_MASK, this function returns
-   --  "&lt;Control&gt;q".
+   --  in GDK_KEY_q and GDK_CONTROL_MASK, this function returns "<Control>q".
    --  If you need to display accelerators in the user interface, see
    --  Gtk.Accel_Group.Accelerator_Get_Label.
    --  "accelerator_key": accelerator keyval
@@ -358,7 +357,8 @@ package Gtk.Accel_Group is
    --  The accel-activate signal is an implementation detail of
    --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
    --  applications.
-   --  Returns True if the accelerator was activated
+   --
+   --  Returns TRUE if the accelerator was activated
    --
    --  "accel-changed"
    --     procedure Handler
@@ -371,9 +371,10 @@ package Gtk.Accel_Group is
    --    --  "accel_closure": the GClosure of the accelerator
    --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
    --  added to or removed from the accel group.
-   --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an associated
-   --  accelerator should connect to this signal, and rebuild their visual
-   --  representation if the Accel_Closure is theirs.
+   --
+   --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an
+   --  associated accelerator should connect to this signal, and rebuild their
+   --  visual representation if the Accel_Closure is theirs.
 
    Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";

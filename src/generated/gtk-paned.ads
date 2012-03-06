@@ -44,7 +44,7 @@ pragma Ada_05;
 --  is true, then when the Gtk.Paned.Gtk_Paned is resized, that child will
 --  expand or shrink along with the paned widget. If Shrink is true, then that
 --  child can be made smaller than its requisition by the user. Setting Shrink
---  to False allows the application to set a minimum size. If Resize is false
+--  to FALSE allows the application to set a minimum size. If Resize is false
 --  for both children, then this is treated as if Resize is true for both
 --  children.
 --
@@ -289,6 +289,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle when moving it using key
    --  bindings.
+   --
    --  The default binding for this signal is Return or Space.
    --
    --  "cancel-position"
@@ -298,6 +299,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cancel moving the position of the handle using key bindings. The
    --  position of the handle will be reset to the value prior to moving it.
+   --
    --  The default binding for this signal is Escape.
    --
    --  "cycle-child-focus"
@@ -308,6 +310,7 @@ package Gtk.Paned is
    --  The ::cycle-child-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle the focus between the children of the paned.
+   --
    --  The default binding is f6.
    --
    --  "cycle-handle-focus"
@@ -319,6 +322,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle whether the paned should grab focus to allow the user to change
    --  position of the handle by using key bindings.
+   --
    --  The default binding for this signal is f8.
    --
    --  "move-handle"
@@ -337,6 +341,7 @@ package Gtk.Paned is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle and then move focus to the
    --  next widget in the focus chain.
+   --
    --  The default binding is Tab.
 
    Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";

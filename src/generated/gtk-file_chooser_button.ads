@@ -29,7 +29,7 @@ pragma Ada_05;
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. The user can then use that
 --  dialog to change the file associated with that button. This widget does not
 --  support setting the Gtk.File_Chooser.Gtk_File_Chooser:select-multiple
---  property to True.
+--  property to TRUE.
 --
 --  == Create a button to let the user select a file in /etc ==
 --
@@ -425,8 +425,8 @@ package Gtk.File_Chooser_Button is
    --     procedure Handler
    --       (Self : access Gtk_File_Chooser_Button_Record'Class);
    --  The ::file-set signal is emitted when the user selects a file.
-   --  Note that this signal is only emitted when the <emphasis>user</emphasis>
-   --  changes the file.
+   --
+   --  Note that this signal is only emitted when the *user* changes the file.
 
    Signal_File_Set : constant Glib.Signal_Name := "file-set";
 

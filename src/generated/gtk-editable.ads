@@ -36,7 +36,7 @@ pragma Ada_05;
 --
 --  == Forcing entry to uppercase. ==
 --
---    #include <ctype.h>
+--    include <ctype.h>
 --    void
 --    insert_text_handler (GtkEditable *editable,
 --       const gchar *text,
@@ -121,7 +121,7 @@ package Gtk.Editable is
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
-   --  "is_editable": True if the user is allowed to edit the text in the
+   --  "is_editable": TRUE if the user is allowed to edit the text in the
    --  widget
 
    function Get_Position (Editable : Gtk_Editable) return Gint;
@@ -187,10 +187,11 @@ package Gtk.Editable is
    --     procedure Handler (Self : access Gtk_Editable);
    --  The ::changed signal is emitted at the end of a single user-visible
    --  operation on the contents of the Gtk.Editable.Gtk_Editable.
-   --  E.g., a paste operation that replaces the contents of the selection will
-   --  cause only one signal emission (even though it is implemented by first
-   --  deleting the selection, then inserting the new content, and may cause
-   --  multiple ::notify::text signals to be emitted).
+   --
+   --  E.g., a paste operation that replaces the contents of the selection
+   --  will cause only one signal emission (even though it is implemented by
+   --  first deleting the selection, then inserting the new content, and may
+   --  cause multiple ::notify::text signals to be emitted).
    --
    --  "delete-text"
    --     procedure Handler

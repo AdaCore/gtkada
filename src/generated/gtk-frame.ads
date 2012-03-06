@@ -45,8 +45,6 @@ pragma Ada_05;
 --    <object class="GtkEntry" id="frame-content"/>
 --    </child>
 --    </object>
---
---
 --  </description>
 --  <description>
 --  This is a very convenient widget to visually group related widgets (like
@@ -85,7 +83,7 @@ package Gtk.Frame is
       (Frame : not null access Gtk_Frame_Record'Class;
        Label : UTF8_String := "");
    --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
-   --  is null, the label is omitted.
+   --  is NULL, the label is omitted.
    --  "label": the text to use as the label of the frame
 
    function Get_Type return Glib.GType;
@@ -100,7 +98,7 @@ package Gtk.Frame is
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
        Label : UTF8_String := "");
-   --  Sets the text of the label. If Label is null, the current label is
+   --  Sets the text of the label. If Label is NULL, the current label is
    --  removed.
    --  "label": the text to use as the label of the frame
 

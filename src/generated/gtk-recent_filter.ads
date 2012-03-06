@@ -68,8 +68,6 @@ pragma Ada_05;
 --    <application>glade</application>
 --    </applications>
 --    </object>
---
---
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -184,7 +182,7 @@ package Gtk.Recent_Filter is
    --  Since: gtk+ 2.10
    --  "needed": bitfield of flags indicating the information that the custom
    --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
+   --  "func": callback function; if the function returns TRUE, then the file
    --  will be displayed.
    --  "data_destroy": function to call to free Data when it is no longer
    --  needed.
@@ -218,7 +216,7 @@ package Gtk.Recent_Filter is
       --  Since: gtk+ 2.10
       --  "needed": bitfield of flags indicating the information that the
       --  custom filter function needs.
-      --  "func": callback function; if the function returns True, then the
+      --  "func": callback function; if the function returns TRUE, then the
       --  file will be displayed.
       --  "data": data to pass to Func
       --  "data_destroy": function to call to free Data when it is no longer
@@ -260,8 +258,8 @@ package Gtk.Recent_Filter is
    --  Tests whether a file should be displayed according to Filter. The
    --  Gtk.Recent_Filter.Gtk_Recent_Filter_Info structure Filter_Info should
    --  include the fields returned from Gtk.Recent_Filter.Get_Needed.
-   --  This function will not typically be used by applications; it is intended
-   --  principally for use in the implementation of
+   --  This function will not typically be used by applications; it is
+   --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  Since: gtk+ 2.10
    --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info structure
@@ -283,8 +281,8 @@ package Gtk.Recent_Filter is
        return Gtk_Recent_Filter_Flags;
    --  Gets the fields that need to be filled in for the structure passed to
    --  Gtk.Recent_Filter.Filter
-   --  This function will not typically be used by applications; it is intended
-   --  principally for use in the implementation of
+   --  This function will not typically be used by applications; it is
+   --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  calling Gtk.Recent_Filter.Filter
    --  Since: gtk+ 2.10

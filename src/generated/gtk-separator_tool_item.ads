@@ -28,8 +28,8 @@ pragma Ada_05;
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will often look like a
 --  vertical line on horizontally docked toolbars.
 --
---  If the Gtk.Toolbar.Gtk_Toolbar child property "expand" is True and the
---  property Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is False, a
+--  If the Gtk.Toolbar.Gtk_Toolbar child property "expand" is TRUE and the
+--  property Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is FALSE, a
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will act as a "spring" that
 --  forces other items to the ends of the toolbar.
 --
@@ -76,7 +76,7 @@ package Gtk.Separator_Tool_Item is
       (Item : not null access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
    --  Whether Item is drawn as a vertical line, or just blank. Setting this
-   --  to False along with Gtk.Tool_Item.Set_Expand is useful to create an item
+   --  to FALSE along with Gtk.Tool_Item.Set_Expand is useful to create an item
    --  that forces following items to the end of the toolbar.
    --  Since: gtk+ 2.4
    --  "draw": whether Item is drawn as a vertical line

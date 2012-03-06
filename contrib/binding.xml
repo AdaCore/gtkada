@@ -82,7 +82,7 @@
         ################################################-->
 
    <package id="Gdk.Screen">
-     <doc  group="Gdk, the low-level API"/>
+     <doc group="Gdk, the low-level API"/>
      <parameter name="self" ada="Screen"/>
      <method id="gdk_screen_get_setting" bind="False" />
      <method id="gdk_screen_get_toplevel_windows" return="WindowList" />
@@ -1708,7 +1708,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
         <parameter name="group" ctype="WidgetSList"/>
         <doc extend="true">A common way to set up a group of radio group is the following:
 
-%PRE%      Group  : GSlist := null;
+__PRE__      Group  : GSlist := null;
       Action : Gtk_Radio_Action;
       while ... loop
          Gtk_New (Action, ...);
@@ -1798,7 +1798,7 @@ This package provides an interface implemented by Gtk.File_Chooser_Widget and Gt
 
 Gtk_File_Chooser allows for shortcuts to various places in the filesystem.  In the default implementation these are displayed in the left pane. It may be a bit confusing at first that these shortcuts come from various sources and in various flavours, so lets explain the terminology here:
 
-%PRE%  - Bookmarks
+__PRE__  - Bookmarks
     are created by the user, by dragging folders from the right pane to the
     left pane, or by using the "Add". Bookmarks can be renamed and deleted
     by the user.
@@ -1835,7 +1835,7 @@ Key bindings
 
 The following default key bindings are provided, but you can use a gtkrc file to override them if you need (see gtk-rc.ads).
 
-%PRE%
+__PRE__
    Signal name    | Key binding
    location-popup | Control-L  (empty path)
                   | /          (path of "/")
@@ -2106,7 +2106,7 @@ The following default key bindings are provided, but you can use a gtkrc file to
 In case the default screen is being used, adding a new recently used file is as
 simple as:
 
-%PRE%
+__PRE__
      declare
         Manager : constant Gtk_Recent_Manager := Get_Default;
      begin
@@ -2115,7 +2115,7 @@ simple as:
 
 While looking up a recently used file is as simple as using:
 
-%PRE%
+__PRE__
      declare
         Manager : constant Gtk_Recent_Manager := Get_Default;
         Info    : Gtk_Recent_Info;

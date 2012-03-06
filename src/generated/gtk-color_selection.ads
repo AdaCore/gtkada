@@ -88,8 +88,8 @@ package Gtk.Color_Selection is
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color);
    --  Sets the current color to be Color.
-   --  The first time this is called, it will also set the original color to be
-   --  Color too.
+   --  The first time this is called, it will also set the original color to
+   --  be Color too.
    --  "color": a Gdk.Color.Gdk_Color to set the current color with
 
    procedure Get_Current_Rgba
@@ -99,8 +99,8 @@ package Gtk.Color_Selection is
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA);
    --  Sets the current color to be Rgba.
-   --  The first time this is called, it will also set the original color to be
-   --  Rgba too.
+   --  The first time this is called, it will also set the original color to
+   --  be Rgba too.
    --  Since: gtk+ 3.0
    --  "rgba": A Gdk.Rgba.Gdk_Rgba to set the current color with
 
@@ -110,7 +110,7 @@ package Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean);
    --  Sets the Colorsel to use or not use opacity.
-   --  "has_opacity": True if Colorsel can set the opacity, False otherwise
+   --  "has_opacity": TRUE if Colorsel can set the opacity, FALSE otherwise
 
    function Get_Has_Palette
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
@@ -118,7 +118,7 @@ package Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Palette : Boolean);
    --  Shows and hides the palette based upon the value of Has_Palette.
-   --  "has_palette": True if palette is to be visible, False otherwise
+   --  "has_palette": TRUE if palette is to be visible, FALSE otherwise
 
    function Get_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
@@ -160,7 +160,7 @@ package Gtk.Color_Selection is
    function Is_Adjusting
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
    --  Gets the current state of the Colorsel.
-   --  a color around, and False if the selection has stopped
+   --  a color around, and FALSE if the selection has stopped
 
    ----------------------
    -- GtkAda additions --

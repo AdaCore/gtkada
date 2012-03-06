@@ -64,9 +64,9 @@ package Gtk.Cell_Editable is
        Event         : Gdk.Event.Gdk_Event);
    pragma Import (C, Start_Editing, "gtk_cell_editable_start_editing");
    --  Begins editing on a Cell_Editable. Event is the Gdk_Event that began
-   --  the editing process. It may be null, in the instance that editing was
+   --  the editing process. It may be NULL, in the instance that editing was
    --  initiated through programatic means.
-   --  "event": A Gdk_Event, or null
+   --  "event": A Gdk_Event, or NULL
 
    ----------------
    -- Properties --
@@ -90,9 +90,11 @@ package Gtk.Cell_Editable is
    --     procedure Handler (Self : access Gtk_Cell_Editable);
    --  This signal is a sign for the cell renderer to update its value from
    --  the Cell_Editable.
+   --
    --  Implementations of Gtk.Cell_Editable.Gtk_Cell_Editable are responsible
    --  for emitting this signal when they are done editing, e.g.
    --  Gtk.GEntry.Gtk_Entry is emitting it when the user presses Enter.
+   --
    --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
    --
@@ -100,11 +102,13 @@ package Gtk.Cell_Editable is
    --     procedure Handler (Self : access Gtk_Cell_Editable);
    --  This signal is meant to indicate that the cell is finished editing, and
    --  the widget may now be destroyed.
+   --
    --  Implementations of Gtk.Cell_Editable.Gtk_Cell_Editable are responsible
    --  for emitting this signal when they are done editing. It must be emitted
    --  after the Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal, to
    --  give the cell renderer a chance to update the cell's value before the
    --  widget is removed.
+   --
    --  Gtk.Cell_Editable.Remove_Widget is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget.
 

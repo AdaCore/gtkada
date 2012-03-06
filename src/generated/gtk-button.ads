@@ -129,7 +129,7 @@ package Gtk.Button is
    function Get_Event_Window
       (Button : not null access Gtk_Button_Record)
        return Gdk.Window.Gdk_Window;
-   --  Returns the button's event window if it is realized, null otherwise.
+   --  Returns the button's event window if it is realized, NULL otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22
 
@@ -197,9 +197,9 @@ package Gtk.Button is
    procedure Set_Use_Stock
       (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean);
-   --  If True, the label set on the button is used as a stock id to select
+   --  If TRUE, the label set on the button is used as a stock id to select
    --  the stock item for the button.
-   --  "use_stock": True if the button should use a stock item
+   --  "use_stock": TRUE if the button should use a stock item
 
    function Get_Use_Underline
       (Button : not null access Gtk_Button_Record) return Boolean;
@@ -208,7 +208,7 @@ package Gtk.Button is
        Use_Underline : Boolean);
    --  If true, an underline in the text of the button label indicates the
    --  next character should be used for the mnemonic accelerator key.
-   --  "use_underline": True if underlines in the text indicate mnemonics
+   --  "use_underline": TRUE if underlines in the text indicate mnemonics
 
    procedure Leave (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Leave);

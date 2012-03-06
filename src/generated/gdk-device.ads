@@ -82,7 +82,7 @@ package Gdk.Device is
    --  keyboard.
    --  If Device is of type Gdk.Device.Gdk_Device_Type_Slave, it will return
    --  the master device to which Device is attached to.
-   --  If Device is of type Gdk.Device.Gdk_Device_Type_Floating, null will be
+   --  If Device is of type Gdk.Device.Gdk_Device_Type_Floating, NULL will be
    --  returned, as there is no associated device.
    --  Since: gtk+ 3.0
 
@@ -155,8 +155,8 @@ package Gdk.Device is
    --  unless there is an ongoing grab on them, see gdk_device_grab.
    --  "window": a Gdk.Window.Gdk_Window.
    --  "axes": an array of doubles to store the values of the axes of Device
-   --  in, or null.
-   --  "mask": location to store the modifiers, or null.
+   --  in, or NULL.
+   --  "mask": location to store the modifiers, or NULL.
 
    procedure Set_Key
       (Self      : not null access Gdk_Device_Record;
@@ -227,7 +227,7 @@ package Gdk.Device is
    --  Flags: read-write
    --  Associated pointer or keyboard with this device, if any. Devices of
    --  type GDK_DEVICE_TYPE_MASTER always come in keyboard/pointer pairs. Other
-   --  device types will have a null associated device.
+   --  device types will have a NULL associated device.
    --
    --  Name: Device_Manager_Property
    --  Type: Device_Manager
@@ -244,7 +244,7 @@ package Gdk.Device is
    --  Type: Boolean
    --  Flags: read-write
    --  Whether the device is represented by a cursor on the screen. Devices of
-   --  type Gdk.Device.Gdk_Device_Type_Master will have True here.
+   --  type Gdk.Device.Gdk_Device_Type_Master will have TRUE here.
    --
    --  Name: Input_Mode_Property
    --  Type: Input_Mode

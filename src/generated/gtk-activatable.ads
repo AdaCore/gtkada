@@ -78,7 +78,7 @@ pragma Ada_05;
 --       iface->update = foo_bar_activatable_update;
 --       iface->sync_action_properties = foo_bar_activatable_sync_action_properties;
 --    }
---    ... Break the reference using gtk_activatable_do_set_related_action()...
+--    ... Break the reference using Gtk.Volume_Button.Do_Set_Related_Action...
 --    static void
 --    foo_bar_dispose (GObject *object)
 --    {
@@ -148,8 +148,8 @@ pragma Ada_05;
 --          gtk_activatable_sync_action_properties (GTK_ACTIVATABLE (bar), priv->action);
 --       }
 --    }
---    ... call gtk_activatable_do_set_related_action() and then assign the action pointer,
---    no need to reference the action here since gtk_activatable_do_set_related_action() already
+--    ... call Gtk.Volume_Button.Do_Set_Related_Action and then assign the action pointer,
+--    no need to reference the action here since Gtk.Volume_Button.Do_Set_Related_Action already
 --    holds a reference here for you...
 --    static void
 --    foo_bar_set_related_action (FooBar    *bar,
@@ -246,7 +246,8 @@ package Gtk.Activatable is
    --  you, it also makes sure the Gtk.Activatable.Gtk_Activatable->update
    --  method is called when the related Gtk.Action.Gtk_Action properties
    --  change and registers to the action's proxy list.
-   --   Note: Be careful to call this before setting the local copy of the
+   --  Note:
+   --  Be careful to call this before setting the local copy of the
    --  Gtk.Action.Gtk_Action property, since this function uses
    --  Gtk.Activatable.Get_Action to retrieve the previous action
    --  Since: gtk+ 2.16
@@ -258,7 +259,8 @@ package Gtk.Activatable is
       (Self   : Gtk_Activatable;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
    --  Sets the related action on the Activatable object.
-   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --  Note:
+   --  Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:related-action property and call
    --  Gtk.Volume_Button.Do_Set_Related_Action when it changes.
    --  Since: gtk+ 2.16
@@ -271,7 +273,8 @@ package Gtk.Activatable is
        Use_Appearance : Boolean);
    --  Sets whether this activatable should reset its layout and appearance
    --  when setting the related action or when the action changes appearance
-   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
+   --  Note:
+   --  Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance property and call
    --  Gtk.Volume_Button.Sync_Action_Properties to update Activatable if
    --  needed.
@@ -286,7 +289,7 @@ package Gtk.Activatable is
    --  property is set or unset and by the implementing class when
    --  Gtk.Activatable.Gtk_Activatable::use-action-appearance changes.
    --  Since: gtk+ 2.16
-   --  "action": the related Gtk.Action.Gtk_Action or null
+   --  "action": the related Gtk.Action.Gtk_Action or NULL
 
    ----------------
    -- Properties --
@@ -299,19 +302,25 @@ package Gtk.Activatable is
    --  Flags: read-write
    --  The action that this activatable will activate and receive updates from
    --  for various states and possibly appearance.
-   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle the
-   --  this property and call Gtk.Activatable.Do_Set_Related_Action when it
-   --  changes.
+   --
+   --  Note:
+   --
+   --  Gtk.Activatable.Gtk_Activatable implementors need to handle the this
+   --  property and call Gtk.Activatable.Do_Set_Related_Action when it changes.
    --
    --  Name: Use_Action_Appearance_Property
    --  Type: Boolean
    --  Flags: read-write
    --  Whether this activatable should reset its layout and appearance when
    --  setting the related action or when the action changes appearance.
+   --
    --  See the Gtk.Action.Gtk_Action documentation directly to find which
    --  properties should be ignored by the Gtk.Activatable.Gtk_Activatable when
-   --  this property is False.
-   --   Note: Gtk.Activatable.Gtk_Activatable implementors need to handle this
+   --  this property is FALSE.
+   --
+   --  Note:
+   --
+   --  Gtk.Activatable.Gtk_Activatable implementors need to handle this
    --  property and call Gtk.Activatable.Sync_Action_Properties on the
    --  activatable widget when it changes.
 

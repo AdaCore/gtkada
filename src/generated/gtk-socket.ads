@@ -44,7 +44,7 @@ pragma Ada_05;
 --       * the ancestors of the socket is not yet visible.
 --       */
 --       gtk_widget_realize (socket);
---          g_print ("The ID of the sockets window is %#x\n",
+--          g_print ("The ID of the sockets window is %x\n",
 --          gtk_socket_get_id (socket));
 --
 --  Note that if you pass the window ID of the socket to another process that
@@ -52,7 +52,7 @@ pragma Ada_05;
 --  is not destroyed until that plug is created. Violating this rule will cause
 --  unpredictable consequences, the most likely consequence being that the plug
 --  will appear as a separate toplevel window. You can check if the plug has
---  been created by using Gtk.Socket.Get_Plug_Window. If it returns a non-null
+--  been created by using Gtk.Socket.Get_Plug_Window. If it returns a non-NULL
 --  value, then the plug has been successfully created inside of the socket.
 --
 --  When GTK+ is notified that the embedded window has been destroyed, then it
@@ -112,10 +112,10 @@ package Gtk.Socket is
    --  Gtk.Socket.Gtk_Socket. The client may be in the same process or in a
    --  different process.
    --  To embed a Gtk.Plug.Gtk_Plug in a Gtk.Socket.Gtk_Socket, you can either
-   --  create the Gtk.Plug.Gtk_Plug with <literal>gtk_plug_new (0)</literal>,
-   --  call gtk_plug_get_id to get the window ID of the plug, and then pass
-   --  that to the Gtk.Socket.Add_Id, or you can call Gtk.Socket.Get_Id to get
-   --  the window ID for the socket, and call gtk_plug_new passing in that ID.
+   --  create the Gtk.Plug.Gtk_Plug with 'gtk_plug_new (0)', call
+   --  gtk_plug_get_id to get the window ID of the plug, and then pass that to
+   --  the Gtk.Socket.Add_Id, or you can call Gtk.Socket.Get_Id to get the
+   --  window ID for the socket, and call gtk_plug_new passing in that ID.
    --  The Gtk.Socket.Gtk_Socket must have already be added into a toplevel
    --  window before you can make this call.
    --  "window": the Window of a client participating in the XEMBED protocol.
@@ -176,8 +176,9 @@ package Gtk.Socket is
    --       (Self : access Gtk_Socket_Record'Class) return Boolean;
    --  This signal is emitted when a client is removed from the socket. The
    --  default action is to destroy the Gtk.Socket.Gtk_Socket widget, so if you
-   --  want to reuse it you must add a signal handler that returns True.
-   --  Returns True to stop other handlers from being invoked.
+   --  want to reuse it you must add a signal handler that returns TRUE.
+   --
+   --  Returns TRUE to stop other handlers from being invoked.
 
    Signal_Plug_Added : constant Glib.Signal_Name := "plug-added";
    Signal_Plug_Removed : constant Glib.Signal_Name := "plug-removed";

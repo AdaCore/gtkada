@@ -189,8 +189,8 @@ package Gtk.File_Chooser_Dialog is
    --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This
    --  function is analogous to gtk_dialog_new_with_buttons.
    --  Since: gtk+ 2.4
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
+   --  "title": Title of the dialog, or NULL
+   --  "parent": Transient parent of the dialog, or NULL
    --  "action": Open or save mode for the dialog
 
    function Get_Type return Glib.GType;

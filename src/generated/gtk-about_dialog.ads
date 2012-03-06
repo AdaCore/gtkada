@@ -88,6 +88,7 @@ package Gtk.About_Dialog is
       License_Artistic);
    pragma Convention (C, Gtk_License);
    --  The type of license for an application.
+   --
    --  This enumeration can be expanded at later date.
 
    ----------------------------
@@ -124,7 +125,7 @@ package Gtk.About_Dialog is
    --  Sets the strings which are displayed in the artists tab of the
    --  secondary credits dialog.
    --  Since: gtk+ 2.6
-   --  "artists": a null-terminated array of strings
+   --  "artists": a NULL-terminated array of strings
 
    function Get_Authors
       (About : not null access Gtk_About_Dialog_Record)
@@ -135,7 +136,7 @@ package Gtk.About_Dialog is
    --  Sets the strings which are displayed in the authors tab of the
    --  secondary credits dialog.
    --  Since: gtk+ 2.6
-   --  "authors": a null-terminated array of strings
+   --  "authors": a NULL-terminated array of strings
 
    function Get_Comments
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
@@ -166,7 +167,7 @@ package Gtk.About_Dialog is
    --  Sets the strings which are displayed in the documenters tab of the
    --  secondary credits dialog.
    --  Since: gtk+ 2.6
-   --  "documenters": a null-terminated array of strings
+   --  "documenters": a NULL-terminated array of strings
 
    function Get_License
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
@@ -174,9 +175,9 @@ package Gtk.About_Dialog is
       (About   : not null access Gtk_About_Dialog_Record;
        License : UTF8_String := "");
    --  Sets the license information to be displayed in the secondary license
-   --  dialog. If License is null, the license button is hidden.
+   --  dialog. If License is NULL, the license button is hidden.
    --  Since: gtk+ 2.6
-   --  "license": the license information or null
+   --  "license": the license information or NULL
 
    function Get_License_Type
       (About : not null access Gtk_About_Dialog_Record) return Gtk_License;
@@ -197,10 +198,10 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record;
        Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
-   --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
+   --  NULL, the default window icon set with Gtk.Window.Set_Default_Icon will
    --  be used.
    --  Since: gtk+ 2.6
-   --  "logo": a Gdk.Pixbuf.Gdk_Pixbuf, or null
+   --  "logo": a Gdk.Pixbuf.Gdk_Pixbuf, or NULL
 
    function Get_Logo_Icon_Name
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
@@ -208,10 +209,10 @@ package Gtk.About_Dialog is
       (About     : not null access Gtk_About_Dialog_Record;
        Icon_Name : UTF8_String := "");
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
-   --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
+   --  NULL, the default window icon set with Gtk.Window.Set_Default_Icon will
    --  be used.
    --  Since: gtk+ 2.6
-   --  "icon_name": an icon name, or null
+   --  "icon_name": an icon name, or NULL
 
    function Get_Program_Name
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
@@ -327,23 +328,27 @@ package Gtk.About_Dialog is
    --  The license of the program. This string is displayed in a text view in
    --  a secondary dialog, therefore it is fine to use a long multi-paragraph
    --  text. Note that the text is only wrapped in the text view if the
-   --  "wrap-license" property is set to True; otherwise the text itself must
+   --  "wrap-license" property is set to TRUE; otherwise the text itself must
    --  contain the intended linebreaks. When setting this property to a
-   --  non-null value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
+   --  non-NULL value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
    --  property is set to Gtk.About_Dialog.License_Custom as a side effect.
    --
    --  Name: License_Type_Property
    --  Type: Gtk_License
    --  Flags: read-write
    --  The license of the program, as a value of the GtkLicense enumeration.
+   --
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
    --  standard disclaimer and link the user to the appropriate online resource
    --  for the license text.
+   --
    --  If Gtk.About_Dialog.License_Unknown is used, the link used will be the
    --  same specified in the Gtk.About_Dialog.Gtk_About_Dialog:website
    --  property.
+   --
    --  If Gtk.About_Dialog.License_Custom is used, the current contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are used.
+   --
    --  For any other Gtk.About_Dialog.Gtk_License value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
    --  property as a side effect.
@@ -420,7 +425,8 @@ package Gtk.About_Dialog is
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
-   --  Returns True if the link has been activated
+   --
+   --  Returns TRUE if the link has been activated
 
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 

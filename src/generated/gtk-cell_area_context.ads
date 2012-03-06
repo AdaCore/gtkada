@@ -89,8 +89,8 @@ package Gtk.Cell_Area_Context is
    --  was recently reset with Gtk.Cell_Area_Context.Reset, the returned value
    --  will be -1.
    --  Since: gtk+ 3.0
-   --  "width": location to store the allocated width, or null
-   --  "height": location to store the allocated height, or null
+   --  "width": location to store the allocated width, or NULL
+   --  "height": location to store the allocated height, or NULL
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -102,8 +102,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  "minimum_height": location to store the minimum height, or NULL
+   --  "natural_height": location to store the natural height, or NULL
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -117,8 +117,8 @@ package Gtk.Cell_Area_Context is
    --  values are -1.
    --  Since: gtk+ 3.0
    --  "width": a proposed width for allocation
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  "minimum_height": location to store the minimum height, or NULL
+   --  "natural_height": location to store the natural height, or NULL
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -130,8 +130,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  "minimum_width": location to store the minimum width, or NULL
+   --  "natural_width": location to store the natural width, or NULL
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -145,8 +145,8 @@ package Gtk.Cell_Area_Context is
    --  values are -1.
    --  Since: gtk+ 3.0
    --  "height": a proposed height for allocation
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  "minimum_width": location to store the minimum width, or NULL
+   --  "natural_width": location to store the natural width, or NULL
 
    procedure Push_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -178,17 +178,17 @@ package Gtk.Cell_Area_Context is
 
    procedure Reset (Self : not null access Gtk_Cell_Area_Context_Record);
    --  Resets any previously cached request and allocation data.
-   --  When underlying Gtk.Tree_Model.Gtk_Tree_Model data changes its important
-   --  to reset the context if the content size is allowed to shrink. If the
-   --  content size is only allowed to grow (this is usually an option for
-   --  views rendering large data stores as a measure of optimization), then
-   --  only the row that changed or was inserted needs to be (re)requested with
-   --  Gtk.Cell_Area.Get_Preferred_Width.
+   --  When underlying Gtk.Tree_Model.Gtk_Tree_Model data changes its
+   --  important to reset the context if the content size is allowed to shrink.
+   --  If the content size is only allowed to grow (this is usually an option
+   --  for views rendering large data stores as a measure of optimization),
+   --  then only the row that changed or was inserted needs to be (re)requested
+   --  with Gtk.Cell_Area.Get_Preferred_Width.
    --  When the new overall size of the context requires that the allocated
    --  size changes (or whenever this allocation changes at all), the variable
    --  row sizes need to be re-requested for every row.
-   --  For instance, if the rows are displayed all with the same width from top
-   --  to bottom then a change in the allocated width necessitates a
+   --  For instance, if the rows are displayed all with the same width from
+   --  top to bottom then a change in the allocated width necessitates a
    --  recalculation of all the displayed row heights using
    --  Gtk.Cell_Area.Get_Preferred_Height_For_Width.
    --  Since 3.0

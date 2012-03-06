@@ -41,7 +41,7 @@ pragma Ada_05;
 --  By default, the content of the entry is replaced by the text column of the
 --  model, but this can be overridden by connecting to the
 --  Gtk.Entry_Completion.Gtk_Entry_Completion::match-selected signal and
---  updating the entry in the signal handler. Note that you should return True
+--  updating the entry in the signal handler. Note that you should return TRUE
 --  from the signal handler to suppress the default behaviour.
 --
 --  To add completion functionality to an entry, use
@@ -97,8 +97,8 @@ package Gtk.Entry_Completion is
    --  given Key, and should be displayed as a possible completion for Key.
    --  Note that Key is normalized and case-folded (see g_utf8_normalize and
    --  g_utf8_casefold). If this is not appropriate, match functions have
-   --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
-   --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+   --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
+   --  (gtk_entry_completion_get_entry (<!-- -->)))'.
    --  for Key
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
@@ -166,7 +166,7 @@ package Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return UTF8_String;
    --  Get the original text entered by the user that triggered the completion
-   --  or null if there's no completion ongoing.
+   --  or NULL if there's no completion ongoing.
    --  Since: gtk+ 2.12
 
    function Get_Entry
@@ -184,7 +184,7 @@ package Gtk.Entry_Completion is
    --  Sets whether the common prefix of the possible completions should be
    --  automatically inserted in the entry.
    --  Since: gtk+ 2.6
-   --  "inline_completion": True to do inline completion
+   --  "inline_completion": TRUE to do inline completion
 
    function Get_Inline_Selection
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -195,7 +195,7 @@ package Gtk.Entry_Completion is
    --  Sets whether it is possible to cycle through the possible completions
    --  inside the entry.
    --  Since: gtk+ 2.12
-   --  "inline_selection": True to do inline selection
+   --  "inline_selection": TRUE to do inline selection
 
    function Get_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
@@ -217,7 +217,7 @@ package Gtk.Entry_Completion is
        Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
    --  Sets the model for a Gtk.Entry_Completion.Gtk_Entry_Completion. If
    --  Completion already has a model set, it will remove it before setting the
-   --  new model. If model is null, then it will unset the model.
+   --  new model. If model is NULL, then it will unset the model.
    --  Since: gtk+ 2.4
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
 
@@ -229,7 +229,7 @@ package Gtk.Entry_Completion is
        Popup_Completion : Boolean);
    --  Sets whether the completions should be presented in a popup window.
    --  Since: gtk+ 2.6
-   --  "popup_completion": True to do popup completion
+   --  "popup_completion": TRUE to do popup completion
 
    function Get_Popup_Set_Width
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -240,7 +240,7 @@ package Gtk.Entry_Completion is
    --  Sets whether the completion popup window will be resized to be the same
    --  width as the entry.
    --  Since: gtk+ 2.8
-   --  "popup_set_width": True to make the width of the popup the same as the
+   --  "popup_set_width": TRUE to make the width of the popup the same as the
    --  entry
 
    function Get_Popup_Single_Match
@@ -250,11 +250,11 @@ package Gtk.Entry_Completion is
       (Completion         : not null access Gtk_Entry_Completion_Record;
        Popup_Single_Match : Boolean);
    --  Sets whether the completion popup window will appear even if there is
-   --  only a single match. You may want to set this to False if you are using
+   --  only a single match. You may want to set this to FALSE if you are using
    --  <link linkend="GtkEntryCompletion--inline-completion">inline
    --  completion</link>.
    --  Since: gtk+ 2.8
-   --  "popup_single_match": True if the popup should appear even for a single
+   --  "popup_single_match": TRUE if the popup should appear even for a single
    --  match
 
    function Get_Text_Column
@@ -323,8 +323,8 @@ package Gtk.Entry_Completion is
       --  given Key, and should be displayed as a possible completion for Key.
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
       --  g_utf8_casefold). If this is not appropriate, match functions have
-      --  access to the unmodified key via <literal>gtk_entry_get_text (GTK_ENTRY
-      --  (gtk_entry_completion_get_entry (<!-- -->)))</literal>.
+      --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
+      --  (gtk_entry_completion_get_entry (<!-- -->)))'.
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
@@ -352,10 +352,10 @@ package Gtk.Entry_Completion is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be null to remove a previously set function.
+   --  Func may be NULL to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
 
    generic
       type User_Data_Type (<>) is private;
@@ -386,10 +386,10 @@ package Gtk.Entry_Completion is
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
-      --  Func may be null to remove a previously set function.
+      --  Func may be NULL to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
@@ -476,6 +476,7 @@ package Gtk.Entry_Completion is
    --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers in the
    --  treeview column.
+   --
    --  If no area is specified when creating the entry completion with
    --  Gtk.Entry_Completion.Gtk_New_With_Area a horizontally oriented
    --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
@@ -517,7 +518,7 @@ package Gtk.Entry_Completion is
    --  Type: Boolean
    --  Flags: read-write
    --  Determines whether the completions popup window will shown for a single
-   --  possible completion. You probably want to set this to False if you are
+   --  possible completion. You probably want to set this to FALSE if you are
    --  using <link linkend="GtkEntryCompletion--inline-completion">inline
    --  completion</link>.
    --
@@ -559,9 +560,11 @@ package Gtk.Entry_Completion is
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
+   --
    --  Note that Model is the model that was passed to
    --  Gtk.Entry_Completion.Set_Model.
-   --  Returns True if the signal has been handled
+   --
+   --  Returns TRUE if the signal has been handled
    --
    --  "insert-prefix"
    --     function Handler
@@ -571,11 +574,13 @@ package Gtk.Entry_Completion is
    --  Gets emitted when the inline autocompletion is triggered. The default
    --  behaviour is to make the entry display the whole prefix and select the
    --  newly inserted part.
+   --
    --  Applications may connect to this signal in order to insert only a
    --  smaller part of the Prefix into the entry - e.g. the entry used in the
    --  Gtk.File_Chooser.Gtk_File_Chooser inserts only the part of the prefix up
    --  to the next '/'.
-   --  Returns True if the signal has been handled
+   --
+   --  Returns TRUE if the signal has been handled
    --
    --  "match-selected"
    --     function Handler
@@ -587,9 +592,11 @@ package Gtk.Entry_Completion is
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.
+   --
    --  Note that Model is the model that was passed to
    --  Gtk.Entry_Completion.Set_Model.
-   --  Returns True if the signal has been handled
+   --
+   --  Returns TRUE if the signal has been handled
 
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
    Signal_Cursor_On_Match : constant Glib.Signal_Name := "cursor-on-match";

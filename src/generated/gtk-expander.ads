@@ -72,8 +72,6 @@ pragma Ada_05;
 --    <object class="GtkEntry" id="expander-content"/>
 --    </child>
 --    </object>
---
---
 --  </description>
 --  <screenshot>gtk-expanded</screenshot>
 --  <group>Layout containers</group>
@@ -131,8 +129,8 @@ package Gtk.Expander is
    procedure Set_Expanded
       (Expander : not null access Gtk_Expander_Record;
        Expanded : Boolean);
-   --  Sets the state of the expander. Set to True, if you want the child
-   --  widget to be revealed, and False if you want the child widget to be
+   --  Sets the state of the expander. Set to TRUE, if you want the child
+   --  widget to be revealed, and FALSE if you want the child widget to be
    --  hidden.
    --  Since: gtk+ 2.4
    --  "expanded": whether the child widget is revealed
@@ -155,7 +153,7 @@ package Gtk.Expander is
    --  Sets whether the label widget should fill all available horizontal
    --  space allocated to Expander.
    --  Since: gtk+ 2.22
-   --  "label_fill": True if the label should should fill all available
+   --  "label_fill": TRUE if the label should should fill all available
    --  horizontal space
 
    function Get_Label_Widget
@@ -198,7 +196,7 @@ package Gtk.Expander is
    --  linkend="PangoMarkupFormat">Pango's text markup language</link>. See
    --  Gtk.Label.Set_Markup.
    --  Since: gtk+ 2.4
-   --  "use_markup": True if the label's text should be parsed for markup
+   --  "use_markup": TRUE if the label's text should be parsed for markup
 
    function Get_Use_Underline
       (Expander : not null access Gtk_Expander_Record) return Boolean;
@@ -208,7 +206,7 @@ package Gtk.Expander is
    --  If true, an underline in the text of the expander label indicates the
    --  next character should be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.4
-   --  "use_underline": True if underlines in the text indicate mnemonics
+   --  "use_underline": TRUE if underlines in the text indicate mnemonics
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -260,7 +258,7 @@ package Gtk.Expander is
    --  Name: Resize_Toplevel_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  When this property is True, the expander will resize the toplevel
+   --  When this property is TRUE, the expander will resize the toplevel
    --  widget containing the expander upon expanding and collapsing.
    --
    --  Name: Spacing_Property

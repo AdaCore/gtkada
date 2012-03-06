@@ -94,8 +94,7 @@ package Gtk.Status_Bar is
       (Statusbar           : not null access Gtk_Status_Bar_Record;
        Context_Description : UTF8_String) return Context_Id;
    --  Returns a new context identifier, given a description of the actual
-   --  context. Note that the description is <emphasis>not</emphasis> shown in
-   --  the UI.
+   --  context. Note that the description is *not* shown in the UI.
    --  "context_description": textual description of what context the new
    --  message is being used in
 

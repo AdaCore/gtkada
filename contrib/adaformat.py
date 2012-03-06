@@ -755,14 +755,9 @@ def cleanup_doc(doc):
         t.userecord = False
         return t.ada
 
-    doc = doc.replace("%NULL", "null")
-    doc = doc.replace("%TRUE", "True")
-    doc = doc.replace("%FALSE", "False")
-
-    doc = doc.replace("<para>", "")
-    doc = doc.replace("</para>", "")
-    doc = doc.replace("<note>", "\nNote: ")
-    doc = doc.replace("</note>", "")
+    # get_package might have been called before we had the XML node
+    # from the Gir file, and therefore no doc for the package. We can
+    # now override it, unless it came from binding.xml
 
     subp = re.compile("([\S_]+)\(\)")
     doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
@@ -776,31 +771,130 @@ def cleanup_doc(doc):
     enums = re.compile("%([A-Z][\w_]+)")
     doc = enums.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
+    doc = doc.replace("<emphasis>", "*") \
+        .replace("</emphasis>", "*") \
+        .replace("<literal>", "'") \
+        .replace("</literal>", "'") \
+        .replace("<firstterm>", "'") \
+        .replace("</firstterm>", "'") \
+        .replace("<![CDATA[", "") \
+        .replace("]]>", "") \
+        .replace("&nbsp;", " ") \
+        .replace("<parameter>", "'") \
+        .replace("</parameter>", "'") \
+        .replace("<filename>", "'") \
+        .replace("</filename>", "'") \
+        .replace("<footnote>", "[") \
+        .replace("</footnote>", "]") \
+        .replace("<keycap>", "'") \
+        .replace("</keycap>", "'") \
+        .replace("<keycombo>", "[") \
+        .replace("</keycombo>", "]") \
+        .replace("<entry>", "\n\n") \
+        .replace("</entry>", "") \
+        .replace("<row>", "") \
+        .replace("</row>", "") \
+        .replace("<tbody>", "") \
+        .replace("</tbody>", "") \
+        .replace("</tgroup>", "") \
+        .replace("<informaltable>", "") \
+        .replace("</informaltable>", "") \
+        .replace("<note>", "\nNote: ") \
+        .replace("</note>", "")
+
+    doc = re.sub("<tgroup[^>]*>", "", doc)
+    doc = re.sub("<term><parameter>(.*?)</parameter>&nbsp;:</term>",
+                 r"\1:", doc)
+
+    # Lists
+
+    doc = re.sub("<listitem>(\n?<simpara>|\n?<para>)?", "\n\n   * ", doc)
+
+    doc = doc.replace("</para></listitem>", "") \
+        .replace("</listitem>", "") \
+        .replace("<simpara>", "") \
+        .replace("</simpara>", "") \
+        .replace("<para>", "\n\n") \
+        .replace("</para>", "")
+
+    # Definition of terms (variablelists)
+
+    doc = doc.replace("<variablelist>", "") \
+        .replace("</variablelist>", "") \
+        .replace("<varlistentry>", "") \
+        .replace("</varlistentry>", "") \
+        .replace("<term>", "'") \
+        .replace("</term>", "'")
+
+    doc = re.sub("<variablelist[^>]*>", "", doc)
+    doc = re.sub("<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
+    doc = re.sub("<refsect\d[^>]*>", "", doc)
+    doc = re.sub("</refsect\d>", "", doc)
+
+    doc = doc.replace("<example>", "") \
+             .replace("</example>", "") \
+             .replace("<informalexample>", "") \
+             .replace("</informalexample>", "") \
+             .replace("<itemizedlist>", "").replace("</itemizedlist>", "") \
+             .replace("<orderedlist>", "").replace("</orderedlist>", "") \
+             .replace("&percnt;", "%") \
+             .replace("&lt;", "<").replace("&gt;", ">") \
+             .replace("&ast;", "*") \
+             .replace("<programlisting>", "\n\n__PRE__<programlisting>")
+
+    doc = re.sub("<programlisting>(.*?)</programlisting>",
+                 lambda m: re.sub(
+            "\n\n+", "\n", indent_code(m.group(1), addnewlines=False)),
+                 doc,
+                 flags=re.DOTALL or re.MULTILINE)
+
+    doc = re.sub("\n\n\n+", "\n\n", doc)
+
     return doc
 
 
-def format_doc(doc, indent, separate_paragraphs=True):
+def format_doc(doc, indent, separate_paragraphs=True, fill=True):
     """Transform the doc from a list of strings to a single string"""
 
     result = ""
     prev = ""
 
+    # Make sure the doc is a list of paragraphs
+
+    if not isinstance(doc, list):
+        doc = [doc]
+
+    # Cleanup the XML tags in each paragraph. This could result in
+    # new paragraphs being created
+
+    cleaned = []
+
     for d in doc:
+        d = cleanup_doc(d)
+        if fill:
+            cleaned.extend(d.split("\n\n"))
+        else:
+            cleaned.append(d)
+
+    prefix = "\n" + indent + "--"
+
+    for d in cleaned:
 
         # Separate paragraphs with an empty line, unless it is a markup
         # or we are at the end
         if separate_paragraphs:
             if prev != "" and not prev.lstrip().startswith("<"):
-                result += "\n" + indent + "--"
+                result += prefix
 
         if d:
-            if d.lstrip().startswith("%PRE%"):
-                result += "".join("\n" + indent + "-- " + l
-                                  for l in d[5:].split("\n"))
-            else:
-                d = cleanup_doc(d)
-                result += "\n" + indent + "-- "
+            if d.lstrip().startswith("__PRE__"):
+                d = d.lstrip()[7:]
+                result += "".join(prefix + " " + p for p in d.splitlines())
+            elif fill:
+                result += prefix + " "
                 result += fill_text(d, indent + "--  ", 79)
+            else:
+                result += "".join(prefix + " " + p for p in d.splitlines())
 
             prev = d
 
@@ -1352,7 +1446,7 @@ class Code(object):
     def format(self, indent=""):
         """Return the code that should be written into a package"""
         if self.iscomment:
-            return format_doc([self.content], indent=indent) + "\n"
+            return format_doc(self.content, indent=indent) + "\n"
         else:
             return indent_code(self.content, indent=len(indent), addnewlines=False)
 
@@ -1397,13 +1491,10 @@ class Section(object):
         """
         if comment == "":
             self.comment += "   --\n"
-        elif fill:
-            self.comment += "   -- " + fill_text(
-                cleanup_doc (comment), "   --  ", 79) + "\n"
         else:
-            self.comment += "\n".join(
-                "   -- %s" % cleanup_doc(p)
-                for p in comment.splitlines()) + "\n"
+            self.comment += "".join(
+                format_doc(comment, indent="   ", fill=fill)) + \
+                "\n"
 
     def add(self, obj, in_spec=True):
         """Add one or more objects to the section (subprogram, code,...)"""

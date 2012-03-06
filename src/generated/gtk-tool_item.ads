@@ -198,16 +198,16 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function in the handler of
    --  the GtkToolItem::toolbar_reconfigured signal to find out in what style
    --  the toolbar is displayed and change themselves accordingly
-   --  Possibilities are: <itemizedlist> <listitem> GTK_TOOLBAR_BOTH, meaning
-   --  the tool item should show both an icon and a label, stacked vertically
-   --  </listitem> <listitem> GTK_TOOLBAR_ICONS, meaning the toolbar shows only
-   --  icons </listitem> <listitem> GTK_TOOLBAR_TEXT, meaning the tool item
-   --  should only show text</listitem> <listitem> GTK_TOOLBAR_BOTH_HORIZ,
-   --  meaning the tool item should show both an icon and a label, arranged
-   --  horizontally (however, note the
+   --  Possibilities are:
+   --     * GTK_TOOLBAR_BOTH, meaning the tool item should show both an icon
+   --  and a label, stacked vertically
+   --     * GTK_TOOLBAR_ICONS, meaning the toolbar shows only icons
+   --     * GTK_TOOLBAR_TEXT, meaning the tool item should only show text
+   --     * GTK_TOOLBAR_BOTH_HORIZ, meaning the tool item should show both an
+   --  icon and a label, arranged horizontally (however, note the
    --  Gtk.Tool_Button.Gtk_Tool_Button::has_text_horizontally that makes tool
    --  buttons not show labels when the toolbar style is
-   --  GTK_TOOLBAR_BOTH_HORIZ. </listitem> </itemizedlist>
+   --  GTK_TOOLBAR_BOTH_HORIZ.
    --  for Tool_Item.
    --  Since: gtk+ 2.4
 
@@ -216,7 +216,7 @@ package Gtk.Tool_Item is
    procedure Set_Use_Drag_Window
       (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean);
-   --  Sets whether Tool_Item has a drag window. When True the toolitem can be
+   --  Sets whether Tool_Item has a drag window. When TRUE the toolitem can be
    --  used as a drag source through gtk_drag_source_set. When Tool_Item has a
    --  drag window it will intercept all events, even those that would
    --  otherwise be sent to a child of Tool_Item.
@@ -241,7 +241,7 @@ package Gtk.Tool_Item is
        Visible_Vertical : Boolean);
    --  Sets whether Tool_Item is visible when the toolbar is docked
    --  vertically. Some tool items, such as text entries, are too wide to be
-   --  useful on a vertically docked toolbar. If Visible_Vertical is False
+   --  useful on a vertically docked toolbar. If Visible_Vertical is FALSE
    --  Tool_Item will not appear on toolbars that are docked vertically.
    --  Since: gtk+ 2.4
    --  "visible_vertical": whether Tool_Item is visible when the toolbar is in
@@ -380,31 +380,42 @@ package Gtk.Tool_Item is
    --       (Self : access Gtk_Tool_Item_Record'Class) return Boolean;
    --  This signal is emitted when the toolbar needs information from
    --  Tool_Item about whether the item should appear in the toolbar overflow
-   --  menu. In response the tool item should either <itemizedlist>
-   --  <listitem>call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and
-   --  return True to indicate that the item should not appear in the overflow
-   --  menu </listitem> <listitem> call Gtk.Tool_Item.Set_Proxy_Menu_Item with
-   --  a new menu item and return True, or </listitem> <listitem> return False
-   --  to indicate that the signal was not handled by the item. This means that
-   --  the item will not appear in the overflow menu unless a later handler
-   --  installs a menu item. </listitem> </itemizedlist>
+   --  menu. In response the tool item should either
+   --
+   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a NULL pointer and
+   --  return TRUE to indicate that the item should not appear in the overflow
+   --  menu
+   --
+   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
+   --  return TRUE, or
+   --
+   --     * return FALSE to indicate that the signal was not handled by the
+   --  item. This means that the item will not appear in the overflow menu
+   --  unless a later handler installs a menu item.
+   --
    --  The toolbar may cache the result of this signal. When the tool item
    --  changes how it will respond to this signal it must call
    --  Gtk.Tool_Item.Rebuild_Menu to invalidate the cache and ensure that the
    --  toolbar rebuilds its overflow menu.
-   --  Returns True if the signal was handled, False if not
+   --
+   --  Returns TRUE if the signal was handled, FALSE if not
    --
    --  "toolbar-reconfigured"
    --     procedure Handler (Self : access Gtk_Tool_Item_Record'Class);
    --  This signal is emitted when some property of the toolbar that the item
    --  is a child of changes. For custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the
-   --  functions <itemizedlist>
-   --  <listitem>gtk_tool_shell_get_orientation</listitem>
-   --  <listitem>gtk_tool_shell_get_style</listitem>
-   --  <listitem>gtk_tool_shell_get_icon_size</listitem>
-   --  <listitem>gtk_tool_shell_get_relief_style</listitem> </itemizedlist> to
-   --  find out what the toolbar should look like and change themselves
+   --  functions
+   --
+   --     * gtk_tool_shell_get_orientation
+   --
+   --     * gtk_tool_shell_get_style
+   --
+   --     * gtk_tool_shell_get_icon_size
+   --
+   --     * gtk_tool_shell_get_relief_style
+   --
+   --  to find out what the toolbar should look like and change themselves
    --  accordingly.
 
    Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";

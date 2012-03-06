@@ -131,7 +131,7 @@ package Gtk.Toggle_Button is
        Is_Active     : Boolean);
    --  Change the state of the button. When Is_Active is True, the button is
    --  drawn as a pressed button
-   --  "is_active": True or False.
+   --  "is_active": TRUE or FALSE.
 
    function Get_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
@@ -147,7 +147,7 @@ package Gtk.Toggle_Button is
    --  user toggles the toggle button. This has to be done manually,
    --  Gtk.Toggle_Button.Set_Inconsistent only affects visual appearance, it
    --  doesn't affect the semantics of the button.
-   --  "setting": True if state is inconsistent
+   --  "setting": TRUE if state is inconsistent
 
    function Get_Mode
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
@@ -157,13 +157,13 @@ package Gtk.Toggle_Button is
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
    --  You can call this function on a checkbutton or a radiobutton with
-   --  Draw_Indicator = False to make the button look like a normal button
+   --  Draw_Indicator = FALSE to make the button look like a normal button
    --  This function only affects instances of classes like
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
    --  Gtk.Toggle_Button.Gtk_Toggle_Button itself.
-   --  "draw_indicator": if True, draw the button as a separate indicator and
-   --  label; if False, draw the button like a normal button
+   --  "draw_indicator": if TRUE, draw the button as a separate indicator and
+   --  label; if FALSE, draw the button like a normal button
 
    procedure Toggled
       (Toggle_Button : not null access Gtk_Toggle_Button_Record);

@@ -89,8 +89,6 @@ pragma Ada_05;
 --    <widget name="radio2"/>
 --    </widgets>
 --    </object>
---
---
 --  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 
@@ -228,7 +226,7 @@ package Gtk.Size_Group is
    --  Name: Ignore_Hidden_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  If True, unmapped widgets are ignored when determining the size of the
+   --  If TRUE, unmapped widgets are ignored when determining the size of the
    --  group.
    --
    --  Name: Mode_Property

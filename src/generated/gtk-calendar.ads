@@ -80,9 +80,9 @@ package Gtk.Calendar is
       Day      : Guint) return UTF8_String;
    --  This kind of functions provide Pango markup with detail information for
    --  the specified day. Examples for such details are holidays or
-   --  appointments. The function returns null when no information is
+   --  appointments. The function returns NULL when no information is
    --  available.
-   --   for the specified day, or null.
+   --  for the specified day, or NULL.
    --  Since: gtk+ 2.14
    --  "calendar": a Gtk.Calendar.Gtk_Calendar.
    --  "year": the year for which details are needed.
@@ -123,9 +123,9 @@ package Gtk.Calendar is
        Day      : out Guint);
    --  Obtains the selected date from a Gtk.Calendar.Gtk_Calendar.
    --  "year": location to store the year as a decimal number (e.g. 2011), or
-   --  null
-   --  "month": location to store the month number (between 0 and 11), or null
-   --  "day": location to store the day number (between 1 and 31), or null
+   --  NULL
+   --  "month": location to store the month number (between 0 and 11), or NULL
+   --  "day": location to store the day number (between 1 and 31), or NULL
 
    function Get_Day_Is_Marked
       (Calendar : not null access Gtk_Calendar_Record;
@@ -215,9 +215,9 @@ package Gtk.Calendar is
          User_Data : User_Data_Type) return UTF8_String;
       --  This kind of functions provide Pango markup with detail information for
       --  the specified day. Examples for such details are holidays or
-      --  appointments. The function returns null when no information is
+      --  appointments. The function returns NULL when no information is
       --  available.
-      --   for the specified day, or null.
+      --  for the specified day, or NULL.
       --  Since: gtk+ 2.14
       --  "calendar": a Gtk.Calendar.Gtk_Calendar.
       --  "year": the year for which details are needed.

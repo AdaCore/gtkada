@@ -172,8 +172,8 @@ package Gtk.Adjustment is
       (Adjustment     : not null access Gtk_Adjustment_Record;
        Page_Increment : Gdouble);
    --  Sets the page increment of the adjustment.
-   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
-   --  the "changed" signal when setting multiple adjustment properties.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
+   --  of the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_increment": the new page increment
 
@@ -183,8 +183,8 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record;
        Page_Size  : Gdouble);
    --  Sets the page size of the adjustment.
-   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
-   --  the "changed" signal when setting multiple adjustment properties.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
+   --  of the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_size": the new page size
 
@@ -194,8 +194,8 @@ package Gtk.Adjustment is
       (Adjustment     : not null access Gtk_Adjustment_Record;
        Step_Increment : Gdouble);
    --  Sets the step increment of the adjustment.
-   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
-   --  the "changed" signal when setting multiple adjustment properties.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
+   --  of the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "step_increment": the new step increment
 
@@ -205,10 +205,10 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record;
        Upper      : Gdouble);
    --  Sets the maximum value of the adjustment.
-   --  Note that values will be restricted by <literal>upper -
-   --  page-size</literal> if the page-size property is nonzero.
-   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions of
-   --  the "changed" signal when setting multiple adjustment properties.
+   --  Note that values will be restricted by 'upper - page-size' if the
+   --  page-size property is nonzero.
+   --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
+   --  of the "changed" signal when setting multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "upper": the new maximum value
 
@@ -266,8 +266,7 @@ package Gtk.Adjustment is
    --  Type: Gdouble
    --  Flags: read-write
    --  The maximum value of the adjustment. Note that values will be
-   --  restricted by <literal>upper - page-size</literal> if the page-size
-   --  property is nonzero.
+   --  restricted by 'upper - page-size' if the page-size property is nonzero.
    --
    --  Name: Value_Property
    --  Type: Gdouble
