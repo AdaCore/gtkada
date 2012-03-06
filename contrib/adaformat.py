@@ -254,9 +254,39 @@ class CType(object):
 
         elif lang == "c->ada":
             ret = self.convert_from_c()
-            return VariableCall(
-                call=wrapper % (ret[2] % {"var": name}),
-                precall='', postcall='', tmpvars=ret[3])
+
+            # Do we need a temporary variable ?
+            # An "out" parameter for an enumeration requires a temporary
+            # variable: Internal(Enum'Pos (Param)) is invalid
+
+            ret_convert = ret and ret[2]
+
+            if ret_convert and ret_convert != "%(var)s" and mode != "in":
+                tmp = "Tmp_%s" % name
+                tmpvars = [Local_Var(name=tmp, type=self.ada)]
+
+                if "%(tmp)s" in ret_convert:
+                    tmp2 = "Tmp2_%s" % name
+                    tmpvars += [Local_Var(name=tmp2, type=self.cparam)]
+                    postcall = "%s; %s := %s;" % (
+                        ret_convert % {"var": tmp, "tmp": tmp2},
+                        name,
+                        tmp2)
+                else:
+                    postcall = "%s := %s;" % (
+                        name,
+                        self.convert_to_c() % {"var": tmp})
+
+                return VariableCall(
+                    call=wrapper % tmp,
+                    precall="",
+                    postcall=postcall,
+                    tmpvars=tmpvars)
+
+            else:
+                return VariableCall(
+                    call=wrapper % (ret[2] % {"var": name}),
+                    precall='', postcall='', tmpvars=ret[3])
 
     def add_with(self, pkg=None):
         """Add required withs for this type"""
@@ -323,12 +353,12 @@ class Enum(CType):
 
 
 class GObject(CType):
-    def __init__(self, ada):
+    def __init__(self, ada, userecord=True):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
         self.is_ptr = False
         self.classwide = False  # Parameter should include "'Class"
-        self.userecord = True  # Parameter should be "access .._Record"
+        self.userecord = userecord  # Parameter should be "access .._Record"
 
     def convert_from_c(self):
         stub = "Stub_%s" % base_name(self.ada)

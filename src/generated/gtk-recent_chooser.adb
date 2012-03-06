@@ -423,22 +423,23 @@ package body Gtk.Recent_Chooser is
         (System.Address, Gtk_Recent_Sort_Func);
 
       function Internal_Cb
-         (A         : Gtk.Recent_Info.Gtk_Recent_Info;
-          B         : Gtk.Recent_Info.Gtk_Recent_Info;
+         (A         : System.Address;
+          B         : System.Address;
           User_Data : System.Address) return Gint;
+      pragma Convention (C, Internal_Cb);
 
       -----------------
       -- Internal_Cb --
       -----------------
 
       function Internal_Cb
-         (A         : Gtk.Recent_Info.Gtk_Recent_Info;
-          B         : Gtk.Recent_Info.Gtk_Recent_Info;
+         (A         : System.Address;
+          B         : System.Address;
           User_Data : System.Address) return Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Recent_Sort_Func (D.Func) (A, B, D.Data.all);
+         return To_Gtk_Recent_Sort_Func (D.Func) (From_Object (A), From_Object (B), D.Data.all);
       end Internal_Cb;
 
       -------------------

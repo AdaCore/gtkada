@@ -69,7 +69,10 @@ Where the package node is defined as follows:
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
             ada="..."      <!-- optional, name to use in Ada -->
-            type="..."     <!-- optional, override Ada type -->
+            type="..."     <!-- optional, override Ada type.
+                                The value will be passed as is to C, unless
+                                it is "Glib.Object.GObject", in which
+                                case the value is processed as a GObject -->
             ctype="..."    <!-- Override C type (to better qualify it) -->
             default="..."  <!-- optional, the default value for the param-->
             direction=".." <!-- optional, "in", "out" or "inout" -->
@@ -133,7 +136,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring
-from adaformat import AdaType, CType, Proxy, List, naming, Enum
+from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum
 
 
 class GtkAda(object):
@@ -439,6 +442,9 @@ class GtkAdaParameter(object):
         if self.node is not None:
             t = self.node.get("type", None)
             if t:
+                if t == "Glib.Object.GObject":
+                    return GObject(t, userecord=False)
+
                 return AdaType(t, pkg=pkg)  # An instance of CType
 
             t = self.node.get("ctype", None)

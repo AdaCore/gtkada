@@ -72,6 +72,8 @@ package body Create_Status_Icons is
      (Check_Button : not null access Gtk_Check_Button_Record'Class);
    --  Callback procedures
 
+   package Widget_Popups is new Popup_User_Data (GObject);
+
    -----------------
    -- Change_Icon --
    -----------------
@@ -159,10 +161,10 @@ package body Create_Status_Icons is
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 
-      Popup
+      Widget_Popups.Popup
         (Menu          => Menu,
-         Func          => Position_Menu'Access,
-         User_Data     => Get_Object (Status_Icon),
+         Func          => Gtk.Status_Icon.Position_Menu'Access,
+         Data          => GObject (Status_Icon),
          Activate_Time => Get_Current_Event_Time);
    end Popup_Menu_Cb;
 

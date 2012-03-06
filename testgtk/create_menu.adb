@@ -42,20 +42,22 @@ with Common;                use Common;
 
 package body Create_Menu is
 
-   package My_Popup is new Gtk.Menu.User_Menu_Popup (Gint);
+   package My_Popup is new Gtk.Menu.Popup_User_Data (Gint);
    use My_Popup;
 
    procedure Position_At_0
-     (Menu : access Gtk_Menu_Record'Class;
+     (Menu : not null access Gtk_Menu_Record'Class;
       X    : out Gint;
-      Y    : out Gint);
+      Y    : out Gint;
+      Push_In : out Boolean);
    --  Position function at coordinates 0,0.
 
    procedure Position_At_Data
-     (Menu : access Gtk_Menu_Record'Class;
+     (Menu : not null access Gtk_Menu_Record'Class;
       X    : out Gint;
       Y    : out Gint;
-      Val  : access Gint);
+      Push_In : out Boolean;
+      Val  : Gint);
    --  Position function at coordinates Val,Val.
 
    procedure Popup_At_Position (Widget : not null access GObject_Record'Class);
@@ -69,14 +71,16 @@ package body Create_Menu is
    -------------------
 
    procedure Position_At_0
-     (Menu : access Gtk_Menu_Record'Class;
+     (Menu : not null access Gtk_Menu_Record'Class;
       X    : out Gint;
-      Y    : out Gint)
+      Y    : out Gint;
+      Push_In : out Boolean)
    is
       pragma Unreferenced (Menu);
    begin
       X := 0;
       Y := 0;
+      Push_In := True;
    end Position_At_0;
 
    ----------------------
@@ -84,15 +88,17 @@ package body Create_Menu is
    ----------------------
 
    procedure Position_At_Data
-     (Menu : access Gtk_Menu_Record'Class;
+     (Menu : not null access Gtk_Menu_Record'Class;
       X    : out Gint;
       Y    : out Gint;
-      Val  : access Gint)
+      Push_In : out Boolean;
+      Val  : Gint)
    is
       pragma Unreferenced (Menu);
    begin
-      X := Val.all;
-      Y := Val.all;
+      X := Val;
+      Y := Val;
+      Push_In := True;
    end Position_At_Data;
 
    -----------------------
@@ -105,7 +111,7 @@ package body Create_Menu is
       Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
-      Val : aliased Gint := Get_Value_As_Int (Spin);
+      Val : constant Gint := Get_Value_As_Int (Spin);
    begin
       Gtk_New (Menu);
 
@@ -121,7 +127,7 @@ package body Create_Menu is
       My_Popup.Popup
         (Menu => Menu,
          Func => Position_At_Data'Access,
-         Data => Val'Access);
+         Data => Val);
    end Popup_At_Position;
 
    -----------

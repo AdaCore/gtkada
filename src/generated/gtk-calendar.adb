@@ -267,11 +267,12 @@ package body Gtk.Calendar is
         (System.Address, Gtk_Calendar_Detail_Func);
 
       function Internal_Cb
-         (Calendar  : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar  : System.Address;
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
-          User_Data : System.Address) return UTF8_String;
+          User_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Convention (C, Internal_Cb);
       --  This kind of functions provide Pango markup with detail information
       --  for the specified day. Examples for such details are holidays or
       --  appointments. The function returns NULL when no information is
@@ -289,15 +290,16 @@ package body Gtk.Calendar is
       -----------------
 
       function Internal_Cb
-         (Calendar  : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
+         (Calendar  : System.Address;
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
-          User_Data : System.Address) return UTF8_String
+          User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         D                 : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Calendar : Gtk.Calendar.Gtk_Calendar_Record;
       begin
-         return To_Gtk_Calendar_Detail_Func (D.Func) (Calendar, Year, Month, Day, D.Data.all);
+         return New_String (To_Gtk_Calendar_Detail_Func (D.Func) (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_Gtk_Calendar)), Year, Month, Day, D.Data.all));
       end Internal_Cb;
 
       ---------------------

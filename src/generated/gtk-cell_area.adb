@@ -542,10 +542,11 @@ package body Gtk.Cell_Area is
         (System.Address, Gtk_Cell_Alloc_Callback);
 
       function Internal_Cb
-         (Renderer        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Renderer        : System.Address;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-          Data            : System.Address) return Boolean;
+          Data            : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for iterating over the cell
       --  renderers and their allocated areas inside a
       --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
@@ -578,14 +579,15 @@ package body Gtk.Cell_Area is
       -----------------
 
       function Internal_Cb
-         (Renderer        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         (Renderer        : System.Address;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-          Data            : System.Address) return Boolean
+          Data            : System.Address) return Integer
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         return To_Gtk_Cell_Alloc_Callback (D.Func) (Renderer, Cell_Area, Cell_Background, D.Data.all);
+         return Boolean'Pos (To_Gtk_Cell_Alloc_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), Cell_Area, Cell_Background, D.Data.all));
       end Internal_Cb;
 
    end Foreach_Alloc_User_Data;
@@ -599,8 +601,9 @@ package body Gtk.Cell_Area is
         (System.Address, Gtk_Cell_Callback);
 
       function Internal_Cb
-         (Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Data     : System.Address) return Boolean;
+         (Renderer : System.Address;
+          Data     : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for iterating over the cell
       --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see
       --  Gtk.Cell_Area.Foreach.
@@ -625,12 +628,13 @@ package body Gtk.Cell_Area is
       -----------------
 
       function Internal_Cb
-         (Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Data     : System.Address) return Boolean
+         (Renderer : System.Address;
+          Data     : System.Address) return Integer
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         return To_Gtk_Cell_Callback (D.Func) (Renderer, D.Data.all);
+         return Boolean'Pos (To_Gtk_Cell_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), D.Data.all));
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -1042,10 +1046,11 @@ package body Gtk.Cell_Area is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
+      pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
@@ -1061,14 +1066,16 @@ package body Gtk.Cell_Area is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Cell, Tree_Model, Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------

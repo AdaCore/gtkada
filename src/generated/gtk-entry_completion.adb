@@ -427,10 +427,11 @@ package body Gtk.Entry_Completion is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
+      pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
@@ -446,14 +447,16 @@ package body Gtk.Entry_Completion is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Cell, Tree_Model, Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -525,10 +528,11 @@ package body Gtk.Entry_Completion is
         (System.Address, Gtk_Entry_Completion_Match_Func);
 
       function Internal_Cb
-         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Key        : UTF8_String;
+         (Completion : System.Address;
+          Key        : Interfaces.C.Strings.chars_ptr;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Boolean;
+          User_Data  : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  A function which decides whether the row indicated by Iter matches a
       --  given Key, and should be displayed as a possible completion for Key.
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
@@ -546,14 +550,15 @@ package body Gtk.Entry_Completion is
       -----------------
 
       function Internal_Cb
-         (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
-          Key        : UTF8_String;
+         (Completion : System.Address;
+          Key        : Interfaces.C.Strings.chars_ptr;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Boolean
+          User_Data  : System.Address) return Integer
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         D                         : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Entry_Completion : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
       begin
-         return To_Gtk_Entry_Completion_Match_Func (D.Func) (Completion, Key, Iter, D.Data.all);
+         return Boolean'Pos (To_Gtk_Entry_Completion_Match_Func (D.Func) (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Interfaces.C.Strings.Value (Key), Iter, D.Data.all));
       end Internal_Cb;
 
       --------------------

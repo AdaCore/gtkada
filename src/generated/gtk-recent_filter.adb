@@ -167,7 +167,8 @@ package body Gtk.Recent_Filter is
 
       function Internal_Cb
          (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-          User_Data   : System.Address) return Boolean;
+          User_Data   : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.Recent_Filter.Add_Custom.
       --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
@@ -196,11 +197,11 @@ package body Gtk.Recent_Filter is
 
       function Internal_Cb
          (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-          User_Data   : System.Address) return Boolean
+          User_Data   : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Recent_Filter_Func (D.Func) (Filter_Info, D.Data.all);
+         return Boolean'Pos (To_Gtk_Recent_Filter_Func (D.Func) (Filter_Info, D.Data.all));
       end Internal_Cb;
 
    end Add_Custom_User_Data;

@@ -398,6 +398,7 @@ package body Gtk.Assistant is
       function Internal_Cb
          (Current_Page : Gint;
           Data         : System.Address) return Gint;
+      pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which
       --  is the next page given a current one. It's called both for computing
       --  the next page when the user presses the "forward" button and for

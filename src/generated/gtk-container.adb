@@ -209,9 +209,8 @@ package body Gtk.Container is
       function To_Gtk_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Callback);
 
-      procedure Internal_Cb
-         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Data   : System.Address);
+      procedure Internal_Cb (Widget : System.Address; Data : System.Address);
+      pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see Gtk.Container.Foreach.
       --  "widget": the widget to operate on
@@ -234,13 +233,11 @@ package body Gtk.Container is
       -- Internal_Cb --
       -----------------
 
-      procedure Internal_Cb
-         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Data   : System.Address)
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+      procedure Internal_Cb (Widget : System.Address; Data : System.Address) is
+         D               : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       begin
-         To_Gtk_Callback (D.Func) (Widget, D.Data.all);
+         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), D.Data.all);
       end Internal_Cb;
 
    end Forall_User_Data;
@@ -265,9 +262,8 @@ package body Gtk.Container is
       function To_Gtk_Callback is new Ada.Unchecked_Conversion
         (System.Address, Gtk_Callback);
 
-      procedure Internal_Cb
-         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Data   : System.Address);
+      procedure Internal_Cb (Widget : System.Address; Data : System.Address);
+      pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see Gtk.Container.Foreach.
       --  "widget": the widget to operate on
@@ -290,13 +286,11 @@ package body Gtk.Container is
       -- Internal_Cb --
       -----------------
 
-      procedure Internal_Cb
-         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Data   : System.Address)
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+      procedure Internal_Cb (Widget : System.Address; Data : System.Address) is
+         D               : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       begin
-         To_Gtk_Callback (D.Func) (Widget, D.Data.all);
+         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), D.Data.all);
       end Internal_Cb;
 
    end Foreach_User_Data;

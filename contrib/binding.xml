@@ -1856,7 +1856,6 @@ __PRE__
 
      <method id="gtk_cell_layout_set_attributes" bind="False"/>
      <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
-     <!--<method id="gtk_cell_layout_set_cell_data_func" bind="False"/>-->
   </package>
 
   <package id="Gtk.Assistant">
@@ -2025,13 +2024,8 @@ __PRE__
       <!-- ??? inclusion of below method is pending on L117-038 -->
       <method id="gtk_status_icon_get_geometry" bind="False"/>
 
-      <method id="gtk_status_icon_position_menu" convention="C">
-         <!-- The purpose of this method is to provide a canned
-              implementation of a menu position function for use with
-              Gtk.Menu.  Pass all parameters through unchanged.
-              May be used as a Gtk.Menu.C_Gtk_Menu_Position_Func. -->
-         <parameter name="menu" ctype="gpointer"/>
-         <parameter name="push_in" ctype="gboolean*" type="gboolean"/>
+      <method id="gtk_status_icon_position_menu">
+        <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
       </method>
    </package>
 
@@ -2632,6 +2626,19 @@ __PRE__
      <method id="gtk_action_get_proxies" return="WidgetSList*"/>
    </package>
 
+   <package id="Gtk.Menu">
+     <parameter name="self" ada="Menu"/>
+     <method id="gtk_menu_get_active" return="GtkMenuItem"/>
+     <method id="gtk_menu_popup">
+       <parameter name="parent_menu_shell" ctype="GtkMenuShell" default="null"/>
+       <parameter name="parent_menu_item" ctype="GtkMenuItem" default="null"/>
+       <parameter name="func" default="null"/>
+       <parameter name="button" default="1"/>
+       <parameter name="activate_time" default="0"/>
+     </method>
+     <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
@@ -2639,6 +2646,9 @@ __PRE__
 
    <package id="Gtk.Tree_Model">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
+   </package>
+   <package id="Gtk.Action_Group">
+     <parameter name="self" ada="Action_Group"/>
    </package>
 
 </GIR>

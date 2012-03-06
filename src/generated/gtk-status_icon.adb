@@ -626,21 +626,23 @@ package body Gtk.Status_Icon is
    -------------------
 
    procedure Position_Menu
-      (Menu      : System.Address;
-       X         : out Gint;
-       Y         : out Gint;
-       Push_In   : out gboolean;
-       User_Data : System.Address)
+      (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
+       X       : out Gint;
+       Y       : out Gint;
+       Push_In : out Boolean;
+       Icon    : Glib.Object.GObject)
    is
       procedure Internal
-         (Menu      : System.Address;
-          X         : out Gint;
-          Y         : out Gint;
-          Push_In   : out gboolean;
-          User_Data : System.Address);
+         (Menu    : System.Address;
+          X       : out Gint;
+          Y       : out Gint;
+          Push_In : out Integer;
+          Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");
+      Tmp_Push_In : Integer;
    begin
-      Internal (Menu, X, Y, Push_In, User_Data);
+      Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));
+      Push_In := Boolean'Val (Tmp_Push_In);
    end Position_Menu;
 
 end Gtk.Status_Icon;

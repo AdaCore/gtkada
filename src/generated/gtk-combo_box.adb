@@ -638,10 +638,11 @@ package body Gtk.Combo_Box is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
+      pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
@@ -657,14 +658,16 @@ package body Gtk.Combo_Box is
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
-          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+          Cell        : System.Address;
+          Tree_Model  : System.Address;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Cell, Tree_Model, Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -792,9 +795,10 @@ package body Gtk.Combo_Box is
         (System.Address, Gtk_Tree_View_Row_Separator_Func);
 
       function Internal_Cb
-         (Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         (Model : System.Address;
           Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Boolean;
+          Data  : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  Function type for determining whether the row pointed to by Iter
       --  should be rendered as a separator. A common way to implement this is
       --  to have a boolean column in the model, whose values the
@@ -808,13 +812,14 @@ package body Gtk.Combo_Box is
       -----------------
 
       function Internal_Cb
-         (Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         (Model : System.Address;
           Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Boolean
+          Data  : System.Address) return Integer
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                   : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         return To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Model, Iter, D.Data.all);
+         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all));
       end Internal_Cb;
 
       ----------------------------

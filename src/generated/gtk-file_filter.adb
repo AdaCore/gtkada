@@ -124,7 +124,8 @@ package body Gtk.File_Filter is
 
       function Internal_Cb
          (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
-          Data        : System.Address) return Boolean;
+          Data        : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.File_Filter.Add_Custom.
       --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
@@ -152,11 +153,11 @@ package body Gtk.File_Filter is
 
       function Internal_Cb
          (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
-          Data        : System.Address) return Boolean
+          Data        : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return To_Gtk_File_Filter_Func (D.Func) (Filter_Info, D.Data.all);
+         return Boolean'Pos (To_Gtk_File_Filter_Func (D.Func) (Filter_Info, D.Data.all));
       end Internal_Cb;
 
    end Add_Custom_User_Data;

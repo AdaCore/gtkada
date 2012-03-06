@@ -213,7 +213,8 @@ package body Gtk.Accel_Group is
       function Internal_Cb
          (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
-          Data    : System.Address) return Boolean;
+          Data    : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
       --  Since: gtk+ 2.2
 
       ----------
@@ -236,11 +237,11 @@ package body Gtk.Accel_Group is
       function Internal_Cb
          (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
-          Data    : System.Address) return Boolean
+          Data    : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return To_Gtk_Accel_Group_Find_Func (D.Func) (Key, Closure, D.Data.all);
+         return Boolean'Pos (To_Gtk_Accel_Group_Find_Func (D.Func) (Key, Closure, D.Data.all));
       end Internal_Cb;
 
    end Find_User_Data;

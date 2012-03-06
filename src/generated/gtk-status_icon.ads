@@ -58,6 +58,7 @@ with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Image;       use Gtk.Image;
+with Gtk.Menu;        use Gtk.Menu;
 
 package Gtk.Status_Icon is
 
@@ -318,12 +319,11 @@ package Gtk.Status_Icon is
    ---------------
 
    procedure Position_Menu
-      (Menu      : System.Address;
-       X         : out Gint;
-       Y         : out Gint;
-       Push_In   : out gboolean;
-       User_Data : System.Address);
-   pragma Convention (C, Position_Menu);
+      (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
+       X       : out Gint;
+       Y       : out Gint;
+       Push_In : out Boolean;
+       Icon    : Glib.Object.GObject);
    --  Menu positioning function to use with Gtk.Menu.Popup to position Menu
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10
@@ -332,7 +332,7 @@ package Gtk.Status_Icon is
    --  "y": return location for the y position
    --  "push_in": whether the first menu item should be offset (pushed in) to
    --  be aligned with the menu popup position (only useful for GtkOptionMenu).
-   --  "user_data": the status icon to position the menu on
+   --  "Icon": the status icon to position the menu on
 
    ----------------
    -- Properties --
