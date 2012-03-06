@@ -263,8 +263,11 @@ package body Gtk.Action_Group is
    is
       Data : constant Local_Radio_Action_User_Data_Access :=
         Convert (User_Data);
+      Stub : Gtk_Action_Record;
+      G : constant Gtk_Action := Gtk_Action (Get_User_Data (Group, Stub));
+      C : constant Gtk_Action := Gtk_Action (Get_User_Data (Current, Stub));
    begin
-      Data.Callback (Convert (Group), Convert (Current), Data.User_Data);
+      Data.Callback (G, C, Data.User_Data);
    end Local_Radio_Action_Callback;
 
    --------------------------------

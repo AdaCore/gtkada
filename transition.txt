@@ -188,6 +188,8 @@ these obsolete subprograms have been removed without a replacement.
 
 Get_Action has been removed without a replacement.
 
+Convert has been removed, use Glib.Object.Get_User_Data instead.
+
 Gtk.Aspect_Frame
 ================
 

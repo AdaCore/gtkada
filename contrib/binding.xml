@@ -2626,6 +2626,12 @@ While looking up a recently used file is as simple as using:
      </method>
    </package>
 
+   <package id="Gtk.Action">
+     <parameter name="self" ada="Action"/>
+     <method id="gtk_action_get_accel_closure" bind="False" /> <!-- Closures not handled-->
+     <method id="gtk_action_get_proxies" return="WidgetSList*"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

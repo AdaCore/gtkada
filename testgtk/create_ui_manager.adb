@@ -23,6 +23,7 @@
 
 with Ada.Text_IO;      use Ada.Text_IO;
 with Glib;             use Glib;
+with Glib.Object;      use Glib.Object;
 with Glib.Error;       use Glib.Error;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Frame;        use Gtk.Frame;
@@ -192,7 +193,8 @@ package body Create_UI_Manager is
    ---------------------
 
    procedure Activate_Action (Action, User_Data : System.Address) is
-      Act : constant Gtk_Action := Convert (Action);
+      Stub : Gtk_Action_Record;
+      Act : constant Gtk_Action := Gtk_Action (Get_User_Data (Action, Stub));
       pragma Unreferenced (User_Data);
    begin
       Put_Line ("Action " & Get_Name (Act) & " was activated");
