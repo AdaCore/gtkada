@@ -209,8 +209,8 @@ package Gtk.Scale is
    function Get_Digits
       (Scale : not null access Gtk_Scale_Record) return Gint;
    procedure Set_Digits
-      (Scale            : not null access Gtk_Scale_Record;
-       Number_Of_Digits : Gint);
+      (Scale      : not null access Gtk_Scale_Record;
+       The_Digits : Gint);
    --  Sets the number of decimal places that are displayed in the value. Also
    --  causes the value of the adjustment to be rounded off to this number of
    --  digits, so the retrieved value matches the value the user saw.
@@ -309,7 +309,7 @@ package Gtk.Scale is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
    --
-   --  Name: Number_Of_Digits_Property
+   --  Name: The_Digits_Property
    --  Type: Gint
    --  Flags: read-write
    --
@@ -321,7 +321,7 @@ package Gtk.Scale is
    --  Type: Gtk.Enums.Gtk_Position_Type
    --  Flags: read-write
 
-   Number_Of_Digits_Property : constant Glib.Properties.Property_Int;
+   The_Digits_Property : constant Glib.Properties.Property_Int;
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
 
@@ -347,7 +347,7 @@ package Gtk.Scale is
    Signal_Format_Value : constant Glib.Signal_Name := "format-value";
 
 private
-   Number_Of_Digits_Property : constant Glib.Properties.Property_Int :=
+   The_Digits_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("digits");
    Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw-value");

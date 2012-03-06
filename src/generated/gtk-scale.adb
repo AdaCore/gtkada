@@ -340,13 +340,13 @@ package body Gtk.Scale is
    ----------------
 
    procedure Set_Digits
-      (Scale            : not null access Gtk_Scale_Record;
-       Number_Of_Digits : Gint)
+      (Scale      : not null access Gtk_Scale_Record;
+       The_Digits : Gint)
    is
-      procedure Internal (Scale : System.Address; Number_Of_Digits : Gint);
+      procedure Internal (Scale : System.Address; The_Digits : Gint);
       pragma Import (C, Internal, "gtk_scale_set_digits");
    begin
-      Internal (Get_Object (Scale), Number_Of_Digits);
+      Internal (Get_Object (Scale), The_Digits);
    end Set_Digits;
 
    --------------------

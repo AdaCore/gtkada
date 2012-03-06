@@ -557,6 +557,9 @@ the rest of the toolkit.  Gtk_New is implemented as a procedure rather
 than as a function, and the use of GNAT.Strings.String_List replaces
 Gtkada.Types.Chars_Ptr_Array throughout.
 
+Gtk.Spin_Button
+===============
+
 Gtk.Status_Icon
 ===============
 
