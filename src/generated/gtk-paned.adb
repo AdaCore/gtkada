@@ -70,7 +70,7 @@ package body Gtk.Paned is
    ----------------
 
    procedure Initialize
-      (Paned       : access Gtk_Paned_Record'Class;
+      (Paned       : not null access Gtk_Paned_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       function Internal
@@ -84,7 +84,9 @@ package body Gtk.Paned is
    -- Initialize_Hpaned --
    -----------------------
 
-   procedure Initialize_Hpaned (Paned : access Gtk_Hpaned_Record'Class) is
+   procedure Initialize_Hpaned
+      (Paned : not null access Gtk_Hpaned_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hpaned_new");
    begin
@@ -95,7 +97,9 @@ package body Gtk.Paned is
    -- Initialize_Vpaned --
    -----------------------
 
-   procedure Initialize_Vpaned (Paned : access Gtk_Vpaned_Record'Class) is
+   procedure Initialize_Vpaned
+      (Paned : not null access Gtk_Vpaned_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin

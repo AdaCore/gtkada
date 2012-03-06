@@ -55,7 +55,7 @@ package body Gtk.Adjustment is
    ----------------
 
    procedure Initialize
-      (Adjustment     : access Gtk_Adjustment_Record'Class;
+      (Adjustment     : not null access Gtk_Adjustment_Record'Class;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;

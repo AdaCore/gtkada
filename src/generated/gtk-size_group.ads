@@ -133,7 +133,7 @@ package Gtk.Size_Group is
       (Size_Group : out Gtk_Size_Group;
        Mode       : Size_Group_Mode := Both);
    procedure Initialize
-      (Size_Group : access Gtk_Size_Group_Record'Class;
+      (Size_Group : not null access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both);
    --  Create a new Gtk.Size_Group.Gtk_Size_Group.
    --  "mode": the mode for the new size group.

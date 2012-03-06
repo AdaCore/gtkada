@@ -133,7 +133,9 @@ package body Gtk.Recent_Manager is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Recent_Manager_Record'Class) is
+   procedure Initialize
+      (Self : not null access Gtk_Recent_Manager_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_manager_new");
    begin

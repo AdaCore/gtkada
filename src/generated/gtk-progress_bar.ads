@@ -72,7 +72,7 @@ package Gtk.Progress_Bar is
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar);
    procedure Initialize
-      (Progress_Bar : access Gtk_Progress_Bar_Record'Class);
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class);
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
 
    function Get_Type return Glib.GType;

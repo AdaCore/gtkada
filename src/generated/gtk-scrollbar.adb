@@ -77,7 +77,7 @@ package body Gtk.Scrollbar is
    ----------------
 
    procedure Initialize
-      (Scrollbar   : access Gtk_Scrollbar_Record'Class;
+      (Scrollbar   : not null access Gtk_Scrollbar_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
@@ -94,7 +94,7 @@ package body Gtk.Scrollbar is
    ---------------------------
 
    procedure Initialize_Hscrollbar
-      (Scrollbar  : access Gtk_Hscrollbar_Record'Class;
+      (Scrollbar  : not null access Gtk_Hscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       function Internal (Adjustment : System.Address) return System.Address;
@@ -108,7 +108,7 @@ package body Gtk.Scrollbar is
    ---------------------------
 
    procedure Initialize_Vscrollbar
-      (Scrollbar  : access Gtk_Vscrollbar_Record'Class;
+      (Scrollbar  : not null access Gtk_Vscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       function Internal (Adjustment : System.Address) return System.Address;

@@ -48,7 +48,7 @@ package body Gtk.Progress_Bar is
    ----------------
 
    procedure Initialize
-      (Progress_Bar : access Gtk_Progress_Bar_Record'Class)
+      (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_progress_bar_new");

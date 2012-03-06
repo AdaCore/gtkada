@@ -58,8 +58,8 @@ pragma Ada_05;
 --  manager = gtk_recent_manager_get_default (); info =
 --  gtk_recent_manager_lookup_item (manager, file_uri, &amp;error); if (error)
 --  { g_warning ("Could not find the file: %s", error->message); g_error_free
---  (error); } else { /&ast; Use the info object &ast;/ gtk_recent_info_unref
---  (info); } ]|
+--  (error); } else { /* Use the info object */ gtk_recent_info_unref (info); }
+--  ]|
 --
 --  In order to retrieve the list of recently used files, you can use
 --  Gtk.Recent_Manager.Get_Items, which returns a list of
@@ -146,7 +146,8 @@ package Gtk.Recent_Manager is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Recent_Manager);
-   procedure Initialize (Self : access Gtk_Recent_Manager_Record'Class);
+   procedure Initialize
+      (Self : not null access Gtk_Recent_Manager_Record'Class);
    --  Creates a new recent manager object. Recent manager objects are used to
    --  handle the list of recently used resources. A
    --  Gtk.Recent_Manager.Gtk_Recent_Manager object monitors the recently used

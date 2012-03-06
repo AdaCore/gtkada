@@ -52,7 +52,7 @@ package body Gtk.File_Chooser_Widget is
    ----------------
 
    procedure Initialize
-      (Self   : access Gtk_File_Chooser_Widget_Record'Class;
+      (Self   : not null access Gtk_File_Chooser_Widget_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
       function Internal

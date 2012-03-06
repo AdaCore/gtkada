@@ -89,7 +89,9 @@ package body Gtk.Assistant is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Assistant : access Gtk_Assistant_Record'Class) is
+   procedure Initialize
+      (Assistant : not null access Gtk_Assistant_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_assistant_new");
    begin

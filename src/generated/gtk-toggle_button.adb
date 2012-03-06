@@ -64,7 +64,7 @@ package body Gtk.Toggle_Button is
    ----------------
 
    procedure Initialize
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String := "")
    is
       function Internal
@@ -88,7 +88,7 @@ package body Gtk.Toggle_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String)
    is
       function Internal

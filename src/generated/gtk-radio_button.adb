@@ -94,7 +94,7 @@ package body Gtk.Radio_Button is
    ----------------
 
    procedure Initialize
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "")
    is
@@ -120,7 +120,7 @@ package body Gtk.Radio_Button is
    ----------------
 
    procedure Initialize
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "")
    is
@@ -146,7 +146,7 @@ package body Gtk.Radio_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String)
    is
@@ -167,7 +167,7 @@ package body Gtk.Radio_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String)
    is

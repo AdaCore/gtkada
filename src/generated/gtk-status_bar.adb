@@ -47,7 +47,9 @@ package body Gtk.Status_Bar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class) is
+   procedure Initialize
+      (Statusbar : not null access Gtk_Status_Bar_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_new");
    begin

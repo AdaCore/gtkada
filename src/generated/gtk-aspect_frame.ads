@@ -59,7 +59,7 @@ package Gtk.Aspect_Frame is
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
    procedure Initialize
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record'Class;
        Label        : UTF8_String := "";
        Xalign       : Gfloat;
        Yalign       : Gfloat;

@@ -83,7 +83,9 @@ package body Gtk.Accel_Group is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class) is
+   procedure Initialize
+      (Accel_Group : not null access Gtk_Accel_Group_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_new");
    begin

@@ -174,7 +174,7 @@ package body Gtk.Image is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Image : access Gtk_Image_Record'Class) is
+   procedure Initialize (Image : not null access Gtk_Image_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_image_new");
    begin
@@ -186,7 +186,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image     : access Gtk_Image_Record'Class;
+      (Image     : not null access Gtk_Image_Record'Class;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation)
    is
       function Internal
@@ -201,7 +201,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Filename : UTF8_String)
    is
       function Internal
@@ -220,7 +220,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -237,7 +237,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image  : access Gtk_Image_Record'Class;
+      (Image  : not null access Gtk_Image_Record'Class;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       function Internal (Pixbuf : System.Address) return System.Address;
@@ -251,7 +251,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -272,7 +272,7 @@ package body Gtk.Image is
    ---------------------------
 
    procedure Initialize_From_Gicon
-      (Image : access Gtk_Image_Record'Class;
+      (Image : not null access Gtk_Image_Record'Class;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size)
    is
@@ -289,7 +289,7 @@ package body Gtk.Image is
    -------------------------------
 
    procedure Initialize_From_Icon_Name
-      (Image     : access Gtk_Image_Record'Class;
+      (Image     : not null access Gtk_Image_Record'Class;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is

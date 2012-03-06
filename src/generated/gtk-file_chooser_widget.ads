@@ -61,7 +61,7 @@ package Gtk.File_Chooser_Widget is
       (Self   : out Gtk_File_Chooser_Widget;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
-      (Self   : access Gtk_File_Chooser_Widget_Record'Class;
+      (Self   : not null access Gtk_File_Chooser_Widget_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget. This is
    --  a file chooser widget that can be embedded in custom windows, and it is

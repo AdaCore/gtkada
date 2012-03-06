@@ -46,7 +46,7 @@ package body Gtk.Fixed is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class) is
+   procedure Initialize (Fixed : not null access Gtk_Fixed_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_fixed_new");
    begin

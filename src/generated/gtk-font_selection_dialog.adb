@@ -52,7 +52,7 @@ package body Gtk.Font_Selection_Dialog is
    ----------------
 
    procedure Initialize
-      (Dialog : access Gtk_Font_Selection_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record'Class;
        Title  : UTF8_String)
    is
       function Internal

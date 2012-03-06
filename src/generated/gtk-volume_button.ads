@@ -51,7 +51,8 @@ package Gtk.Volume_Button is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Volume_Button);
-   procedure Initialize (Widget : access Gtk_Volume_Button_Record'Class);
+   procedure Initialize
+      (Widget : not null access Gtk_Volume_Button_Record'Class);
    --  Creates a Gtk.Volume_Button.Gtk_Volume_Button, with a range between 0.0
    --  and 1.0, with a stepping of 0.02. Volume values can be obtained and
    --  modified using the functions from Gtk.Scale_Button.Gtk_Scale_Button.

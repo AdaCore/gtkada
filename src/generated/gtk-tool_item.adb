@@ -47,7 +47,9 @@ package body Gtk.Tool_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Tool_Item : access Gtk_Tool_Item_Record'Class) is
+   procedure Initialize
+      (Tool_Item : not null access Gtk_Tool_Item_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_new");
    begin

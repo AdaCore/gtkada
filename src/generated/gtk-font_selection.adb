@@ -48,7 +48,9 @@ package body Gtk.Font_Selection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Fontsel : access Gtk_Font_Selection_Record'Class) is
+   procedure Initialize
+      (Fontsel : not null access Gtk_Font_Selection_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_new");
    begin

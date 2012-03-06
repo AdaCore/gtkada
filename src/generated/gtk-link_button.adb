@@ -62,7 +62,7 @@ package body Gtk.Link_Button is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Link_Button_Record'Class;
+      (Widget : not null access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String)
    is
       function Internal
@@ -81,7 +81,7 @@ package body Gtk.Link_Button is
    ---------------------------
 
    procedure Initialize_With_Label
-      (Widget : access Gtk_Link_Button_Record'Class;
+      (Widget : not null access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String;
        Label  : UTF8_String := "")
    is

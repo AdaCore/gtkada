@@ -50,7 +50,7 @@ package body Gtk.Button_Box is
    ----------------
 
    procedure Initialize
-      (Widget      : access Gtk_Button_Box_Record'Class;
+      (Widget      : not null access Gtk_Button_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       function Internal

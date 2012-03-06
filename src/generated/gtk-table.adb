@@ -52,7 +52,7 @@ package body Gtk.Table is
    ----------------
 
    procedure Initialize
-      (Table       : access Gtk_Table_Record'Class;
+      (Table       : not null access Gtk_Table_Record'Class;
        Rows        : Guint;
        Columns     : Guint;
        Homogeneous : Boolean)

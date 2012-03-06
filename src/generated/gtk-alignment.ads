@@ -72,7 +72,7 @@ package Gtk.Alignment is
        Xscale    : Gfloat;
        Yscale    : Gfloat);
    procedure Initialize
-      (Alignment : access Gtk_Alignment_Record'Class;
+      (Alignment : not null access Gtk_Alignment_Record'Class;
        Xalign    : Gfloat;
        Yalign    : Gfloat;
        Xscale    : Gfloat;

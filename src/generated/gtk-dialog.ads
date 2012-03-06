@@ -74,12 +74,12 @@ pragma Ada_05;
 --
 --  == Simple GtkDialog usage ==
 --
---    /&ast; Function to open a dialog box displaying the message provided. &ast;/
+--    /* Function to open a dialog box displaying the message provided. */
 --    void
 --    quick_message (gchar *message)
 --    {
 --       GtkWidget *dialog, *label, *content_area;
---       /&ast; Create the widgets &ast;/
+--       /* Create the widgets */
 --       dialog = gtk_dialog_new_with_buttons ("Message",
 --          main_application_window,
 --          GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -88,12 +88,12 @@ pragma Ada_05;
 --          NULL);
 --       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 --       label = gtk_label_new (message);
---       /&ast; Ensure that the dialog box is destroyed when the user responds &ast;/
+--       /* Ensure that the dialog box is destroyed when the user responds */
 --       g_signal_connect_swapped (dialog,
 --          "response",
 --          G_CALLBACK (gtk_widget_destroy),
 --          dialog);
---       /&ast; Add the label, and show everything we've added to the dialog &ast;/
+--       /* Add the label, and show everything we've added to the dialog */
 --       gtk_container_add (GTK_CONTAINER (content_area), label);
 --       gtk_widget_show_all (dialog);
 --    }
@@ -209,7 +209,7 @@ package Gtk.Dialog is
    ------------------
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
-   procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+   procedure Initialize (Dialog : not null access Gtk_Dialog_Record'Class);
    --  Creates a new dialog box.
    --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
    --  but into the Vbox and Action_Area, as described above.
@@ -220,7 +220,7 @@ package Gtk.Dialog is
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);
    procedure Initialize
-      (Dialog : access Gtk_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Dialog_Record'Class;
        Title  : UTF8_String;
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);

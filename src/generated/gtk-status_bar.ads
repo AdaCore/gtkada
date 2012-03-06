@@ -79,7 +79,8 @@ package Gtk.Status_Bar is
    ------------------
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
-   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class);
+   procedure Initialize
+      (Statusbar : not null access Gtk_Status_Bar_Record'Class);
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
 
    function Get_Type return Glib.GType;

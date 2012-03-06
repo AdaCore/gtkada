@@ -73,7 +73,9 @@ package body Gtk.Color_Button is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Button : access Gtk_Color_Button_Record'Class) is
+   procedure Initialize
+      (Button : not null access Gtk_Color_Button_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_button_new");
    begin
@@ -85,7 +87,7 @@ package body Gtk.Color_Button is
    ---------------------------
 
    procedure Initialize_With_Color
-      (Button : access Gtk_Color_Button_Record'Class;
+      (Button : not null access Gtk_Color_Button_Record'Class;
        Color  : Gdk.Color.Gdk_Color)
    is
       function Internal (Color : Gdk.Color.Gdk_Color) return System.Address;
@@ -99,7 +101,7 @@ package body Gtk.Color_Button is
    --------------------------
 
    procedure Initialize_With_Rgba
-      (Button : access Gtk_Color_Button_Record'Class;
+      (Button : not null access Gtk_Color_Button_Record'Class;
        Rgba   : Gdk.RGBA.Gdk_RGBA)
    is
       function Internal (Rgba : Gdk.RGBA.Gdk_RGBA) return System.Address;

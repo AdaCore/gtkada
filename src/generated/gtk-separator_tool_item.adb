@@ -46,7 +46,9 @@ package body Gtk.Separator_Tool_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Item : access Gtk_Separator_Tool_Item_Record'Class) is
+   procedure Initialize
+      (Item : not null access Gtk_Separator_Tool_Item_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_tool_item_new");
    begin

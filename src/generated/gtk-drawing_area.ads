@@ -76,7 +76,7 @@ pragma Ada_05;
 --       return FALSE;
 --    }
 --    [...]
---    GtkWidget &ast;drawing_area = gtk_drawing_area_new (<!-- -->);
+--    GtkWidget *drawing_area = gtk_drawing_area_new (<!-- -->);
 --       gtk_widget_set_size_request (drawing_area, 100, 100);
 --          g_signal_connect (G_OBJECT (drawing_area), "draw",
 --          G_CALLBACK (draw_callback), NULL);
@@ -126,7 +126,7 @@ package Gtk.Drawing_Area is
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
    procedure Initialize
-      (Drawing_Area : access Gtk_Drawing_Area_Record'Class);
+      (Drawing_Area : not null access Gtk_Drawing_Area_Record'Class);
    --  Creates a new drawing area.
 
    function Get_Type return Glib.GType;

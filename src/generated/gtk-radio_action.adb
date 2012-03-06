@@ -55,7 +55,7 @@ package body Gtk.Radio_Action is
    ----------------
 
    procedure Initialize
-      (Action   : access Gtk_Radio_Action_Record'Class;
+      (Action   : not null access Gtk_Radio_Action_Record'Class;
        Name     : UTF8_String;
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";

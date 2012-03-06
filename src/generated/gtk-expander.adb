@@ -61,7 +61,7 @@ package body Gtk.Expander is
    ----------------
 
    procedure Initialize
-      (Expander : access Gtk_Expander_Record'Class;
+      (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String)
    is
       function Internal
@@ -80,7 +80,7 @@ package body Gtk.Expander is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Expander : access Gtk_Expander_Record'Class;
+      (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String := "")
    is
       function Internal

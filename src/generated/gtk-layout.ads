@@ -84,7 +84,7 @@ package Gtk.Layout is
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize
-      (Layout      : access Gtk_Layout_Record'Class;
+      (Layout      : not null access Gtk_Layout_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific

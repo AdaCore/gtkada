@@ -52,8 +52,8 @@ pragma Ada_05;
 --
 --  expander = GTK_EXPANDER (object);
 --
---  if (gtk_expander_get_expanded (expander)) { /&ast; Show or create widgets
---  &ast;/ } else { /&ast; Hide or destroy widgets &ast;/ } } </programlisting>
+--  if (gtk_expander_get_expanded (expander)) { /* Show or create widgets */ }
+--  else { /* Hide or destroy widgets */ } } </programlisting>
 --
 --  == GtkExpander as GtkBuildable ==
 --
@@ -97,7 +97,7 @@ package Gtk.Expander is
 
    procedure Gtk_New (Expander : out Gtk_Expander; Label : UTF8_String);
    procedure Initialize
-      (Expander : access Gtk_Expander_Record'Class;
+      (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String);
    --  Creates a new expander using Label as the text of the label.
    --  Since: gtk+ 2.4
@@ -107,7 +107,7 @@ package Gtk.Expander is
       (Expander : out Gtk_Expander;
        Label    : UTF8_String := "");
    procedure Initialize_With_Mnemonic
-      (Expander : access Gtk_Expander_Record'Class;
+      (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String := "");
    --  Creates a new expander using Label as the text of the label. If
    --  characters in Label are preceded by an underscore, they are underlined.

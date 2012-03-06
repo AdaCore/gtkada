@@ -91,7 +91,9 @@ package body Gtk.File_Filter is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_File_Filter_Record'Class) is
+   procedure Initialize
+      (Self : not null access Gtk_File_Filter_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_file_filter_new");
    begin

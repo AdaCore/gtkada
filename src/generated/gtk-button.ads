@@ -61,7 +61,7 @@ package Gtk.Button is
       (Button   : out Gtk_Button;
        Stock_Id : UTF8_String);
    procedure Initialize_From_Stock
-      (Button   : access Gtk_Button_Record'Class;
+      (Button   : not null access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
    --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
@@ -72,7 +72,7 @@ package Gtk.Button is
 
    procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
    procedure Initialize
-      (Button : access Gtk_Button_Record'Class;
+      (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String := "");
    --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
    --  containing the given text.
@@ -82,7 +82,7 @@ package Gtk.Button is
       (Button : out Gtk_Button;
        Label  : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Button : access Gtk_Button_Record'Class;
+      (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
    --  in Label are preceded by an underscore, they are underlined. If you need

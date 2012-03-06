@@ -46,7 +46,7 @@ package body Gtk.Spinner is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Spinner : access Gtk_Spinner_Record'Class) is
+   procedure Initialize (Spinner : not null access Gtk_Spinner_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_spinner_new");
    begin

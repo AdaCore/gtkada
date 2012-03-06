@@ -57,7 +57,7 @@ package body Gtk.Scale_Button is
    ----------------
 
    procedure Initialize
-      (Button : access Gtk_Scale_Button_Record'Class;
+      (Button : not null access Gtk_Scale_Button_Record'Class;
        Size   : Gtk.Enums.Gtk_Icon_Size;
        Min    : Gdouble;
        Max    : Gdouble;

@@ -191,7 +191,7 @@ package Gtk.Label is
 
    procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "");
    procedure Initialize
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "");
    --  Creates a new label with the given text inside it. You can pass null to
    --  get an empty label widget.
@@ -201,7 +201,7 @@ package Gtk.Label is
       (Label : out Gtk_Label;
        Str   : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String);
    --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
    --  If characters in Str are preceded by an underscore, they are underlined.

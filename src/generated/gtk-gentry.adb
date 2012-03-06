@@ -71,7 +71,7 @@ package body Gtk.GEntry is
    -- Initialize --
    ----------------
 
-   procedure Initialize (The_Entry : access Gtk_Entry_Record'Class) is
+   procedure Initialize (The_Entry : not null access Gtk_Entry_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_entry_new");
    begin
@@ -83,7 +83,7 @@ package body Gtk.GEntry is
    ----------------------------
 
    procedure Initialize_With_Buffer
-      (The_Entry : access Gtk_Entry_Record'Class;
+      (The_Entry : not null access Gtk_Entry_Record'Class;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
       
    is

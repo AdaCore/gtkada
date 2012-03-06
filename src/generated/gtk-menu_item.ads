@@ -67,14 +67,15 @@ package Gtk.Menu_Item is
    ------------------
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item);
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class);
+   procedure Initialize
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class);
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item.
 
    procedure Gtk_New_With_Label
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
    procedure Initialize_With_Label
-      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String);
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item whose child is a
    --  Gtk.Label.Gtk_Label.
@@ -84,7 +85,7 @@ package Gtk.Menu_Item is
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String);
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so

@@ -53,7 +53,8 @@ package Gtk.Color_Button is
    ------------------
 
    procedure Gtk_New (Button : out Gtk_Color_Button);
-   procedure Initialize (Button : access Gtk_Color_Button_Record'Class);
+   procedure Initialize
+      (Button : not null access Gtk_Color_Button_Record'Class);
    --  Creates a new color button.
    --  This returns a widget in the form of a small button containing a swatch
    --  representing the current selected color. When the button is clicked, a
@@ -66,7 +67,7 @@ package Gtk.Color_Button is
       (Button : out Gtk_Color_Button;
        Color  : Gdk.Color.Gdk_Color);
    procedure Initialize_With_Color
-      (Button : access Gtk_Color_Button_Record'Class;
+      (Button : not null access Gtk_Color_Button_Record'Class;
        Color  : Gdk.Color.Gdk_Color);
    --  Creates a new color button.
    --  Since: gtk+ 2.4
@@ -76,7 +77,7 @@ package Gtk.Color_Button is
       (Button : out Gtk_Color_Button;
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    procedure Initialize_With_Rgba
-      (Button : access Gtk_Color_Button_Record'Class;
+      (Button : not null access Gtk_Color_Button_Record'Class;
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    --  Creates a new color button.
    --  Since: gtk+ 3.0

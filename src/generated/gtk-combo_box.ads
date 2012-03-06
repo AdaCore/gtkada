@@ -100,7 +100,8 @@ package Gtk.Combo_Box is
    ------------------
 
    procedure Gtk_New (Combo_Box : out Gtk_Combo_Box);
-   procedure Initialize (Combo_Box : access Gtk_Combo_Box_Record'Class);
+   procedure Initialize
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
    --  Since: gtk+ 2.4
 
@@ -108,7 +109,7 @@ package Gtk.Combo_Box is
       (Combo_Box : out Gtk_Combo_Box;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
    --  cells.
@@ -118,7 +119,7 @@ package Gtk.Combo_Box is
       (Combo_Box : out Gtk_Combo_Box;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area_And_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
    --  The new combo box will use Area to layout cells.
@@ -126,7 +127,7 @@ package Gtk.Combo_Box is
 
    procedure Gtk_New_With_Entry (Combo_Box : out Gtk_Combo_Box);
    procedure Initialize_With_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class);
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
 
    procedure Gtk_New_With_Model
@@ -134,7 +135,7 @@ package Gtk.Combo_Box is
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
    procedure Initialize_With_Model
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
    --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
@@ -147,7 +148,7 @@ package Gtk.Combo_Box is
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
    procedure Initialize_With_Model_And_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with

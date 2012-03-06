@@ -60,14 +60,14 @@ pragma Ada_05;
 --       GtkWidget *window, *radio1, *radio2, *box, *entry;
 --       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 --       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, TRUE, 2);
---       /&ast; Create a radio button with a GtkEntry widget &ast;/
+--       /* Create a radio button with a GtkEntry widget */
 --       radio1 = gtk_radio_button_new (NULL);
 --       entry = gtk_entry_new (<!-- -->);
 --          gtk_container_add (GTK_CONTAINER (radio1), entry);
---          /&ast; Create a radio button with a label &ast;/
+--          /* Create a radio button with a label */
 --             radio2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
 --             "I'm the second radio button.");
---          /&ast; Pack them into a box, then show all the widgets &ast;/
+--          /* Pack them into a box, then show all the widgets */
 --          gtk_box_pack_start (GTK_BOX (box), radio1, TRUE, TRUE, 2);
 --          gtk_box_pack_start (GTK_BOX (box), radio2, TRUE, TRUE, 2);
 --          gtk_container_add (GTK_CONTAINER (window), box);
@@ -111,7 +111,7 @@ package Gtk.Radio_Button is
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "");
    procedure Initialize
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "");
    --  Creates or initializes a new radio button, belonging to Group. If Label
@@ -129,7 +129,7 @@ package Gtk.Radio_Button is
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "");
    procedure Initialize
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String := "");
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
@@ -142,7 +142,7 @@ package Gtk.Radio_Button is
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String);
    procedure Gtk_New_With_Mnemonic
@@ -150,7 +150,7 @@ package Gtk.Radio_Button is
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : access Gtk_Radio_Button_Record'Class;
        Label        : UTF8_String);
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button containing a label. The

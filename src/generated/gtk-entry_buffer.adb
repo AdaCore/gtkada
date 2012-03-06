@@ -52,7 +52,7 @@ package body Gtk.Entry_Buffer is
    ----------------
 
    procedure Initialize
-      (Self            : access Gtk_Entry_Buffer_Record'Class;
+      (Self            : not null access Gtk_Entry_Buffer_Record'Class;
        Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint)
    is

@@ -80,7 +80,7 @@ package Gtk.Scale is
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    procedure Initialize
-      (Scale       : access Gtk_Scale_Record'Class;
+      (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new Gtk.Scale.Gtk_Scale.
@@ -96,7 +96,7 @@ package Gtk.Scale is
        Max         : Gdouble;
        Step        : Gdouble);
    procedure Initialize_With_Range
-      (Scale       : access Gtk_Scale_Record'Class;
+      (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Min         : Gdouble;
        Max         : Gdouble;
@@ -121,7 +121,7 @@ package Gtk.Scale is
       (Scale      : out Gtk_Hscale;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize_Hscale
-      (Scale      : access Gtk_Hscale_Record'Class;
+      (Scale      : not null access Gtk_Hscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Gtk_New_Hscale
       (Scale : out Gtk_Hscale;
@@ -129,7 +129,7 @@ package Gtk.Scale is
        Max   : Gdouble;
        Step  : Gdouble);
    procedure Initialize_Hscale
-      (Scale : access Gtk_Hscale_Record'Class;
+      (Scale : not null access Gtk_Hscale_Record'Class;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble);
@@ -151,7 +151,7 @@ package Gtk.Scale is
       (Scale      : out Gtk_Vscale;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize_Vscale
-      (Scale      : access Gtk_Vscale_Record'Class;
+      (Scale      : not null access Gtk_Vscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Gtk_New_Vscale
       (Scale : out Gtk_Vscale;
@@ -159,7 +159,7 @@ package Gtk.Scale is
        Max   : Gdouble;
        Step  : Gdouble);
    procedure Initialize_Vscale
-      (Scale : access Gtk_Vscale_Record'Class;
+      (Scale : not null access Gtk_Vscale_Record'Class;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble);

@@ -50,7 +50,7 @@ package Gtk.Separator_Menu_Item is
 
    procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
    procedure Initialize
-      (Widget : access Gtk_Separator_Menu_Item_Record'Class);
+      (Widget : not null access Gtk_Separator_Menu_Item_Record'Class);
    --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
 
    function Get_Type return Glib.GType;

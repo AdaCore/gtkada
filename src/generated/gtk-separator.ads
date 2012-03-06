@@ -59,7 +59,7 @@ package Gtk.Separator is
       (Separator   : out Gtk_Separator;
        Orientation : Gtk.Enums.Gtk_Orientation);
    procedure Initialize
-      (Separator   : access Gtk_Separator_Record'Class;
+      (Separator   : not null access Gtk_Separator_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
    --  Since: gtk+ 3.0
@@ -70,7 +70,7 @@ package Gtk.Separator is
 
    procedure Gtk_New_Hseparator (Separator : out Gtk_Hseparator);
    procedure Initialize_Hseparator
-      (Separator : access Gtk_Hseparator_Record'Class);
+      (Separator : not null access Gtk_Hseparator_Record'Class);
    --  Creates a new Gtk.Separator.Gtk_Hseparator.
 
    function Hseparator_Get_Type return Glib.GType;
@@ -78,7 +78,7 @@ package Gtk.Separator is
 
    procedure Gtk_New_Vseparator (Separator : out Gtk_Vseparator);
    procedure Initialize_Vseparator
-      (Separator : access Gtk_Vseparator_Record'Class);
+      (Separator : not null access Gtk_Vseparator_Record'Class);
    --  Creates a new Gtk.Separator.Gtk_Vseparator.
 
    function Vseparator_Get_Type return Glib.GType;

@@ -70,7 +70,7 @@ package body Gtk.Separator is
    ----------------
 
    procedure Initialize
-      (Separator   : access Gtk_Separator_Record'Class;
+      (Separator   : not null access Gtk_Separator_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
       function Internal
@@ -85,7 +85,7 @@ package body Gtk.Separator is
    ---------------------------
 
    procedure Initialize_Hseparator
-      (Separator : access Gtk_Hseparator_Record'Class)
+      (Separator : not null access Gtk_Hseparator_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hseparator_new");
@@ -98,7 +98,7 @@ package body Gtk.Separator is
    ---------------------------
 
    procedure Initialize_Vseparator
-      (Separator : access Gtk_Vseparator_Record'Class)
+      (Separator : not null access Gtk_Vseparator_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vseparator_new");

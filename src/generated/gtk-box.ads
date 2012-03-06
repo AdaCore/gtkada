@@ -109,7 +109,7 @@ package Gtk.Box is
        Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Gint);
    procedure Initialize
-      (Box         : access Gtk_Box_Record'Class;
+      (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Gint);
    --  Creates a new Gtk.Box.Gtk_Box.
@@ -125,7 +125,7 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    procedure Initialize_Hbox
-      (Box         : access Gtk_Hbox_Record'Class;
+      (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Hbox.
@@ -144,7 +144,7 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    procedure Initialize_Vbox
-      (Box         : access Gtk_Vbox_Record'Class;
+      (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Vbox.

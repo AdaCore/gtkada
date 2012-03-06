@@ -74,7 +74,7 @@ package body Gtk.Button is
    ----------------
 
    procedure Initialize
-      (Button : access Gtk_Button_Record'Class;
+      (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String := "")
    is
       function Internal
@@ -98,7 +98,7 @@ package body Gtk.Button is
    ---------------------------
 
    procedure Initialize_From_Stock
-      (Button   : access Gtk_Button_Record'Class;
+      (Button   : not null access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String)
    is
       function Internal
@@ -117,7 +117,7 @@ package body Gtk.Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Button : access Gtk_Button_Record'Class;
+      (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String)
    is
       function Internal

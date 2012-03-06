@@ -51,7 +51,7 @@ package body Gtk.Arrow is
    ----------------
 
    procedure Initialize
-      (Arrow       : access Gtk_Arrow_Record'Class;
+      (Arrow       : not null access Gtk_Arrow_Record'Class;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type)
    is

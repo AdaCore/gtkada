@@ -47,7 +47,7 @@ package body Gtk.Separator_Menu_Item is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Separator_Menu_Item_Record'Class)
+      (Widget : not null access Gtk_Separator_Menu_Item_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_menu_item_new");

@@ -64,7 +64,7 @@ package body Gtk.Check_Button is
    ----------------
 
    procedure Initialize
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -88,7 +88,7 @@ package body Gtk.Check_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String)
    is
       function Internal

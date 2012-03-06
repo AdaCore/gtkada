@@ -51,7 +51,7 @@ package body Gtk.Color_Selection_Dialog is
    ----------------
 
    procedure Initialize
-      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
+      (Color_Selection_Dialog : not null access Gtk_Color_Selection_Dialog_Record'Class;
        Title                  : UTF8_String)
    is
       function Internal

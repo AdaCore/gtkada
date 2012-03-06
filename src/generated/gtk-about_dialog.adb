@@ -49,7 +49,9 @@ package body Gtk.About_Dialog is
    -- Initialize --
    ----------------
 
-   procedure Initialize (About : access Gtk_About_Dialog_Record'Class) is
+   procedure Initialize
+      (About : not null access Gtk_About_Dialog_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_new");
    begin

@@ -48,7 +48,8 @@ package Gtk.Event_Box is
    ------------------
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
+   procedure Initialize
+      (Event_Box : not null access Gtk_Event_Box_Record'Class);
    --  Create a new box.
    --  The box's child can then be set using the Gtk.Container.Add function.
 

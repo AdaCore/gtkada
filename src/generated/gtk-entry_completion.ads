@@ -123,7 +123,7 @@ package Gtk.Entry_Completion is
 
    procedure Gtk_New (Completion : out Gtk_Entry_Completion);
    procedure Initialize
-      (Completion : access Gtk_Entry_Completion_Record'Class);
+      (Completion : not null access Gtk_Entry_Completion_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
    --  Since: gtk+ 2.4
 
@@ -132,7 +132,7 @@ package Gtk.Entry_Completion is
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       ;
    procedure Initialize_With_Area
-      (Completion : access Gtk_Entry_Completion_Record'Class;
+      (Completion : not null access Gtk_Entry_Completion_Record'Class;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       ;
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using

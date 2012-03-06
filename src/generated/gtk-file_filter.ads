@@ -33,7 +33,7 @@ pragma Ada_05;
 --  e.g. a filter for text/plain also matches a file with mime type
 --  application/rtf, since application/rtf is a subclass of text/plain. Note
 --  that Gtk.File_Filter.Gtk_File_Filter allows wildcards for the subtype of a
---  mime type, so you can e.g. filter for image/&ast;.
+--  mime type, so you can e.g. filter for image/*.
 --
 --  Normally, filters are used by adding them to a
 --  Gtk.File_Chooser.Gtk_File_Chooser, see Gtk.File_Chooser_Widget.Add_Filter,
@@ -53,7 +53,7 @@ pragma Ada_05;
 --    <object class="GtkFileFilter">
 --    <mime-types>
 --    <mime-type>text/plain</mime-type>
---    <mime-type>image/&ast;</mime-type>
+--    <mime-type>image/*</mime-type>
 --    </mime-types>
 --    <patterns>
 --    <pattern>*.txt</pattern>
@@ -118,7 +118,8 @@ package Gtk.File_Filter is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_File_Filter);
-   procedure Initialize (Self : access Gtk_File_Filter_Record'Class);
+   procedure Initialize
+      (Self : not null access Gtk_File_Filter_Record'Class);
    --  Creates a new Gtk.File_Filter.Gtk_File_Filter with no rules added to
    --  it. Such a filter doesn't accept any files, so is not particularly
    --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,

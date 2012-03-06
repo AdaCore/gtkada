@@ -102,7 +102,8 @@ package Gtk.Calendar is
    ------------------
 
    procedure Gtk_New (Calendar : out Gtk_Calendar);
-   procedure Initialize (Calendar : access Gtk_Calendar_Record'Class);
+   procedure Initialize
+      (Calendar : not null access Gtk_Calendar_Record'Class);
    --  Creates a new calendar, with the current date being selected.
 
    function Get_Type return Glib.GType;

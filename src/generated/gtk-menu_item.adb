@@ -73,7 +73,9 @@ package body Gtk.Menu_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class) is
+   procedure Initialize
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new");
    begin
@@ -85,7 +87,7 @@ package body Gtk.Menu_Item is
    ---------------------------
 
    procedure Initialize_With_Label
-      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String)
    is
       function Internal
@@ -104,7 +106,7 @@ package body Gtk.Menu_Item is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String)
    is
       function Internal

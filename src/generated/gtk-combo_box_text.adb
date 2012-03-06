@@ -112,7 +112,9 @@ package body Gtk.Combo_Box_Text is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Combo_Box_Text_Record'Class) is
+   procedure Initialize
+      (Self : not null access Gtk_Combo_Box_Text_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_text_new");
    begin
@@ -124,7 +126,7 @@ package body Gtk.Combo_Box_Text is
    ---------------------------
 
    procedure Initialize_With_Entry
-      (Self : access Gtk_Combo_Box_Text_Record'Class)
+      (Self : not null access Gtk_Combo_Box_Text_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_text_new_with_entry");

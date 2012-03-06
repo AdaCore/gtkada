@@ -160,7 +160,7 @@ package body Gtk.Entry_Completion is
    ----------------
 
    procedure Initialize
-      (Completion : access Gtk_Entry_Completion_Record'Class)
+      (Completion : not null access Gtk_Entry_Completion_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new");
@@ -173,7 +173,7 @@ package body Gtk.Entry_Completion is
    --------------------------
 
    procedure Initialize_With_Area
-      (Completion : access Gtk_Entry_Completion_Record'Class;
+      (Completion : not null access Gtk_Entry_Completion_Record'Class;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       
    is

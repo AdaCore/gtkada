@@ -179,7 +179,7 @@ package Gtk.File_Chooser_Dialog is
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
-      (Dialog : access Gtk_File_Chooser_Dialog_Record'Class;
+      (Dialog : not null access Gtk_File_Chooser_Dialog_Record'Class;
        Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);

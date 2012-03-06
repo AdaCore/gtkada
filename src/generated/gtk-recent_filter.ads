@@ -136,7 +136,8 @@ package Gtk.Recent_Filter is
    ------------------
 
    procedure Gtk_New (Filter : out Gtk_Recent_Filter);
-   procedure Initialize (Filter : access Gtk_Recent_Filter_Record'Class);
+   procedure Initialize
+      (Filter : not null access Gtk_Recent_Filter_Record'Class);
    --  Creates a new Gtk.Recent_Filter.Gtk_Recent_Filter with no rules added
    --  to it. Such filter does not accept any recently used resources, so is
    --  not particularly useful until you add rules with

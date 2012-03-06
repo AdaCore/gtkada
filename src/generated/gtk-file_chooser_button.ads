@@ -80,7 +80,7 @@ package Gtk.File_Chooser_Button is
        Title  : UTF8_String;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    procedure Initialize
-      (Button : access Gtk_File_Chooser_Button_Record'Class;
+      (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Title  : UTF8_String;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new file-selecting button widget.
@@ -92,7 +92,7 @@ package Gtk.File_Chooser_Button is
       (Button : out Gtk_File_Chooser_Button;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Initialize_With_Dialog
-      (Button : access Gtk_File_Chooser_Button_Record'Class;
+      (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Creates a Gtk.File_Chooser_Button.Gtk_File_Chooser_Button widget which
    --  uses Dialog as its file-picking window.

@@ -46,7 +46,7 @@ package body Gtk.Toolbar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Initialize (Toolbar : not null access Gtk_Toolbar_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_new");
    begin

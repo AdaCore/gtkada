@@ -61,7 +61,7 @@ package body Gtk.Label is
    ----------------
 
    procedure Initialize
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "")
    is
       function Internal
@@ -80,7 +80,7 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String)
    is
       function Internal

@@ -86,7 +86,7 @@ package body Gtk.Dialog is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Dialog : access Gtk_Dialog_Record'Class) is
+   procedure Initialize (Dialog : not null access Gtk_Dialog_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new");
    begin
@@ -98,7 +98,7 @@ package body Gtk.Dialog is
    ----------------
 
    procedure Initialize
-      (Dialog : access Gtk_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Dialog_Record'Class;
        Title  : UTF8_String;
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags)

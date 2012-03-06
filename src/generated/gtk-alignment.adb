@@ -53,7 +53,7 @@ package body Gtk.Alignment is
    ----------------
 
    procedure Initialize
-      (Alignment : access Gtk_Alignment_Record'Class;
+      (Alignment : not null access Gtk_Alignment_Record'Class;
        Xalign    : Gfloat;
        Yalign    : Gfloat;
        Xscale    : Gfloat;

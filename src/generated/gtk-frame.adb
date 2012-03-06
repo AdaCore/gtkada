@@ -48,7 +48,7 @@ package body Gtk.Frame is
    ----------------
 
    procedure Initialize
-      (Frame : access Gtk_Frame_Record'Class;
+      (Frame : not null access Gtk_Frame_Record'Class;
        Label : UTF8_String := "")
    is
       function Internal

@@ -64,7 +64,8 @@ package Gtk.Handle_Box is
    ------------------
 
    procedure Gtk_New (Handle_Box : out Gtk_Handle_Box);
-   procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record'Class);
+   procedure Initialize
+      (Handle_Box : not null access Gtk_Handle_Box_Record'Class);
    --  Create a new handle box.
 
    function Get_Type return Glib.GType;

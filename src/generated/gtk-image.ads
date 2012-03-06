@@ -147,14 +147,14 @@ package Gtk.Image is
    ------------------
 
    procedure Gtk_New (Image : out Gtk_Image);
-   procedure Initialize (Image : access Gtk_Image_Record'Class);
+   procedure Initialize (Image : not null access Gtk_Image_Record'Class);
    --  Creates a new empty Gtk.Image.Gtk_Image widget.
 
    procedure Gtk_New
       (Image     : out Gtk_Image;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
    procedure Initialize
-      (Image     : access Gtk_Image_Record'Class;
+      (Image     : not null access Gtk_Image_Record'Class;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
    --  Creates a Gtk.Image.Gtk_Image displaying the given animation. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the animation; you
@@ -168,7 +168,7 @@ package Gtk.Image is
 
    procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String);
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Filename : UTF8_String);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
@@ -188,7 +188,7 @@ package Gtk.Image is
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize_From_Gicon
-      (Image : access Gtk_Image_Record'Class;
+      (Image : not null access Gtk_Image_Record'Class;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
@@ -204,7 +204,7 @@ package Gtk.Image is
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize_From_Icon_Name
-      (Image     : access Gtk_Image_Record'Class;
+      (Image     : not null access Gtk_Image_Record'Class;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
@@ -220,7 +220,7 @@ package Gtk.Image is
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon set. Sample stock
@@ -240,7 +240,7 @@ package Gtk.Image is
       (Image  : out Gtk_Image;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    procedure Initialize
-      (Image  : access Gtk_Image_Record'Class;
+      (Image  : not null access Gtk_Image_Record'Class;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Creates a new Gtk.Image.Gtk_Image displaying Pixbuf. The
    --  Gtk.Image.Gtk_Image does not assume a reference to the pixbuf; you still
@@ -256,7 +256,7 @@ package Gtk.Image is
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize
-      (Image    : access Gtk_Image_Record'Class;
+      (Image    : not null access Gtk_Image_Record'Class;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying a stock icon. Sample stock

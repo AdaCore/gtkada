@@ -38,13 +38,13 @@ pragma Ada_05;
 --
 --    #include <ctype.h>
 --    void
---    insert_text_handler (GtkEditable &ast;editable,
---       const gchar &ast;text,
+--    insert_text_handler (GtkEditable *editable,
+--       const gchar *text,
 --       gint         length,
---       gint        &ast;position,
+--       gint        *position,
 --       gpointer     data)
 --    {
---       gchar &ast;result = g_utf8_strup (text, length);
+--       gchar *result = g_utf8_strup (text, length);
 --       g_signal_handlers_block_by_func (editable,
 --            (gpointer) insert_text_handler, data);
 --       gtk_editable_insert_text (editable, result, length, position);

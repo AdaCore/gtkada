@@ -113,7 +113,9 @@ package body Gtk.Status_Icon is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Status_Icon : access Gtk_Status_Icon_Record'Class) is
+   procedure Initialize
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new");
    begin
@@ -125,7 +127,7 @@ package body Gtk.Status_Icon is
    --------------------------
 
    procedure Initialize_From_File
-      (Status_Icon : access Gtk_Status_Icon_Record'Class;
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Filename    : UTF8_String)
    is
       function Internal
@@ -144,7 +146,7 @@ package body Gtk.Status_Icon is
    ---------------------------
 
    procedure Initialize_From_Gicon
-      (Status_Icon : access Gtk_Status_Icon_Record'Class;
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon        : Glib.G_Icon.G_Icon)
    is
       function Internal (Icon : Glib.G_Icon.G_Icon) return System.Address;
@@ -158,7 +160,7 @@ package body Gtk.Status_Icon is
    -------------------------------
 
    procedure Initialize_From_Icon_Name
-      (Status_Icon : access Gtk_Status_Icon_Record'Class;
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon_Name   : UTF8_String)
    is
       function Internal
@@ -177,7 +179,7 @@ package body Gtk.Status_Icon is
    ----------------------------
 
    procedure Initialize_From_Pixbuf
-      (Status_Icon : access Gtk_Status_Icon_Record'Class;
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Pixbuf      : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       function Internal (Pixbuf : System.Address) return System.Address;
@@ -191,7 +193,7 @@ package body Gtk.Status_Icon is
    ---------------------------
 
    procedure Initialize_From_Stock
-      (Status_Icon : access Gtk_Status_Icon_Record'Class;
+      (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Stock_Id    : UTF8_String)
    is
       function Internal

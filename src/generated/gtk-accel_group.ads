@@ -101,7 +101,8 @@ package Gtk.Accel_Group is
    ------------------
 
    procedure Gtk_New (Accel_Group : out Gtk_Accel_Group);
-   procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class);
+   procedure Initialize
+      (Accel_Group : not null access Gtk_Accel_Group_Record'Class);
    --  Creates a new Gtk.Accel_Group.Gtk_Accel_Group. Remember to call
    --  Gtk.Window.Add_Accel_Group to active the group.
 

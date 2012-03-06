@@ -46,7 +46,7 @@ package body Gtk.Socket is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Socket_Record'Class) is
+   procedure Initialize (Self : not null access Gtk_Socket_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_socket_new");
    begin

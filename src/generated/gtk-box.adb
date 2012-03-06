@@ -79,7 +79,7 @@ package body Gtk.Box is
    ----------------
 
    procedure Initialize
-      (Box         : access Gtk_Box_Record'Class;
+      (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Gint)
    is
@@ -96,7 +96,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Hbox
-      (Box         : access Gtk_Hbox_Record'Class;
+      (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is
@@ -113,7 +113,7 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Vbox
-      (Box         : access Gtk_Vbox_Record'Class;
+      (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0)
    is

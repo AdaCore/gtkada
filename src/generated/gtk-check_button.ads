@@ -59,7 +59,7 @@ package Gtk.Check_Button is
       (Check_Button : out Gtk_Check_Button;
        Label        : UTF8_String := "");
    procedure Initialize
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String := "");
    --  Create a check button. if Label is null, then no widget is associated
    --  with the button, and any widget can be added to the button (with
@@ -70,7 +70,7 @@ package Gtk.Check_Button is
       (Check_Button : out Gtk_Check_Button;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String);
    --  Creates a new Gtk.Check_Button.Gtk_Check_Button containing a label. The
    --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so

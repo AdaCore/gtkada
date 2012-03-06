@@ -52,7 +52,7 @@ package Gtk.Color_Selection_Dialog is
       (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
        Title                  : UTF8_String);
    procedure Initialize
-      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
+      (Color_Selection_Dialog : not null access Gtk_Color_Selection_Dialog_Record'Class;
        Title                  : UTF8_String);
    --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
    --  "title": a string containing the title text for the dialog.

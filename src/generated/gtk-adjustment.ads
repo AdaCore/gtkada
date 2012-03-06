@@ -76,7 +76,7 @@ package Gtk.Adjustment is
        Page_Increment : Gdouble;
        Page_Size      : Gdouble := 0.0);
    procedure Initialize
-      (Adjustment     : access Gtk_Adjustment_Record'Class;
+      (Adjustment     : not null access Gtk_Adjustment_Record'Class;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;

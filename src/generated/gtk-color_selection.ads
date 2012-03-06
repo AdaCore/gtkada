@@ -60,7 +60,8 @@ package Gtk.Color_Selection is
    ------------------
 
    procedure Gtk_New (Colorsel : out Gtk_Color_Selection);
-   procedure Initialize (Colorsel : access Gtk_Color_Selection_Record'Class);
+   procedure Initialize
+      (Colorsel : not null access Gtk_Color_Selection_Record'Class);
    --  Creates a new GtkColorSelection.
 
    function Get_Type return Glib.GType;

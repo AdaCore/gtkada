@@ -102,7 +102,9 @@ package body Gtk.Recent_Filter is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Filter : access Gtk_Recent_Filter_Record'Class) is
+   procedure Initialize
+      (Filter : not null access Gtk_Recent_Filter_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_filter_new");
    begin

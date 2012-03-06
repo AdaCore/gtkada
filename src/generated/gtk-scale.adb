@@ -124,7 +124,7 @@ package body Gtk.Scale is
    ----------------
 
    procedure Initialize
-      (Scale       : access Gtk_Scale_Record'Class;
+      (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
@@ -141,7 +141,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Hscale
-      (Scale      : access Gtk_Hscale_Record'Class;
+      (Scale      : not null access Gtk_Hscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
       function Internal (Adjustment : System.Address) return System.Address;
@@ -155,7 +155,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Hscale
-      (Scale : access Gtk_Hscale_Record'Class;
+      (Scale : not null access Gtk_Hscale_Record'Class;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble)
@@ -174,7 +174,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Vscale
-      (Scale      : access Gtk_Vscale_Record'Class;
+      (Scale      : not null access Gtk_Vscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
       function Internal (Adjustment : System.Address) return System.Address;
@@ -188,7 +188,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Vscale
-      (Scale : access Gtk_Vscale_Record'Class;
+      (Scale : not null access Gtk_Vscale_Record'Class;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble)
@@ -207,7 +207,7 @@ package body Gtk.Scale is
    ---------------------------
 
    procedure Initialize_With_Range
-      (Scale       : access Gtk_Scale_Record'Class;
+      (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Min         : Gdouble;
        Max         : Gdouble;

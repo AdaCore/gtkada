@@ -180,6 +180,7 @@ class GIR(object):
             doc = doc.replace("<listitem>", "   *").replace("</listitem>", "")
             doc = doc.replace("&percnt;", "%")
             doc = doc.replace("&lt;", "<").replace("&gt;", ">")
+            doc = doc.replace("&ast;", "*");
 
             doc = doc.replace("<programlisting>", "\n\n%PRE%<programlisting>")
             doc = re.sub("<programlisting>(.*?)</programlisting>",
@@ -960,7 +961,7 @@ class GIRClass(object):
         initialize_params = [Parameter(
             name=selfname,
             type=AdaType(selftype, pkg=self.pkg, in_spec=True),
-            mode="access")] + profile.params
+            mode="not null access")] + profile.params
         initialize = Subprogram(
             name=adaname.replace("Gtk_New", "%s.Initialize" % self.pkg.name),
             plist=initialize_params,

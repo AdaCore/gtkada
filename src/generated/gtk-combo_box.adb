@@ -225,7 +225,9 @@ package body Gtk.Combo_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Combo_Box : access Gtk_Combo_Box_Record'Class) is
+   procedure Initialize
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new");
    begin
@@ -237,7 +239,7 @@ package body Gtk.Combo_Box is
    --------------------------
 
    procedure Initialize_With_Area
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
    is
       function Internal (Area : System.Address) return System.Address;
@@ -251,7 +253,7 @@ package body Gtk.Combo_Box is
    ------------------------------------
 
    procedure Initialize_With_Area_And_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
    is
       function Internal (Area : System.Address) return System.Address;
@@ -265,7 +267,7 @@ package body Gtk.Combo_Box is
    ---------------------------
 
    procedure Initialize_With_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class)
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_entry");
@@ -278,7 +280,7 @@ package body Gtk.Combo_Box is
    ---------------------------
 
    procedure Initialize_With_Model
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       
    is
@@ -293,7 +295,7 @@ package body Gtk.Combo_Box is
    -------------------------------------
 
    procedure Initialize_With_Model_And_Entry
-      (Combo_Box : access Gtk_Combo_Box_Record'Class;
+      (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       
    is

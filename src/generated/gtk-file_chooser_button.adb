@@ -66,7 +66,7 @@ package body Gtk.File_Chooser_Button is
    ----------------
 
    procedure Initialize
-      (Button : access Gtk_File_Chooser_Button_Record'Class;
+      (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Title  : UTF8_String;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
    is
@@ -88,7 +88,7 @@ package body Gtk.File_Chooser_Button is
    ----------------------------
 
    procedure Initialize_With_Dialog
-      (Button : access Gtk_File_Chooser_Button_Record'Class;
+      (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       function Internal (Dialog : System.Address) return System.Address;

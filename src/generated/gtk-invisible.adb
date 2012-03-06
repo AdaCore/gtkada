@@ -59,7 +59,7 @@ package body Gtk.Invisible is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Self : access Gtk_Invisible_Record'Class) is
+   procedure Initialize (Self : not null access Gtk_Invisible_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
    begin
@@ -71,7 +71,7 @@ package body Gtk.Invisible is
    ---------------------------
 
    procedure Initialize_For_Screen
-      (Self   : access Gtk_Invisible_Record'Class;
+      (Self   : not null access Gtk_Invisible_Record'Class;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class)
    is
       function Internal (Screen : System.Address) return System.Address;

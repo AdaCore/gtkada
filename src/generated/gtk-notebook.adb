@@ -79,7 +79,9 @@ package body Gtk.Notebook is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Notebook : access Gtk_Notebook_Record'Class) is
+   procedure Initialize
+      (Notebook : not null access Gtk_Notebook_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_notebook_new");
    begin

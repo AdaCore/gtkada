@@ -50,7 +50,7 @@ package body Gtk.Size_Group is
    ----------------
 
    procedure Initialize
-      (Size_Group : access Gtk_Size_Group_Record'Class;
+      (Size_Group : not null access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both)
    is
       function Internal (Mode : Size_Group_Mode) return System.Address;

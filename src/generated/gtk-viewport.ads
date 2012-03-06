@@ -67,7 +67,7 @@ package Gtk.Viewport is
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    procedure Initialize
-      (Viewport    : access Gtk_Viewport_Record'Class;
+      (Viewport    : not null access Gtk_Viewport_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.

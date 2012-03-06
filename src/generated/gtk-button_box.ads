@@ -58,7 +58,7 @@ package Gtk.Button_Box is
       (Widget      : out Gtk_Button_Box;
        Orientation : Gtk.Enums.Gtk_Orientation);
    procedure Initialize
-      (Widget      : access Gtk_Button_Box_Record'Class;
+      (Widget      : not null access Gtk_Button_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
    --  Since: gtk+ 3.0

@@ -86,7 +86,8 @@ package Gtk.Notebook is
    ------------------
 
    procedure Gtk_New (Notebook : out Gtk_Notebook);
-   procedure Initialize (Notebook : access Gtk_Notebook_Record'Class);
+   procedure Initialize
+      (Notebook : not null access Gtk_Notebook_Record'Class);
    --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
 
    function Get_Type return Glib.GType;

@@ -40,9 +40,9 @@ pragma Ada_05;
 --    GtkWidget *socket = gtk_socket_new (<!-- -->);
 --       gtk_widget_show (socket);
 --       gtk_container_add (GTK_CONTAINER (parent), socket);
---       /&ast; The following call is only necessary if one of
+--       /* The following call is only necessary if one of
 --       * the ancestors of the socket is not yet visible.
---       &ast;/
+--       */
 --       gtk_widget_realize (socket);
 --          g_print ("The ID of the sockets window is %#x\n",
 --          gtk_socket_get_id (socket));
@@ -95,7 +95,7 @@ package Gtk.Socket is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Socket);
-   procedure Initialize (Self : access Gtk_Socket_Record'Class);
+   procedure Initialize (Self : not null access Gtk_Socket_Record'Class);
    --  Create a new empty Gtk.Socket.Gtk_Socket.
 
    function Get_Type return Glib.GType;

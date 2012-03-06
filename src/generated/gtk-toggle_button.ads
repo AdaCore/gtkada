@@ -95,7 +95,7 @@ package Gtk.Toggle_Button is
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String := "");
    procedure Initialize
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String := "");
    --  Initialize a button. If Label is "", then no label is created inside
    --  the button and you will have to provide your own child through a call to
@@ -108,7 +108,7 @@ package Gtk.Toggle_Button is
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String);
    --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
