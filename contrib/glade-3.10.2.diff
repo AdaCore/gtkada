@@ -14,8 +14,8 @@
 	the user to set the prefix for icons through the GLADE_BASE_DIR environment
 	variable.
 
---- gladeui/glade-app.c.orig	2012-03-05 12:54:58.000000000 -0500
-+++ gladeui/glade-app.c	2012-03-05 13:03:23.000000000 -0500
+--- glade-app.c.orig	2012-03-06 17:48:58.000000000 +0100
++++ glade-app.c	2012-03-06 17:49:04.000000000 +0100
 @@ -41,6 +41,7 @@
  #include "glade-accumulators.h"
  
@@ -24,24 +24,41 @@
  #include <glib.h>
  #include <glib/gstdio.h>
  #include <glib/gi18n-lib.h>
-@@ -218,9 +219,11 @@ glade_app_get_bin_dir (void)
+@@ -218,34 +219,51 @@ glade_app_get_bin_dir (void)
  static void
  build_package_paths (void)
  {
 -#if defined (G_OS_WIN32) || (defined (MAC_INTEGRATION) && defined (MAC_BUNDLE))
    gchar *prefix;
- 
-+  /* Set the prefix by looking at integration parameters */
++  gboolean must_free = TRUE;
 +
++  /* On all platforms, look for GLADE_BASE_DIR overriding the prefix */
++
++  prefix = getenv("GLADE_BASE_DIR");
++  if (prefix)
++    must_free = FALSE;
++  else
++    {
++      /* Set the prefix by looking at integration parameters */
+ 
 +#if defined (G_OS_WIN32) || (defined (MAC_INTEGRATION) && defined (MAC_BUNDLE))
  # ifdef G_OS_WIN32
-   prefix = g_win32_get_package_installation_directory_of_module (NULL);
+-  prefix = g_win32_get_package_installation_directory_of_module (NULL);
++      prefix = g_win32_get_package_installation_directory_of_module (NULL);
  
-@@ -231,21 +234,30 @@ build_package_paths (void)
-       g_build_filename (ige_mac_bundle_get_path (bundle), "Contents",
-                         "Resources", NULL);
+ # else // defined (MAC_INTEGRATION) && defined (MAC_BUNDLE)
+-  IgeMacBundle *bundle = ige_mac_bundle_get_default ();
++      IgeMacBundle *bundle = ige_mac_bundle_get_default ();
+ 
+-  prefix =
+-      g_build_filename (ige_mac_bundle_get_path (bundle), "Contents",
+-                        "Resources", NULL);
++      prefix =
++          g_build_filename (ige_mac_bundle_get_path (bundle), "Contents",
++                            "Resources", NULL);
  # endif
 +# endif
++    }
  
 -  pixmaps_dir = g_build_filename (prefix, "share", PACKAGE, "pixmaps", NULL);
 -  catalogs_dir = g_build_filename (prefix, "share", PACKAGE, "catalogs", NULL);
@@ -57,10 +74,6 @@
 -  locale_dir = g_strdup (GLADE_LOCALEDIR);
 -  bin_dir = g_strdup (GLADE_BINDIR);
 -#endif
-+  /* On all platforms, look for GLADE_BASE_DIR overriding the prefix */
-+
-+  prefix = getenv("GLADE_BASE_DIR");
-+
 +  if (prefix)
 +    {
 +      pixmaps_dir = g_build_filename (prefix, "share", PACKAGE, "pixmaps", NULL);
@@ -69,7 +82,8 @@
 +      locale_dir = g_build_filename (prefix, "share", "locale", NULL);
 +      bin_dir = g_build_filename (prefix, "bin", NULL);
 +
-+      g_free (prefix);
++      if (must_free)
++        g_free (prefix);
 +    }
 +  else
 +    {
