@@ -1,0 +1,30 @@
+2012-03-06	Nicolas Setton  <setton@adacore.com>
+
+	(configure): Do not set HAVE_LIBELF, not working on older
+	version of Linux (SuSE 10, Red Hat 4)
+
+	(gio/Makefile.in): Do not run tests in gio/, which require
+	Python 2.5 and do not work on old versions of Linux and Solaris.
+
+--- configure.orig	2012-03-06 20:20:36.000000000 +0100
++++ configure	2012-03-06 20:24:23.000000000 +0100
+@@ -25992,7 +25992,7 @@
+ 
+ if test $have_libelf = yes; then
+ 
+-$as_echo "#define HAVE_LIBELF 1" >>confdefs.h
++# $as_echo "#define HAVE_LIBELF 1" >>confdefs.h
+ 
+   ELF_LIBS=-lelf
+ fi
+--- gio/Makefile.in.orig	2012-03-06 20:26:50.000000000 +0100
++++ gio/Makefile.in	2012-03-06 21:52:21.000000000 +0100
+@@ -755,7 +755,7 @@
+ TEST_PROGS = 
+ NULL = 
+ SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_5) \
+-	$(am__append_9) $(am__append_12) . $(am__append_15) tests
++	$(am__append_9) $(am__append_12) . $(am__append_15)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
