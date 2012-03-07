@@ -2643,6 +2643,10 @@ __PRE__
      <parameter name="self" ada="Menu_Bar"/>
    </package>
 
+   <package id="Gtk.Menu_Shell">
+     <parameter name="self" ada="Menu_Shell"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
