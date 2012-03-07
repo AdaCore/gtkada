@@ -32,6 +32,7 @@ interfaces = ("Activatable",
 
 binding = ("GdkDevice",
            "GdkDragContext",
+           "GdkRGBA",
            "GdkScreen",
            "GtkAboutDialog",
            "GtkAccelGroup",
@@ -143,9 +144,6 @@ destroy_data_params = ["destroy", "func_notify"]
 # as they are processed.
 
 naming.cname_to_adaname = {
-    "gtk_widget_get_direction":     "Gtk.Widget.Get_Direction",
-    "gtk_widget_add_events":        "Gtk.Widget.Add_Event",
-    "gtk_widget_set_size_request":  "Gtk.Widget.Set_Size_Request",
     "gtk_window_get_default_icon_list": "Gtk.Window.Get_Default_Icon_List",
     "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
     "gtk_widget_set_direction":     "Gtk.Window.Set_Direction",
@@ -233,6 +231,8 @@ naming.type_exceptions = {
     "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
+
+    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA"),
 
     "cairo_t":               Proxy("Cairo.Cairo_Context"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),

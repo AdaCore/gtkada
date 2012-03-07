@@ -1503,7 +1503,7 @@ See Glib.Properties for more information on properties)""")
 
         typename = classtype.ada   # The type we are mapping
 
-        self.name = typename[:typename.rfind(".")]    # Only package part
+        self.name = package_name(typename)
         self._subst["name"] = self.name
         self._subst["typename"] = typename[typename.rfind(".") + 1:]
         self._subst["cname"] = self.ctype
@@ -1574,6 +1574,7 @@ See Glib.Properties for more information on properties)""")
 
         if not self.has_toplevel_type:
             pass
+
         elif self.is_interface:
             self.pkg.add_with("Glib.Types")
             section.add_code(
@@ -1587,7 +1588,19 @@ subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
 
         elif self._subst["parent"] is None:
-            section.add_code("""
+
+            # Two cases: either we have a public record, in which case it will
+            # be bound through record_binding. Or we have a private record, for
+            # which we generate an Ada tagged type to get the convenient dot
+            # notation for primitive operations.
+
+            if self.node.tag == nrecord \
+                 and self.node.findall(nfield):  # has fields => public record
+
+                pass
+
+            else:
+                section.add_code("""
 type %(typename)s is tagged record
    Ptr : System.Address := System.Null_Address;
 end record;
@@ -1597,7 +1610,7 @@ end record;
    function From_Object (Object : System.Address) return %(typename)s;
 """ % self._subst)
 
-            section.add_code("""
+                section.add_code("""
 
    function From_Object (Object : System.Address) return %(typename)s is
       S : %(typename)s;

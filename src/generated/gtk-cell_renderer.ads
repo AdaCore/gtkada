@@ -397,7 +397,7 @@ package Gtk.Cell_Renderer is
    --  Name: Cell_Background_Rgba_Property
    --  Type: Gdk.RGBA
    --  Flags: read-write
-   --  Cell background as a Gdk.Rgba.Gdk_Rgba
+   --  Cell background as a Gdk.RGBA.Gdk_RGBA
    --
    --  Name: Cell_Background_Set_Property
    --  Type: Boolean

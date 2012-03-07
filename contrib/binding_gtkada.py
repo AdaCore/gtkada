@@ -237,6 +237,7 @@ class GtkAdaPackage(object):
                 result.append((rec.get("ctype"),
                                naming.type(name="", cname=rec.get("ctype")),
                                override_fields))
+
         return result
 
     def get_doc(self):

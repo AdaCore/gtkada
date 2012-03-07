@@ -2672,6 +2672,36 @@ __PRE__
       </method>
    </package>
 
+   <package id="Gdk.RGBA">
+     <record ctype="GdkRGBA"/>
+     <method id="gdk_rgba_equal">
+       <parameter name="p2" ctype="GdkRGBA*"/>
+     </method>
+     <extra>
+       <spec>
+   Null_RGBA : constant Gdk_RGBA :=
+      (Glib.Gdouble'First, Glib.Gdouble'First,
+       Glib.Gdouble'First, Glib.Gdouble'First);
+
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address;
+   --  Used for the GtkAda binding itself.
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In all cases, Val is supposed to be an access to the type mentioned in
+   --  the name of the subprogram.
+   --  In Ada2012, these could be replaced with expression functions instead.
+       </spec>
+       <body>
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
+        (Gdk_RGBA, Null_RGBA);
+   begin
+      return Internal (Val);
+   end Gdk_RGBA_Or_Null;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
