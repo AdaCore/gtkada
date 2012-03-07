@@ -771,6 +771,10 @@ Resize no longer accepts parameters set to -1 to indicate the preferred
 size of the window. This was a GtkAda extension, which can be achieved
 using Get_Preferred_Size and passing the result to Size.
 
+Group_Add_Window was renamed to Add_Window.
+Group_Remove_Window was renamed to Remove_Window.
+Group_List_Windows was renames to List_Windows.
+
 Gnome.App_Bar
 =============
 

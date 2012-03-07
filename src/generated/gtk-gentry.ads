@@ -1136,8 +1136,8 @@ package Gtk.GEntry is
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a text deletion.
    --
-   --  If the Type is GTK_DELETE_CHARS, GTK+ deletes the selection if there is
-   --  one, otherwise it deletes the requested number of characters.
+   --  If the Type is Gtk.Enums.Delete_Chars, GTK+ deletes the selection if
+   --  there is one, otherwise it deletes the requested number of characters.
    --
    --  The default bindings for this signal are Delete for deleting a
    --  character and Ctrl-Delete for deleting a word.

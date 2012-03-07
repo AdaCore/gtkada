@@ -330,7 +330,8 @@ package Gtk.Scrolled_Window is
    --     procedure Handler
    --       (Self           : access Gtk_Scrolled_Window_Record'Class;
    --        Direction_Type : Gtk.Enums.Gtk_Direction_Type);
-   --    --  "direction_type": either GTK_DIR_TAB_FORWARD or GTK_DIR_TAB_BACKWARD
+   --    --  "direction_type": either Gtk.Enums.Dir_Tab_Forward or
+   --    --  Gtk.Enums.Dir_Tab_Backward
    --  The ::move-focus-out signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when focus is moved away from the scrolled window by a keybinding. The

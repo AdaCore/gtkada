@@ -834,7 +834,7 @@ package Gtk.Widget is
    --  was queued. In general, only container implementations have this
    --  information; applications should use Gtk.Widget.Size_Request.
    --  Deprecated since 3.0, Use Gtk.Widget.Get_Preferred_Size instead.
-   --  "requisition": a Gtk.Requisition.Gtk_Requisition to be filled in
+   --  "requisition": a Gtk.Widget.Gtk_Requisition to be filled in
 
    function Get_Child_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean;
@@ -1173,7 +1173,7 @@ package Gtk.Widget is
 
    function Get_Path
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget_Path;
-   --  Returns the Gtk.Widget_Path.Gtk_Widget_Path representing Widget, if the
+   --  Returns the Gtk.Widget.Gtk_Widget_Path representing Widget, if the
    --  widget is not connected to a toplevel widget, a partial path will be
    --  created.
 
@@ -1321,10 +1321,9 @@ package Gtk.Widget is
    --  removed, If you need to cache sizes across requests and allocations,
    --  add an explicit cache to the widget in question instead.
    --  Since: gtk+ 2.20
-   --  Deprecated since 3.0, The Gtk.Requisition.Gtk_Requisition cache on the
+   --  Deprecated since 3.0, The Gtk.Widget.Gtk_Requisition cache on the
    --  widget was
-   --  "requisition": a pointer to a Gtk.Requisition.Gtk_Requisition to copy
-   --  to
+   --  "requisition": a pointer to a Gtk.Widget.Gtk_Requisition to copy to
 
    function Get_Root_Window
       (Widget : not null access Gtk_Widget_Record)
@@ -1384,7 +1383,7 @@ package Gtk.Widget is
    --  Also remember that the size request is not necessarily the size a
    --  widget will actually be allocated.
    --  Deprecated since 3.0, Use Gtk.Widget.Get_Preferred_Size instead.
-   --  "requisition": a Gtk.Requisition.Gtk_Requisition to be filled in
+   --  "requisition": a Gtk.Widget.Gtk_Requisition to be filled in
 
    function Get_State
       (Widget : not null access Gtk_Widget_Record)

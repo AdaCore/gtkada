@@ -197,7 +197,7 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record;
        Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
-   --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
+   --  null, the default window icon set with gtk_window_set_default_icon will
    --  be used.
    --  Since: gtk+ 2.6
    --  "logo": a Gdk.Pixbuf.Gdk_Pixbuf, or null
@@ -208,7 +208,7 @@ package Gtk.About_Dialog is
       (About     : not null access Gtk_About_Dialog_Record;
        Icon_Name : UTF8_String := "");
    --  Sets the pixbuf to be displayed as logo in the about dialog. If it is
-   --  null, the default window icon set with Gtk.Window.Set_Default_Icon will
+   --  null, the default window icon set with gtk_window_set_default_icon will
    --  be used.
    --  Since: gtk+ 2.6
    --  "icon_name": an icon name, or null
@@ -356,7 +356,7 @@ package Gtk.About_Dialog is
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
    --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
-   --  Gtk.Window.Get_Default_Icon_List.
+   --  gtk_window_get_default_icon_list.
    --
    --  Name: Logo_Icon_Name_Property
    --  Type: UTF8_String

@@ -19,7 +19,7 @@ from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
-from data import interfaces, binding, user_data_params, destroy_data_params
+from data import enums, interfaces, binding, user_data_params, destroy_data_params
 
 # For parsing command line options
 from optparse import OptionParser
@@ -129,32 +129,23 @@ class GIR(object):
                 return cl
         return None
 
-    def _create_class(self, rootNode, node, is_interface, is_gobject=True):
-        n = node.get(ctype_qname)
-        n = naming.case(n)
-        pkg = n.replace("_", ".", 1)
-
-        if is_interface:
-            t = Interface("%s.%s" % (pkg, n))
-        elif is_gobject:
-            t = GObject("%s.%s" % (pkg, n))
-        else:
-            t = Tagged("%s.%s" % (pkg, n))
-
-        naming.add_type_exception(cname=node.get(ctype_qname), type=t)
-        naming.add_girname(girname=n, ctype=node.get(ctype_qname))
-        return GIRClass(self, rootNode, node, is_interface)
+    def _create_class(self, rootNode, node, is_interface, is_gobject=True,
+                      has_toplevel_type=True):
+        return GIRClass(self, rootNode=rootNode, node=node,
+                        is_interface=is_interface,
+                        is_gobject=is_gobject,
+                        has_toplevel_type=has_toplevel_type)
 
     def debug(self, element):
         """A debug form of element"""
         return tostring(element)
 
-    def get_package(self, name, doc=""):
+    def get_package(self, name, ctype, doc=""):
         """Return a handle to an Ada package"""
         if not name.lower() in self.packages:
             pkg = self.packages[name.lower()] = Package(
                 name=name,
-                doc=gtkada.get_pkg(name).get_doc())
+                doc=gtkada.get_pkg(ctype).get_doc())
         else:
             pkg = self.packages[name.lower()]
 
@@ -558,14 +549,14 @@ class SubprogramProfile(object):
 class GIRClass(object):
     """Represents a gtk class"""
 
-    def __init__(self, gir, rootNode, node, is_interface, has_toplevel_type=True):
+    def __init__(self, gir, rootNode, node, is_interface=False,
+                 is_gobject=True, has_toplevel_type=True):
         """If has_toplevel_type is False, no widget type is generated"""
 
         self.gir = gir
         self.node = node
         self.rootNode = rootNode
         self.ctype = self.node.get(ctype_qname)
-        self._subst = dict()  # for substitution in string templates
         self._private = ""
         self._generated = False
         self.implements = dict() # Implemented interfaces
@@ -575,6 +566,43 @@ class GIRClass(object):
         self.pkg = None  # Instance of Package(), that we are generating
 
         self.conversions = dict() # List of Convert(...) functions that were implemented
+
+        # Search for the GtkAda binding information
+
+        self.gtkpkg = gtkada.get_pkg(self.ctype)
+
+        # Register naming exceptions for this class
+
+        n = naming.case(self.ctype)
+        pkg = "%s.%s" % (naming.protect_keywords(n.replace("_", ".", 1)), n)
+        naming.add_girname(girname=n, ctype=self.ctype)
+
+        if has_toplevel_type:
+            if is_interface:
+                t = Interface(pkg)
+            elif is_gobject:
+                t = GObject(pkg)
+            else:
+                t = Tagged(pkg)
+
+            naming.add_type_exception(cname=node.get(ctype_qname), type=t)
+
+            classtype = naming.type(name=self.ctype)
+            typename = classtype.ada   # The type we are mapping
+            self.name = package_name(typename)
+
+        else:
+            typename = ""
+            self.name = package_name(pkg)
+
+        self.gtkpkg.register_types(adapkg=self.name)
+
+        # Compute information that will be used for the binding
+
+        self._subst = {  # for substitution in string templates
+            "name": self.name,
+            "typename": base_name(typename),
+            "cname": self.ctype}
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
@@ -1499,14 +1527,9 @@ See Glib.Properties for more information on properties)""")
         if self._generated:
             return
 
-        classtype = naming.type(name=self.ctype)
-
-        typename = classtype.ada   # The type we are mapping
-
-        self.name = package_name(typename)
-        self._subst["name"] = self.name
-        self._subst["typename"] = typename[typename.rfind(".") + 1:]
-        self._subst["cname"] = self.ctype
+        extra = self.gtkpkg.extra()
+        if extra:
+            self.node.extend(extra)
 
         # The parent is unfortunately specified as a GIR name. But that creates
         # ambiguities when loading both Gtk and Gdk, which for instance both
@@ -1527,11 +1550,6 @@ See Glib.Properties for more information on properties)""")
             self._subst["parent"] = parent
 
         self._generated = True
-
-        self.gtkpkg = gtkada.get_pkg(self.name)
-        extra = self.gtkpkg.extra()
-        if extra:
-            self.node.extend(extra)
 
         girdoc = self.node.findtext(ndoc)
 
@@ -1557,7 +1575,9 @@ See Glib.Properties for more information on properties)""")
                 cname=self.ctype,
                 type=GObject(typename))
 
-        self.pkg = gir.get_package(into or self.name, doc=girdoc)
+        self.pkg = gir.get_package(into or self.name,
+                                   ctype=self.ctype,
+                                   doc=girdoc)
         self.pkg.language_version = "pragma Ada_05;"
 
         if self._subst["parent_pkg"]:
@@ -1722,6 +1742,7 @@ if options.c_outfile == None:
 if missing_files:
     parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
+gtkada = GtkAda(options.xml_file)
 gir = GIR(options.gir_file)
 
 Package.copyright_header="""------------------------------------------------------------------------------
@@ -1778,24 +1799,23 @@ This file is automatically generated from the .gir files
 #include <gtk/gtk.h>
 """
 
-gtkada = GtkAda(options.xml_file)
+for the_ctype in enums:
+    node = Element(
+        nclass,
+        {ctype_qname: the_ctype})
+    root = Element(nclass)
+
+    cl = gir._create_class(rootNode=root, node=node,
+                           is_interface=False,
+                           is_gobject=False,
+                           has_toplevel_type=False)
+    cl.generate(gir)
 
 for name in interfaces:
     gir.interfaces[name].generate(gir)
 
 for the_ctype in binding:
-    if "::ada" in the_ctype:
-        the_ctype = the_ctype.replace("::ada", "")
-        node = Element(
-            nclass,
-            {ctype_qname: the_ctype})
-        root = Element(nclass)
-
-        cl = GIRClass(gir, rootNode=root, node=node, is_interface=False,
-                      has_toplevel_type=False)
-        cl.generate(gir)
-    else:
-        gir.classes[the_ctype].generate(gir)
+    gir.classes[the_ctype].generate(gir)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

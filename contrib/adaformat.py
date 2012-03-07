@@ -629,7 +629,11 @@ class AdaNaming(object):
         if name.endswith("_"):
             name = name[:-1]
 
-        return self.exceptions.get(name, name)
+        return self.protect_keywords(name)
+        #return self.exceptions.get(name, name)
+
+    def protect_keywords(self, name):
+        return ".".join(self.exceptions.get(n, n) for n in name.split("."))
 
     def __camel_case_to_ada(self, name):
         """Converts a name with CamelCase to Camel_Case"""

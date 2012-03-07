@@ -9,7 +9,7 @@
         Gdk.Device
         ################################################-->
 
-   <package id="Gdk.Device">
+   <package id="GdkDevice">
       <enum ctype="GdkDeviceType" />
       <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
       <method id="gdk_device_get_axis_value" bind="False" /><!-- need support for array of gdoubles -->
@@ -71,7 +71,7 @@
         Gdk.Drag_Contexts
         ################################################-->
 
-   <package id="Gdk.Drag_Contexts">
+   <package id="GdkDragContext">
       <enum ctype="GdkDragAction" prefix="GDK_"/>
       <enum ctype="GdkDragProtocol" prefix="GDK_"/>
       <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
@@ -81,7 +81,7 @@
         Gdk.Screen
         ################################################-->
 
-   <package id="Gdk.Screen">
+   <package id="GdkScreen">
      <doc group="Gdk, the low-level API"/>
      <parameter name="self" ada="Screen"/>
      <method id="gdk_screen_get_setting" bind="False" />
@@ -213,7 +213,7 @@
         Gtk.Aspect_Frame
         ################################################-->
 
-   <package id="Gtk.Aspect_Frame">
+   <package id="GtkAspectFrame">
      <doc testgtk="create_frame.adb" group="Layout Containers"/>
      <parameter name="self" ada="Aspect_Frame"/>
      <method id="gtk_aspect_frame_new">
@@ -225,7 +225,7 @@
         Gtk.Button
         ###################################################-->
 
-   <package id="Gtk.Button">
+   <package id="GtkButton">
       <doc screenshot="gtk-button" group="Buttons and Toggles"
            testgtk="create_buttons.adb"/>
       <parameter name="self" ada="Button"/>
@@ -239,7 +239,7 @@
         Gtk.Cell_Area
         ###################################################-->
 
-   <package id="Gtk.Cell_Area">
+   <package id="GtkCellArea">
       <doc group="Layout Containers"/>
       <method id="gtk_cell_area_cell_get_valist" bind="False"/><!-- va_list -->
       <method id="gtk_cell_area_cell_set_valist" bind="False"/><!-- va_list -->
@@ -373,7 +373,7 @@
         Gtk.Cell_Area_Context
         ###################################################-->
 
-   <package id="Gtk.Cell_Area_Context">
+   <package id="GtkCellAreaContext">
       <doc group="Layout Containers"/>
       <method id="gtk_cell_area_context_get_area" bind="False"/>
       <!-- in Gtk.Cell_Area -->
@@ -383,7 +383,7 @@
         Gtk.Color_Selection
         ################################################-->
 
-   <package id="Gtk.Color_Selection">
+   <package id="GtkColorSelection">
       <doc testgtk="create_color_selection.adb"
            screenshot="gtk-colorsel"
            group="Drawing">
@@ -488,7 +488,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
         Gtk.Color_Selection_Dialog
         ################################################-->
 
-   <package id="Gtk.Color_Selection_Dialog">
+   <package id="GtkColorSelectionDialog">
       <doc group="Drawing">
 The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
 user to select a color much like the Gtk_File_Selection provides a standard
@@ -504,7 +504,7 @@ dialog for file selection.
         Gtk.Combo_Box
         ################################################-->
 
-   <package id="Gtk.Combo_Box">
+   <package id="GtkComboBox">
      <doc group="Numeric/Text Data Entry"/>
      <parameter name="self" ada="Combo_Box"/>
      <method id="gtk_combo_box_popup_for_device" bind="False" />
@@ -543,7 +543,7 @@ dialog for file selection.
         Gtk.Combo_Box_Text
         ################################################-->
 
-   <package id="Gtk.Combo_Box_Text">
+   <package id="GtkComboBoxText">
      <doc group="Numeric/Text Data Entry"/>
    </package>
 
@@ -551,7 +551,7 @@ dialog for file selection.
         Gtk.EventBox
         ################################################-->
 
-   <package id="Gtk.Event_Box">
+   <package id="GtkEventBox">
      <doc group="Layout Containers"/>
      <parameter name="self" ada="Event_Box"/>
      <method id="gtk_event_box_new">
@@ -568,7 +568,7 @@ The box's child can then be set using the Gtk.Container.Add function.
         Gtk.Font_Selection
         ################################################-->
 
-   <package id="Gtk.Font_Selection">
+   <package id="GtkFontSelection">
       <doc testgtk="create_font_selection.adb"
            screenshot="gtk-fontsel"
            group="Selectors">
@@ -597,7 +597,7 @@ interactively by the user.
         Gtk.Font_Selection_Dialog
         ################################################-->
 
-   <package id="Gtk.Font_Selection_Dialog">
+   <package id="GtkFontSelectionDialog">
       <doc testgtk="create_font_selection.adb"
            screenshot="gtk-fontsel"
            group="Selectors">
@@ -610,7 +610,7 @@ See also Gtk.Font_Selection.
    <!-- ###################################################
         Gtk.Frame
         ###################################################-->
-   <package id="Gtk.Frame">
+   <package id="GtkFrame">
       <doc screenshot="gtk-frame" testgtk="create_frame.adb"
            group="Ornaments">
 This is a very convenient widget to visually group related widgets (like
@@ -632,7 +632,7 @@ widgets.
         Gtk.Label
         ################################################-->
 
-   <package id="Gtk.Label">
+   <package id="GtkLabel">
       <doc screenshot="gtk-label" testgtk="create_label.adb"
            group="Display widgets"/>
       <parameter name="self" ada="Label"/>
@@ -666,7 +666,7 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
         Gtk.Notebook
         ###################################################-->
 
-   <package id="Gtk.Notebook">
+   <package id="GtkNotebook">
       <doc screenshot="gtk-notebook" group="Layout containers"
            testgtk="create_notebook.adb"/>
       <parameter name="self" ada="Notebook"/>
@@ -744,7 +744,7 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
         Gtk.Paned
         ################################################-->
 
-   <package id="Gtk.Paned">
+   <package id="GtkPaned">
       <doc screenshot="gtk-paned" testgtk="create_paned.adb"
            group="Layout container"/>
       <parameter name="self" ada="Paned"/>
@@ -787,7 +787,7 @@ This is equivalent to using Pack2 with its default parameters.
       </method>
    </package>
 
-   <package id="Gtk.Vpaned" into="GtkPaned">
+   <package id="GtkVPaned" into="GtkPaned">
       <type name="Gtk_Vpaned" subtype="true"/>
       <parameter name="self" ada="Paned"/>
       <method id="gtk_vpaned_new" ada="Gtk_New_Vpaned">
@@ -796,7 +796,7 @@ This is equivalent to using Pack2 with its default parameters.
       <method id="gtk_vpaned_get_type" ada="Get_Type_Vpaned" />
    </package>
 
-   <package id="Gtk.Hpaned" into="GtkPaned">
+   <package id="GtkHPaned" into="GtkPaned">
       <type name="Gtk_Hpaned" subtype="true"/>
       <parameter name="self" ada="Paned"/>
       <method id="gtk_hpaned_new" ada="Gtk_New_Hpaned">
@@ -809,7 +809,7 @@ This is equivalent to using Pack2 with its default parameters.
    <!-- ################################################
         Gtk.Box, Gtk.Vbox, Gtk.Hbox
         ################################################-->
-   <package id="Gtk.Box">
+   <package id="GtkBox">
       <doc screenshot="gtk-box" testgtk="create_box.adb"
            group="Layout containers">
 See the testgtk example in the GtkAda distribution to see concrete examples
@@ -845,7 +845,7 @@ on how all the parameters for the boxes work.
       </extra>
    </package>
 
-   <package id="Gtk.Vbox" into="GtkBox">
+   <package id="GtkVBox" into="GtkBox">
       <type name="Gtk_Vbox" subtype="true"/>
       <method id="gtk_vbox_new" ada="Gtk_New_Vbox">
          <parameter name="homogeneous" default="False"/>
@@ -855,7 +855,7 @@ on how all the parameters for the boxes work.
       <method id="gtk_vbox_get_type" ada="Get_Vbox_Type" />
    </package>
 
-   <package id="Gtk.Hbox" into="GtkBox">
+   <package id="GtkHBox" into="GtkBox">
       <type name="Gtk_Hbox" subtype="true"/>
       <method id="gtk_hbox_new" ada="Gtk_New_Hbox" >
          <parameter name="homogeneous" default="False"/>
@@ -865,11 +865,11 @@ on how all the parameters for the boxes work.
       <method id="gtk_hbox_get_type" ada="Get_Hbox_Type" />
    </package>
 
-   <package id="Gtk.Scale">
+   <package id="GtkScale">
       <doc group="Numeric/Text Data Entry" screenshot="gtk-scale.png"/>
       <parameter name="self" ada="Scale"/>
    </package>
-   <package id="Gtk.Vscale" into="GtkScale">
+   <package id="GtkVScale" into="GtkScale">
       <parameter name="self" ada="Scale"/>
       <type name="Gtk_Vscale" subtype="true"/>
       <method id="gtk_vscale_new" ada="Gtk_New_Vscale">
@@ -878,7 +878,7 @@ on how all the parameters for the boxes work.
       <method id="gtk_vscale_new_with_range" ada="Gtk_New_Vscale"/>
       <method id="gtk_vscale_get_type" ada="Vscale_Get_Type" />
    </package>
-   <package id="Gtk.Hscale" into="GtkScale">
+   <package id="GtkHScale" into="GtkScale">
       <parameter name="self" ada="Scale"/>
       <type name="Gtk_Hscale" subtype="true"/>
       <method id="gtk_hscale_new" ada="Gtk_New_Hscale">
@@ -892,7 +892,7 @@ on how all the parameters for the boxes work.
         ## Gtk.Arrow
         ########################################################-->
 
-   <package id="Gtk.Arrow">
+   <package id="GtkArrow">
       <doc screenshot="gtk-arrow" testgtk="create_arrow.adb"/>
       <parameter name="self" ada="Arrow"/>
    </package>
@@ -901,7 +901,7 @@ on how all the parameters for the boxes work.
         ## Gtk.Viewport
         #######################################################-->
 
-   <package id="Gtk.Viewport">
+   <package id="GtkViewport">
       <doc group="Scrolling"/>
       <parameter name="self" ada="Viewport"/>
       <method id="gtk_viewport_new">
@@ -920,7 +920,7 @@ on how all the parameters for the boxes work.
         ## Gtk.Pixmap
         #######################################################-->
 
-   <package id="Gtk.Pixmap">
+   <package id="GtkPixmap">
       <doc group="Obsolescent widgets"/>
       <parameter name="self" ada="Pixmap"/>
       <parameter name="pixmap" ada="Val"/>
@@ -1008,7 +1008,7 @@ on how all the parameters for the boxes work.
       </extra>
    </package>
 
-   <package id="Gtk.Misc">
+   <package id="GtkMisc">
       <doc group="Abstract base classes"/>
       <parameter name="self" ada="Misc"/>
       <method id="gtk_misc_set_alignment">
@@ -1025,7 +1025,7 @@ won't have any effect.
       </method>
    </package>
 
-   <package id="Gtk.Bin">
+   <package id="GtkBin">
       <doc group="Abstract base classes"/>
       <parameter name="self" ada="Bin"/>
    </package>
@@ -1034,7 +1034,7 @@ won't have any effect.
         Gtk.Layout
         ################################################################ -->
 
-   <package id="Gtk.Layout">
+   <package id="GtkLayout">
       <doc group="Layout containers" testgtk="create_layout.adb"
            screenshot="gtk-layout">
 A Gtk_Layout is a widget that can have an almost infinite size, without
@@ -1071,12 +1071,12 @@ and make sure you specify a size big enough for the layout.
       <method id="gtk_layout_set_vadjustment" bind="false"/>
    </package>
 
-   <package id="Gtk.GRange">
+   <package id="GtkRange">
       <doc testgtk="create_range.adb" screenshot="gtk-range"/>
       <parameter name="self" ada="The_Range"/>
    </package>
 
-   <package id="Gtk.Button_Box">
+   <package id="GtkButtonBox">
       <doc testgtk="create_button_box.adb" screenshot="gtk-button_box"
            group="Layout containers">
 A Gtk_Button_Box is a special type of Gtk_Box specially tailored to contain
@@ -1090,7 +1090,7 @@ above two instead.
       <parameter name="self" ada="Widget"/>
    </package>
 
-   <package id="Gtk.Hbutton_Box">
+   <package id="GtkHButtonBox">
       <doc group="Layout containers">
 A Gtk_Hbutton_Box is a specific Gtk_Button_Box that organizes its
 children horizontally.
@@ -1100,7 +1100,7 @@ is on the left of the box. Its end (for Gtk.Box.Pack_End) is on the right.
       <parameter name="self" ada="Widget"/>
    </package>
 
-   <package id="Gtk.Vbutton_Box">
+   <package id="GtkVButtonBox">
       <doc group="Layout containers">
 A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its
 children vertically.
@@ -1110,17 +1110,17 @@ is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
       <parameter name="self" ada="Widget"/>
    </package>
 
-   <package id="Gtk.Volume_Button">
+   <package id="GtkVolumeButton">
       <parameter name="self" ada="Widget"/>
    </package>
 
-   <package id="Gtk.About_Dialog">
+   <package id="GtkAboutDialog">
       <doc group="Windows" testgtk="create_about.adb"/>
       <parameter name="self" ada="About"/>
       <enum ctype="GtkLicense"/>
   </package>
 
-  <package id="Gtk.GEntry">
+  <package id="GtkEntry">
      <doc testgtk="create_entry.adb" group="Numeric/Text Data Entry"
           screenshot="gtk-gentry">
 A Gtk_Entry is a single line text editing widget.
@@ -1165,7 +1165,7 @@ See Gtk_Text_View for a multiple-line text editing widget.
      </extra>
   </package>
 
-  <package id="Gtk.Dialog">
+  <package id="GtkDialog">
      <doc group="Windows" testgtk="create_dialog.adb"
           screenshot="gtk-dialog">
           See Gtkada.Dialogs for a higher level dialog interface.
@@ -1326,7 +1326,7 @@ See Gtk_Text_View for a multiple-line text editing widget.
      </extra>
   </package>
 
-  <package id="Gtk.Curve">
+  <package id="GtkCurve">
      <doc group="Drawing">
 The Gtk_Curve widget allows the user to edit a curve covering a range of values. It is typically used to fine-tune color balances in graphics applications like the Gimp.
 
@@ -1390,18 +1390,18 @@ The Gtk_Curve widget has 3 modes of operation: spline, linear and free.  In spli
     </extra>
   </package>
 
-  <package id="Gtk.Expander">
+  <package id="GtkExpander">
      <doc group="Layout containers" screenshot="gtk-expanded"/>
      <parameter name="self" ada="Expander"/>
   </package>
 
-  <package id="Gtk.Drawing_Area">
+  <package id="GtkDrawingArea">
      <doc group="Drawing" testgtk="libart_demo.adb">
 See also the Double_Buffer widget provided in the GtkAda examples for an advanced example that demonstrates how to use double buffering, to avoid flickering in your drawings.</doc>
      <parameter name="self" ada="Drawing_Area"/>
   </package>
 
-  <package id="Gtk.Adjustment">
+  <package id="GtkAdjustment">
      <doc group="Scrolling">
 The meaning of the most important fields can be explained on the following figure (imagine this is a scrollbar):
 
@@ -1419,7 +1419,7 @@ lower    value        value + page_size       upper
      </method>
   </package>
 
-  <package id="Gtk.Image">
+  <package id="GtkImage">
      <doc group="Display widgets" screenshot="gtk-image"/>
      <parameter name="self" ada="Image"/>
      <parameter name="image" ada="Val"/>
@@ -1502,14 +1502,14 @@ lower    value        value + page_size       upper
      </extra>
   </package>
 
-  <package id="Gtk.Calendar">
+  <package id="GtkCalendar">
      <doc group="Selectors" testgtk="create_calendar.adb"
           screenshot="gtk-calendar"/>
      <parameter name="self" ada="Calendar"/>
      <enum ctype="GtkCalendarDisplayOptions" prefix="GTK_CALENDAR_"/>
   </package>
 
-  <package id="Gtk.Size_Group">
+  <package id="GtkSizeGroup">
      <doc testgtk="create_size_groups.adb"/>
      <parameter name="self" ada="Size_Group" />
      <method id="gtk_size_group_new">
@@ -1519,7 +1519,7 @@ lower    value        value + page_size       upper
      <enum ctype="GtkSizeGroupMode" ada="Size_Group_Mode" prefix="GTK_SIZE_GROUP_"/>
   </package>
 
-  <package id="Gtk.Alignment">
+  <package id="GtkAlignment">
      <doc testgtk="create_alignment.adb" screenshot="gtk-alignment"/>
      <parameter name="self" ada="Alignment"/>
      <method id="gtkada_GtkAlignment_get_xalign" bind="True"/>
@@ -1528,7 +1528,7 @@ lower    value        value + page_size       upper
      <method id="gtkada_GtkAlignment_get_yscale" bind="True"/>
   </package>
 
-  <package id="Gtk.Status_Bar">
+  <package id="GtkStatusbar">
      <doc group="Display widgets" testgtk="create_status.adb"
           screenshot="gtk-status_bar"/>
      <parameter name="self" ada="Statusbar"/>
@@ -1547,7 +1547,7 @@ lower    value        value + page_size       upper
      </extra>
   </package>
 
-  <package id="Gtk.Table">
+  <package id="GtkTable">
      <doc group="Layout containers"/>
      <parameter name="self" ada="Table"/>
      <method id="gtk_table_new">
@@ -1571,7 +1571,7 @@ lower    value        value + page_size       upper
      </method>
   </package>
 
-  <package id="Gtk.Check_Button">
+  <package id="GtkCheckButton">
      <doc screenshot="gtk-check_button" group="Buttons and Toggles"
         testgtk="create_check_buttons.adb"/>
      <parameter name="self" ada="Check_Button"/>
@@ -1582,7 +1582,7 @@ lower    value        value + page_size       upper
      </method>
   </package>
 
-  <package id="Gtk.Toggle_Button">
+  <package id="GtkToggleButton">
      <doc screenshot="gtk-toggle_button" group="Buttons and Toggles"
           testgtk="create_toggle_buttons.adb">
 You should consider using a Gtk_Check_Button instead, since it looks nicer and provides more visual clues that the button can be toggled.
@@ -1601,7 +1601,7 @@ You should consider using a Gtk_Check_Button instead, since it looks nicer and p
      </method>
   </package>
 
-  <package id="Gtk.Accel_Group">
+  <package id="GtkAccelGroup">
      <parameter name="self" ada="Accel_Group"/>
      <method id="gtk_accel_group_new">
         <doc>Creates a new Gtk.Accel_Group.Gtk_Accel_Group.
@@ -1667,7 +1667,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      </extra>
   </package>
 
-  <package id="Gtk.Radio_Button">
+  <package id="GtkRadioButton">
      <doc screenshot="gtk-radio_button" group="Buttons and Toggles"
           testgtk="create_radio_button.adb"/>
      <parameter name="self" ada="Radio_Button"/>
@@ -1696,7 +1696,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      </method>
   </package>
 
-  <package id="Gtk.Radio_Action">
+  <package id="GtkRadioAction">
      <doc group="Action-based menus" see="Gtk_Action"/>
      <parameter name="self" ada="Action"/>
      <method id="gtk_radio_action_new">
@@ -1719,34 +1719,34 @@ __PRE__      Group  : GSlist := null;
      <method id="gtk_radio_action_get_group" return="WidgetSList"/>
   </package>
 
-  <package id="Gtk.Separator">
+  <package id="GtkSeparator">
       <doc group="Ornaments" screenshot="gtk-separator"/>
       <parameter name="self" ada="Separator"/>
   </package>
-  <package id="Gtk.Vseparator" into="GtkSeparator">
+  <package id="GtkVSeparator" into="GtkSeparator">
       <type name="Gtk_Vseparator" subtype="true"/>
       <method id="gtk_vseparator_new" ada="Gtk_New_Vseparator"/>
       <parameter name="self" ada="Separator"/>
       <method id="gtk_vseparator_get_type" ada="Vseparator_Get_Type" />
   </package>
-  <package id="Gtk.Hseparator" into="GtkSeparator">
+  <package id="GtkHSeparator" into="GtkSeparator">
       <type name="Gtk_Hseparator" subtype="true"/>
       <method id="gtk_hseparator_new" ada="Gtk_New_Hseparator"/>
       <parameter name="self" ada="Separator"/>
       <method id="gtk_hseparator_get_type" ada="Hseparator_Get_Type" />
   </package>
 
-  <package id="Gtk.Separator_Menu_Item">
+  <package id="GtkSeparatorMenuItem">
      <doc group="Menus and Toolbars"/>
      <parameter name="self" ada="Widget" />
   </package>
 
-  <package id="Gtk.Separator_Tool_Item">
+  <package id="GtkSeparatorToolItem">
      <doc group="Menus and Toolbars"/>
      <parameter name="self" ada="Item" />
   </package>
 
-  <package id="Gtk.Ruler">
+  <package id="GtkRuler">
      <doc group="Drawing" testgtk="create_rulers.adb"
           screenshot="gtk-rulers">
  This widget is generally put on the sides of a drawing area to help the user measure distances. It indicates the current position of the mouse cursor within the drawing area, and can be graduated in multiple units.</doc>
@@ -1755,20 +1755,20 @@ __PRE__      Group  : GSlist := null;
         <doc>Set or get the units used for a Gtk_Ruler. See Set_Metric</doc>
      </method>
   </package>
-  <package id="Gtk.Vruler" into="GtkRuler">
+  <package id="GtkVRuler" into="GtkRuler">
       <type name="Gtk_Vruler" subtype="true"/>
       <method id="gtk_vruler_new" ada="Gtk_New_Vruler"/>
       <parameter name="self" ada="Ruler"/>
       <method id="gtk_vruler_get_type" ada="Vruler_Get_Type" />
   </package>
-  <package id="Gtk.Hruler" into="GtkRuler">
+  <package id="GtkHRuler" into="GtkRuler">
       <type name="Gtk_Hruler" subtype="true"/>
       <method id="gtk_hruler_new" ada="Gtk_New_Hruler"/>
       <parameter name="self" ada="Ruler"/>
       <method id="gtk_hruler_get_type" ada="Hruler_Get_Type" />
   </package>
 
-  <package id="Gtk.Fixed">
+  <package id="GtkFixed">
       <doc group="Layout containers" testgtk="create_fixed.adb"
            screenshot="gtk-fixed"/>
       <parameter name="self" ada="Fixed" />
@@ -1783,16 +1783,16 @@ __PRE__      Group  : GSlist := null;
       </method>
   </package>
 
-  <package id="Gtk.Cell_Editable">
+  <package id="GtkCellEditable">
      <doc group="Trees and Lists"/>
      <parameter name="self" ada="Cell_Editable"/>
   </package>
 
-  <package id="Gtk.Buildable">
+  <package id="GtkBuildable">
      <method id="gtk_buildable_custom_tag_start" bind="False"/>
   </package>
 
-  <package id="Gtk.File_Chooser">
+  <package id="GtkFileChooser">
      <doc group="Selectors">
 This package provides an interface implemented by Gtk.File_Chooser_Widget and Gtk.File_Chooser_Button, and by your own file selection widgets if you wish to expose a standard interface.
 
@@ -1848,7 +1848,7 @@ __PRE__
      </doc>
   </package>
 
-  <package id="Gtk.Cell_Layout">
+  <package id="GtkCellLayout">
      <doc group="Trees and Lists" testgtk="create_cell_view.adb"/>
      <parameter name="self" ada="Cell_Layout"/>
      <method id="gtk_cell_layout_get_area" bind="False"/>
@@ -1858,49 +1858,49 @@ __PRE__
      <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
   </package>
 
-  <package id="Gtk.Assistant">
+  <package id="GtkAssistant">
      <doc group="Windows" testgtk="create_assistant.adb"/>
      <parameter name="self" ada="Assistant"/>
      <enum ctype="GtkAssistantPageType" prefix=""/>
   </package>
 
-  <package id="Gtk.Spinner">
+  <package id="GtkSpinner">
      <doc group="Ornaments"/>
      <parameter name="self" ada="Spinner"/>
   </package>
 
-  <package id="Gtk.Entry_Completion">
+  <package id="GtkEntryCompletion">
      <doc group="Numeric/Text Data Entry"/>
      <parameter name="self" ada="Completion"/>
   </package>
 
-  <package id="Gtk.Scrollable">
+  <package id="GtkScrollable">
      <doc group="Interfaces"/>
   </package>
 
-  <package id="Gtk.Progress_Bar">
+  <package id="GtkProgressBar">
      <doc testgtk="create_progress.adb"
           screenshot="gtk-progress_bar"
           group="Display widgets"/>
      <parameter name="self" ada="Progress_Bar"/>
   </package>
 
-  <package id="Gtk.Color_Button">
+  <package id="GtkColorButton">
      <doc group="Buttons and Toggles"/>
      <parameter name="self" ada="Button"/>
   </package>
 
-  <package id="Gtk.Link_Button">
+  <package id="GtkLinkButton">
      <doc group="Buttons and Toggles"/>
      <parameter name="self" ada="Widget" />
   </package>
 
-  <package id="Gtk.File_Filter">
+  <package id="GtkFileFilter">
      <enum ctype="GtkFileFilterFlags"/>
      <record ctype="GtkFileFilterInfo"/>
   </package>
 
-  <package id="Gtk.File_Chooser">
+  <package id="GtkFileChooser">
      <doc group=""/>
      <parameter name="self" ada="Chooser"/>
      <enum ctype="GtkFileChooserAction" prefix="GTK_FILE_CHOOSER_"/>
@@ -1927,12 +1927,12 @@ __PRE__
      <method id="gtk_file_chooser_list_filters" return="ObjectSList"/>
   </package>
 
-  <package id="Gtk.File_Chooser_Button">
+  <package id="GtkFileChooserButton">
      <doc group="Buttons and Toggles"/>
      <parameter name="self" ada="Button"/>
   </package>
 
-  <package id="Gtk.Toolbar">
+  <package id="GtkToolbar">
      <parameter name="self" ada="Toolbar"/>
      <method id="gtk_toolbar_set_show_arrow">
         <parameter name="show_arrow" default="True"/>
@@ -1946,7 +1946,7 @@ __PRE__
      <method id="gtk_tool_shell_get_style" bind="False"/>
   </package>
 
-  <package id="Gtk.Editable">
+  <package id="GtkEditable">
      <parameter name="self" ada="Editable"/>
      <method id="gtk_editable_select_region">
         <parameter name="end_pos" default="-1"/>
@@ -1981,7 +1981,7 @@ __PRE__
      <method id="gtk_editable_get_selection_bounds" bind="False"/>
   </package>
 
-  <package id="Gtk.Tool_Item">
+  <package id="GtkToolItem">
      <parameter name="self" ada="Tool_Item"/>
      <method id="gtk_tool_item_retrieve_proxy_menu_item" return="GtkMenuItem"/>
      <method id="gtk_tool_item_get_proxy_menu_item" return="GtkMenuItem"/>
@@ -1990,25 +1990,25 @@ __PRE__
      </method>
   </package>
 
-   <package id="Gtk.Scrollbar">
+   <package id="GtkScrollbar">
       <parameter name="self" ada="Scrollbar"/>
    </package>
 
-   <package id="Gtk.Hscrollbar" into="GtkScrollbar">
+   <package id="GtkHScrollbar" into="GtkScrollbar">
       <parameter name="self" ada="Scrollbar"/>
       <type name="Gtk_Hscrollbar" subtype="true"/>
       <method id="gtk_hscrollbar_new" ada="Gtk_New_Hscrollbar"/>
       <method id="gtk_hscrollbar_get_type" ada="Hscrollbar_Get_Type"/>
    </package>
 
-   <package id="Gtk.Vscrollbar" into="GtkScrollbar">
+   <package id="GtkVScrollbar" into="GtkScrollbar">
       <parameter name="self" ada="Scrollbar"/>
       <type name="Gtk_Vscrollbar" subtype="true"/>
       <method id="gtk_vscrollbar_new" ada="Gtk_New_Vscrollbar"/>
       <method id="gtk_vscrollbar_get_type" ada="Vscrollbar_Get_Type"/>
    </package>
 
-   <package id="Gtk.Cell_Renderer">
+   <package id="GtkCellRenderer">
       <parameter name="self" ada="Cell"/>
       <enum ctype="GtkCellRendererState"/>
       <enum ctype="GtkCellRendererMode"/>
@@ -2019,7 +2019,7 @@ __PRE__
       <list ada="Cell_Renderer_List" ctype="GtkCellRenderer"/>
    </package>
 
-   <package id="Gtk.Status_Icon">
+   <package id="GtkStatusIcon">
       <parameter name="self" ada="Status_Icon"/>
       <!-- ??? inclusion of below method is pending on L117-038 -->
       <method id="gtk_status_icon_get_geometry" bind="False"/>
@@ -2029,7 +2029,7 @@ __PRE__
       </method>
    </package>
 
-   <package id="Gtk.Menu_Item">
+   <package id="GtkMenuItem">
       <parameter name="self" ada="Menu_Item"/>
       <method id="gtk_menu_item_select" ada="Gtk_Select"/>
       <method id="gtk_menu_item_set_right_justified">
@@ -2048,14 +2048,14 @@ __PRE__
       </extra>
    </package>
 
-   <package id="Gtk.Recent_Filter">
+   <package id="GtkRecentFilter">
      <parameter name="self" ada="Filter"/>
      <enum ctype="GtkRecentFilterFlags" />
      <record ctype="GtkRecentFilterInfo" />
      <slist ada="Gtk_Recent_Filter_List" ctype="GtkRecentFilter"/>
    </package>
 
-   <package id="Gtk.File_Chooser_Dialog">
+   <package id="GtkFileChooserDialog">
       <parameter name="self" ada="Dialog"/>
       <method id="gtk_file_chooser_dialog_new" ada="Gtk_New" bind="False"/> <!-- varargs -->
 
@@ -2087,15 +2087,15 @@ __PRE__
       </extra>
    </package>
 
-   <package id="Gtk.Handle_Box">
+   <package id="GtkHandleBox">
      <parameter name="self" ada="Handle_Box"/>
    </package>
 
-   <package id="Gtk.Scale_Button">
+   <package id="GtkScaleButton">
       <parameter name="self" ada="Button"/>
   </package>
 
-   <package id="Gtk.Recent_Manager">
+   <package id="GtkRecentManager">
      <doc>
 In case the default screen is being used, adding a new recently used file is as
 simple as:
@@ -2268,7 +2268,7 @@ __PRE__
      </extra>
    </package>
 
-   <package id="Gtk.Recent_Info">  <!-- into="GtkRecentManager">-->
+   <package id="GtkRecentInfo">  <!-- into="GtkRecentManager">-->
      <method id="gtk_recent_info_ref" return="void" />
 
      <!-- ??? Disabled for now, we are creating an unconstrained local var -->
@@ -2289,7 +2289,7 @@ __PRE__
      </extra>
    </package>
 
-   <package id="Gtk.Recent_Chooser">
+   <package id="GtkRecentChooser">
      <parameter name="self" ada="Chooser" />
      <method id="gtk_recent_chooser_get_items" return="RecentInfoList"/>
      <enum ctype="GtkRecentSortType" />
@@ -2300,7 +2300,7 @@ __PRE__
      <method id="gtk_recent_chooser_list_filters" return="RecentFilterSList"/>
    </package>
 
-   <package id="Gtk.Widget" needs_merge="false">
+   <package id="GtkWidget" needs_merge="false">
      <parameter name="self" ada="Widget" />
      <enum ctype="GtkAlign"/>
      <record ctype="GtkRequisition"/>
@@ -2473,7 +2473,7 @@ __PRE__
      </extra>
    </package>
 
-   <package id="Gtk.Enums">
+   <package id="GtkEnums">
      <enum ctype="GtkArrowType"/>
      <enum ctype="GtkAttachOptions"/>
      <enum ctype="GtkButtonBoxStyle"/>
@@ -2589,7 +2589,7 @@ __PRE__
      </extra>
    </package>
 
-   <package id="Gtk.Container">
+   <package id="GtkContainer">
      <parameter name="self" ada="Container"/>
      <method id="gtk_container_add_with_properties" bind="False"/><!-- varargs -->
      <method id="gtk_container_child_get" bind="False"/> <!-- varargs -->
@@ -2610,7 +2610,7 @@ __PRE__
      </method>
    </package>
 
-   <package id="Gtk.Spin_Button">
+   <package id="GtkSpinButton">
      <parameter name="self" ada="Spin_Button"/>
      <enum ctype="GtkSpinType"/>
      <enum ctype="GtkSpinButtonUpdatePolicy"/>
@@ -2620,13 +2620,13 @@ __PRE__
      </method>
    </package>
 
-   <package id="Gtk.Action">
+   <package id="GtkAction">
      <parameter name="self" ada="Action"/>
      <method id="gtk_action_get_accel_closure" bind="False" /> <!-- Closures not handled-->
      <method id="gtk_action_get_proxies" return="WidgetSList*"/>
    </package>
 
-   <package id="Gtk.Menu">
+   <package id="GtkMenu">
      <parameter name="self" ada="Menu"/>
      <method id="gtk_menu_get_active" return="GtkMenuItem"/>
      <method id="gtk_menu_popup">
@@ -2639,15 +2639,15 @@ __PRE__
      <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
    </package>
 
-   <package id="Gtk.Menu_Bar">
+   <package id="GtkMenuBar">
      <parameter name="self" ada="Menu_Bar"/>
    </package>
 
-   <package id="Gtk.Menu_Shell">
+   <package id="GtkMenuShell">
      <parameter name="self" ada="Menu_Shell"/>
    </package>
 
-   <package id="Gtk.Menu_Tool_Button">
+   <package id="GtkMenuToolButton">
      <parameter name="self" ada="Button"/>
      <method id="gtk_menu_tool_button_new">
        <parameter name="self" ada="Menu"/>
@@ -2659,12 +2659,12 @@ __PRE__
      <method id="gtk_menu_tool_button_get_menu" return="GtkMenu"/>
    </package>
 
-   <package id="Gtk.Image_Menu_Item">
+   <package id="GtkImageMenuItem">
      <method id="gtk_image_menu_item_new"/>
      <method id="gtk_image_menu_item_new_with_label" ada="Gtk_New"/>
    </package>
 
-   <package id="Gtk.Check_Menu_Item">
+   <package id="GtkCheckMenuItem">
      <parameter name="self" ada="Check_Menu_Item"/>
       <method id="gtk_check_menu_item_new" bind="False"/>
       <method id="gtk_check_menu_item_new_with_label" ada="Gtk_New" >
@@ -2672,7 +2672,7 @@ __PRE__
       </method>
    </package>
 
-   <package id="Gdk.RGBA">
+   <package id="GdkRGBA">
      <method id="gdk_rgba_equal">
        <parameter name="p2" ctype="GdkRGBA*"/>
      </method>
@@ -2701,7 +2701,7 @@ __PRE__
      </extra>
    </package>
 
-   <package id="Gtk.Scrolled_Window">
+   <package id="GtkScrolledWindow">
      <parameter name="self" ada="Scrolled_Window"/>
      <method id="gtk_scrolled_window_new">
        <parameter name="hadjustment" default="null"/>
@@ -2711,15 +2711,49 @@ __PRE__
      <method id="gtk_scrolled_window_get_vscrollbar" return="GtkScrollbar"/>
    </package>
 
+   <package id="GtkWindow">
+     <parameter name="self" ada="Window"/>
+     <method id="gtk_window_new">
+       <parameter name="type" default="Gtk.Enums.Window_Toplevel"/>
+     </method>
+     <method id="gtk_window_list_toplevels" return="WidgetList"/>
+     <method id="gtk_window_get_icon_list" return="ObjectList"/>
+     <method id="gtk_window_set_icon_list">
+       <parameter name="list" ctype="ObjectList"/>
+     </method>
+     <method id="gtk_window_get_default_icon_list" return="ObjectList"/>
+     <method id="gtk_window_set_default_icon_list">
+       <parameter name="list" ctype="ObjectList"/>
+     </method>
+     <method id="gtk_window_add_mnemonic">
+       <parameter name="keyval" ctype="GdkKeyType"/>
+     </method>
+     <method id="gtk_window_remove_mnemonic">
+       <parameter name="keyval" ctype="GdkKeyType"/>
+     </method>
+     <method id="gtk_window_mnemonic_activate">
+       <parameter name="keyval" ctype="GdkKeyType"/>
+     </method>
+
+     <method id="gtk_window_get_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
+     <method id="gtk_window_set_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
+   </package>
+
+   <package id="GtkWindowGroup" into="GtkWindow">
+     <parameter name="self" ada="Window_Group"/>
+     <method id="gtk_window_group_get_type" ada="Group_Get_Type"/>
+     <method id="gtk_window_group_list_windows" return="WidgetList"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
    -->
 
-   <package id="Gtk.Tree_Model">
+   <package id="GtkTreeModel">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
    </package>
-   <package id="Gtk.Action_Group">
+   <package id="GtkActionGroup">
      <parameter name="self" ada="Action_Group"/>
    </package>
 

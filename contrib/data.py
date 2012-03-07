@@ -4,6 +4,11 @@
 
 from adaformat import *
 
+# General packages that don't depend on others and must be processed first
+
+enums = ("GtkEnums",
+         )
+
 # List of interfaces to bind. These are processed before the widgets themselves.
 # These are GIR names
 
@@ -34,12 +39,14 @@ binding = ("GdkDevice",
            "GdkDragContext",
            "GdkRGBA",
            "GdkScreen",
+
            "GtkAboutDialog",
            "GtkAccelGroup",
            "GtkAction",
            # "GtkActionGroup",
            "GtkAdjustment",
            "GtkAlignment",
+           #"GtkApplication",
            "GtkArrow",
            "GtkAspectFrame",
            "GtkAssistant",
@@ -128,9 +135,8 @@ binding = ("GdkDevice",
            "GtkViewport",
            "GtkVolumeButton",
            "GtkWidget",
-
-           # Custom GtkAda packages
-           "Gtk.Enums.GtkEnums::ada",
+           #"GtkWindow",
+           #"GtkWindowGroup",
           )
 
 # Handling of functions with user data. The names below are the likely names
@@ -145,12 +151,7 @@ destroy_data_params = ["destroy", "func_notify"]
 # as they are processed.
 
 naming.cname_to_adaname = {
-    "gtk_window_get_default_icon_list": "Gtk.Window.Get_Default_Icon_List",
-    "gtk_window_set_default_icon":  "Gtk.Window.Set_Default_Icon",
-    "gtk_widget_set_direction":     "Gtk.Window.Set_Direction",
-    "gtk_widget_set_has_window":    "Gtk.Widget.Set_Has_Window",
     "gtk_show_uri":                 "gtk_show_uri()",
-    "gtk_widget_show":              "Gtk.Widget.Show",
     "gtk_icon_factory_add_default": "Gtk.Icon_Factory.Add_Default",
     "gtk_icon_factory_add":         "Gtk.Icon_Factory.Add",
     "gdk_pixbuf_new_from_data":     "Gdk.Pixbuf.Gdk_New_From_Data",
@@ -233,7 +234,7 @@ naming.type_exceptions = {
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
-    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA"),
+    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA"),  # impose casing
 
     "cairo_t":               Proxy("Cairo.Cairo_Context"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
@@ -312,4 +313,9 @@ naming.type_exceptions = {
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
+    "GdkGravity":         Proxy("Gdk.Window.Gdk_Gravity"),
+    "GdkWindowEdge":      Proxy("Gdk.Window.Gdk_Window_Edge"),
+    "GdkGeometry*":       Proxy("Gdk.Window.Gdk_Geometry"),
+    "GdkWindowHints":     Proxy("Gdk.Window.Gdk_Window_Hints"),
+    "GdkWindowTypeHint":  Proxy("Gdk.Window.Gdk_Window_Type_Hint"),
 }

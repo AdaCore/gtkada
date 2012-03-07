@@ -8,7 +8,7 @@ The syntax of that file is as follows:
     </GIR>
 
 Where the package node is defined as follows:
-    <package id="..."       <!-- mandatory -->
+    <package id="..."       <!-- mandatory, ctype -->
              obsolescent="..." <!--  Whether this package is obsolete -->
     >
        <doc screenshot="..." <!-- optional -->
@@ -136,7 +136,7 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring, SubElement
-from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum
+from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum, package_name
 
 
 class GtkAda(object):
@@ -161,28 +161,32 @@ class GtkAdaPackage(object):
         self.node = node
         self.doc = []
 
-        # If we are going to generate some enumerations in the package, we
-        # need to register them now, so that all places where the enumeration
-        # is referenced have the proper full name.
+    def register_types(self, adapkg):
+        """If we are going to generate some enumerations in the package, we
+           need to register them now, so that all places where the enumeration
+           is referenced have the proper full name.
 
-        if node:
-            for enum in node.findall("enum"):
-                Enum.register_ada_decl(pkg=node.get("id"),
+           adapkg is the name of the Ada package.
+        """
+
+        if self.node:
+            for enum in self.node.findall("enum"):
+                Enum.register_ada_decl(pkg=adapkg,
                                        ctype=enum.get("ctype"),
                                        ada=enum.get("ada", None))
-            for rec in node.findall("record"):
+            for rec in self.node.findall("record"):
                 Proxy.register_ada_record(
-                    pkg=node.get("id"),
+                    pkg=adapkg,
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None))
-            for rec in node.findall("list"):
+            for rec in self.node.findall("list"):
                 List.register_ada_list(
-                    pkg=node.get("id"),
+                    pkg=adapkg,
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None))
-            for rec in node.findall("slist"):
+            for rec in self.node.findall("slist"):
                 List.register_ada_list(
-                    pkg=node.get("id"),
+                    pkg=adapkg,
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None),
                     single=True)
