@@ -395,6 +395,15 @@ Gtk.Image
 The subprograms working with Gdk_Pixmap have been removed, use the
 variants working on Gdk_Pixbuf instead.
 
+Gtk.Image_Menu_Item
+===================
+
+All controlling parameters were renamed to Self. There was no consistency
+before.
+
+Gtk_New_From_Stock now requires an Accel_Group parameter, which can be set to
+null.
+
 Gtk.Input_Dialog
 ================
 

@@ -69,7 +69,6 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Dialog;              use Gtk.Dialog;
-with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.About_Dialog is
 

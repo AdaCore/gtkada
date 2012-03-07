@@ -68,7 +68,6 @@ with Gtk.Cell_Layout;   use Gtk.Cell_Layout;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 with Gtk.Combo_Box;     use Gtk.Combo_Box;
 with Gtk.Tree_Model;    use Gtk.Tree_Model;
-with Gtk.Widget;        use Gtk.Widget;
 
 package Gtk.Combo_Box_Text is
 

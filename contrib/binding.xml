@@ -2659,6 +2659,11 @@ __PRE__
      <method id="gtk_menu_tool_button_get_menu" return="GtkMenu"/>
    </package>
 
+   <package id="Gtk.Image_Menu_Item">
+     <method id="gtk_image_menu_item_new"/>
+     <method id="gtk_image_menu_item_new_with_label" ada="Gtk_New"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

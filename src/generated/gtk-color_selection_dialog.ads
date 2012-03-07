@@ -37,7 +37,6 @@ with Glib.Types;          use Glib.Types;
 with Gtk.Buildable;       use Gtk.Buildable;
 with Gtk.Color_Selection; use Gtk.Color_Selection;
 with Gtk.Dialog;          use Gtk.Dialog;
-with Gtk.Widget;          use Gtk.Widget;
 
 package Gtk.Color_Selection_Dialog is
 

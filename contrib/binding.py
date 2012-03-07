@@ -277,18 +277,25 @@ class SubprogramProfile(object):
         self.destroy_param = -1   # index of the parameter to destroy data
 
     @staticmethod
-    def parse(node, gtkmethod, pkg=None):
+    def parse(node, gtkmethod, pkg=None, ignore_return=False):
         """Parse the parameter info and return type info from the XML
            GIR node, overriding with binding.xml.
            gtkmethod is the GtkAdaMethod that contains the overriding for the
            various method attributes.
            If pkg is specified, with statements are added as necessary.
+
+           If ignore_return is True, the return type is not parsed. This is
+           used for constructors, so that we do not end up adding extra 'with'
+           statements in the generated package.
         """
         profile = SubprogramProfile()
         profile.node = node
         profile.gtkmethod = gtkmethod
         profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
-        profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
+
+        if not ignore_return:
+            profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
+
         profile.doc = profile._getdoc(gtkmethod, node)
         return profile
 
@@ -927,7 +934,8 @@ class GIRClass(object):
                 continue
 
             profile = SubprogramProfile.parse(
-                node=c, gtkmethod=gtkmethod, pkg=self.pkg)
+                node=c, gtkmethod=gtkmethod, pkg=self.pkg,
+                ignore_return=True)
             if profile.has_varargs():
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
                 print "No binding for %s: varargs" % cname

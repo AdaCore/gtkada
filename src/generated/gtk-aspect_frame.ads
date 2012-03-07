@@ -40,7 +40,6 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Frame;       use Gtk.Frame;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Aspect_Frame is
 

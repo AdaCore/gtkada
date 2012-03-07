@@ -50,7 +50,6 @@ with Gtk.Action;      use Gtk.Action;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Button;      use Gtk.Button;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Link_Button is
 

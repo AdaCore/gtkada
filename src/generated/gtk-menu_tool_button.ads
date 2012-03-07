@@ -57,7 +57,6 @@ with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu;        use Gtk.Menu;
 with Gtk.Tool_Button; use Gtk.Tool_Button;
-with Gtk.Tool_Item;   use Gtk.Tool_Item;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Menu_Tool_Button is

@@ -35,7 +35,6 @@ with Glib.Types;     use Glib.Types;
 with Gtk.Buildable;  use Gtk.Buildable;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
-with Gtk.Widget;     use Gtk.Widget;
 
 package Gtk.Menu_Bar is
 

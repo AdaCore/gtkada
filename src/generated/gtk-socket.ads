@@ -82,7 +82,6 @@ with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;
 with Gtk.Buildable; use Gtk.Buildable;
 with Gtk.Container; use Gtk.Container;
-with Gtk.Widget;    use Gtk.Widget;
 with Gtk.Window;    use Gtk.Window;
 
 package Gtk.Socket is

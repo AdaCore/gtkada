@@ -99,7 +99,6 @@ with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Cell_Editable;       use Gtk.Cell_Editable;
 with Gtk.Editable;            use Gtk.Editable;
 with Gtk.GEntry;              use Gtk.GEntry;
-with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Spin_Button is
 

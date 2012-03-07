@@ -48,7 +48,6 @@ with Gtk.Box;         use Gtk.Box;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Orientable;  use Gtk.Orientable;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Color_Selection is
 

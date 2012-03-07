@@ -53,7 +53,6 @@ with Gtk.Orientable;  use Gtk.Orientable;
 with Gtk.Size_Group;  use Gtk.Size_Group;
 with Gtk.Tool_Item;   use Gtk.Tool_Item;
 with Gtk.Tool_Shell;  use Gtk.Tool_Shell;
-with Gtk.Widget;      use Gtk.Widget;
 with Pango.Layout;    use Pango.Layout;
 
 package Gtk.Toolbar is

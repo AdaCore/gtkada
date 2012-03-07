@@ -65,7 +65,6 @@ with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Tree_Model;    use Gtk.Tree_Model;
 with Gtk.Tree_View;     use Gtk.Tree_View;
-with Gtk.Widget;        use Gtk.Widget;
 
 package Gtk.Combo_Box is
 
