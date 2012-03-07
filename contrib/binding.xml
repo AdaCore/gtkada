@@ -2768,6 +2768,13 @@ __PRE__
      </extra>
    </package>
 
+   <package id="GtkRecentAction">
+     <parameter name="self" ada="Widget"/>
+     <method id="gtk_recent_action_new_for_manager">
+       <parameter name="manager" default="Gtk.Recent_Manager.Get_Default"/>
+     </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
