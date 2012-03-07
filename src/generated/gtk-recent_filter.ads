@@ -38,7 +38,7 @@ pragma Ada_05;
 --
 --  Normally, filters are used by adding them to a
 --  Gtk.Recent_Chooser.Gtk_Recent_Chooser, see
---  Gtk.Recent_Chooser_Dialog.Add_Filter, but it is also possible to manually
+--  Gtk.Recent_Chooser_Widget.Add_Filter, but it is also possible to manually
 --  use a filter on a file with Gtk.Recent_Filter.Filter.
 --
 --  Recently used files are supported since GTK+ 2.10.

@@ -86,7 +86,7 @@ package Gtk.Recent_Chooser is
    --  Adds Filter to the list of Gtk.Recent_Filter.Gtk_Recent_Filter objects
    --  held by Chooser.
    --  If no previous filter objects were defined, this function will call
-   --  Gtk.Recent_Chooser_Dialog.Set_Filter.
+   --  Gtk.Recent_Chooser_Widget.Set_Filter.
    --  Since: gtk+ 2.10
    --  "filter": a Gtk.Recent_Filter.Gtk_Recent_Filter
 
@@ -134,7 +134,7 @@ package Gtk.Recent_Chooser is
    procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Gint);
    pragma Import (C, Set_Limit, "gtk_recent_chooser_set_limit");
    --  Sets the number of items that should be returned by
-   --  Gtk.Recent_Chooser_Dialog.Get_Items and gtk_recent_chooser_get_uris.
+   --  Gtk.Recent_Chooser_Widget.Get_Items and gtk_recent_chooser_get_uris.
    --  Since: gtk+ 2.10
    --  "limit": a positive integer, or -1 for all items
 
