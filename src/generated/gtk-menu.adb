@@ -45,7 +45,7 @@ package body Gtk.Menu is
    pragma Import (C, C_Gtk_Menu_Popup, "gtk_menu_popup");
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
-   --  and will typically supply NULL for the Parent_Menu_Shell,
+   --  and will typically supply null for the Parent_Menu_Shell,
    --  Parent_Menu_Item, Func and Data parameters. The default menu positioning
    --  function will position the menu at the current mouse cursor position.
    --  The Button parameter should be the mouse button pressed to initiate the
@@ -59,10 +59,10 @@ package body Gtk.Menu is
    --  if no such event is available, gtk_get_current_event_time can be used
    --  instead.
    --  "parent_menu_shell": the menu shell containing the triggering menu
-   --  item, or NULL
+   --  item, or null
    --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or NULL
-   --  "func": a user supplied function used to position the menu, or NULL
+   --  or null
+   --  "func": a user supplied function used to position the menu, or null
    --  "data": user supplied data to be passed to Func.
    --  "button": the mouse button which was pressed to initiate the event.
    --  "activate_time": the time at which the activation event occurred.
@@ -80,7 +80,7 @@ package body Gtk.Menu is
    pragma Import (C, C_Gtk_Menu_Popup_For_Device, "gtk_menu_popup_for_device");
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
-   --  and will typically supply NULL for the Parent_Menu_Shell,
+   --  and will typically supply null for the Parent_Menu_Shell,
    --  Parent_Menu_Item, Func, Data and Destroy parameters. The default menu
    --  positioning function will position the menu at the current position of
    --  Device (or its corresponding pointer).
@@ -97,10 +97,10 @@ package body Gtk.Menu is
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
    --  "parent_menu_shell": the menu shell containing the triggering menu
-   --  item, or NULL
+   --  item, or null
    --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or NULL
-   --  "func": a user supplied function used to position the menu, or NULL
+   --  or null
+   --  "func": a user supplied function used to position the menu, or null
    --  "data": user supplied data to be passed to Func
    --  "destroy": destroy notify for Data
    --  "button": the mouse button which was pressed to initiate the event
@@ -119,7 +119,7 @@ package body Gtk.Menu is
    --  "y": address of the Gint representing the vertical position where the
    --  menu shall be drawn. This is an output parameter.
    --  "push_in": This parameter controls how menus placed outside the monitor
-   --  are handled. If this is set to TRUE and part of the menu is outside the
+   --  are handled. If this is set to True and part of the menu is outside the
    --  monitor then GTK+ pushes the window into the visible area, effectively
    --  modifying the popup position. Note that moving and possibly resizing the
    --  menu around will alter the scroll position to keep the menu items "in
@@ -391,7 +391,7 @@ package body Gtk.Menu is
       --  "y": address of the Gint representing the vertical position where
       --  the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the
-      --  monitor are handled. If this is set to TRUE and part of the menu is
+      --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
       --  area, effectively modifying the popup position. Note that moving and
       --  possibly resizing the menu around will alter the scroll position to
@@ -471,7 +471,7 @@ package body Gtk.Menu is
       --  "y": address of the Gint representing the vertical position where
       --  the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the
-      --  monitor are handled. If this is set to TRUE and part of the menu is
+      --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
       --  area, effectively modifying the popup position. Note that moving and
       --  possibly resizing the menu around will alter the scroll position to

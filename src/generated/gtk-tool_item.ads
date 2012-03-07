@@ -216,7 +216,7 @@ package Gtk.Tool_Item is
    procedure Set_Use_Drag_Window
       (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean);
-   --  Sets whether Tool_Item has a drag window. When TRUE the toolitem can be
+   --  Sets whether Tool_Item has a drag window. When True the toolitem can be
    --  used as a drag source through gtk_drag_source_set. When Tool_Item has a
    --  drag window it will intercept all events, even those that would
    --  otherwise be sent to a child of Tool_Item.
@@ -241,7 +241,7 @@ package Gtk.Tool_Item is
        Visible_Vertical : Boolean);
    --  Sets whether Tool_Item is visible when the toolbar is docked
    --  vertically. Some tool items, such as text entries, are too wide to be
-   --  useful on a vertically docked toolbar. If Visible_Vertical is FALSE
+   --  useful on a vertically docked toolbar. If Visible_Vertical is False
    --  Tool_Item will not appear on toolbars that are docked vertically.
    --  Since: gtk+ 2.4
    --  "visible_vertical": whether Tool_Item is visible when the toolbar is in
@@ -382,14 +382,14 @@ package Gtk.Tool_Item is
    --  Tool_Item about whether the item should appear in the toolbar overflow
    --  menu. In response the tool item should either
    --
-   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a NULL pointer and
-   --  return TRUE to indicate that the item should not appear in the overflow
+   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and
+   --  return True to indicate that the item should not appear in the overflow
    --  menu
    --
    --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
-   --  return TRUE, or
+   --  return True, or
    --
-   --     * return FALSE to indicate that the signal was not handled by the
+   --     * return False to indicate that the signal was not handled by the
    --  item. This means that the item will not appear in the overflow menu
    --  unless a later handler installs a menu item.
    --
@@ -398,7 +398,7 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Rebuild_Menu to invalidate the cache and ensure that the
    --  toolbar rebuilds its overflow menu.
    --
-   --  Returns TRUE if the signal was handled, FALSE if not
+   --  Returns True if the signal was handled, False if not
    --
    --  "toolbar-reconfigured"
    --     procedure Handler (Self : access Gtk_Tool_Item_Record'Class);

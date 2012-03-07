@@ -108,7 +108,7 @@ package Gtk.GRange is
    --  horizontal and its direction is Gtk.Enums.Text_Dir_Rtl.
    --  See Gtk.Widget.Get_Direction.
    --  Since: gtk+ 2.18
-   --  "flippable": TRUE to make the range flippable
+   --  "flippable": True to make the range flippable
 
    function Get_Inverted
       (The_Range : not null access Gtk_Range_Record) return Boolean;
@@ -118,7 +118,7 @@ package Gtk.GRange is
    --  Ranges normally move from lower to higher values as the slider moves
    --  from top to bottom or left to right. Inverted ranges have higher values
    --  at the top or on the right rather than on the bottom or left.
-   --  "setting": TRUE to invert the range
+   --  "setting": True to invert the range
 
    function Get_Lower_Stepper_Sensitivity
       (The_Range : not null access Gtk_Range_Record)
@@ -191,8 +191,8 @@ package Gtk.GRange is
    --  widget->window coordinates.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
-   --  "slider_start": return location for the slider's start, or NULL
-   --  "slider_end": return location for the slider's end, or NULL
+   --  "slider_start": return location for the slider's start, or null
+   --  "slider_end": return location for the slider's end, or null
 
    function Get_Slider_Size_Fixed
       (The_Range : not null access Gtk_Range_Record) return Boolean;
@@ -203,7 +203,7 @@ package Gtk.GRange is
    --  depends on its adjustment's page size.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
-   --  "size_fixed": TRUE to make the slider size constant
+   --  "size_fixed": True to make the slider size constant
 
    function Get_Upper_Stepper_Sensitivity
       (The_Range : not null access Gtk_Range_Record)
@@ -373,8 +373,8 @@ package Gtk.GRange is
    --  The Gtk.GRange.Gtk_Range::change-value signal is emitted when a scroll
    --  action is performed on a range. It allows an application to determine
    --  the type of scroll event that occurred and the resultant new value. The
-   --  application can handle the event itself and return TRUE to prevent
-   --  further processing. Or, by returning FALSE, it can pass the event to
+   --  application can handle the event itself and return True to prevent
+   --  further processing. Or, by returning False, it can pass the event to
    --  other handlers until the default GTK+ handler is reached.
    --
    --  The value parameter is unrounded. An application that overrides the
@@ -385,8 +385,8 @@ package Gtk.GRange is
    --  It is not possible to use delayed update policies in an overridden
    --  Gtk.GRange.Gtk_Range::change-value handler.
    --
-   --  Returns TRUE to prevent other handlers from being invoked for the
-   --  signal, FALSE to propagate the signal further
+   --  Returns True to prevent other handlers from being invoked for the
+   --  signal, False to propagate the signal further
    --
    --  "move-slider"
    --     procedure Handler

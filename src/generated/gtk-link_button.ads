@@ -36,7 +36,7 @@ pragma Ada_05;
 --
 --  By default, GtkLinkButton calls gtk_show_uri() when the button is clicked.
 --  This behaviour can be overridden by connecting to the
---  Gtk.Link_Button.Gtk_Link_Button::activate-link signal and returning TRUE
+--  Gtk.Link_Button.Gtk_Link_Button::activate-link signal and returning True
 --  from the signal handler.
 --
 --  </description>
@@ -205,7 +205,7 @@ package Gtk.Link_Button is
    --
    --  To override the default behavior, you can connect to the
    --  ::activate-link signal and stop the propagation of the signal by
-   --  returning TRUE from your handler.
+   --  returning True from your handler.
 
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 

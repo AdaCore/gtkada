@@ -52,7 +52,7 @@ pragma Ada_05;
 --  is not destroyed until that plug is created. Violating this rule will cause
 --  unpredictable consequences, the most likely consequence being that the plug
 --  will appear as a separate toplevel window. You can check if the plug has
---  been created by using Gtk.Socket.Get_Plug_Window. If it returns a non-NULL
+--  been created by using Gtk.Socket.Get_Plug_Window. If it returns a non-null
 --  value, then the plug has been successfully created inside of the socket.
 --
 --  When GTK+ is notified that the embedded window has been destroyed, then it
@@ -176,9 +176,9 @@ package Gtk.Socket is
    --       (Self : access Gtk_Socket_Record'Class) return Boolean;
    --  This signal is emitted when a client is removed from the socket. The
    --  default action is to destroy the Gtk.Socket.Gtk_Socket widget, so if you
-   --  want to reuse it you must add a signal handler that returns TRUE.
+   --  want to reuse it you must add a signal handler that returns True.
    --
-   --  Returns TRUE to stop other handlers from being invoked.
+   --  Returns True to stop other handlers from being invoked.
 
    Signal_Plug_Added : constant Glib.Signal_Name := "plug-added";
    Signal_Plug_Removed : constant Glib.Signal_Name := "plug-removed";

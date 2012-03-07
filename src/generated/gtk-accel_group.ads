@@ -169,8 +169,8 @@ package Gtk.Accel_Group is
        Closure     : C_Gtk_Accel_Group_Activate) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  Since 2.20 Closure can be NULL.
-   --  "closure": the closure to remove from this accelerator group, or NULL
+   --  Since 2.20 Closure can be null.
+   --  "closure": the closure to remove from this accelerator group, or null
    --  to remove all closures
 
    function Disconnect_Key
@@ -179,7 +179,7 @@ package Gtk.Accel_Group is
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  removed, FALSE otherwise
+   --  removed, False otherwise
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
 
@@ -187,7 +187,7 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns TRUE and returns its Gtk.Accel_Group.Gtk_Accel_Key.
+   --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
 
@@ -207,7 +207,7 @@ package Gtk.Accel_Group is
           Find_Func   : Gtk_Accel_Group_Find_Func;
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func
-      --  returns TRUE and returns its Gtk.Accel_Group.Gtk_Accel_Key.
+      --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
       --  Find_Func. The key is owned by GTK+ and must not be freed.
       --  "find_func": a function to filter the entries of Accel_Group with
       --  "data": data to pass to Find_Func
@@ -218,7 +218,7 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
    --  Gtk.Accel_Group.Unlock.
-   --  FALSE otherwise.
+   --  False otherwise.
    --  Since: gtk+ 2.14
 
    function Get_Modifier_Mask
@@ -247,7 +247,7 @@ package Gtk.Accel_Group is
       (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
-   --  is connected, or NULL
+   --  is connected, or null
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
@@ -295,8 +295,8 @@ package Gtk.Accel_Group is
    --  If the parse fails, Accelerator_Key and Accelerator_Mods will be set to
    --  0 (zero).
    --  "accelerator": string representing an accelerator
-   --  "accelerator_key": return location for accelerator keyval, or NULL
-   --  "accelerator_mods": return location for accelerator modifier mask, NULL
+   --  "accelerator_key": return location for accelerator keyval, or null
+   --  "accelerator_mods": return location for accelerator modifier mask, null
 
    function Accelerator_Name
       (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
@@ -358,7 +358,7 @@ package Gtk.Accel_Group is
    --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
    --  applications.
    --
-   --  Returns TRUE if the accelerator was activated
+   --  Returns True if the accelerator was activated
    --
    --  "accel-changed"
    --     procedure Handler

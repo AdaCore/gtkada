@@ -289,7 +289,7 @@ package Gtk.Activatable is
    --  property is set or unset and by the implementing class when
    --  Gtk.Activatable.Gtk_Activatable::use-action-appearance changes.
    --  Since: gtk+ 2.16
-   --  "action": the related Gtk.Action.Gtk_Action or NULL
+   --  "action": the related Gtk.Action.Gtk_Action or null
 
    ----------------
    -- Properties --
@@ -316,7 +316,7 @@ package Gtk.Activatable is
    --
    --  See the Gtk.Action.Gtk_Action documentation directly to find which
    --  properties should be ignored by the Gtk.Activatable.Gtk_Activatable when
-   --  this property is FALSE.
+   --  this property is False.
    --
    --  Note:
    --

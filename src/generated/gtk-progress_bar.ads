@@ -111,7 +111,7 @@ package Gtk.Progress_Bar is
        Inverted     : Boolean);
    --  Progress bars normally grow from top to bottom or left to right.
    --  Inverted progress bars grow in the opposite direction.
-   --  "inverted": TRUE to invert the progress bar
+   --  "inverted": True to invert the progress bar
 
    function Get_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
@@ -131,12 +131,12 @@ package Gtk.Progress_Bar is
        Show_Text    : Boolean);
    --  Sets whether the progressbar will show text superimposed over the bar.
    --  The shown text is either the value of the
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar::text property or, if that is NULL,
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar::text property or, if that is null,
    --  the Gtk.Progress_Bar.Gtk_Progress_Bar::fraction value, as a percentage.
    --  To make a progress bar that is styled and sized suitably for containing
    --  text (even if the actual text is blank), set
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to TRUE and
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text to the empty string (not NULL).
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to True and
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text to the empty string (not null).
    --  Since: gtk+ 3.0
    --  "show_text": whether to show superimposed text
 
@@ -147,15 +147,15 @@ package Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Text         : UTF8_String := "");
    --  Causes the given Text to appear superimposed on the progress bar.
-   --  If Text is NULL and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is
-   --  TRUE, the current value of Gtk.Progress_Bar.Gtk_Progress_Bar:fraction
+   --  If Text is null and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is
+   --  True, the current value of Gtk.Progress_Bar.Gtk_Progress_Bar:fraction
    --  will be displayed as a percentage.
-   --  If Text is non-NULL and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is
-   --  TRUE, the text will be displayed. In this case, it will not display the
+   --  If Text is non-null and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is
+   --  True, the text will be displayed. In this case, it will not display the
    --  progress percentage. If Text is the empty string, the progress bar will
    --  still be styled and sized suitably for containing text, as long as
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is TRUE.
-   --  "text": a UTF-8 string, or NULL
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is True.
+   --  "text": a UTF-8 string, or null
 
    procedure Pulse (Progress_Bar : not null access Gtk_Progress_Bar_Record);
    --  Indicates that some progress is made, but you don't know how much.

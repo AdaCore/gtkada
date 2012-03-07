@@ -146,7 +146,7 @@ package Gtk.File_Filter is
    --  Since: gtk+ 2.4
    --  "needed": bitfield of flags indicating the information that the custom
    --  filter function needs.
-   --  "func": callback function; if the function returns TRUE, then the file
+   --  "func": callback function; if the function returns True, then the file
    --  will be displayed.
    --  "notify": function to call to free Data when it is no longer needed.
 
@@ -178,7 +178,7 @@ package Gtk.File_Filter is
       --  Since: gtk+ 2.4
       --  "needed": bitfield of flags indicating the information that the
       --  custom filter function needs.
-      --  "func": callback function; if the function returns TRUE, then the
+      --  "func": callback function; if the function returns True, then the
       --  file will be displayed.
       --  "data": data to pass to Func
       --  "notify": function to call to free Data when it is no longer needed.
@@ -226,7 +226,7 @@ package Gtk.File_Filter is
    --  will be displayed in the file selector user interface if there is a
    --  selectable list of filters.
    --  Since: gtk+ 2.4
-   --  "name": the human-readable-name for the filter, or NULL to remove any
+   --  "name": the human-readable-name for the filter, or null to remove any
    --  existing name.
 
    function Get_Needed

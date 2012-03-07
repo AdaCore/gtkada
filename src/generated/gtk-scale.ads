@@ -87,7 +87,7 @@ package Gtk.Scale is
    --  Since: gtk+ 3.0
    --  "orientation": the scale's orientation.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale, or NULL to create a new adjustment.
+   --  the scale, or null to create a new adjustment.
 
    procedure Gtk_New_With_Range
       (Scale       : out Gtk_Scale;
@@ -190,7 +190,7 @@ package Gtk.Scale is
    --  A mark is indicated visually by drawing a tick mark next to the scale,
    --  and GTK+ makes it easy for the user to position the scale exactly at the
    --  marks value.
-   --  If Markup is not NULL, text is shown next to the tick mark.
+   --  If Markup is not null, text is shown next to the tick mark.
    --  To remove marks from a scale, use Gtk.Scale.Clear_Marks.
    --  Since: gtk+ 2.16
    --  "value": the value at which the mark is placed, must be between the
@@ -200,7 +200,7 @@ package Gtk.Scale is
    --  For a vertical scale, GTK_POS_LEFT and Gtk.Enums.Pos_Top are drawn to
    --  the left of the scale, anything else to the right.
    --  "markup": Text to be shown at the mark, using <link
-   --  linkend="PangoMarkupFormat">Pango markup</link>, or NULL
+   --  linkend="PangoMarkupFormat">Pango markup</link>, or null
 
    procedure Clear_Marks (Scale : not null access Gtk_Scale_Record);
    --  Removes any marks that have been added with Gtk.Scale.Add_Mark.
@@ -224,7 +224,7 @@ package Gtk.Scale is
        Draw_Value : Boolean);
    --  Specifies whether the current value is displayed as a string next to
    --  the slider.
-   --  "draw_value": TRUE to draw the value
+   --  "draw_value": True to draw the value
 
    function Get_Layout
       (Scale : not null access Gtk_Scale_Record)
@@ -232,7 +232,7 @@ package Gtk.Scale is
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
    --  the caller.
-   --  or NULL if the Gtk.Scale.Gtk_Scale:draw-value property is FALSE.
+   --  or null if the Gtk.Scale.Gtk_Scale:draw-value property is False.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets
@@ -243,11 +243,11 @@ package Gtk.Scale is
    --  Pango.Layout.Pango_Layout representing the text in the scale. Remember
    --  when using the Pango.Layout.Pango_Layout function you need to convert to
    --  and from pixels using PANGO_PIXELS or PANGO_SCALE.
-   --  If the Gtk.Scale.Gtk_Scale:draw-value property is FALSE, the return
+   --  If the Gtk.Scale.Gtk_Scale:draw-value property is False, the return
    --  values are undefined.
    --  Since: gtk+ 2.4
-   --  "x": location to store X offset of layout, or NULL
-   --  "y": location to store Y offset of layout, or NULL
+   --  "x": location to store X offset of layout, or null
+   --  "y": location to store Y offset of layout, or null
 
    function Get_Value_Pos
       (Scale : not null access Gtk_Scale_Record)

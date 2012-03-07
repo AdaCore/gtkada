@@ -160,6 +160,10 @@ naming.cname_to_adaname = {
     "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
     "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
+    "TRUE": "True",
+    "FALSE": "False",
+    "NULL": "null",
+
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
 

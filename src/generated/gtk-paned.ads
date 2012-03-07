@@ -44,7 +44,7 @@ pragma Ada_05;
 --  is true, then when the Gtk.Paned.Gtk_Paned is resized, that child will
 --  expand or shrink along with the paned widget. If Shrink is true, then that
 --  child can be made smaller than its requisition by the user. Setting Shrink
---  to FALSE allows the application to set a minimum size. If Resize is false
+--  to False allows the application to set a minimum size. If Resize is false
 --  for both children, then this is treated as if Resize is true for both
 --  children.
 --

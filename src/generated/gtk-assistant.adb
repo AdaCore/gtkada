@@ -42,11 +42,11 @@ package body Gtk.Assistant is
    pragma Import (C, C_Gtk_Assistant_Set_Forward_Page_Func, "gtk_assistant_set_forward_page_func");
    --  Sets the page forwarding function to be Page_Func.
    --  This function will be used to determine what will be the next page when
-   --  the user presses the forward button. Setting Page_Func to NULL will make
+   --  the user presses the forward button. Setting Page_Func to null will make
    --  the assistant to use the default forward function, which just goes to
    --  the next visible page.
    --  Since: gtk+ 2.10
-   --  "page_func": the Gtk_Assistant_Page_Func, or NULL to use the default
+   --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
    --  one
    --  "data": user data for Page_Func
    --  "destroy": destroy notifier for Data

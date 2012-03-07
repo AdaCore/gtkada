@@ -132,7 +132,7 @@ package Gtk.Image is
    --  currently-stored representation. e.g. if the Gtk.Image.Get_Storage_Type
    --  returns GTK_IMAGE_PIXBUF, then you can call Gtk.Image.Get but not Get.
    --  For empty images, you can request any storage type (call any of the
-   --  "get" functions), but they will all return NULL values.
+   --  "get" functions), but they will all return null values.
 
    ----------------------------
    -- Enumeration Properties --
@@ -172,7 +172,7 @@ package Gtk.Image is
        Filename : UTF8_String);
    --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
    --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
-   --  will display a "broken image" icon. This function never returns NULL, it
+   --  will display a "broken image" icon. This function never returns null, it
    --  always returns a valid Gtk.Image.Gtk_Image widget.
    --  If the file contains an animation, the image will contain an animation.
    --  If you need to detect failures to load the file, use
@@ -249,7 +249,7 @@ package Gtk.Image is
    --  Note that this function just creates an Gtk.Image.Gtk_Image from the
    --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
    --  Should you want that, you should use Gtk.Image.Gtk_New.
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or NULL
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Gtk_New
       (Image    : out Gtk_Image;

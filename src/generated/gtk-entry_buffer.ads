@@ -62,7 +62,7 @@ package Gtk.Entry_Buffer is
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.
    --  Since: gtk+ 2.18
-   --  "initial_chars": initial buffer text, or NULL
+   --  "initial_chars": initial buffer text, or null
    --  "n_initial_chars": number of characters in Initial_Chars, or -1
 
    function Get_Type return Glib.GType;

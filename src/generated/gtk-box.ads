@@ -132,7 +132,7 @@ package Gtk.Box is
    --  wich is a very quick and easy change. But the recommendation is to
    --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
    --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
-   --  "homogeneous": TRUE if all children are to be given equal space
+   --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
 
@@ -151,7 +151,7 @@ package Gtk.Box is
    --  wich is a very quick and easy change. But the recommendation is to
    --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
    --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
-   --  "homogeneous": TRUE if all children are to be given equal space
+   --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
 
@@ -169,7 +169,7 @@ package Gtk.Box is
        Homogeneous : Boolean);
    --  Sets the Gtk.Box.Gtk_Box:homogeneous property of Box, controlling
    --  whether or not all children of Box are given equal space in the box.
-   --  "homogeneous": a boolean value, TRUE to create equal allotments, FALSE
+   --  "homogeneous": a boolean value, True to create equal allotments, False
    --  for variable allotments
 
    function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint;
@@ -190,12 +190,12 @@ package Gtk.Box is
    --  is packed after (away from end of) any other child packed with reference
    --  to the end of Box.
    --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
-   --  "expand": TRUE if the new child is to be given extra space allocated to
+   --  "expand": True if the new child is to be given extra space allocated to
    --  Box. The extra space will be divided evenly between all children of Box
    --  that use this option
-   --  "fill": TRUE if space given to Child by the Expand option is actually
+   --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to FALSE. A child is always allocated the full
+   --  effect if Expand is set to False. A child is always allocated the full
    --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
    --  Gtk.Box.Gtk_Box. This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its
@@ -214,12 +214,12 @@ package Gtk.Box is
    --  is packed after any other child packed with reference to the start of
    --  Box.
    --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
-   --  "expand": TRUE if the new child is to be given extra space allocated to
+   --  "expand": True if the new child is to be given extra space allocated to
    --  Box. The extra space will be divided evenly between all children that
    --  use this option
-   --  "fill": TRUE if space given to Child by the Expand option is actually
+   --  "fill": True if space given to Child by the Expand option is actually
    --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to FALSE. A child is always allocated the full
+   --  effect if Expand is set to False. A child is always allocated the full
    --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
    --  Gtk.Box.Gtk_Box. This option affects the other dimension
    --  "padding": extra space in pixels to put between this child and its

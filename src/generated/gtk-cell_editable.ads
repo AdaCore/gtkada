@@ -64,9 +64,9 @@ package Gtk.Cell_Editable is
        Event         : Gdk.Event.Gdk_Event);
    pragma Import (C, Start_Editing, "gtk_cell_editable_start_editing");
    --  Begins editing on a Cell_Editable. Event is the Gdk_Event that began
-   --  the editing process. It may be NULL, in the instance that editing was
+   --  the editing process. It may be null, in the instance that editing was
    --  initiated through programatic means.
-   --  "event": A Gdk_Event, or NULL
+   --  "event": A Gdk_Event, or null
 
    ----------------
    -- Properties --

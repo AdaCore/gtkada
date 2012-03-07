@@ -103,7 +103,7 @@ package Gtk.Notebook is
    --  page in the notebook, or -1 if function fails
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
 
    procedure Append_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -115,10 +115,10 @@ package Gtk.Notebook is
    --  page in the notebook, or -1 if function fails
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
    --  "menu_label": the widget to use as a label for the page-switch menu, if
-   --  that is enabled. If NULL, and Tab_Label is a Gtk.Label.Gtk_Label or
-   --  NULL, then the menu label will be a newly created label with the same
+   --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
+   --  null, then the menu label will be a newly created label with the same
    --  text as Tab_Label; if Tab_Label is not a Gtk.Label.Gtk_Label, Menu_Label
    --  must be specified if the page-switch menu is to be used.
 
@@ -159,10 +159,10 @@ package Gtk.Notebook is
        Group_Name : UTF8_String := "");
    --  Sets a group name for Notebook.
    --  Notebooks with the same name will be able to exchange tabs via drag and
-   --  drop. A notebook with a NULL group name will not be able to exchange
+   --  drop. A notebook with a null group name will not be able to exchange
    --  tabs with any other notebook.
    --  Since: gtk+ 2.24
-   --  "group_name": the name of the notebook group, or NULL to unset it
+   --  "group_name": the name of the notebook group, or null to unset it
 
    function Get_Menu_Label
       (Notebook : not null access Gtk_Notebook_Record;
@@ -174,7 +174,7 @@ package Gtk.Notebook is
        Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Changes the menu label for the page containing Child.
    --  "child": the child widget
-   --  "menu_label": the menu label, or NULL for default
+   --  "menu_label": the menu label, or null for default
 
    function Get_Menu_Label_Text
       (Notebook : not null access Gtk_Notebook_Record;
@@ -208,7 +208,7 @@ package Gtk.Notebook is
        Scrollable : Boolean := True);
    --  Sets whether the tab label area will have arrows for scrolling if there
    --  are too many tabs to fit in the area.
-   --  "scrollable": TRUE if scroll arrows should be added
+   --  "scrollable": True if scroll arrows should be added
 
    function Get_Show_Border
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
@@ -218,7 +218,7 @@ package Gtk.Notebook is
    --  Sets whether a bevel will be drawn around the notebook pages. This only
    --  has a visual effect when the tabs are not shown. See
    --  Gtk.Notebook.Set_Show_Tabs.
-   --  "show_border": TRUE if a bevel should be drawn around the notebook
+   --  "show_border": True if a bevel should be drawn around the notebook
 
    function Get_Show_Tabs
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
@@ -226,7 +226,7 @@ package Gtk.Notebook is
       (Notebook  : not null access Gtk_Notebook_Record;
        Show_Tabs : Boolean := True);
    --  Sets whether to show the tabs for the notebook or not.
-   --  "show_tabs": TRUE if the tabs should be shown
+   --  "show_tabs": True if the tabs should be shown
 
    function Get_Tab_Detachable
       (Notebook : not null access Gtk_Notebook_Record;
@@ -273,10 +273,10 @@ package Gtk.Notebook is
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Changes the tab label for Child. If NULL is specified for Tab_Label,
+   --  Changes the tab label for Child. If null is specified for Tab_Label,
    --  then the page will have the label 'page N'.
    --  "child": the page
-   --  "tab_label": the tab label widget to use, or NULL for default tab label
+   --  "tab_label": the tab label widget to use, or null for default tab label
 
    function Get_Tab_Label_Text
       (Notebook : not null access Gtk_Notebook_Record;
@@ -329,7 +329,7 @@ package Gtk.Notebook is
    --  page in the notebook, or -1 if function fails
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
    --  "position": the index (starting at 0) at which to insert the page, or
    --  -1 to append the page after all other pages
 
@@ -344,10 +344,10 @@ package Gtk.Notebook is
    --  page in the notebook
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
    --  "menu_label": the widget to use as a label for the page-switch menu, if
-   --  that is enabled. If NULL, and Tab_Label is a Gtk.Label.Gtk_Label or
-   --  NULL, then the menu label will be a newly created label with the same
+   --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
+   --  null, then the menu label will be a newly created label with the same
    --  text as Tab_Label; if Tab_Label is not a Gtk.Label.Gtk_Label, Menu_Label
    --  must be specified if the page-switch menu is to be used.
    --  "position": the index (starting at 0) at which to insert the page, or
@@ -380,7 +380,7 @@ package Gtk.Notebook is
    --  page in the notebook, or -1 if function fails
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
 
    function Prepend_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -392,10 +392,10 @@ package Gtk.Notebook is
    --  page in the notebook, or -1 if function fails
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or NULL to use the default label, 'page N'
+   --  page, or null to use the default label, 'page N'
    --  "menu_label": the widget to use as a label for the page-switch menu, if
-   --  that is enabled. If NULL, and Tab_Label is a Gtk.Label.Gtk_Label or
-   --  NULL, then the menu label will be a newly created label with the same
+   --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
+   --  null, then the menu label will be a newly created label with the same
    --  text as Tab_Label; if Tab_Label is not a Gtk.Label.Gtk_Label, Menu_Label
    --  must be specified if the page-switch menu is to be used.
 
@@ -532,7 +532,7 @@ package Gtk.Notebook is
    --  moving/resizing the window and adding the necessary properties to the
    --  notebook (e.g. the Gtk.Notebook.Gtk_Notebook:group ).
    --
-   --  added to, or NULL.
+   --  added to, or null.
    --
    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
    --

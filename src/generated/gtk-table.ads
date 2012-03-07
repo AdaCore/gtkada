@@ -85,7 +85,7 @@ package Gtk.Table is
    --  contained in the table. Same behavior for the rows.
    --  "rows": The number of rows the new table should have.
    --  "columns": The number of columns the new table should have.
-   --  "homogeneous": If set to TRUE, all table cells are resized to the size
+   --  "homogeneous": If set to True, all table cells are resized to the size
    --  of the cell containing the largest widget.
 
    function Get_Type return Glib.GType;
@@ -179,8 +179,8 @@ package Gtk.Table is
    --  Indicate the homogeneous status of the table. If Homogeneous is True,
    --  the rows and columns of the table will all be allocated the same width
    --  or height.
-   --  "homogeneous": Set to TRUE to ensure all table cells are the same size.
-   --  Set to FALSE if this is not your desired behaviour.
+   --  "homogeneous": Set to True to ensure all table cells are the same size.
+   --  Set to False if this is not your desired behaviour.
 
    function Get_Row_Spacing
       (Table : not null access Gtk_Table_Record;
@@ -199,8 +199,8 @@ package Gtk.Table is
        Columns : out Guint);
    --  Gets the number of rows and columns in the table.
    --  Since: gtk+ 2.22
-   --  "rows": return location for the number of rows, or NULL
-   --  "columns": return location for the number of columns, or NULL
+   --  "rows": return location for the number of rows, or null
+   --  "columns": return location for the number of columns, or null
 
    procedure Resize
       (Table   : not null access Gtk_Table_Record;

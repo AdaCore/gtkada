@@ -206,26 +206,26 @@ package Gtk.Cell_Layout is
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
-   --  Adds the Cell to the end of Cell_Layout. If Expand is FALSE, then the
+   --  Adds the Cell to the end of Cell_Layout. If Expand is False, then the
    --  Cell is allocated no more space than it needs. Any unused space is
-   --  divided evenly between cells for which Expand is TRUE.
+   --  divided evenly between cells for which Expand is True.
    --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "expand": TRUE if Cell is to be given extra space allocated to
+   --  "expand": True if Cell is to be given extra space allocated to
    --  Cell_Layout
 
    procedure Pack_Start
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Expand      : Boolean);
-   --  Packs the Cell into the beginning of Cell_Layout. If Expand is FALSE,
+   --  Packs the Cell into the beginning of Cell_Layout. If Expand is False,
    --  then the Cell is allocated no more space than it needs. Any unused space
-   --  is divided evenly between cells for which Expand is TRUE.
+   --  is divided evenly between cells for which Expand is True.
    --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "expand": TRUE if Cell is to be given extra space allocated to
+   --  "expand": True if Cell is to be given extra space allocated to
    --  Cell_Layout
 
    procedure Reorder
@@ -247,10 +247,10 @@ package Gtk.Cell_Layout is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be NULL to remove a previously set function.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -281,10 +281,10 @@ package Gtk.Cell_Layout is
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
-      --  Func may be NULL to remove a previously set function.
+      --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;

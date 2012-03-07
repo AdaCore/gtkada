@@ -73,7 +73,7 @@ package Gtk.Buildable is
    --  Since: gtk+ 2.12
    --  "builder": a Gtk.Builder.Gtk_Builder
    --  "child": child to add
-   --  "type": kind of child or NULL
+   --  "type": kind of child or null
 
    function Construct_Child
       (Self    : Gtk_Buildable;
@@ -96,7 +96,7 @@ package Gtk.Buildable is
    --  each custom tag handled by the Buildable.
    --  Since: gtk+ 2.12
    --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "child": child object or NULL for non-child tags
+   --  "child": child object or null for non-child tags
    --  "tagname": the name of the tag
    --  "data": user data created in custom_tag_start
 
@@ -110,7 +110,7 @@ package Gtk.Buildable is
    --  buildable.
    --  Since: gtk+ 2.12
    --  "builder": Gtk.Builder.Gtk_Builder used to construct this object
-   --  "child": child object or NULL for non-child tags
+   --  "child": child object or null for non-child tags
    --  "tagname": name of tag
    --  "data": user data that will be passed in to parser functions
 

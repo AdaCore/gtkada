@@ -33,7 +33,7 @@ pragma Ada_05;
 --  Gtk.Radio_Button.Gtk_Radio_Button is one way of giving the user a choice
 --  from many options.
 --
---  Radio button widgets are created with gtk_radio_button_new, passing NULL
+--  Radio button widgets are created with gtk_radio_button_new, passing null
 --  as the argument if this is the first radio button in a group. In subsequent
 --  calls, the group you wish to add this button to should be passed as an
 --  argument. Optionally, Gtk.Radio_Button.Gtk_New can be used if you want a
@@ -120,7 +120,7 @@ package Gtk.Radio_Button is
    --  initialize the group (when creating the first button), leave Group to
    --  the Null_List. You can later get the new group that is created with a
    --  call to the Group subprogram below.
-   --  "group": an existing radio button group, or NULL if you are creating a
+   --  "group": an existing radio button group, or null if you are creating a
    --  new group.
    --  "label": the text label to display next to the radio button.
 
@@ -134,7 +134,7 @@ package Gtk.Radio_Button is
        Label        : UTF8_String := "");
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
    --  adding it to the same group as Radio_Group_Member.
-   --  "Group": widget to get radio group from or NULL
+   --  "Group": widget to get radio group from or null
    --  "label": a text string to display next to the radio button.
 
    procedure Gtk_New_With_Mnemonic
@@ -159,7 +159,7 @@ package Gtk.Radio_Button is
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
-   --  "Group": widget to get radio group from or NULL
+   --  "Group": widget to get radio group from or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -198,7 +198,7 @@ package Gtk.Radio_Button is
    --  radio_button; } ]|
    --  Since: gtk+ 3.0
    --  "group_source": a radio button object whos group we are joining, or
-   --  NULL to remove the radio button from its group
+   --  null to remove the radio button from its group
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

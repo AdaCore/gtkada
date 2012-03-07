@@ -120,11 +120,11 @@ package Gtk.Combo_Box_Text is
        Id   : UTF8_String := "";
        Text : UTF8_String);
    --  Appends Text to the list of strings stored in Combo_Box. If Id is
-   --  non-NULL then it is used as the ID of the row.
+   --  non-null then it is used as the ID of the row.
    --  This is the same as calling Gtk.Combo_Box_Text.Insert with a position
    --  of -1.
    --  Since: gtk+ 2.24
-   --  "id": a string ID for this value, or NULL
+   --  "id": a string ID for this value, or null
    --  "text": A string
 
    procedure Append_Text
@@ -138,7 +138,7 @@ package Gtk.Combo_Box_Text is
 
    function Get_Active_Text
       (Self : not null access Gtk_Combo_Box_Text_Record) return UTF8_String;
-   --  Returns the currently active string in Combo_Box, or NULL if none is
+   --  Returns the currently active string in Combo_Box, or null if none is
    --  selected. If Combo_Box contains an entry, this function will return its
    --  contents (which will not necessarily be an item from the list).
    --  active text. Must be freed with g_free.
@@ -150,12 +150,12 @@ package Gtk.Combo_Box_Text is
        Id       : UTF8_String := "";
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box. If
-   --  Id is non-NULL then it is used as the ID of the row. See
+   --  Id is non-null then it is used as the ID of the row. See
    --  Gtk.Combo_Box.Gtk_Combo_Box::id-column.
    --  If Position is negative then Text is appended.
    --  Since: gtk+ 3.0
    --  "position": An index to insert Text
-   --  "id": a string ID for this value, or NULL
+   --  "id": a string ID for this value, or null
    --  "text": A string to display
 
    procedure Insert_Text
@@ -164,7 +164,7 @@ package Gtk.Combo_Box_Text is
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box.
    --  If Position is negative then Text is appended.
-   --  This is the same as calling Gtk.Combo_Box_Text.Insert with a NULL ID
+   --  This is the same as calling Gtk.Combo_Box_Text.Insert with a null ID
    --  string.
    --  Since: gtk+ 2.24
    --  "position": An index to insert Text
@@ -175,11 +175,11 @@ package Gtk.Combo_Box_Text is
        Id   : UTF8_String := "";
        Text : UTF8_String);
    --  Prepends Text to the list of strings stored in Combo_Box. If Id is
-   --  non-NULL then it is used as the ID of the row.
+   --  non-null then it is used as the ID of the row.
    --  This is the same as calling Gtk.Combo_Box_Text.Insert with a position
    --  of 0.
    --  Since: gtk+ 2.24
-   --  "id": a string ID for this value, or NULL
+   --  "id": a string ID for this value, or null
    --  "text": a string
 
    procedure Prepend_Text
@@ -210,10 +210,10 @@ package Gtk.Combo_Box_Text is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be NULL to remove a previously set function.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -244,10 +244,10 @@ package Gtk.Combo_Box_Text is
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
-      --  Func may be NULL to remove a previously set function.
+      --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;

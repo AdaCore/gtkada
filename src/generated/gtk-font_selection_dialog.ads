@@ -82,7 +82,7 @@ package Gtk.Font_Selection_Dialog is
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
-   --  Fontname specified, FALSE otherwise.
+   --  Fontname specified, False otherwise.
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"

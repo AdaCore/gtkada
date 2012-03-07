@@ -468,7 +468,7 @@ package Gtk.File_Chooser is
    --  Sets whether file choser will offer to create new folders. This is only
    --  relevant if the action is not set to be Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.18
-   --  "create_folders": TRUE if the New Folder button should be displayed
+   --  "create_folders": True if the New Folder button should be displayed
 
    function Get_Current_Folder
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -506,12 +506,12 @@ package Gtk.File_Chooser is
        Do_Overwrite_Confirmation : Boolean);
    --  Sets whether a file chooser in Gtk.File_Chooser.Action_Save mode will
    --  present a confirmation dialog if the user types a file name that already
-   --  exists. This is FALSE by default.
+   --  exists. This is False by default.
    --  Regardless of this setting, the Chooser will emit the
    --  Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal when
    --  appropriate.
    --  If all you need is the stock confirmation dialog, set this property to
-   --  TRUE. You can override the way confirmation is done by actually handling
+   --  True. You can override the way confirmation is done by actually handling
    --  the Gtk.File_Chooser.Gtk_File_Chooser::confirm-overwrite signal; please
    --  refer to its documentation for the details.
    --  Since: gtk+ 2.8
@@ -588,14 +588,14 @@ package Gtk.File_Chooser is
       (Chooser    : Gtk_File_Chooser;
        Local_Only : Boolean);
    --  Sets whether only local files can be selected in the file selector. If
-   --  Local_Only is TRUE (the default), then the selected file are files are
+   --  Local_Only is True (the default), then the selected file are files are
    --  guaranteed to be accessible through the operating systems native file
    --  file system and therefore the application only needs to worry about the
    --  filename functions in Gtk.File_Chooser.Gtk_File_Chooser, like
    --  Gtk.File_Chooser_Widget.Get_Filename, rather than the URI functions like
    --  Gtk.File_Chooser_Widget.Get_Uri,
    --  Since: gtk+ 2.4
-   --  "local_only": TRUE if only local files can be selected
+   --  "local_only": True if only local files can be selected
 
    function Get_Preview_Filename
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -654,7 +654,7 @@ package Gtk.File_Chooser is
    --  is only relevant if the action is set to be Gtk.File_Chooser.Action_Open
    --  or Gtk.File_Chooser.Action_Select_Folder.
    --  Since: gtk+ 2.4
-   --  "select_multiple": TRUE if multiple files can be selected.
+   --  "select_multiple": True if multiple files can be selected.
 
    function Get_Show_Hidden (Chooser : Gtk_File_Chooser) return Boolean;
    procedure Set_Show_Hidden
@@ -663,7 +663,7 @@ package Gtk.File_Chooser is
    --  Sets whether hidden files and folders are displayed in the file
    --  selector.
    --  Since: gtk+ 2.6
-   --  "show_hidden": TRUE if hidden files and folders should be displayed.
+   --  "show_hidden": True if hidden files and folders should be displayed.
 
    function Get_Uri (Chooser : Gtk_File_Chooser) return UTF8_String;
    function Set_Uri
@@ -709,9 +709,9 @@ package Gtk.File_Chooser is
       (Chooser   : Gtk_File_Chooser;
        Use_Label : Boolean);
    --  Sets whether the file chooser should display a stock label with the
-   --  name of the file that is being previewed; the default is TRUE.
+   --  name of the file that is being previewed; the default is True.
    --  Applications that want to draw the whole preview area themselves should
-   --  set this to FALSE and display the name themselves in their preview
+   --  set this to False and display the name themselves in their preview
    --  widget.
    --  See also: Gtk.File_Chooser_Widget.Set_Preview_Widget
    --  Since: gtk+ 2.4
@@ -732,7 +732,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
    --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder_Uri.
-   --  URIs, or NULL if there are no shortcut folders. Free the returned list
+   --  URIs, or null if there are no shortcut folders. Free the returned list
    --  with g_slist_free, and the URIs with g_free.
    --  Since: gtk+ 2.4
 
@@ -740,7 +740,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
    --  Queries the list of shortcut folders in the file chooser, as set by
    --  Gtk.File_Chooser_Widget.Add_Shortcut_Folder.
-   --  folder filenames, or NULL if there are no shortcut folders. Free the
+   --  folder filenames, or null if there are no shortcut folders. Free the
    --  returned list with g_slist_free, and the filenames with g_free.
    --  Since: gtk+ 2.4
 

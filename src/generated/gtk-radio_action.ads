@@ -67,10 +67,10 @@ package Gtk.Radio_Action is
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.4
    --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or NULL
-   --  "tooltip": A tooltip for this action, or NULL
+   --  "label": The label displayed in menu items and on buttons, or null
+   --  "tooltip": A tooltip for this action, or null
    --  "stock_id": The stock icon to display in widgets representing this
-   --  action, or NULL
+   --  action, or null
    --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
    --  return if this action is selected.
 
@@ -124,7 +124,7 @@ package Gtk.Radio_Action is
    --  action; } ]|
    --  Since: gtk+ 3.0
    --  "group_source": a radio action object whos group we are joining, or
-   --  NULL to remove the radio action from its group
+   --  null to remove the radio action from its group
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -202,7 +202,7 @@ package Gtk.Recent_Manager is
    --  Searches for a URI inside the recently used resources list, and returns
    --  a structure containing informations about the resource like its MIME
    --  type, or its display name.
-   --  about the resource pointed by Uri, or NULL if the URI was not
+   --  about the resource pointed by Uri, or null if the URI was not
    --  registered in the recently used resources list. Free with
    --  Gtk.Recent_Info.Unref.
    --  Since: gtk+ 2.10
@@ -217,7 +217,7 @@ package Gtk.Recent_Manager is
    --  the URIs, but only the URI used in the recently used resources list.
    --  Since: gtk+ 2.10
    --  "uri": the URI of a recently used resource
-   --  "new_uri": the new URI of the recently used resource, or NULL to remove
+   --  "new_uri": the new URI of the recently used resource, or null to remove
    --  the item pointed by Uri in the list
 
    function Purge_Items
@@ -231,7 +231,7 @@ package Gtk.Recent_Manager is
        URI  : UTF8_String) return Boolean;
    --  Removes a resource pointed by Uri from the recently used resources list
    --  handled by a recent manager.
-   --  removed by the recently used resources list, and FALSE otherwise.
+   --  removed by the recently used resources list, and False otherwise.
    --  Since: gtk+ 2.10
    --  "uri": the URI of the item you wish to remove
 

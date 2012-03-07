@@ -135,7 +135,7 @@ package Gtk.Color_Button is
        Use_Alpha : Boolean);
    --  Sets whether or not the color button should use the alpha channel.
    --  Since: gtk+ 2.4
-   --  "use_alpha": TRUE if color button should use alpha channel, FALSE if
+   --  "use_alpha": True if color button should use alpha channel, False if
    --  not
 
    ---------------------------------------------
@@ -226,7 +226,7 @@ package Gtk.Color_Button is
    --  Name: Use_Alpha_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  If this property is set to TRUE, the color swatch on the button is
+   --  If this property is set to True, the color swatch on the button is
    --  rendered against a checkerboard background to show its opacity and the
    --  opacity slider is displayed in the color selection dialog.
 

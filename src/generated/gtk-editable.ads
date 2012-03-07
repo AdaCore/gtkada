@@ -121,7 +121,7 @@ package Gtk.Editable is
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
-   --  "is_editable": TRUE if the user is allowed to edit the text in the
+   --  "is_editable": True if the user is allowed to edit the text in the
    --  widget
 
    function Get_Position (Editable : Gtk_Editable) return Gint;

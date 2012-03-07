@@ -284,7 +284,7 @@ package Gtk.Dialog is
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
-   --  Response_Id, or NULL.
+   --  Response_Id, or null.
    --  Since: gtk+ 2.20
    --  "response_id": the response ID used by the Dialog widget
 
@@ -345,7 +345,7 @@ package Gtk.Dialog is
    --  the dialog's action area with the given Response_Id. A convenient way to
    --  sensitize/desensitize dialog buttons.
    --  "response_id": a response ID
-   --  "setting": TRUE for sensitive
+   --  "setting": True for sensitive
 
    ----------------------
    -- GtkAda additions --

@@ -40,7 +40,7 @@ package body Gtk.Accel_Group is
        Data        : System.Address) return Gtk_Accel_Key;
    pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
    --  Finds the first entry in an accelerator group for which Find_Func
-   --  returns TRUE and returns its Gtk.Accel_Group.Gtk_Accel_Key.
+   --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
    --  "data": data to pass to Find_Func

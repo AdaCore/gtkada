@@ -76,7 +76,7 @@ package Gtk.Scale_Button is
    --  "max": the maximum value of the scale (usually 100)
    --  "step": the stepping of value when a scroll-wheel event, or up/down
    --  arrow event occurs (usually 2)
-   --  "icons": a NULL-terminated array of icon names, or NULL if you want to
+   --  "icons": a null-terminated array of icon names, or null if you want to
    --  set the list later with Gtk.Scale_Button.Set_Icons
 
    function Get_Type return Glib.GType;
@@ -136,7 +136,7 @@ package Gtk.Scale_Button is
    --  Sets the icons to be used by the scale button. For details, see the
    --  Gtk.Scale_Button.Gtk_Scale_Button:icons property.
    --  Since: gtk+ 2.12
-   --  "icons": a NULL-terminated array of icon names
+   --  "icons": a null-terminated array of icon names
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

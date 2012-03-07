@@ -104,7 +104,7 @@ package Gtk.Button_Box is
    --  other end of the button box from the main children. For the other
    --  styles, they appear immediately next to the main children.
    --  "child": a child of Widget
-   --  "is_secondary": if TRUE, the Child appears in a secondary group of the
+   --  "is_secondary": if True, the Child appears in a secondary group of the
    --  button box.
 
    function Get_Layout

@@ -384,14 +384,14 @@ package Gtk.Container is
    procedure Set_Focus_Child
       (Container : not null access Gtk_Container_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets, or unsets if Child is NULL, the focused child of Container.
+   --  Sets, or unsets if Child is null, the focused child of Container.
    --  This function emits the GtkContainer::set_focus_child signal of
    --  Container. Implementations of Gtk.Container.Gtk_Container can override
    --  the default behaviour by overriding the class closure of this signal.
    --  This is function is mostly meant to be used by widgets. Applications
    --  can use Gtk.Widget.Grab_Focus to manualy set the focus to a specific
    --  widget.
-   --  "child": a Gtk.Widget.Gtk_Widget, or NULL
+   --  "child": a Gtk.Widget.Gtk_Widget, or null
 
    function Get_Focus_Hadjustment
       (Container : not null access Gtk_Container_Record)

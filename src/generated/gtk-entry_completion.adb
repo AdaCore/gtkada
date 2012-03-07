@@ -47,10 +47,10 @@ package body Gtk.Entry_Completion is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be NULL to remove a previously set function.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 

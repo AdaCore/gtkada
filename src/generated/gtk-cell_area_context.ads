@@ -89,8 +89,8 @@ package Gtk.Cell_Area_Context is
    --  was recently reset with Gtk.Cell_Area_Context.Reset, the returned value
    --  will be -1.
    --  Since: gtk+ 3.0
-   --  "width": location to store the allocated width, or NULL
-   --  "height": location to store the allocated height, or NULL
+   --  "width": location to store the allocated width, or null
+   --  "height": location to store the allocated height, or null
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -102,8 +102,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_height": location to store the minimum height, or NULL
-   --  "natural_height": location to store the natural height, or NULL
+   --  "minimum_height": location to store the minimum height, or null
+   --  "natural_height": location to store the natural height, or null
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -117,8 +117,8 @@ package Gtk.Cell_Area_Context is
    --  values are -1.
    --  Since: gtk+ 3.0
    --  "width": a proposed width for allocation
-   --  "minimum_height": location to store the minimum height, or NULL
-   --  "natural_height": location to store the natural height, or NULL
+   --  "minimum_height": location to store the minimum height, or null
+   --  "natural_height": location to store the natural height, or null
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -130,8 +130,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_width": location to store the minimum width, or NULL
-   --  "natural_width": location to store the natural width, or NULL
+   --  "minimum_width": location to store the minimum width, or null
+   --  "natural_width": location to store the natural width, or null
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -145,8 +145,8 @@ package Gtk.Cell_Area_Context is
    --  values are -1.
    --  Since: gtk+ 3.0
    --  "height": a proposed height for allocation
-   --  "minimum_width": location to store the minimum width, or NULL
-   --  "natural_width": location to store the natural width, or NULL
+   --  "minimum_width": location to store the minimum width, or null
+   --  "natural_width": location to store the natural width, or null
 
    procedure Push_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;

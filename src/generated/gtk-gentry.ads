@@ -144,14 +144,14 @@ package Gtk.GEntry is
    procedure Set_Activates_Default
       (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean);
-   --  If Setting is TRUE, pressing Enter in the Entry will activate the
+   --  If Setting is True, pressing Enter in the Entry will activate the
    --  default widget for the window containing the entry. This usually means
    --  that the dialog box containing the entry will be closed, since the
    --  default widget is usually one of the dialog buttons.
-   --  (For experts: if Setting is TRUE, the entry calls
+   --  (For experts: if Setting is True, the entry calls
    --  gtk_window_activate_default on the window containing the entry, in the
    --  default handler for the Gtk.Widget.Gtk_Widget::activate signal.)
-   --  "setting": TRUE to activate window's default widget on Enter keypress
+   --  "setting": True to activate window's default widget on Enter keypress
 
    function Get_Alignment
       (The_Entry : not null access Gtk_Entry_Record) return Gfloat;
@@ -187,9 +187,9 @@ package Gtk.GEntry is
    --  Sets Completion to be the auxiliary completion object to use with
    --  Entry. All further configuration of the completion mechanism is done on
    --  Completion using the Gtk.Entry_Completion.Gtk_Entry_Completion API.
-   --  Completion is disabled if Completion is set to NULL.
+   --  Completion is disabled if Completion is set to null.
    --  Since: gtk+ 2.4
-   --  "completion": The Gtk.Entry_Completion.Gtk_Entry_Completion or NULL
+   --  "completion": The Gtk.Entry_Completion.Gtk_Entry_Completion or null
 
    function Get_Current_Icon_Drag_Source
       (The_Entry : not null access Gtk_Entry_Record) return Gint;
@@ -215,7 +215,7 @@ package Gtk.GEntry is
    --  system as the entry.
    --  Since: gtk+ 2.12
    --  "adjustment": an adjustment which should be adjusted when the cursor is
-   --  moved, or NULL
+   --  moved, or null
 
    function Get_Has_Frame
       (The_Entry : not null access Gtk_Entry_Record) return Boolean;
@@ -235,7 +235,7 @@ package Gtk.GEntry is
    --  Sets whether the icon is activatable.
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
-   --  "activatable": TRUE if the icon should be activatable
+   --  "activatable": True if the icon should be activatable
 
    procedure Get_Icon_Area
       (The_Entry : not null access Gtk_Entry_Record;
@@ -266,7 +266,7 @@ package Gtk.GEntry is
    function Get_Icon_Gicon
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.G_Icon.G_Icon;
-   --  Retrieves the GIcon used for the icon, or NULL if there is no icon or
+   --  Retrieves the GIcon used for the icon, or null if there is no icon or
    --  if the icon was set by some other method (e.g., by stock, pixbuf, or
    --  icon name).
    --  or if the icon is not a GIcon
@@ -276,7 +276,7 @@ package Gtk.GEntry is
    function Get_Icon_Name
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
-   --  Retrieves the icon name used for the icon, or NULL if there is no icon
+   --  Retrieves the icon name used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, stock or
    --  gicon).
    --  wasn't set from an icon name
@@ -310,7 +310,7 @@ package Gtk.GEntry is
    function Get_Icon_Stock
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
-   --  Retrieves the stock id used for the icon, or NULL if there is no icon
+   --  Retrieves the stock id used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, icon name
    --  or gicon).
    --  wasn't set from a stock id
@@ -336,12 +336,12 @@ package Gtk.GEntry is
    --  Sets Tooltip as the contents of the tooltip for the icon at the
    --  specified position. Tooltip is assumed to be marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>.
-   --  Use NULL for Tooltip to remove an existing tooltip.
+   --  Use null for Tooltip to remove an existing tooltip.
    --  See also Gtk.Widget.Set_Tooltip_Markup and
    --  gtk_enty_set_icon_tooltip_text.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
-   --  "tooltip": the contents of the tooltip for the icon, or NULL
+   --  "tooltip": the contents of the tooltip for the icon, or null
 
    function Get_Icon_Tooltip_Text
       (The_Entry : not null access Gtk_Entry_Record;
@@ -352,12 +352,12 @@ package Gtk.GEntry is
        Tooltip   : UTF8_String := "");
    --  Sets Tooltip as the contents of the tooltip for the icon at the
    --  specified position.
-   --  Use NULL for Tooltip to remove an existing tooltip.
+   --  Use null for Tooltip to remove an existing tooltip.
    --  See also Gtk.Widget.Set_Tooltip_Text and
    --  Gtk.GEntry.Set_Icon_Tooltip_Markup.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
-   --  "tooltip": the contents of the tooltip for the icon, or NULL
+   --  "tooltip": the contents of the tooltip for the icon, or null
 
    function Get_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record)
@@ -365,7 +365,7 @@ package Gtk.GEntry is
    procedure Set_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record;
        Border    : in out Gtk.Style.Gtk_Border);
-   --  Sets %entry's inner-border property to %border, or clears it if NULL is
+   --  Sets %entry's inner-border property to %border, or clears it if null is
    --  passed. The inner-border is the area around the entry's text, but inside
    --  its frame.
    --  If set, this property overrides the inner-border style property.
@@ -373,7 +373,7 @@ package Gtk.GEntry is
    --  in-place editing of some text in a canvas or list widget, where
    --  pixel-exact positioning of the entry is important.
    --  Since: gtk+ 2.10
-   --  "border": a Gtk.Style.Gtk_Border, or NULL
+   --  "border": a Gtk.Style.Gtk_Border, or null
 
    function Get_Invisible_Char
       (The_Entry : not null access Gtk_Entry_Record) return gunichar;
@@ -382,7 +382,7 @@ package Gtk.GEntry is
        Char      : gunichar);
    --  Sets the character to use in place of the actual text when
    --  Gtk.GEntry.Set_Visibility has been called to set text visibility to
-   --  FALSE. i.e. this is the character used in "password mode" to show the
+   --  False. i.e. this is the character used in "password mode" to show the
    --  user how many characters have been typed. By default, GTK+ picks the
    --  best invisible char available in the current font. If you set the
    --  invisible char to 0, then the user will get no feedback at all; there
@@ -421,8 +421,8 @@ package Gtk.GEntry is
    --  Gtk.GEntry.Layout_Index_To_Text_Index and
    --  Gtk.GEntry.Text_Index_To_Layout_Index are needed to convert byte indices
    --  in the layout to byte indices in the entry contents.
-   --  "x": location to store X offset of layout, or NULL
-   --  "y": location to store Y offset of layout, or NULL
+   --  "x": location to store X offset of layout, or null
+   --  "y": location to store Y offset of layout, or null
 
    function Get_Max_Length
       (The_Entry : not null access Gtk_Entry_Record) return Gint;
@@ -462,7 +462,7 @@ package Gtk.GEntry is
    --  by delaying the initial focus setting until the first key event arrives.
    --  Since: gtk+ 3.2
    --  "text": a string to be displayed when Entry is empty an unfocused, or
-   --  NULL
+   --  null
 
    function Get_Progress_Fraction
       (The_Entry : not null access Gtk_Entry_Record) return Gdouble;
@@ -518,12 +518,12 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Visible   : Boolean);
    --  Sets whether the contents of the entry are visible or not. When
-   --  visibility is set to FALSE, characters are displayed as the invisible
+   --  visibility is set to False, characters are displayed as the invisible
    --  char, and will also appear that way when the text in the entry widget is
    --  copied elsewhere.
    --  By default, GTK+ picks the best invisible character available in the
    --  current font, but it can be changed with Gtk.GEntry.Set_Invisible_Char.
-   --  "visible": TRUE if the contents of the entry are displayed as plaintext
+   --  "visible": True if the contents of the entry are displayed as plaintext
 
    function Get_Width_Chars
       (The_Entry : not null access Gtk_Entry_Record) return Gint;
@@ -540,7 +540,7 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Event     : Gdk.Event.Gdk_Event_Key) return Boolean;
    --  Allow the Gtk.GEntry.Gtk_Entry input method to internally handle key
-   --  press and release events. If this function returns TRUE, then no further
+   --  press and release events. If this function returns True, then no further
    --  processing should be done for this key event. See
    --  gtk_im_context_filter_keypress.
    --  Note that you are expected to call this function from your handler when
@@ -603,10 +603,10 @@ package Gtk.GEntry is
    --  Sets the icon shown in the entry at the specified position from the
    --  current icon theme. If the icon isn't known, a "broken image" icon will
    --  be displayed instead.
-   --  If Icon is NULL, no icon will be shown in the specified position.
+   --  If Icon is null, no icon will be shown in the specified position.
    --  Since: gtk+ 2.16
    --  "icon_pos": The position at which to set the icon
-   --  "icon": The icon to set, or NULL
+   --  "icon": The icon to set, or null
 
    procedure Set_Icon_From_Icon_Name
       (The_Entry : not null access Gtk_Entry_Record;
@@ -616,20 +616,20 @@ package Gtk.GEntry is
    --  current icon theme.
    --  If the icon name isn't known, a "broken image" icon will be displayed
    --  instead.
-   --  If Icon_Name is NULL, no icon will be shown in the specified position.
+   --  If Icon_Name is null, no icon will be shown in the specified position.
    --  Since: gtk+ 2.16
    --  "icon_pos": The position at which to set the icon
-   --  "icon_name": An icon name, or NULL
+   --  "icon_name": An icon name, or null
 
    procedure Set_Icon_From_Pixbuf
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Sets the icon shown in the specified position using a pixbuf.
-   --  If Pixbuf is NULL, no icon will be shown in the specified position.
+   --  If Pixbuf is null, no icon will be shown in the specified position.
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
-   --  "pixbuf": A Gdk.Pixbuf.Gdk_Pixbuf, or NULL
+   --  "pixbuf": A Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Set_Icon_From_Stock
       (The_Entry : not null access Gtk_Entry_Record;
@@ -637,10 +637,10 @@ package Gtk.GEntry is
        Stock_Id  : UTF8_String := "");
    --  Sets the icon shown in the entry at the specified position from a stock
    --  image.
-   --  If Stock_Id is NULL, no icon will be shown in the specified position.
+   --  If Stock_Id is null, no icon will be shown in the specified position.
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
-   --  "stock_id": The name of the stock item, or NULL
+   --  "stock_id": The name of the stock item, or null
 
    function Text_Index_To_Layout_Index
       (The_Entry  : not null access Gtk_Entry_Record;
@@ -817,7 +817,7 @@ package Gtk.GEntry is
    --  Which IM (input method) module should be used for this entry. See
    --  Gtk.Imcontext.Gtk_Imcontext.
    --
-   --  Setting this to a non-NULL value overrides the system-wide IM module
+   --  Setting this to a non-null value overrides the system-wide IM module
    --  setting. See the GtkSettings Gtk.Settings.Gtk_Settings:gtk-im-module
    --  property.
    --
@@ -1011,7 +1011,7 @@ package Gtk.GEntry is
    --  Type: Gtk.Enums.Gtk_Shadow_Type
    --  Flags: read-write
    --  Which kind of shadow to draw around the entry when
-   --  Gtk.GEntry.Gtk_Entry:has-frame is set to TRUE.
+   --  Gtk.GEntry.Gtk_Entry:has-frame is set to True.
    --
    --  Name: Text_Property
    --  Type: UTF8_String
@@ -1025,7 +1025,7 @@ package Gtk.GEntry is
    --  Name: Truncate_Multiline_Property
    --  Type: Boolean
    --  Flags: read-write
-   --  When TRUE, pasted multi-line text is truncated to the first line.
+   --  When True, pasted multi-line text is truncated to the first line.
    --
    --  Name: Visibility_Property
    --  Type: Boolean
@@ -1180,7 +1180,7 @@ package Gtk.GEntry is
    --        Extend_Selection : Boolean);
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
-   --    --  "extend_selection": TRUE if the move should extend the selection
+   --    --  "extend_selection": True if the move should extend the selection
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible

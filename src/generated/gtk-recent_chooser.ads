@@ -144,10 +144,10 @@ package Gtk.Recent_Chooser is
        Local_Only : Boolean);
    --  Sets whether only local resources, that is resources using the file://
    --  URI scheme, should be shown in the recently used resources selector. If
-   --  Local_Only is TRUE (the default) then the shown resources are guaranteed
+   --  Local_Only is True (the default) then the shown resources are guaranteed
    --  to be accessible through the operating system native file system.
    --  Since: gtk+ 2.10
-   --  "local_only": TRUE if only local files can be shown
+   --  "local_only": True if only local files can be shown
 
    function Get_Select_Multiple
       (Chooser : Gtk_Recent_Chooser) return Boolean;
@@ -156,7 +156,7 @@ package Gtk.Recent_Chooser is
        Select_Multiple : Boolean);
    --  Sets whether Chooser can select multiple items.
    --  Since: gtk+ 2.10
-   --  "select_multiple": TRUE if Chooser can select more than one item
+   --  "select_multiple": True if Chooser can select more than one item
 
    function Get_Show_Icons (Chooser : Gtk_Recent_Chooser) return Boolean;
    procedure Set_Show_Icons
@@ -182,7 +182,7 @@ package Gtk.Recent_Chooser is
        Show_Private : Boolean);
    --  Whether to show recently used resources marked registered as private.
    --  Since: gtk+ 2.10
-   --  "show_private": TRUE to show private items, FALSE otherwise
+   --  "show_private": True to show private items, False otherwise
 
    function Get_Show_Tips (Chooser : Gtk_Recent_Chooser) return Boolean;
    procedure Set_Show_Tips
@@ -192,7 +192,7 @@ package Gtk.Recent_Chooser is
    --  recently used resource in a Gtk.Recent_Chooser.Gtk_Recent_Chooser
    --  widget.
    --  Since: gtk+ 2.10
-   --  "show_tips": TRUE if tooltips should be shown
+   --  "show_tips": True if tooltips should be shown
 
    function Get_Sort_Type
       (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type;
@@ -250,7 +250,7 @@ package Gtk.Recent_Chooser is
    --  comes after the second.
    --  Since: gtk+ 2.10
    --  "sort_func": the comparison function
-   --  "data_destroy": destroy notifier for Sort_Data, or NULL
+   --  "data_destroy": destroy notifier for Sort_Data, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -277,8 +277,8 @@ package Gtk.Recent_Chooser is
       --  first item comes after the second.
       --  Since: gtk+ 2.10
       --  "sort_func": the comparison function
-      --  "sort_data": user data to pass to Sort_Func, or NULL
-      --  "data_destroy": destroy notifier for Sort_Data, or NULL
+      --  "sort_data": user data to pass to Sort_Func, or null
+      --  "data_destroy": destroy notifier for Sort_Data, or null
 
    end Set_Sort_Func_User_Data;
 
@@ -342,7 +342,7 @@ package Gtk.Recent_Chooser is
    --  Flags: read-write
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display the
    --  recently used resources even if not present anymore. Setting this to
-   --  FALSE will perform a potentially expensive check on every local resource
+   --  False will perform a potentially expensive check on every local resource
    --  (every remote resource will always be displayed).
    --
    --  Name: Show_Private_Property

@@ -178,15 +178,15 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Active_Id : UTF8_String := "") return Boolean;
    --  Changes the active row of Combo_Box to the one that has an ID equal to
-   --  Active_Id, or unsets the active row if Active_Id is NULL. Rows having a
-   --  NULL ID string cannot be made active by this function.
+   --  Active_Id, or unsets the active row if Active_Id is null. Rows having a
+   --  null ID string cannot be made active by this function.
    --  If the Gtk.Combo_Box.Gtk_Combo_Box:id-column property of Combo_Box is
    --  unset or if no row has the given ID then the function does nothing and
-   --  returns FALSE.
+   --  returns False.
    --  Active_Id was given to unset the active row, the function always
-   --  returns TRUE.
+   --  returns True.
    --  Since: gtk+ 3.0
-   --  "active_id": the ID of the row to select, or NULL
+   --  "active_id": the ID of the row to select, or null
 
    function Get_Add_Tearoffs
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
@@ -195,7 +195,7 @@ package Gtk.Combo_Box is
        Add_Tearoffs : Boolean);
    --  Sets whether the popup menu should have a tearoff menu item.
    --  Since: gtk+ 2.6
-   --  "add_tearoffs": TRUE to add tearoff menu items
+   --  "add_tearoffs": True to add tearoff menu items
 
    function Get_Button_Sensitivity
       (Combo_Box : not null access Gtk_Combo_Box_Record)
@@ -230,7 +230,7 @@ package Gtk.Combo_Box is
    --  be Text_Column. The column Text_Column in the model of Combo_Box must be
    --  of type G_TYPE_STRING.
    --  This is only relevant if Combo_Box has been created with
-   --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry as TRUE.
+   --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry as True.
    --  Since: gtk+ 2.24
    --  "text_column": A column in Model to get the strings from for the
    --  internal entry
@@ -271,7 +271,7 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
    --  Sets the model used by Combo_Box to be Model. Will unset a previously
-   --  set model (if applicable). If model is NULL, then it will unset the
+   --  set model (if applicable). If model is null, then it will unset the
    --  model.
    --  Note that this function does not clear the cell renderers, you have to
    --  call Gtk.Entry_Completion.Clear yourself if you need to set up different
@@ -296,7 +296,7 @@ package Gtk.Combo_Box is
        Func      : Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func);
    --  Sets the row separator function, which is used to determine whether a
    --  row should be drawn as a separator. If the row separator function is
-   --  NULL, no separators are drawn. This is the default value.
+   --  null, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
    --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
 
@@ -347,9 +347,9 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Sets the current active item to be the one referenced by Iter, or
-   --  unsets the active item if Iter is NULL.
+   --  unsets the active item if Iter is null.
    --  Since: gtk+ 2.4
-   --  "iter": The Gtk.Tree_Iter.Gtk_Tree_Iter, or NULL
+   --  "iter": The Gtk.Tree_Iter.Gtk_Tree_Iter, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -374,10 +374,10 @@ package Gtk.Combo_Box is
           Data      : User_Data_Type);
       --  Sets the row separator function, which is used to determine whether
       --  a row should be drawn as a separator. If the row separator function
-      --  is NULL, no separators are drawn. This is the default value.
+      --  is null, no separators are drawn. This is the default value.
       --  Since: gtk+ 2.6
       --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-      --  "data": user data to pass to Func, or NULL
+      --  "data": user data to pass to Func, or null
 
    end Set_Row_Separator_Func_User_Data;
 
@@ -389,10 +389,10 @@ package Gtk.Combo_Box is
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
-   --  Func may be NULL to remove a previously set function.
+   --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -423,10 +423,10 @@ package Gtk.Combo_Box is
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
-      --  Func may be NULL to remove a previously set function.
+      --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or NULL
+      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;
@@ -589,7 +589,7 @@ package Gtk.Combo_Box is
    --  Flags: read-write
    --  The column in the combo box's model to associate with strings from the
    --  entry if the combo was created with
-   --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry = TRUE.
+   --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry = True.
    --
    --  Name: Focus_On_Click_Property
    --  Type: Boolean

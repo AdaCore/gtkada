@@ -29,7 +29,7 @@ pragma Ada_05;
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. The user can then use that
 --  dialog to change the file associated with that button. This widget does not
 --  support setting the Gtk.File_Chooser.Gtk_File_Chooser:select-multiple
---  property to TRUE.
+--  property to True.
 --
 --  == Create a button to let the user select a file in /etc ==
 --
