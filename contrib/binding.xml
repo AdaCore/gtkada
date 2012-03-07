@@ -2639,6 +2639,10 @@ __PRE__
      <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
    </package>
 
+   <package id="Gtk.Menu_Bar">
+     <parameter name="self" ada="Menu_Bar"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

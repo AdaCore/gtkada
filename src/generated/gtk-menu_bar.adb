@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2012, AdaCore                     --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,19 +21,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with System;
-with Gtk.Enums;   use Gtk.Enums;
-with Glib.Type_Conversion_Hooks;
-pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+pragma Ada_05;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Menu_Bar is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Menu_Bar_Record);
-   pragma Warnings (Off, Type_Conversion);
-   --  This package is used to implement a minimal automated type conversion
-   --  without having to drag the whole Gtk.Type_Conversion package for the
-   --  most common widgets.
+   pragma Unreferenced (Type_Conversion);
 
    -------------
    -- Gtk_New --
@@ -50,10 +46,11 @@ package body Gtk.Menu_Bar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class) is
+   procedure Initialize
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
-
    begin
       Set_Object (Menu_Bar, Internal);
    end Initialize;
@@ -63,13 +60,14 @@ package body Gtk.Menu_Bar is
    ------------------------------
 
    function Get_Child_Pack_Direction
-     (Menubar : access Gtk_Menu_Bar_Record)
-      return Gtk_Pack_Direction
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record)
+       return Gtk.Enums.Gtk_Pack_Direction
    is
-      function Internal (Menubar : System.Address) return Gtk_Pack_Direction;
+      function Internal
+         (Menu_Bar : System.Address) return Gtk.Enums.Gtk_Pack_Direction;
       pragma Import (C, Internal, "gtk_menu_bar_get_child_pack_direction");
    begin
-      return Internal (Get_Object (Menubar));
+      return Internal (Get_Object (Menu_Bar));
    end Get_Child_Pack_Direction;
 
    ------------------------
@@ -77,15 +75,14 @@ package body Gtk.Menu_Bar is
    ------------------------
 
    function Get_Pack_Direction
-     (Menubar : access Gtk_Menu_Bar_Record)
-      return Gtk_Pack_Direction
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record)
+       return Gtk.Enums.Gtk_Pack_Direction
    is
       function Internal
-        (Menubar : System.Address)
-         return Gtk_Pack_Direction;
+         (Menu_Bar : System.Address) return Gtk.Enums.Gtk_Pack_Direction;
       pragma Import (C, Internal, "gtk_menu_bar_get_pack_direction");
    begin
-      return Internal (Get_Object (Menubar));
+      return Internal (Get_Object (Menu_Bar));
    end Get_Pack_Direction;
 
    ------------------------------
@@ -93,15 +90,15 @@ package body Gtk.Menu_Bar is
    ------------------------------
 
    procedure Set_Child_Pack_Direction
-     (Menubar        : access Gtk_Menu_Bar_Record;
-      Child_Pack_Dir : Gtk_Pack_Direction)
+      (Menu_Bar       : not null access Gtk_Menu_Bar_Record;
+       Child_Pack_Dir : Gtk.Enums.Gtk_Pack_Direction)
    is
       procedure Internal
-        (Menubar        : System.Address;
-         Child_Pack_Dir : Gtk_Pack_Direction);
+         (Menu_Bar       : System.Address;
+          Child_Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
       pragma Import (C, Internal, "gtk_menu_bar_set_child_pack_direction");
    begin
-      Internal (Get_Object (Menubar), Child_Pack_Dir);
+      Internal (Get_Object (Menu_Bar), Child_Pack_Dir);
    end Set_Child_Pack_Direction;
 
    ------------------------
@@ -109,15 +106,15 @@ package body Gtk.Menu_Bar is
    ------------------------
 
    procedure Set_Pack_Direction
-     (Menubar  : access Gtk_Menu_Bar_Record;
-      Pack_Dir : Gtk_Pack_Direction)
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record;
+       Pack_Dir : Gtk.Enums.Gtk_Pack_Direction)
    is
       procedure Internal
-        (Menubar  : System.Address;
-         Pack_Dir : Gtk_Pack_Direction);
+         (Menu_Bar : System.Address;
+          Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
       pragma Import (C, Internal, "gtk_menu_bar_set_pack_direction");
    begin
-      Internal (Get_Object (Menubar), Pack_Dir);
+      Internal (Get_Object (Menu_Bar), Pack_Dir);
    end Set_Pack_Direction;
 
 end Gtk.Menu_Bar;
