@@ -6974,8 +6974,8 @@ package body Gtkada.MDI is
 
             if Ref_Window /= null then
                MDI.Dnd_Target_Window.Resize
-                  (Guint (MDI.Dnd_Rectangle.Width),
-                   Guint (MDI.Dnd_Rectangle.Height));
+                  (MDI.Dnd_Rectangle.Width,
+                   MDI.Dnd_Rectangle.Height);
 
                Get_Origin (Ref_Window, Root_X, Root_Y, Success);
 

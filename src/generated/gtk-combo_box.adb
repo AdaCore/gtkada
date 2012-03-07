@@ -143,9 +143,9 @@ package body Gtk.Combo_Box is
       return Boolean'Pos (Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter));
    end Internal_Gtk_Tree_View_Row_Separator_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Combo_Box is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Combo_Box_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Combo_Box);
 
    -------------
    -- Gtk_New --

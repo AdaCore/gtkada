@@ -50,9 +50,9 @@ package body Gdk.Device is
       Window :=  Tmp_Return;
    end Get_Window_At_Position;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gdk_Device is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Device_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gdk_Device);
 
    ---------------------------
    -- Get_Associated_Device --

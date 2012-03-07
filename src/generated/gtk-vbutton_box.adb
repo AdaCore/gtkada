@@ -28,9 +28,9 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Vbutton_Box is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Vbutton_Box is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Vbutton_Box_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Vbutton_Box);
 
    -------------
    -- Gtk_New --

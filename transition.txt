@@ -775,6 +775,9 @@ Group_Add_Window was renamed to Add_Window.
 Group_Remove_Window was renamed to Remove_Window.
 Group_List_Windows was renames to List_Windows.
 
+Initialize now has the same default value for its The_Type parameter
+as Gtk_New.
+
 Gnome.App_Bar
 =============
 

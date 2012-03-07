@@ -78,9 +78,9 @@ package body Gtk.Color_Selection is
       end if;
    end Palette_To_String;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Color_Selection is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Color_Selection_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Color_Selection);
 
    -------------
    -- Gtk_New --

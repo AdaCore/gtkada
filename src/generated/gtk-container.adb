@@ -81,9 +81,9 @@ package body Gtk.Container is
       Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)));
    end Internal_Gtk_Callback;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Container is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Container_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Container);
 
    ---------
    -- Add --

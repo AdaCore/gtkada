@@ -135,8 +135,8 @@ binding = ("GdkDevice",
            "GtkViewport",
            "GtkVolumeButton",
            "GtkWidget",
-           #"GtkWindow",
-           #"GtkWindowGroup",
+           "GtkWindow",
+           "GtkWindowGroup",
           )
 
 # Handling of functions with user data. The names below are the likely names

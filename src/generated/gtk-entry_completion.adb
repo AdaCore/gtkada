@@ -127,9 +127,9 @@ package body Gtk.Entry_Completion is
       return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Interfaces.C.Strings.Value (Key), Iter));
    end Internal_Gtk_Entry_Completion_Match_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Entry_Completion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Entry_Completion_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Entry_Completion);
 
    -------------
    -- Gtk_New --

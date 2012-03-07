@@ -455,7 +455,7 @@ package Gtk.Enums is
    --  A Gtk.Window.Gtk_Window can be one of these types. Most things you'd
    --  consider a "window" should have type GTK_WINDOW_TOPLEVEL; windows with
    --  this type are managed by the window manager and have a frame by default
-   --  (call gtk_window_set_decorated to toggle the frame). Windows with type
+   --  (call Gtk.Window.Set_Decorated to toggle the frame). Windows with type
    --  GTK_WINDOW_POPUP are ignored by the window manager; window manager
    --  keybindings won't work on them, the window manager won't decorate the
    --  window with a frame, many GTK+ features that rely on the window manager
@@ -464,7 +464,7 @@ package Gtk.Enums is
    --  or tooltips that you normally don't think of as windows per se. Nearly
    --  all windows should be GTK_WINDOW_TOPLEVEL. In particular, do not use
    --  GTK_WINDOW_POPUP just to turn off the window borders; use
-   --  gtk_window_set_decorated for that.
+   --  Gtk.Window.Set_Decorated for that.
 
    type Gtk_Wrap_Mode is (
       Wrap_None,

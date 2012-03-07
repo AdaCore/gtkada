@@ -675,7 +675,7 @@ package body Main_Windows is
    procedure Gtk_New (Win : out Main_Window) is
    begin
       Win := new Main_Window_Record;
-      Initialize (Win);
+      Main_Windows.Initialize (Win);
    end Gtk_New;
 
    -----------------

@@ -29,9 +29,9 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Color_Selection_Dialog is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Color_Selection_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Color_Selection_Dialog_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Color_Selection_Dialog);
 
    -------------
    -- Gtk_New --

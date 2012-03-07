@@ -65,9 +65,9 @@ package body Gtk.Accel_Group is
       return Boolean'Pos (Func (Key, Closure));
    end Internal_Gtk_Accel_Group_Find_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Accel_Group is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Accel_Group_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Accel_Group);
 
    -------------
    -- Gtk_New --

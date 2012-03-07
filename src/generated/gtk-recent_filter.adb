@@ -84,9 +84,9 @@ package body Gtk.Recent_Filter is
       return Boolean'Pos (Func (Filter_Info));
    end Internal_Gtk_Recent_Filter_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Recent_Filter is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Recent_Filter_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Recent_Filter);
 
    -------------
    -- Gtk_New --

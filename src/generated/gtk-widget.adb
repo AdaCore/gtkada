@@ -65,9 +65,9 @@ package body Gtk.Widget is
       return To_Requisition (Glib.Values.Get_Address (Value));
    end Get_Requisition;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Widget is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Widget_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Widget);
 
    --------------
    -- Activate --

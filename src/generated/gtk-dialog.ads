@@ -44,7 +44,7 @@ pragma Ada_05;
 --  Gtk.Dialog.Get_Action_Area, as can be seen from the example below.
 --
 --  A 'modal' dialog (that is, one which freezes the rest of the application
---  from user input), can be created by calling gtk_window_set_modal on the
+--  from user input), can be created by calling Gtk.Window.Set_Modal on the
 --  dialog. Use the GTK_WINDOW macro to cast the widget returned from
 --  Gtk.Dialog.Gtk_New into a Gtk.Window.Gtk_Window. When using
 --  gtk_dialog_new_with_buttons you can also pass the GTK_DIALOG_MODAL flag to

@@ -66,11 +66,11 @@ pragma Ada_05;
 --  contextual to that width using Gtk.Widget.Get_Preferred_Height_For_Width,
 --  which will also be a highly recursive operation. The minimum height for the
 --  minimum width is normally used to set the minimum size constraint on the
---  toplevel (unless gtk_window_set_geometry_hints is explicitly used instead).
+--  toplevel (unless Gtk.Window.Set_Geometry_Hints is explicitly used instead).
 --
 --  After the toplevel window has initially requested its size in both
 --  dimensions it can go on to allocate itself a reasonable size (or a size
---  previously specified with gtk_window_set_default_size). During the
+--  previously specified with Gtk.Window.Set_Default_Size). During the
 --  recursive allocation process it's important to note that request cycles
 --  will be recursively executed while container widgets allocate their
 --  children. Each container widget, once allocated a size, will go on to first
@@ -373,7 +373,7 @@ package Gtk.Widget is
    --  Installs an accelerator for this Widget in Accel_Group that causes
    --  Accel_Signal to be emitted if the accelerator is activated. The
    --  Accel_Group needs to be added to the widget's toplevel via
-   --  gtk_window_add_accel_group, and the signal must be of type G_RUN_ACTION.
+   --  Gtk.Window.Add_Accel_Group, and the signal must be of type G_RUN_ACTION.
    --  Accelerators added through this function are not user changeable during
    --  runtime. If you want to support accelerators that can be changed by the
    --  user, use Gtk.Accel_Map.Add_Entry and Gtk.Widget.Set_Accel_Path or
@@ -1659,7 +1659,7 @@ package Gtk.Widget is
    --  the global input focus. This is a convenience function for use in ::draw
    --  handlers that takes into account whether focus indication should
    --  currently be shown in the toplevel window of Widget. See
-   --  gtk_window_get_focus_visible for more information about focus
+   --  Gtk.Window.Get_Focus_Visible for more information about focus
    --  indication.
    --  To find out if the widget has the global input focus, use
    --  Gtk.Widget.Has_Focus.

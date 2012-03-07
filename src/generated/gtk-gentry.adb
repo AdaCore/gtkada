@@ -39,9 +39,9 @@ package body Gtk.GEntry is
         (Editable, New_Text & ASCII.NUL, New_Text'Length, Position);
    end Insert_Text;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Entry is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Entry_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Entry);
 
    -------------
    -- Gtk_New --

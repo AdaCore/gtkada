@@ -28,9 +28,9 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gdk.Drag_Contexts is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Drag_Context is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Drag_Context_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Drag_Context);
 
    -----------------
    -- Get_Actions --

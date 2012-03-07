@@ -167,7 +167,7 @@ package Gtk.Menu is
        Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Set the Gtk.Accel_Group.Gtk_Accel_Group which holds global accelerators
    --  for the menu. This accelerator group needs to also be added to all
-   --  windows that this menu is being used in with gtk_window_add_accel_group,
+   --  windows that this menu is being used in with Gtk.Window.Add_Accel_Group,
    --  in order for those windows to support all the accelerators contained in
    --  this group.
    --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to be associated

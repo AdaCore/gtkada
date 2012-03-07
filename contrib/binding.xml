@@ -2734,6 +2734,10 @@ __PRE__
      <method id="gtk_window_mnemonic_activate">
        <parameter name="keyval" ctype="GdkKeyType"/>
      </method>
+     <method id="gtk_window_get_resize_grip_area" return_as_param="retrieved"/>
+     <method id="gtk_window_set_modal">
+       <parameter name="modal" default="true"/>
+     </method>
 
      <method id="gtk_window_get_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
      <method id="gtk_window_set_application" bind="False"/> <!-- Missing binding for Gtk.Application -->

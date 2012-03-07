@@ -115,9 +115,9 @@ package body Gtk.Recent_Manager is
       return Boolean'Val (Result);
    end Add_Full;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Recent_Manager is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Recent_Manager_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Recent_Manager);
 
    -------------
    -- Gtk_New --

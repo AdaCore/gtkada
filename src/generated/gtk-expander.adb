@@ -29,9 +29,9 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Expander is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Expander is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Expander_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Expander);
 
    -------------
    -- Gtk_New --

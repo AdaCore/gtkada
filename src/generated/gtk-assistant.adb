@@ -71,9 +71,9 @@ package body Gtk.Assistant is
       return Func (Current_Page);
    end Internal_Gtk_Assistant_Page_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Assistant is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Assistant_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Assistant);
 
    -------------
    -- Gtk_New --

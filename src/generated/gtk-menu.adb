@@ -149,9 +149,9 @@ package body Gtk.Menu is
       Push_In := Boolean'Pos (Tmp_Push_In);
    end Internal_Gtk_Menu_Position_Func;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Menu is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Menu_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Menu);
 
    -------------
    -- Gtk_New --

@@ -30,9 +30,9 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Status_Icon is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Status_Icon is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Status_Icon_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Status_Icon);
 
    -------------
    -- Gtk_New --

@@ -149,7 +149,7 @@ package Gtk.GEntry is
    --  that the dialog box containing the entry will be closed, since the
    --  default widget is usually one of the dialog buttons.
    --  (For experts: if Setting is True, the entry calls
-   --  gtk_window_activate_default on the window containing the entry, in the
+   --  Gtk.Window.Activate_Default on the window containing the entry, in the
    --  default handler for the Gtk.Widget.Gtk_Widget::activate signal.)
    --  "setting": True to activate window's default widget on Enter keypress
 

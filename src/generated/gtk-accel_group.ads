@@ -25,7 +25,7 @@ pragma Ada_05;
 --  <description>
 --  A Gtk.Accel_Group.Gtk_Accel_Group represents a group of keyboard
 --  accelerators, typically attached to a toplevel Gtk.Window.Gtk_Window (with
---  gtk_window_add_accel_group). Usually you won't need to create a
+--  Gtk.Window.Add_Accel_Group). Usually you won't need to create a
 --  Gtk.Accel_Group.Gtk_Accel_Group directly; instead, when using
 --  Gtk.Uimanager.Gtk_Uimanager, GTK+ automatically sets up the accelerators
 --  for your menus in the ui manager's Gtk.Accel_Group.Gtk_Accel_Group.

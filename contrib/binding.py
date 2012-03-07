@@ -574,7 +574,15 @@ class GIRClass(object):
         # Register naming exceptions for this class
 
         n = naming.case(self.ctype)
-        pkg = "%s.%s" % (naming.protect_keywords(n.replace("_", ".", 1)), n)
+
+        into = self.gtkpkg.into()
+        if into:
+            into = naming.case(into)
+            pkg = naming.protect_keywords(into.replace("_", ".", 1))
+        else:
+            pkg = naming.protect_keywords(n.replace("_", ".", 1))
+
+        pkg = "%s.%s" % (pkg, n)
         naming.add_girname(girname=n, ctype=self.ctype)
 
         if has_toplevel_type:
@@ -1085,9 +1093,9 @@ class GIRClass(object):
 
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False);
                 section.add_code("""
-package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+package Type_Conversion_%(typename)s is new Glib.Type_Conversion_Hooks.Hook_Registrator
    (Get_Type'Access, %(typename)s_Record);
-pragma Unreferenced (Type_Conversion);""" % self._subst, specs=False)
+pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, specs=False)
 
     def _get_c_type(self, node):
         t = node.find(ntype)
@@ -1543,8 +1551,8 @@ See Glib.Properties for more information on properties)""")
             cname=parent and parent.get(ctype_qname)).ada
 
         if parent and parent.rfind(".") != -1:
-            self._subst["parent_pkg"] = parent[:parent.rfind(".")]
-            self._subst["parent"] = parent[parent.rfind(".") + 1:]
+            self._subst["parent_pkg"] = package_name(parent)
+            self._subst["parent"] = base_name(parent)
         else:
             self._subst["parent_pkg"] = None
             self._subst["parent"] = parent
