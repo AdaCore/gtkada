@@ -2673,7 +2673,6 @@ __PRE__
    </package>
 
    <package id="Gdk.RGBA">
-     <record ctype="GdkRGBA"/>
      <method id="gdk_rgba_equal">
        <parameter name="p2" ctype="GdkRGBA*"/>
      </method>

@@ -135,7 +135,7 @@ Where the package node is defined as follows:
     </package>
 """
 
-from xml.etree.cElementTree import parse, QName, tostring
+from xml.etree.cElementTree import parse, QName, tostring, SubElement
 from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum
 
 
@@ -216,6 +216,12 @@ class GtkAdaPackage(object):
                                True))
 
         return result
+
+    def add_record_type(self, ctype):
+        """Add explicit record to bind"""
+
+        if self.node:
+            SubElement(self.node, "record", {"ctype": ctype})
 
     def records(self):
         """Returns the list of record types, as a list of tuples:

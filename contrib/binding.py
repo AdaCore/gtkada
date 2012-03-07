@@ -1597,7 +1597,8 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
             if self.node.tag == nrecord \
                  and self.node.findall(nfield):  # has fields => public record
 
-                pass
+                # Automatically add the record to bind
+                self.gtkpkg.add_record_type(self.ctype)
 
             else:
                 section.add_code("""
