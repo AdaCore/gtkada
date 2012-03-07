@@ -2818,6 +2818,10 @@ __PRE__
      <parameter name="self" ada="Widget"/>
    </package>
 
+   <package id="GtkToggleAction">
+     <parameter name="self" ada="Action"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
