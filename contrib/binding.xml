@@ -2664,6 +2664,14 @@ __PRE__
      <method id="gtk_image_menu_item_new_with_label" ada="Gtk_New"/>
    </package>
 
+   <package id="Gtk.Check_Menu_Item">
+     <parameter name="self" ada="Check_Menu_Item"/>
+      <method id="gtk_check_menu_item_new" bind="False"/>
+      <method id="gtk_check_menu_item_new_with_label" ada="Gtk_New" >
+         <parameter name="label" default='""' allow-none="1"/>
+      </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

@@ -208,6 +208,9 @@ Gtk.Button_Box
 Set_Child_Size was removed. Equivalent behavior can only be done by
 changing the theme properties child-min-width and child-min-height.
 
+Gtk.Check_Menu_Item
+===================
+
 Gtk.Cell_Layout
 ===============
 
