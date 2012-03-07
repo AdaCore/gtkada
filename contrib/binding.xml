@@ -2779,6 +2779,41 @@ __PRE__
      <parameter name="self" ada="Menu_Item"/>
    </package>
 
+   <package id="GtkRecentChooserDialog">
+     <parameter name="self" ada="Widget"/>
+     <extra>
+       <gir:constructor c:identifier="ada_gtk_recent_chooser_dialog_new" name="new">
+         <gir:return-value>
+           <gir:type name="GtkWidget" c:type="GtkWidget*"/>
+         </gir:return-value>
+         <gir:parameters>
+           <gir:parameter name="title" allow-none="1">
+             <gir:type name="utf8" c:type="gchar*"/>
+           </gir:parameter>
+           <gir:parameter name="parent" allow-none="1">
+             <gir:type name="Window" c:type="GtkWindow*"/>
+           </gir:parameter>
+         </gir:parameters>
+       </gir:constructor>
+       <gir:constructor c:identifier="ada_gtk_recent_chooser_dialog_new_for_manager" name="new_for_manager">
+         <gir:return-value>
+           <gir:type name="GtkWidget" c:type="GtkWidget*"/>
+         </gir:return-value>
+         <gir:parameters>
+           <gir:parameter name="title" allow-none="1">
+             <gir:type name="utf8" c:type="gchar*"/>
+           </gir:parameter>
+           <gir:parameter name="parent" allow-none="1">
+             <gir:type name="Window" c:type="GtkWindow*"/>
+           </gir:parameter>
+           <gir:parameter name="manager" allow-none="1">
+             <gir:type name="RecentManager" c:type="GtkRecentManager*"/>
+           </gir:parameter>
+         </gir:parameters>
+       </gir:constructor>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
