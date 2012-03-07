@@ -1094,6 +1094,31 @@ package Gtk.Window is
    --  Removes a window from a Gtk.Window.Gtk_Window_Group.
    --  "window": the Gtk.Window.Gtk_Window to remove
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Window_Record, Gtk_Window);
+   function "+"
+     (Widget : access Gtk_Window_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Window
+   renames Implements_Buildable.To_Object;
+
    ---------------
    -- Functions --
    ---------------
@@ -1149,31 +1174,6 @@ package Gtk.Window is
    --  failure if Err is null.
    --  Since: gtk+ 2.2
    --  "filename": location of icon file
-
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Window_Record, Gtk_Window);
-   function "+"
-     (Widget : access Gtk_Window_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Window
-   renames Implements_Buildable.To_Object;
 
    ----------------
    -- Properties --

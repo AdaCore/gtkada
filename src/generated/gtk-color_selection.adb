@@ -354,19 +354,6 @@ package body Gtk.Color_Selection is
       Internal (Get_Object (Colorsel), Rgba);
    end Set_Previous_Rgba;
 
-   -----------------------------------------
-   -- Set_Change_Palette_With_Screen_Hook --
-   -----------------------------------------
-
-   procedure Set_Change_Palette_With_Screen_Hook
-      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
-   is
-      procedure Internal (Func : System.Address);
-      pragma Import (C, Internal, "gtk_color_selection_set_change_palette_with_screen_hook");
-   begin
-      Internal (Func'Address);
-   end Set_Change_Palette_With_Screen_Hook;
-
    ---------------------
    -- Get_Orientation --
    ---------------------
@@ -397,5 +384,18 @@ package body Gtk.Color_Selection is
    begin
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
+
+   -----------------------------------------
+   -- Set_Change_Palette_With_Screen_Hook --
+   -----------------------------------------
+
+   procedure Set_Change_Palette_With_Screen_Hook
+      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
+   is
+      procedure Internal (Func : System.Address);
+      pragma Import (C, Internal, "gtk_color_selection_set_change_palette_with_screen_hook");
+   begin
+      Internal (Func'Address);
+   end Set_Change_Palette_With_Screen_Hook;
 
 end Gtk.Color_Selection;

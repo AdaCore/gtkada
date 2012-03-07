@@ -55,6 +55,7 @@ package Gdk.RGBA is
    -------------
 
    function Copy (Self : Gdk_RGBA) return Gdk_RGBA;
+   pragma Import (C, Copy, "gdk_rgba_copy");
    --  Makes a copy of a Gdk.RGBA.Gdk_RGBA structure.
    --  The result must be freed through Gdk.RGBA.Free.
    --  Since: gtk+ 3.0
@@ -65,10 +66,12 @@ package Gdk.RGBA is
    --  "p2": another Gdk.RGBA.Gdk_RGBA pointer
 
    procedure Free (Self : Gdk_RGBA);
+   pragma Import (C, Free, "gdk_rgba_free");
    --  Frees a Gdk.RGBA.Gdk_RGBA struct created with Gdk.RGBA.Copy
    --  Since: gtk+ 3.0
 
    function Hash (Self : Gdk_RGBA) return Guint;
+   pragma Import (C, Hash, "gdk_rgba_hash");
    --  A hash function suitable for using for a hash table that stores
    --  Gdk_RGBAs.
    --  Since: gtk+ 3.0

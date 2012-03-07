@@ -187,20 +187,6 @@ package Gtk.Color_Selection is
      (Colors   : Gdk.Color.Gdk_Color_Array) return String;
    --  Encodes a palette as a string, useful for persistent storage.
 
-   ---------------
-   -- Functions --
-   ---------------
-
-   procedure Set_Change_Palette_With_Screen_Hook
-      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
-   --  Installs a global function to be called whenever the user tries to
-   --  modify the palette in a color selection.
-   --  This function should save the new palette contents, and update the
-   --  Gtk.Settings.Gtk_Settings::gtk-color-palette GtkSettings property so all
-   --  GtkColorSelection widgets will be modified.
-   --  Since: gtk+ 2.2
-   --  "func": a function to call when the custom palette needs saving
-
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -245,6 +231,20 @@ package Gtk.Color_Selection is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Color_Selection
    renames Implements_Orientable.To_Object;
+
+   ---------------
+   -- Functions --
+   ---------------
+
+   procedure Set_Change_Palette_With_Screen_Hook
+      (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func);
+   --  Installs a global function to be called whenever the user tries to
+   --  modify the palette in a color selection.
+   --  This function should save the new palette contents, and update the
+   --  Gtk.Settings.Gtk_Settings::gtk-color-palette GtkSettings property so all
+   --  GtkColorSelection widgets will be modified.
+   --  Since: gtk+ 2.2
+   --  "func": a function to call when the custom palette needs saving
 
    ----------------
    -- Properties --

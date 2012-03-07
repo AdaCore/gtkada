@@ -106,11 +106,17 @@ Where the package node is defined as follows:
              ada="..."     <!-- optional Ada name (no package info needed) -->
        />
 
-       <!-- Instantiates a list of elements -->
+       <!-- Instantiates a list of elements. These statements automatically
+            define new ctypes which are the concatenation of the ctype given
+            as attribute and a suffix (resp. "List" and "SList"), so that you
+            can then use these lists as parameter types in methods.
+       -->
 
        <list ada="Ada name for the list type"
+             section="..."  <!--  Where should the list be declared -->
              ctype="..."/>  <!--  Name of the element contained in the list -->
        <slist ada="Ada name for the list type"  <!-- single-linked list -->
+             section="..."  <!--  Where should the list be declared -->
              ctype="..."/>  <!--  Name of the element contained in the list -->
 
        <extra>
@@ -206,18 +212,22 @@ class GtkAdaPackage(object):
     def lists(self):
         """Return the list of list instantiations we need to add to the
            package. Returns a list of tuples:
-              [(adaname, CType for element, true for a single-linked list), ..]
+              [(adaname, CType for element,
+                  true for a single-linked list, section),
+                ...]
         """
         result = []
         if self.node:
             for l in self.node.findall("list"):
                 result.append((l.get("ada"),
                                naming.type(name="", cname=l.get("ctype")),
-                               False))
+                               False,
+                               l.get("section", "")))
             for l in self.node.findall("slist"):
                 result.append((l.get("ada"),
                                naming.type(name="", cname=l.get("ctype")),
-                               True))
+                               True,
+                               l.get("section", "")))
 
         return result
 

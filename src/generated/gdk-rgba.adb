@@ -36,17 +36,6 @@ package body Gdk.RGBA is
       return Internal (Val);
    end Gdk_RGBA_Or_Null;
 
-   ----------
-   -- Copy --
-   ----------
-
-   function Copy (Self : Gdk_RGBA) return Gdk_RGBA is
-      function Internal (Self : Gdk_RGBA) return Gdk_RGBA;
-      pragma Import (C, Internal, "gdk_rgba_copy");
-   begin
-      return Internal (Self);
-   end Copy;
-
    -----------
    -- Equal --
    -----------
@@ -57,28 +46,6 @@ package body Gdk.RGBA is
    begin
       return Boolean'Val (Internal (Self, P2));
    end Equal;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (Self : Gdk_RGBA) is
-      procedure Internal (Self : Gdk_RGBA);
-      pragma Import (C, Internal, "gdk_rgba_free");
-   begin
-      Internal (Self);
-   end Free;
-
-   ----------
-   -- Hash --
-   ----------
-
-   function Hash (Self : Gdk_RGBA) return Guint is
-      function Internal (Self : Gdk_RGBA) return Guint;
-      pragma Import (C, Internal, "gdk_rgba_hash");
-   begin
-      return Internal (Self);
-   end Hash;
 
    -----------
    -- Parse --

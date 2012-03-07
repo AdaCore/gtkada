@@ -1725,6 +1725,27 @@ class Package(object):
             return "\n".join(result) + "\n"
         return ""
 
+    def section_order(self, name):
+        """Return a numerical order for sections"""
+        order = {"": 0,
+                 "Enumeration Properties": 1,
+
+                 # Primitive operations first
+                 "Constructors": 2,
+                 "Methods": 3,
+                 "GtkAda additions": 4,
+                 "Inherited subprograms (from interfaces)": 5,
+
+                 # Then non-primitive (so that we can freeze the type, for
+                 # instance by instantiating lists)
+                 "Interfaces": 6,
+                 "Functions": 7,
+
+                 # General data independent of the type
+                 "Properties": 8,
+                 "Signals": 9}
+        return order.get(name, 1000)
+
     def spec(self):
         """Returns the spec of the package, in the file `out`"""
 
@@ -1752,6 +1773,9 @@ class Package(object):
             result.append(indent + "generic")
             result.append(indent + "   %s" % self.formal_params)
         result.append(indent + "package %s is" % self.name)
+
+        self.sections.sort(lambda x, y: cmp(self.section_order(x.name),
+                                            self.section_order(y.name)))
 
         for s in self.sections:
             sec = s.spec(pkg=self, indent=indent + "   ")

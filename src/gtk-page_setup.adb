@@ -154,11 +154,10 @@ package body Gtk.Page_Setup is
      (Setup : access Gtk_Page_Setup_Record)
       return Gtk.Paper_Size.Gtk_Paper_Size
    is
-      function Internal (Setup : System.Address)
-        return Gtk.Paper_Size.Gtk_Paper_Size;
+      function Internal (Setup : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_page_setup_get_paper_size");
    begin
-      return Internal (Get_Object (Setup));
+      return Gtk.Paper_Size.From_Object (Internal (Get_Object (Setup)));
    end Get_Paper_Size;
 
    ---------------------
@@ -415,10 +414,10 @@ package body Gtk.Page_Setup is
    is
       procedure Internal
         (Setup : System.Address;
-         Size  : Gtk.Paper_Size.Gtk_Paper_Size);
+         Size  : System.Address);
       pragma Import (C, Internal, "gtk_page_setup_set_paper_size");
    begin
-      Internal (Get_Object (Setup), Size);
+      Internal (Get_Object (Setup), Gtk.Paper_Size.Get_Object (Size));
    end Set_Paper_Size;
 
    ----------------------------------------
@@ -431,11 +430,11 @@ package body Gtk.Page_Setup is
    is
       procedure Internal
         (Setup : System.Address;
-         Size  : Gtk.Paper_Size.Gtk_Paper_Size);
+         Size  : System.Address);
       pragma Import
         (C, Internal, "gtk_page_setup_set_paper_size_and_default_margins");
    begin
-      Internal (Get_Object (Setup), Size);
+      Internal (Get_Object (Setup), Gtk.Paper_Size.Get_Object (Size));
    end Set_Paper_Size_And_Default_Margins;
 
    ----------------------

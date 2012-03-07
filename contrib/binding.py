@@ -92,7 +92,7 @@ class GIR(object):
             k = "%s/%s" % (namespace, ninterface)
             for cl in root.findall(k):
                 self.interfaces[cl.get("name")] = self._create_class(
-                    root, cl, is_interface=True)
+                    root, cl, is_interface=True, is_gobject=False)
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
@@ -560,12 +560,21 @@ class GIRClass(object):
         self._private = ""
         self._generated = False
         self.implements = dict() # Implemented interfaces
+        self.is_gobject = is_gobject
         self.is_interface = is_interface
         self.has_toplevel_type = has_toplevel_type
         self.callbacks = set() # The callback functions
         self.pkg = None  # Instance of Package(), that we are generating
 
         self.conversions = dict() # List of Convert(...) functions that were implemented
+
+        # Is this a binding for an opaque C record (not a GObject). In this
+        # case, we bind it as an Ada tagged type so that we can use the
+        # convenient dot notation for primitive operations. Public records are
+        # handled differently.
+
+        self.is_record_with_ptr = self.node.tag == nrecord \
+            and not self.node.findall(nfield)
 
         # Search for the GtkAda binding information
 
@@ -637,7 +646,9 @@ class GIRClass(object):
            should be implemented directly as a pragma Import, rather than
            require its own body.
         """
-        return not self.is_gobject and profile.direct_c_map()
+        return not self.is_gobject \
+            and not self.is_record_with_ptr \
+            and profile.direct_c_map()
 
     def _add_self_param(self, adaname, gtkmethod, profile, is_import):
         """Add a Self parameter to the list of parameters in profile.
@@ -1016,36 +1027,52 @@ class GIRClass(object):
         else:
             selftype = "%(typename)s" % self._subst
 
-        initialize_params = [Parameter(
-            name=selfname,
-            type=AdaType(selftype, pkg=self.pkg, in_spec=True),
-            mode="not null access")] + profile.params
-        initialize = Subprogram(
-            name=adaname.replace("Gtk_New", "%s.Initialize" % self.pkg.name),
-            plist=initialize_params,
-            local_vars=local_vars + call[2],
-            doc=profile.doc,
-            code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
-            ).add_nested(internal)
+        if self.is_gobject:
+            initialize_params = [Parameter(
+                    name=selfname,
+                    type=AdaType(selftype, pkg=self.pkg, in_spec=True),
+                    mode="not null access")] + profile.params
+            initialize = Subprogram(
+                name=adaname.replace("Gtk_New", "%s.Initialize" % self.pkg.name),
+                plist=initialize_params,
+                local_vars=local_vars + call[2],
+                doc=profile.doc,
+                code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
+                ).add_nested(internal)
 
-        call = initialize.call(in_pkg=self.pkg)
-        assert(call[1] is None)  # This is a procedure
+            call = initialize.call(in_pkg=self.pkg)
+            assert(call[1] is None)  # This is a procedure
 
-        naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
-        gtk_new = Subprogram(
-            name=adaname,
-            plist=[Parameter(
-                name=selfname,
-                type=AdaType("%(typename)s" % self._subst,
-                             pkg=self.pkg, in_spec=True),
-                mode="out")] + profile.params,
-            local_vars=call[2],
-            code=selfname + " := new %(typename)s_Record;" % self._subst
-               + call[0],
-            doc=profile.doc)
+            naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
+            gtk_new = Subprogram(
+                name=adaname,
+                plist=[Parameter(
+                        name=selfname,
+                        type=AdaType("%(typename)s" % self._subst,
+                                     pkg=self.pkg, in_spec=True),
+                        mode="out")] + profile.params,
+                local_vars=call[2],
+                code=selfname + " := new %(typename)s_Record;" % self._subst
+                + call[0],
+                doc=profile.doc)
 
-        section.add(gtk_new)
-        section.add(initialize)
+            section.add(gtk_new)
+            section.add(initialize)
+
+        else:
+            gtk_new = Subprogram(
+                name=adaname,
+                plist=[Parameter(
+                        name=selfname,
+                        type=AdaType("%(typename)s" % self._subst,
+                                     pkg=self.pkg, in_spec=True),
+                        mode="out")] + profile.params,
+                local_vars=local_vars + call[2],
+                code="%s%s.Ptr := %s" % (call[0], selfname, call[1]),
+                doc=profile.doc)
+
+            gtk_new.add_nested(internal)
+            section.add(gtk_new)
 
     def _methods(self):
         all = self.node.findall(nmethod)
@@ -1598,8 +1625,6 @@ See Glib.Properties for more information on properties)""")
         if self.gtkpkg.is_obsolete():
             section.add_code("pragma Obsolescent;")
 
-        self.is_gobject = True
-
         if not self.has_toplevel_type:
             pass
 
@@ -1607,7 +1632,6 @@ See Glib.Properties for more information on properties)""")
             self.pkg.add_with("Glib.Types")
             section.add_code(
 "type %(typename)s is new Glib.Types.GType_Interface;" % self._subst)
-            self.is_gobject = False
 
         elif self.gtktype.is_subtype():
             section.add_code(
@@ -1615,31 +1639,21 @@ See Glib.Properties for more information on properties)""")
 subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
 
-        elif self._subst["parent"] is None:
+        elif self.is_record_with_ptr:
+            # The type is not private so that we can directly instantiate
+            # generic packages for lists of this type.
 
-            # Two cases: either we have a public record, in which case it will
-            # be bound through record_binding. Or we have a private record, for
-            # which we generate an Ada tagged type to get the convenient dot
-            # notation for primitive operations.
-
-            if self.node.tag == nrecord \
-                 and self.node.findall(nfield):  # has fields => public record
-
-                # Automatically add the record to bind
-                self.gtkpkg.add_record_type(self.ctype)
-
-            else:
-                section.add_code("""
-type %(typename)s is tagged record
-   Ptr : System.Address := System.Null_Address;
-end record;
+            section.add_code("""
+   type %(typename)s is tagged record
+      Ptr : System.Address := System.Null_Address;
+   end record;
 
    function Get_Object
      (Object : %(typename)s'Class) return System.Address;
    function From_Object (Object : System.Address) return %(typename)s;
 """ % self._subst)
 
-                section.add_code("""
+            section.add_code("""
 
    function From_Object (Object : System.Address) return %(typename)s is
       S : %(typename)s;
@@ -1654,6 +1668,12 @@ end record;
       return Object.Ptr;
    end Get_Object;""" % self._subst, specs=False)
 
+        elif self._subst["parent"] is None:
+            # Likely a public record type (ie with visible fields). Automatically
+            # add it to the list of records to bind.
+
+            self.gtkpkg.add_record_type(self.ctype)
+
         else:
             section.add_code("""
 type %(typename)s_Record is new %(parent)s_Record with null record;
@@ -1666,8 +1686,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         for ctype, enum, override_fields in self.gtkpkg.records():
             self.record_binding(section, ctype, enum, override_fields)
 
-        for ada, ctype, single in self.gtkpkg.lists():
-            self.add_list_binding(section, ada, ctype, single)
+        for ada, ctype, single, sect_name in self.gtkpkg.lists():
+            sect = self.pkg.section(sect_name)
+            self.add_list_binding(sect, ada, ctype, single)
 
         if extra:
             for p in extra:

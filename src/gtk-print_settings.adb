@@ -387,11 +387,10 @@ package body Gtk.Print_Settings is
      (Settings : access Gtk_Print_Settings_Record)
       return Gtk.Paper_Size.Gtk_Paper_Size
    is
-      function Internal (Settings : System.Address)
-        return Gtk.Paper_Size.Gtk_Paper_Size;
+      function Internal (Settings : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_settings_get_paper_size");
    begin
-      return Internal (Get_Object (Settings));
+      return Gtk.Paper_Size.From_Object (Internal (Get_Object (Settings)));
    end Get_Paper_Size;
 
    ---------------------
@@ -1036,10 +1035,10 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
         (Settings   : System.Address;
-         Paper_Size : Gtk.Paper_Size.Gtk_Paper_Size);
+         Paper_Size : System.Address);
       pragma Import (C, Internal, "gtk_print_settings_set_paper_size");
    begin
-      Internal (Get_Object (Settings), Paper_Size);
+      Internal (Get_Object (Settings), Gtk.Paper_Size.Get_Object (Paper_Size));
    end Set_Paper_Size;
 
    ---------------------

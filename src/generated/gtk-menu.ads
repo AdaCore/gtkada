@@ -487,19 +487,6 @@ package Gtk.Menu is
    --  "screen": a Gdk.Screen.Gdk_Screen, or null if the screen should be
    --  determined by the widget the menu is attached to
 
-   ---------------
-   -- Functions --
-   ---------------
-
-   function Get_For_Attach_Widget
-      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gtk.Widget.Widget_List.Glist;
-   --  Returns a list of the menus which are attached to this widget. This
-   --  list is owned by GTK+ and must not be modified.
-   --  of menus attached to his widget.
-   --  Since: gtk+ 2.6
-   --  "widget": a Gtk.Widget.Gtk_Widget
-
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -524,6 +511,19 @@ package Gtk.Menu is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Menu
    renames Implements_Buildable.To_Object;
+
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Get_For_Attach_Widget
+      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk.Widget.Widget_List.Glist;
+   --  Returns a list of the menus which are attached to this widget. This
+   --  list is owned by GTK+ and must not be modified.
+   --  of menus attached to his widget.
+   --  Since: gtk+ 2.6
+   --  "widget": a Gtk.Widget.Gtk_Widget
 
    ----------------
    -- Properties --

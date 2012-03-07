@@ -102,6 +102,7 @@ binding = ("GdkDevice",
            "GtkMenuToolButton",
            "GtkNotebook",
            "GtkPaned",
+           "GtkPaperSize",
            "GtkProgressBar",
            "GtkRadioAction",
            "GtkRadioButton",
@@ -291,6 +292,8 @@ naming.type_exceptions = {
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
     "GtkCellLayoutDataFunc":
         Callback("Gtk.Cell_Layout.Cell_Data_Func"),
+
+    "GKeyFile*":           Proxy("Glib.Key_File.G_Key_File"),
 
     "GdkColor*": Proxy("Gdk.Color.Gdk_Color", None,
                        "Gdk.Color.Gdk_Color_Or_Null"),

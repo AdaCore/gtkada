@@ -2749,6 +2749,25 @@ __PRE__
      <method id="gtk_window_group_list_windows" return="WidgetList"/>
    </package>
 
+   <package id="GtkPaperSize">
+     <parameter name="self" ada="Widget"/>
+     <list ada="Gtk_Paper_Size_Glist" ctype="GtkPaperSize" section="Functions"/>
+     <method id="gtk_paper_size_get_paper_sizes" return="GtkPaperSizeList"/>
+     <extra>
+       <spec>
+   --  Common names, from PWG 5101.1-2002 PWG: Standard for Media Standardized
+   --  Names
+   Gtk_Paper_Name_A3        : constant String := "iso_a3";
+   Gtk_Paper_Name_A4        : constant String := "iso_a4";
+   Gtk_Paper_Name_A5        : constant String := "iso_a5";
+   Gtk_Paper_Name_B5        : constant String := "iso_b5";
+   Gtk_Paper_Name_Letter    : constant String := "na_letter";
+   Gtk_Paper_Name_Executive : constant String := "na_executive";
+   Gtk_Paper_Name_Legal     : constant String := "na_legal";
+       </spec>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
