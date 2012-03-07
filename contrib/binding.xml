@@ -2647,6 +2647,18 @@ __PRE__
      <parameter name="self" ada="Menu_Shell"/>
    </package>
 
+   <package id="Gtk.Menu_Tool_Button">
+     <parameter name="self" ada="Button"/>
+     <method id="gtk_menu_tool_button_new">
+       <parameter name="self" ada="Menu"/>
+       <parameter name="icon_widget" default="null"/>
+     </method>
+     <method id="gtk_menu_tool_button_new_from_stock">
+       <parameter name="self" ada="Menu"/>
+     </method>
+     <method id="gtk_menu_tool_button_get_menu" return="GtkMenu"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
