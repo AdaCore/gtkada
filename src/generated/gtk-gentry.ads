@@ -209,7 +209,7 @@ package Gtk.GEntry is
       ;
    --  Hooks up an adjustment to the cursor position in an entry, so that when
    --  the cursor is moved, the adjustment is scrolled to show that position.
-   --  See gtk_scrolled_window_get_hadjustment for a typical way of obtaining
+   --  See Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining
    --  the adjustment.
    --  The adjustment has to be in pixel units and in the same coordinate
    --  system as the entry.

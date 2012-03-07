@@ -33,7 +33,7 @@ pragma Ada_05;
 --  it can be added to a Gtk.Scrolled_Window.Gtk_Scrolled_Window with
 --  Gtk.Container.Add. If a widget does not, you must first add the widget to a
 --  Gtk.Viewport.Gtk_Viewport, then add the viewport to the scrolled window.
---  The convenience function gtk_scrolled_window_add_with_viewport does exactly
+--  The convenience function Gtk.Scrolled_Window.Add_With_Viewport does exactly
 --  this, so you can ignore the presence of the viewport.
 --
 --  The Gtk.Viewport.Gtk_Viewport will start scrolling content only if

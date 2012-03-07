@@ -403,7 +403,7 @@ package Gtk.Container is
    --  Hooks up an adjustment to focus handling in a container, so when a
    --  child of the container is focused, the adjustment is scrolled to show
    --  that widget. This function sets the horizontal alignment. See
-   --  gtk_scrolled_window_get_hadjustment for a typical way of obtaining the
+   --  Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining the
    --  adjustment and Gtk.Container.Set_Focus_Vadjustment for setting the
    --  vertical adjustment.
    --  The adjustments have to be in pixel units and in the same coordinate
@@ -421,7 +421,7 @@ package Gtk.Container is
    --  Hooks up an adjustment to focus handling in a container, so when a
    --  child of the container is focused, the adjustment is scrolled to show
    --  that widget. This function sets the vertical alignment. See
-   --  gtk_scrolled_window_get_vadjustment for a typical way of obtaining the
+   --  Gtk.Scrolled_Window.Get_Vadjustment for a typical way of obtaining the
    --  adjustment and Gtk.Container.Set_Focus_Hadjustment for setting the
    --  horizontal adjustment.
    --  The adjustments have to be in pixel units and in the same coordinate

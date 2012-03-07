@@ -2701,6 +2701,16 @@ __PRE__
      </extra>
    </package>
 
+   <package id="Gtk.Scrolled_Window">
+     <parameter name="self" ada="Scrolled_Window"/>
+     <method id="gtk_scrolled_window_new">
+       <parameter name="hadjustment" default="null"/>
+       <parameter name="vadjustment" default="null"/>
+     </method>
+     <method id="gtk_scrolled_window_get_hscrollbar" return="GtkScrollbar"/>
+     <method id="gtk_scrolled_window_get_vscrollbar" return="GtkScrollbar"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

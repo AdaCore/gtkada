@@ -572,6 +572,12 @@ the rest of the toolkit.  Gtk_New is implemented as a procedure rather
 than as a function, and the use of GNAT.Strings.String_List replaces
 Gtkada.Types.Chars_Ptr_Array throughout.
 
+Gtk.Scrolled_Window
+===================
+
+Set_Policy's parameters were renamed to Hscrollbar_Policy and
+Vscrollbar_Policy instead of H_Scrollbar_Policy and V_Scrollbar_Policy.
+
 Gtk.Spin_Button
 ===============
 

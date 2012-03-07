@@ -62,8 +62,8 @@ package body Create_Scrolled is
       Gtk_New (Scrolled);
       Set_Border_Width (Scrolled, Border_Width => 10);
       Set_Policy (Scrolled,
-                  H_Scrollbar_Policy => Policy_Automatic,
-                  V_Scrollbar_Policy => Policy_Automatic);
+                  Hscrollbar_Policy => Policy_Automatic,
+                  Vscrollbar_Policy => Policy_Automatic);
       Add (Frame, Scrolled);
 
       Gtk_New (Table,
@@ -89,4 +89,3 @@ package body Create_Scrolled is
    end Run;
 
 end Create_Scrolled;
-
