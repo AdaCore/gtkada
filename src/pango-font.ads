@@ -50,6 +50,14 @@ package Pango.Font is
 
    type Pango_Font_Description is new Glib.C_Proxy;
 
+   type Pango_Font_Family_Record is new Glib.Object.GObject_Record
+      with null record;
+   type Pango_Font_Family is access all Pango_Font_Family_Record'Class;
+
+   type Pango_Font_Face_Record is new Glib.Object.GObject_Record
+      with null record;
+   type Pango_Font_Face is access all Pango_Font_Face_Record'Class;
+
    function Get_Type return Glib.GType;
    --  Return the internal gtk+ type associated with font descriptions.
 

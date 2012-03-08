@@ -2833,6 +2833,10 @@ __PRE__
      </method>
    </package>
 
+   <package id="GtkFontButton">
+     <parameter name="self" ada="Font_Button"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
