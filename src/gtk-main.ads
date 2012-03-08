@@ -343,7 +343,7 @@ package Gtk.Main is
    --  to Idle_Remove.
 
    procedure Idle_Remove (Id : Idle_Handler_Id);
-   pragma Obsolescent (Idle_Remove, "Use Glib.Main.Idle_Remove");
+   pragma Obsolescent (Idle_Remove, "Use Glib.Main.Remove");
    --  Remove an idle callback, when its Id is known.
 
    procedure Init_Add (Func : Init_Function; Data : System.Address);
