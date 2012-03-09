@@ -1,15 +1,15 @@
 *** configure.orig	2011-08-23 10:28:30.000015000 -0400
---- configure	2012-03-09 12:36:25.321647000 -0500
+--- configure	2012-03-09 14:02:57.000015000 -0500
 ***************
 *** 2613,2618 ****
 --- 2613,2624 ----
   IFS=$ac_save_IFS
   case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
   
-+ case $host_os in
++ case $host in
 +   *solaris*)
-+     mkdir -p $host_os
-+     cp install-sh $host_os
++     mkdir -p $host
++     cp install-sh $host
 +     ;;
 + esac
   
