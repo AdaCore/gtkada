@@ -32,6 +32,9 @@ package body Gtk.Cell_Layout is
    function To_Cell_Data_Func is new Ada.Unchecked_Conversion
      (System.Address, Cell_Data_Func);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk.Cell_Layout.Cell_Data_Func, System.Address);
+
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : System.Address;
@@ -202,7 +205,7 @@ package body Gtk.Cell_Layout is
        Func        : Cell_Data_Func)
    is
    begin
-      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Cell_Layout, Get_Object (Cell), Internal_Cell_Data_Func'Address, Func'Address, System.Null_Address);
+      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Cell_Layout, Get_Object (Cell), Internal_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
    end Set_Cell_Data_Func;
 
    package body Set_Cell_Data_Func_User_Data is

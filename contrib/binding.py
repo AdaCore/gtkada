@@ -780,7 +780,8 @@ class GIRClass(object):
 
         # Compute the name of the Ada type representing the user callback
 
-        funcname = base_name(naming.type(name=cb.type.ada, cname=cbname).ada)
+        cb_type_name = naming.type(name=cb.type.ada, cname=cbname).ada
+        funcname = base_name(cb_type_name)
 
         user_data = profile.callback_user_data()
         destroy   = profile.find_param(destroy_data_params)
@@ -843,6 +844,10 @@ class GIRClass(object):
                 ("function To_%s is new Ada.Unchecked_Conversion\n"
                 + "   (System.Address, %s);\n") % (funcname, funcname),
                 specs=False)
+            section.add_code(
+                ("function To_Address is new Ada.Unchecked_Conversion\n"
+                + "   (%s, System.Address);\n") % (cb_type_name,),
+                specs=False)
 
             ada_func = copy.deepcopy(subp)
             ada_func.name = "Func"
@@ -888,7 +893,7 @@ class GIRClass(object):
         nouser_profile.remove_param(destroy_data_params + [user_data])
         values = {destroy: "System.Null_Address",
                   cb.name.lower(): "Internal_%s'Address" % funcname,
-                  user_data.lower(): "%s'Address" % cb.name}
+                  user_data.lower(): "To_Address (%s)" % cb.name}
         subp = nouser_profile.subprogram(
             name=adaname, local_vars=local_vars,
             code=gtk_func.call_to_string(

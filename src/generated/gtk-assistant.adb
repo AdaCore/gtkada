@@ -34,6 +34,9 @@ package body Gtk.Assistant is
    function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Assistant_Page_Func);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Assistant_Page_Func, System.Address);
+
    procedure C_Gtk_Assistant_Set_Forward_Page_Func
       (Assistant : System.Address;
        Page_Func : System.Address;
@@ -384,7 +387,7 @@ package body Gtk.Assistant is
        Page_Func : Gtk_Assistant_Page_Func)
    is
    begin
-      C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Gtk_Assistant_Page_Func'Address, Page_Func'Address, System.Null_Address);
+      C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Gtk_Assistant_Page_Func'Address, To_Address (Page_Func), System.Null_Address);
    end Set_Forward_Page_Func;
 
    package body Set_Forward_Page_Func_User_Data is

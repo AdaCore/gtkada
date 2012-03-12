@@ -100,11 +100,20 @@ package body Gtk.Cell_Area is
    function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Cell_Callback);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Callback, System.Address);
+
    function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Cell_Alloc_Callback);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Alloc_Callback, System.Address);
+
    function To_Cell_Data_Func is new Ada.Unchecked_Conversion
      (System.Address, Cell_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk.Cell_Layout.Cell_Data_Func, System.Address);
 
    procedure C_Gtk_Cell_Area_Foreach
       (Self          : System.Address;
@@ -514,7 +523,7 @@ package body Gtk.Cell_Area is
        Callback : Gtk_Cell_Callback)
    is
    begin
-      C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Gtk_Cell_Callback'Address, Callback'Address);
+      C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Gtk_Cell_Callback'Address, To_Address (Callback));
    end Foreach;
 
    -------------------
@@ -530,7 +539,7 @@ package body Gtk.Cell_Area is
        Callback        : Gtk_Cell_Alloc_Callback)
    is
    begin
-      C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Gtk_Cell_Alloc_Callback'Address, Callback'Address);
+      C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Gtk_Cell_Alloc_Callback'Address, To_Address (Callback));
    end Foreach_Alloc;
 
    package body Foreach_Alloc_User_Data is
@@ -1039,7 +1048,7 @@ package body Gtk.Cell_Area is
        Func        : Gtk.Cell_Layout.Cell_Data_Func)
    is
    begin
-      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, Func'Address, System.Null_Address);
+      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
    end Set_Cell_Data_Func;
 
    package body Set_Cell_Data_Func_User_Data is

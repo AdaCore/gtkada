@@ -34,6 +34,9 @@ package body Gtk.Recent_Chooser is
    function To_Gtk_Recent_Sort_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Recent_Sort_Func);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Recent_Sort_Func, System.Address);
+
    procedure C_Gtk_Recent_Chooser_Set_Sort_Func
       (Chooser      : Gtk_Recent_Chooser;
        Sort_Func    : System.Address;
@@ -411,7 +414,7 @@ package body Gtk.Recent_Chooser is
        Data_Destroy : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_Recent_Chooser_Set_Sort_Func (Chooser, Internal_Gtk_Recent_Sort_Func'Address, Sort_Func'Address, Data_Destroy);
+      C_Gtk_Recent_Chooser_Set_Sort_Func (Chooser, Internal_Gtk_Recent_Sort_Func'Address, To_Address (Sort_Func), Data_Destroy);
    end Set_Sort_Func;
 
    package body Set_Sort_Func_User_Data is

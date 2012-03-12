@@ -34,6 +34,9 @@ package body Gtk.Container is
    function To_Gtk_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Callback);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Callback, System.Address);
+
    procedure C_Gtk_Container_Forall
       (Container     : System.Address;
        Callback      : System.Address;
@@ -198,7 +201,7 @@ package body Gtk.Container is
        Callback  : Gtk_Callback)
    is
    begin
-      C_Gtk_Container_Forall (Get_Object (Container), Internal_Gtk_Callback'Address, Callback'Address);
+      C_Gtk_Container_Forall (Get_Object (Container), Internal_Gtk_Callback'Address, To_Address (Callback));
    end Forall;
 
    package body Forall_User_Data is
@@ -254,7 +257,7 @@ package body Gtk.Container is
        Callback  : Gtk_Callback)
    is
    begin
-      C_Gtk_Container_Foreach (Get_Object (Container), Internal_Gtk_Callback'Address, Callback'Address);
+      C_Gtk_Container_Foreach (Get_Object (Container), Internal_Gtk_Callback'Address, To_Address (Callback));
    end Foreach;
 
    package body Foreach_User_Data is

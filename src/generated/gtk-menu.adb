@@ -34,6 +34,9 @@ package body Gtk.Menu is
    function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Menu_Position_Func);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Menu_Position_Func, System.Address);
+
    procedure C_Gtk_Menu_Popup
       (Menu              : System.Address;
        Parent_Menu_Shell : System.Address;
@@ -342,7 +345,7 @@ package body Gtk.Menu is
        Activate_Time     : guint32 := 0)
    is
    begin
-      C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, Func'Address, Button, Activate_Time);
+      C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), Button, Activate_Time);
    end Popup;
 
    ----------------------
@@ -359,7 +362,7 @@ package body Gtk.Menu is
        Activate_Time     : guint32)
    is
    begin
-      C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, Func'Address, System.Null_Address, Button, Activate_Time);
+      C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), System.Null_Address, Button, Activate_Time);
    end Popup_For_Device;
 
    package body Popup_For_Device_User_Data is

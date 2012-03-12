@@ -34,6 +34,9 @@ package body Gtk.Font_Chooser is
    function To_Gtk_Font_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Font_Filter_Func);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Font_Filter_Func, System.Address);
+
    procedure C_Gtk_Font_Chooser_Set_Filter_Func
       (Self      : Gtk_Font_Chooser;
        Filter    : System.Address;
@@ -144,7 +147,7 @@ package body Gtk.Font_Chooser is
        Filter : Gtk_Font_Filter_Func)
    is
    begin
-      C_Gtk_Font_Chooser_Set_Filter_Func (Self, Internal_Gtk_Font_Filter_Func'Address, Filter'Address, System.Null_Address);
+      C_Gtk_Font_Chooser_Set_Filter_Func (Self, Internal_Gtk_Font_Filter_Func'Address, To_Address (Filter), System.Null_Address);
    end Set_Filter_Func;
 
    package body Set_Filter_Func_User_Data is
