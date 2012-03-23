@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2010-2011, AdaCore                  --
+--                 Copyright (C) 2010-2012, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -114,7 +114,8 @@ procedure Testcairo is
       Toy_Text        => -"The Cairo 'toy' text API",
       Pango_Text      => -"Rendering sophisticated text using Pango",
       Clip_And_Paint  => -"Painting and clipping",
-      Surface_And_Png => -"Using surfaces and saving to PNG");
+      Surface_And_Png => -"Using surfaces and saving to PNG",
+      Image           => -"Rendering an image as background");
 
    ---------------
    -- Expose_Cb --

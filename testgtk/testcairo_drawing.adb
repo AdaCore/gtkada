@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                 Copyright (C) 2010-2011, AdaCore                  --
+--                 Copyright (C) 2010-2012, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,11 @@ with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 
 with Glib; use Glib;
+with Glib.Error;
 with Glib.Object; use Glib.Object;
+
+with Gdk.Cairo;
+with Gdk.Pixbuf; use Gdk.Pixbuf;
 
 with Cairo.Matrix;  use Cairo.Matrix;
 with Cairo.Pattern; use Cairo.Pattern;
@@ -49,6 +53,8 @@ with Pango.Font;   use Pango.Font;
 package body Testcairo_Drawing is
 
    Two_Pi : constant Gdouble := Gdouble (2.0 * Ada.Numerics.Pi);
+
+   Background : Gdk_Pixbuf := null;
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
@@ -73,9 +79,18 @@ package body Testcairo_Drawing is
       Status        : Cairo_Status;
 
       Idx           : Natural;
-
+      Error         : Glib.Error.GError;
    begin
       case Test is
+         when Image =>
+            if Background = null then
+               Gdk_New_From_File (Background, "background.jpg", Error);
+            end if;
+
+            Gdk.Cairo.Set_Source_Pixbuf (Cr, Background, 10.0, 10.0);
+
+            Cairo.Paint (Cr);
+
          when Rectangles =>
             for J in reverse 1 .. 10 loop
                D := Gdouble (J);
