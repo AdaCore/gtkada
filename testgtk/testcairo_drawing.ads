@@ -29,7 +29,7 @@ package Testcairo_Drawing is
 
    type Test_Type is (Rectangles, Transparency, Operators, Matrix,
                       Transformations, Paths, Patterns, Clip_And_Paint,
-                      Surface_And_Png, Toy_Text, Pango_Text);
+                      Surface_And_Png, Toy_Text, Pango_Text, Image);
    --  The supported drawing types
 
    procedure Draw_On_Context
