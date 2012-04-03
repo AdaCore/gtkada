@@ -107,8 +107,9 @@ In order to use the precompiled Gtk+ binaries that we distribute with GtkAda,
 you need to distribute all the Gtk+ .so libraries along with your application,
 and use the LD_LIBRARY_PATH environment variable to point to these libraries.
 
-The list of libraries needed is :file:`<gtkada-prefix>/lib/lib*.so.?`
-along with your executable, and set LD_LIBRARY_PATH.
+The list of libraries needed is :file:`<gtkada-prefix>/lib/lib*.so.?` or
+:file:`<gtkada-prefix>/lib64/lib*.so.?` along with your executable, and set
+LD_LIBRARY_PATH.
 
 You may also need the :file:`libgtkada-xxx.so` file. This dependency is
 optional since gtkada supports both static and dynamic linking, so by e.g.
