@@ -48,4 +48,9 @@ AC_SUBST(BUILD_TYPE)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
+# Ignore user's choice of libdir, as well as configure's own default,
+# because we want GtkAda to always install in /lib (backward compatibility)
+
+libdir='${prefix}/lib'
+
 AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/gnome/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)

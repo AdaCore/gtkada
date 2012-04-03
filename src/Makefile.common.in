@@ -48,12 +48,7 @@ DESTDIR =
 prefix        = @prefix@
 exec_prefix   = @exec_prefix@
 bindir        = @bindir@
-
-# Ignore user's choice of libdir, because we want GtkAda to always install
-# in /lib.
-libdir        = ${prefix}/lib
-# libdir        = @libdir@
-
+libdir        = @libdir@
 incdir        = @includedir@/gtkada
 alidir        = @libdir@/gtkada
 
