@@ -11,8 +11,8 @@ endif
 # Some examples are build with project files, others with gtkada-config, so
 # we modify the following two environment variables so that the GtkAda version
 # we just installed can be used to compile the examples
-export ADA_PROJECT_PATH:=${prefix}/lib/gnat${DIRSEP}${ADA_PROJECT_PATH}
-export PATH:=${prefix}/bin:${PATH}
+export ADA_PROJECT_PATH:=${libdir}/gnat${DIRSEP}${ADA_PROJECT_PATH}
+export PATH:=${bindir}:${PATH}
 
 DIRECTORIES=base_widget \
   calendar_combo        \

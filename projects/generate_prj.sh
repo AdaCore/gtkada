@@ -5,6 +5,7 @@ prefix=$2
 default_library_type="$3"
 version=$4
 subdir=$5
+libdir=$6
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
@@ -116,7 +117,7 @@ EOF
          for Library_Name use "${library_name}${lcversion}";
    end case;
 
-   for Library_Dir use "../gtkada/" & Project'Library_Kind;
+   for Library_Dir use "${libdir}/gtkada/" & Project'Library_Kind;
 
 EOF
    esac
