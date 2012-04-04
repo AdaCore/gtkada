@@ -36,10 +36,10 @@ else
 all:       module_all
 install:   module_install force
 	if [ $(BUILD_SHARED) = yes ]; then \
-           $(MKDIR) $(bindir); \
+           $(MKDIR) ${DESTDIR}$(bindir); \
            if [ "$(OS)" = "Windows_NT" ]; then \
-                $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(bindir); \
-                $(CHMOD) +x $(bindir)/$(SONAME); \
+                $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) ${DESTDIR}$(bindir); \
+                $(CHMOD) +x ${DESTDIR}$(bindir)/$(SONAME); \
            fi; \
         fi
 endif

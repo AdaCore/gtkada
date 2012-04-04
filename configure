@@ -3485,6 +3485,12 @@ echo "${ECHO_T}*** OpenGL support will not be integrated into GtkAda ***" >&6
 EXEC_PREFIX="$prefix"
 
 
+
+# Ignore user's choice of libdir, as well as configure's own default,
+# because we want GtkAda to always install in /lib (backward compatibility)
+
+libdir='${prefix}/lib'
+
                                                                                                                                                                 ac_config_files="$ac_config_files Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
