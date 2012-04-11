@@ -2832,8 +2832,17 @@ package body Gtkada.Canvas is
             Handled := On_Button_Click (Canvas.Item_Press, Event);
 
             if not Handled then
-               --  If not handled, then make it's a selection
-               Add_To_Selection (Canvas, Canvas.Item_Press);
+               --  If not handled, then:
+               --  if the iter was part of a selection, do nothing,
+               --  if the iter was not part of a selection, clear the selection
+               --  and select this iter.
+
+               if not Canvas.Item_Press.Selected then
+                  Clear_Selection (Canvas);
+
+                  Add_To_Selection (Canvas, Canvas.Item_Press);
+               end if;
+
                Canvas.Item_Press := null;
             else
                return True;
@@ -3056,6 +3065,15 @@ package body Gtkada.Canvas is
          --  Scroll the canvas so as to show the first item from the selection
          Refresh_Canvas (Canvas);
 
+      else
+         --  If we are reaching this point, this means that there wasn't an
+         --  item being pressed, and we didn't perform a button pressed move.
+         --  So if there is an item under the cursor, if this item wasn't
+         --  already selected, clear the selection.
+         Item := Item_At_Coordinates (Canvas, Event);
+         if not Item.Selected then
+            Clear_Selection (Canvas);
+         end if;
       end if;
 
       Canvas.Item_Press := null;
