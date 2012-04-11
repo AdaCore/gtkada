@@ -2821,9 +2821,6 @@ package body Gtkada.Canvas is
                Add_To_Selection (Canvas, Canvas.Item_Press);
             end if;
          else
-
-            Clear_Selection (Canvas);
-
             Set_X
               (Event,
                Canvas.World_X_At_Click - Gdouble (Canvas.Item_Press.Coord.X));
