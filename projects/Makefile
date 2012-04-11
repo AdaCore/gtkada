@@ -12,21 +12,24 @@ install: force
 	${CP} gtkada.pc "${DESTDIR}$(libdir)/pkgconfig/"
 	-${RM} "${DESTDIR}${prefix}"/projects/gtkada*
 
-	./generate_prj.sh GtkAda "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${DESTDIR}${libdir}"
+	@# We must pass ${libdir} and not ${DESTDIR}${libdir}, since DESTDIR is
+	@# really only a temporary directory for packagers, but the package will
+	@# eventually be installed in ${libdir}.
+	./generate_prj.sh GtkAda "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
 	${CP} gtkada.gpr ${prjdir}
 
 ifeq ($(HAVE_LIBGLADE), True)
-	./generate_prj.sh GtkAda_Glade "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${DESTDIR}${libdir}"
+	./generate_prj.sh GtkAda_Glade "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
 	${CP} gtkada_glade.gpr ${prjdir}
 endif	
 
 ifeq ($(HAVE_OPENGL), True)
-	./generate_prj.sh GtkAda_GL "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} opengl "${DESTDIR}${libdir}"
+	./generate_prj.sh GtkAda_GL "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} opengl "${libdir}"
 	${CP} gtkada_gl.gpr ${prjdir}
 endif	
 
 ifeq ($(HAVE_GNOME), True)
-	./generate_prj.sh GtkAda_Gnome "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${DESTDIR}${libdir}"
+	./generate_prj.sh GtkAda_Gnome "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
 	${CP} gtkada_gnome.gpr ${prjdir}
 endif	
 
