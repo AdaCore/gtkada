@@ -9,31 +9,82 @@
 	(configure): Do not set HAVE_LIBELF, not working on older
 	version of Linux (SuSE 10, Red Hat 4)
 
-	(gio/Makefile.in): Do not run tests in gio/, which require
 	Python 2.5 and do not work on old versions of Linux and Solaris.
 
---- configure.orig	2012-03-06 20:20:36.000000000 +0100
-+++ configure	2012-03-06 20:24:23.000000000 +0100
-@@ -25992,7 +25992,7 @@
+--- configure.orig	2012-04-18 18:48:43.000000000 +0200
++++ configure	2012-04-18 18:49:26.000000000 +0200
+@@ -26060,7 +26060,7 @@
+ $as_echo "$ac_cv_lib_elf_elf_begin" >&6; }
+ if test "x$ac_cv_lib_elf_elf_begin" = xyes; then :
+   cat >>confdefs.h <<_ACEOF
+-#define HAVE_LIBELF 1
++#undef HAVE_LIBELF 
+ _ACEOF
+ 
+   LIBS="-lelf $LIBS"
+@@ -26107,7 +26107,7 @@
+ $as_echo "$ac_cv_lib_elf_elf_getshdrstrndx" >&6; }
+ if test "x$ac_cv_lib_elf_elf_getshdrstrndx" = xyes; then :
+   cat >>confdefs.h <<_ACEOF
+-#define HAVE_LIBELF 1
++#undef HAVE_LIBELF
+ _ACEOF
+ 
+   LIBS="-lelf $LIBS"
+@@ -26154,7 +26154,7 @@
+ $as_echo "$ac_cv_lib_elf_elf_getshdrnum" >&6; }
+ if test "x$ac_cv_lib_elf_elf_getshdrnum" = xyes; then :
+   cat >>confdefs.h <<_ACEOF
+-#define HAVE_LIBELF 1
++#undef HAVE_LIBELF
+ _ACEOF
+ 
+   LIBS="-lelf $LIBS"
+@@ -26180,7 +26180,7 @@
  
  if test $have_libelf = yes; then
  
 -$as_echo "#define HAVE_LIBELF 1" >>confdefs.h
-+# $as_echo "#define HAVE_LIBELF 1" >>confdefs.h
++$as_echo "#undef HAVE_LIBELF" >>confdefs.h
  
-   ELF_LIBS=-lelf
  fi
---- gio/Makefile.in.orig	2012-03-06 20:26:50.000000000 +0100
-+++ gio/Makefile.in	2012-03-06 21:52:21.000000000 +0100
-@@ -755,7 +755,7 @@
- TEST_PROGS = 
- NULL = 
- SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_5) \
--	$(am__append_9) $(am__append_12) . $(am__append_15) tests
-+	$(am__append_9) $(am__append_12) . $(am__append_15)
- @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
- @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
- @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+ 
+*** gio/Makefile.in.orig	2012-04-18 18:00:04.000000000 +0200
+--- gio/Makefile.in	2012-04-18 18:20:22.000000000 +0200
+***************
+*** 479,485 ****
+  CTAGS = ctags
+  am__tty_colors = \
+  red=; grn=; lgn=; blu=; std=
+! DIST_SUBDIRS = gdbus-2.0/codegen xdgmime inotify fen win32 . fam tests
+  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+  am__relativize = \
+    dir0=`pwd`; \
+--- 479,485 ----
+  CTAGS = ctags
+  am__tty_colors = \
+  red=; grn=; lgn=; blu=; std=
+! DIST_SUBDIRS = gdbus-2.0/codegen xdgmime inotify fen win32 . fam
+  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+  am__relativize = \
+    dir0=`pwd`; \
+***************
+*** 756,762 ****
+  TEST_PROGS = 
+  NULL = 
+  SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_4) \
+! 	$(am__append_8) $(am__append_11) . $(am__append_14) tests
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+--- 756,762 ----
+  TEST_PROGS = 
+  NULL = 
+  SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_4) \
+! 	$(am__append_8) $(am__append_11) . $(am__append_14) 
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
 --- glib/gthread-posix.c.orig	2012-04-02 10:14:29.000000000 +0200
 +++ glib/gthread-posix.c	2012-04-02 10:14:48.000000000 +0200
 @@ -1172,8 +1172,10 @@
