@@ -1,0 +1,66 @@
+2012-04-02	Nicolas Setton  <setton@adacore.com>
+
+	(glib/gthread-posix.c, glib/tests/thread.c): Some old versions
+	of linux have a prctl.h which does not define PR_GET_NAME:
+	add test for this.
+
+2012-03-06	Nicolas Setton  <setton@adacore.com>
+
+	(configure): Do not set HAVE_LIBELF, not working on older
+	version of Linux (SuSE 10, Red Hat 4)
+
+	(gio/Makefile.in): Do not run tests in gio/, which require
+	Python 2.5 and do not work on old versions of Linux and Solaris.
+
+--- configure.orig	2012-03-06 20:20:36.000000000 +0100
++++ configure	2012-03-06 20:24:23.000000000 +0100
+@@ -25992,7 +25992,7 @@
+ 
+ if test $have_libelf = yes; then
+ 
+-$as_echo "#define HAVE_LIBELF 1" >>confdefs.h
++# $as_echo "#define HAVE_LIBELF 1" >>confdefs.h
+ 
+   ELF_LIBS=-lelf
+ fi
+--- gio/Makefile.in.orig	2012-03-06 20:26:50.000000000 +0100
++++ gio/Makefile.in	2012-03-06 21:52:21.000000000 +0100
+@@ -755,7 +755,7 @@
+ TEST_PROGS = 
+ NULL = 
+ SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_5) \
+-	$(am__append_9) $(am__append_12) . $(am__append_15) tests
++	$(am__append_9) $(am__append_12) . $(am__append_15)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+--- glib/gthread-posix.c.orig	2012-04-02 10:14:29.000000000 +0200
++++ glib/gthread-posix.c	2012-04-02 10:14:48.000000000 +0200
+@@ -1172,8 +1172,10 @@
+ g_system_thread_set_name (const gchar *name)
+ {
+ #ifdef HAVE_SYS_PRCTL_H
++#ifdef PR_SET_NAME
+   prctl (PR_SET_NAME, name, 0, 0, 0, 0);
+ #endif
++#endif
+ }
+ 
+ /* {{{1 Epilogue */
+--- glib/tests/thread.c.orig	2012-04-02 10:16:08.000000000 +0200
++++ glib/tests/thread.c	2012-04-02 10:16:29.000000000 +0200
+@@ -168,12 +168,14 @@
+ thread6_func (gpointer data)
+ {
+ #ifdef HAVE_SYS_PRCTL_H
++#ifdef PR_GET_NAME
+   const gchar name[16];
+ 
+   prctl (PR_GET_NAME, name, 0, 0, 0, 0);
+ 
+   g_assert_cmpstr (name, ==, (gchar*)data);
+ #endif
++#endif
+ 
+   return NULL;
+ }
