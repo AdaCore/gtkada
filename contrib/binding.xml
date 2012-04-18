@@ -2814,6 +2814,9 @@ __PRE__
      </extra>
    </package>
 
+   <package id="GtkRecentChooserMenu">
+   </package>
+
    <package id="GtkRecentChooserWidget">
      <parameter name="self" ada="Widget"/>
    </package>
