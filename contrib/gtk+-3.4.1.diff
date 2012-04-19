@@ -1,20 +1,96 @@
-Index: ./gdk/x11/gdkwindow-x11.c
-*** ./gdk/x11/gdkwindow-x11.c.orig	2012-03-05 14:50:28.000000000 -0500
---- ./gdk/x11/gdkwindow-x11.c	2012-03-05 14:50:12.000000000 -0500
-***************
-*** 4294,4300 ****
-          finish_drag (mv_resize);
-        break;
-  
-! #ifdef HAVE_XGENERICEVENTS
-      case GenericEvent:
-        {
-          /* we just assume this is an XI2 event */
---- 4294,4300 ----
-          finish_drag (mv_resize);
-        break;
-  
-! #if defined (HAVE_XGENERICEVENTS) && defined (XINPUT_2)
-      case GenericEvent:
-        {
-          /* we just assume this is an XI2 event */
+--- configure.orig	2012-04-19 16:02:25.000000000 +0200
++++ configure	2012-04-19 16:03:15.000000000 +0200
+@@ -23020,7 +23020,8 @@
+   fi
+ 
+   if test "x$have_xinput2" != "xyes"; then :
+-  as_fn_error $? "*** XInput2 extension not found. Check 'config.log' for more details." "$LINENO" 5
++$as_echo "#undef XINPUT_2" >>confdefs.h
++
+ fi
+ 
+   # Check for the RANDR extension
+--- gdk/x11/gdkdevice-xi2.c.orig	2012-04-19 16:38:12.000000000 +0200
++++ gdk/x11/gdkdevice-xi2.c	2012-04-19 16:38:35.000000000 +0200
+@@ -15,6 +15,8 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#ifdef XINPUT_2
++
+ #include "config.h"
+ 
+ #include "gdkx11device-xi2.h"
+@@ -866,3 +868,5 @@
+ 
+   return device->device_id;
+ }
++
++#endif
+--- gdk/x11/gdkdevicemanager-xi2.c.orig	2012-04-19 16:39:04.000000000 +0200
++++ gdk/x11/gdkdevicemanager-xi2.c	2012-04-19 16:39:25.000000000 +0200
+@@ -15,6 +15,8 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#ifdef XINPUT_2
++
+ #include "config.h"
+ 
+ #include "gdkx11devicemanager-xi2.h"
+@@ -1656,3 +1658,5 @@
+   return g_hash_table_lookup (device_manager_xi2->id_table,
+                               GINT_TO_POINTER (device_id));
+ }
++
++#endif
+--- gtk/gtkcellarea.c.orig	2012-04-19 16:51:11.000000000 +0200
++++ gtk/gtkcellarea.c	2012-04-19 16:51:25.000000000 +0200
+@@ -707,9 +707,9 @@
+                   GTK_TYPE_TREE_ITER,
+                   G_TYPE_BOOLEAN,
+                   G_TYPE_BOOLEAN);
+-  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
++/*  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
+                               _gtk_marshal_VOID__OBJECT_BOXED_BOOLEAN_BOOLEANv);
+-
++*/
+   /**
+    * GtkCellArea::add-editable:
+    * @area: the #GtkCellArea where editing started
+--- gdk/gdk.symbols.orig	2012-04-19 16:54:28.000000000 +0200
++++ gdk/gdk.symbols	2012-04-19 16:54:30.000000000 +0200
+@@ -530,8 +530,6 @@
+ gdk_x11_device_get_id
+ gdk_x11_device_manager_core_get_type
+ gdk_x11_device_manager_lookup
+-gdk_x11_device_manager_xi2_get_type
+-gdk_x11_device_xi2_get_type
+ gdk_x11_display_broadcast_startup_message
+ gdk_x11_display_error_trap_pop
+ gdk_x11_display_error_trap_pop_ignored
+--- gtk/gtktypefuncs.c.orig	2012-04-19 16:59:59.000000000 +0200
++++ gtk/gtktypefuncs.c	2012-04-19 17:00:32.000000000 +0200
+@@ -73,12 +73,6 @@
+ *tp++ = gdk_x11_device_manager_core_get_type();
+ #endif
+ #ifdef GDK_WINDOWING_X11
+-*tp++ = gdk_x11_device_manager_xi2_get_type();
+-#endif
+-#ifdef GDK_WINDOWING_X11
+-*tp++ = gdk_x11_device_xi2_get_type();
+-#endif
+-#ifdef GDK_WINDOWING_X11
+ *tp++ = gdk_x11_display_get_type();
+ #endif
+ #ifdef GDK_WINDOWING_X11
+--- gtk/Makefile.in.orig	2012-04-19 17:06:22.000000000 +0200
++++ gtk/Makefile.in	2012-04-19 17:06:51.000000000 +0200
+@@ -5426,6 +5426,7 @@
+ 	$(AM_V_GEN) echo '#include <gtk/gtkx.h>' > xgen-gtfsrc.c && \
+ 	  ${CPP} $(DEFS) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) xgen-gtfsrc.c | \
+ 	  $(GREP) -o '\bg[td]k_[a-zA-Z0-9_]*_get_type\b' | \
++          grep -v _xi2 | \
+ 	  sort | uniq | \
+ 	  $(SED) '{ s/^/*tp++ = /; s/$$/();/; s/^.*\(gdk_x11\|gtk_plug_\|gtk_socket_\).*$$/#ifdef GDK_WINDOWING_X11\n&\n#endif/; }' > xgen-gtf \
+ 	&& cp xgen-gtf $@ && rm -f xgen-gtf
