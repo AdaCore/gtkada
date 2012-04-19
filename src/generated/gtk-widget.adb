@@ -516,22 +516,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Uri_Targets;
 
-   --------------------------------
-   -- Drag_Source_Set_Icon_Gicon --
-   --------------------------------
-
-   procedure Drag_Source_Set_Icon_Gicon
-      (Widget : not null access Gtk_Widget_Record;
-       Icon   : Glib.G_Icon.G_Icon)
-   is
-      procedure Internal
-         (Widget : System.Address;
-          Icon   : Glib.G_Icon.G_Icon);
-      pragma Import (C, Internal, "gtk_drag_source_set_icon_gicon");
-   begin
-      Internal (Get_Object (Widget), Icon);
-   end Drag_Source_Set_Icon_Gicon;
-
    -------------------------------
    -- Drag_Source_Set_Icon_Name --
    -------------------------------

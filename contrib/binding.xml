@@ -2320,6 +2320,7 @@ __PRE__
      <method id="gtk_widget_get_modifier_style" bind="False"/><!-- in Gtk.RC -->
      <method id="gtk_widget_class_path" bind="False"/><!-- deprecated -->
      <method id="gtk_widget_path" bind="False"/><!-- deprecated -->
+     <method id="gtk_drag_source_set_icon_gicon" bind="False"/><!-- does not exist in quartz backend-->
      <method id="gtk_drag_source_get_target_list" bind="False"/><!-- in Gtk.Dnd -->
      <method id="gtk_drag_source_set_target_list" bind="False"/><!-- in Gtk.Dnd-->
      <method id="gtk_drag_begin" bind="False"/><!-- in Gtk.Dnd -->
@@ -2606,7 +2607,7 @@ __PRE__
 
      <!-- ??? Binding needs testing -->
      <method id="gtk_container_get_focus_chain" return_as_param="Success" bind="false">
-       <parameter name="focusable_widgets" ctype="WidgetList*" direction="out"/> 
+       <parameter name="focusable_widgets" ctype="WidgetList*" direction="out"/>
      </method>
    </package>
 

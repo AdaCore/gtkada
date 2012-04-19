@@ -642,14 +642,6 @@ package Gtk.Widget is
    --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
-   procedure Drag_Source_Set_Icon_Gicon
-      (Widget : not null access Gtk_Widget_Record;
-       Icon   : Glib.G_Icon.G_Icon);
-   --  Sets the icon that will be used for drags from a particular source to
-   --  Icon. See the docs for Gtk.Icon_Theme.Gtk_Icon_Theme for more details.
-   --  Since: gtk+ 3.2
-   --  "icon": A GIcon
-
    procedure Drag_Source_Set_Icon_Name
       (Widget    : not null access Gtk_Widget_Record;
        Icon_Name : UTF8_String);
