@@ -1,3 +1,16 @@
+2012-04-20	Nicolas Setton  <setton@adacore.com>
+
+	(gtk/gtkcellarea.c): Fix build error.
+
+	To be investigated further.
+
+2012-04-20	Nicolas Setton  <setton@adacore.com>
+
+	(configure, gdk/x11/gdkdevice-xi2.c, gdk/x11/gdkdevicemanager-xi2.c,
+	gdk/gdk.symbols, gtk/gtktypefuncs.c, gtk/Makefile.in): Deactivate
+	support for XINPUT_2, not available on old versions of Linux.
+	To be discussed on the gtk-devel mailing list.
+
 --- configure.orig	2012-04-19 16:02:25.000000000 +0200
 +++ configure	2012-04-19 16:03:15.000000000 +0200
 @@ -23020,7 +23020,8 @@
@@ -44,20 +57,6 @@
  }
 +
 +#endif
---- gtk/gtkcellarea.c.orig	2012-04-19 16:51:11.000000000 +0200
-+++ gtk/gtkcellarea.c	2012-04-19 16:51:25.000000000 +0200
-@@ -707,9 +707,9 @@
-                   GTK_TYPE_TREE_ITER,
-                   G_TYPE_BOOLEAN,
-                   G_TYPE_BOOLEAN);
--  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
-+/*  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
-                               _gtk_marshal_VOID__OBJECT_BOXED_BOOLEAN_BOOLEANv);
--
-+*/
-   /**
-    * GtkCellArea::add-editable:
-    * @area: the #GtkCellArea where editing started
 --- gdk/gdk.symbols.orig	2012-04-19 16:54:28.000000000 +0200
 +++ gdk/gdk.symbols	2012-04-19 16:54:30.000000000 +0200
 @@ -530,8 +530,6 @@
@@ -94,3 +93,17 @@
  	  sort | uniq | \
  	  $(SED) '{ s/^/*tp++ = /; s/$$/();/; s/^.*\(gdk_x11\|gtk_plug_\|gtk_socket_\).*$$/#ifdef GDK_WINDOWING_X11\n&\n#endif/; }' > xgen-gtf \
  	&& cp xgen-gtf $@ && rm -f xgen-gtf
+--- gtk/gtkcellarea.c.orig	2012-04-19 16:51:11.000000000 +0200
++++ gtk/gtkcellarea.c	2012-04-19 16:51:25.000000000 +0200
+@@ -707,9 +707,9 @@
+                   GTK_TYPE_TREE_ITER,
+                   G_TYPE_BOOLEAN,
+                   G_TYPE_BOOLEAN);
+-  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
++/*  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
+                               _gtk_marshal_VOID__OBJECT_BOXED_BOOLEAN_BOOLEANv);
+-
++*/
+   /**
+    * GtkCellArea::add-editable:
+    * @area: the #GtkCellArea where editing started
