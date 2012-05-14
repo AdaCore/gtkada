@@ -242,7 +242,6 @@ with Gdk.Visual;              use Gdk.Visual;
 with Gdk.Window;              use Gdk.Window;
 with Glib;                    use Glib;
 with Glib.GSlist;             use Glib.GSlist;
-with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
