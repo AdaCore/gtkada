@@ -583,8 +583,6 @@ package body Gtkada.Canvas is
 
       Widget_Callback.Connect
         (Canvas, "notify::hadjustment", Set_Scroll_Adjustments'Access);
---        Widget_Callback.Connect
---          (Canvas, "notify::vadjustment", Set_Scroll_Adjustments'Access);
 
       Style := Get_Style (Canvas);
       Set_Bg (Style, State_Normal, Gdk_Color'(Get_White (Style)));
@@ -653,10 +651,7 @@ package body Gtkada.Canvas is
    procedure Set_Scroll_Adjustments
      (Canvas : not null access Gtk_Widget_Record'Class)
    is
---        Hadj : constant System.Address := Get_Address (Nth (Args, 1));
---        Vadj : constant System.Address := Get_Address (Nth (Args, 2));
       Canv : constant Interactive_Canvas := Interactive_Canvas (Canvas);
---        Stub : Gtk_Adjustment_Record;
 
    begin
       Scrolled (Canvas);
