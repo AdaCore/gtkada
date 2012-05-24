@@ -9,6 +9,14 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 3.4.1
+----------------------------
+
+L413-025 Binding for Gtk.Recent_Chooser_Menu
+
+  A new binding for Gtk.Recent_Chooser_Menu has been added.  This
+  widget shows a list of recently used resources in menu form.
+
 L125-027 Remove support for GNOME widgets (2012-01-25)
 
   These widgets were no longer support nor up-to-date with regards to
