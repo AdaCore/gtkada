@@ -1,49 +1,9 @@
 2012-05-29	Nicolas Setton  <setton@adacore.com>
 
-	* atk/atksocket.h, atk/atkplug.h, atk/atktext.h:
+	* atk/atktext.h:
 	Add an underscore in front of prototype functions, so they are not
 	picked up by the GIR scanner.
 
---- atk/atksocket.h.orig	2012-05-29 14:26:09.969400000 +0200
-+++ atk/atksocket.h	2012-05-29 16:52:26.669800000 +0200
-@@ -26,7 +26,7 @@
- 
- G_BEGIN_DECLS
- 
--#define ATK_TYPE_SOCKET               (atk_socket_get_type ())
-+#define ATK_TYPE_SOCKET               (_atk_socket_get_type ())
- #define ATK_SOCKET(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), ATK_TYPE_SOCKET, AtkSocket))
- #define ATK_IS_SOCKET(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ATK_TYPE_SOCKET))
- #define ATK_SOCKET_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), ATK_TYPE_SOCKET, AtkSocketClass))
-@@ -44,7 +44,7 @@
-   gchar* embedded_plug_id;
- };
- 
--GType atk_socket_get_type (void);
-+GType _atk_socket_get_type (void);
- 
- struct _AtkSocketClass
- {
---- atk/atkplug.h.orig	2012-05-29 14:26:02.824600000 +0200
-+++ atk/atkplug.h	2012-05-29 17:07:19.910200000 +0200
-@@ -26,7 +26,7 @@
- 
- G_BEGIN_DECLS
- 
--#define ATK_TYPE_PLUG               (atk_plug_get_type ())
-+#define ATK_TYPE_PLUG               (_atk_plug_get_type ())
- #define ATK_PLUG(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), ATK_TYPE_PLUG, AtkPlug))
- #define ATK_IS_PLUG(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ATK_TYPE_PLUG))
- #define ATK_PLUG_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), ATK_TYPE_PLUG, AtkPlugClass))
-@@ -41,7 +41,7 @@
-   AtkObject parent;
- };
- 
--GType atk_plug_get_type (void);
-+GType _atk_plug_get_type (void);
- 
- struct _AtkPlugClass
- {
 --- atk/atktext.h.orig	2012-05-29 14:25:49.268200000 +0200
 +++ atk/atktext.h	2012-05-29 17:07:49.893400000 +0200
 @@ -174,7 +174,7 @@
@@ -55,3 +15,11 @@
  
  /**
   *AtkTextClipType
+--- atk/atk.symbols.orig	2012-05-31 14:12:44.060200000 +0200
++++ atk/atk.symbols	2012-05-31 14:13:24.308200000 +0200
+@@ -246,3 +246,5 @@
+ 	atk_value_get_type
+ 	atk_value_set_current_value
+ 	atk_window_get_type
++	atk_socket_get_type
++	atk_plug_get_type
