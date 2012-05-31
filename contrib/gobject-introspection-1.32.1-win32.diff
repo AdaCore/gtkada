@@ -4,10 +4,6 @@
 
 	* giscanner/utils.py: Port to Windows a local hack.
 
-	* giscanner/sourcescanner.py:
-	Spawn gcc instead of cc, since cc is a link which cannot
-	be launched by python.subprocess.
-
 	* giscanner/dumper.py: The extension is '.exe', not 'exe'.
 	Add workaround against wrong library additions on the link
 	line.
@@ -62,17 +58,6 @@
      return libname
  
  # Returns arguments for invoking libtool, if applicable, otherwise None
---- giscanner/sourcescanner.py.orig	2012-05-28 12:26:54.500200000 +0200
-+++ giscanner/sourcescanner.py	2012-05-28 12:27:05.123800000 +0200
-@@ -274,7 +274,7 @@
- 
-         defines = ['__GI_SCANNER__']
-         undefs = []
--        cpp_args = os.environ.get('CC', 'cc').split()
-+        cpp_args = os.environ.get('CC', 'gcc').split()
-         cpp_args += ['-E', '-C', '-I.', '-']
- 
-         cpp_args += self._cpp_options
 --- giscanner/giscannermodule.c.orig	2012-05-28 13:53:10.861000000 +0200
 +++ giscanner/giscannermodule.c	2012-05-28 13:53:26.242600000 +0200
 @@ -418,7 +418,7 @@
