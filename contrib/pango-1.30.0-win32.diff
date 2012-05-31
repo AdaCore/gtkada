@@ -4,9 +4,7 @@
 	of Pango-1.0.gir on freetype2 libraries, which are not
 	present on Windows.
 
-	* pango/pangocairo-win32.h: Add an underscore in front of
-	prototype function, so it doesn't get picked up by the
-	GIR scanner.
+	* pango/pangocairo.def: define pango_cairo_win32_font_map_get_type.
 
 --- pango/Makefile.in.orig	2012-05-29 15:37:20.687800000 +0200
 +++ pango/Makefile.in	2012-05-29 15:38:00.233800000 +0200
@@ -39,23 +37,10 @@
  PangoCairo_1_0_gir_FILES = $(filter-out %-private.h, $(addprefix $(srcdir)/,$(pangocairo_introspection_files)))
  libpangowin32_1_0_la_LDFLAGS = $(LIBRARY_LIBTOOL_OPTIONS) \
  	$(am__append_38)
---- ../originals/pango-1.30.0/pango/pangocairo-win32.h	2011-08-16 03:11:08.000000000 +0200
-+++ pango/pangocairo-win32.h	2012-05-29 17:54:21.825400000 +0200
-@@ -28,7 +28,7 @@
- 
- G_BEGIN_DECLS
- 
--#define PANGO_TYPE_CAIRO_WIN32_FONT_MAP       (pango_cairo_win32_font_map_get_type ())
-+#define PANGO_TYPE_CAIRO_WIN32_FONT_MAP       (_pango_cairo_win32_font_map_get_type ())
- #define PANGO_CAIRO_WIN32_FONT_MAP(object)    (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_CAIRO_WIN32_FONT_MAP, PangoCairoWin32FontMap))
- #define PANGO_IS_CAIRO_WIN32_FONT_MAP(object) (G_TYPE_CHECK_INSTANCE_TYPE ((object), PANGO_TYPE_CAIRO_WIN32_FONT_MAP))
- 
-@@ -41,7 +41,7 @@
-   double dpi;
- };
- 
--GType pango_cairo_win32_font_map_get_type (void) G_GNUC_CONST;
-+GType _pango_cairo_win32_font_map_get_type (void) G_GNUC_CONST;
- 
- PangoFont *_pango_cairo_win32_font_new (PangoCairoWin32FontMap       *cwfontmap,
- 					PangoContext                 *context,
+--- pango/pangocairo.def.orig	2012-05-31 15:03:24.047800000 +0200
++++ pango/pangocairo.def	2012-05-31 15:03:44.187400000 +0200
+@@ -32,3 +32,4 @@
+ 	pango_cairo_show_layout_line
+ 	pango_cairo_update_context
+ 	pango_cairo_update_layout
++	pango_cairo_win32_font_map_get_type
