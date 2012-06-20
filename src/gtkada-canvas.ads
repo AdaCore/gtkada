@@ -108,7 +108,7 @@ with Glib.Graphs;
 with Glib.Main;
 
 with Gtk.Adjustment;
-with Gtk.Drawing_Area;
+with Gtk.Layout;
 
 with Pango.Font;
 with Pango.Layout;
@@ -116,7 +116,7 @@ with Pango.Layout;
 package Gtkada.Canvas is
 
    type Interactive_Canvas_Record is new
-     Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
+     Gtk.Layout.Gtk_Layout_Record with private;
    type Interactive_Canvas is access all Interactive_Canvas_Record'Class;
    --  A canvas on which items are put.
    --  Each item can be moved interactively by the user, and links can be
@@ -961,7 +961,7 @@ private
    end record;
 
    type Interactive_Canvas_Record is new
-     Gtk.Drawing_Area.Gtk_Drawing_Area_Record
+     Gtk.Layout.Gtk_Layout_Record
    with record
       Children          : Glib.Graphs.Graph;
       World_X, World_Y  : Glib.Gdouble;
@@ -972,8 +972,8 @@ private
       Vertical_Layout   : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
-      World_X_At_Click  : Glib.Gdouble;
-      World_Y_At_Click  : Glib.Gdouble;
+      World_X_At_Click  : Glib.Gdouble := 0.0;
+      World_Y_At_Click  : Glib.Gdouble := 0.0;
       --  Coordinates of the last button_press event in the canvas.
       --  These are world-coordinates, so that even if the canvas is scrolled
       --  they remain valid
@@ -981,8 +981,8 @@ private
       Selected_Count    : Natural := 0;
       --  Number of selected items
 
-      Offset_X_World    : Glib.Gint;
-      Offset_Y_World    : Glib.Gint;
+      Offset_X_World    : Glib.Gint := 0;
+      Offset_Y_World    : Glib.Gint := 0;
       --  How much world-coordinates have we moved the mouse since the last
       --  button press event ?
 
@@ -1018,7 +1018,6 @@ private
       Annotation_Layout : Pango.Layout.Pango_Layout;
       --  Layout used to draw the annotations
 
-      Hadj, Vadj        : Gtk.Adjustment.Gtk_Adjustment;
       Scrolling_Timeout_Id : Glib.Main.G_Source_Id := 0;
 
       Orthogonal_Links : Boolean := False;

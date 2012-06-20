@@ -1,5 +1,10 @@
 Known problems fixed in GtkAda 3.2.0
 
+- L615-005 Constraint Error using the GtkAda.Canvas
+  Problem:    The GtkAda.Canvas might raise a Constraint_Error when moving
+              the mouse and a button has never been pressed.
+  Workaround: None known.
+
 - K726-004 Support for dead keys under Windows
   Problem:    Under windows, the dead keys for acute accent and diaeresis,
               followed by a space, should produce respectively an apostrophe
