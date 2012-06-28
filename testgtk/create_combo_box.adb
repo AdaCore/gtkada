@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,6 +43,7 @@ package body Create_Combo_Box is
 
    Column_0 : constant := 0;
    Column_1 : constant := 1;
+   Column_2 : constant := 2;
    --  The columns in the model
 
    procedure Append_Color_Pixbuf
@@ -156,18 +157,23 @@ package body Create_Combo_Box is
       --  Create a model. This is a set of rows, each with two columns in this
       --  specific case.
       Gtk_New (Model, (Column_0 => GType_String,
-                       Column_1 => Gdk.Pixbuf.Get_Type));
+                       Column_1 => Gdk.Pixbuf.Get_Type,
+                       Column_2 => GType_Boolean));
+
       Append (Model, Iter);
       Set (Model, Iter, Column_0, "Combo From Model 1");
       Set_Color_Pixbuf (Model, Iter, "red");
+      Set (Model, Iter, Column_2, True);
 
       Append (Model, Iter);
       Set (Model, Iter, Column_0, "Combo From Model 2");
       Set_Color_Pixbuf (Model, Iter, "green");
+      Set (Model, Iter, Column_2, False);  --  Row 2 will be insensitive
 
       Append (Model, Iter);
       Set (Model, Iter, Column_0, "Combo From Model 3");
       Set_Color_Pixbuf (Model, Iter, "blue");
+      Set (Model, Iter, Column_2, True);
 
       --  Create the combo. We use both columns of the model to display in the
       --  model, but we could display only one, or even have a display that
@@ -180,10 +186,12 @@ package body Create_Combo_Box is
       Gtk_New (Pix);
       Pack_Start    (+Combo, Pix, Expand => True);
       Add_Attribute (+Combo, Pix, "pixbuf", Column_1);
+      Add_Attribute (+Combo, Pix, "sensitive", Column_2);
 
       Gtk_New (Render);
       Pack_Start    (+Combo, Render, Expand => True);
       Add_Attribute (+Combo, Render, "text", Column_0);
+      Add_Attribute (+Combo, Render, "sensitive", Column_2);
 
       Set_Active (Combo, 0);
 
