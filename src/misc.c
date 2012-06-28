@@ -3003,11 +3003,6 @@ ada_tree_iter_copy (const GtkTreeIter *source,
 
 #include <windows.h>
 #include <gdk/gdkwin32.h>
-void
-ada_gdk_move_pointer (gint x, gint y)
-{
-  SetCursorPos (x, y);
-}
 
 void *
 ada_gdk_get_window_id (GdkWindow *w)
@@ -3020,10 +3015,6 @@ ada_gdk_get_window_id (GdkWindow *w)
     XWarpPointer requires explicit linker flags pointing to X11 libs,
     and when using Quartz, there is no X11 lib at all.
 */
-void
-ada_gdk_move_pointer (gint x, gint y)
-{
-}
 
 void *
 ada_gdk_get_window_id (GdkWindow *w)
@@ -3033,16 +3024,6 @@ ada_gdk_get_window_id (GdkWindow *w)
 
 #else
 #include <gdk/gdkx.h>
-
-void
-ada_gdk_move_pointer (gint x, gint y)
-{
-  GdkDisplay *display = gdk_display_get_default ();
-  Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
-  Window xroot_window = GDK_WINDOW_XID (gdk_get_default_root_window ());
-
-  XWarpPointer (xdisplay, None, xroot_window, 0, 0, 0, 0, x, y);
-}
 
 void *
 ada_gdk_get_window_id (GdkWindow *w)
