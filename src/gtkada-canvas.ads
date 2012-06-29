@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -975,8 +975,8 @@ private
       Vertical_Layout   : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
-      World_X_At_Click  : Glib.Gdouble;
-      World_Y_At_Click  : Glib.Gdouble;
+      World_X_At_Click  : Glib.Gdouble := 0.0;
+      World_Y_At_Click  : Glib.Gdouble := 0.0;
       --  Coordinates of the last button_press event in the canvas.
       --  These are world-coordinates, so that even if the canvas is scrolled
       --  they remain valid
@@ -984,8 +984,8 @@ private
       Selected_Count    : Natural := 0;
       --  Number of selected items
 
-      Offset_X_World    : Glib.Gint;
-      Offset_Y_World    : Glib.Gint;
+      Offset_X_World    : Glib.Gint := 0;
+      Offset_Y_World    : Glib.Gint := 0;
       --  How much world-coordinates have we moved the mouse since the last
       --  button press event ?
 
