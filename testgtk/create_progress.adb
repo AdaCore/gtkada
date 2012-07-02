@@ -47,8 +47,6 @@ package body Create_Progress is
    type ProgressData is record
       Pbar            : Gtk_Progress_Bar;
       Block_Spin      : Gtk_Spin_Button;
-      X_Align_Spin    : Gtk_Spin_Button;
-      Y_Align_Spin    : Gtk_Spin_Button;
       Step_Spin       : Gtk_Spin_Button;
       Act_Blocks_Spin : Gtk_Spin_Button;
       Label           : Gtk_Label;
@@ -152,8 +150,6 @@ package body Create_Progress is
       Set_Show_Text (Progress_Bar => Pdata.Pbar,
                      Show_Text    => Get_Active (Widget));
       Set_Sensitive (Pdata.Gentry, Get_Active (Widget));
-      Set_Sensitive (Pdata.X_Align_Spin, Get_Active (Widget));
-      Set_Sensitive (Pdata.Y_Align_Spin, Get_Active (Widget));
    end Toggle_Show_Text;
 
    --------------------------
@@ -231,7 +227,7 @@ package body Create_Progress is
 
       Gtk_New (Pdata.Pbar);
       --  ??? will text with control characters display as expected?
-      Set_Text (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
+      Set_Text (Pdata.Pbar, "");
       Add (Align, Pdata.Pbar);
 
       Pdata.Timer := Time_Cb.Timeout_Add
@@ -316,7 +312,7 @@ package body Create_Progress is
 
       --  Format
 
-      Gtk_New (Label, "Format : ");
+      Gtk_New (Label, "Text (leave empty to display a percentage) : ");
       Pack_Start (Hbox, Label, False, True, 0);
 
       Gtk_New (Pdata.Gentry);
@@ -324,7 +320,7 @@ package body Create_Progress is
         (Pdata.Gentry, "changed", Entry_Changed'Access,
          Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
-      Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
+      Set_Text (Pdata.Gentry, "");
       Set_Size_Request (Pdata.Gentry, 100, -1);
       Set_Sensitive (Pdata.Gentry, False);
 
