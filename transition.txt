@@ -279,6 +279,25 @@ Widget (which is a GObject) to an Interface (a System.Address).
 Therefore the Gtk_Editable_Record type has been eliminated.  User code
 referencing only the Gtk_Editable type should function unchanged.
 
+Code using the tag as a test before converting a widget to a Gtk.Editable
+can now work using the Implements_Editable package.
+
+For instance, if Widget is a GObject_Record, the following code:
+      if Widget.all in Gtk_Editable_Record'Class then
+         Cut_Clipboard (Gtk_Editable (Widget));
+becomes:
+      if Is_A (Widget.Get_Type, Gtk.Editable.Get_Type) then
+         Cut_Clipboard (+Widget);
+
+where the function "+" is defined by instantiating Implements_Editable:
+
+   package Implements_Editable is new Glib.Types.Implements
+     (Gtk.Editable.Gtk_Editable, GObject_Record, GObject);
+   function "+"
+     (Widget : access GObject_Record'Class)
+      return Gtk.Editable.Gtk_Editable
+      renames Implements_Editable.To_Interface;
+
 The Select_Region subprogram parameter name The_End has been normalized
 to End_Pos.
 
