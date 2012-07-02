@@ -2834,6 +2834,37 @@ __PRE__
      <parameter name="self" ada="Button"/>
    </package>
 
+   <package id="GtkStyle">
+     <parameter name="self" ada="Style"/>
+      <method id="gtk_style_get_valist" bind="False"/><!-- va_list -->
+      <method id="gtk_style_lookup_color"
+              return_as_param="Found"/>
+
+      <method id="gtk_style_render_icon" bind="False"/>  <!-- need icon_source -->
+      <method id="gtk_style_lookup_icon_set" bind="False"/>  <!-- need icon_factory -->
+
+      <extra>
+        <spec>
+   type Gtk_Border_Record is record
+      Left   : Gint;
+      Right  : Gint;
+      Top    : Gint;
+      Bottom : Gint;
+   end record;
+   pragma Convention (C, Gtk_Border_Record);
+   type Gtk_Border is access all Gtk_Border_Record;
+
+   --  function Border_Copy (Border : access Gtk_Border_Record) return Gtk_Border;
+   --  Copies a Gtk_Border structure.
+
+   --  procedure Border_Free (Border : access Gtk_Border_Record);
+   --  Frees a Gtk_Border structure.
+
+   --  function Border_Get_Type return GType;
+        </spec>
+      </extra>
+   </package>
+
    <package id="GtkToolButton">
      <parameter name="self" ada="Button"/>
      <method id="gtk_tool_button_new">

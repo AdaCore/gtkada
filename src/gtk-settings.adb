@@ -22,7 +22,6 @@
 ------------------------------------------------------------------------------
 
 with Glib.Values;          use Glib.Values;
-with Gtk.Style;            use Gtk.Style;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Glib.Type_Conversion_Hooks;

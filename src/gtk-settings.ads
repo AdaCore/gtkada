@@ -32,7 +32,6 @@ with Gdk;
 with Glib.Object;
 with Glib.Properties;
 with Glib.Values;
-with Gtk.Style;
 with Interfaces.C.Strings;
 
 package Gtk.Settings is
@@ -53,13 +52,6 @@ package Gtk.Settings is
    procedure Install_Property (Pspec : Glib.Param_Spec);
    --  Declares a property that can be shared among various parts of the
    --  application
-
-   procedure Install_Property_Parser
-     (Pspec  : Glib.Param_Spec;
-      Parser : Gtk.Style.Gtk_Rc_Property_Parser);
-   --  Install a new parser for the given property. This parser is responsible
-   --  for reading the property's value in a gtk configuration file, and
-   --  convert it to a suitable value.
 
    --------------------------------
    -- Precoded parsing functions --
@@ -717,8 +709,6 @@ private
                                         Build ("gtk-xft-rgba");
 
    pragma Import (C, Get_Type,          "gtk_settings_get_type");
-   pragma Import (C, Install_Property_Parser,
-                  "gtk_settings_install_property_parser");
    pragma Import (C, Install_Property,  "gtk_settings_install_property");
    pragma Import (C, Parse_Color,       "gtk_rc_property_parse_color");
    pragma Import (C, Parse_Enum,        "gtk_rc_property_parse_enum");

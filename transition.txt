@@ -576,6 +576,7 @@ Gtk.Style
 =========
 
 All functions based on Gdk.GC or Gdk.Pixmap have been removed.
+This package is deprecated (but not removed yet) in gtk3
 Use functions in Gtk.Style_Context instead.
 
 A number of drawing functions have been removed: use the Paint_* functions
