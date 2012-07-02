@@ -39,7 +39,6 @@ with Gdk.Pixbuf;
 with Gdk.RGBA;
 
 with Gtk.Enums;
-with Gdk.RGBA;
 with Gtk.Widget;
 
 package Gtkada.Style is
