@@ -76,7 +76,10 @@ package Gdk.RGBA is
    --  Gdk_RGBAs.
    --  Since: gtk+ 3.0
 
-   function Parse (Self : Gdk_RGBA; Spec : UTF8_String) return Boolean;
+   procedure Parse
+      (Self    : out Gdk_RGBA;
+       Spec    : UTF8_String;
+       Success : out Boolean);
    --  Parses a textual representation of a color, filling in the
    --  <structfield>red</structfield>, <structfield>green</structfield>,
    --  <structfield>blue</structfield> and <structfield>alpha</structfield>

@@ -2677,6 +2677,9 @@ __PRE__
      <method id="gdk_rgba_equal">
        <parameter name="p2" ctype="GdkRGBA*"/>
      </method>
+     <method id="gdk_rgba_parse" return_as_param="Success">
+       <parameter name="self" direction="out"/>
+     </method>
      <extra>
        <spec>
    Null_RGBA : constant Gdk_RGBA :=

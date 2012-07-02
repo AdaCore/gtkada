@@ -51,17 +51,23 @@ package body Gdk.RGBA is
    -- Parse --
    -----------
 
-   function Parse (Self : Gdk_RGBA; Spec : UTF8_String) return Boolean is
+   procedure Parse
+      (Self    : out Gdk_RGBA;
+       Spec    : UTF8_String;
+       Success : out Boolean)
+   is
       function Internal
-         (Self : Gdk_RGBA;
-          Spec : Interfaces.C.Strings.chars_ptr) return Integer;
+         (Acc_Self : access Gdk_RGBA;
+          Spec     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gdk_rgba_parse");
+      Acc_Self   : aliased Gdk_RGBA;
       Tmp_Spec   : Interfaces.C.Strings.chars_ptr := New_String (Spec);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Self, Tmp_Spec);
+      Tmp_Return := Internal (Acc_Self'Access, Tmp_Spec);
+      Self := Acc_Self;
       Free (Tmp_Spec);
-      return Boolean'Val (Tmp_Return);
+      Success := Boolean'Val (Tmp_Return);
    end Parse;
 
    ---------------

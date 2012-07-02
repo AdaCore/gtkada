@@ -659,8 +659,18 @@ class GIRClass(object):
 
         t = naming.type(self._subst["cname"], cname=self._subst["cname"],
                         useclass=False)
-        pname = gtkmethod.get_param("self").ada_name() or "Self"
-        profile.add_param(0, Parameter(name=pname, type=t))
+        gtkparam = gtkmethod.get_param("self")
+        pname = gtkparam.ada_name() or "Self"
+
+        direction = gtkparam.get_direction() or "in"
+        if direction in ("out", "access"):
+            mode = direction
+        elif direction == "inout":
+            mode = "in out"
+        else:
+            mode = "in"
+
+        profile.add_param(0, Parameter(name=pname, type=t, mode=mode))
 
     def _handle_function_internal(self, section, node, cname,
                                   gtkmethod,
