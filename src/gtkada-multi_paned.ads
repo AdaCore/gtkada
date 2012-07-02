@@ -29,7 +29,8 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
-with Glib;       use Glib;
+with Cairo;         use Cairo;
+with Glib;          use Glib;
 with Gdk.Cursor;
 with Gtk.Enums;
 with Gtk.Fixed;
@@ -270,6 +271,9 @@ private
       Initial_Pos  : Gint;
       Selected     : Child_Description_Access;
       Selected_Pos : Gtk.Widget.Gtk_Allocation;
+
+      Overlay : Cairo.Cairo_Surface;
+      --  A surface used during a resize operation
 
       Cursor_Double_H_Arrow : Gdk.Cursor.Gdk_Cursor;
       Cursor_Double_V_Arrow : Gdk.Cursor.Gdk_Cursor;

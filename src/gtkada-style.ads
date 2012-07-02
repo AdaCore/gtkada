@@ -29,15 +29,11 @@
 --  <group>Configuration and Themes</group>
 
 with Glib;
-
 with Cairo;
-
 with Pango.Layout;
-
 with Gdk.Color;
 with Gdk.Pixbuf;
 with Gdk.RGBA;
-
 with Gtk.Enums;
 with Gtk.Widget;
 
@@ -162,5 +158,25 @@ package Gtkada.Style is
    --  are server-side images, so depend on a surface attached to a screen.
    --  As a result, those would not be drawn on a non-screen surface (such as
    --  an internal Image_Surface).
+
+   --------------------------
+   -- Context manipulation --
+   --------------------------
+
+   function Snapshot
+     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Cairo.Cairo_Surface;
+   --  Create a snapshot of the widget.
+   --  This allocates a new surface and draws the widget on it. The surface
+   --  needs to be destroyed when you are done with it using Surface_Destroy.
+   --  The snapshot can be drawn on another surface using
+   --      Set_Source_Surface (Cr, the_snapshot, 0.0, 0.0);
+   --      Set_Operator (Cr, Cairo_Operator_Source);
+   --      Rectangle (Cr, ....);
+   --      Cairo.Fill (Cr);
+   --  The 0.0 values might need to be adjusted if your widget does not have
+   --  its own window. In this case, you should use:
+   --      Get_Allocation (Widget, Alloc);
+   --      --  and replace 0.0 with Gdouble (Alloc.X)
 
 end Gtkada.Style;

@@ -29,6 +29,7 @@ with Cairo;        use Cairo;
 with Pango.Cairo;  use Pango.Cairo;
 with Gdk.Cairo;    use Gdk.Cairo;
 with Gdk.RGBA;          use Gdk.RGBA;
+with Gdk.Window;
 
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Style_Context; use Gtk.Style_Context;
@@ -461,5 +462,33 @@ package body Gtkada.Style is
       Gdk.Cairo.Set_Source_Pixbuf (Cr, Pixbuf, Gdouble (X), Gdouble (Y));
       Cairo.Paint (Cr);
    end Draw_Pixbuf;
+
+   --------------
+   -- Snapshot --
+   --------------
+
+   function Snapshot
+     (Widget : not null access Gtk_Widget_Record'Class)
+      return Cairo.Cairo_Surface
+   is
+      Ctx     : Cairo_Context;
+      Surface : Cairo_Surface;
+      Color   : Gdk_RGBA;
+   begin
+      Surface := Gdk.Window.Create_Similar_Surface
+        (Window  => Get_Window (Widget),
+         Content => Cairo_Content_Color,
+         Width   => Get_Allocated_Width (Widget),
+         Height  => Get_Allocated_Height (Widget));
+
+      Get_Style_Context (Widget).Get_Background_Color
+        (Gtk_State_Flag_Normal, Color);
+      Ctx := Create (Surface);
+      Set_Source_RGBA (Ctx, Color);
+      Paint (Ctx);
+      Draw (Widget, Ctx);  --  Capture current rendering
+      Destroy (Ctx);
+      return Surface;
+   end Snapshot;
 
 end Gtkada.Style;

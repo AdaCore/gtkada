@@ -586,6 +586,27 @@ package Cairo is
    --
    --  The default operator is Cairo_Operator_Over.
 
+   function Pattern_Create_Rgb
+     (Red, Green, Blue : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Rgb, "cairo_pattern_create_rgb");
+
+   function Pattern_Create_Rgba
+     (Red, Green, Blue, Alpha : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Rgba, "cairo_pattern_create_rgba");
+
+   function Pattern_Create_For_Surface
+     (Surface : Cairo_Surface) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_For_Surface,
+                  "cairo_pattern_create_for_surface");
+
+   function Pattern_Create_Linear
+     (X0, Y0, X1, Y1 : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Linear, "cairo_pattern_create_linear");
+
+   function Pattern_Create_Radial
+     (Cx0, Cy0, Radius0, Cx1, Cy1, Radius1 : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Radial, "cairo_pattern_create_radial");
+
    procedure Set_Source (Cr : Cairo_Context; Source : Cairo_Pattern);
    --  Cr: a cairo context
    --  Source: a Cairo_Pattern to be used as the Source for

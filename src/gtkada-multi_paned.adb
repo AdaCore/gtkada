@@ -44,9 +44,9 @@ with Gtk.Style_Context;    use Gtk.Style_Context;
 with Gtk.Widget;           use Gtk.Widget;
 
 with Gtkada.Handlers;      use Gtkada.Handlers;
+with Gtkada.Style;         use Gtkada.Style;
 
-with Cairo; use Cairo;
-with Gdk.Cairo; use Gdk.Cairo;
+with Gdk.Cairo;            use Gdk.Cairo;
 
 package body Gtkada.Multi_Paned is
 
@@ -789,16 +789,36 @@ package body Gtkada.Multi_Paned is
      (Split : access Gtkada_Multi_Paned_Record'Class)
    is
       Cr : Cairo_Context;
+      Alloc : Gtk_Allocation;
    begin
       if not Split.Opaque_Resizing then
          Cr := Create (Get_Window (Split));
-         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
-         Gtk.Style_Context.Render_Line
-           (Get_Style_Context (Split), Cr,
+
+         Get_Allocation (Split, Alloc);
+
+         Save (Cr);
+         Set_Source_Surface
+           (Cr, Split.Overlay, Gdouble (Alloc.X), Gdouble (Alloc.Y));
+         Set_Operator (Cr, Cairo_Operator_Source);
+         Rectangle
+           (Cr,
+            Gdouble (Alloc.X), Gdouble (Alloc.Y),
+            Gdouble (Alloc.Width), Gdouble (Alloc.Height));
+         Cairo.Fill (Cr);
+         Restore (Cr);
+
+         Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 1.0));
+         Set_Line_Width (Cr, 1.0);
+         Move_To
+           (Cr,
             Gdouble (Split.Selected_Pos.X),
-            Gdouble (Split.Selected_Pos.Y),
-            Gdouble (Split.Selected_Pos.Width + Split.Selected_Pos.X),
-            Gdouble (Split.Selected_Pos.Height + Split.Selected_Pos.Y));
+            Gdouble (Split.Selected_Pos.Y));
+         Rel_Line_To
+           (Cr,
+            Gdouble (Split.Selected_Pos.Width),
+            Gdouble (Split.Selected_Pos.Height));
+         Stroke (Cr);
+
          Destroy (Cr);
       end if;
    end Draw_Resize_Line;
@@ -884,6 +904,8 @@ package body Gtkada.Multi_Paned is
          Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
          Cursor => Cursor,
          Time   => 0);
+
+      Split.Overlay := Gtkada.Style.Snapshot (Split);
 
       Draw_Resize_Line (Split);
       return False;
@@ -1025,7 +1047,6 @@ package body Gtkada.Multi_Paned is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
    begin
       if Split.Selected /= null then
-         Draw_Resize_Line (Split);
          Pointer_Ungrab (Time => 0);
 
          case Split.Selected.Parent.Orientation is
@@ -1038,8 +1059,8 @@ package body Gtkada.Multi_Paned is
          Resize_Child_And_Siblings (Split.Selected.Parent, Split.Selected);
          Size_Allocate (Split,
                         Split.Selected.Parent,
-                        Gint'Max (1, Split.Selected.Parent.Width),
-                        Gint'Max (1, Split.Selected.Parent.Height));
+                        Float'Max (1.0, Split.Selected.Parent.Width),
+                        Float'Max (1.0, Split.Selected.Parent.Height));
 
          if Traces then
             Put_Line ("After button_release.size_allocate");
@@ -1048,6 +1069,10 @@ package body Gtkada.Multi_Paned is
 
          Split.Selected := null;
       end if;
+
+      Surface_Destroy (Split.Overlay);
+      Split.Overlay := Null_Surface;
+
       return False;
    end Button_Released;
 
@@ -1063,8 +1088,6 @@ package body Gtkada.Multi_Paned is
       New_Pos : Gint;
    begin
       if Split.Selected /= null then
-         Draw_Resize_Line (Split);
-
          case Split.Selected.Parent.Orientation is
             when Orientation_Horizontal =>
                New_Pos := Gint (Get_X_Root (Event)) + Split.Initial_Pos;
@@ -1095,8 +1118,8 @@ package body Gtkada.Multi_Paned is
 
             Size_Allocate (Split,
                            Split.Selected.Parent,
-                           Split.Selected.Parent.Width,
-                           Split.Selected.Parent.Height);
+                           Float'Max (1.0, Split.Selected.Parent.Width),
+                           Float'Max (1.0, Split.Selected.Parent.Height));
          end if;
 
          Draw_Resize_Line (Split);
