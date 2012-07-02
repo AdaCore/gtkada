@@ -41,7 +41,7 @@ package body Create_Link_Buttons is
    ----------------------------
 
    function On_Link_Button_Clicked
-     (Button : not null access Gtk_Link_Button_Record'Class) return Boolean
+     (Button : access Gtk_Link_Button_Record'Class) return Boolean
    is
    begin
       Put_Line ("Link_Button clicked: " & Button.Get_Uri);
@@ -54,7 +54,7 @@ package body Create_Link_Buttons is
    -----------------------------
 
    procedure On_Reset_Button_Clicked
-     (Widget : not null access Gtk_Link_Button_Record'Class)
+     (Widget : access Gtk_Link_Button_Record'Class)
    is
    begin
       Set_Visited (Widget, False);

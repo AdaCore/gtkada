@@ -73,7 +73,7 @@ package body Create_Cursors is
    -------------
 
    function On_Draw
-      (Darea : not null access Gtk_Drawing_Area_Record'Class;
+      (Darea : access Gtk_Drawing_Area_Record'Class;
        Cr    : Cairo_Context) return Boolean
    is
       W       : constant Gdouble  := Gdouble (Get_Allocated_Width (Darea));
@@ -98,7 +98,7 @@ package body Create_Cursors is
    -- Set_Cursor --
    ----------------
 
-   procedure Set_Cursor (Spinner : not null access My_Spin_Button_Record'Class;
+   procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
                          Widget  : Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
@@ -126,7 +126,7 @@ package body Create_Cursors is
    ------------------
 
    function Cursor_Event
-     (Darea   : not null access Gtk_Widget_Record'Class;
+     (Darea   : access Gtk_Widget_Record'Class;
       Event   : Gdk_Event;
       Spinner : My_Spin_Button) return Gint
    is

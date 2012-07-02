@@ -57,7 +57,7 @@ package body Create_Status is
    -- Push --
    ----------
 
-   procedure Push (Status : not null access Gtk_Status_Bar_Record'Class) is
+   procedure Push (Status : access Gtk_Status_Bar_Record'Class) is
       Id : Message_Id;
       pragma Unreferenced (Id);
    begin
@@ -69,7 +69,7 @@ package body Create_Status is
    -- Pop --
    ---------
 
-   procedure Pop (Status : not null access Gtk_Status_Bar_Record'Class) is
+   procedure Pop (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Pop (Status, 1);
    end Pop;
@@ -78,7 +78,7 @@ package body Create_Status is
    -- Steal --
    -----------
 
-   procedure Steal (Status : not null access Gtk_Status_Bar_Record'Class) is
+   procedure Steal (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Remove (Status, 1, 4);
    end Steal;
@@ -87,7 +87,7 @@ package body Create_Status is
    -- Contexts --
    --------------
 
-   procedure Contexts (Status : not null access Gtk_Status_Bar_Record'Class) is
+   procedure Contexts (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "any context"
@@ -167,4 +167,3 @@ package body Create_Status is
    end Run;
 
 end Create_Status;
-

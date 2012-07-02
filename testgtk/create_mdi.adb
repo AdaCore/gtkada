@@ -47,12 +47,12 @@ package body Create_MDI is
    package Desktops is new Gtkada.MDI.Desktop (Integer);
 
    function Create_Child (Index : Natural) return MDI_Child;
-   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class);
-   procedure On_Snapshot  (Button : not null access Gtk_Widget_Record'Class);
-   procedure Do_Configure (MDI : not null access MDI_Window_Record'Class);
+   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class);
+   procedure On_Snapshot  (Button : access Gtk_Widget_Record'Class);
+   procedure Do_Configure (MDI : access MDI_Window_Record'Class);
 
    procedure On_Save_Desktop
-      (Button : not null access Gtk_Widget_Record'Class);
+      (Button : access Gtk_Widget_Record'Class);
    procedure Load_Desktop;
    --  Load the desktop (and all known perspectives) from an external
    --  XML file. Or create that file from the current desktop.
@@ -138,7 +138,7 @@ package body Create_MDI is
    -- Do_Configure --
    ------------------
 
-   procedure Do_Configure (MDI : not null access MDI_Window_Record'Class) is
+   procedure Do_Configure (MDI : access MDI_Window_Record'Class) is
       Bg_Color, Title_Color, Focus_Color : Gdk_Color;
    begin
       Bg_Color := Parse ("#8A8A8A");
@@ -158,7 +158,7 @@ package body Create_MDI is
    -- On_Opaque --
    ---------------
 
-   procedure On_Opaque  (Button : not null access Gtk_Widget_Record'Class) is
+   procedure On_Opaque  (Button : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
    begin
       Opaque := not Opaque;
@@ -169,7 +169,7 @@ package body Create_MDI is
    -- On_Snapshot --
    -----------------
 
-   procedure On_Snapshot (Button : not null access Gtk_Widget_Record'Class) is
+   procedure On_Snapshot (Button : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
       Child : MDI_Child := MDI.Get_Focus_Child;
       Context : Cairo_Context;
@@ -200,7 +200,7 @@ package body Create_MDI is
    ---------------------
 
    procedure On_Save_Desktop
-      (Button : not null access Gtk_Widget_Record'Class)
+      (Button : access Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (Button);
       Perspectives, Central : Node_Ptr;

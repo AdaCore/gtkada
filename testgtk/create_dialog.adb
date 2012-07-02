@@ -53,7 +53,7 @@ package body Create_Dialog is
    use Chooser_Interface_Implementation;
 
    procedure Destroyed
-     (Lab : not null access Gtk_Label_Record'Class;
+     (Lab : access Gtk_Label_Record'Class;
       Ptr : Gtk_Label_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
@@ -78,7 +78,7 @@ package body Create_Dialog is
    ---------------
 
    procedure Destroyed
-     (Lab : not null access Gtk_Label_Record'Class;
+     (Lab : access Gtk_Label_Record'Class;
       Ptr : Gtk_Label_Access)
    is
       pragma Unreferenced (Lab);
@@ -90,7 +90,7 @@ package body Create_Dialog is
    -- Label_Toggle --
    ------------------
 
-   procedure Label_Toggle (Button : not null access Gtk_Widget_Record'Class) is
+   procedure Label_Toggle (Button : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
    begin
       if Global_Label = null then
@@ -109,7 +109,7 @@ package body Create_Dialog is
    -- Basic_Dialog --
    ------------------
 
-   procedure Basic_Dialog (Widget : not null access Gtk_Widget_Record'Class) is
+   procedure Basic_Dialog (Widget : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
       Button : Gtk_Button;
    begin
@@ -144,7 +144,7 @@ package body Create_Dialog is
    --------------------------
 
    procedure Cancel_Recent_Dialog
-      (Widget : not null access Gtk_Widget_Record'Class)
+      (Widget : access Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (Widget);
    begin
@@ -158,7 +158,7 @@ package body Create_Dialog is
    -- Open_File --
    ---------------
 
-   procedure Open_File (Widget : not null access Gtk_Widget_Record'Class) is
+   procedure Open_File (Widget : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
       RChooser : constant Gtk_Recent_Chooser :=
         Gtk_Recent_Chooser (To_Interface (RDialog));
@@ -174,7 +174,7 @@ package body Create_Dialog is
    -------------------
 
    procedure Recent_Dialog
-      (Widget : not null access Gtk_Widget_Record'Class)
+      (Widget : access Gtk_Widget_Record'Class)
    is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;

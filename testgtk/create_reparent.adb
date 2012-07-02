@@ -63,8 +63,8 @@ package body Create_Reparent is
    -----------------------
 
    procedure Set_Parent_Signal
-      (Child      : not null access Gtk_Label_Record'Class;
-       Old_Parent : not null access Gtk_Widget_Record'Class;
+      (Child      : access Gtk_Label_Record'Class;
+       Old_Parent : access Gtk_Widget_Record'Class;
        Data       : Gint)
    is
    begin
@@ -94,7 +94,7 @@ package body Create_Reparent is
    --------------------
 
    procedure Reparent_Label
-      (Widget     : not null access My_Button_Record'Class;
+      (Widget     : access My_Button_Record'Class;
        New_Parent : Gtk_Box)
    is
    begin
@@ -161,4 +161,3 @@ package body Create_Reparent is
    end Run;
 
 end Create_Reparent;
-

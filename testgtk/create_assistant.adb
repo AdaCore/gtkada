@@ -99,7 +99,7 @@ package body Create_Assistant is
    -----------------------
 
    procedure Complete_Callback
-     (Check : not null access Gtk_Check_Button_Record'Class;
+     (Check : access Gtk_Check_Button_Record'Class;
       Data  : Page_Data)
    is
       Complete : Boolean;
@@ -156,7 +156,7 @@ package body Create_Assistant is
    ---------------------
 
    procedure Cancel_Callback
-      (Assistant : not null access Gtk_Assistant_Record'Class) is
+      (Assistant : access Gtk_Assistant_Record'Class) is
    begin
       Put_Line ("cancel");
       Hide (Assistant);
@@ -167,7 +167,7 @@ package body Create_Assistant is
    --------------------
 
    procedure Close_Callback
-      (Assistant : not null access Gtk_Assistant_Record'Class) is
+      (Assistant : access Gtk_Assistant_Record'Class) is
    begin
       Put_Line ("close");
       Hide (Assistant);
@@ -178,7 +178,7 @@ package body Create_Assistant is
    --------------------
 
    procedure Apply_Callback
-      (Assistant : not null access Gtk_Assistant_Record'Class)
+      (Assistant : access Gtk_Assistant_Record'Class)
    is
       pragma Unreferenced (Assistant);
    begin
@@ -215,7 +215,7 @@ package body Create_Assistant is
    ----------------------
 
    procedure Prepare_Callback
-     (Assistant : not null access Gtk_Assistant_Record'Class)
+     (Assistant : access Gtk_Assistant_Record'Class)
    is
       Page : constant Gtk_Widget :=
         Get_Nth_Page (Assistant, Get_Current_Page (Assistant));
@@ -246,7 +246,7 @@ package body Create_Assistant is
    -----------------------------
 
    procedure Create_Simple_Assistant
-     (Widget : not null access Gtk_Button_Record'Class)
+     (Widget : access Gtk_Button_Record'Class)
    is
       pragma Warnings (Off, Widget);
       Assistant : Gtk_Assistant renames All_Assistants (Simple);
@@ -290,7 +290,7 @@ package body Create_Assistant is
    ----------------------
 
    procedure Visible_Callback
-     (Check : not null access Gtk_Check_Button_Record'Class;
+     (Check : access Gtk_Check_Button_Record'Class;
       Page  : Gtk_Widget)
    is
       Visible : constant Boolean := Get_Active (Check);
@@ -307,7 +307,7 @@ package body Create_Assistant is
    -------------------------------
 
    procedure Create_Generous_Assistant
-     (Widget : not null access Gtk_Button_Record'Class)
+     (Widget : access Gtk_Button_Record'Class)
    is
       pragma Unreferenced (Widget);
       Assistant : Gtk_Assistant renames All_Assistants (Generous);
@@ -397,7 +397,7 @@ package body Create_Assistant is
    Selected_Branch : Character := 'A';
 
    procedure Select_Branch
-     (Button : not null access Gtk_Radio_Button_Record'Class;
+     (Button : access Gtk_Radio_Button_Record'Class;
       Branch : Character)
    is
       pragma Unreferenced (Button);
@@ -431,7 +431,7 @@ package body Create_Assistant is
    --------------------------------
 
    procedure Create_Nonlinear_Assistant
-     (Widget : not null access Gtk_Button_Record'Class)
+     (Widget : access Gtk_Button_Record'Class)
    is
       Assistant    : Gtk_Assistant renames All_Assistants (Nonlinear);
       Page         : Gtk_Vbox;
@@ -535,7 +535,7 @@ package body Create_Assistant is
    ------------------------------
 
    procedure Create_Looping_Assistant
-     (Widget : not null access Gtk_Button_Record'Class)
+     (Widget : access Gtk_Button_Record'Class)
    is
       Assistant    : Gtk_Assistant renames All_Assistants (Looping);
       Label        : Gtk_Label;
@@ -602,7 +602,7 @@ package body Create_Assistant is
    ------------------------------------
 
    procedure Create_Full_Featured_Assistant
-     (Widget : not null access Gtk_Button_Record'Class)
+     (Widget : access Gtk_Button_Record'Class)
    is
       Assistant : Gtk_Assistant renames All_Assistants (Full_Featured);
       Button    : Gtk_Button;

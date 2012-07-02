@@ -61,7 +61,7 @@ package body Create_Selection is
    ---------------------
 
    procedure On_Button_Click
-      (Button : not null access My_Button_Record'Class)
+      (Button : access My_Button_Record'Class)
    is
       Text : constant String := Wait_For_Text (Gtk.Clipboard.Get);
       Iter : Gtk_Text_Iter;

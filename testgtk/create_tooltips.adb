@@ -55,7 +55,7 @@ package body Create_Tooltips is
    ----------------------
 
    function Query_Tooltip_Cb
-      (Widget : not null access Gtk_Widget_Record'Class;
+      (Widget : access Gtk_Widget_Record'Class;
        Args   : Glib.Values.GValues) return Boolean
    is
       X : constant Gint := Get_Int (Nth (Args, 1));
@@ -76,7 +76,7 @@ package body Create_Tooltips is
    -----------------------------
 
    function Query_Tooltip_Custom_Cb
-      (Widget : not null access Gtk_Widget_Record'Class) return Boolean
+      (Widget : access Gtk_Widget_Record'Class) return Boolean
    is
       Window : constant Gtk_Window :=
          Gtk_Window (Widget.Get_Tooltip_Window);

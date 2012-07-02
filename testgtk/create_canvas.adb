@@ -472,7 +472,7 @@ package body Create_Canvas is
    ---------------------
 
    procedure Add_Random_Item
-     (Canvas : not null access Interactive_Canvas_Record'Class)
+     (Canvas : access Interactive_Canvas_Record'Class)
    is
       Item : constant Display_Item := new Display_Item_Record;
    begin
@@ -487,7 +487,7 @@ package body Create_Canvas is
    -----------
 
    procedure Clear
-      (Canvas : not null access Interactive_Canvas_Record'Class)
+      (Canvas : access Interactive_Canvas_Record'Class)
    is
       function Remove_Internal
         (Canvas : access Interactive_Canvas_Record'Class;
@@ -511,7 +511,7 @@ package body Create_Canvas is
    ---------------
 
    procedure Add_Items
-     (Canvas : not null access Interactive_Canvas_Record'Class)
+     (Canvas : access Interactive_Canvas_Record'Class)
    is
       Max : constant Positive := Last_Item
         + Positive (Get_Value_As_Int (Num_Spin)) - 1;
@@ -555,7 +555,7 @@ package body Create_Canvas is
    -------------------------------
 
    procedure Add_Single_Item_With_Link
-     (Canvas : not null access Interactive_Canvas_Record'Class) is
+     (Canvas : access Interactive_Canvas_Record'Class) is
    begin
       Add_Single_Item (Canvas, True);
    end Add_Single_Item_With_Link;
@@ -565,7 +565,7 @@ package body Create_Canvas is
    -----------------------------
 
    procedure Add_Single_Item_No_Link
-     (Canvas : not null access Interactive_Canvas_Record'Class) is
+     (Canvas : access Interactive_Canvas_Record'Class) is
    begin
       Add_Single_Item (Canvas, False);
    end Add_Single_Item_No_Link;
@@ -590,7 +590,7 @@ package body Create_Canvas is
    -----------------
 
    procedure Remove_Link
-     (Canvas : not null access Interactive_Canvas_Record'Class)
+     (Canvas : access Interactive_Canvas_Record'Class)
    is
       It1, It2 : Canvas_Item;
 
@@ -628,7 +628,7 @@ package body Create_Canvas is
    -------------
 
    procedure Zoom_In
-     (Canvas : not null access Interactive_Canvas_Record'Class) is
+     (Canvas : access Interactive_Canvas_Record'Class) is
    begin
       for J in Zoom_Levels'First .. Zoom_Levels'Last - 1 loop
          if Zoom_Levels (J) = Get_Zoom (Canvas) then
@@ -642,7 +642,7 @@ package body Create_Canvas is
    --------------
 
    procedure Zoom_Out
-     (Canvas : not null access Interactive_Canvas_Record'Class) is
+     (Canvas : access Interactive_Canvas_Record'Class) is
    begin
       for J in Zoom_Levels'First + 1 .. Zoom_Levels'Last loop
          if Zoom_Levels (J) = Get_Zoom (Canvas) then
@@ -717,7 +717,7 @@ package body Create_Canvas is
    ------------------
 
    procedure Toggle_Align
-     (Align : not null access Gtk_Widget_Record'Class;
+     (Align : access Gtk_Widget_Record'Class;
       Canvas : Image_Canvas) is
    begin
       Align_On_Grid (Canvas, Get_Active (Gtk_Check_Button (Align)));
@@ -728,7 +728,7 @@ package body Create_Canvas is
    ----------------------
 
    procedure Toggle_Draw_Grid
-     (Align : not null access Gtk_Widget_Record'Class;
+     (Align : access Gtk_Widget_Record'Class;
       Canvas : Image_Canvas) is
    begin
       Canvas.Draw_Grid := Get_Active (Gtk_Check_Button (Align));
@@ -740,7 +740,7 @@ package body Create_Canvas is
    -----------------------
 
    procedure Toggle_Orthogonal
-     (Align : not null access Gtk_Widget_Record'Class;
+     (Align : access Gtk_Widget_Record'Class;
       Canvas : Image_Canvas) is
    begin
       Set_Orthogonal_Links (Canvas, Get_Active (Gtk_Check_Button (Align)));
@@ -752,7 +752,7 @@ package body Create_Canvas is
    ------------------------
 
    procedure Background_Changed
-     (Bg_Draw : not null access Gtk_Widget_Record'Class;
+     (Bg_Draw : access Gtk_Widget_Record'Class;
       Canvas  : Image_Canvas)
    is
       Surface : Cairo_Surface;

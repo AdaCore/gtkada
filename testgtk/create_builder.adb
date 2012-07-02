@@ -50,7 +50,7 @@ package body Create_Builder is
    --  This is the file from which we'll read our UI description.
 
    procedure On_Button_Clicked
-      (Button : not null access Gtk_Button_Record'Class);
+      (Button : access Gtk_Button_Record'Class);
    --  Callback for a button click
 
    ------------------------------
@@ -82,15 +82,15 @@ package body Create_Builder is
    --  "handler"s defined on the controls in the UI XML file.
 
    procedure On_Btn_Concatenate_Clicked
-     (Object : not null access Widget_Collection_Record'Class);
+     (Object : access Widget_Collection_Record'Class);
    procedure On_Btn_Console_Greeting_Clicked
-     (Object : not null access Widget_Collection_Record'Class);
+     (Object : access Widget_Collection_Record'Class);
    procedure On_Print_To_Console_Clicked
-     (Object : not null access Widget_Collection_Record'Class);
+     (Object : access Widget_Collection_Record'Class);
    function On_Window1_Delete_Event
-     (Object : not null access Widget_Collection_Record'Class) return Boolean;
+     (Object : access Widget_Collection_Record'Class) return Boolean;
    procedure On_Window1_Destroy
-     (Object : not null access Widget_Collection_Record'Class);
+     (Object : access Widget_Collection_Record'Class);
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
@@ -199,7 +199,7 @@ package body Create_Builder is
    -----------------------
 
    procedure On_Button_Clicked
-      (Button : not null access Gtk_Button_Record'Class)
+      (Button : access Gtk_Button_Record'Class)
    is
       pragma Unreferenced (Button);
 
@@ -244,7 +244,7 @@ package body Create_Builder is
    --------------------------------
 
    procedure On_Btn_Concatenate_Clicked
-     (Object : not null access Widget_Collection_Record'Class)
+     (Object : access Widget_Collection_Record'Class)
    is
       Buffer : Gtk_Text_Buffer;
    begin
@@ -267,7 +267,7 @@ package body Create_Builder is
    -------------------------------------
 
    procedure On_Btn_Console_Greeting_Clicked
-     (Object : not null access Widget_Collection_Record'Class)
+     (Object : access Widget_Collection_Record'Class)
    is
       pragma Unreferenced (Object);
    begin
@@ -279,7 +279,7 @@ package body Create_Builder is
    ---------------------------------
 
    procedure On_Print_To_Console_Clicked
-     (Object : not null access Widget_Collection_Record'Class)
+     (Object : access Widget_Collection_Record'Class)
    is
       Buffer : constant Gtk_Text_Buffer := Get_Buffer (Object.Text_Field);
       Iter_Start, Iter_End : Gtk.Text_Iter.Gtk_Text_Iter;
@@ -295,7 +295,7 @@ package body Create_Builder is
    -----------------------------
 
    function On_Window1_Delete_Event
-     (Object : not null access Widget_Collection_Record'Class)
+     (Object : access Widget_Collection_Record'Class)
       return Boolean
    is
       pragma Unreferenced (Object);
@@ -311,7 +311,7 @@ package body Create_Builder is
    ------------------------
 
    procedure On_Window1_Destroy
-     (Object : not null access Widget_Collection_Record'Class)
+     (Object : access Widget_Collection_Record'Class)
    is
       pragma Unreferenced (Object);
    begin

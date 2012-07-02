@@ -30,7 +30,7 @@ package body Common is
    --------------------
 
    procedure Destroy_Window
-      (Win : not null access Gtk.Window.Gtk_Window_Record'Class;
+      (Win : access Gtk.Window.Gtk_Window_Record'Class;
        Ptr : Gtk_Window_Access)
    is
       pragma Unreferenced (Win);
@@ -43,7 +43,7 @@ package body Common is
    --------------------
 
    procedure Destroy_Dialog
-      (Win : not null access Gtk.Dialog.Gtk_Dialog_Record'Class;
+      (Win : access Gtk.Dialog.Gtk_Dialog_Record'Class;
        Ptr : Gtk_Dialog_Access)
    is
       pragma Unreferenced (Win);

@@ -63,7 +63,7 @@ package body Create_Test_Timeout is
    -- Stop_Timeout --
    ------------------
 
-   procedure Stop_Timeout (Object : not null access Gtk_Widget_Record'Class) is
+   procedure Stop_Timeout (Object : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Object);
    begin
       if Timeout /= 0 then
@@ -77,7 +77,7 @@ package body Create_Test_Timeout is
    -- Start_Timeout --
    -------------------
 
-   procedure Start_Timeout (Label : not null access Gtk_Label_Record'Class) is
+   procedure Start_Timeout (Label : access Gtk_Label_Record'Class) is
    begin
       if Timeout = 0 then
          Timeout := Label_Timeout.Timeout_Add
@@ -120,4 +120,3 @@ package body Create_Test_Timeout is
    end Run;
 
 end Create_Test_Timeout;
-

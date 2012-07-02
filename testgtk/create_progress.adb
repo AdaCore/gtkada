@@ -99,7 +99,7 @@ package body Create_Progress is
    ----------------------
 
    procedure Destroy_Progress
-      (Window : not null access Gtk_Widget_Record'Class)
+      (Window : access Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (Window);
    begin
@@ -115,7 +115,7 @@ package body Create_Progress is
    ----------------------
 
    procedure Toggle_Inversion
-      (Widget : not null access Gtk_Widget_Record'Class)
+      (Widget : access Gtk_Widget_Record'Class)
    is
       Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
       Current : constant UTF8_String := Combo.Get_Active_Text;
@@ -129,7 +129,7 @@ package body Create_Progress is
    ------------------------
 
    procedure Toggle_Orientation
-      (Widget : not null access Gtk_Widget_Record'Class)
+      (Widget : access Gtk_Widget_Record'Class)
    is
       Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
       Current : constant UTF8_String := Combo.Get_Active_Text;
@@ -146,7 +146,7 @@ package body Create_Progress is
    ----------------------
 
    procedure Toggle_Show_Text
-      (Widget : not null access Gtk_Check_Button_Record'Class)
+      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
       Set_Show_Text (Progress_Bar => Pdata.Pbar,
@@ -161,7 +161,7 @@ package body Create_Progress is
    --------------------------
 
    procedure Toggle_Activity_Mode
-     (Widget : not null access Gtk_Check_Button_Record'Class)
+     (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
       if Get_Active (Widget) then
@@ -182,7 +182,7 @@ package body Create_Progress is
    -------------------
 
    procedure Entry_Changed
-      (Widget : not null access Gtk_Widget_Record'Class)
+      (Widget : access Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (Widget);
    begin

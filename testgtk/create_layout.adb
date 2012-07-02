@@ -66,7 +66,7 @@ package body Create_Layout is
    -------------
 
    function On_Draw
-      (Layout : not null access Gtk_Layout_Record'Class;
+      (Layout : access Gtk_Layout_Record'Class;
        Cr     : Cairo_Context) return Boolean
    is
       pragma Unreferenced (Layout);

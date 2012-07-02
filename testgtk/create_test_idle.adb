@@ -87,7 +87,7 @@ package body Create_Test_Idle is
    -- Destroy_Idle --
    ------------------
 
-   procedure Destroy_Idle (Window : not null access Gtk_Widget_Record'Class) is
+   procedure Destroy_Idle (Window : access Gtk_Widget_Record'Class) is
    begin
       Stop_Idle (Window);
    end Destroy_Idle;
@@ -96,7 +96,7 @@ package body Create_Test_Idle is
    -- Start_Idle --
    ----------------
 
-   procedure Start_Idle (Label : not null access Gtk_Label_Record'Class) is
+   procedure Start_Idle (Label : access Gtk_Label_Record'Class) is
    begin
       if Idle = 0 then
          Idle := Label_Idle.Idle_Add (Idle_Test'Access, Gtk_Label (Label));
@@ -108,7 +108,7 @@ package body Create_Test_Idle is
    ----------------------
 
    procedure Toggle_Container
-      (Button  : not null access My_Button_Record'Class;
+      (Button  : access My_Button_Record'Class;
        Contain : in Gtk_Box) is
    begin
       Set_Resize_Mode (Contain, Button.Value);
@@ -192,4 +192,3 @@ package body Create_Test_Idle is
    end Run;
 
 end Create_Test_Idle;
-

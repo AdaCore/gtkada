@@ -38,7 +38,7 @@ package body Create_Main_Loop is
    -- Loop_Destroy --
    ------------------
 
-   procedure Loop_Destroy (Win : not null access Gtk_Widget_Record'Class) is
+   procedure Loop_Destroy (Win : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Win);
    begin
       Main_Quit;
@@ -96,4 +96,3 @@ package body Create_Main_Loop is
    end Run;
 
 end Create_Main_Loop;
-

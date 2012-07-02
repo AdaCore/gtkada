@@ -34,7 +34,7 @@ with Gtk.Widget;           use Gtk.Widget;
 package body Create_About is
 
    function On_Activate_Link
-      (About  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Params : Glib.Values.GValues) return Boolean;
    --  Called when a link is clicked
 
@@ -43,7 +43,7 @@ package body Create_About is
    ----------------------
 
    function On_Activate_Link
-      (About  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Params : Glib.Values.GValues) return Boolean
    is
       URI   : constant String := Get_String (Nth (Params, 1));

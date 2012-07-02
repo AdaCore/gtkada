@@ -68,7 +68,7 @@ package body Create_Spin is
    -------------------
 
    procedure Change_Digits
-      (Spin : not null access Gtk_Spin_Button_Record'Class) is
+      (Spin : access Gtk_Spin_Button_Record'Class) is
    begin
       Set_Digits (Spinner1, Guint (Get_Value_As_Int (Spin)));
    end Change_Digits;
@@ -78,7 +78,7 @@ package body Create_Spin is
    -----------------
 
    procedure Toggle_Snap
-      (Widget : not null access Gtk_Toggle_Button_Record'Class;
+      (Widget : access Gtk_Toggle_Button_Record'Class;
        Spin : Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Get_Active (Widget));
@@ -89,7 +89,7 @@ package body Create_Spin is
    --------------------
 
    procedure Toggle_Numeric
-      (Widget : not null access Gtk_Toggle_Button_Record'Class;
+      (Widget : access Gtk_Toggle_Button_Record'Class;
        Spin   : Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Get_Active (Widget));
@@ -99,7 +99,7 @@ package body Create_Spin is
    -- Get_Value --
    ---------------
 
-   procedure Get_Value (Widget : not null access My_Button_Record'Class;
+   procedure Get_Value (Widget : access My_Button_Record'Class;
                         Data   : Gint)
    is
       Spin  : constant Gtk_Spin_Button := Spinner1;

@@ -79,7 +79,7 @@ package body Libart_Demo is
    -- Destroy --
    -------------
 
-   procedure Destroy (Draw : not null access Image_Drawing_Record'Class) is
+   procedure Destroy (Draw : access Image_Drawing_Record'Class) is
    begin
       --  Destroy the associated image
       Unref (Draw.Pix);
@@ -90,7 +90,7 @@ package body Libart_Demo is
    -------------
 
    function On_Draw
-      (Draw : not null access Image_Drawing_Record'Class;
+      (Draw : access Image_Drawing_Record'Class;
        Cr   : Cairo_Context) return Boolean is
    begin
       Set_Source_Pixbuf (Cr, Draw.Pix, 0.0, 0.0);

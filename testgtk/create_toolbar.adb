@@ -75,7 +75,7 @@ package body Create_Toolbar is
    --------------------
 
    procedure Set_Horizontal
-      (Toolbar : not null access Gtk_Toolbar_Record'Class) is
+      (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Horizontal);
    end Set_Horizontal;
@@ -85,7 +85,7 @@ package body Create_Toolbar is
    ------------------
 
    procedure Set_Vertical
-      (Toolbar : not null access Gtk_Toolbar_Record'Class) is
+      (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Vertical);
    end Set_Vertical;
@@ -94,7 +94,7 @@ package body Create_Toolbar is
    -- Set_Icons --
    ---------------
 
-   procedure Set_Icons (Toolbar : not null access Gtk_Toolbar_Record'Class) is
+   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Icons);
    end Set_Icons;
@@ -103,7 +103,7 @@ package body Create_Toolbar is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Toolbar : not null access Gtk_Toolbar_Record'Class) is
+   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Text);
    end Set_Text;
@@ -112,7 +112,7 @@ package body Create_Toolbar is
    -- Set_Both --
    --------------
 
-   procedure Set_Both (Toolbar : not null access Gtk_Toolbar_Record'Class) is
+   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Both);
    end Set_Both;
@@ -218,4 +218,3 @@ package body Create_Toolbar is
    end Run;
 
 end Create_Toolbar;
-

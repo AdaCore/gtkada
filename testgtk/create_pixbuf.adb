@@ -83,14 +83,14 @@ package body Create_Pixbuf is
    --  Return False if one of the pixmaps could not be loaded
 
    function On_Draw
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo_Context) return Boolean;
    --  Expose callback for the drawing area
 
    function Timeout_Handler return Boolean;
    --  Timeout handler to regenerate the frame
 
-   procedure Destroy_Cb (Widget : not null access Gtk_Widget_Record'Class);
+   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
    --  Callback when the widget is destroyed
 
    ------------------
@@ -123,7 +123,7 @@ package body Create_Pixbuf is
    -------------
 
    function On_Draw
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo_Context) return Boolean
    is
       pragma Unreferenced (Widget);
@@ -229,7 +229,7 @@ package body Create_Pixbuf is
    -- Destroy_Cb --
    ----------------
 
-   procedure Destroy_Cb (Widget : not null access Gtk_Widget_Record'Class) is
+   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
    begin
       Remove (Timeout_Id);

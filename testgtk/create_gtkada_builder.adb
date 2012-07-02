@@ -50,20 +50,20 @@ package body Create_Gtkada_Builder is
    --  This is the file from which we'll read our UI description.
 
    procedure On_Button_Clicked
-      (Button : not null access Gtk_Button_Record'Class);
+      (Button : access Gtk_Button_Record'Class);
    --  Callback for a button click
 
    procedure On_Btn_Concatenate_Clicked
-     (Builder : not null access Gtkada_Builder_Record'Class);
+     (Builder : access Gtkada_Builder_Record'Class);
    procedure On_Btn_Console_Greeting_Clicked
-     (Builder : not null access Gtkada_Builder_Record'Class);
+     (Builder : access Gtkada_Builder_Record'Class);
    function On_Window1_Delete_Event
-     (Builder : not null access Gtkada_Builder_Record'Class) return Boolean;
+     (Builder : access Gtkada_Builder_Record'Class) return Boolean;
    procedure On_Window1_Destroy
-     (Builder : not null access Gtkada_Builder_Record'Class);
+     (Builder : access Gtkada_Builder_Record'Class);
 
    procedure On_Print_To_Console
-      (Object : not null access GObject_Record'Class);
+      (Object : access GObject_Record'Class);
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
@@ -107,7 +107,7 @@ package body Create_Gtkada_Builder is
    -------------------------
 
    procedure On_Print_To_Console
-      (Object : not null access GObject_Record'Class)
+      (Object : access GObject_Record'Class)
    is
       Term1 : constant Gtk_Entry := Gtk_Entry (Object);
    begin
@@ -119,7 +119,7 @@ package body Create_Gtkada_Builder is
    -----------------------
 
    procedure On_Button_Clicked
-      (Button : not null access Gtk_Button_Record'Class)
+      (Button : access Gtk_Button_Record'Class)
    is
       pragma Unreferenced (Button);
 
@@ -181,7 +181,7 @@ package body Create_Gtkada_Builder is
    --------------------------------
 
    procedure On_Btn_Concatenate_Clicked
-     (Builder : not null access Gtkada_Builder_Record'Class)
+     (Builder : access Gtkada_Builder_Record'Class)
    is
       Buffer  : constant Gtk_Text_Buffer := Get_Buffer
         (Gtk.Text_View.Gtk_Text_View (Get_Widget (Builder, "textField")));
@@ -204,7 +204,7 @@ package body Create_Gtkada_Builder is
    -------------------------------------
 
    procedure On_Btn_Console_Greeting_Clicked
-     (Builder : not null access Gtkada_Builder_Record'Class)
+     (Builder : access Gtkada_Builder_Record'Class)
    is
       pragma Unreferenced (Builder);
    begin
@@ -216,7 +216,7 @@ package body Create_Gtkada_Builder is
    -----------------------------
 
    function On_Window1_Delete_Event
-     (Builder : not null access Gtkada_Builder_Record'Class)
+     (Builder : access Gtkada_Builder_Record'Class)
       return Boolean
    is
       pragma Unreferenced (Builder);
@@ -232,7 +232,7 @@ package body Create_Gtkada_Builder is
    ------------------------
 
    procedure On_Window1_Destroy
-     (Builder : not null access Gtkada_Builder_Record'Class)
+     (Builder : access Gtkada_Builder_Record'Class)
    is
    begin
       --  We actually don't do much here, since within testgtk, we're not

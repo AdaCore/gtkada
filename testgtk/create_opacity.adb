@@ -54,7 +54,7 @@ package body Create_Opacity is
    ----------------------
 
    procedure On_Value_Changed
-     (Adjustment : not null access Gtk_Adjustment_Record'Class)
+     (Adjustment : access Gtk_Adjustment_Record'Class)
    is
    begin
       Set_Opacity (Main_Window, Get_Value (Adjustment) / 100.0);

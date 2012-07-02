@@ -422,7 +422,7 @@ package body Create_Dnd is
    --  This is the general form for handlers of "drag_drop".
 
    function Target_Drag_Drop
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Args   : Glib.Values.GValues) return Boolean
    is
       Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
@@ -446,7 +446,7 @@ package body Create_Dnd is
    --  This is the general form of handlers for "drag_data_received".
 
    procedure Target_Drag_Data_Received
-     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
@@ -486,7 +486,7 @@ package body Create_Dnd is
    --  This is the general form for handlers of "drag_motion".
 
    function Target_Drag_Motion
-      (Widget : not null access Gtk_Widget_Record'Class;
+      (Widget : access Gtk_Widget_Record'Class;
        Args   : Glib.Values.GValues)
       return Boolean
    is
@@ -519,7 +519,7 @@ package body Create_Dnd is
    --  This is the general form of handlers for "drag_leave".
 
    procedure Target_Drag_Leave
-      (Widget : not null access Gtk_Widget_Record'Class;
+      (Widget : access Gtk_Widget_Record'Class;
        Args   : Glib.Values.GValues)
    is
       Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
@@ -540,7 +540,7 @@ package body Create_Dnd is
    --  This is the general form of handlers for "drag_data_received".
 
    procedure Label_Drag_Data_Received
-     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
@@ -578,7 +578,7 @@ package body Create_Dnd is
    --  This is the general form of handlers for "drag_data_get".
 
    procedure Source_Drag_Data_Get
-     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
@@ -612,7 +612,7 @@ package body Create_Dnd is
    --  This is the general handler type for "drag_data_delete".
 
    procedure Source_Drag_Data_Delete
-     (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+     (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args    : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=

@@ -57,7 +57,7 @@ package body Create_Icon_View is
    --  Fill the contents of List
 
    procedure Toggled
-     (Model  : not null access GObject_Record'Class;
+     (Model  : access GObject_Record'Class;
       Params : Glib.Values.GValues);
    --  Called when one of the toggle buttons is clicked on. This performs the
    --  actual toggling.
@@ -83,7 +83,7 @@ package body Create_Icon_View is
    -------------
 
    procedure Toggled
-     (Model  : not null access GObject_Record'Class;
+     (Model  : access GObject_Record'Class;
       Params : Glib.Values.GValues)
    is
       M    : constant Gtk_List_Store := Gtk_List_Store (Model);

@@ -82,11 +82,11 @@ procedure Testcairo is
    function Pretty (T : Test_Type) return String;
    --  Pretty print T
 
-   function On_Draw (Area  : not null access Gtk_Drawing_Area_Record'Class;
+   function On_Draw (Area  : access Gtk_Drawing_Area_Record'Class;
                      Cr    : Cairo_Context) return Boolean;
    --  Callback on an draw event on Win
 
-   procedure On_Print_Cb  (Widget : not null access Gtk_Button_Record'Class);
+   procedure On_Print_Cb  (Widget : access Gtk_Button_Record'Class);
    --  Callback on a click on the "Print" button
 
    type Doc_Array is array (Test_Type) of Unbounded_String;
@@ -114,7 +114,7 @@ procedure Testcairo is
    -- On_Draw --
    -------------
 
-   function On_Draw (Area  : not null access Gtk_Drawing_Area_Record'Class;
+   function On_Draw (Area  : access Gtk_Drawing_Area_Record'Class;
                      Cr    : Cairo_Context) return Boolean
    is
       pragma Unreferenced (Area);
@@ -142,7 +142,7 @@ procedure Testcairo is
    -- On_Print_Cb --
    -----------------
 
-   procedure On_Print_Cb (Widget : not null access Gtk_Button_Record'Class) is
+   procedure On_Print_Cb (Widget : access Gtk_Button_Record'Class) is
       Print_Op : Testcairo_Print_Operation;
       Result   : Gtk_Print_Operation_Result;
       pragma Unreferenced (Result);
@@ -185,14 +185,14 @@ procedure Testcairo is
    end Pretty;
 
    procedure S_Changed
-     (Widget : not null access Gtk_Tree_Selection_Record'Class);
+     (Widget : access Gtk_Tree_Selection_Record'Class);
 
    ---------------
    -- S_Changed --
    ---------------
 
    procedure S_Changed
-     (Widget : not null access Gtk_Tree_Selection_Record'Class)
+     (Widget : access Gtk_Tree_Selection_Record'Class)
    is
       pragma Unreferenced (Widget);
       Iter  : Gtk_Tree_Iter;

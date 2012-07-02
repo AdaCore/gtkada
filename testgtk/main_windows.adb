@@ -135,7 +135,7 @@ package body Main_Windows is
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
 
-   procedure Display_Help (Button : not null access Gtk_Widget_Record'Class);
+   procedure Display_Help (Button : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
 
    package Notebook_Cb is new Gtk.Handlers.Callback (Gtk_Notebook_Record);
@@ -161,22 +161,22 @@ package body Main_Windows is
    function NS (S : String) return String_Access;
 
    procedure Tree_Select_Child
-      (View : not null access Gtk_Widget_Record'Class);
+      (View : access Gtk_Widget_Record'Class);
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
    package Return_Window_Cb is new Handlers.Return_Callback
      (Gtk_Widget_Record, Boolean);
-   procedure Exit_Main (Object : not null access Gtk_Widget_Record'Class);
+   procedure Exit_Main (Object : access Gtk_Widget_Record'Class);
    --  Callbacks when the main window is killed
    function Delete_Event
-     (Object : not null access Gtk_Widget_Record'Class) return Boolean;
+     (Object : access Gtk_Widget_Record'Class) return Boolean;
 
-   procedure Destroy_Help (Button : not null access Gtk_Widget_Record'Class);
+   procedure Destroy_Help (Button : access Gtk_Widget_Record'Class);
    function Opengl_Help return String;
 
    procedure Switch_Page
-      (Notebook : not null access Gtk_Notebook_Record'Class);
+      (Notebook : access Gtk_Notebook_Record'Class);
    --  Called when a new notebook page is selected
 
    procedure Create_Demo_Frame
@@ -432,7 +432,7 @@ package body Main_Windows is
    -- Destroy_Help --
    ------------------
 
-   procedure Destroy_Help (Button : not null access Gtk_Widget_Record'Class) is
+   procedure Destroy_Help (Button : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Button);
    begin
       Destroy (Help_Dialog);
@@ -443,7 +443,7 @@ package body Main_Windows is
    -- Display_Help --
    ------------------
 
-   procedure Display_Help (Button : not null access Gtk_Widget_Record'Class) is
+   procedure Display_Help (Button : access Gtk_Widget_Record'Class) is
       Close     : Gtk.Button.Gtk_Button;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
@@ -597,7 +597,7 @@ package body Main_Windows is
    --  Exit_Main  --
    -----------------
 
-   procedure Exit_Main (Object : not null access Gtk_Widget_Record'Class) is
+   procedure Exit_Main (Object : access Gtk_Widget_Record'Class) is
    begin
       Destroy (Object);
       Gtk.Main.Main_Quit;
@@ -608,7 +608,7 @@ package body Main_Windows is
    ------------------
 
    function Delete_Event
-     (Object : not null access Gtk_Widget_Record'Class) return Boolean
+     (Object : access Gtk_Widget_Record'Class) return Boolean
    is
       pragma Unreferenced (Object);
    begin
@@ -638,7 +638,7 @@ package body Main_Windows is
    -----------------------
 
    procedure Tree_Select_Child
-      (View : not null access Gtk_Widget_Record'Class)
+      (View : access Gtk_Widget_Record'Class)
    is
       Model     : Gtk_Tree_Model;
       Iter      : Gtk_Tree_Iter;
@@ -700,7 +700,7 @@ package body Main_Windows is
    -----------------
 
    procedure Switch_Page
-      (Notebook : not null access Gtk_Notebook_Record'Class) is
+      (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       if Get_Current_Page (Notebook) = 3 then
          Set_Help (Opengl_Help'Access);

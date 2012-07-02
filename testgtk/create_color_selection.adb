@@ -48,7 +48,7 @@ package body Create_Color_Selection is
      (Gtk_Color_Selection_Dialog_Record);
 
    procedure Destroy_Dialog
-     (Win : not null access Gtk_Color_Selection_Dialog_Record'Class;
+     (Win : access Gtk_Color_Selection_Dialog_Record'Class;
       Ptr : Gtk_Color_Dialog_Access);
    --  Called when the dialog is destroyed
 
@@ -76,7 +76,7 @@ package body Create_Color_Selection is
    --------------------
 
    procedure Destroy_Dialog
-     (Win : not null access Gtk_Color_Selection_Dialog_Record'Class;
+     (Win : access Gtk_Color_Selection_Dialog_Record'Class;
       Ptr : Gtk_Color_Dialog_Access)
    is
       pragma Warnings (Off, Win);
@@ -88,7 +88,7 @@ package body Create_Color_Selection is
    -- Close_Window --
    ------------------
 
-   procedure Close_Window (Win : not null access Gtk_Widget_Record'Class) is
+   procedure Close_Window (Win : access Gtk_Widget_Record'Class) is
    begin
       Destroy (Win);
    end Close_Window;
@@ -115,7 +115,7 @@ package body Create_Color_Selection is
    --------------
 
    procedure Color_Ok
-     (Dialog : not null access Gtk_Color_Selection_Dialog_Record'Class)
+     (Dialog : access Gtk_Color_Selection_Dialog_Record'Class)
    is
       Color : Gdk_Color;
    begin

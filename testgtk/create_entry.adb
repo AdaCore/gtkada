@@ -66,7 +66,7 @@ package body Create_Entry is
    ---------------------
 
    procedure Toggle_Editable
-     (Button    : not null access Gtk_Check_Button_Record'Class;
+     (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry) is
    begin
       The_Entry.Set_Editable (Button.Get_Active);
@@ -77,7 +77,7 @@ package body Create_Entry is
    ----------------------
 
    procedure Toggle_Overwrite
-     (Button    : not null access Gtk_Check_Button_Record'Class;
+     (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -89,7 +89,7 @@ package body Create_Entry is
    ----------------------
 
    procedure Toggle_Sensitive
-     (Button    : not null access Gtk_Check_Button_Record'Class;
+     (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -101,7 +101,7 @@ package body Create_Entry is
    -----------------------
 
    procedure Toggle_Visibility
-     (Button    : not null access Gtk_Check_Button_Record'Class;
+     (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry)
    is
    begin
@@ -138,7 +138,7 @@ package body Create_Entry is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Window : not null access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Window : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Window);
    begin
       Remove (Timer1);
