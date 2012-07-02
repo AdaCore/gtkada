@@ -722,6 +722,7 @@ getters. This removed a number of subprograms, like:
    Rc_Style_Is_Set (see Has_Rc_Style)
    In_Destruction_Is_Set (see In_Destruction)
    Drawable_Is_Set (see Is_Drawable)
+   No_Window_Is_Set (see Has_Window)
 
 Size_Allocate now takes an "in out" parameter for the allocation
 
