@@ -3165,7 +3165,7 @@ package body Gtkada.Canvas is
       Item  : Canvas_Item;
       X, Y  : Gint;
       Rect  : Gdk_Rectangle;
-      Sel   : Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
+      Sel   : Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
 
    begin
       if Canvas.Selected_Count = 0 then
@@ -3196,7 +3196,7 @@ package body Gtkada.Canvas is
       else
          Iter := Start (Canvas, Selected_Only => True);
          Cairo.Set_Operator (Cr, Cairo_Operator_Xor);
-         Set_Source_RGBA (Cr, Sel);
+         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 0.5));
 
          loop
             Item := Get (Iter);
