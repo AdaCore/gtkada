@@ -2857,4 +2857,7 @@ __PRE__
      <parameter name="self" ada="Action_Group"/>
    </package>
 
+   <package id="GtkTooltip">
+   </package>
+
 </GIR>
