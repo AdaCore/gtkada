@@ -722,6 +722,9 @@ when writting theme engines.
 
 Class_Path and Path were replaced with Get_Path.
 
+Allow_Shrink_Property and Allow_Grow_Property have been removed: use
+ Get_Hexpand and Get_Vexpand instead.
+
 Gtk.Window
 ==========
 
