@@ -34,7 +34,7 @@ package body Gtk.Window is
    pragma Unreferenced (Type_Conversion_Gtk_Window);
 
    package Type_Conversion_Gtk_Window_Group is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Window_Group_Record);
+     (Group_Get_Type'Access, Gtk_Window_Group_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Window_Group);
 
    -------------

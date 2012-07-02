@@ -1123,9 +1123,10 @@ class GIRClass(object):
                 return
 
             self.pkg.add_with("Glib")
+            get_type_name = gtkmethod.ada_name() or "Get_Type"
             section.add(
                 Subprogram(
-                    name=gtkmethod.ada_name() or "Get_Type",
+                    name=get_type_name,
                     returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
                 .import_c(n))
 
@@ -1133,10 +1134,13 @@ class GIRClass(object):
                     and not self.is_interface \
                     and self._subst["parent"] is not None:
 
-                self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False);
+                self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False)
+
+                self._subst["get_type"] = get_type_name
+
                 section.add_code("""
 package Type_Conversion_%(typename)s is new Glib.Type_Conversion_Hooks.Hook_Registrator
-   (Get_Type'Access, %(typename)s_Record);
+   (%(get_type)s'Access, %(typename)s_Record);
 pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, specs=False)
 
     def _get_c_type(self, node):

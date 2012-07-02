@@ -1446,7 +1446,7 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default handler for
    --  the Gtk.Widget.Gtk_Widget::query-tooltip signal.
    --  See also the Gtk.Widget.Gtk_Widget:tooltip-markup property and
-   --  gtk_tooltip_set_markup.
+   --  Gtk.Tooltip.Set_Markup.
    --  Since: gtk+ 2.12
    --  "markup": the contents of the tooltip for Widget, or null
 
@@ -1459,7 +1459,7 @@ package Gtk.Widget is
    --  of setting Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default
    --  handler for the Gtk.Widget.Gtk_Widget::query-tooltip signal.
    --  See also the Gtk.Widget.Gtk_Widget:tooltip-text property and
-   --  gtk_tooltip_set_text.
+   --  Gtk.Tooltip.Set_Text.
    --  Since: gtk+ 2.12
    --  "text": the contents of the tooltip for Widget
 
@@ -2334,7 +2334,7 @@ package Gtk.Widget is
    procedure Trigger_Tooltip_Query
       (Widget : not null access Gtk_Widget_Record);
    --  Triggers a tooltip query on the display where the toplevel of Widget is
-   --  located. See gtk_tooltip_trigger_tooltip_query for more information.
+   --  located. See Gtk.Tooltip.Trigger_Tooltip_Query for more information.
    --  Since: gtk+ 2.12
 
    procedure Unmap (Widget : not null access Gtk_Widget_Record);
@@ -2597,7 +2597,7 @@ package Gtk.Widget is
    --  Flags: read-write
    --  Sets the text of tooltip to be the given string, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>. Also see gtk_tooltip_set_markup.
+   --  language</link>. Also see Gtk.Tooltip.Set_Markup.
    --
    --  This is a convenience property which will take care of getting the
    --  tooltip shown if the given string is not null:
@@ -2610,7 +2610,7 @@ package Gtk.Widget is
    --  Flags: read-write
    --  Sets the text of tooltip to be the given string.
    --
-   --  Also see gtk_tooltip_set_text.
+   --  Also see Gtk.Tooltip.Set_Text.
    --
    --  This is a convenience property which will take care of getting the
    --  tooltip shown if the given string is not null:
