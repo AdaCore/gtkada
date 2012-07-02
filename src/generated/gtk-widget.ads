@@ -1931,7 +1931,7 @@ package Gtk.Widget is
    --  widget appearance. If you are developing a widgets library and intend
    --  this change to be themeable, it is better done by setting meaningful CSS
    --  classes and regions in your widget/container implementation through
-   --  gtk_style_context_add_class and gtk_style_context_add_region.
+   --  Gtk.Style_Context.Add_Class and Gtk.Style_Context.Add_Region.
    --  This way, your widget library can install a
    --  Gtk.Css_Provider.Gtk_Css_Provider with the
    --  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK priority in order to provide a
@@ -2742,7 +2742,7 @@ package Gtk.Widget is
    --     procedure Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Pspec : GObject.Param_Spec);
-   --    --  "pspec": the GParam_Spec of the changed child property
+   --    --  "pspec": the Glib.Param_Spec of the changed child property
    --  The ::child-notify signal is emitted for each <link
    --  linkend="child-properties">child property</link> that has changed on an
    --  object. The signal's detail holds the property name.

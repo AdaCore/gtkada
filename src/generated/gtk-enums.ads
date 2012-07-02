@@ -119,6 +119,20 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Icon_Size);
 
 
+   type Gtk_Junction_Sides is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Junction_Sides);
+   --  Describes how a rendered element connects to adjacent elements.
+
+   Junction_None : constant Gtk_Junction_Sides := 0;
+   Junction_Corner_Topleft : constant Gtk_Junction_Sides := 1;
+   Junction_Corner_Topright : constant Gtk_Junction_Sides := 2;
+   Junction_Corner_Bottomleft : constant Gtk_Junction_Sides := 4;
+   Junction_Corner_Bottomright : constant Gtk_Junction_Sides := 8;
+   Junction_Top : constant Gtk_Junction_Sides := 3;
+   Junction_Bottom : constant Gtk_Junction_Sides := 12;
+   Junction_Left : constant Gtk_Junction_Sides := 5;
+   Junction_Right : constant Gtk_Junction_Sides := 10;
+
    type Gtk_Justification is (
       Justify_Left,
       Justify_Right,
@@ -266,6 +280,16 @@ package Gtk.Enums is
       Print_Quality_Draft);
    pragma Convention (C, Gtk_Print_Quality);
 
+
+   type Gtk_Region_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Region_Flags);
+   --  Describes a region within a widget.
+
+   Region_Even : constant Gtk_Region_Flags := 1;
+   Region_Odd : constant Gtk_Region_Flags := 2;
+   Region_First : constant Gtk_Region_Flags := 4;
+   Region_Last : constant Gtk_Region_Flags := 8;
+   Region_Sorted : constant Gtk_Region_Flags := 32;
 
    type Gtk_Relief_Style is (
       Relief_Normal,
@@ -510,6 +534,10 @@ package Gtk.Enums is
       new Generic_Internal_Discrete_Property (Gtk_Icon_Size);
    type Property_Gtk_Icon_Size is new Gtk_Icon_Size_Properties.Property;
 
+   package Gtk_Junction_Sides_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Junction_Sides);
+   type Property_Gtk_Junction_Sides is new Gtk_Junction_Sides_Properties.Property;
+
    package Gtk_Justification_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Justification);
    type Property_Gtk_Justification is new Gtk_Justification_Properties.Property;
@@ -573,6 +601,10 @@ package Gtk.Enums is
    package Gtk_Print_Quality_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Print_Quality);
    type Property_Gtk_Print_Quality is new Gtk_Print_Quality_Properties.Property;
+
+   package Gtk_Region_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Region_Flags);
+   type Property_Gtk_Region_Flags is new Gtk_Region_Flags_Properties.Property;
 
    package Gtk_Relief_Style_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Relief_Style);

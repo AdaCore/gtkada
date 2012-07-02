@@ -58,4 +58,18 @@ package body Gdk.Cairo is
       Internal (Cr, Get_Object (Pixbuf), Pixbuf_X, Pixbuf_Y);
    end Set_Source_Pixbuf;
 
+   ---------------------
+   -- Set_Source_RGBA --
+   ---------------------
+
+   procedure Set_Source_RGBA
+     (Cr       : Cairo_Context;
+      Color    : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal (Cr : Cairo_Context; Color : System.Address);
+      pragma Import (C, Internal, "gdk_cairo_set_source_rgba");
+   begin
+      Internal (Cr, Gdk_RGBA_Or_Null (Color'Address));
+   end Set_Source_RGBA;
+
 end Gdk.Cairo;

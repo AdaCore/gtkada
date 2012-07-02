@@ -32,6 +32,7 @@ with Glib;         use Glib;
 with Cairo;        use Cairo;
 with Gdk.Color;    use Gdk.Color;
 with Gdk.Pixbuf;   use Gdk.Pixbuf;
+with Gdk.RGBA;     use Gdk.RGBA;
 
 package Gdk.Cairo is
 
@@ -76,6 +77,9 @@ package Gdk.Cairo is
    procedure Set_Source_Color
      (Cr       : Cairo_Context;
       Color    : Gdk_Color);
+   procedure Set_Source_RGBA
+     (Cr       : Cairo_Context;
+      Color    : Gdk.RGBA.Gdk_RGBA);
    --  Set the specified Color as the source of Cr.
 
 private

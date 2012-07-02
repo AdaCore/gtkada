@@ -133,7 +133,7 @@ package Gtk.Style is
    --  Color and returning True if found, otherwise returning False. Do not
    --  cache the found mapping, because it depends on the Gtk.Style.Gtk_Style
    --  and might change when a theme switch occurs.
-   --  Deprecated:3.0: Use gtk_style_context_lookup_color instead
+   --  Deprecated:3.0: Use Gtk.Style_Context.Lookup_Color instead
    --  Since: gtk+ 2.10
    --  "color_name": the name of the logical color to look up
    --  "color": the Gdk.Color.Gdk_Color to fill in
@@ -144,7 +144,7 @@ package Gtk.Style is
        State_Type : Gtk.Enums.Gtk_State_Type);
    --  Sets the background of Window to the background color or pixmap
    --  specified by Style for the given state.
-   --  Deprecated:3.0: Use gtk_style_context_set_background instead
+   --  Deprecated:3.0: Use Gtk.Style_Context.Set_Background instead
    --  "window": a Gdk.Window.Gdk_Window
    --  "state_type": a state
 

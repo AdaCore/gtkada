@@ -231,6 +231,20 @@ package body Gdk.Window is
       Internal (Window, Color_A);
    end Set_Background;
 
+   -------------------------
+   -- Set_Background_RGBA --
+   -------------------------
+
+   procedure Set_Background_RGBA
+     (Window : Gdk_Window; Color : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+        (Window : Gdk_Window; Color : System.Address);
+      pragma Import (C, Internal, "gdk_window_set_background_rgba");
+   begin
+      Internal (Window, Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
+   end Set_Background_RGBA;
+
    -----------------------
    -- Set_Debug_Updates --
    -----------------------

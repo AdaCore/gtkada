@@ -57,7 +57,6 @@ with Pango.Layout;            use Pango.Layout;
 
 with Gdk;                     use Gdk;
 with Gdk.Cairo;               use Gdk.Cairo;
-with Gdk.Color;               use Gdk.Color;
 with Gdk.Cursor;              use Gdk.Cursor;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Main;                use Gdk.Main;
@@ -91,7 +90,7 @@ with Gtk.Notebook;            use Gtk.Notebook;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
-with Gtk.Style;               use Gtk.Style;
+with Gtk.Style_Context;       use Gtk.Style_Context;
 with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
 
@@ -817,6 +816,9 @@ package body Gtkada.MDI is
          6 => (1 => GType_Pointer),
          7 => (1 => GType_None),
          8 => (1 => GType_None));
+
+      Ctx : constant Gtk_Style_Context := Get_Style_Context (MDI);
+      Success : Boolean;
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
 
@@ -836,11 +838,12 @@ package body Gtkada.MDI is
       Set_Dnd_Message (MDI, "");
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
-      MDI.Background_Color := Parse (Default_MDI_Background_Color);
-      MDI.Title_Bar_Color := Parse (Default_Title_Bar_Color);
-      MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
 
-      MDI.Default_Title_Color := Get_Bg (Get_Default_Style, State_Normal);
+      Parse (MDI.Background_Color, Default_MDI_Background_Color, Success);
+      Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
+      Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
+
+      Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
 
       Glib.Object.Initialize_Class_Record
         (MDI,
@@ -1214,9 +1217,9 @@ package body Gtkada.MDI is
       Opaque_Resize             : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
       Title_Font                : Pango_Font_Description := null;
-      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Background_Color          : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Title_Bar_Color           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color         : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars           : Title_Bars_Policy   := Always;
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Bottom;
@@ -1250,34 +1253,16 @@ package body Gtkada.MDI is
       Get_Pixel_Size (MDI.Title_Layout, W, H);
       MDI.Title_Bar_Height := 2 + H;
 
+      MDI.Focus_Title_Color := Focus_Title_Color;
+
       --  Ignore changes in colors, unless the MDI is realized
 
-      if Background_Color /= Null_Color then
+      if Background_Color /= Null_RGBA then
          MDI.Background_Color  := Background_Color;
       end if;
 
-      if Title_Bar_Color /= Null_Color then
+      if Title_Bar_Color /= Null_RGBA then
          MDI.Title_Bar_Color   := Title_Bar_Color;
-      end if;
-
-      if MDI.Highlight_Style /= null then
-         Unref (MDI.Highlight_Style);
-      end if;
-
-      Gtk_New (MDI.Highlight_Style);
-
-      if Focus_Title_Color /= Null_Color then
-         MDI.Focus_Title_Color := Focus_Title_Color;
-         Set_Foreground
-           (MDI.Highlight_Style, State_Normal, MDI.Focus_Title_Color);
-         Set_Foreground
-           (MDI.Highlight_Style, State_Active, MDI.Focus_Title_Color);
-         Set_Foreground
-           (MDI.Highlight_Style, State_Selected, MDI.Focus_Title_Color);
-         Set_Foreground
-           (MDI.Highlight_Style, State_Prelight, MDI.Focus_Title_Color);
-         Set_Foreground
-           (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
       end if;
 
       Iter := First_Child
@@ -1307,16 +1292,16 @@ package body Gtkada.MDI is
       end loop;
 
       if MDI.Get_Realized then
-         if Background_Color /= Null_Color then
-            Set_Background (Get_Window (MDI), Background_Color);
+         if Background_Color /= Null_RGBA then
+            Set_Background_RGBA (Get_Window (MDI), Background_Color);
             Need_Redraw := True;
          end if;
 
-         if Title_Bar_Color /= Null_Color then
+         if Title_Bar_Color /= Null_RGBA then
             Need_Redraw := True;
          end if;
 
-         if Focus_Title_Color /= Null_Color then
+         if Focus_Title_Color /= Null_RGBA then
             Need_Redraw := True;
          end if;
       end if;
@@ -1365,7 +1350,7 @@ package body Gtkada.MDI is
       M           : constant MDI_Window := MDI_Window (MDI);
 
    begin
-      Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
+      Gdk.Window.Set_Background_RGBA (Get_Window (M), M.Background_Color);
 
       if M.Cursor_Cross = null then
          Gdk_New (M.Cursor_Cross, Cross);
@@ -1428,10 +1413,6 @@ package body Gtkada.MDI is
 
       if M.Cursor_Cross /= null then
          Unref (M.Cursor_Cross);
-      end if;
-
-      if M.Highlight_Style /= null then
-         Unref (M.Highlight_Style);
       end if;
 
       if M.Menu /= null then
@@ -1670,9 +1651,7 @@ package body Gtkada.MDI is
       return Boolean
    is
       Child            : constant MDI_Child := MDI_Child (Widget);
-      Border_Thickness : constant Gint :=
-                           Gint (Get_Border_Width (Child.Main_Box));
-      Color : Gdk_Color := Child.MDI.Title_Bar_Color;
+      Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
       W, H  : Gint;
       X     : Gint := 1;
    begin
@@ -1688,7 +1667,7 @@ package body Gtkada.MDI is
       Update_Tab_Color (Child);
 
       if Child.Title_Box.Get_Realized then
-         Set_Source_Color (Cr, Color);
+         Set_Source_RGBA (Cr, Color);
          Cairo.Rectangle
            (Cr,
             0.0, 0.0,
@@ -1719,22 +1698,26 @@ package body Gtkada.MDI is
          end if;
 
          Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
-         Set_Source_Color (Cr, Get_White (Get_Style (Child.MDI)));
+         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
          Move_To (Cr, Gdouble (X), 0.0);
          Show_Layout (Cr, Child.MDI.Title_Layout);
 
-         if Border_Thickness /= 0 then
-            Paint_Shadow
-              (Style       => Get_Style (Child),
-               Window      => Get_Window (Child),
-               State_Type  => State_Normal,
-               Shadow_Type => Shadow_Out,
-               Widget      => Child,
-               X           => 0,
-               Y           => 0,
-               Width       => Get_Allocated_Width (Child),
-               Height      => Get_Allocated_Height (Child));
-         end if;
+         --  ??? MANU we need to replace this with actual cairo drawing
+
+         --  Border_Thickness : constant Gint :=
+         --     Gint (Get_Border_Width (Child.Main_Box));
+         --  if Border_Thickness /= 0 then
+         --     Paint_Shadow
+         --       (Style       => Get_Style (Child),
+         --        Window      => Get_Window (Child),
+         --        State_Type  => State_Normal,
+         --        Shadow_Type => Shadow_Out,
+         --        Widget      => Child,
+         --        X           => 0,
+         --        Y           => 0,
+         --        Width       => Get_Allocated_Width (Child),
+         --        Height      => Get_Allocated_Height (Child));
+         --  end if;
       end if;
 
       return False;
@@ -1764,7 +1747,8 @@ package body Gtkada.MDI is
          Gtk_New (MDI.Dnd_Window, Window_Popup);
          Set_Transient_For (MDI.Dnd_Window, Gtk_Window (Get_Toplevel (MDI)));
          Set_Position (MDI.Dnd_Window, Win_Pos_Center_On_Parent);
-         Modify_Bg (MDI.Dnd_Window, State_Normal, MDI.Focus_Title_Color);
+         Override_Background_Color
+           (MDI.Dnd_Window, Gtk_State_Flag_Normal, MDI.Focus_Title_Color);
          Set_Keep_Above (MDI.Dnd_Window, True);
 
          Gtk_New (Frame);
@@ -3117,24 +3101,23 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
-      Color : Gdk_Color := Get_Bg (Get_Default_Style, State_Normal);
+      Ctx   : constant Gtk_Style_Context := Get_Style_Context (Child.MDI);
+      Color : Gdk_RGBA;
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
-      RGBA  : Gdk_RGBA;
    begin
       if Note /= null then
+         Ctx.Get_Color (Gtk_State_Flag_Normal, Color);
+
          if MDI_Child (Child) = Child.MDI.Focus_Child then
             Color := Child.MDI.Focus_Title_Color;
          end if;
 
-         RGBA.Red   := Gdouble (Red (Color));
-         RGBA.Green := Gdouble (Green (Color));
-         RGBA.Blue  := Gdouble (Blue (Color));
-         Note.Override_Background_Color (Gtk_State_Flag_Normal, RGBA);
+         Note.Override_Background_Color (Gtk_State_Flag_Normal, Color);
 
          Label := Get_Tab_Label (Note, Child);
          if Label /= null then
-            Label.Override_Background_Color (Gtk_State_Flag_Normal, RGBA);
+            Label.Override_Background_Color (Gtk_State_Flag_Normal, Color);
          end if;
       end if;
    end Update_Tab_Color;
@@ -6854,7 +6837,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
-      Style : Gtk_Style;
+      Widget : Gtk_Widget;
    begin
       if Highlight then
          Show (Child);  --  Make sure the child is visible
@@ -6864,10 +6847,6 @@ package body Gtkada.MDI is
          then
             return;
          end if;
-
-         Style := Child.MDI.Highlight_Style;
-      else
-         Style := null;
       end if;
 
       --  Might be null if we haven't created the MDI menu yet
@@ -6881,7 +6860,7 @@ package body Gtkada.MDI is
          begin
             while Tmp /= Null_List loop
                if Get_Data (Tmp).all'Tag = Gtk_Accel_Label_Record'Tag then
-                  Set_Style (Get_Data (Tmp), Style);
+                  Widget := Get_Data (Tmp);
                end if;
 
                Tmp := Next (Tmp);
@@ -6892,7 +6871,28 @@ package body Gtkada.MDI is
       end if;
 
       if Child.Tab_Label /= null then
-         Set_Style (Child.Tab_Label, Style);
+         if Highlight then
+            for State in Gtk_State_Flags'Range loop
+               Override_Color
+                 (Child.Tab_Label, State, Child.MDI.Focus_Title_Color);
+            end loop;
+         else
+            for State in Gtk_State_Flags'Range loop
+               Override_Color (Child.Tab_Label, State, Gdk.RGBA.Null_RGBA);
+            end loop;
+         end if;
+
+         if Widget /= null then
+            if Highlight then
+               for State in Gtk_State_Flags'Range loop
+                  Override_Color (Widget, State, Child.MDI.Focus_Title_Color);
+               end loop;
+            else
+               for State in Gtk_State_Flags'Range loop
+                  Override_Color (Widget, State, Gdk.RGBA.Null_RGBA);
+               end loop;
+            end if;
+         end if;
       end if;
    end Highlight_Child;
 
@@ -6960,8 +6960,9 @@ package body Gtkada.MDI is
                Set_Transient_For
                  (MDI.Dnd_Target_Window, Gtk_Window (Get_Toplevel (MDI)));
                Set_Events (MDI.Dnd_Target_Window, Exposure_Mask);
-               Modify_Bg
-                 (MDI.Dnd_Target_Window, State_Normal, MDI.Focus_Title_Color);
+               Override_Background_Color
+                 (MDI.Dnd_Target_Window, Gtk_State_Flag_Normal,
+                  MDI.Focus_Title_Color);
                Set_Decorated (MDI.Dnd_Target_Window, False);
                Set_Accept_Focus (MDI.Dnd_Target_Window, False);
 

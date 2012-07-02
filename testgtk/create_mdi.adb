@@ -24,7 +24,7 @@
 with Ada.Text_IO;        use Ada.Text_IO;
 with Cairo.PDF;
 with Cairo;              use Cairo;
-with Gdk.Color;          use Gdk.Color;
+with Gdk.RGBA;           use Gdk.RGBA;
 with Glib;               use Glib;
 with Glib.Xml_Int;       use Glib.Xml_Int;
 with Gtk;                use Gtk;
@@ -139,11 +139,12 @@ package body Create_MDI is
    ------------------
 
    procedure Do_Configure (MDI : access MDI_Window_Record'Class) is
-      Bg_Color, Title_Color, Focus_Color : Gdk_Color;
+      Bg_Color, Title_Color, Focus_Color : Gdk_RGBA;
+      Success : Boolean;
    begin
-      Bg_Color := Parse ("#8A8A8A");
-      Title_Color := Parse ("#7D7D7D");
-      Focus_Color := Parse ("#5894FA");
+      Parse (Bg_Color, "#8A8A8A", Success);
+      Parse (Title_Color, "#7D7D7D", Success);
+      Parse (Focus_Color, "#5894FA", Success);
       Configure (MDI,
                  Background_Color  => Bg_Color,
                  Title_Bar_Color   => Title_Color,

@@ -39,7 +39,8 @@ with Gdk.Pixbuf;
 with Gdk.RGBA;
 
 with Gtk.Enums;
-with Gtk.Style;
+with Gdk.RGBA;
+with Gtk.Widget;
 
 package Gtkada.Style is
 
@@ -96,7 +97,7 @@ package Gtkada.Style is
 
    procedure Draw_Shadow
      (Cr                  : Cairo.Cairo_Context;
-      Style               : Gtk.Style.Gtk_Style;
+      Widget              : not null access Gtk.Widget.Gtk_Widget_Record'Class;
       Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
       X, Y, Width, Height : Glib.Gint;
       Corner_Radius       : Glib.Gdouble := 0.0);

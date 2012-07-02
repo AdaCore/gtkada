@@ -33,7 +33,7 @@ package body Close_Button is
    end record;
 
    function Shade
-     (Color : Gdk_Color;
+     (Color : Gdk_RGBA;
       Value : Gdouble) return Cairo_Color;
 
    function On_Draw
@@ -167,13 +167,14 @@ package body Close_Button is
       Height  : Gint;
       dW      : Gdouble;
       Cross_W : Gdouble;
-      Bg      : Gdk_Color;
+      Bg      : Gdk_RGBA;
       Base    : Cairo_Color;
       Lo, Hi  : Cairo_Color;
       Ptrn    : Cairo_Pattern;
       Note    : constant Gtk_Notebook :=
                  Gtk_Notebook (Get_Parent (Button.Child));
       Alloc   : Gtk_Allocation;
+      Ctx     : Gtk_Style_Context;
 
    begin
       if not Button.In_Titlebar
@@ -220,7 +221,8 @@ package body Close_Button is
          then
             Bg := Button.Child.MDI.Title_Bar_Color;
          else
-            Bg := Gtk.Style.Get_Bg (Get_Style (Button.Child), State_Normal);
+            Ctx := Get_Style_Context (Button.Child.MDI);
+            Ctx.Get_Color (Gtk_State_Flag_Normal, Bg);
          end if;
 
          --  Shade the color according to the button's state
@@ -285,31 +287,13 @@ package body Close_Button is
    -----------
 
    function Shade
-     (Color : Gdk_Color;
-      Value : Gdouble) return Cairo_Color
-   is
-      Ret : Cairo_Color;
+     (Color : Gdk_RGBA;
+      Value : Gdouble) return Cairo_Color is
    begin
-      Ret :=
-        (R => Gdouble (Red (Color)) / 65535.0 * Value,
-         G => Gdouble (Green (Color)) / 65535.0 * Value,
-         B => Gdouble (Blue (Color)) / 65535.0 * Value);
-
-      if Value > 1.0 then
-         if Ret.R > 1.0 then
-            Ret.R := 1.0;
-         end if;
-
-         if Ret.G > 1.0 then
-            Ret.G := 1.0;
-         end if;
-
-         if Ret.B > 1.0 then
-            Ret.B := 1.0;
-         end if;
-      end if;
-
-      return Ret;
+      return
+        (R => Gdouble'Min (1.0, Color.Red * Value),
+         G => Gdouble'Min (1.0, Color.Green * Value),
+         B => Gdouble'Min (1.0, Color.Blue * Value));
    end Shade;
 
    -----------------------

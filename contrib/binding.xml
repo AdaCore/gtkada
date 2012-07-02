@@ -2312,7 +2312,7 @@ __PRE__
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get_valist" bind="False"/><!-- varargs -->
      <method id="gtk_widget_list_accel_closures" bind="False"/><!-- We do not expose Closures-->
-     <method id="gtk_widget_get_style_context" bind="False"/><!-- Needs Gtk.Style_Context-->
+     <method id="gtk_widget_get_style_context" bind="False"/><!-- in Gtk.Style_Context-->
      <method id="gtk_widget_get_accessible" bind="False"/> <!-- Requires ATK -->
      <method id="gtk_widget_get_clipboard" bind="False"/><!-- in Gtk.Clipboard -->
      <method id="gtk_widget_get_settings" bind="False"/><!-- in Gtk.Settings -->
@@ -2483,6 +2483,7 @@ __PRE__
      <enum ctype="GtkDirectionType"/>
      <enum ctype="GtkExpanderStyle"/>
      <enum ctype="GtkIconSize"/>
+     <enum ctype="GtkJunctionSides"/>
      <enum ctype="GtkJustification"/>
      <enum ctype="GtkMenuDirectionType"/>
      <enum ctype="GtkMovementStep"/>
@@ -2499,6 +2500,7 @@ __PRE__
      <enum ctype="GtkPrintDuplex"/>
      <enum ctype="GtkPrintPages"/>
      <enum ctype="GtkPrintQuality"/>
+     <enum ctype="GtkRegionFlags"/>
      <enum ctype="GtkReliefStyle"/>
      <enum ctype="GtkResizeMode"/>
      <enum ctype="GtkScrollStep"/>
@@ -2866,6 +2868,58 @@ __PRE__
    --  function Border_Get_Type return GType;
         </spec>
       </extra>
+   </package>
+
+   <package id="GtkSymbolicColor">
+     <method id="gtk_symbolic_color_resolve" bind="False"/> <!-- circular dep with StyleProperties -->
+   </package>
+
+   <package id="GtkStyleProvider">
+     <method id="gtk_style_provider_get_style" bind="False" /> <!-- circular dep with StyleProperties -->
+     <method id="gtk_style_provider_get_style_property"
+             return_as_param="Found"/>
+   </package>
+
+   <package id="GtkStyleProperties">
+     <method id="gtk_style_properties_get_property"
+             return_as_param="Exists"/>
+     <method id="gtk_style_properties_set_valist" bind="False"/> <!-- need valist -->
+     <method id="gtk_style_properties_get_valist" bind="False"/> <!-- need valist -->
+     <method id="gtk_style_properties_lookup_property" bind="False"/> <!-- need StylePropertyParser -->
+     <method id="gtk_style_properties_register_property" bind="False"/> <!-- need StylePropertyParser -->
+   </package>
+
+   <package id="GtkStyleContext">
+     <method id="gtk_style_context_has_region"
+             return_as_param="Is_Defined"/>
+     <method id="gtk_style_context_list_classes" return="StringList"/>
+     <method id="gtk_style_context_list_regions" return="StringList"/>
+     <method id="gtk_style_context_get_valist" bind="False"/> <!-- needs valist -->
+     <method id="gtk_style_context_get_style_valist" bind="False"/> <!-- needs valist -->
+     <method id="gtk_style_context_lookup_color" return_as_param="Found"/>
+     <method id="gtk_style_context_state_is_running" return_as_param="Is_Running"/>
+     <extra>
+       <spec>
+   function Get_Style_Context
+      (Widget : not null access Gtk_Widget_Record'Class)
+       return Gtk_Style_Context;
+   --  Returns the style context associated to Widget.
+   --  must not be freed.
+       </spec>
+       <body>
+   function Get_Style_Context
+      (Widget : not null access Gtk_Widget_Record'Class)
+       return Gtk_Style_Context
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_style_context");
+      Stub_Gtk_Style_Context : Gtk_Style_Context_Record;
+   begin
+      return Gtk_Style_Context
+         (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Style_Context));
+   end Get_Style_Context;
+       </body>
+     </extra>
    </package>
 
    <package id="GtkToolButton">

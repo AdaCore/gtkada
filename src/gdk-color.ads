@@ -153,6 +153,7 @@ package Gdk.Color is
    --    systems.
 
    function Equal (Colora, Colorb : Gdk_Color) return Boolean;
+   function "=" (Colora, Colorb : Gdk_Color) return Boolean renames Equal;
    --  True if the Red, Green and Blue components of both colors are equal.
 
    --  <doc_ignore>

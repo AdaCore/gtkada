@@ -31,7 +31,6 @@ with System.Address_Image;
 with Gdk.Cursor;           use Gdk, Gdk.Cursor;
 with Gdk.Event;            use Gdk.Event;
 with Gdk.Main;             use Gdk.Main;
-with Gdk.Rectangle;        use Gdk.Rectangle;
 with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
@@ -41,10 +40,10 @@ with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Fixed;            use Gtk.Fixed;
 with Gtk.Notebook;         use Gtk.Notebook;
-with Gtk.Style;            use Gtk.Style;
 with Gtk.Widget;           use Gtk.Widget;
 
 with Gtkada.Handlers;      use Gtkada.Handlers;
+with Gtkada.Style;         use Gtkada.Style;
 
 with Cairo; use Cairo;
 with Gdk.Cairo; use Gdk.Cairo;
@@ -1144,9 +1143,9 @@ package body Gtkada.Multi_Paned is
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
       Iter        : Child_Iterator := Start (Split);
-      Area        : Gdk_Rectangle;
+      --  Area        : Gdk_Rectangle;
       Current     : Child_Description_Access;
-      Orientation : Gtk_Orientation;
+      --  Orientation : Gtk_Orientation;
       X1, Y1, X2, Y2 : Gdouble;
    begin
       Clip_Extents (Cr, X1, Y1, X2, Y2);
@@ -1158,39 +1157,50 @@ package body Gtkada.Multi_Paned is
          if not Is_Last_Visible (Current)
            and then Current.Visible
          then
-            case Current.Parent.Orientation is
-               when Orientation_Vertical =>
-                  Orientation := Orientation_Horizontal;
-               when Orientation_Horizontal =>
-                  Orientation := Orientation_Vertical;
-            end case;
+            null;
+            --  case Current.Parent.Orientation is
+            --     when Orientation_Vertical =>
+            --        Orientation := Orientation_Horizontal;
+            --     when Orientation_Horizontal =>
+            --        Orientation := Orientation_Vertical;
+            --  end case;
 
-            Area := (Gint (X1), Gint (Y1), Gint (X2 - X1), Gint (Y2 - Y1));
+            --  Area := (Gint (X1), Gint (Y1), Gint (X2 - X1), Gint (Y2 - Y1));
 
-            Paint_Box
-              (Get_Style (Split),
-               Get_Window (Split),
-               State_Normal,
-               Shadow_None,
-               Area,
-               Split,
-               X           => Current.Handle.Position.X,
-               Y           => Current.Handle.Position.Y,
-               Width       => Current.Handle.Position.Width,
-               Height      => Current.Handle.Position.Height);
+            Gtkada.Style.Draw_Rectangle
+              (Cr     => Cr,
+               Color  => (0.0, 0.0, 0.0, 1.0),
+               Filled => True,
+               X      => Current.Handle.Position.X,
+               Y      => Current.Handle.Position.Y,
+               Width  => Current.Handle.Position.Width,
+               Height => Current.Handle.Position.Height);
 
-            Paint_Handle
-              (Get_Style (Split),
-               Get_Window (Split),
-               State_Normal,
-               Shadow_None,
-               Area,
-               Split,
-               X           => Current.Handle.Position.X,
-               Y           => Current.Handle.Position.Y,
-               Width       => Current.Handle.Position.Width,
-               Height      => Current.Handle.Position.Height,
-               Orientation => Orientation);
+            --  ??? MANU we need to replace these with actual cairo drawing
+
+            --  Paint_Box
+            --    (Get_Style (Split),
+            --     Get_Window (Split),
+            --     State_Normal,
+            --     Shadow_None,
+            --     Area,
+            --     Split,
+            --     X           => Current.Handle.Position.X,
+            --     Y           => Current.Handle.Position.Y,
+            --     Width       => Current.Handle.Position.Width,
+            --     Height      => Current.Handle.Position.Height);
+            --  Paint_Handle
+            --    (Get_Style (Split),
+            --     Get_Window (Split),
+            --     State_Normal,
+            --     Shadow_None,
+            --     Area,
+            --     Split,
+            --     X           => Current.Handle.Position.X,
+            --     Y           => Current.Handle.Position.Y,
+            --     Width       => Current.Handle.Position.Width,
+            --     Height      => Current.Handle.Position.Height,
+            --     Orientation => Orientation);
 
          --  Hide could cause another Expose event to be sent, resulting in an
          --  infinite loop. So we first check whether it is already visible

@@ -34,8 +34,8 @@ with Cairo.Surface;       use Cairo.Surface;
 with Pango.Cairo;         use Pango.Cairo;
 
 with Gdk.Cairo;           use Gdk.Cairo;
-with Gdk.Color;           use Gdk.Color;
 with Gdk.Event;           use Gdk.Event;
+with Gdk.RGBA;            use Gdk.RGBA;
 
 with Gtk.Arrow;           use Gtk.Arrow;
 with Gtk.Box;             use Gtk.Box;
@@ -51,7 +51,6 @@ with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Pango.Layout;        use Pango.Layout;
-with Gtk.Style;           use Gtk.Style;
 
 package body Create_Canvas is
 
@@ -68,8 +67,8 @@ package body Create_Canvas is
 
    type Display_Item_Record is new Canvas_Item_Record with record
       Canvas : Interactive_Canvas;
-      Color  : Gdk.Color.Gdk_Color;
-      Title  : Gdk.Color.Gdk_Color;
+      Color  : Gdk.RGBA.Gdk_RGBA;
+      Title  : Gdk.RGBA.Gdk_RGBA;
       W, H   : Gint;
       Num    : Positive;
    end record;
@@ -196,7 +195,7 @@ package body Create_Canvas is
       new String'("orange1"),
       new String'("pink"));
 
-   Colors : array (Color_Type) of Gdk_Color;
+   Colors : array (Color_Type) of Gdk_RGBA;
 
    Items_List : array (1 .. 500) of Canvas_Item;
    Last_Item : Positive;
@@ -254,12 +253,12 @@ package body Create_Canvas is
       Cr     : Cairo_Context)
    is
    begin
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Color);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Color);
       Cairo.Rectangle
         (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
       Cairo.Fill (Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Rectangle
         (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
       Cairo.Stroke (Cr);
@@ -284,14 +283,14 @@ package body Create_Canvas is
    begin
       Cairo.Save (Cr);
 
-      Set_Source_Color (Cr, Item.Color);
+      Set_Source_RGBA (Cr, Item.Color);
       Rectangle
         (Cr, 0.5, 0.5,
          W - 2.0 * Arrow - 1.0,
          H - 1.0);
       Cairo.Fill (Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Rectangle
         (Cr, 0.5, 0.5,
          W - 2.0 * Arrow - 1.0,
@@ -348,7 +347,7 @@ package body Create_Canvas is
 
       Draw (Display_Item_Record (Item.all)'Access, Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Cairo.Rectangle
         (Cr, Item_Width_10 - 0.5, Item_Height_10 - 0.5, 21.0, 21.0);
       Cairo.Stroke (Cr);
@@ -400,8 +399,7 @@ package body Create_Canvas is
          Cairo.Restore (Cr);
       else
          Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_Color
-           (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+         Gdk.Cairo.Set_Source_RGBA (Cr, (0.8, 0.8, 0.8, 1.0));
          Cairo.Paint (Cr);
          Cairo.Restore (Cr);
       end if;
@@ -455,7 +453,7 @@ package body Create_Canvas is
    begin
       Item.Canvas := Interactive_Canvas (Canvas);
       Item.Color := Colors (Color_Random.Random (Color_Gen));
-      Item.Title := Get_Black (Get_Default_Style);
+      Item.Title := (0.0, 0.0, 0.0, 1.0);
       Item.W := Item_Width * Random (Zoom_Gen);
       Item.H := Item_Height * Random (Zoom_Gen);
       Item.Num := Last_Item;
@@ -756,7 +754,6 @@ package body Create_Canvas is
       Canvas  : Image_Canvas)
    is
       Surface : Cairo_Surface;
-      Style   : Gtk_Style;
 
    begin
       if Get_Active (Gtk_Check_Button (Bg_Draw)) then
@@ -768,25 +765,11 @@ package body Create_Canvas is
            (Canvas.Background, Cairo_Extend_Repeat);
          Destroy (Surface);
 
-         Style := Get_Default_Style;
-         Set_Bg
-           (Style, State_Normal, Gdk_Color'(Get_Black (Style)));
-         Set_Fg
-           (Style, State_Normal, Gdk_Color'(Get_Light (Style, State_Normal)));
-         Set_Style (Canvas, Style);
-
       else
          if Canvas.Background /= Null_Pattern then
             Destroy (Canvas.Background);
             Canvas.Background := Null_Pattern;
          end if;
-
-         Style := Get_Default_Style;
-         Set_Bg
-           (Style, State_Normal, Gdk_Color'(Get_Light (Style, State_Normal)));
-         Set_Fg
-           (Style, State_Normal, Gdk_Color'(Get_Black (Style)));
-         Set_Style (Canvas, Style);
       end if;
       Refresh_Canvas (Canvas);
    end Background_Changed;
@@ -805,6 +788,7 @@ package body Create_Canvas is
       Adj      : Gtk_Adjustment;
       F        : Gtk_Frame;
       Align    : Gtk_Check_Button;
+      Success  : Boolean;
 
    begin
       Last_Item := Items_List'First;
@@ -952,7 +936,7 @@ package body Create_Canvas is
       --  gtk3.
 
       for J in Color_Names'Range loop
-         Colors (J) := Parse (Color_Names (J).all);
+         Parse (Colors (J), Color_Names (J).all, Success);
       end loop;
 
       Layout := Create_Pango_Layout (Frame);

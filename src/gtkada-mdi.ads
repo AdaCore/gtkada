@@ -33,10 +33,10 @@ with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Main;
 with Glib.Xml_Int;
-with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
+with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
@@ -47,7 +47,6 @@ with Gtk.Label;
 with Gtk.Menu;
 with Gtk.Menu_Item;
 with Gtk.Notebook;
-with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
@@ -123,9 +122,9 @@ package Gtkada.MDI is
       Opaque_Resize             : Boolean := False;
       Close_Floating_Is_Unfloat : Boolean := True;
       Title_Font         : Pango.Font.Pango_Font_Description := null;
-      Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Background_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Title_Bar_Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic);
@@ -1071,14 +1070,10 @@ private
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
 
-      Highlight_Style : Gtk.Style.Gtk_Style;
-      --  Style to use to highlight the tabs and menus for the highlighted
-      --  children.
-
-      Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Default_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Background_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Title_Bar_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
 
       Cursor_Cross      : Gdk.Cursor.Gdk_Cursor;
       Cursor_Fleur      : Gdk.Cursor.Gdk_Cursor;

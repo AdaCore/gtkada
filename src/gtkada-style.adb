@@ -28,9 +28,12 @@ with Glib;         use Glib;
 with Cairo;        use Cairo;
 with Pango.Cairo;  use Pango.Cairo;
 with Gdk.Cairo;    use Gdk.Cairo;
+with Gdk.RGBA;          use Gdk.RGBA;
 
-with Gtk.Enums;    use Gtk.Enums;
-with Gtk.Style;    use Gtk.Style;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Style_Context; use Gtk.Style_Context;
+with Gtk.Style;         use Gtk.Style;
+with Gtk.Widget;        use Gtk.Widget;
 
 package body Gtkada.Style is
 
@@ -160,7 +163,10 @@ package body Gtkada.Style is
 
    function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color is
    begin
-      return (Color.Red, Color.Green, Color.Blue, Color.Alpha);
+      return (R     => Color.Red,
+              G     => Color.Green,
+              B     => Color.Blue,
+              Alpha => Color.Alpha);
    end To_Cairo;
 
    -----------
@@ -235,7 +241,7 @@ package body Gtkada.Style is
 
    procedure Draw_Shadow
      (Cr                  : Cairo.Cairo_Context;
-      Style               : Gtk.Style.Gtk_Style;
+      Widget              : not null access Gtk.Widget.Gtk_Widget_Record'Class;
       Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
       X, Y, Width, Height : Glib.Gint;
       Corner_Radius       : Glib.Gdouble := 0.0)
@@ -243,18 +249,28 @@ package body Gtkada.Style is
       Hilight : Cairo_Color;
       Shadow  : Cairo_Color;
       HSV     : HSV_Color;
-      X_Thick : constant Gdouble := Gdouble (X_Thickness (Style)) / 4.0;
+
+      Ctx : constant Gtk_Style_Context := Get_Style_Context (Widget);
+      Border : Gtk_Border;
+
+      X_Thick : Gdouble;
       Radius  : Gdouble;
       dX, dY, dW, dH : Gdouble;
+      Color : Gdk_RGBA;
 
    begin
       if Shadow_Type = Shadow_None then
          return;
       end if;
 
+      Ctx.Get_Border (Gtk_State_Flag_Normal, Border);
+      X_Thick := Gdouble (Border.Left + Border.Right);
+      Ctx.Get_Background_Color (Gtk_State_Flag_Normal, Color);
+
       Cairo.Save (Cr);
 
-      HSV := To_HSV (To_Cairo (Get_Bg (Style, State_Normal)));
+      HSV := To_HSV (To_Cairo (Color));
+
       HSV.V := 0.3;
       Shadow := To_Cairo (HSV);
 

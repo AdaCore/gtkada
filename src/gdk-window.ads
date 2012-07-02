@@ -57,6 +57,7 @@ with Gdk;
 with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Event;
+with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Unchecked_Conversion;
@@ -436,6 +437,8 @@ package Gdk.Window is
 
    procedure Set_Background
      (Window : Gdk_Window; Color : Gdk.Color.Gdk_Color);
+   procedure Set_Background_RGBA
+     (Window : Gdk_Window; Color : Gdk.RGBA.Gdk_RGBA);
 
    procedure Set_Cursor
      (Window : Gdk_Window; Cursor : Gdk.Cursor.Gdk_Cursor);

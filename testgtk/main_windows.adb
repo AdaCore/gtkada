@@ -39,7 +39,6 @@ with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Paned;           use Gtk.Paned;
-with Gtk.Style;           use Gtk.Style;
 with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
 with Gtk.Text_Iter;       use Gtk.Text_Iter;
 with Gtk.Text_Mark;       use Gtk.Text_Mark;
@@ -784,7 +783,6 @@ package body Main_Windows is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
       Vbox     : Gtk.Box.Gtk_Box;
-      Style    : Gtk_Style;
       Button   : Gtk.Button.Gtk_Button;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
 
@@ -802,11 +800,8 @@ package body Main_Windows is
       Add (Win, Vbox);
 
       --  Label
-      Style := Copy (Get_Style (Win));
-      Set_Font_Description (Style, From_String ("Helvetica Bold 18"));
-
       Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
-      Set_Style (Label, Style);
+      Override_Font (Label, From_String ("Helvetica Bold 18"));
       Pack_Start (Vbox, Label, Expand => False, Fill => False, Padding => 10);
 
       --  Notebook creation

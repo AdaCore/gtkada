@@ -46,6 +46,7 @@ with Gdk.Color;                          use Gdk.Color;
 with Gdk.Cursor;                         use Gdk.Cursor;
 with Gdk.Event;                          use Gdk.Event;
 with Gdk.Rectangle;                      use Gdk.Rectangle;
+with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Window;                         use Gdk.Window;
 with Gdk.Types;                          use Gdk.Types;
 with Gdk.Types.Keysyms;                  use Gdk.Types.Keysyms;
@@ -54,7 +55,6 @@ with Gtk.Adjustment;                     use Gtk.Adjustment;
 with Gtk.Arguments;                      use Gtk.Arguments;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;
-with Gtk.Style;                          use Gtk.Style;
 with Gtk.Widget;                         use Gtk.Widget;
 
 with Gtkada.Handlers;                    use Gtkada.Handlers;
@@ -431,7 +431,6 @@ package body Gtkada.Canvas is
       Cairo.Translate (Cr, -Canvas.World_X, -Canvas.World_Y);
 
       Cairo.Scale (Cr, Canvas.Zoom, Canvas.Zoom);
-      Set_Source_Color (Cr, Get_Fg (Get_Style (Canvas), State_Normal));
       Set_Line_Width (Cr, 1.0);
 
       return Cr;
@@ -539,8 +538,6 @@ package body Gtkada.Canvas is
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
       --  initialized.
 
-      Style : Gtk_Style;
-
    begin
       Gtk.Layout.Initialize (Canvas);
       Canvas.Offset_X_World := 0;
@@ -582,10 +579,6 @@ package body Gtkada.Canvas is
 
       Widget_Callback.Connect
         (Canvas, "notify::hadjustment", Set_Scroll_Adjustments'Access);
-
-      Style := Get_Style (Canvas);
-      Set_Bg (Style, State_Normal, Gdk_Color'(Get_White (Style)));
-      Set_Style (Canvas, Style);
 
       Canvas.Annotation_Layout := Create_Pango_Layout (Canvas);
 
@@ -1434,8 +1427,7 @@ package body Gtkada.Canvas is
          Get_Pixel_Size (Canvas.Annotation_Layout, W, H);
 
          Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_Color
-           (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+         Gdk.Cairo.Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
          Cairo.Set_Line_Width (Cr, 1.0);
          Cairo.Rectangle
            (Cr,
@@ -2282,9 +2274,10 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Cr     : Cairo_Context)
    is
+      pragma Unreferenced (Canvas);
    begin
       Cairo.Save (Cr);
-      Set_Source_Color (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+      Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
       Paint (Cr);
       Cairo.Restore (Cr);
    end Draw_Background;
@@ -2492,8 +2485,7 @@ package body Gtkada.Canvas is
      (Item : access Canvas_Item_Record;
       Cr   : Cairo.Cairo_Context)
    is
-      Sel : constant Gdk_Color :=
-              Get_Bg (Get_Style (Item.Canvas), State_Selected);
+      Sel : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
       P   : Cairo_Pattern;
 
    begin
@@ -2511,12 +2503,7 @@ package body Gtkada.Canvas is
          Gdouble (Item.Coord.Width),
          Gdouble (Item.Coord.Height));
 
-      Cairo.Set_Source_Rgba
-        (Cr,
-         Gdouble (Red (Sel)) / 65535.0,
-         Gdouble (Green (Sel)) / 65535.0,
-         Gdouble (Blue (Sel)) / 65535.0,
-         0.5);
+      Set_Source_RGBA (Cr, Sel);
 
       Cairo.Fill (Cr);
 
@@ -3178,8 +3165,7 @@ package body Gtkada.Canvas is
       Item  : Canvas_Item;
       X, Y  : Gint;
       Rect  : Gdk_Rectangle;
-      Sel   : constant Gdk_Color :=
-                Get_Bg (Get_Style (Canvas), State_Selected);
+      Sel   : Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
 
    begin
       if Canvas.Selected_Count = 0 then
@@ -3197,14 +3183,12 @@ package body Gtkada.Canvas is
             Gdouble (Rect.Width) - 1.0,
             Gdouble (Rect.Height) - 1.0);
 
-         Cairo.Set_Source_Rgba
-           (Cr,
-            Gdouble (Red (Sel)) / 65535.0,
-            Gdouble (Green (Sel)) / 65535.0,
-            Gdouble (Blue (Sel)) / 65535.0,
-            0.3);
+         Sel.Alpha := 0.3;
+         Set_Source_RGBA (Cr, Sel);
          Fill_Preserve (Cr);
-         Set_Source_Color (Cr, Sel);
+
+         Sel.Alpha := 1.0;
+         Set_Source_RGBA (Cr, Sel);
          Stroke (Cr);
 
          Cairo.Restore (Cr);
@@ -3212,12 +3196,7 @@ package body Gtkada.Canvas is
       else
          Iter := Start (Canvas, Selected_Only => True);
          Cairo.Set_Operator (Cr, Cairo_Operator_Xor);
-         Set_Source_Rgba
-           (Cr,
-            Gdouble (Red (Sel)) / 65535.0,
-            Gdouble (Green (Sel)) / 65535.0,
-            Gdouble (Blue (Sel)) / 65535.0,
-            0.5);
+         Set_Source_RGBA (Cr, Sel);
 
          loop
             Item := Get (Iter);
