@@ -154,6 +154,15 @@ package body Gtkada.Style is
               Alpha => 1.0);
    end To_Cairo;
 
+   --------------
+   -- To_Cairo --
+   --------------
+
+   function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color is
+   begin
+      return (Color.Red, Color.Green, Color.Blue, Color.Alpha);
+   end To_Cairo;
+
    -----------
    -- Shade --
    -----------

@@ -36,6 +36,7 @@ with Pango.Layout;
 
 with Gdk.Color;
 with Gdk.Pixbuf;
+with Gdk.RGBA;
 
 with Gtk.Enums;
 with Gtk.Style;
@@ -64,6 +65,7 @@ package Gtkada.Style is
    function To_HSV (Color   : Cairo_Color) return HSV_Color;
    function To_Cairo (HSV : HSV_Color) return Cairo_Color;
    function To_Cairo (Color : Gdk.Color.Gdk_Color) return Cairo_Color;
+   function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color;
    --  Translations between one color definition to another
 
    function Shade
