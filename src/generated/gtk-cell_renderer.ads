@@ -24,20 +24,19 @@
 pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Renderer.Gtk_Cell_Renderer is a base class of a set of
---  objects used for rendering a cell to a Cairo.Cairo_Context. These objects
---  are used primarily by the Gtk.Tree_View.Gtk_Tree_View widget, though they
---  aren't tied to them in any specific way. It is worth noting that
+--  objects used for rendering a cell to a cairo_t. These objects are used
+--  primarily by the Gtk.Tree_View.Gtk_Tree_View widget, though they aren't
+--  tied to them in any specific way. It is worth noting that
 --  Gtk.Cell_Renderer.Gtk_Cell_Renderer is not a Gtk.Widget.Gtk_Widget and
 --  cannot be treated as such.
 --
 --  The primary use of a Gtk.Cell_Renderer.Gtk_Cell_Renderer is for drawing a
---  certain graphical elements on a Cairo.Cairo_Context. Typically, one cell
---  renderer is used to draw many cells on the screen. To this extent, it isn't
---  expected that a CellRenderer keep any permanent state around. Instead, any
---  state is set just prior to use using Glib.Object.GObject<!-- -->s property
---  system. Then, the cell is measured using Gtk.Cell_Renderer.Get_Size.
---  Finally, the cell is rendered in the correct location using
---  Gtk.Cell_Renderer.Render.
+--  certain graphical elements on a cairo_t. Typically, one cell renderer is
+--  used to draw many cells on the screen. To this extent, it isn't expected
+--  that a CellRenderer keep any permanent state around. Instead, any state is
+--  set just prior to use using Glib.Object.GObject<!-- -->s property system.
+--  Then, the cell is measured using Gtk.Cell_Renderer.Get_Size. Finally, the
+--  cell is rendered in the correct location using Gtk.Cell_Renderer.Render.
 --
 --  There are a number of rules that must be followed when writing a new
 --  Gtk.Cell_Renderer.Gtk_Cell_Renderer. First and formost, its important that
@@ -328,7 +327,7 @@ package Gtk.Cell_Renderer is
 
    procedure Render
       (Cell            : not null access Gtk_Cell_Renderer_Record;
-       Cr              : in out Cairo.Cairo_Context;
+       Cr              : Cairo.Cairo_Context;
        Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;

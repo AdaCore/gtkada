@@ -810,6 +810,372 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Screen), Provider);
    end Remove_Provider_For_Screen;
 
+   ---------------------
+   -- Render_Activity --
+   ---------------------
+
+   procedure Render_Activity
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_activity");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Activity;
+
+   ------------------
+   -- Render_Arrow --
+   ------------------
+
+   procedure Render_Arrow
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Angle   : Gdouble;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Size    : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          Angle   : Gdouble;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Size    : Gdouble);
+      pragma Import (C, Internal, "gtk_render_arrow");
+   begin
+      Internal (Get_Object (Context), Cr, Angle, X, Y, Size);
+   end Render_Arrow;
+
+   -----------------------
+   -- Render_Background --
+   -----------------------
+
+   procedure Render_Background
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_background");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Background;
+
+   ------------------
+   -- Render_Check --
+   ------------------
+
+   procedure Render_Check
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_check");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Check;
+
+   ---------------------
+   -- Render_Expander --
+   ---------------------
+
+   procedure Render_Expander
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_expander");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Expander;
+
+   ----------------------
+   -- Render_Extension --
+   ----------------------
+
+   procedure Render_Extension
+      (Context  : not null access Gtk_Style_Context_Record'Class;
+       Cr       : Cairo.Cairo_Context;
+       X        : Gdouble;
+       Y        : Gdouble;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Gap_Side : Gtk.Enums.Gtk_Position_Type)
+   is
+      procedure Internal
+         (Context  : System.Address;
+          Cr       : Cairo.Cairo_Context;
+          X        : Gdouble;
+          Y        : Gdouble;
+          Width    : Gdouble;
+          Height   : Gdouble;
+          Gap_Side : Gtk.Enums.Gtk_Position_Type);
+      pragma Import (C, Internal, "gtk_render_extension");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height, Gap_Side);
+   end Render_Extension;
+
+   ------------------
+   -- Render_Focus --
+   ------------------
+
+   procedure Render_Focus
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_focus");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Focus;
+
+   ------------------
+   -- Render_Frame --
+   ------------------
+
+   procedure Render_Frame
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_frame");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Frame;
+
+   ----------------------
+   -- Render_Frame_Gap --
+   ----------------------
+
+   procedure Render_Frame_Gap
+      (Context  : not null access Gtk_Style_Context_Record'Class;
+       Cr       : Cairo.Cairo_Context;
+       X        : Gdouble;
+       Y        : Gdouble;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Gap_Side : Gtk.Enums.Gtk_Position_Type;
+       Xy0_Gap  : Gdouble;
+       Xy1_Gap  : Gdouble)
+   is
+      procedure Internal
+         (Context  : System.Address;
+          Cr       : Cairo.Cairo_Context;
+          X        : Gdouble;
+          Y        : Gdouble;
+          Width    : Gdouble;
+          Height   : Gdouble;
+          Gap_Side : Gtk.Enums.Gtk_Position_Type;
+          Xy0_Gap  : Gdouble;
+          Xy1_Gap  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_frame_gap");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height, Gap_Side, Xy0_Gap, Xy1_Gap);
+   end Render_Frame_Gap;
+
+   -------------------
+   -- Render_Handle --
+   -------------------
+
+   procedure Render_Handle
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_handle");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Handle;
+
+   -----------------
+   -- Render_Icon --
+   -----------------
+
+   procedure Render_Icon
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Pixbuf  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          Pixbuf  : System.Address;
+          X       : Gdouble;
+          Y       : Gdouble);
+      pragma Import (C, Internal, "gtk_render_icon");
+   begin
+      Internal (Get_Object (Context), Cr, Get_Object (Pixbuf), X, Y);
+   end Render_Icon;
+
+   -------------------
+   -- Render_Layout --
+   -------------------
+
+   procedure Render_Layout
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Layout  : not null access Pango.Layout.Pango_Layout_Record'Class)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Layout  : System.Address);
+      pragma Import (C, Internal, "gtk_render_layout");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Get_Object (Layout));
+   end Render_Layout;
+
+   -----------------
+   -- Render_Line --
+   -----------------
+
+   procedure Render_Line
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X0      : Gdouble;
+       Y0      : Gdouble;
+       X1      : Gdouble;
+       Y1      : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X0      : Gdouble;
+          Y0      : Gdouble;
+          X1      : Gdouble;
+          Y1      : Gdouble);
+      pragma Import (C, Internal, "gtk_render_line");
+   begin
+      Internal (Get_Object (Context), Cr, X0, Y0, X1, Y1);
+   end Render_Line;
+
+   -------------------
+   -- Render_Option --
+   -------------------
+
+   procedure Render_Option
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_render_option");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height);
+   end Render_Option;
+
+   -------------------
+   -- Render_Slider --
+   -------------------
+
+   procedure Render_Slider
+      (Context     : not null access Gtk_Style_Context_Record'Class;
+       Cr          : Cairo.Cairo_Context;
+       X           : Gdouble;
+       Y           : Gdouble;
+       Width       : Gdouble;
+       Height      : Gdouble;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal
+         (Context     : System.Address;
+          Cr          : Cairo.Cairo_Context;
+          X           : Gdouble;
+          Y           : Gdouble;
+          Width       : Gdouble;
+          Height      : Gdouble;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+      pragma Import (C, Internal, "gtk_render_slider");
+   begin
+      Internal (Get_Object (Context), Cr, X, Y, Width, Height, Orientation);
+   end Render_Slider;
+
    -------------------
    -- Reset_Widgets --
    -------------------

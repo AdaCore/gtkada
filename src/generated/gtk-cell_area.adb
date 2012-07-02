@@ -992,7 +992,7 @@ package body Gtk.Cell_Area is
       (Self            : not null access Gtk_Cell_Area_Record;
        Context         : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cr              : in out Cairo.Cairo_Context;
+       Cr              : Cairo.Cairo_Context;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
@@ -1002,7 +1002,7 @@ package body Gtk.Cell_Area is
          (Self            : System.Address;
           Context         : System.Address;
           Widget          : System.Address;
-          Cr              : in out Cairo.Cairo_Context;
+          Cr              : Cairo.Cairo_Context;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;

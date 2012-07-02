@@ -251,7 +251,7 @@ naming.type_exceptions = {
 
     "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA"),  # impose casing
 
-    "cairo_t":               Proxy("Cairo.Cairo_Context"),
+    "cairo_t*":              Proxy("Cairo.Cairo_Context"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 

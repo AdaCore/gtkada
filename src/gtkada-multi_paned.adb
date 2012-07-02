@@ -40,10 +40,10 @@ with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Fixed;            use Gtk.Fixed;
 with Gtk.Notebook;         use Gtk.Notebook;
+with Gtk.Style_Context;    use Gtk.Style_Context;
 with Gtk.Widget;           use Gtk.Widget;
 
 with Gtkada.Handlers;      use Gtkada.Handlers;
-with Gtkada.Style;         use Gtkada.Style;
 
 with Cairo; use Cairo;
 with Gdk.Cairo; use Gdk.Cairo;
@@ -228,6 +228,7 @@ package body Gtkada.Multi_Paned is
       Prefix : String := "")
    is
       Tmp : Child_Description_Access;
+      Alloc : Gtk_Allocation;
 
       function Image (Orient : Gtk_Orientation) return String;
       --  Return the string to display for Orient
@@ -270,11 +271,15 @@ package body Gtkada.Multi_Paned is
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
+         Get_Allocation (Child.Widget, Alloc);
+
          Put (Prefix & "<w req=("
               & Image (Gint (Child.Width))
               & Gint'Image (Gint (Child.Height))
               & ") alloc=("
-              & Image (Get_Allocated_Width (Child.Widget))
+              & Gint'Image (Alloc.X)
+              & Gint'Image (Alloc.Y)
+              & Gint'Image (Get_Allocated_Width (Child.Widget))
               & Gint'Image (Get_Allocated_Height (Child.Widget))
               & ") "
               & Image ("HIDDEN", not Child.Visible)
@@ -511,6 +516,8 @@ package body Gtkada.Multi_Paned is
    ----------------
 
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class) is
+      Ctx   : Gtk_Style_Context;
+      Flags : Gtk_State_Flags;
    begin
       Gtk.Fixed.Initialize (Win);
       Glib.Object.Initialize_Class_Record
@@ -542,6 +549,13 @@ package body Gtkada.Multi_Paned is
       Widget_Callback.Connect
         (Win, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Paned'Access));
+
+      Ctx := Get_Style_Context (Win);
+      Ctx.Add_Class ("pane-separator");
+
+      Flags := Win.Get_State_Flags;
+      Flags := Flags or Gtk_State_Flag_Prelight;
+      Ctx.Set_State (Flags);
    end Initialize;
 
    ------------------------
@@ -777,17 +791,14 @@ package body Gtkada.Multi_Paned is
       Cr : Cairo_Context;
    begin
       if not Split.Opaque_Resizing then
-         --  ??? Transition to Gtk3: We used to draw in Xor mode.
-         --  We probably need to adapt this.
          Cr := Create (Get_Window (Split));
-         New_Path (Cr);
-         Move_To (Cr,
-                  Gdouble (Split.Selected_Pos.X),
-                  Gdouble (Split.Selected_Pos.Y));
-         Rel_Line_To (Cr,
-                      Gdouble (Split.Selected_Pos.Width),
-                      Gdouble (Split.Selected_Pos.Height));
-         Stroke (Cr);
+         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
+         Gtk.Style_Context.Render_Line
+           (Get_Style_Context (Split), Cr,
+            Gdouble (Split.Selected_Pos.X),
+            Gdouble (Split.Selected_Pos.Y),
+            Gdouble (Split.Selected_Pos.Width + Split.Selected_Pos.X),
+            Gdouble (Split.Selected_Pos.Height + Split.Selected_Pos.Y));
          Destroy (Cr);
       end if;
    end Draw_Resize_Line;
@@ -1027,8 +1038,8 @@ package body Gtkada.Multi_Paned is
          Resize_Child_And_Siblings (Split.Selected.Parent, Split.Selected);
          Size_Allocate (Split,
                         Split.Selected.Parent,
-                        Split.Selected.Parent.Width,
-                        Split.Selected.Parent.Height);
+                        Gint'Max (1, Split.Selected.Parent.Width),
+                        Gint'Max (1, Split.Selected.Parent.Height));
 
          if Traces then
             Put_Line ("After button_release.size_allocate");
@@ -1141,14 +1152,13 @@ package body Gtkada.Multi_Paned is
      (Paned : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean
    is
-      Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Iter        : Child_Iterator := Start (Split);
-      --  Area        : Gdk_Rectangle;
-      Current     : Child_Description_Access;
-      --  Orientation : Gtk_Orientation;
-      X1, Y1, X2, Y2 : Gdouble;
+      Split   : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+      Iter    : Child_Iterator := Start (Split);
+      Current : Child_Description_Access;
+      Ctx     : constant Gtk_Style_Context := Get_Style_Context (Paned);
+      Alloc   : Gtk_Allocation;
    begin
-      Clip_Extents (Cr, X1, Y1, X2, Y2);
+      Get_Allocation (Paned, Alloc);
 
       loop
          Current := Get (Iter);
@@ -1157,50 +1167,20 @@ package body Gtkada.Multi_Paned is
          if not Is_Last_Visible (Current)
            and then Current.Visible
          then
-            null;
-            --  case Current.Parent.Orientation is
-            --     when Orientation_Vertical =>
-            --        Orientation := Orientation_Horizontal;
-            --     when Orientation_Horizontal =>
-            --        Orientation := Orientation_Vertical;
-            --  end case;
-
-            --  Area := (Gint (X1), Gint (Y1), Gint (X2 - X1), Gint (Y2 - Y1));
-
-            Gtkada.Style.Draw_Rectangle
-              (Cr     => Cr,
-               Color  => (0.0, 0.0, 0.0, 1.0),
-               Filled => True,
-               X      => Current.Handle.Position.X,
-               Y      => Current.Handle.Position.Y,
-               Width  => Current.Handle.Position.Width,
-               Height => Current.Handle.Position.Height);
-
-            --  ??? MANU we need to replace these with actual cairo drawing
-
-            --  Paint_Box
-            --    (Get_Style (Split),
-            --     Get_Window (Split),
-            --     State_Normal,
-            --     Shadow_None,
-            --     Area,
-            --     Split,
-            --     X           => Current.Handle.Position.X,
-            --     Y           => Current.Handle.Position.Y,
-            --     Width       => Current.Handle.Position.Width,
-            --     Height      => Current.Handle.Position.Height);
-            --  Paint_Handle
-            --    (Get_Style (Split),
-            --     Get_Window (Split),
-            --     State_Normal,
-            --     Shadow_None,
-            --     Area,
-            --     Split,
-            --     X           => Current.Handle.Position.X,
-            --     Y           => Current.Handle.Position.Y,
-            --     Width       => Current.Handle.Position.Width,
-            --     Height      => Current.Handle.Position.Height,
-            --     Orientation => Orientation);
+            Gtk.Style_Context.Render_Background
+              (Context => Ctx,
+               Cr      => Cr,
+               X       => Gdouble (Current.Handle.Position.X - Alloc.X),
+               Y       => Gdouble (Current.Handle.Position.Y - Alloc.Y),
+               Width   => Gdouble (Current.Handle.Position.Width),
+               Height  => Gdouble (Current.Handle.Position.Height));
+            Gtk.Style_Context.Render_Handle
+              (Context => Ctx,
+               Cr      => Cr,
+               X       => Gdouble (Current.Handle.Position.X - Alloc.X),
+               Y       => Gdouble (Current.Handle.Position.Y - Alloc.Y),
+               Width   => Gdouble (Current.Handle.Position.Width),
+               Height  => Gdouble (Current.Handle.Position.Height));
 
          --  Hide could cause another Expose event to be sent, resulting in an
          --  infinite loop. So we first check whether it is already visible
@@ -1214,7 +1194,7 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      return True;
+      return False;
    end On_Draw;
 
    ------------------------

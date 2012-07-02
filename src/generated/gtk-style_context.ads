@@ -229,6 +229,8 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Cairo;              use Cairo;
+with Gdk.Pixbuf;         use Gdk.Pixbuf;
 with Gdk.RGBA;           use Gdk.RGBA;
 with Gdk.Screen;         use Gdk.Screen;
 with Gdk.Window;         use Gdk.Window;
@@ -242,6 +244,7 @@ with Gtk.Style;          use Gtk.Style;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Widget;         use Gtk.Widget;
 with Pango.Font;         use Pango.Font;
+with Pango.Layout;       use Pango.Layout;
 
 package Gtk.Style_Context is
 
@@ -404,7 +407,8 @@ package Gtk.Style_Context is
       (Self  : not null access Gtk_Style_Context_Record;
        Sides : Gtk.Enums.Gtk_Junction_Sides);
    --  Sets the sides where rendered elements (mostly through
-   --  gtk_render_frame) will visually connect with other visual elements.
+   --  Gtk.Style_Context.Render_Frame) will visually connect with other visual
+   --  elements.
    --  This is merely a hint that may or may not be honored by theming
    --  engines.
    --  Container widgets are expected to set junction hints as appropriate for
@@ -740,6 +744,301 @@ package Gtk.Style_Context is
    --  color scheme changes in the related Gtk.Settings.Gtk_Settings object.
    --  Since: gtk+ 3.0
    --  "screen": a Gdk.Screen.Gdk_Screen
+
+   procedure Render_Handle
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders a handle (as in Gtk.Handle_Box.Gtk_Handle_Box,
+   --  Gtk.Paned.Gtk_Paned and Gtk.Window.Gtk_Window<!-- -->'s resize grip), in
+   --  the rectangle determined by X, Y, Width, Height.
+   --  == Handles rendered for the paned and grip classes ==
+   --  <inlinegraphic fileref="handles.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Check
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders a checkmark (as in a Gtk.Check_Button.Gtk_Check_Button).
+   --  The Gtk.Enums.Gtk_State_Flag_Active state determines whether the check
+   --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent determines
+   --  whether it should be marked as undefined.
+   --  == Typical checkmark rendering ==
+   --  <inlinegraphic fileref="checks.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Option
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders an option mark (as in a Gtk.Radio_Button.Gtk_Radio_Button), the
+   --  Gtk.Enums.Gtk_State_Flag_Active state will determine whether the option
+   --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent whether it
+   --  should be marked as undefined.
+   --  == Typical option mark rendering ==
+   --  <inlinegraphic fileref="options.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Arrow
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Angle   : Gdouble;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Size    : Gdouble);
+   --  Renders an arrow pointing to Angle.
+   --  == Typical arrow rendering at 0, 1&solidus;2 &pi;, &pi; and 3&solidus;2
+   --  &pi; ==
+   --  <inlinegraphic fileref="arrows.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "angle": arrow angle from 0 to 2 * G_PI, being 0 the arrow pointing to
+   --  the north
+   --  "x": X origin of the render area
+   --  "y": Y origin of the render area
+   --  "size": square side for render area
+
+   procedure Render_Background
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders the background of an element.
+   --  <title>Typical background rendering, showing the effect of
+   --  'background-image', 'border-width' and 'border-radius'</title>
+   --  <inlinegraphic fileref="background.png" format="PNG"/>
+   --  Since: gtk+ 3.0.
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Frame
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders a frame around the rectangle defined by X, Y, Width, Height.
+   --  <title>Examples of frame rendering, showing the effect of
+   --  'border-image', 'border-color', 'border-width', 'border-radius' and
+   --  junctions</title> <inlinegraphic fileref="frames.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Expander
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders an expander (as used in Gtk.Tree_View.Gtk_Tree_View and
+   --  Gtk.Expander.Gtk_Expander) in the area defined by X, Y, Width, Height.
+   --  The state Gtk.Enums.Gtk_State_Flag_Active determines whether the
+   --  expander is collapsed or expanded.
+   --  == Typical expander rendering ==
+   --  <inlinegraphic fileref="expanders.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Focus
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders a focus indicator on the rectangle determined by X, Y, Width,
+   --  Height.
+   --  == Typical focus rendering ==
+   --  <inlinegraphic fileref="focus.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Layout
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Layout  : not null access Pango.Layout.Pango_Layout_Record'Class);
+   --  Renders Layout on the coordinates X, Y
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin
+   --  "y": Y origin
+   --  "layout": the Pango.Layout.Pango_Layout to render
+
+   procedure Render_Line
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X0      : Gdouble;
+       Y0      : Gdouble;
+       X1      : Gdouble;
+       Y1      : Gdouble);
+   --  Renders a line from (x0, y0) to (x1, y1).
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x0": X coordinate for the origin of the line
+   --  "y0": Y coordinate for the origin of the line
+   --  "x1": X coordinate for the end of the line
+   --  "y1": Y coordinate for the end of the line
+
+   procedure Render_Slider
+      (Context     : not null access Gtk_Style_Context_Record'Class;
+       Cr          : Cairo.Cairo_Context;
+       X           : Gdouble;
+       Y           : Gdouble;
+       Width       : Gdouble;
+       Height      : Gdouble;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Renders a slider (as in Gtk.Scale.Gtk_Scale) in the rectangle defined
+   --  by X, Y, Width, Height. Orientation defines whether the slider is
+   --  vertical or horizontal.
+   --  == Typical slider rendering ==
+   --  <inlinegraphic fileref="sliders.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+   --  "orientation": orientation of the slider
+
+   procedure Render_Frame_Gap
+      (Context  : not null access Gtk_Style_Context_Record'Class;
+       Cr       : Cairo.Cairo_Context;
+       X        : Gdouble;
+       Y        : Gdouble;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Gap_Side : Gtk.Enums.Gtk_Position_Type;
+       Xy0_Gap  : Gdouble;
+       Xy1_Gap  : Gdouble);
+   --  Renders a frame around the rectangle defined by (X, Y, Width, Height),
+   --  leaving a gap on one side. Xy0_Gap and Xy1_Gap will mean X coordinates
+   --  for Gtk.Enums.Pos_Top and Gtk.Enums.Pos_Bottom gap sides, and Y
+   --  coordinates for Gtk.Enums.Pos_Left and Gtk.Enums.Pos_Right.
+   --  == Typical rendering of a frame with a gap ==
+   --  <inlinegraphic fileref="frame-gap.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+   --  "gap_side": side where the gap is
+   --  "xy0_gap": initial coordinate (X or Y depending on Gap_Side) for the
+   --  gap
+   --  "xy1_gap": end coordinate (X or Y depending on Gap_Side) for the gap
+
+   procedure Render_Extension
+      (Context  : not null access Gtk_Style_Context_Record'Class;
+       Cr       : Cairo.Cairo_Context;
+       X        : Gdouble;
+       Y        : Gdouble;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Gap_Side : Gtk.Enums.Gtk_Position_Type);
+   --  Renders a extension (as in a Gtk.Notebook.Gtk_Notebook tab) in the
+   --  rectangle defined by X, Y, Width, Height. The side where the extension
+   --  connects to is defined by Gap_Side.
+   --  == Typical extension rendering ==
+   --  <inlinegraphic fileref="extensions.png" format="PNG"/>
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+   --  "gap_side": side where the gap is
+
+   procedure Render_Activity
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   --  Renders an activity area (Such as in Gtk.Spinner.Gtk_Spinner or the
+   --  fill line in Gtk.GRange.Gtk_Range), the state
+   --  Gtk.Enums.Gtk_State_Flag_Active determines whether there is activity
+   --  going on.
+   --  Since: gtk+ 3.0
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "x": X origin of the rectangle
+   --  "y": Y origin of the rectangle
+   --  "width": rectangle width
+   --  "height": rectangle height
+
+   procedure Render_Icon
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Pixbuf  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble);
+   --  Renders the icon in Pixbuf at the specified X and Y coordinates.
+   --  Since: gtk+ 3.2
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf containing the icon to draw
+   --  "x": X position for the Pixbuf
+   --  "y": Y position for the Pixbuf
 
    ----------------
    -- Properties --

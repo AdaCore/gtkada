@@ -817,7 +817,7 @@ package body Gtkada.MDI is
          7 => (1 => GType_None),
          8 => (1 => GType_None));
 
-      Ctx : constant Gtk_Style_Context := Get_Style_Context (MDI);
+      Ctx : Gtk_Style_Context;
       Success : Boolean;
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
@@ -843,6 +843,7 @@ package body Gtkada.MDI is
       Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
       Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
 
+      Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
 
       Glib.Object.Initialize_Class_Record
@@ -6836,8 +6837,25 @@ package body Gtkada.MDI is
    procedure Highlight_Child
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
+      procedure Override (Widget : not null access Gtk_Widget_Record'Class);
+
+      procedure Override (Widget : not null access Gtk_Widget_Record'Class) is
+         C : Gdk_RGBA;
+      begin
+         if Highlight then
+            C := Child.MDI.Focus_Title_Color;
+         else
+            C := Null_RGBA;
+         end if;
+
+         Override_Color (Widget, Gtk_State_Flag_Normal, C);
+         Override_Color (Widget, Gtk_State_Flag_Active, C);
+         Override_Color (Widget, Gtk_State_Flag_Prelight, C);
+         Override_Color (Widget, Gtk_State_Flag_Selected, C);
+         Override_Color (Widget, Gtk_State_Flag_Focused, C);
+      end Override;
+
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
-      Widget : Gtk_Widget;
    begin
       if Highlight then
          Show (Child);  --  Make sure the child is visible
@@ -6860,7 +6878,7 @@ package body Gtkada.MDI is
          begin
             while Tmp /= Null_List loop
                if Get_Data (Tmp).all'Tag = Gtk_Accel_Label_Record'Tag then
-                  Widget := Get_Data (Tmp);
+                  Override (Get_Data (Tmp));
                end if;
 
                Tmp := Next (Tmp);
@@ -6871,28 +6889,7 @@ package body Gtkada.MDI is
       end if;
 
       if Child.Tab_Label /= null then
-         if Highlight then
-            for State in Gtk_State_Flags'Range loop
-               Override_Color
-                 (Child.Tab_Label, State, Child.MDI.Focus_Title_Color);
-            end loop;
-         else
-            for State in Gtk_State_Flags'Range loop
-               Override_Color (Child.Tab_Label, State, Gdk.RGBA.Null_RGBA);
-            end loop;
-         end if;
-
-         if Widget /= null then
-            if Highlight then
-               for State in Gtk_State_Flags'Range loop
-                  Override_Color (Widget, State, Child.MDI.Focus_Title_Color);
-               end loop;
-            else
-               for State in Gtk_State_Flags'Range loop
-                  Override_Color (Widget, State, Gdk.RGBA.Null_RGBA);
-               end loop;
-            end if;
-         end if;
+         Override (Child.Tab_Label);
       end if;
    end Highlight_Child;
 

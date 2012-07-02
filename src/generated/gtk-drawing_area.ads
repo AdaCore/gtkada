@@ -89,7 +89,8 @@ pragma Ada_05;
 --  set the "can-focus" property on the drawing area, and you should probably
 --  draw some user-visible indication that the drawing area is focused. Use
 --  Gtk.Widget.Has_Focus in your expose event handler to decide whether to draw
---  the focus indicator. See gtk_render_focus for one way to draw focus.
+--  the focus indicator. See Gtk.Style_Context.Render_Focus for one way to draw
+--  focus.
 --
 --  </description>
 --  <description>

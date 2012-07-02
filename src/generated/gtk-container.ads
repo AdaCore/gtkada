@@ -452,7 +452,7 @@ package Gtk.Container is
    procedure Propagate_Draw
       (Container : not null access Gtk_Container_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cr        : in out Cairo.Cairo_Context);
+       Cr        : Cairo.Cairo_Context);
    --  When a container receives a call to the draw function, it must send
    --  synthetic Gtk.Widget.Gtk_Widget::draw calls to all children that don't
    --  have their own Gdk_Windows. This function provides a convenient way of

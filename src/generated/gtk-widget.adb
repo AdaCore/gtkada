@@ -594,11 +594,9 @@ package body Gtk.Widget is
 
    procedure Draw
       (Widget : not null access Gtk_Widget_Record;
-       Cr     : in out Cairo.Cairo_Context)
+       Cr     : Cairo.Cairo_Context)
    is
-      procedure Internal
-         (Widget : System.Address;
-          Cr     : in out Cairo.Cairo_Context);
+      procedure Internal (Widget : System.Address; Cr : Cairo.Cairo_Context);
       pragma Import (C, Internal, "gtk_widget_draw");
    begin
       Internal (Get_Object (Widget), Cr);

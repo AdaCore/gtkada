@@ -417,12 +417,12 @@ package body Gtk.Container is
    procedure Propagate_Draw
       (Container : not null access Gtk_Container_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cr        : in out Cairo.Cairo_Context)
+       Cr        : Cairo.Cairo_Context)
    is
       procedure Internal
          (Container : System.Address;
           Child     : System.Address;
-          Cr        : in out Cairo.Cairo_Context);
+          Cr        : Cairo.Cairo_Context);
       pragma Import (C, Internal, "gtk_container_propagate_draw");
    begin
       Internal (Get_Object (Container), Get_Object (Child), Cr);

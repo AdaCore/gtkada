@@ -358,7 +358,7 @@ package body Gtk.Cell_Renderer is
 
    procedure Render
       (Cell            : not null access Gtk_Cell_Renderer_Record;
-       Cr              : in out Cairo.Cairo_Context;
+       Cr              : Cairo.Cairo_Context;
        Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
@@ -366,7 +366,7 @@ package body Gtk.Cell_Renderer is
    is
       procedure Internal
          (Cell            : System.Address;
-          Cr              : in out Cairo.Cairo_Context;
+          Cr              : Cairo.Cairo_Context;
           Widget          : System.Address;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;

@@ -2898,6 +2898,22 @@ __PRE__
      <method id="gtk_style_context_get_style_valist" bind="False"/> <!-- needs valist -->
      <method id="gtk_style_context_lookup_color" return_as_param="Found"/>
      <method id="gtk_style_context_state_is_running" return_as_param="Is_Running"/>
+     <function id="gtk_render_handle"/>
+     <function id="gtk_render_check" />
+     <function id="gtk_render_option" />
+     <function id="gtk_render_arrow" />
+     <function id="gtk_render_background" />
+     <function id="gtk_render_frame" />
+     <function id="gtk_render_expander" />
+     <function id="gtk_render_focus" />
+     <function id="gtk_render_layout" />
+     <function id="gtk_render_line" />
+     <function id="gtk_render_slider" />
+     <function id="gtk_render_frame_gap" />
+     <function id="gtk_render_extension" />
+     <function id="gtk_render_activity" />
+     <!--  <function id="gtk_render_icon_pixbuf" /> -->
+     <function id="gtk_render_icon" />
      <extra>
        <spec>
    function Get_Style_Context

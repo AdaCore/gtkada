@@ -673,7 +673,7 @@ package Gtk.Widget is
 
    procedure Draw
       (Widget : not null access Gtk_Widget_Record;
-       Cr     : in out Cairo.Cairo_Context);
+       Cr     : Cairo.Cairo_Context);
    --  Draws Widget to Cr. The top left corner of the widget will be drawn to
    --  the currently set origin point of Cr.
    --  You should pass a cairo context as Cr argument that is in an original

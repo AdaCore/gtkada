@@ -31,6 +31,7 @@ with Gtk.Toolbar;        use Gtk.Toolbar;
 with Gtkada.Handlers;    use Gtkada.Handlers;
 with Gtk.Vbutton_Box;    use Gtk.Vbutton_Box;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
+with Gtk.Tool_Button;    use Gtk.Tool_Button;
 with Gtk.Enums;          use Gtk.Enums;
 
 package body Create_Splittable is
@@ -145,7 +146,7 @@ package body Create_Splittable is
       Frame  : Gtk_Frame;
       Box    : Gtk_Vbutton_Box;
       Button : Gtk_Button;
-      Item   : Gtk_Button;
+      Item   : Gtk_Tool_Button;
    begin
       Gtk_New (Frame);
 
@@ -179,7 +180,7 @@ package body Create_Splittable is
         (Button, "clicked", On_Fixed'Unrestricted_Access, Frame);
 
       if Bar /= null then
-         Gtk_New (Item, "Toggle_" & Title);
+         Gtk_New (Item, Label => "Toggle_" & Title);
          Add (Bar, Item);
          Widget_Callback.Object_Connect
            (Item, "clicked",

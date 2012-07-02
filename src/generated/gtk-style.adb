@@ -60,7 +60,7 @@ package body Gtk.Style is
 
    procedure Apply_Default_Background
       (Style      : not null access Gtk_Style_Record;
-       Cr         : in out Cairo.Cairo_Context;
+       Cr         : Cairo.Cairo_Context;
        Window     : Gdk.Window.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type;
        X          : Gint;
@@ -70,7 +70,7 @@ package body Gtk.Style is
    is
       procedure Internal
          (Style      : System.Address;
-          Cr         : in out Cairo.Cairo_Context;
+          Cr         : Cairo.Cairo_Context;
           Window     : Gdk.Window.Gdk_Window;
           State_Type : Gtk.Enums.Gtk_State_Type;
           X          : Gint;

@@ -909,7 +909,7 @@ package Gtk.Cell_Area is
       (Self            : not null access Gtk_Cell_Area_Record;
        Context         : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Cr              : in out Cairo.Cairo_Context;
+       Cr              : Cairo.Cairo_Context;
        Background_Area : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
@@ -920,7 +920,7 @@ package Gtk.Cell_Area is
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
    --  of data.
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "cr": the Cairo.Cairo_Context to render with
+   --  "cr": the cairo_t to render with
    --  "background_area": the Widget relative coordinates for Area's
    --  background
    --  "cell_area": the Widget relative coordinates for Area
