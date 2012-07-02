@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
-
 --  <description>
 --  This package provides an interactive canvas, on which the user can put
 --  items, move them with the mouse, etc. The items can be connected together,

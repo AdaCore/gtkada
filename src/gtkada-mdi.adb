@@ -32,7 +32,6 @@
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
 
-pragma Ada_05;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
@@ -177,38 +176,38 @@ package body Gtkada.MDI is
      Ada.Unchecked_Deallocation (UTF8_String, String_Access);
 
    function Button_Pressed
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has pressed the mouse button in the canvas.
    --  Test whether an item was selected.
 
    function Button_Pressed_Forced
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Same as above, except we also act even if the event wasn't started in
    --  Child's window.
 
    function Button_Release
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has released the mouse button.
    --  If an item was selected, refresh the canvas.
 
    function Button_Motion
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
    function On_Notebook_Button_Press
-     (Child    : not null access Gtk_Widget_Record'Class;
+     (Child    : access Gtk_Widget_Record'Class;
       Event    : Gdk.Event.Gdk_Event) return Boolean;
    --  Manage the contextual menu on tabs
 
    procedure Child_Widget_Shown
-     (Widget : not null access Gtk_Widget_Record'Class);
+     (Widget : access Gtk_Widget_Record'Class);
    procedure Child_Widget_Hidden
-     (Widget : not null access Gtk_Widget_Record'Class);
+     (Widget : access Gtk_Widget_Record'Class);
    --  Called when the child widget is shown or hidden by the user, to reflect
    --  that fact at the MDI_Child level, no matter whether the child is
    --  currently floating or not.
@@ -240,33 +239,33 @@ package body Gtkada.MDI is
    --  Change the state of Child
 
    function Delete_Child
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Forward a delete_event from the toplevel window to the child
 
-   procedure Destroy_Child (Child : not null access Gtk_Widget_Record'Class);
+   procedure Destroy_Child (Child : access Gtk_Widget_Record'Class);
    procedure Destroy_Initial_Child
-      (Child : not null access Gtk_Widget_Record'Class);
+      (Child : access Gtk_Widget_Record'Class);
    --  Called when either the child itself, or the widget we initially put
    --  in it, are destroyed. Remove the child from the MDI properly.
 
-   procedure Destroy_MDI (MDI : not null access Gtk_Widget_Record'Class);
+   procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the MDI is destroyed
 
    procedure Menu_Entry_Destroyed
-      (Child : not null access Gtk_Widget_Record'Class);
+      (Child : access Gtk_Widget_Record'Class);
    --  Called when the Menu_Item associated with a Child is destroyed
 
-   procedure Menu_Destroyed (MDI : not null access Gtk_Widget_Record'Class);
+   procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
    --  Called when the Menu associated with a MDI is destroyed
 
    function Draw_Child
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo_Context)
       return Boolean;
    --  Draw the child (and the title bar)
 
-   procedure Realize_MDI (MDI : not null access Gtk_Widget_Record'Class);
+   procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
 
    procedure Set_Dnd_Source
@@ -315,17 +314,17 @@ package body Gtkada.MDI is
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
    --  Add an entry to the MDI menu that provides easy activation of Child
 
-   procedure Split_H_Cb (MDI   : not null access Gtk_Widget_Record'Class);
-   procedure Split_V_Cb (MDI   : not null access Gtk_Widget_Record'Class);
-   procedure Float_Cb   (MDI   : not null access Gtk_Widget_Record'Class);
-   procedure Close_Cb   (MDI   : not null access Gtk_Widget_Record'Class);
-   procedure Focus_Cb   (Child : not null access Gtk_Widget_Record'Class);
+   procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
+   procedure Float_Cb   (MDI   : access Gtk_Widget_Record'Class);
+   procedure Close_Cb   (MDI   : access Gtk_Widget_Record'Class);
+   procedure Focus_Cb   (Child : access Gtk_Widget_Record'Class);
    --  Callbacks for the menu
 
    procedure Set_Focus_Child_MDI
-     (MDI : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    procedure Set_Focus_Child_Notebook
-     (Note : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when the widget that has the keyboard focus has changed. This is
    --  used to automatically select its parent MDI_Child.
 
@@ -337,23 +336,23 @@ package body Gtkada.MDI is
    --  has left the mouse on top of that window, not just passing through.
 
    function Set_Focus_Child_MDI_Floating
-     (Child : not null access Gtk_Widget_Record'Class) return Boolean;
+     (Child : access Gtk_Widget_Record'Class) return Boolean;
    --  Same as Set_Focus_Child_MDI, but for floating windows
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Gives the focus to Child when the notebook tab associated with it is
    --  pressed.
 
    procedure Set_Focus_Child_Switch_Notebook_Page
-     (Note : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when a new page from a notebook has been selected, in particular
    --  when using the scroll arrows when there are too many pages to be
    --  displayed
 
    function Toplevel_Focus_In
-     (MDI : not null access Gtk_Widget_Record'Class) return Boolean;
+     (MDI : access Gtk_Widget_Record'Class) return Boolean;
    --  Called when the toplevel window that contains a the MDI gains the focus
    --  from the window manager
 
@@ -381,12 +380,12 @@ package body Gtkada.MDI is
    --  matches the filter.
 
    function Key_Event_In_Floating
-     (Win   : not null access Gtk_Widget_Record'Class;
+     (Win   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Forward the key press event to the Win
 
    function Key_Event_Selection_Dialog
-     (MDI   : not null access Gtk_Widget_Record'Class;
+     (MDI   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Handle key events in the selection dialog
 
@@ -411,7 +410,7 @@ package body Gtkada.MDI is
    --  the same attribute).
 
    procedure Removed_From_Notebook
-     (Note : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when a child is removed from one of the notebooks
 
    procedure Update_Dnd_Window
@@ -589,7 +588,7 @@ package body Gtkada.MDI is
    -------------------------
 
    procedure Set_Focus_Child_MDI
-     (MDI : not null access Gtk_Widget_Record'Class; Args : Gtk_Args)
+     (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
       Widget : Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
@@ -618,7 +617,7 @@ package body Gtkada.MDI is
    ------------------------------------------
 
    procedure Set_Focus_Child_Switch_Notebook_Page
-     (Note : not null access Gtk_Widget_Record'Class; Args : Gtk_Args)
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
       N     : constant Gtk_Notebook := Gtk_Notebook (Note);
       Page  : constant Guint := To_Guint (Args, 2);
@@ -637,7 +636,7 @@ package body Gtkada.MDI is
    ------------------------------
 
    procedure Set_Focus_Child_Notebook
-     (Note : not null access Gtk_Widget_Record'Class; Args : Gtk_Args)
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
       pragma Unreferenced (Note);
       Widget : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
@@ -679,7 +678,7 @@ package body Gtkada.MDI is
    ----------------------------------
 
    function Set_Focus_Child_MDI_Floating
-     (Child : not null access Gtk_Widget_Record'Class) return Boolean
+     (Child : access Gtk_Widget_Record'Class) return Boolean
    is
       C  : constant MDI_Child := MDI_Child (Child);
    begin
@@ -705,7 +704,7 @@ package body Gtkada.MDI is
    ----------------------------------
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Tmp : Boolean;
@@ -746,7 +745,7 @@ package body Gtkada.MDI is
    -----------------------
 
    function Toplevel_Focus_In
-     (MDI : not null access Gtk_Widget_Record'Class) return Boolean
+     (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
       M : constant MDI_Window := MDI_Window (MDI);
    begin
@@ -997,7 +996,7 @@ package body Gtkada.MDI is
    --------------------------------
 
    function Key_Event_Selection_Dialog
-     (MDI   : not null access Gtk_Widget_Record'Class;
+     (MDI   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       M     : constant MDI_Window := MDI_Window (MDI);
@@ -1362,7 +1361,7 @@ package body Gtkada.MDI is
    -- Realize_MDI --
    -----------------
 
-   procedure Realize_MDI (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
       M           : constant MDI_Window := MDI_Window (MDI);
 
    begin
@@ -1379,7 +1378,7 @@ package body Gtkada.MDI is
    -- Destroy_MDI --
    -----------------
 
-   procedure Destroy_MDI (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class) is
       M   : constant MDI_Window := MDI_Window (MDI);
       Tmp : Widget_List.Glist := First (M.Items);
       N   : Widget_List.Glist;
@@ -1541,7 +1540,7 @@ package body Gtkada.MDI is
    -- Destroy_Child --
    -------------------
 
-   procedure Destroy_Child (Child : not null access Gtk_Widget_Record'Class) is
+   procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
       C                   : constant MDI_Child := MDI_Child (Child);
       MDI                 : constant MDI_Window := C.MDI;
@@ -1636,7 +1635,7 @@ package body Gtkada.MDI is
    ---------------------------
 
    procedure Destroy_Initial_Child
-      (Child : not null access Gtk_Widget_Record'Class) is
+      (Child : access Gtk_Widget_Record'Class) is
    begin
       if not Child.In_Destruction then
          Destroy (Child);
@@ -1666,7 +1665,7 @@ package body Gtkada.MDI is
    ----------------
 
    function Draw_Child
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo_Context)
       return Boolean
    is
@@ -1844,7 +1843,7 @@ package body Gtkada.MDI is
    --------------------
 
    function Button_Pressed
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean is
    begin
       --  It sometimes happens that widgets let events pass through (for
@@ -1863,7 +1862,7 @@ package body Gtkada.MDI is
    ---------------------------
 
    function Button_Pressed_Forced
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       C    : constant MDI_Child := MDI_Child (Child);
@@ -1909,7 +1908,7 @@ package body Gtkada.MDI is
    --------------------
 
    function Button_Release
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       C                    : constant MDI_Child := MDI_Child (Child);
@@ -2140,7 +2139,7 @@ package body Gtkada.MDI is
    -------------------
 
    function Button_Motion
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       C        : constant MDI_Child := MDI_Child (Child);
@@ -2355,7 +2354,7 @@ package body Gtkada.MDI is
    -------------------------
 
    procedure Child_Widget_Hidden
-     (Widget : not null access Gtk_Widget_Record'Class)
+     (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
       Note  : Gtk_Notebook;
@@ -2378,7 +2377,7 @@ package body Gtkada.MDI is
    ------------------------
 
    procedure Child_Widget_Shown
-     (Widget : not null access Gtk_Widget_Record'Class)
+     (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
       Note  : Gtk_Notebook;
@@ -3262,7 +3261,7 @@ package body Gtkada.MDI is
    ------------------
 
    function Delete_Child
-     (Child : not null access Gtk_Widget_Record'Class;
+     (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean is
    begin
       if MDI_Child (Child).MDI.In_Destruction then
@@ -3291,7 +3290,7 @@ package body Gtkada.MDI is
    ---------------------------
 
    function Key_Event_In_Floating
-     (Win   : not null access Gtk_Widget_Record'Class;
+     (Win   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean is
    begin
       --  Note: the following works because we are connected after the standard
@@ -3510,11 +3509,11 @@ package body Gtkada.MDI is
    package Tab_Pos_Callback is new Gtk.Handlers.User_Callback
      (Gtk_Notebook_Record, Gtk.Enums.Gtk_Position_Type);
    procedure On_Tab_Pos
-     (Note : not null access Gtk_Notebook_Record'Class;
+     (Note : access Gtk_Notebook_Record'Class;
       Pos  : Gtk.Enums.Gtk_Position_Type);
 
    procedure On_Tab_Pos
-     (Note : not null access Gtk_Notebook_Record'Class;
+     (Note : access Gtk_Notebook_Record'Class;
       Pos  : Gtk.Enums.Gtk_Position_Type) is
    begin
       Set_Tab_Pos (Note, Pos);
@@ -3546,7 +3545,7 @@ package body Gtkada.MDI is
    ------------------------------
 
    function On_Notebook_Button_Press
-     (Child    : not null access Gtk_Widget_Record'Class;
+     (Child    : access Gtk_Widget_Record'Class;
       Event    : Gdk.Event.Gdk_Event) return Boolean
    is
       C    : constant MDI_Child := MDI_Child (Child);
@@ -4126,7 +4125,7 @@ package body Gtkada.MDI is
    ---------------------------
 
    procedure Removed_From_Notebook
-     (Note : not null access Gtk_Widget_Record'Class; Args  : Gtk_Args)
+     (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args)
    is
       C     : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
       Child : MDI_Child;
@@ -4271,7 +4270,7 @@ package body Gtkada.MDI is
    -- Split_H_Cb --
    ----------------
 
-   procedure Split_H_Cb (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Split_H_Cb (MDI : access Gtk_Widget_Record'Class) is
       M : constant MDI_Window := MDI_Window (MDI);
    begin
       --  Do nothing unless the current child is in the central area, since
@@ -4295,7 +4294,7 @@ package body Gtkada.MDI is
    -- Split_V_Cb --
    ----------------
 
-   procedure Split_V_Cb (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Split_V_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       --  Do nothing unless the current child is in the central area, since
       --  otherwise this is disturbing for the user
@@ -4317,7 +4316,7 @@ package body Gtkada.MDI is
    -- Float_Cb --
    --------------
 
-   procedure Float_Cb (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Float_Cb (MDI : access Gtk_Widget_Record'Class) is
       C : MDI_Child;
    begin
       if MDI.all in MDI_Window_Record'Class then
@@ -4347,7 +4346,7 @@ package body Gtkada.MDI is
    -- Close_Cb --
    --------------
 
-   procedure Close_Cb (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Close_Cb (MDI : access Gtk_Widget_Record'Class) is
       C : MDI_Child;
    begin
       if MDI.all in MDI_Window_Record'Class then
@@ -4379,7 +4378,7 @@ package body Gtkada.MDI is
    -- Focus_Cb --
    --------------
 
-   procedure Focus_Cb (Child : not null access Gtk_Widget_Record'Class) is
+   procedure Focus_Cb (Child : access Gtk_Widget_Record'Class) is
       C : constant MDI_Child := MDI_Child (Child);
    begin
       if Get_Active (C.Menu_Item) then
@@ -4397,7 +4396,7 @@ package body Gtkada.MDI is
    --------------------------
 
    procedure Menu_Entry_Destroyed
-      (Child : not null access Gtk_Widget_Record'Class) is
+      (Child : access Gtk_Widget_Record'Class) is
    begin
       MDI_Child (Child).Menu_Item := null;
    end Menu_Entry_Destroyed;
@@ -4483,7 +4482,7 @@ package body Gtkada.MDI is
    -- Menu_Destroyed --
    --------------------
 
-   procedure Menu_Destroyed (MDI : not null access Gtk_Widget_Record'Class) is
+   procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class) is
    begin
       MDI_Window (MDI).Menu := null;
       MDI_Window (MDI).Float_Menu_Item := null;
@@ -4636,7 +4635,7 @@ package body Gtkada.MDI is
       ------------------------
 
       procedure Change_Perspective
-        (Item : not null access Gtk_Widget_Record'Class)
+        (Item : access Gtk_Widget_Record'Class)
       is
          Persp : constant Perspective_Menu_Item :=
            Perspective_Menu_Item (Item);
@@ -4660,7 +4659,7 @@ package body Gtkada.MDI is
       ---------------------------
 
       procedure Create_Perspective_CB
-        (Item : not null access Gtk_Widget_Record'Class)
+        (Item : access Gtk_Widget_Record'Class)
       is
          Persp : constant Perspective_Menu_Item :=
            Perspective_Menu_Item (Item);

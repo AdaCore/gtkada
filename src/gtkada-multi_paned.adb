@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
-
 with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with GNAT.IO;              use GNAT.IO;
@@ -123,7 +121,7 @@ package body Gtkada.Multi_Paned is
    --  This assumes however that Size_Allocate has been called at least once
    --  before, or panes with 0 width or height will not be handled properly.
 
-   procedure Realize_Paned (Paned : not null access Gtk_Widget_Record'Class);
+   procedure Realize_Paned (Paned : access Gtk_Widget_Record'Class);
    --  Called when the window was realized.
 
    procedure Set_Handle_Cursor
@@ -143,7 +141,7 @@ package body Gtkada.Multi_Paned is
    --  have been changed before calling this subprogram.
 
    function On_Draw
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean;
    --  Redraw all the handles
 
@@ -154,22 +152,22 @@ package body Gtkada.Multi_Paned is
    --  If Show is False, then the handle is hidden
 
    function Button_Pressed
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    function Button_Released
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    function Button_Motion
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
 
    procedure Remove_Child
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Args  : Gtk_Args);
    --  A child was removed from Paned
 
    procedure Remove_Child
-      (Split : not null access Gtkada_Multi_Paned_Record'Class;
+      (Split : access Gtkada_Multi_Paned_Record'Class;
        Pane : Child_Description_Access);
    --  Remove a specific pane
 
@@ -177,7 +175,7 @@ package body Gtkada.Multi_Paned is
    --  Draw, in xor mode, the resizing line
 
    procedure Destroy_Paned
-     (Paned : not null access Gtk_Widget_Record'Class);
+     (Paned : access Gtk_Widget_Record'Class);
    --  The Paned window is being destroyed.
 
    function Get (Iter : Child_Iterator) return Child_Description_Access;
@@ -552,7 +550,7 @@ package body Gtkada.Multi_Paned is
    ------------------------
 
    procedure Destroy_Paned
-     (Paned : not null access Gtk_Widget_Record'Class)
+     (Paned : access Gtk_Widget_Record'Class)
    is
       use type Widget_List.Glist;
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
@@ -568,7 +566,7 @@ package body Gtkada.Multi_Paned is
    ------------------
 
    procedure Remove_Child
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Args  : Gtk_Args)
    is
       Split   : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
@@ -600,7 +598,7 @@ package body Gtkada.Multi_Paned is
    ------------------
 
    procedure Remove_Child
-      (Split : not null access Gtkada_Multi_Paned_Record'Class;
+      (Split : access Gtkada_Multi_Paned_Record'Class;
        Pane : Child_Description_Access)
    is
       procedure Merge_With_Parent_If_Single_Child
@@ -800,7 +798,7 @@ package body Gtkada.Multi_Paned is
    --------------------
 
    function Button_Pressed
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Split   : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
@@ -1010,7 +1008,7 @@ package body Gtkada.Multi_Paned is
    ---------------------
 
    function Button_Released
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       pragma Unreferenced (Event);
@@ -1048,7 +1046,7 @@ package body Gtkada.Multi_Paned is
    -------------------
 
    function Button_Motion
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
@@ -1141,7 +1139,7 @@ package body Gtkada.Multi_Paned is
    -------------
 
    function On_Draw
-     (Paned : not null access Gtk_Widget_Record'Class;
+     (Paned : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
@@ -1214,7 +1212,7 @@ package body Gtkada.Multi_Paned is
    ------------------------
 
    procedure Realize_Paned
-     (Paned : not null access Gtk_Widget_Record'Class)
+     (Paned : access Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (Paned);
    begin

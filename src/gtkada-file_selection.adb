@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
-
 with Gtk.Main;           use Gtk.Main;
 with Gtk.Button;         use Gtk.Button;
 with Gtk.Dialog;         use Gtk.Dialog;
@@ -44,18 +42,18 @@ package body Gtkada.File_Selection is
    type Gtkada_File_Selection is access all Gtkada_File_Selection_Record'Class;
 
    function Delete_Cb
-     (Win : not null access Gtk_Widget_Record'Class) return Boolean;
+     (Win : access Gtk_Widget_Record'Class) return Boolean;
    procedure Clicked_Ok_Cb
-     (Button : not null access Gtk_Widget_Record'Class);
+     (Button : access Gtk_Widget_Record'Class);
    procedure Clicked_Cancel_Cb
-     (Button : not null access Gtk_Widget_Record'Class);
+     (Button : access Gtk_Widget_Record'Class);
 
    ---------------
    -- Delete_Cb --
    ---------------
 
    function Delete_Cb
-     (Win : not null access Gtk_Widget_Record'Class) return Boolean
+     (Win : access Gtk_Widget_Record'Class) return Boolean
    is
       pragma Unreferenced (Win);
    begin
@@ -68,7 +66,7 @@ package body Gtkada.File_Selection is
    -------------------
 
    procedure Clicked_Ok_Cb
-     (Button : not null access Gtk_Widget_Record'Class)
+     (Button : access Gtk_Widget_Record'Class)
    is
    begin
       Gtkada_File_Selection (Get_Toplevel (Button)).File_Selected := True;
@@ -80,7 +78,7 @@ package body Gtkada.File_Selection is
    -----------------------
 
    procedure Clicked_Cancel_Cb
-     (Button : not null access Gtk_Widget_Record'Class)
+     (Button : access Gtk_Widget_Record'Class)
    is
    begin
       Gtkada_File_Selection (Get_Toplevel (Button)).File_Selected := False;

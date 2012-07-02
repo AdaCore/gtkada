@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 with Ada.Numerics;                       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
@@ -130,39 +129,39 @@ package body Gtkada.Canvas is
      new Glib.Main.Generic_Sources (Interactive_Canvas);
 
    function On_Draw
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean;
    --  Handle the "draw" events for a canvas.
 
    procedure Canvas_Destroyed
-      (Canvas : not null access Gtk_Widget_Record'Class);
+      (Canvas : access Gtk_Widget_Record'Class);
    --  Called when the canvas is being destroyed. All the items and links
    --  are removed, and the double-buffer is freed
 
    procedure Size_Allocate
-     (Canv : not null access Gtk_Widget_Record'Class; Args : Gtk_Args);
+     (Canv : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  When the item is resized.
 
    function Button_Pressed
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has pressed the mouse button in the canvas.
    --  This tests whether an item was selected.
 
    function Button_Release
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user has released the mouse button.
    --  If an item was selected, this refreshed the canvas.
 
    function Button_Motion
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
    function Key_Press
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Handle key events, to provide scrolling through Page Up, Page Down, and
    --  arrow keys.
@@ -249,10 +248,10 @@ package body Gtkada.Canvas is
    --  should already include zoom processing.
 
    procedure Set_Scroll_Adjustments
-     (Canvas : not null access Gtk_Widget_Record'Class);
+     (Canvas : access Gtk_Widget_Record'Class);
    --  Change the two adjustments used for the canvas (in a callback)
 
-   procedure Scrolled (Canvas : not null access Gtk_Widget_Record'Class);
+   procedure Scrolled (Canvas : access Gtk_Widget_Record'Class);
    --  Called everytime the value of one of the adjustments is changed.
 
    procedure Get_Bounding_Box
@@ -631,7 +630,7 @@ package body Gtkada.Canvas is
    ----------------------
 
    procedure Canvas_Destroyed
-      (Canvas : not null access Gtk_Widget_Record'Class)
+      (Canvas : access Gtk_Widget_Record'Class)
    is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
@@ -649,7 +648,7 @@ package body Gtkada.Canvas is
    ----------------------------
 
    procedure Set_Scroll_Adjustments
-     (Canvas : not null access Gtk_Widget_Record'Class)
+     (Canvas : access Gtk_Widget_Record'Class)
    is
       Canv : constant Interactive_Canvas := Interactive_Canvas (Canvas);
 
@@ -699,7 +698,7 @@ package body Gtkada.Canvas is
    -------------------
 
    procedure Size_Allocate
-     (Canv : not null access Gtk_Widget_Record'Class;
+     (Canv : access Gtk_Widget_Record'Class;
       Args : Gtk_Args)
    is
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2444,7 +2443,7 @@ package body Gtkada.Canvas is
    -------------
 
    function On_Draw
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean
    is
       pragma Unreferenced (Cr);
@@ -2531,7 +2530,7 @@ package body Gtkada.Canvas is
    ---------------
 
    function Key_Press
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas    : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2718,7 +2717,7 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Pressed
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas  : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2834,7 +2833,7 @@ package body Gtkada.Canvas is
    -------------------
 
    function Button_Motion
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas             : constant Interactive_Canvas :=
@@ -2918,7 +2917,7 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Release
-     (Canv  : not null access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas       : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -3831,7 +3830,7 @@ package body Gtkada.Canvas is
    -- Scrolled --
    --------------
 
-   procedure Scrolled (Canvas : not null access Gtk_Widget_Record'Class) is
+   procedure Scrolled (Canvas : access Gtk_Widget_Record'Class) is
    begin
       Queue_Draw (Canvas);
    end Scrolled;

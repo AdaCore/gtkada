@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 with Ada.Numerics;    use Ada.Numerics;
 with Cairo.Pattern;   use Cairo, Cairo.Pattern;
 with Glib;            use Glib;
@@ -38,7 +37,7 @@ package body Close_Button is
       Value : Gdouble) return Cairo_Color;
 
    function On_Draw
-     (Widget  : not null access Gtk_Widget_Record'Class;
+     (Widget  : access Gtk_Widget_Record'Class;
       Cr      : Cairo.Cairo_Context)
       return Boolean;
    --  draws the close button upon "draw" event
@@ -55,32 +54,32 @@ package body Close_Button is
    --  Draws a cross centered on W / 2.0 of current size and thin.
 
    function On_Tab_Enter
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Crossing)
       return Boolean;
 
    function On_Tab_Leave
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Crossing)
       return Boolean;
 
    function On_Enter
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Crossing)
       return Boolean;
 
    function On_Leave
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Crossing)
       return Boolean;
 
    function On_Mouse_Pressed
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Button)
       return Boolean;
 
    function On_Mouse_Released
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event_Button)
       return Boolean;
 
@@ -156,7 +155,7 @@ package body Close_Button is
    -------------
 
    function On_Draw
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo_Context)
       return Boolean
    is
@@ -397,7 +396,7 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Enter
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Crossing)
       return Boolean
    is
@@ -414,7 +413,7 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Leave
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Crossing)
       return Boolean
    is
@@ -429,7 +428,7 @@ package body Close_Button is
    --------------
 
    function On_Enter
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Crossing)
       return Boolean
    is
@@ -446,7 +445,7 @@ package body Close_Button is
    --------------
 
    function On_Leave
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Crossing)
       return Boolean
    is
@@ -464,7 +463,7 @@ package body Close_Button is
    ----------------------
 
    function On_Mouse_Pressed
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Button)
       return Boolean
    is
@@ -487,7 +486,7 @@ package body Close_Button is
    -----------------------
 
    function On_Mouse_Released
-     (Widget : not null access Gtk_Widget_Record'Class;
+     (Widget : access Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Button)
       return Boolean
    is

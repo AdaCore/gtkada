@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 with Gdk.Color;                use Gdk.Color;
 with Gdk.Event;                use Gdk.Event;
 with Gdk.Main;                 use Gdk.Main;
@@ -77,7 +76,7 @@ package body Gtkada.Properties is
 
    type Property_Type is (Property_Standard, Property_Child, Property_Style);
 
-   procedure Editor_Delete (Editor : not null access GObject_Record'Class);
+   procedure Editor_Delete (Editor : access GObject_Record'Class);
    --  Called when the properties editor Editor is destroyed
 
    procedure Gtk_New (Editor : out Properties_Editor);
@@ -91,9 +90,9 @@ package body Gtkada.Properties is
      (Container : access Gtk_Container_Record'Class);
    --  Remove all children from a container
 
-   procedure Pick_Widget (Editor : not null access Gtk_Widget_Record'Class);
+   procedure Pick_Widget (Editor : access Gtk_Widget_Record'Class);
    function Widget_Picked
-     (Editor : not null access Gtk_Widget_Record'Class) return Boolean;
+     (Editor : access Gtk_Widget_Record'Class) return Boolean;
    --  Start picking a new object to examine. When one is clicked on,
    --  Widget_Picked is called.
 
@@ -154,13 +153,13 @@ package body Gtkada.Properties is
    package Handler_Id_User_Data is new Glib.Object.User_Data (Handler_Id);
 
    procedure Property_Modified
-     (Object : not null access GObject_Record'Class;
+     (Object : access GObject_Record'Class;
       Data   : Property_Modified_Data);
    --  Called when a property has been modified, and dispatch to the callback
    --  in Data.
 
    procedure Controller_Called
-     (Editor : not null access Gtk_Widget_Record'Class;
+     (Editor : access Gtk_Widget_Record'Class;
       Data   : Controller_Data);
    --  An editor has been modified by the user, call the appropriate controller
 
@@ -456,7 +455,7 @@ package body Gtkada.Properties is
    -----------------------
 
    procedure Property_Modified
-     (Object : not null access GObject_Record'Class;
+     (Object : access GObject_Record'Class;
       Data   : Property_Modified_Data)
    is
       Value : GValue;
@@ -508,7 +507,7 @@ package body Gtkada.Properties is
    -----------------------
 
    procedure Controller_Called
-     (Editor : not null access Gtk_Widget_Record'Class;
+     (Editor : access Gtk_Widget_Record'Class;
       Data   : Controller_Data)
    is
       Value : GValue;
@@ -740,7 +739,7 @@ package body Gtkada.Properties is
    -- Editor_Delete --
    -------------------
 
-   procedure Editor_Delete (Editor : not null access GObject_Record'Class) is
+   procedure Editor_Delete (Editor : access GObject_Record'Class) is
       Ed : constant Properties_Editor := Properties_Editor (Editor);
    begin
       if Global_Editor = Ed then
@@ -753,7 +752,7 @@ package body Gtkada.Properties is
    -------------------
 
    function Widget_Picked
-     (Editor : not null access Gtk_Widget_Record'Class) return Boolean
+     (Editor : access Gtk_Widget_Record'Class) return Boolean
    is
       Ed  : constant Properties_Editor := Properties_Editor (Editor);
       W   : Gtk_Widget;
@@ -776,7 +775,7 @@ package body Gtkada.Properties is
    -- Pick_Widget --
    -----------------
 
-   procedure Pick_Widget (Editor : not null access Gtk_Widget_Record'Class) is
+   procedure Pick_Widget (Editor : access Gtk_Widget_Record'Class) is
       Ed  : constant Properties_Editor := Properties_Editor (Editor);
       Tmp : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
