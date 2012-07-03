@@ -550,6 +550,31 @@ package body Gtk.Spin_Button is
       return Internal (Get_Object (Editable));
    end Get_Position;
 
+   --------------------------
+   -- Get_Selection_Bounds --
+   --------------------------
+
+   procedure Get_Selection_Bounds
+      (Editable      : not null access Gtk_Spin_Button_Record;
+       Start_Pos     : out Gint;
+       End_Pos       : out Gint;
+       Has_Selection : out Boolean)
+   is
+      function Internal
+         (Editable      : System.Address;
+          Acc_Start_Pos : access Gint;
+          Acc_End_Pos   : access Gint) return Integer;
+      pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
+      Acc_Start_Pos : aliased Gint;
+      Acc_End_Pos   : aliased Gint;
+      Tmp_Return    : Integer;
+   begin
+      Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
+      Start_Pos := Acc_Start_Pos;
+      End_Pos := Acc_End_Pos;
+      Has_Selection := Boolean'Val (Tmp_Return);
+   end Get_Selection_Bounds;
+
    -----------------
    -- Insert_Text --
    -----------------

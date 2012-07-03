@@ -714,6 +714,12 @@ package Gtk.GEntry is
       (Editable : not null access Gtk_Entry_Record;
        Position : Gint);
 
+   procedure Get_Selection_Bounds
+      (Editable      : not null access Gtk_Entry_Record;
+       Start_Pos     : out Gint;
+       End_Pos       : out Gint;
+       Has_Selection : out Boolean);
+
    procedure Insert_Text
       (Editable        : not null access Gtk_Entry_Record;
        New_Text        : UTF8_String;

@@ -136,6 +136,18 @@ package Gtk.Editable is
    --  the editable. Note that Position is in characters, not in bytes.
    --  "position": the position of the cursor
 
+   procedure Get_Selection_Bounds
+      (Editable      : Gtk_Editable;
+       Start_Pos     : out Gint;
+       End_Pos       : out Gint;
+       Has_Selection : out Boolean);
+   --  Retrieves the selection bound of the editable. start_pos will be filled
+   --  with the start of the selection and End_Pos with end. If no text was
+   --  selected both will be identical and False will be returned.
+   --  Note that positions are specified in characters, not bytes.
+   --  "start_pos": location to store the starting position, or null
+   --  "end_pos": location to store the end position, or null
+
    procedure Insert_Text
       (Editable        : Gtk_Editable;
        New_Text        : UTF8_String;

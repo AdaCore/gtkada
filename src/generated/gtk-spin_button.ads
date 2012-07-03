@@ -358,6 +358,12 @@ package Gtk.Spin_Button is
       (Editable : not null access Gtk_Spin_Button_Record;
        Position : Gint);
 
+   procedure Get_Selection_Bounds
+      (Editable      : not null access Gtk_Spin_Button_Record;
+       Start_Pos     : out Gint;
+       End_Pos       : out Gint;
+       Has_Selection : out Boolean);
+
    procedure Insert_Text
       (Editable        : not null access Gtk_Spin_Button_Record;
        New_Text        : UTF8_String;

@@ -1994,8 +1994,8 @@ __PRE__
    end Insert_Text;
         </body>
      </extra>
-     <!-- ??? inclusion of below method is pending on L117-038 -->
-     <method id="gtk_editable_get_selection_bounds" bind="False"/>
+     <method id="gtk_editable_get_selection_bounds"
+             return_as_param="Has_Selection"/>
   </package>
 
   <package id="GtkToolItem">

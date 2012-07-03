@@ -67,6 +67,31 @@ package body Gtk.Editable is
       return Boolean'Val (Internal (Editable));
    end Get_Editable;
 
+   --------------------------
+   -- Get_Selection_Bounds --
+   --------------------------
+
+   procedure Get_Selection_Bounds
+      (Editable      : Gtk_Editable;
+       Start_Pos     : out Gint;
+       End_Pos       : out Gint;
+       Has_Selection : out Boolean)
+   is
+      function Internal
+         (Editable      : Gtk_Editable;
+          Acc_Start_Pos : access Gint;
+          Acc_End_Pos   : access Gint) return Integer;
+      pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
+      Acc_Start_Pos : aliased Gint;
+      Acc_End_Pos   : aliased Gint;
+      Tmp_Return    : Integer;
+   begin
+      Tmp_Return := Internal (Editable, Acc_Start_Pos'Access, Acc_End_Pos'Access);
+      Start_Pos := Acc_Start_Pos;
+      End_Pos := Acc_End_Pos;
+      Has_Selection := Boolean'Val (Tmp_Return);
+   end Get_Selection_Bounds;
+
    -----------------
    -- Insert_Text --
    -----------------
