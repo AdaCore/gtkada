@@ -135,6 +135,10 @@ Get_Desk_Relative_Origin: this function has been removed without a replacement.
 
 Get_Toplevels has been removed, use Gtk.Window.List_Toplevels instead.
 
+Set_Hints has been removed.  Depending on what you are trying to do, use
+Gtk.Window.Resize, Gtk.Window.Set_Size_Request, Gtk.Window.Move,
+Gtk.Window.Parse_Geometry, and Gtk.Window.Set_Geometry_Hints.
+
 Gdk.Window_Attr
 ===============
 

@@ -370,16 +370,6 @@ package Gdk.Window is
      (Window     : Gdk_Window;
       Use_Static : Boolean) return Boolean;
 
-   procedure Set_Hints
-     (Window     : Gdk_Window;
-      X          : Gint;
-      Y          : Gint;
-      Min_Width  : Gint;
-      Min_Height : Gint;
-      Max_Width  : Gint;
-      Max_Height : Gint;
-      Flags      : Gdk_Window_Hints);
-
    procedure Set_Type_Hint
      (Window : Gdk_Window;
       Hint   : Gdk_Window_Type_Hint);
@@ -656,7 +646,6 @@ private
    pragma Import (C, Set_Functions, "gdk_window_set_functions");
    pragma Import (C, Set_Geometry_Hints, "gdk_window_set_geometry_hints");
    pragma Import (C, Set_Group, "gdk_window_set_group");
-   pragma Import (C, Set_Hints, "gdk_window_set_hints");
    pragma Import (C, Set_Transient_For, "gdk_window_set_transient_for");
    pragma Import (C, Show, "gdk_window_show");
    pragma Import (C, Show_Unraised, "gdk_window_show_unraised");
