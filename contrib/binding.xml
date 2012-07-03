@@ -3030,7 +3030,7 @@ Newly created tags must be added to the tags table for the buffer you
 intend to use them in, as in:
  "Gtk.Text_Tag_Table.Add (Get_Tag_Table (Buffer), Tag)".
 See also Gtk.Text_Buffer.Create_Tag which is a more convenient way of
-creating a tag.         
+creating a tag.
        </doc>
      </method>
      <method id="gtk_text_tag_event" bind="false"/> <!-- circular dep with text_iter-->
