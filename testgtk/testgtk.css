@@ -1,0 +1,11 @@
+.notebook tab:active {
+   color:blue;
+}
+.notebook tab {
+   background-image: -gtk-gradient (linear, left top, left bottom, from(#999), to(#fff));
+   padding: 2 1 0 1;
+}
+
+.notebook .active {
+   color: red;
+}

@@ -3037,6 +3037,17 @@ creating a tag.
      <slist ada="Text_Tag_List" ctype="GtkTextTag"/>
    </package>
 
+   <package id="GtkCssProvider">
+     <method id="gtk_css_provider_load_from_data">
+       <parameter name="data" ctype="char*"/>
+       <parameter name="length" default="-1" ctype="gint"/>
+     </method>
+     <method id="gtk_css_provider_load_from_path">
+       <parameter name="error" direction="access"/>
+     </method>
+     <method id="gtk_css_provider_load_from_file" bind="False"/> <!--  needs GFile -->
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

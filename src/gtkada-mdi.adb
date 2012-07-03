@@ -3102,24 +3102,32 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
-      Ctx   : constant Gtk_Style_Context := Get_Style_Context (Child.MDI);
-      Color : Gdk_RGBA := Null_RGBA;
+      --  Ctx   : constant Gtk_Style_Context := Get_Style_Context (Child.MDI);
+      --  Color : Gdk_RGBA := Null_RGBA;
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
    begin
       if Note /= null then
-         Ctx.Get_Color (Gtk_State_Flag_Normal, Color);
+         --  Ctx.Get_Color (Gtk_State_Flag_Normal, Color);
+         Label := Get_Tab_Label (Note, Child);
 
          if MDI_Child (Child) = Child.MDI.Focus_Child then
-            Color := Child.MDI.Focus_Title_Color;
+            if Label /= null then
+               Get_Style_Context (Label).Add_Class ("active");
+            end if;
+
+            --  Color := Child.MDI.Focus_Title_Color;
+         else
+            if Label /= null then
+               Get_Style_Context (Label).Remove_Class ("active");
+            end if;
          end if;
 
-         Note.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+         --  Note.Override_Background_Color (Gtk_State_Flag_Normal, Color);
 
-         Label := Get_Tab_Label (Note, Child);
-         if Label /= null then
-            Label.Override_Background_Color (Gtk_State_Flag_Normal, Color);
-         end if;
+         --  if Label /= null then
+         --     Label.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+         --  end if;
       end if;
    end Update_Tab_Color;
 

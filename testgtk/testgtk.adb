@@ -21,13 +21,35 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Text_IO;       use Ada.Text_IO;
+with Gdk.Display;       use Gdk.Display;
+with Gdk.Screen;        use Gdk.Screen;
+with Glib.Error;        use Glib.Error;
+with Gtk.Css_Provider;  use Gtk.Css_Provider;
+with Gtk.Style_Context;
 with Gtk.Main;
 with Main_Windows;
 
 procedure Testgtk is
-   Win : Main_Windows.Main_Window;
+   Css     : Gtk_Css_Provider;
+   Win     : Main_Windows.Main_Window;
+   Display : Gdk_Display;
+   Screen  : Gdk_Screen;
+   Error   : aliased GError;
 begin
    Gtk.Main.Init;
+
+   Gtk_New (Css);
+   if not Css.Load_From_Path ("testgtk.css", Error'Access) then
+      Put_Line ("Could not load testgtk.css");
+      Put_Line (Get_Message (Error));
+   else
+      Display := Get_Default;
+      Screen  := Get_Default_Screen (Display);
+      Gtk.Style_Context.Add_Provider_For_Screen
+        (Screen, +Css, Priority => 1000);
+   end if;
+
    Main_Windows.Gtk_New (Win);
    Main_Windows.Show_All (Win);
    Gtk.Main.Main;

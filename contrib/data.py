@@ -66,6 +66,7 @@ binding = ("GdkDevice",
            "GtkComboBox",
            "GtkComboBoxText",
            "GtkContainer",
+           "GtkCssProvider",
            "GtkDialog",
            "GtkDrawingArea",
            "GtkEntry",
@@ -272,6 +273,7 @@ naming.type_exceptions = {
 
     "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 
+    "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),
     "GClosure*":         Proxy("System.Address", ""),
     "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),

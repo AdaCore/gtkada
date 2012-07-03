@@ -2418,7 +2418,7 @@ package Gtk.Widget is
    --  Returns the default style used by all widgets initially.
    --  object is owned by GTK+ and should not be modified or freed.
    --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead, and
-   --  gtk_css_provider_get_default to obtain a
+   --  Gtk.Css_Provider.Get_Default to obtain a
    --  Gtk.Style_Provider.Gtk_Style_Provider with the default widget style
    --  information.
 
