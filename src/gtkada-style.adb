@@ -474,6 +474,8 @@ package body Gtkada.Style is
       Ctx     : Cairo_Context;
       Surface : Cairo_Surface;
       Color   : Gdk_RGBA;
+
+      Window_Provider  : Gtk_Widget := Gtk_Widget (Widget);
    begin
       Surface := Gdk.Window.Create_Similar_Surface
         (Window  => Get_Window (Widget),
@@ -481,8 +483,17 @@ package body Gtkada.Style is
          Width   => Get_Allocated_Width (Widget),
          Height  => Get_Allocated_Height (Widget));
 
-      Get_Style_Context (Widget).Get_Background_Color
-        (Gtk_State_Flag_Normal, Color);
+      while Window_Provider /= null
+        and then not Window_Provider.Get_Has_Window
+      loop
+         Window_Provider := Window_Provider.Get_Parent;
+      end loop;
+
+      if Window_Provider /= null then
+         Get_Style_Context (Window_Provider).Get_Background_Color
+           (Gtk_State_Flag_Normal, Color);
+      end if;
+
       Ctx := Create (Surface);
       Set_Source_RGBA (Ctx, Color);
       Paint (Ctx);
