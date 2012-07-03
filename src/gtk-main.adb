@@ -24,8 +24,6 @@
 
 with Gdk.Types;               use Gdk.Types;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
-with Ada.Unchecked_Deallocation;
-with Ada.Unchecked_Conversion;
 
 package body Gtk.Main is
 
@@ -146,85 +144,6 @@ package body Gtk.Main is
    begin
       return Boolean'Val (Internal (Boolean'Pos (Blocking)));
    end Main_Iteration;
-
-   ----------
-   -- Idle --
-   ----------
-
-   package body Idle is
-
-      type Data_Type_Access is access Data_Type;
-      type Cb_Record is record
-         Func : Callback;
-         User_Destroy : Destroy_Callback;
-         Data : Data_Type_Access;
-      end record;
-      type Cb_Record_Access is access Cb_Record;
-
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Cb_Record_Access);
-
-      ----------
-      -- Free --
-      ----------
-
-      procedure Free_Data (D : System.Address) is
-         procedure Internal is new Ada.Unchecked_Deallocation
-           (Cb_Record, Cb_Record_Access);
-         procedure Internal2 is new Ada.Unchecked_Deallocation
-           (Data_Type, Data_Type_Access);
-         Data : Cb_Record_Access := Convert (D);
-
-      begin
-         if Data.User_Destroy /= null then
-            Data.User_Destroy (Data.Data.all);
-         end if;
-         Internal2 (Data.Data);
-         Internal (Data);
-      end Free_Data;
-
-      ----------------
-      -- General_Cb --
-      ----------------
-
-      function General_Cb (D : System.Address) return Gint is
-         Data : constant Cb_Record_Access := Convert (D);
-      begin
-         return Boolean'Pos (Data.Func (Data.Data.all));
-      end General_Cb;
-
-      ---------
-      -- Add --
-      ---------
-
-      function Add
-        (Cb       : Callback;
-         D        : Data_Type;
-         Priority : Idle_Priority := Priority_Default_Idle;
-         Destroy  : Destroy_Callback := null)
-         return Idle_Handler_Id
-      is
-         function Internal
-           (Priority : Idle_Priority;
-            Func     : System.Address;
-            Marshal  : System.Address;
-            Data     : System.Address;
-            Destroy  : System.Address) return Idle_Handler_Id;
-         pragma Import (C, Internal, "gtk_idle_add_full");
-
-         function Convert is new Ada.Unchecked_Conversion
-           (Cb_Record_Access, System.Address);
-
-         Data : constant Cb_Record_Access := new Cb_Record'
-           (Func => Cb,
-            User_Destroy => Destroy,
-            Data => new Data_Type'(D));
-      begin
-         return Internal (Priority, General_Cb'Address, System.Null_Address,
-                          Convert (Data), Free_Data'Address);
-      end Add;
-
-   end Idle;
 
    -------------------
    -- Check_Version --

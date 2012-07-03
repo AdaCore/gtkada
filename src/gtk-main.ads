@@ -98,24 +98,6 @@ package Gtk.Main is
    --  locale. It determines, for example, whether GTK+ uses the
    --  right-to-left or left-to-right text direction.
 
-   -----------------------------
-   -- Init and Quit functions --
-   -----------------------------
-
-   type Init_Function is access procedure (Data : System.Address);
-   pragma Convention (C, Init_Function);
-   --  Function called just before starting the main loop.
-   --  This can be registered with Init_Add below.
-
-   type Quit_Handler_Id is new Guint;
-   --  registration ID for functions that will be called before the
-   --  main loop exits.
-
-   type Quit_Function is access function return Boolean;
-   --  Type of function that can be called when the main loop exits.
-   --  It should return False if it should not be called again when another
-   --  main loop exits.
-
    -------------------
    -- The main loop --
    -------------------
@@ -289,78 +271,10 @@ package Gtk.Main is
    function Grab_Get_Current return Gtk.Widget.Gtk_Widget;
    --  Return the widget that currently has the focus.
 
-   -----------------
-   -- Obsolescent --
-   -----------------
-   --  All subprograms below are now obsolescent in gtk+. They might be removed
-   --  from future versions of gtk+ (and therefore GtkAda).
-   --  To find out whether your code uses any of these, we recommend compiling
-   --  with the -gnatwj switch
-   --  <doc_ignore>
-
-   procedure Gtk_Exit (Error_Code : Gint);
-   pragma Obsolescent (Gtk_Exit);
-   --  Terminate GtkAda.
-   --  Deprecated, use Main_Quit instead.
-
-   type Idle_Handler_Id is new Guint;
-   --  pragma Obsolescent (Entity => Idle_Handler_Id);
-   --  Id for Idle handlers.
-
-   type Idle_Priority   is new Guint;
-   --  pragma Obsolescent (Entity => Idle_Priority);
-   --  Priorities that can be set for idle handlers.
-   --  The higher the priority, the less urgent the task. Handlers whose
-   --  priority is lower will be called before others.
-
-   Priority_High_Idle    : constant Idle_Priority := 100;
-   Priority_Default_Idle : constant Idle_Priority := 200;
-   Priority_Low_Idle     : constant Idle_Priority := 300;
-
-   generic
-      type Data_Type (<>) is private;
-   package Idle is
-      type Callback is access function (D : Data_Type) return Boolean;
-      type Destroy_Callback is access procedure (D : in out Data_Type);
-
-      function Add
-        (Cb       : Callback;
-         D        : Data_Type;
-         Priority : Idle_Priority := Priority_Default_Idle;
-         Destroy  : Destroy_Callback := null)
-         return Idle_Handler_Id;
-      pragma Obsolescent (Add, "Use Glib.Main.Idle");
-
-   private
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
-   end Idle;
-   --  Destroy will be called automatically just prior to the destruction of D.
-   --  In particular, it is also called if the idle is destroyed through a call
-   --  to Idle_Remove.
-
-   procedure Idle_Remove (Id : Idle_Handler_Id);
-   pragma Obsolescent (Idle_Remove, "Use Glib.Main.Remove");
-   --  Remove an idle callback, when its Id is known.
-
-   procedure Init_Add (Func : Init_Function; Data : System.Address);
-   pragma Obsolescent (Init_Add);
-   --  Register a function to be called just before starting a main loop.
-   --  This function is called only once, even if a new main loop is started
-   --  recursively.
-
-   --  </doc_ignore>
-
 private
-   pragma Import (C, Gtk_Exit, "gtk_exit");
    pragma Import (C, Main_Level, "gtk_main_level");
    pragma Import (C, Main_Quit, "gtk_main_quit");
    pragma Import (C, Main, "gtk_main");
-   pragma Import (C, Idle_Remove, "gtk_idle_remove");
-   pragma Import (C, Init_Add, "gtk_init_add");
    pragma Import (C, Get_Current_Event, "gtk_get_current_event");
    pragma Import (C, Disable_Setlocale, "gtk_disable_setlocale");
    pragma Import (C, Get_Current_Event_Time, "gtk_get_current_event_time");
@@ -376,12 +290,6 @@ private
    --  No binding: gtk_init_with_args
    --  No binding: gtk_parse_args
    --  No binding: gtk_main_iteration
-
-   --  These functions are not bound, we only use gtk_idle_add_full
-   --  No binding: gtk_idle_add
-   --  No binding: gtk_idle_add_priority
-   --  No binding: gtk_idle_remove_by_data
-   --  No binding: gtk_timeout_add
 
    --  This function are not bound, we only use gtk_quit_add_full
    --  No binding: gtk_quit_add
