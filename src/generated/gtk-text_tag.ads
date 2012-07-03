@@ -37,17 +37,20 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Event;       use Gdk.Event;
 with Glib;            use Glib;
+with Glib.GSlist;     use Glib.GSlist;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;
-with Gtk.Text_Iter;   use Gtk.Text_Iter;
 
 package Gtk.Text_Tag is
 
    type Gtk_Text_Tag_Record is new GObject_Record with null record;
    type Gtk_Text_Tag is access all Gtk_Text_Tag_Record'Class;
+
+   function Convert (R : Gtk.Text_Tag.Gtk_Text_Tag) return System.Address;
+   function Convert (R : System.Address) return Gtk.Text_Tag.Gtk_Text_Tag;
+   package Text_Tag_List is new Generic_SList (Gtk.Text_Tag.Gtk_Text_Tag);
 
    ------------------
    -- Constructors --
@@ -60,10 +63,9 @@ package Gtk.Text_Tag is
    --  Creates a Gtk.Text_Tag.Gtk_Text_Tag. Configure the tag using object
    --  arguments, i.e. using g_object_set.
    --  Newly created tags must be added to the tags table for the buffer you
-   --  intend to use them in.
-   --  Gtk.Text_Tag_Table.Add (Get_Tag_Table (Buffer), Tag);
-   --  See also Gtk.Text_Buffer.Create_Tag which is a more convenient way of
-   --  creating a tag.
+   --  intend to use them in, as in: "Gtk.Text_Tag_Table.Add (Get_Tag_Table
+   --  (Buffer), Tag)". See also Gtk.Text_Buffer.Create_Tag which is a more
+   --  convenient way of creating a tag.
    --  "name": tag name, or null
 
    function Get_Type return Glib.GType;
@@ -72,16 +74,6 @@ package Gtk.Text_Tag is
    -------------
    -- Methods --
    -------------
-
-   function Event
-      (Tag          : not null access Gtk_Text_Tag_Record;
-       Event_Object : not null access Glib.Object.GObject_Record'Class;
-       Event        : Gdk.Event.Gdk_Event;
-       Iter         : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
-   --  Emits the "event" signal on the Gtk.Text_Tag.Gtk_Text_Tag.
-   --  "event_object": object that received the event, such as a widget
-   --  "event": the event
-   --  "iter": location where the event was received
 
    function Get_Priority
       (Tag : not null access Gtk_Text_Tag_Record) return Gint;

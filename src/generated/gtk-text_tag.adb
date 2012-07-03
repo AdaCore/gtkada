@@ -29,6 +29,15 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Text_Tag is
 
+   function Convert (R : Gtk.Text_Tag.Gtk_Text_Tag) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gtk.Text_Tag.Gtk_Text_Tag is
+      Stub : Gtk.Text_Tag.Gtk_Text_Tag_Record;begin
+         return Gtk.Text_Tag.Gtk_Text_Tag (Glib.Object.Get_User_Data (R, Stub));end Convert;
+
    package Type_Conversion_Gtk_Text_Tag is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Text_Tag_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Text_Tag);
@@ -66,26 +75,6 @@ package body Gtk.Text_Tag is
       Free (Tmp_Name);
       Set_Object (Tag, Tmp_Return);
    end Initialize;
-
-   -----------
-   -- Event --
-   -----------
-
-   function Event
-      (Tag          : not null access Gtk_Text_Tag_Record;
-       Event_Object : not null access Glib.Object.GObject_Record'Class;
-       Event        : Gdk.Event.Gdk_Event;
-       Iter         : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean
-   is
-      function Internal
-         (Tag          : System.Address;
-          Event_Object : System.Address;
-          Event        : Gdk.Event.Gdk_Event;
-          Iter         : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_text_tag_event");
-   begin
-      return Boolean'Val (Internal (Get_Object (Tag), Get_Object (Event_Object), Event, Get_Object (Iter)));
-   end Event;
 
    ------------------
    -- Get_Priority --

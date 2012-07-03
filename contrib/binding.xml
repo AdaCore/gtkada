@@ -3015,6 +3015,8 @@ See also Gtk.Text_Buffer.Create_Tag which is a more convenient way of
 creating a tag.         
        </doc>
      </method>
+     <method id="gtk_text_tag_event" bind="false"/> <!-- circular dep with text_iter-->
+     <slist ada="Text_Tag_List" ctype="GtkTextTag"/>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
