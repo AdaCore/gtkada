@@ -1161,12 +1161,14 @@ class Subprogram(object):
     """An Ada subprogram that we are generating"""
 
     def __init__(self, name, code="", plist=[], local_vars=[],
-                 returns=None, doc=[], showdoc=True, convention=None):
+                 returns=None, doc=[], showdoc=True, convention=None,
+                 lang="ada"):
         """Create a new subprogram.
            'plist' is a list of Parameter.
            'local_vars' is a list of Local_Var.
            'doc' is a string or a list of paragraphs.
            'code' can be the empty string, in which case no body is output.
+           'lang' is the language for the types of parameters.
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
         """
@@ -1182,7 +1184,7 @@ class Subprogram(object):
         self._deprecated = (False, "") # True if deprecated
         self._manual_body = None  # Written by user explicitly
 
-        self.lang = "ada"  # Language for the types of parameters
+        self.lang = lang  # Language for the types of parameters
 
         if code and code[-1] != ";":
             self.code = code + ";"

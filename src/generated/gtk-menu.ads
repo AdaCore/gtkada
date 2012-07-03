@@ -93,6 +93,15 @@ package Gtk.Menu is
    type Gtk_Menu_Record is new Gtk_Menu_Shell_Record with null record;
    type Gtk_Menu is access all Gtk_Menu_Record'Class;
 
+   type Gtk_Menu_Detach_Func is access procedure (Attach_Widget : System.Address; Menu : System.Address);
+   --  A user function supplied when calling Gtk.Menu.Attach_To_Widget which
+   --  will be called when the menu is later detached from the widget.
+   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu is being
+   --  detached from.
+   --  "menu": the Gtk.Menu.Gtk_Menu being detached.
+
+   pragma Convention (C, Gtk_Menu_Detach_Func);
+
    type Gtk_Menu_Position_Func is access procedure
      (Menu    : not null access Gtk_Menu_Record'Class;
       X       : out Gint;
@@ -153,6 +162,18 @@ package Gtk.Menu is
    --  to
    --  "top_attach": The row number to attach the top of the item to
    --  "bottom_attach": The row number to attach the bottom of the item to
+
+   procedure Attach_To_Widget
+      (Menu          : not null access Gtk_Menu_Record;
+       Attach_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Detacher      : Gtk_Menu_Detach_Func);
+   --  Attaches the menu to the widget and provides a callback function that
+   --  will be invoked when the menu calls Gtk.Menu.Detach during its
+   --  destruction.
+   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
+   --  attached to
+   --  "detacher": the user supplied callback function that will be called
+   --  when the menu calls Gtk.Menu.Detach
 
    procedure Detach (Menu : not null access Gtk_Menu_Record);
    --  Detaches the menu from the widget to which it had been attached. This

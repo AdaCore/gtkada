@@ -419,7 +419,7 @@ class SubprogramProfile(object):
             p.default = None
 
     def subprogram(self, name, showdoc=True, local_vars=[], code=[],
-                   convention=None):
+                   convention=None, lang="ada"):
         """Return an instance of Subprogram with the corresponding profile"""
 
         subp = Subprogram(
@@ -428,6 +428,7 @@ class SubprogramProfile(object):
                 returns=self.returns,
                 showdoc=showdoc,
                 doc=self.doc,
+                lang=lang,
                 local_vars=local_vars,
                 code=code)
         subp.convention = convention or self.gtkmethod.convention()
@@ -809,6 +810,8 @@ class GIRClass(object):
         cb_profile = SubprogramProfile.parse(
             cb_gir_node, gtkmethod=gtkmethod, pkg=self.pkg)
 
+        cb_user_data = cb_profile.find_param(user_data_params)
+
         # Generate the access-to-subprogram type for the user callback, unless
         # we have already done so. This is the type that doesn't receive
         # user data.
@@ -816,7 +819,7 @@ class GIRClass(object):
         if cbname not in self.callbacks:
             self.callbacks.add(cbname)   # Prevent multiple generations
 
-            cb_user_data = cb_profile.find_param(user_data_params)
+            section = self.pkg.section("")
 
             if cb_user_data is None:
                 # If the C function has no user data, we do not know how to
@@ -827,51 +830,53 @@ class GIRClass(object):
                 # Instead, we just generate a low-level C callback passing
                 # System.Address for widgets.
 
-                print "Can't bind %s.%s (for %s) because it has no user data" % (
-                    self.name, funcname, cname)
-                return
+                nouser_cb_profile = copy.deepcopy(cb_profile)
+                subp = nouser_cb_profile.subprogram(name="", lang="c")
+                section.add_code(
+                    "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
+                section.add_code(
+                    "\npragma Convention (C, %s);" % funcname)
 
-            section = self.pkg.section("")
+            else:
+                # Generate a simpler version of the callback, without
+                # user data, that the Ada applications can use
 
-            # Generate a simpler version of the callback, without
-            # user data, that the Ada applications can use
+                nouser_cb_profile = copy.deepcopy(cb_profile)
+                nouser_cb_profile.remove_param(
+                    destroy_data_params + [cb_user_data])
+                subp = nouser_cb_profile.subprogram(name="")
+                section.add_code(
+                    "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
 
-            nouser_cb_profile = copy.deepcopy(cb_profile)
-            nouser_cb_profile.remove_param(
-                destroy_data_params + [cb_user_data])
-            subp = nouser_cb_profile.subprogram(name="")
-            section.add_code(
-                "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
+                # Generate a subprogram in the body to act as the C callback.
+                # This subprogram is responsible for calling the user's callback.
+                # In the call to the user's callback, we need to convert the
+                # parameters from the C values to the corresponding Ada values.
 
-            # Generate a subprogram in the body to act as the C callback.
-            # This subprogram is responsible for calling the user's callback.
-            # In the call to the user's callback, we need to convert the
-            # parameters from the C values to the corresponding Ada values.
+                self.pkg.add_with(
+                    "Ada.Unchecked_Conversion", do_use=False, specs=False)
+                section.add_code(
+                    ("function To_%s is new Ada.Unchecked_Conversion\n"
+                    + "   (System.Address, %s);\n") % (funcname, funcname),
+                    specs=False)
+                section.add_code(
+                    ("function To_Address is new Ada.Unchecked_Conversion\n"
+                    + "   (%s, System.Address);\n") % (cb_type_name,),
+                    specs=False)
 
-            self.pkg.add_with(
-                "Ada.Unchecked_Conversion", do_use=False, specs=False)
-            section.add_code(
-                ("function To_%s is new Ada.Unchecked_Conversion\n"
-                + "   (System.Address, %s);\n") % (funcname, funcname),
-                specs=False)
-            section.add_code(
-                ("function To_Address is new Ada.Unchecked_Conversion\n"
-                + "   (%s, System.Address);\n") % (cb_type_name,),
-                specs=False)
-
-            ada_func = copy.deepcopy(subp)
-            ada_func.name = "Func"
-            ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
-            body_cb = cb_profile.subprogram(
-                name="Internal_%s" % funcname,
-                local_vars=[Local_Var("Func", "constant %s" % funcname,
-                                      "To_%s (%s)" % (funcname, cb_user_data))]
-                    + ada_func_call[2],
-                code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
-            body_cb.set_param_lang("c")
-            body_cb.convention = "C"
-            body_cb.doc = []
-            section.add(body_cb, in_spec=False)
+                ada_func = copy.deepcopy(subp)
+                ada_func.name = "Func"
+                ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
+                body_cb = cb_profile.subprogram(
+                    name="Internal_%s" % funcname,
+                    local_vars=[Local_Var("Func", "constant %s" % funcname,
+                                          "To_%s (%s)" % (funcname, cb_user_data))]
+                        + ada_func_call[2],
+                    code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
+                body_cb.set_param_lang("c")
+                body_cb.convention = "C"
+                body_cb.doc = []
+                section.add(body_cb, in_spec=False)
 
         # The gtk C function, will all parameters.
         # This will be used to generate the "Internal" nested subprogram.
@@ -883,11 +888,13 @@ class GIRClass(object):
         callback = profile.callback_param_info()
         if callback is not None:
             gtk_func_profile.replace_param(callback.name, "System.Address")
-        gtk_func_profile.replace_param(destroy, "System.Address")
+
+        if cb_user_data is not None:
+            gtk_func_profile.replace_param(destroy, "System.Address")
+
         gtk_func_profile.unset_default_values()
         gtk_func = gtk_func_profile.subprogram(
-            name=naming.case("C_%s" % cname)).import_c(cname)
-        gtk_func.set_param_lang("c")
+            name=naming.case("C_%s" % cname), lang="c").import_c(cname)
 
         # This function is shared both by the version without user_data and by
         # the generic package, so we need to put it directly in the package,
@@ -900,10 +907,18 @@ class GIRClass(object):
         section = self.pkg.section("Methods")
 
         nouser_profile = copy.deepcopy(profile)
-        nouser_profile.remove_param(destroy_data_params + [user_data])
-        values = {destroy: "System.Null_Address",
-                  cb.name.lower(): "Internal_%s'Address" % funcname,
-                  user_data.lower(): "To_Address (%s)" % cb.name}
+
+        if cb_user_data is None:
+            values = {destroy: "System.Null_Address",
+                      cb.name.lower(): "Internal_%s'Address" % funcname,
+                      user_data.lower(): "%s'Address" % cb.name}
+
+        else:
+            nouser_profile.remove_param(destroy_data_params + [user_data])
+            values = {destroy: "System.Null_Address",
+                      cb.name.lower(): "Internal_%s'Address" % funcname,
+                      user_data.lower(): "To_Address (%s)" % cb.name}
+
         subp = nouser_profile.subprogram(
             name=adaname, local_vars=local_vars,
             code=gtk_func.call_to_string(

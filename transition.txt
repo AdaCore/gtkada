@@ -596,6 +596,10 @@ Use functions in Gtk.Style_Context instead.
 A number of drawing functions have been removed: use the Paint_* functions
 instead.
 
+Replace a call to Get_Font with:
+    with Gtk.Style_Context;  use Gtk.Style_Context;
+    Get_Style_Context (Widget).Get_Font (Gtk_State_Flags_Normal);
+
 Gtk.Text
 ========
 

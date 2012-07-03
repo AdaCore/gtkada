@@ -37,6 +37,19 @@ package body Gtk.Menu is
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Menu_Position_Func, System.Address);
 
+   procedure C_Gtk_Menu_Attach_To_Widget
+      (Menu          : System.Address;
+       Attach_Widget : System.Address;
+       Detacher      : System.Address);
+   pragma Import (C, C_Gtk_Menu_Attach_To_Widget, "gtk_menu_attach_to_widget");
+   --  Attaches the menu to the widget and provides a callback function that
+   --  will be invoked when the menu calls Gtk.Menu.Detach during its
+   --  destruction.
+   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
+   --  attached to
+   --  "detacher": the user supplied callback function that will be called
+   --  when the menu calls Gtk.Menu.Detach
+
    procedure C_Gtk_Menu_Popup
       (Menu              : System.Address;
        Parent_Menu_Shell : System.Address;
@@ -200,6 +213,19 @@ package body Gtk.Menu is
    begin
       Internal (Get_Object (Menu), Get_Object (Child), Left_Attach, Right_Attach, Top_Attach, Bottom_Attach);
    end Attach;
+
+   ----------------------
+   -- Attach_To_Widget --
+   ----------------------
+
+   procedure Attach_To_Widget
+      (Menu          : not null access Gtk_Menu_Record;
+       Attach_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Detacher      : Gtk_Menu_Detach_Func)
+   is
+   begin
+      C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), Detacher'Address);
+   end Attach_To_Widget;
 
    ------------
    -- Detach --
