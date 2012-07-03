@@ -29,7 +29,8 @@ pragma Ada_05;
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib; use Glib;
+with Glib;        use Glib;
+with Glib.Values; use Glib.Values;
 
 package Gdk.RGBA is
 
@@ -130,5 +131,9 @@ package Gdk.RGBA is
    --  In all cases, Val is supposed to be an access to the type mentioned in
    --  the name of the subprogram.
    --  In Ada2012, these could be replaced with expression functions instead.
+
+   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA);
+   function  Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA;
+   --  Conversion functions for storing a Gdk_RGBA as a GValue.
 
 end Gdk.RGBA;

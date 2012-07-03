@@ -2683,6 +2683,7 @@ __PRE__
        <parameter name="self" direction="out"/>
      </method>
      <extra>
+       <with_spec pkg="Glib.Values" />
        <spec>
    Null_RGBA : constant Gdk_RGBA :=
       (Glib.Gdouble'First, Glib.Gdouble'First,
@@ -2699,14 +2700,47 @@ __PRE__
    --  In all cases, Val is supposed to be an access to the type mentioned in
    --  the name of the subprogram.
    --  In Ada2012, these could be replaced with expression functions instead.
+
+   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA);
+   function  Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA;
+   --  Conversion functions for storing a Gdk_RGBA as a GValue.
        </spec>
+       <with_body pkg="Glib.Generic_Properties" />
        <body>
+   ----------------------
+   -- Gdk_RGBA_Or_Null --
+   ----------------------
+
    function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
       function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
         (Gdk_RGBA, Null_RGBA);
    begin
       return Internal (Val);
    end Gdk_RGBA_Or_Null;
+
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
+   package RGBA_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_RGBA, Get_Type, To_Address);
+
+   function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
+     renames RGBA_Properties.Get_Value;
+   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA)
+     renames RGBA_Properties.Set_Value;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address is
+   begin
+      if Val = Null_RGBA then
+         return System.Null_Address;
+      else
+         return Addr;
+      end if;
+   end To_Address;
        </body>
      </extra>
    </package>
