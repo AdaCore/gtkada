@@ -353,7 +353,6 @@ class Enum(CType):
 
         # Add the special cases for properties that GIR file use
         t = ctype.replace("Pango", "Pango.").replace("Gdk", "Gdk.")
-        print "MANU adding %s -> %s" % (t , ctype)
         naming.girname_to_ctype[t] = ctype
 
 
