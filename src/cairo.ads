@@ -1451,13 +1451,11 @@ package Cairo is
    -- Insideness testing --
    ------------------------
 
-   type Cairo_Bool is new Boolean;
-
    function In_Stroke
      (Cr   : Cairo_Context;
       X    : Gdouble;
       Y    : Gdouble)
-      return Cairo_Bool;
+      return Boolean;
    --  Cr: a cairo context
    --  X: X coordinate of the point to test
    --  Y: Y coordinate of the point to test
@@ -1477,7 +1475,7 @@ package Cairo is
      (Cr   : Cairo_Context;
       X    : Gdouble;
       Y    : Gdouble)
-      return Cairo_Bool;
+      return Boolean;
    --  Cr: a cairo context
    --  X: X coordinate of the point to test
    --  Y: Y coordinate of the point to test
@@ -2331,7 +2329,7 @@ package Cairo is
    --
    --  Return value: the current shape antialiasing mode.
 
-   function Has_Current_Point (Cr : Cairo_Context) return Cairo_Bool;
+   function Has_Current_Point (Cr : Cairo_Context) return Boolean;
    --  Cr: a cairo context
    --
    --  Returns whether a current point is defined on the current path.
@@ -2689,7 +2687,6 @@ package Cairo is
 private
 
    pragma Convention (C, Cairo_Destroy_Func);
-   pragma Convention (C, Cairo_Bool);
    pragma Convention (C, Cairo_Status);
    pragma Convention (C, Cairo_Operator);
    pragma Convention (C, Cairo_Antialias);
@@ -2789,8 +2786,6 @@ private
    pragma Import (C, Fill_Preserve, "cairo_fill_preserve");
    pragma Import (C, Copy_Page, "cairo_copy_page");
    pragma Import (C, Show_Page, "cairo_show_page");
-   pragma Import (C, In_Stroke, "cairo_in_stroke");
-   pragma Import (C, In_Fill, "cairo_in_fill");
    pragma Import (C, Stroke_Extents, "cairo_stroke_extents");
    pragma Import (C, Fill_Extents, "cairo_fill_extents");
    pragma Import (C, Reset_Clip, "cairo_reset_clip");
@@ -2821,7 +2816,6 @@ private
    pragma Import (C, Get_Source, "cairo_get_source");
    pragma Import (C, Get_Tolerance, "cairo_get_tolerance");
    pragma Import (C, Get_Antialias, "cairo_get_antialias");
-   pragma Import (C, Has_Current_Point, "cairo_has_current_point");
    pragma Import (C, Get_Current_Point, "cairo_get_current_point");
    pragma Import (C, Get_Fill_Rule, "cairo_get_fill_rule");
    pragma Import (C, Get_Line_Width, "cairo_get_line_width");

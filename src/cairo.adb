@@ -141,4 +141,47 @@ package body Cairo is
       C_Text_Path (Cr, Tmp'Address);
    end Text_Path;
 
+   ---------------
+   -- In_Stroke --
+   ---------------
+
+   function In_Stroke
+     (Cr   : Cairo_Context;
+      X    : Gdouble;
+      Y    : Gdouble)
+      return Boolean
+   is
+      function Internal (C : Cairo_Context; X, Y : Gdouble) return Gboolean;
+      pragma Import (C, Internal, "cairo_in_stroke");
+   begin
+      return Internal (Cr, X, Y) /= 0;
+   end In_Stroke;
+
+   -------------
+   -- In_Fill --
+   -------------
+
+   function In_Fill
+     (Cr   : Cairo_Context;
+      X    : Gdouble;
+      Y    : Gdouble)
+      return Boolean
+   is
+      function Internal (C : Cairo_Context; X, Y : Gdouble) return Gboolean;
+      pragma Import (C, Internal, "cairo_in_fill");
+   begin
+      return Internal (Cr, X, Y) /= 0;
+   end In_Fill;
+
+   -----------------------
+   -- Has_Current_Point --
+   -----------------------
+
+   function Has_Current_Point (Cr : Cairo_Context) return Boolean is
+      function Internal (Cr : Cairo_Context) return Gboolean;
+      pragma Import (C, Internal, "cairo_has_current_point");
+   begin
+      return Internal (Cr) /= 0;
+   end Has_Current_Point;
+
 end Cairo;

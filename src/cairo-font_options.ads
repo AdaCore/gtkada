@@ -80,7 +80,7 @@ package Cairo.Font_Options is
    function Equal
      (Options : Cairo_Font_Options;
       Other   : Cairo_Font_Options)
-      return    Cairo_Bool;
+      return    Boolean;
    --  Options: a Cairo_Font_Options
    --  Other: another Cairo_Font_Options
    --
@@ -192,7 +192,6 @@ private
    pragma Import (C, Destroy, "cairo_font_options_destroy");
    pragma Import (C, Status, "cairo_font_options_status");
    pragma Import (C, Merge, "cairo_font_options_merge");
-   pragma Import (C, Equal, "cairo_font_options_equal");
    pragma Import (C, Hash, "cairo_font_options_hash");
    pragma Import (C, Set_Antialias, "cairo_font_options_set_antialias");
    pragma Import (C, Get_Antialias, "cairo_font_options_get_antialias");

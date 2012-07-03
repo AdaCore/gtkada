@@ -377,7 +377,7 @@ package Cairo.Surface is
 
    function Has_Show_Text_Glyphs
      (Surface : Cairo_Surface)
-      return    Cairo_Bool;
+      return Boolean;
    --  Surface: a Cairo_Surface
    --
    --  Returns whether the surface supports
@@ -431,9 +431,5 @@ private
       "cairo_surface_get_fallback_resolution");
    pragma Import (C, Copy_Page, "cairo_surface_copy_page");
    pragma Import (C, Show_Page, "cairo_surface_show_page");
-   pragma Import
-     (C,
-      Has_Show_Text_Glyphs,
-      "cairo_surface_has_show_text_glyphs");
 
 end Cairo.Surface;
