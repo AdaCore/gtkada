@@ -166,6 +166,9 @@ Gtk.Assistant
 The values in Gtk_Assistant_Page_Type were renamed for consistency,
 removing their Gtk_ prefix.
 
+The package Generic_Assistant_Functions has been renamed to
+Set_Forward_Page_Func_User_Data.
+
 Gtk.Button_Box
 ==============
 
@@ -433,6 +436,8 @@ This widget has been removed: use a Gtk.Tree_View instead.
 Gtk.Menu
 ========
 
+User_Menu_Popup has been replaced by Popup_User_Data.
+
 The version of Popup was took an access to C_Gtk_Menu_Positon_Func has
 been removed. If you need to pass User_Data to the callback, you need to
 instantiate the package Popup_User_Data. Note that in this package the
@@ -475,6 +480,10 @@ Get_Children has been removed: call Gtk.Container.Get_Children instead.
 
 Set_Tab_Label_Packing has been removed (this is left under control of the
 theme).
+
+Set_Page has been removed, use Set_Current_Page instead.
+
+Insert_Page now returns the number of the page that has been inserted.
 
 Gtk.List
 ========
