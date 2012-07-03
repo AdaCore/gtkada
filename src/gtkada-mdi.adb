@@ -1667,42 +1667,42 @@ package body Gtkada.MDI is
 
       Update_Tab_Color (Child);
 
-      if Child.Title_Box.Get_Realized then
-         Set_Source_RGBA (Cr, Color);
-         Cairo.Rectangle
+      Cairo.Save (Cr);
+      Set_Source_RGBA (Cr, Color);
+      Cairo.Rectangle
+        (Cr,
+         0.0, 0.0,
+         Gdouble (Get_Allocated_Width (Child.Title_Box)),
+         Gdouble (Get_Allocated_Height (Child.Title_Box)));
+      Cairo.Fill (Cr);
+
+      if Child.Icon /= null then
+         W := Get_Width (Child.Icon);
+         H := Get_Height (Child.Icon);
+
+         Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
+         Save (Cr);
+         Translate
            (Cr,
-            0.0, 0.0,
-            Gdouble (Get_Allocated_Width (Child.Title_Box)),
-            Gdouble (Get_Allocated_Height (Child.Title_Box)));
-         Cairo.Fill (Cr);
+            Gdouble (X),
+            Gdouble ((Get_Allocated_Height (Child.Title_Box) - H) / 2));
+         Paint (Cr);
+         Restore (Cr);
 
-         if Child.Icon /= null then
-            W := Get_Width (Child.Icon);
-            H := Get_Height (Child.Icon);
-
-            Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
-            Save (Cr);
-            Translate
-              (Cr,
-               Gdouble (X),
-               Gdouble ((Get_Allocated_Height (Child.Title_Box) - H) / 2));
-            Paint (Cr);
-            Restore (Cr);
-
-            X := X + W + 1;
-         end if;
-
-         if Child.MDI.Use_Short_Titles_For_Floats then
-            Set_Text (Child.MDI.Title_Layout, Child.Short_Title.all);
-         else
-            Set_Text (Child.MDI.Title_Layout, Child.Title.all);
-         end if;
-
-         Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
-         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
-         Move_To (Cr, Gdouble (X), 0.0);
-         Show_Layout (Cr, Child.MDI.Title_Layout);
+         X := X + W + 1;
       end if;
+
+      if Child.MDI.Use_Short_Titles_For_Floats then
+         Set_Text (Child.MDI.Title_Layout, Child.Short_Title.all);
+      else
+         Set_Text (Child.MDI.Title_Layout, Child.Title.all);
+      end if;
+
+      Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
+      Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
+      Move_To (Cr, Gdouble (X), 0.0);
+      Show_Layout (Cr, Child.MDI.Title_Layout);
+      Cairo.Restore (Cr);
 
       return False;
    end Draw_Child;
@@ -2447,6 +2447,7 @@ package body Gtkada.MDI is
       Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
+
       Return_Callback.Object_Connect
         (Child.Title_Box, Signal_Draw,
          Return_Callback.To_Marshaller (Draw_Child'Access),
@@ -2625,7 +2626,6 @@ package body Gtkada.MDI is
                       Width      => Width, Height => Height,
                       Fixed_Size => Fixed_Size);
          else
-            Set_Size_Request (Child, Width, Height);
             Set_Size (MDI,
                       Widget     => Notebook,
                       Width      => Width,
@@ -3591,7 +3591,6 @@ package body Gtkada.MDI is
       Notebook := new MDI_Notebook_Record;
       Gtk.Notebook.Initialize (Notebook);
       Configure_Notebook_Tabs (MDI, Notebook);
-      Set_Show_Border (Notebook, False);
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
@@ -5021,7 +5020,6 @@ package body Gtkada.MDI is
          Width := Gint'Max (Width, -1);
          Height := Gint'Max (Height, -1);
 
-         Set_Size_Request (Notebook, Width, Height);
          Set_Tab_Pos (Notebook, Pos);
          Set_Child_Visible (Notebook, True);
          Show_All (Notebook);
