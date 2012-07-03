@@ -2705,14 +2705,23 @@ __PRE__
      </method>
      <extra>
        <with_spec pkg="Glib.Values" />
+       <with_spec pkg="Glib.Object" />
        <spec>
    Null_RGBA : constant Gdk_RGBA :=
       (Glib.Gdouble'First, Glib.Gdouble'First,
        Glib.Gdouble'First, Glib.Gdouble'First);
 
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
-
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
+
+   type Property_RGBA is new Glib.Property;
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA);
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA;
 
    function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address;
    --  Used for the GtkAda binding itself.
@@ -2728,9 +2737,27 @@ __PRE__
        </spec>
        <with_body pkg="Glib.Generic_Properties" />
        <body>
-   ----------------------
-   -- Gdk_RGBA_Or_Null --
-   ----------------------
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
+   package RGBA_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_RGBA, Gdk.RGBA.Get_Type, To_Address);
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA) is
+   begin
+      RGBA_Properties.Set_Property
+         (Object, RGBA_Properties.Property (Name), Value);
+   end Set_Property;
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA is
+   begin
+      return RGBA_Properties.Get_Property
+        (Object, RGBA_Properties.Property (Name));
+   end Get_Property;
 
    function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
       function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
@@ -2739,19 +2766,10 @@ __PRE__
       return Internal (Val);
    end Gdk_RGBA_Or_Null;
 
-   function To_Address
-     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
-   package RGBA_Properties is new Generic_Internal_Boxed_Property
-     (Gdk_RGBA, Get_Type, To_Address);
-
    function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
      renames RGBA_Properties.Get_Value;
    procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA)
      renames RGBA_Properties.Set_Value;
-
-   ----------------
-   -- To_Address --
-   ----------------
 
    function To_Address
      (Val : Gdk_RGBA; Addr : System.Address) return System.Address is

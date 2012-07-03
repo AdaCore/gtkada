@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib;            use Glib;
-with Gdk.Color;       use Gdk.Color;
+with Gdk.RGBA;        use Gdk.RGBA;
 with Gtk;             use Gtk;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
@@ -103,9 +103,10 @@ package body Create_Text_View is
       Buffer   : Gtk_Text_Buffer;
       Tags     : Gtk_Text_Tag_Table;
       Tag      : Gtk_Text_Tag;
-      Color    : Gdk_Color;
+      Color    : Gdk_RGBA;
       View     : Gtk_Text_View;
       Scrolled : Gtk_Scrolled_Window;
+      Success  : Boolean;
 
    begin
       Gtk_New (Tags);
@@ -113,11 +114,10 @@ package body Create_Text_View is
       --  Create the tags that will be used to change the rendering of the
       --  text.
 
-      Color := Parse ("red");
-
+      Parse (Color, "red", Success);
       Gtk_New (Tag, "red");
       Add (Tags, Tag);
-      Set_Property (Tag, Foreground_Gdk_Property, Color);
+      Set_Property (Tag, Foreground_Rgba_Property, Color);
 
       Gtk_New (Tag, "courier");
       Add (Tags, Tag);

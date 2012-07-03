@@ -30,9 +30,27 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package body Gdk.RGBA is
 
-   ----------------------
-   -- Gdk_RGBA_Or_Null --
-   ----------------------
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
+   package RGBA_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_RGBA, Gdk.RGBA.Get_Type, To_Address);
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA) is
+   begin
+      RGBA_Properties.Set_Property
+        (Object, RGBA_Properties.Property (Name), Value);
+   end Set_Property;
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA is
+   begin
+      return RGBA_Properties.Get_Property
+        (Object, RGBA_Properties.Property (Name));
+   end Get_Property;
 
    function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
       function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
@@ -41,19 +59,10 @@ package body Gdk.RGBA is
       return Internal (Val);
    end Gdk_RGBA_Or_Null;
 
-   function To_Address
-     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
-   package RGBA_Properties is new Generic_Internal_Boxed_Property
-     (Gdk_RGBA, Get_Type, To_Address);
-
    function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
    renames RGBA_Properties.Get_Value;
    procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA)
    renames RGBA_Properties.Set_Value;
-
-   ----------------
-   -- To_Address --
-   ----------------
 
    function To_Address
      (Val : Gdk_RGBA; Addr : System.Address) return System.Address is

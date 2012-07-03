@@ -38,6 +38,7 @@ pragma Ada_05;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;       use Gdk.Color;
+with Gdk.RGBA;        use Gdk.RGBA;
 with Glib;            use Glib;
 with Glib.GSlist;     use Glib.GSlist;
 with Glib.Object;     use Glib.Object;
@@ -386,7 +387,7 @@ package Gtk.Text_Tag is
    Background_Full_Height_Property : constant Glib.Properties.Property_Boolean;
    Background_Full_Height_Set_Property : constant Glib.Properties.Property_Boolean;
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Background_Rgba_Property : constant Glib.Properties.Property_Boxed;
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    Background_Set_Property : constant Glib.Properties.Property_Boolean;
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction;
    Editable_Property : constant Glib.Properties.Property_Boolean;
@@ -397,7 +398,7 @@ package Gtk.Text_Tag is
    Font_Desc_Property : constant Pango.Font.Property_Font_Description;
    Foreground_Property : constant Glib.Properties.Property_String;
    Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Foreground_Rgba_Property : constant Glib.Properties.Property_Boxed;
+   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    Foreground_Set_Property : constant Glib.Properties.Property_Boolean;
    Indent_Property : constant Glib.Properties.Property_Int;
    Indent_Set_Property : constant Glib.Properties.Property_Boolean;
@@ -412,7 +413,7 @@ package Gtk.Text_Tag is
    Name_Property : constant Glib.Properties.Property_String;
    Paragraph_Background_Property : constant Glib.Properties.Property_String;
    Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Paragraph_Background_Rgba_Property : constant Glib.Properties.Property_Boxed;
+   Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean;
    Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int;
    Pixels_Above_Lines_Set_Property : constant Glib.Properties.Property_Boolean;
@@ -482,8 +483,8 @@ private
      Glib.Properties.Build ("background-full-height-set");
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
      Gdk.Color.Build ("background-gdk");
-   Background_Rgba_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("background-rgba");
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("background-rgba");
    Background_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("background-set");
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
@@ -504,8 +505,8 @@ private
      Glib.Properties.Build ("foreground");
    Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
      Gdk.Color.Build ("foreground-gdk");
-   Foreground_Rgba_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("foreground-rgba");
+   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("foreground-rgba");
    Foreground_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("foreground-set");
    Indent_Property : constant Glib.Properties.Property_Int :=
@@ -534,8 +535,8 @@ private
      Glib.Properties.Build ("paragraph-background");
    Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
      Gdk.Color.Build ("paragraph-background-gdk");
-   Paragraph_Background_Rgba_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("paragraph-background-rgba");
+   Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("paragraph-background-rgba");
    Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("paragraph-background-set");
    Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int :=

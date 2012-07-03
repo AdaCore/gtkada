@@ -253,7 +253,8 @@ naming.type_exceptions = {
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
-    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA"),  # impose casing
+    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA",  # impose casing
+                      "Gdk.RGBA.Property_RGBA"),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),

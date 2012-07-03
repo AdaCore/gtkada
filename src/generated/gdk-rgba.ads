@@ -30,6 +30,7 @@ pragma Ada_05;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 
 package Gdk.RGBA is
@@ -121,8 +122,16 @@ package Gdk.RGBA is
       Glib.Gdouble'First, Glib.Gdouble'First);
 
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
-
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
+
+   type Property_RGBA is new Glib.Property;
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA);
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA;
 
    function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address;
    --  Used for the GtkAda binding itself.

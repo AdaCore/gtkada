@@ -275,7 +275,7 @@ package Gtk.Color_Selection is
 
    Current_Alpha_Property : constant Glib.Properties.Property_Uint;
    Current_Color_Property : constant Gdk.Color.Property_Gdk_Color;
-   Current_Rgba_Property : constant Glib.Properties.Property_Boxed;
+   Current_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean;
    Has_Palette_Property : constant Glib.Properties.Property_Boolean;
 
@@ -296,8 +296,8 @@ private
      Glib.Properties.Build ("current-alpha");
    Current_Color_Property : constant Gdk.Color.Property_Gdk_Color :=
      Gdk.Color.Build ("current-color");
-   Current_Rgba_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("current-rgba");
+   Current_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("current-rgba");
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-opacity-control");
    Has_Palette_Property : constant Glib.Properties.Property_Boolean :=

@@ -61,6 +61,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Event;               use Gdk.Event;
+with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -453,7 +454,7 @@ package Gtk.Cell_Renderer is
 
    Cell_Background_Property : constant Glib.Properties.Property_String;
    Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Cell_Background_Rgba_Property : constant Glib.Properties.Property_Boxed;
+   Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    Cell_Background_Set_Property : constant Glib.Properties.Property_Boolean;
    Editing_Property : constant Glib.Properties.Property_Boolean;
    Height_Property : constant Glib.Properties.Property_Int;
@@ -513,8 +514,8 @@ private
      Glib.Properties.Build ("cell-background");
    Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
      Gdk.Color.Build ("cell-background-gdk");
-   Cell_Background_Rgba_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("cell-background-rgba");
+   Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("cell-background-rgba");
    Cell_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("cell-background-set");
    Editing_Property : constant Glib.Properties.Property_Boolean :=
