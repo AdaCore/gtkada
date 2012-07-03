@@ -437,6 +437,12 @@ package Gtk.Combo_Box is
    function Get_Active_Iter
      (Combo_Box : access Gtk_Combo_Box_Record)
    return Gtk.Tree_Model.Gtk_Tree_Iter;
+   --  Return the currently active iter
+
+   function Get_Active_Text
+     (Combo_Box : access Gtk_Combo_Box_Record)
+   return UTF8_String;
+   --  Return the currently active text
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

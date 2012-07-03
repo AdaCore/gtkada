@@ -515,6 +515,13 @@ dialog for file selection.
    function Get_Active_Iter
      (Combo_Box : access Gtk_Combo_Box_Record)
       return Gtk.Tree_Model.Gtk_Tree_Iter;
+   --  Return the currently active iter
+
+   function Get_Active_Text
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return UTF8_String;
+   --  Return the currently active text
+
         </spec>
         <body>
    function Get_Active_Iter
@@ -535,6 +542,16 @@ dialog for file selection.
          return Null_Iter;
       end if;
    end Get_Active_Iter;
+
+   function Get_Active_Text
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return UTF8_String is
+   begin
+      return Combo_Box.Get_Model.Get_String
+        (Combo_Box.Get_Active_Iter,
+         Combo_Box.Get_Entry_Text_Column);
+   end Get_Active_Text;
+
         </body>
      </extra>
    </package>

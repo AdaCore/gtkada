@@ -49,6 +49,15 @@ package body Gtk.Combo_Box is
       end if;
    end Get_Active_Iter;
 
+   function Get_Active_Text
+     (Combo_Box : access Gtk_Combo_Box_Record)
+   return UTF8_String is
+   begin
+      return Combo_Box.Get_Model.Get_String
+        (Combo_Box.Get_Active_Iter,
+         Combo_Box.Get_Entry_Text_Column);
+   end Get_Active_Text;
+
    function To_Gtk_Tree_View_Row_Separator_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_View_Row_Separator_Func);
 
