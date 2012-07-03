@@ -60,6 +60,7 @@ package body Gtkada.Abstract_Tree_Model is
       get_path              : System.Address := System.Null_Address;
       get_value             : System.Address := System.Null_Address;
       iter_next             : System.Address := System.Null_Address;
+      iter_previous         : System.Address := System.Null_Address;
       iter_children         : System.Address := System.Null_Address;
       iter_has_child        : System.Address := System.Null_Address;
       iter_n_children       : System.Address := System.Null_Address;
