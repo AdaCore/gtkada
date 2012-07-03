@@ -2337,6 +2337,10 @@ __PRE__
      <method id="gtk_widget_set_sensitive">
        <parameter name="Sensitive" default="True"/>
      </method>
+     <method id="gtk_widget_set_size_request">
+       <parameter name="Width" default="-1" />
+       <parameter name="Height" default="-1" />
+     </method>
      <method id="gtk_widget_add_accelerator">
        <parameter name="Accel_Key" ctype="GtkAccelKey" />
      </method>

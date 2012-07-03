@@ -1356,8 +1356,8 @@ package Gtk.Widget is
        Height : out Gint);
    procedure Set_Size_Request
       (Widget : not null access Gtk_Widget_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Gint := -1;
+       Height : Gint := -1);
    procedure Size_Request
       (Widget      : not null access Gtk_Widget_Record;
        Requisition : out Gtk_Requisition);
