@@ -75,4 +75,25 @@ package Gtk.Style_Provider is
    --  "pspec": The Glib.Param_Spec to query
    --  "value": return location for the property value
 
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   subtype Priority is Glib.Guint;
+
+   Priority_Fallback : constant Priority := 1;
+   --  Used when no theme is defined
+
+   Priority_Theme : constant Priority := 200;
+   --  Used for style information provided by the theme
+
+   Priority_Settings : constant Priority := 400;
+   --  Used for information provided via Gtk_Settings
+
+   Priority_Application : constant Priority := 600;
+   --  For application-specific information
+
+   Priority_User : constant Priority := 800;
+   --  Used for the style information from ~/.gtk-3.0.css
+
 end Gtk.Style_Provider;

@@ -181,7 +181,7 @@ package body Close_Button is
         and then not Button.Tab_Over
         and then not Button.Over
       then
-         return True;
+         return False;
       end if;
 
       if Button.Get_Realized then
@@ -208,8 +208,8 @@ package body Close_Button is
          X := X + Width - Gint (dW);
          Y := Y + (Height - Gint (dW)) / 2;
 
+         Cairo.Save (Cr);
          Cairo.Set_Line_Width (Cr, 1.0);
-         Cairo.Translate (Cr, Gdouble (X), Gdouble (Y));
          Cross_W := dW * 0.7;
 
          --  Retrieve the parent's actual background color for a nice
@@ -277,9 +277,11 @@ package body Close_Button is
          Cairo.Set_Source_Rgba (Cr, Lo.R, Lo.G, Lo.B, Alpha);
          Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 1.0, 2.5);
          Cairo.Stroke (Cr);
+
+         Cairo.Restore (Cr);
       end if;
 
-      return True;
+      return False;
    end On_Draw;
 
    -----------

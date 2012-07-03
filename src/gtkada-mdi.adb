@@ -471,16 +471,16 @@ package body Gtkada.MDI is
          --  The child this button is attached to
 
          Tab_Over     : Boolean;
-         --  Wether the mouse is over the button's container
+         --  Whether the mouse is over the button's container
 
          Over         : Boolean;
-         --  Wether the mouse is over the button
+         --  Whether the mouse is over the button
 
          Pressed      : Boolean;
-         --  Wether the button is pressed
+         --  Whether the button is pressed
 
          In_Titlebar  : Boolean;
-         --  Wether the button is in the title bar or in the tab
+         --  Whether the button is in the title bar or in the tab
 
          Default_Size : Glib.Gint;
          --  The button's default size. The actual drawing depends on the final
@@ -1702,23 +1702,6 @@ package body Gtkada.MDI is
          Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
          Move_To (Cr, Gdouble (X), 0.0);
          Show_Layout (Cr, Child.MDI.Title_Layout);
-
-         --  ??? MANU we need to replace this with actual cairo drawing
-
-         --  Border_Thickness : constant Gint :=
-         --     Gint (Get_Border_Width (Child.Main_Box));
-         --  if Border_Thickness /= 0 then
-         --     Paint_Shadow
-         --       (Style       => Get_Style (Child),
-         --        Window      => Get_Window (Child),
-         --        State_Type  => State_Normal,
-         --        Shadow_Type => Shadow_Out,
-         --        Widget      => Child,
-         --        X           => 0,
-         --        Y           => 0,
-         --        Width       => Get_Allocated_Width (Child),
-         --        Height      => Get_Allocated_Height (Child));
-         --  end if;
       end if;
 
       return False;
@@ -3102,32 +3085,31 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
-      --  Ctx   : constant Gtk_Style_Context := Get_Style_Context (Child.MDI);
-      --  Color : Gdk_RGBA := Null_RGBA;
+      Color : Gdk_RGBA := Null_RGBA;
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
-      Label : Gtk_Widget;
+      EventBox : Gtk_Widget;
    begin
       if Note /= null then
-         --  Ctx.Get_Color (Gtk_State_Flag_Normal, Color);
-         Label := Get_Tab_Label (Note, Child);
+         EventBox := Get_Tab_Label (Note, Child);
 
          if MDI_Child (Child) = Child.MDI.Focus_Child then
-            if Label /= null then
-               Get_Style_Context (Label).Add_Class ("active");
+            if EventBox /= null then
+               Get_Style_Context (EventBox).Add_Class ("active");
             end if;
 
-            --  Color := Child.MDI.Focus_Title_Color;
+            Color := Child.MDI.Focus_Title_Color;
          else
-            if Label /= null then
-               Get_Style_Context (Label).Remove_Class ("active");
+            Color := White_RGBA;
+            if EventBox /= null then
+               Get_Style_Context (EventBox).Remove_Class ("active");
             end if;
          end if;
 
          --  Note.Override_Background_Color (Gtk_State_Flag_Normal, Color);
 
-         --  if Label /= null then
-         --     Label.Override_Background_Color (Gtk_State_Flag_Normal, Color);
-         --  end if;
+         if EventBox /= null then
+            EventBox.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+         end if;
       end if;
    end Update_Tab_Color;
 
