@@ -186,27 +186,27 @@ package Gtk.Layout is
    --
    --  - "Scrollable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Layout_Record, Gtk_Layout);
    function "+"
      (Widget : access Gtk_Layout_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Layout
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Scrollable is new Glib.Types.Implements
+   package Implements_Gtk_Scrollable is new Glib.Types.Implements
      (Gtk.Scrollable.Gtk_Scrollable, Gtk_Layout_Record, Gtk_Layout);
    function "+"
      (Widget : access Gtk_Layout_Record'Class)
    return Gtk.Scrollable.Gtk_Scrollable
-   renames Implements_Scrollable.To_Interface;
+   renames Implements_Gtk_Scrollable.To_Interface;
    function "-"
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Layout
-   renames Implements_Scrollable.To_Object;
+   renames Implements_Gtk_Scrollable.To_Object;
 
    ----------------
    -- Properties --

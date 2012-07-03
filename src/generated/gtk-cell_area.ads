@@ -1106,27 +1106,27 @@ package Gtk.Cell_Area is
    --
    --  - "CellLayout"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Cell_Area_Record, Gtk_Cell_Area);
    function "+"
      (Widget : access Gtk_Cell_Area_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Cell_Area
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_CellLayout is new Glib.Types.Implements
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
      (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Cell_Area_Record, Gtk_Cell_Area);
    function "+"
      (Widget : access Gtk_Cell_Area_Record'Class)
    return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_CellLayout.To_Interface;
+   renames Implements_Gtk_Cell_Layout.To_Interface;
    function "-"
      (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
    return Gtk_Cell_Area
-   renames Implements_CellLayout.To_Object;
+   renames Implements_Gtk_Cell_Layout.To_Object;
 
    ----------------
    -- Properties --

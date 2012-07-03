@@ -254,38 +254,38 @@ package Gtk.Font_Button is
    --
    --  - "FontChooser"
 
-   package Implements_Activatable is new Glib.Types.Implements
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Font_Button_Record, Gtk_Font_Button);
    function "+"
      (Widget : access Gtk_Font_Button_Record'Class)
    return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
+   renames Implements_Gtk_Activatable.To_Interface;
    function "-"
      (Interf : Gtk.Activatable.Gtk_Activatable)
    return Gtk_Font_Button
-   renames Implements_Activatable.To_Object;
+   renames Implements_Gtk_Activatable.To_Object;
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Font_Button_Record, Gtk_Font_Button);
    function "+"
      (Widget : access Gtk_Font_Button_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Font_Button
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_FontChooser is new Glib.Types.Implements
+   package Implements_Gtk_Font_Chooser is new Glib.Types.Implements
      (Gtk.Font_Chooser.Gtk_Font_Chooser, Gtk_Font_Button_Record, Gtk_Font_Button);
    function "+"
      (Widget : access Gtk_Font_Button_Record'Class)
    return Gtk.Font_Chooser.Gtk_Font_Chooser
-   renames Implements_FontChooser.To_Interface;
+   renames Implements_Gtk_Font_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.Font_Chooser.Gtk_Font_Chooser)
    return Gtk_Font_Button
-   renames Implements_FontChooser.To_Object;
+   renames Implements_Gtk_Font_Chooser.To_Object;
 
    ----------------
    -- Properties --

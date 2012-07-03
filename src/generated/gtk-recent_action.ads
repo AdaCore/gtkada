@@ -290,27 +290,27 @@ package Gtk.Recent_Action is
    --
    --  - "RecentChooser"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Recent_Action_Record, Gtk_Recent_Action);
    function "+"
      (Widget : access Gtk_Recent_Action_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Recent_Action
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_RecentChooser is new Glib.Types.Implements
+   package Implements_Gtk_Recent_Chooser is new Glib.Types.Implements
      (Gtk.Recent_Chooser.Gtk_Recent_Chooser, Gtk_Recent_Action_Record, Gtk_Recent_Action);
    function "+"
      (Widget : access Gtk_Recent_Action_Record'Class)
    return Gtk.Recent_Chooser.Gtk_Recent_Chooser
-   renames Implements_RecentChooser.To_Interface;
+   renames Implements_Gtk_Recent_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.Recent_Chooser.Gtk_Recent_Chooser)
    return Gtk_Recent_Action
-   renames Implements_RecentChooser.To_Object;
+   renames Implements_Gtk_Recent_Chooser.To_Object;
 
    ----------------
    -- Properties --

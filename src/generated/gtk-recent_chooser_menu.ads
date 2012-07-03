@@ -318,38 +318,38 @@ package Gtk.Recent_Chooser_Menu is
    --
    --  - "RecentChooser"
 
-   package Implements_Activatable is new Glib.Types.Implements
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Recent_Chooser_Menu_Record, Gtk_Recent_Chooser_Menu);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Menu_Record'Class)
    return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
+   renames Implements_Gtk_Activatable.To_Interface;
    function "-"
      (Interf : Gtk.Activatable.Gtk_Activatable)
    return Gtk_Recent_Chooser_Menu
-   renames Implements_Activatable.To_Object;
+   renames Implements_Gtk_Activatable.To_Object;
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Recent_Chooser_Menu_Record, Gtk_Recent_Chooser_Menu);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Menu_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Recent_Chooser_Menu
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_RecentChooser is new Glib.Types.Implements
+   package Implements_Gtk_Recent_Chooser is new Glib.Types.Implements
      (Gtk.Recent_Chooser.Gtk_Recent_Chooser, Gtk_Recent_Chooser_Menu_Record, Gtk_Recent_Chooser_Menu);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Menu_Record'Class)
    return Gtk.Recent_Chooser.Gtk_Recent_Chooser
-   renames Implements_RecentChooser.To_Interface;
+   renames Implements_Gtk_Recent_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.Recent_Chooser.Gtk_Recent_Chooser)
    return Gtk_Recent_Chooser_Menu
-   renames Implements_RecentChooser.To_Object;
+   renames Implements_Gtk_Recent_Chooser.To_Object;
 
    ----------------
    -- Properties --

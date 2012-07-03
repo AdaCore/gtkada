@@ -152,15 +152,15 @@ package Gtk.Style_Properties is
    --
    --  - "StyleProvider"
 
-   package Implements_StyleProvider is new Glib.Types.Implements
+   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
      (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Style_Properties_Record, Gtk_Style_Properties);
    function "+"
      (Widget : access Gtk_Style_Properties_Record'Class)
    return Gtk.Style_Provider.Gtk_Style_Provider
-   renames Implements_StyleProvider.To_Interface;
+   renames Implements_Gtk_Style_Provider.To_Interface;
    function "-"
      (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
    return Gtk_Style_Properties
-   renames Implements_StyleProvider.To_Object;
+   renames Implements_Gtk_Style_Provider.To_Object;
 
 end Gtk.Style_Properties;

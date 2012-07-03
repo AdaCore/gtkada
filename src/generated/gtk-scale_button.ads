@@ -184,38 +184,38 @@ package Gtk.Scale_Button is
    --
    --  - "Orientable"
 
-   package Implements_Activatable is new Glib.Types.Implements
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Scale_Button_Record, Gtk_Scale_Button);
    function "+"
      (Widget : access Gtk_Scale_Button_Record'Class)
    return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
+   renames Implements_Gtk_Activatable.To_Interface;
    function "-"
      (Interf : Gtk.Activatable.Gtk_Activatable)
    return Gtk_Scale_Button
-   renames Implements_Activatable.To_Object;
+   renames Implements_Gtk_Activatable.To_Object;
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Scale_Button_Record, Gtk_Scale_Button);
    function "+"
      (Widget : access Gtk_Scale_Button_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Scale_Button
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Scale_Button_Record, Gtk_Scale_Button);
    function "+"
      (Widget : access Gtk_Scale_Button_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Scale_Button
-   renames Implements_Orientable.To_Object;
+   renames Implements_Gtk_Orientable.To_Object;
 
    ----------------
    -- Properties --

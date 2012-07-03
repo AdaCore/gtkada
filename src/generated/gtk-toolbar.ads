@@ -229,38 +229,38 @@ package Gtk.Toolbar is
    --
    --  - "ToolShell"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Toolbar_Record, Gtk_Toolbar);
    function "+"
      (Widget : access Gtk_Toolbar_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Toolbar
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Toolbar_Record, Gtk_Toolbar);
    function "+"
      (Widget : access Gtk_Toolbar_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Toolbar
-   renames Implements_Orientable.To_Object;
+   renames Implements_Gtk_Orientable.To_Object;
 
-   package Implements_ToolShell is new Glib.Types.Implements
+   package Implements_Gtk_Tool_Shell is new Glib.Types.Implements
      (Gtk.Tool_Shell.Gtk_Tool_Shell, Gtk_Toolbar_Record, Gtk_Toolbar);
    function "+"
      (Widget : access Gtk_Toolbar_Record'Class)
    return Gtk.Tool_Shell.Gtk_Tool_Shell
-   renames Implements_ToolShell.To_Interface;
+   renames Implements_Gtk_Tool_Shell.To_Interface;
    function "-"
      (Interf : Gtk.Tool_Shell.Gtk_Tool_Shell)
    return Gtk_Toolbar
-   renames Implements_ToolShell.To_Object;
+   renames Implements_Gtk_Tool_Shell.To_Object;
 
    ----------------
    -- Properties --

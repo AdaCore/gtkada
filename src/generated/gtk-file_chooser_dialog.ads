@@ -398,26 +398,26 @@ package Gtk.File_Chooser_Dialog is
    --
    --  - "FileChooser"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_File_Chooser_Dialog_Record, Gtk_File_Chooser_Dialog);
    function "+"
      (Widget : access Gtk_File_Chooser_Dialog_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_File_Chooser_Dialog
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_FileChooser is new Glib.Types.Implements
+   package Implements_Gtk_File_Chooser is new Glib.Types.Implements
      (Gtk.File_Chooser.Gtk_File_Chooser, Gtk_File_Chooser_Dialog_Record, Gtk_File_Chooser_Dialog);
    function "+"
      (Widget : access Gtk_File_Chooser_Dialog_Record'Class)
    return Gtk.File_Chooser.Gtk_File_Chooser
-   renames Implements_FileChooser.To_Interface;
+   renames Implements_Gtk_File_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.File_Chooser.Gtk_File_Chooser)
    return Gtk_File_Chooser_Dialog
-   renames Implements_FileChooser.To_Object;
+   renames Implements_Gtk_File_Chooser.To_Object;
 
 end Gtk.File_Chooser_Dialog;

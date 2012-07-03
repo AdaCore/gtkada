@@ -3103,7 +3103,7 @@ package body Gtkada.MDI is
 
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
       Ctx   : constant Gtk_Style_Context := Get_Style_Context (Child.MDI);
-      Color : Gdk_RGBA;
+      Color : Gdk_RGBA := Null_RGBA;
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
    begin

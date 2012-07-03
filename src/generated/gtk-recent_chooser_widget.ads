@@ -272,37 +272,37 @@ package Gtk.Recent_Chooser_Widget is
    --
    --  - "RecentChooser"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Recent_Chooser_Widget_Record, Gtk_Recent_Chooser_Widget);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Widget_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Recent_Chooser_Widget
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Recent_Chooser_Widget_Record, Gtk_Recent_Chooser_Widget);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Widget_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Recent_Chooser_Widget
-   renames Implements_Orientable.To_Object;
+   renames Implements_Gtk_Orientable.To_Object;
 
-   package Implements_RecentChooser is new Glib.Types.Implements
+   package Implements_Gtk_Recent_Chooser is new Glib.Types.Implements
      (Gtk.Recent_Chooser.Gtk_Recent_Chooser, Gtk_Recent_Chooser_Widget_Record, Gtk_Recent_Chooser_Widget);
    function "+"
      (Widget : access Gtk_Recent_Chooser_Widget_Record'Class)
    return Gtk.Recent_Chooser.Gtk_Recent_Chooser
-   renames Implements_RecentChooser.To_Interface;
+   renames Implements_Gtk_Recent_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.Recent_Chooser.Gtk_Recent_Chooser)
    return Gtk_Recent_Chooser_Widget
-   renames Implements_RecentChooser.To_Object;
+   renames Implements_Gtk_Recent_Chooser.To_Object;
 
 end Gtk.Recent_Chooser_Widget;

@@ -498,38 +498,38 @@ package Gtk.Combo_Box is
    --
    --  - "CellLayout"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
    function "+"
      (Widget : access Gtk_Combo_Box_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Combo_Box
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_CellEditable is new Glib.Types.Implements
+   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
      (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
    function "+"
      (Widget : access Gtk_Combo_Box_Record'Class)
    return Gtk.Cell_Editable.Gtk_Cell_Editable
-   renames Implements_CellEditable.To_Interface;
+   renames Implements_Gtk_Cell_Editable.To_Interface;
    function "-"
      (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
    return Gtk_Combo_Box
-   renames Implements_CellEditable.To_Object;
+   renames Implements_Gtk_Cell_Editable.To_Object;
 
-   package Implements_CellLayout is new Glib.Types.Implements
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
      (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Combo_Box_Record, Gtk_Combo_Box);
    function "+"
      (Widget : access Gtk_Combo_Box_Record'Class)
    return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_CellLayout.To_Interface;
+   renames Implements_Gtk_Cell_Layout.To_Interface;
    function "-"
      (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
    return Gtk_Combo_Box
-   renames Implements_CellLayout.To_Object;
+   renames Implements_Gtk_Cell_Layout.To_Object;
 
    ----------------
    -- Properties --

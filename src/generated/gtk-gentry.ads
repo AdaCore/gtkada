@@ -738,38 +738,38 @@ package Gtk.GEntry is
    --
    --  - "Editable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Entry_Record, Gtk_Entry);
    function "+"
      (Widget : access Gtk_Entry_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Entry
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_CellEditable is new Glib.Types.Implements
+   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
      (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Entry_Record, Gtk_Entry);
    function "+"
      (Widget : access Gtk_Entry_Record'Class)
    return Gtk.Cell_Editable.Gtk_Cell_Editable
-   renames Implements_CellEditable.To_Interface;
+   renames Implements_Gtk_Cell_Editable.To_Interface;
    function "-"
      (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
    return Gtk_Entry
-   renames Implements_CellEditable.To_Object;
+   renames Implements_Gtk_Cell_Editable.To_Object;
 
-   package Implements_Editable is new Glib.Types.Implements
+   package Implements_Gtk_Editable is new Glib.Types.Implements
      (Gtk.Editable.Gtk_Editable, Gtk_Entry_Record, Gtk_Entry);
    function "+"
      (Widget : access Gtk_Entry_Record'Class)
    return Gtk.Editable.Gtk_Editable
-   renames Implements_Editable.To_Interface;
+   renames Implements_Gtk_Editable.To_Interface;
    function "-"
      (Interf : Gtk.Editable.Gtk_Editable)
    return Gtk_Entry
-   renames Implements_Editable.To_Object;
+   renames Implements_Gtk_Editable.To_Object;
 
    ----------------
    -- Properties --

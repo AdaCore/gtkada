@@ -814,6 +814,8 @@ class GIRClass(object):
         # user data.
 
         if cbname not in self.callbacks:
+            self.callbacks.add(cbname)   # Prevent multiple generations
+
             cb_user_data = cb_profile.find_param(user_data_params)
 
             if cb_user_data is None:
@@ -821,15 +823,13 @@ class GIRClass(object):
                 # generate a high-level binding, since we cannot go through an
                 # intermediate C function that transforms the parameters into
                 # their Ada equivalent.
-                # ??? What we could do however is to make public the low-level
-                # C callback (with for instance a System.Address for widgets)
-                # and let the user deal with that, but that seems hardly worth
-                # it).
+                #
+                # Instead, we just generate a low-level C callback passing
+                # System.Address for widgets.
+
                 print "Can't bind %s.%s (for %s) because it has no user data" % (
                     self.name, funcname, cname)
                 return
-
-            self.callbacks.add(cbname)   # Prevent multiple generations
 
             section = self.pkg.section("")
 
@@ -1351,20 +1351,21 @@ See Glib.Properties for more information on properties)""")
 
             impl = dict(
                 name=name,
+                adatype=base_name(type.ada),
                 impl=type.ada,
                 interface=self.gir.interfaces[name],
                 pkg="%(typename)s" % self._subst)
             impl["code"] = \
-                """package Implements_%(name)s is new Glib.Types.Implements
+                """package Implements_%(adatype)s is new Glib.Types.Implements
        (%(impl)s, %(pkg)s_Record, %(pkg)s);
    function "+"
       (Widget : access %(pkg)s_Record'Class)
       return %(impl)s
-      renames Implements_%(name)s.To_Interface;
+      renames Implements_%(adatype)s.To_Interface;
    function "-"
       (Interf : %(impl)s)
       return %(pkg)s
-      renames Implements_%(name)s.To_Object;
+      renames Implements_%(adatype)s.To_Object;
 """ % impl
 
             self.implements[name] = impl

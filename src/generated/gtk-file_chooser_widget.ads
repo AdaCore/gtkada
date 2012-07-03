@@ -284,37 +284,37 @@ package Gtk.File_Chooser_Widget is
    --
    --  - "Orientable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_File_Chooser_Widget_Record, Gtk_File_Chooser_Widget);
    function "+"
      (Widget : access Gtk_File_Chooser_Widget_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_File_Chooser_Widget
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_FileChooser is new Glib.Types.Implements
+   package Implements_Gtk_File_Chooser is new Glib.Types.Implements
      (Gtk.File_Chooser.Gtk_File_Chooser, Gtk_File_Chooser_Widget_Record, Gtk_File_Chooser_Widget);
    function "+"
      (Widget : access Gtk_File_Chooser_Widget_Record'Class)
    return Gtk.File_Chooser.Gtk_File_Chooser
-   renames Implements_FileChooser.To_Interface;
+   renames Implements_Gtk_File_Chooser.To_Interface;
    function "-"
      (Interf : Gtk.File_Chooser.Gtk_File_Chooser)
    return Gtk_File_Chooser_Widget
-   renames Implements_FileChooser.To_Object;
+   renames Implements_Gtk_File_Chooser.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_File_Chooser_Widget_Record, Gtk_File_Chooser_Widget);
    function "+"
      (Widget : access Gtk_File_Chooser_Widget_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_File_Chooser_Widget
-   renames Implements_Orientable.To_Object;
+   renames Implements_Gtk_Orientable.To_Object;
 
 end Gtk.File_Chooser_Widget;

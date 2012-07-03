@@ -268,27 +268,27 @@ package Gtk.Button is
    --
    --  - "Buildable"
 
-   package Implements_Activatable is new Glib.Types.Implements
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Button_Record, Gtk_Button);
    function "+"
      (Widget : access Gtk_Button_Record'Class)
    return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
+   renames Implements_Gtk_Activatable.To_Interface;
    function "-"
      (Interf : Gtk.Activatable.Gtk_Activatable)
    return Gtk_Button
-   renames Implements_Activatable.To_Object;
+   renames Implements_Gtk_Activatable.To_Object;
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Button_Record, Gtk_Button);
    function "+"
      (Widget : access Gtk_Button_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Button
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
    ----------------
    -- Properties --
