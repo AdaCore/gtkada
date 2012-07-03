@@ -204,6 +204,7 @@ naming.cname_to_adaname = {
 naming.girname_to_ctype = {
     "GdkPixbuf.Pixbuf":    "GdkPixbuf",
     "Pango.EllipsizeMode": "PangoEllipsizeMode",
+    "Pango.FontDescription": "PangoFontDescription*",
     "Pango.WrapMode":      "PangoWrapMode",
     "Pango.AttrList":      "PangoAttrList",
     "Gio.Icon":            "GIcon*",
@@ -212,6 +213,8 @@ naming.girname_to_ctype = {
     "Gdk.Image":           "GdkImage*",
     "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
     "Gdk.Bitmap":          "GdkBitmap*",
+    "Gdk.Color":           "GdkColor*",
+    "Gdk.RGBA":            "GdkRGBA",
     "GObject.Object":      "GObject*",
     "GObject.Closure":     "GClosure*",
     "Cairo.Context":       "cairo_t",
@@ -261,7 +264,8 @@ naming.type_exceptions = {
     "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoContext":      GObject("Pango.Context.Pango_Context"),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
-    "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description"),
+    "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
+                                   "Pango.Font.Property_Font_Description"),
     "PangoFontFace*":   GObject("Pango.Font.Pango_Font_Face"),
     "PangoFontFamily*": GObject("Pango.Font.Pango_Font_Family"),
 
@@ -313,7 +317,8 @@ naming.type_exceptions = {
 
     "GKeyFile*":           Proxy("Glib.Key_File.G_Key_File"),
 
-    "GdkColor*": Proxy("Gdk.Color.Gdk_Color", None,
+    "GdkColor*": Proxy("Gdk.Color.Gdk_Color",
+                       "Gdk.Color.Property_Gdk_Color",
                        "Gdk.Color.Gdk_Color_Or_Null"),
     "GdkDragContext":     GObject("Gdk.Drag_Contexts.Drag_Context"),
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),

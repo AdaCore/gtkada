@@ -208,12 +208,12 @@ package Gtk.Color_Button is
    --  The selected opacity value (0 fully transparent, 65535 fully opaque).
    --
    --  Name: Color_Property
-   --  Type: Gdk.Color
+   --  Type: Gdk.Color.Gdk_Color
    --  Flags: read-write
    --  The selected color.
    --
    --  Name: Rgba_Property
-   --  Type: Gdk.RGBA
+   --  Type: Gdk.RGBA.Gdk_RGBA
    --  Flags: read-write
    --  The RGBA color.
    --
@@ -230,7 +230,7 @@ package Gtk.Color_Button is
    --  opacity slider is displayed in the color selection dialog.
 
    Alpha_Property : constant Glib.Properties.Property_Uint;
-   Color_Property : constant Glib.Properties.Property_Boxed;
+   Color_Property : constant Gdk.Color.Property_Gdk_Color;
    Rgba_Property : constant Glib.Properties.Property_Boxed;
    Title_Property : constant Glib.Properties.Property_String;
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean;
@@ -256,8 +256,8 @@ package Gtk.Color_Button is
 private
    Alpha_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("alpha");
-   Color_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("color");
+   Color_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("color");
    Rgba_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("rgba");
    Title_Property : constant Glib.Properties.Property_String :=

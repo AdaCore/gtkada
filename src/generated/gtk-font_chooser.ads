@@ -174,7 +174,7 @@ package Gtk.Font_Chooser is
    --  The font description as a string, e.g. "Sans Italic 12".
    --
    --  Name: Font_Desc_Property
-   --  Type: Pango.Font_Description
+   --  Type: Pango.Font.Pango_Font_Description
    --  Flags: read-write
    --  The font description as a Pango_Font_Description.
    --
@@ -189,7 +189,7 @@ package Gtk.Font_Chooser is
    --  Whether to show an entry to change the preview text.
 
    Font_Property : constant Glib.Properties.Property_String;
-   Font_Desc_Property : constant Glib.Properties.Property_Boxed;
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description;
    Preview_Text_Property : constant Glib.Properties.Property_String;
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean;
 
@@ -208,8 +208,8 @@ package Gtk.Font_Chooser is
 private
    Font_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("font");
-   Font_Desc_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("font-desc");
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
+     Pango.Font.Build ("font-desc");
    Preview_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("preview-text");
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=

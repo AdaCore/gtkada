@@ -257,11 +257,11 @@ package Gtk.Color_Selection is
    --  Flags: read-write
    --
    --  Name: Current_Color_Property
-   --  Type: Gdk.Color
+   --  Type: Gdk.Color.Gdk_Color
    --  Flags: read-write
    --
    --  Name: Current_Rgba_Property
-   --  Type: Gdk.RGBA
+   --  Type: Gdk.RGBA.Gdk_RGBA
    --  Flags: read-write
    --  The current RGBA color.
    --
@@ -274,7 +274,7 @@ package Gtk.Color_Selection is
    --  Flags: read-write
 
    Current_Alpha_Property : constant Glib.Properties.Property_Uint;
-   Current_Color_Property : constant Glib.Properties.Property_Boxed;
+   Current_Color_Property : constant Gdk.Color.Property_Gdk_Color;
    Current_Rgba_Property : constant Glib.Properties.Property_Boxed;
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean;
    Has_Palette_Property : constant Glib.Properties.Property_Boolean;
@@ -294,8 +294,8 @@ package Gtk.Color_Selection is
 private
    Current_Alpha_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("current-alpha");
-   Current_Color_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("current-color");
+   Current_Color_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("current-color");
    Current_Rgba_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("current-rgba");
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean :=
