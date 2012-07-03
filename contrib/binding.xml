@@ -2987,6 +2987,19 @@ __PRE__
      <parameter name="self" ada="Font_Button"/>
    </package>
 
+   <package id="GtkTextTag">
+     <parameter name="self" ada="Tag"/>
+     <method id="gtk_text_tag_new">
+       <doc extend="true">
+Newly created tags must be added to the tags table for the buffer you
+intend to use them in, as in:
+ "Gtk.Text_Tag_Table.Add (Get_Tag_Table (Buffer), Tag)".
+See also Gtk.Text_Buffer.Create_Tag which is a more convenient way of
+creating a tag.         
+       </doc>
+     </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

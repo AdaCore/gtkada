@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,26 +21,26 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk; use Gtk;
-
-with Glib.Type_Conversion_Hooks;
+pragma Ada_05;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Text_Tag is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Text_Tag is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Text_Tag_Record);
-   pragma Warnings (Off, Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Text_Tag);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New
-     (Widget : out Gtk_Text_Tag;
-      Name   : String := "") is
+   procedure Gtk_New (Tag : out Gtk_Text_Tag; Name : UTF8_String := "") is
    begin
-      Widget := new Gtk_Text_Tag_Record;
-      Initialize (Widget, Name);
+      Tag := new Gtk_Text_Tag_Record;
+      Gtk.Text_Tag.Initialize (Tag, Name);
    end Gtk_New;
 
    ----------------
@@ -48,33 +48,54 @@ package body Gtk.Text_Tag is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Text_Tag_Record'Class;
-      Name   : String := "")
+      (Tag  : not null access Gtk_Text_Tag_Record'Class;
+       Name : UTF8_String := "")
    is
-      function Internal (Name : String) return System.Address;
+      function Internal
+         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_new");
-
-      function Internal_No_Name (Dummy : System.Address) return System.Address;
-      pragma Import (C, Internal_No_Name, "gtk_text_tag_new");
-      --  Same as Internal except that we need to pass a null address for
-      --  the name.
-
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return : System.Address;
    begin
       if Name = "" then
-         Set_Object (Widget, Internal_No_Name (System.Null_Address));
+         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
       else
-         Set_Object (Widget, Internal (Name & ASCII.NUL));
+         Tmp_Name := New_String (Name);
       end if;
+      Tmp_Return := Internal (Tmp_Name);
+      Free (Tmp_Name);
+      Set_Object (Tag, Tmp_Return);
    end Initialize;
+
+   -----------
+   -- Event --
+   -----------
+
+   function Event
+      (Tag          : not null access Gtk_Text_Tag_Record;
+       Event_Object : not null access Glib.Object.GObject_Record'Class;
+       Event        : Gdk.Event.Gdk_Event;
+       Iter         : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean
+   is
+      function Internal
+         (Tag          : System.Address;
+          Event_Object : System.Address;
+          Event        : Gdk.Event.Gdk_Event;
+          Iter         : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_text_tag_event");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tag), Get_Object (Event_Object), Event, Get_Object (Iter)));
+   end Event;
 
    ------------------
    -- Get_Priority --
    ------------------
 
-   function Get_Priority (Tag : access Gtk_Text_Tag_Record) return Gint is
+   function Get_Priority
+      (Tag : not null access Gtk_Text_Tag_Record) return Gint
+   is
       function Internal (Tag : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_tag_get_priority");
-
    begin
       return Internal (Get_Object (Tag));
    end Get_Priority;
@@ -84,37 +105,13 @@ package body Gtk.Text_Tag is
    ------------------
 
    procedure Set_Priority
-     (Tag      : access Gtk_Text_Tag_Record;
-      Priority : Gint)
+      (Tag      : not null access Gtk_Text_Tag_Record;
+       Priority : Gint)
    is
       procedure Internal (Tag : System.Address; Priority : Gint);
       pragma Import (C, Internal, "gtk_text_tag_set_priority");
-
    begin
       Internal (Get_Object (Tag), Priority);
    end Set_Priority;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (W : Gtk_Text_Tag) return System.Address is
-   begin
-      if W = null then
-         return System.Null_Address;
-      else
-         return Get_Object (W);
-      end if;
-   end Convert;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (W : System.Address) return Gtk_Text_Tag is
-      Stub : Gtk_Text_Tag_Record;
-   begin
-      return Gtk_Text_Tag (Get_User_Data (W, Stub));
-   end Convert;
 
 end Gtk.Text_Tag;
