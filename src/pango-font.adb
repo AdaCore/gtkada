@@ -52,16 +52,18 @@ package body Pango.Font is
    --  Some of the values are not directly supported by pango.
    --  ??? See fonts.c in pango
 
-   subtype String9 is String (1 .. 9);
-   Weight_Map : constant array (Enums.Weight) of String9 :=
-     (Enums.Pango_Weight_Ultralight  => "Light    ",
-      Enums.Pango_Weight_Light       => "Light    ",
-      Enums.Pango_Weight_Normal      => "         ",
-      Enums.Pango_Weight_Medium      => "Medium   ",
-      Enums.Pango_Weight_Semi_Bold   => "Semi-Bold",
-      Enums.Pango_Weight_Bold        => "Bold     ",
-      Enums.Pango_Weight_Ultrabold   => "Bold     ",
-      Enums.Pango_Weight_Heavy       => "Heavy    ");
+   Weight_Map : constant array (Enums.Weight) of String10 :=
+     (Enums.Pango_Weight_Ultralight  => "Light     ",
+      Enums.Pango_Weight_Thin        => "Thin      ",
+      Enums.Pango_Weight_Light       => "Light     ",
+      Enums.Pango_Weight_Normal      => "          ",
+      Enums.Pango_Weight_Book        => "Book      ",
+      Enums.Pango_Weight_Medium      => "Medium    ",
+      Enums.Pango_Weight_Semibold    => "Semi-Bold ",
+      Enums.Pango_Weight_Bold        => "Bold      ",
+      Enums.Pango_Weight_Ultrabold   => "Bold      ",
+      Enums.Pango_Weight_Ultraheavy  => "Ultraheavy",
+      Enums.Pango_Weight_Heavy       => "Heavy     ");
 
    procedure g_free (c_str : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, g_free, "g_free");

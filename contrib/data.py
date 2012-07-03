@@ -7,6 +7,7 @@ from adaformat import *
 # General packages that don't depend on others and must be processed first
 
 enums = ("GtkEnums",
+         "PangoEnums",
          )
 
 # List of interfaces to bind. These are processed before the widgets themselves.
@@ -206,7 +207,6 @@ naming.girname_to_ctype = {
     "GdkPixbuf.Pixbuf":    "GdkPixbuf",
     "Pango.EllipsizeMode": "PangoEllipsizeMode",
     "Pango.FontDescription": "PangoFontDescription*",
-    "Pango.WrapMode":      "PangoWrapMode",
     "Pango.AttrList":      "PangoAttrList",
     "Gio.Icon":            "GIcon*",
     "IconSet":             "GtkIconSet*",
@@ -263,7 +263,6 @@ naming.type_exceptions = {
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
     "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
-    "PangoWrapMode":     Enum("Pango.Layout.Pango_Wrap_Mode", ""),
     "PangoContext":      GObject("Pango.Context.Pango_Context"),
     "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",

@@ -55,6 +55,7 @@
 with Glib;
 with Pango.Attributes;
 with Pango.Context;
+with Pango.Enums;
 with Pango.Font;
 with Pango.Tabs;
 with Glib.Object;
@@ -73,19 +74,6 @@ package Pango.Layout is
    --  See Gdk.Drawable.Draw_Layout for how to actually display the layout on
    --  the screen.
 
-   type Pango_Alignment is
-     (Pango_Align_Left,
-      Pango_Align_Center,
-      Pango_Align_Right);
-   pragma Convention (C, Pango_Alignment);
-   --  The alignment for each line of the layout
-
-   type Pango_Wrap_Mode is
-     (Pango_Wrap_Word,
-      Pango_Wrap_Char);
-   pragma Convention (C, Pango_Wrap_Mode);
-   --  The wrap mode for a layout
-
    type Pango_Ellipsize_Mode is
      (Ellipsize_None,
       Ellipsize_Start,
@@ -95,7 +83,6 @@ package Pango.Layout is
    --  applied to a line of text. In the ellipsization process characters are
    --  removed from the text in order to make it fit to a given width and
    --  replaced with an ellipsis.
-
 
    -----------------------
    -- Creating a layout --
@@ -269,12 +256,12 @@ package Pango.Layout is
 
    procedure Set_Alignment
      (Layout    : access Pango_Layout_Record'Class;
-      Alignment : Pango_Alignment);
+      Alignment : Pango.Enums.Alignment);
    --  Set the alignment for the layout (how partial lines are positioned
    --  within the horizontal space available).
 
    function Get_Alignment (Layout : access Pango_Layout_Record)
-     return Pango_Alignment;
+     return Pango.Enums.Alignment;
    --  Return the alignment for the layout.
 
    procedure Set_Width
@@ -287,13 +274,13 @@ package Pango.Layout is
    --  Return the wrapping width of Layout
 
    procedure Set_Wrap
-     (Layout : access Pango_Layout_Record; Mode : Pango_Wrap_Mode);
+     (Layout : access Pango_Layout_Record; Mode : Pango.Enums.Wrap_Mode);
    --  Sets the wrap style; the wrap style only has an effect if a width is set
    --  on the layout with pango_layout_set_width(). To turn off wrapping, set
    --  the width to -1.
 
    function Get_Wrap (Layout : access Pango_Layout_Record)
-      return Pango_Wrap_Mode;
+      return Pango.Enums.Wrap_Mode;
    --  Return the current wrap style
 
    procedure Set_Tabs

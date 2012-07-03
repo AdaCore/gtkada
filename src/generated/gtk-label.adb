@@ -232,10 +232,10 @@ package body Gtk.Label is
 
    function Get_Line_Wrap_Mode
       (Label : not null access Gtk_Label_Record)
-       return Pango.Layout.Pango_Wrap_Mode
+       return Pango.Enums.Wrap_Mode
    is
       function Internal
-         (Label : System.Address) return Pango.Layout.Pango_Wrap_Mode;
+         (Label : System.Address) return Pango.Enums.Wrap_Mode;
       pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
    begin
       return Internal (Get_Object (Label));
@@ -517,11 +517,11 @@ package body Gtk.Label is
 
    procedure Set_Line_Wrap_Mode
       (Label     : not null access Gtk_Label_Record;
-       Wrap_Mode : Pango.Layout.Pango_Wrap_Mode)
+       Wrap_Mode : Pango.Enums.Wrap_Mode)
    is
       procedure Internal
          (Label     : System.Address;
-          Wrap_Mode : Pango.Layout.Pango_Wrap_Mode);
+          Wrap_Mode : Pango.Enums.Wrap_Mode);
       pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
    begin
       Internal (Get_Object (Label), Wrap_Mode);

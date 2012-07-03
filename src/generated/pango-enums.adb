@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2002-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-package body Pango.Enums is
+pragma Ada_05;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
 
-   ---------------
-   -- To_Pixels --
-   ---------------
+package body Pango.Enums is
 
    function To_Pixels (Pango_Units : Gint) return Gint is
    begin

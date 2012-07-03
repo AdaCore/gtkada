@@ -351,6 +351,11 @@ class Enum(CType):
         t = Enum(full_name, "%s.Property_%s" % (pkg, ada))
         naming.add_type_exception(cname=ctype, type=t)
 
+        # Add the special cases for properties that GIR file use
+        t = ctype.replace("Pango", "Pango.").replace("Gdk", "Gdk.")
+        print "MANU adding %s -> %s" % (t , ctype)
+        naming.girname_to_ctype[t] = ctype
+
 
 class GObject(CType):
     def __init__(self, ada, userecord=True):

@@ -53,8 +53,8 @@ package Gtk.Font_Button is
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
    --  Gtk.Font_Button.Set_Filter_Func.
-   --  "family": a Pango_Font_Family
-   --  "face": a Pango_Font_Face belonging to Family
+   --  "family": a Pango.Font_Family.Pango_Font_Family
+   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
 
    ------------------
    -- Constructors --
@@ -163,8 +163,8 @@ package Gtk.Font_Button is
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Button.Set_Filter_Func.
-      --  "family": a Pango_Font_Family
-      --  "face": a Pango_Font_Face belonging to Family
+      --  "family": a Pango.Font_Family.Pango_Font_Family
+      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
       --  "data": user data passed to Gtk.Font_Button.Set_Filter_Func
 
       procedure Set_Filter_Func

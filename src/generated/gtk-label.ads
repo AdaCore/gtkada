@@ -32,7 +32,8 @@ pragma Ada_05;
 --  The GtkLabel implementation of the GtkBuildable interface supports a
 --  custom <attributes> element, which supports any number of <attribute>
 --  elements. the <attribute> element has attributes named name, value, start
---  and end and allows you to specify Pango_Attribute values for this label.
+--  and end and allows you to specify Pango.Attribute.Pango_Attribute values
+--  for this label.
 --
 --  == A UI definition fragment specifying Pango attributes ==
 --
@@ -107,9 +108,9 @@ pragma Ada_05;
 --  Pango.Attributes.Pango_Attr_List tends to cause internationalization
 --  problems, unless you're applying attributes to the entire string (i.e.
 --  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
---  that specifying the start_index and end_index for a Pango_Attribute
---  requires knowledge of the exact string being displayed, so translations
---  will cause problems.
+--  that specifying the start_index and end_index for a
+--  Pango.Attribute.Pango_Attribute requires knowledge of the exact string
+--  being displayed, so translations will cause problems.
 --
 --  == Selectable labels ==
 --
@@ -177,6 +178,7 @@ with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Misc;         use Gtk.Misc;
 with Gtk.Widget;       use Gtk.Widget;
 with Pango.Attributes; use Pango.Attributes;
+with Pango.Enums;      use Pango.Enums;
 with Pango.Layout;     use Pango.Layout;
 
 package Gtk.Label is
@@ -344,13 +346,13 @@ package Gtk.Label is
 
    function Get_Line_Wrap_Mode
       (Label : not null access Gtk_Label_Record)
-       return Pango.Layout.Pango_Wrap_Mode;
+       return Pango.Enums.Wrap_Mode;
    procedure Set_Line_Wrap_Mode
       (Label     : not null access Gtk_Label_Record;
-       Wrap_Mode : Pango.Layout.Pango_Wrap_Mode);
+       Wrap_Mode : Pango.Enums.Wrap_Mode);
    --  If line wrapping is on (see Gtk.Label.Set_Line_Wrap) this controls how
-   --  the line wrapping is done. The default is PANGO_WRAP_WORD which means
-   --  wrap on word boundaries.
+   --  the line wrapping is done. The default is Pango.Enums.Pango_Wrap_Word
+   --  which means wrap on word boundaries.
    --  Since: gtk+ 2.10
    --  "wrap_mode": the line wrapping mode
 
@@ -647,6 +649,13 @@ package Gtk.Label is
    --  Name: Wrap_Property
    --  Type: Boolean
    --  Flags: read-write
+   --
+   --  Name: Wrap_Mode_Property
+   --  Type: Pango.Enums.Wrap_Mode
+   --  Flags: read-write
+   --  If line wrapping is on (see the Gtk.Label.Gtk_Label:wrap property) this
+   --  controls how the line wrapping is done. The default is
+   --  Pango.Enums.Pango_Wrap_Word, which means wrap on word boundaries.
 
    Angle_Property : constant Glib.Properties.Property_Double;
    Cursor_Position_Property : constant Glib.Properties.Property_Int;
@@ -664,6 +673,7 @@ package Gtk.Label is
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
    Width_Chars_Property : constant Glib.Properties.Property_Int;
    Wrap_Property : constant Glib.Properties.Property_Boolean;
+   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode;
 
    -------------
    -- Signals --
@@ -778,4 +788,6 @@ private
      Glib.Properties.Build ("width-chars");
    Wrap_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap");
+   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode :=
+     Pango.Enums.Build ("wrap-mode");
 end Gtk.Label;

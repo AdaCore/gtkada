@@ -564,7 +564,7 @@ pragma Ada_05;
 --
 --  Family [Style] [Size]
 --
---  Pango_Font_Description
+--  Pango.Font_Description.Pango_Font_Description
 --
 --  font: Sans 15;
 --

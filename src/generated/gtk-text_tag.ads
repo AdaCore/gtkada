@@ -44,6 +44,7 @@ with Glib.GSlist;     use Glib.GSlist;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;
+with Pango.Enums;     use Pango.Enums;
 with Pango.Font;      use Pango.Font;
 
 package Gtk.Text_Tag is
@@ -161,7 +162,7 @@ package Gtk.Text_Tag is
    --  Font description as string, e.g. \"Sans Italic 12\".
    --
    --  Note that the initial value of this property depends on the internals
-   --  of Pango_Font_Description.
+   --  of Pango.Font_Description.Pango_Font_Description.
    --
    --  Name: Font_Desc_Property
    --  Type: Pango.Font.Pango_Font_Description
@@ -319,7 +320,7 @@ package Gtk.Text_Tag is
    --  Flags: read-write
    --
    --  Name: Stretch_Property
-   --  Type: Pango.Stretch
+   --  Type: Pango.Enums.Stretch
    --  Flags: read-write
    --
    --  Name: Stretch_Set_Property
@@ -335,7 +336,7 @@ package Gtk.Text_Tag is
    --  Flags: read-write
    --
    --  Name: Style_Property
-   --  Type: Pango.Style
+   --  Type: Pango.Enums.Style
    --  Flags: read-write
    --
    --  Name: Style_Set_Property
@@ -351,7 +352,7 @@ package Gtk.Text_Tag is
    --  Flags: read-write
    --
    --  Name: Underline_Property
-   --  Type: Pango.Underline
+   --  Type: Pango.Enums.Underline
    --  Flags: read-write
    --
    --  Name: Underline_Set_Property
@@ -359,7 +360,7 @@ package Gtk.Text_Tag is
    --  Flags: read-write
    --
    --  Name: Variant_Property
-   --  Type: Pango.Variant
+   --  Type: Pango.Enums.Variant
    --  Flags: read-write
    --
    --  Name: Variant_Set_Property
@@ -430,17 +431,17 @@ package Gtk.Text_Tag is
    Size_Property : constant Glib.Properties.Property_Int;
    Size_Points_Property : constant Glib.Properties.Property_Double;
    Size_Set_Property : constant Glib.Properties.Property_Boolean;
-   Stretch_Property : constant Glib.Properties.Property_Boxed;
+   Stretch_Property : constant Pango.Enums.Property_Stretch;
    Stretch_Set_Property : constant Glib.Properties.Property_Boolean;
    Strikethrough_Property : constant Glib.Properties.Property_Boolean;
    Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean;
-   Style_Property : constant Glib.Properties.Property_Boxed;
+   Style_Property : constant Pango.Enums.Property_Style;
    Style_Set_Property : constant Glib.Properties.Property_Boolean;
    Tabs_Property : constant Glib.Properties.Property_Boxed;
    Tabs_Set_Property : constant Glib.Properties.Property_Boolean;
-   Underline_Property : constant Glib.Properties.Property_Boxed;
+   Underline_Property : constant Pango.Enums.Property_Underline;
    Underline_Set_Property : constant Glib.Properties.Property_Boolean;
-   Variant_Property : constant Glib.Properties.Property_Boxed;
+   Variant_Property : constant Pango.Enums.Property_Variant;
    Variant_Set_Property : constant Glib.Properties.Property_Boolean;
    Weight_Property : constant Glib.Properties.Property_Int;
    Weight_Set_Property : constant Glib.Properties.Property_Boolean;
@@ -569,28 +570,28 @@ private
      Glib.Properties.Build ("size-points");
    Size_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("size-set");
-   Stretch_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("stretch");
+   Stretch_Property : constant Pango.Enums.Property_Stretch :=
+     Pango.Enums.Build ("stretch");
    Stretch_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("stretch-set");
    Strikethrough_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("strikethrough");
    Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("strikethrough-set");
-   Style_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("style");
+   Style_Property : constant Pango.Enums.Property_Style :=
+     Pango.Enums.Build ("style");
    Style_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("style-set");
    Tabs_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("tabs");
    Tabs_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("tabs-set");
-   Underline_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("underline");
+   Underline_Property : constant Pango.Enums.Property_Underline :=
+     Pango.Enums.Build ("underline");
    Underline_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("underline-set");
-   Variant_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("variant");
+   Variant_Property : constant Pango.Enums.Property_Variant :=
+     Pango.Enums.Build ("variant");
    Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("variant-set");
    Weight_Property : constant Glib.Properties.Property_Int :=

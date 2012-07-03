@@ -56,8 +56,8 @@ package Gtk.Font_Chooser is
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
    --  Gtk.Font_Chooser.Set_Filter_Func.
-   --  "family": a Pango_Font_Family
-   --  "face": a Pango_Font_Face belonging to Family
+   --  "family": a Pango.Font_Family.Pango_Font_Family
+   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
 
    ------------------
    -- Constructors --
@@ -85,12 +85,12 @@ package Gtk.Font_Chooser is
    pragma Import (C, Set_Font_Desc, "gtk_font_chooser_set_font_desc");
    --  Sets the currently-selected font from Font_Desc.
    --  Since: gtk+ 3.2
-   --  "font_desc": a Pango_Font_Description
+   --  "font_desc": a Pango.Font_Description.Pango_Font_Description
 
    function Get_Font_Face
       (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Face;
-   --  Gets the Pango_Font_Face representing the selected font group details
-   --  (i.e. family, slant, weight, width, etc).
+   --  Gets the Pango.Font_Face.Pango_Font_Face representing the selected font
+   --  group details (i.e. family, slant, weight, width, etc).
    --  If the selected font is not installed, returns null.
    --  selected font group details, or null. The returned object is owned by
    --  Fontchooser and must not be modified or freed.
@@ -98,8 +98,8 @@ package Gtk.Font_Chooser is
 
    function Get_Font_Family
       (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Family;
-   --  Gets the Pango_Font_Family representing the selected font family. Font
-   --  families are a collection of font faces.
+   --  Gets the Pango.Font_Family.Pango_Font_Family representing the selected
+   --  font family. Font families are a collection of font faces.
    --  If the selected font is not installed, returns null.
    --  selected font family, or null. The returned object is owned by
    --  Fontchooser and must not be modified or freed.
@@ -146,8 +146,8 @@ package Gtk.Font_Chooser is
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Chooser.Set_Filter_Func.
-      --  "family": a Pango_Font_Family
-      --  "face": a Pango_Font_Face belonging to Family
+      --  "family": a Pango.Font_Family.Pango_Font_Family
+      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
       --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
       procedure Set_Filter_Func
@@ -176,7 +176,8 @@ package Gtk.Font_Chooser is
    --  Name: Font_Desc_Property
    --  Type: Pango.Font.Pango_Font_Description
    --  Flags: read-write
-   --  The font description as a Pango_Font_Description.
+   --  The font description as a
+   --  Pango.Font_Description.Pango_Font_Description.
    --
    --  Name: Preview_Text_Property
    --  Type: UTF8_String

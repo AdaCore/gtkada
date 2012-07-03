@@ -2495,6 +2495,50 @@ __PRE__
      </extra>
    </package>
 
+   <package id="PangoEnums">
+     <enum ctype="PangoAlignment" ada="Alignment"/>
+     <enum ctype="PangoAttrType" ada="Attr_Type"/>
+     <enum ctype="PangoCoverageLevel" ada="Coverage_Level"/>
+     <enum ctype="PangoDirection" ada="Direction"/>
+     <enum ctype="PangoStretch" ada="Stretch"/>
+     <enum ctype="PangoStyle" ada="Style"/>
+     <enum ctype="PangoUnderline" ada="Underline"/>
+     <enum ctype="PangoVariant" ada="Variant"/>
+     <enum ctype="PangoWeight" ada="Weight"/>
+     <enum ctype="PangoWrapMode" ada="Wrap_Mode"/>
+
+     <extra>
+       <with_spec pkg="Glib"/>
+       <spec>
+   Pango_Scale : constant := 1024;
+   --  All internal units in Pango are expressed in terms of this unit. A
+   --  typical pango size must be divided by Pango_Scale to get the equivalent
+   --  in pixels.
+
+   function To_Pixels (Pango_Units : Gint) return Gint;
+   --  Convert a size in pango units to pixels. This is a rounding of
+   --  Pango_Units divided by Pango_Scale
+
+   --  Enum types are bound with the following algorithm:
+   --    + the "Pango" prefix of the type name is stripped
+   --    + Each word of the type name is separated by '_'
+   --    + the full enum name is kept, but capitalized.
+
+   --  All enums types should be sorted by alphabetical order...
+       </spec>
+       <body>
+   function To_Pixels (Pango_Units : Gint) return Gint is
+   begin
+      if Pango_Units > 0 then
+         return (Pango_Units + Pango_Scale / 2) / Pango_Scale;
+      else
+         return (Pango_Units - Pango_Scale / 2) / Pango_Scale;
+      end if;
+   end To_Pixels;
+       </body>
+     </extra>
+   </package>
+
    <package id="GtkEnums">
      <enum ctype="GtkArrowType"/>
      <enum ctype="GtkAttachOptions"/>

@@ -252,9 +252,10 @@ package body Pango.Layout is
 
    procedure Set_Alignment
      (Layout    : access Pango_Layout_Record'Class;
-      Alignment : Pango_Alignment)
+      Alignment : Pango.Enums.Alignment)
    is
-      procedure Internal (Layout : System.Address; Align : Pango_Alignment);
+      procedure Internal
+         (Layout : System.Address; Align : Pango.Enums.Alignment);
       pragma Import (C, Internal, "pango_layout_set_alignment");
    begin
       Internal (Get_Object (Layout), Alignment);
@@ -265,9 +266,9 @@ package body Pango.Layout is
    -------------------
 
    function Get_Alignment (Layout : access Pango_Layout_Record)
-      return Pango_Alignment
+      return Pango.Enums.Alignment
    is
-      function Internal (Layout : System.Address) return Pango_Alignment;
+      function Internal (Layout : System.Address) return Pango.Enums.Alignment;
       pragma Import (C, Internal, "pango_layout_get_alignment");
    begin
       return Internal (Get_Object (Layout));
@@ -302,9 +303,10 @@ package body Pango.Layout is
    --------------
 
    procedure Set_Wrap
-     (Layout : access Pango_Layout_Record; Mode : Pango_Wrap_Mode)
+     (Layout : access Pango_Layout_Record; Mode : Pango.Enums.Wrap_Mode)
    is
-      procedure Internal (Layout : System.Address; Mode : Pango_Wrap_Mode);
+      procedure Internal
+         (Layout : System.Address; Mode : Pango.Enums.Wrap_Mode);
       pragma Import (C, Internal, "pango_layout_set_wrap");
    begin
       Internal (Get_Object (Layout), Mode);
@@ -315,9 +317,9 @@ package body Pango.Layout is
    --------------
 
    function Get_Wrap (Layout : access Pango_Layout_Record)
-      return Pango_Wrap_Mode
+      return Pango.Enums.Wrap_Mode
    is
-      function Internal (Layout : System.Address) return Pango_Wrap_Mode;
+      function Internal (Layout : System.Address) return Pango.Enums.Wrap_Mode;
       pragma Import (C, Internal, "pango_layout_get_wrap");
    begin
       return Internal (Get_Object (Layout));

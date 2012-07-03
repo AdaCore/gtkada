@@ -26,7 +26,7 @@ with Gtk.Enums;   use Gtk.Enums;
 with Gtk.Frame;   use Gtk.Frame;
 with Gtk.Label;   use Gtk.Label;
 with Glib.Convert; use Glib.Convert;
-with Pango.Layout; use Pango.Layout;
+with Pango.Enums; use Pango.Enums;
 
 package body Create_Label is
 
