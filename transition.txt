@@ -437,6 +437,14 @@ Gtk.List_Item
 
 This widget has been removed: use a Gtk.Tree_View instead.
 
+Gtk.Main
+========
+
+Do_Event was renamed Main_Do_Event.
+
+Grab_Add and Grab_Removed are available in Gtk.Widget (as was already
+ the case with gtk2).
+
 Gtk.Menu
 ========
 

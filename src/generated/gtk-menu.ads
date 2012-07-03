@@ -305,8 +305,8 @@ package Gtk.Menu is
    --  concurrent requests for mouse/keyboard grab requests. To function
    --  properly, this needs to be the timestamp of the user event (such as a
    --  mouse click or key press) that caused the initiation of the popup. Only
-   --  if no such event is available, gtk_get_current_event_time can be used
-   --  instead.
+   --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
+   --  used instead.
    --  "parent_menu_shell": the menu shell containing the triggering menu
    --  item, or null
    --  "parent_menu_item": the menu item whose activation triggered the popup,
@@ -370,8 +370,8 @@ package Gtk.Menu is
       --  of concurrent requests for mouse/keyboard grab requests. To function
       --  properly, this needs to be the timestamp of the user event (such as a
       --  mouse click or key press) that caused the initiation of the popup.
-      --  Only if no such event is available, gtk_get_current_event_time can be
-      --  used instead.
+      --  Only if no such event is available, Gtk.Main.Get_Current_Event_Time
+      --  can be used instead.
       --  "parent_menu_shell": the menu shell containing the triggering menu
       --  item, or null
       --  "parent_menu_item": the menu item whose activation triggered the
@@ -405,8 +405,8 @@ package Gtk.Menu is
    --  concurrent requests for mouse/keyboard grab requests. To function
    --  properly, this needs to be the time stamp of the user event (such as a
    --  mouse click or key press) that caused the initiation of the popup. Only
-   --  if no such event is available, gtk_get_current_event_time can be used
-   --  instead.
+   --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
+   --  used instead.
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
    --  "parent_menu_shell": the menu shell containing the triggering menu
@@ -473,8 +473,8 @@ package Gtk.Menu is
       --  of concurrent requests for mouse/keyboard grab requests. To function
       --  properly, this needs to be the time stamp of the user event (such as
       --  a mouse click or key press) that caused the initiation of the popup.
-      --  Only if no such event is available, gtk_get_current_event_time can be
-      --  used instead.
+      --  Only if no such event is available, Gtk.Main.Get_Current_Event_Time
+      --  can be used instead.
       --  Since: gtk+ 3.0
       --  "device": a Gdk.Device.Gdk_Device
       --  "parent_menu_shell": the menu shell containing the triggering menu

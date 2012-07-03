@@ -522,7 +522,7 @@ package Gtk.Widget is
    --  Returns True if Device has been shadowed by a GTK+ device grab on
    --  another widget, so it would stop sending events to Widget. This may be
    --  used in the Gtk.Widget.Gtk_Widget::grab-notify signal to check for
-   --  specific devices. See gtk_device_grab_add.
+   --  specific devices. See Gtk.Main.Device_Grab_Add.
    --  by another Gtk.Widget.Gtk_Widget than Widget.
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
@@ -713,8 +713,8 @@ package Gtk.Widget is
    --  Rarely-used function. This function is used to emit the event signals
    --  on a widget (those signals should never be emitted without using this
    --  function to do so). If you want to synthesize an event though, don't use
-   --  this function; instead, use gtk_main_do_event so the event will behave
-   --  as if it were in the event queue. Don't synthesize expose events;
+   --  this function; instead, use Gtk.Main.Main_Do_Event so the event will
+   --  behave as if it were in the event queue. Don't synthesize expose events;
    --  instead, use gdk_window_invalidate_rect to invalidate a region of the
    --  window.
    --  the event was handled)

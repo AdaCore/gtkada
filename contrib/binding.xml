@@ -3112,6 +3112,83 @@ creating a tag.
      <method id="gtk_css_provider_load_from_file" bind="False"/> <!--  needs GFile -->
    </package>
 
+   <package id="GtkMain">
+     <function id="gtk_get_major_version" />
+     <function id="gtk_get_minor_version" />
+     <function id="gtk_get_micro_version" />
+     <function id="gtk_get_binary_age" />
+     <function id="gtk_get_interface_age" />
+     <function id="gtk_check_version" />
+     <function id="gtk_parse_args" bind="False" /> <!-- no access to argc argv -->x
+     <function id="gtk_init" bind="False" /> <!--  custom -->
+     <function id="gtk_init_check" bind="False" /> <!-- custom -->
+     <function id="gtk_init_with_args" bind="False" />
+     <function id="gtk_disable_setlocale"/>
+     <function id="gtk_get_default_language"/>
+     <function id="gtk_events_pending"/>
+     <function id="gtk_main_do_event"/>
+     <function id="gtk_main"/>
+     <function id="gtk_main_level"/>
+     <function id="gtk_main_quit"/>
+     <function id="gtk_main_iteration" />
+     <function id="gtk_main_iteration_do"/>
+     <function id="gtk_true" />
+     <function id="gtk_false" />
+     <function id="gtk_grab_add" bind="False" />  <!--  in GtkWidget -->
+     <function id="gtk_grab_get_current" />
+     <function id="gtk_grab_remove" bind="False"/>  <!--  in GtkWidget -->
+     <function id="gtk_device_grab_add" />
+     <function id="gtk_device_grab_remove" />
+     <function id="gtk_key_snooper_install" />
+     <function id="gtk_key_snooper_remove" />
+     <function id="gtk_get_current_event" />
+     <function id="gtk_get_current_event_time" />
+     <function id="gtk_get_current_event_state"
+               return_as_param="Has_Current_Event">
+       <parameter name="state" direction="out" />
+     </function>
+     <function id="gtk_get_current_event_device" />
+     <function id="gtk_get_event_widget" />
+     <function id="gtk_propagate_event" />
+
+     <extra>
+       <spec>
+   procedure Init;
+   --  Initialize GtkAda's internal structures.
+   --  This subprogram should be called before any other one in GtkAda.
+   --  If GtkAda could not be initialized (no access to the display, etc.), the
+   --  application exits with an error
+
+   function Init_Check return Boolean;
+   --  Initialize GtkAda's internal structures.
+   --  Return False if there was an error (no access to the display, etc.)
+       </spec>
+       <body>
+   gnat_argc : Interfaces.C.int;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   procedure Init is
+      procedure Internal (argc : System.Address; argv : System.Address);
+      pragma Import (C, Internal, "gtk_init");
+
+   begin
+      Internal (gnat_argc'Address, gnat_argv'Address);
+   end Init;
+
+   function Init_Check return Boolean is
+      function Internal
+        (argc : System.Address; argv : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_init_check");
+   begin
+      return Boolean'Val (Internal (gnat_argc'Address, gnat_argv'Address));
+   end Init_Check;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

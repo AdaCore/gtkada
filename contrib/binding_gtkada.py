@@ -341,7 +341,8 @@ class GtkAdaPackage(object):
         """
         if self.node is not None:
             return [GtkAdaMethod(c, self)
-                    for c in self.node.findall("function")]
+                    for c in self.node.findall("function")
+                    if c.get("bind", "true").lower() != "false"]
         return []
 
 

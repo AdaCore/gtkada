@@ -620,7 +620,7 @@ class GIRClass(object):
         self._subst = {  # for substitution in string templates
             "name": self.name,
             "typename": base_name(typename),
-            "cname": self.ctype}
+            "cname": self.ctype or ""}
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True):
@@ -1489,7 +1489,12 @@ See Glib.Properties for more information on properties)""")
         """
 
         base = base_name(type.ada)
-        node = gir.records[ctype]
+
+        try:
+            node = gir.records[ctype]
+        except KeyError:
+            # The package doesn't contain a type (for instance GtkMain)
+            return
 
         fields = []
         for field in node.findall(nfield):
@@ -1879,7 +1884,18 @@ for name in interfaces:
     gir.interfaces[name].generate(gir)
 
 for the_ctype in binding:
-    gir.classes[the_ctype].generate(gir)
+    try:
+        gir.classes[the_ctype].generate(gir)
+    except KeyError:
+        cl = gtkada.get_pkg(the_ctype)
+        if not cl:
+            raise
+        else:
+            node = Element(nclass,
+                           {ctype_qname: the_ctype})
+            gir.classes[the_ctype] = gir._create_class(
+                rootNode=root, node=node, is_interface=False)
+            gir.classes[the_ctype].generate(gir)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

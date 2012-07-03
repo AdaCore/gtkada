@@ -222,7 +222,7 @@ package Gtk.Text_Tag is
    --  used.
    --
    --  Note that the initial value of this property depends on the current
-   --  locale, see also gtk_get_default_language.
+   --  locale, see also Gtk.Main.Get_Default_Language.
    --
    --  Name: Language_Set_Property
    --  Type: Boolean
