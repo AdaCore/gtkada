@@ -634,7 +634,6 @@ class AdaNaming(object):
             name = name[:-1]
 
         return self.protect_keywords(name)
-        #return self.exceptions.get(name, name)
 
     def protect_keywords(self, name):
         return ".".join(self.exceptions.get(n, n) for n in name.split("."))

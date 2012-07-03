@@ -40,6 +40,7 @@ binding = ("GdkDevice",
            "GdkDragContext",
            "GdkRGBA",
            "GdkScreen",
+           #"GdkWindow",
 
            "GtkAboutDialog",
            "GtkAccelGroup",
@@ -236,6 +237,7 @@ naming.exceptions = {
     "Function": "Func",
     "Digits": "The_Digits",
     "Reverse": "Gtk_Reverse",
+    "Raise": "Gdk_Raise",
     "Use": "GUse",
     "Uri": "URI",
 }

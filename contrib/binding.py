@@ -696,6 +696,7 @@ class GIRClass(object):
 
         is_import = self._func_is_direct_import(profile)
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
+        adaname = naming.protect_keywords(adaname)
 
         naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
