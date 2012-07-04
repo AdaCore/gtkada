@@ -197,7 +197,7 @@ naming.cname_to_adaname = {
     "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
     "gtk_builder_add_from_file": "Gtk.Builder.Add_From_File",
     "gtk_builder_add_from_string": "Gtk.Builder.Add_From_String",
-    "gtk_container_add": "Gtk.Container.Add"
+#    "gtk_container_add": "Gtk.Container.Add"
 }
 
 # Maps GIR's "name" to a "c:type". This isn't needed for the classes

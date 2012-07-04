@@ -640,7 +640,11 @@ package body Gtk.Combo_Box is
        Func        : Gtk.Cell_Layout.Cell_Data_Func)
    is
    begin
-      C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
+      if Func = null then
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, System.Null_Address);
+      else
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
+      end if;
    end Set_Cell_Data_Func;
 
    package body Set_Cell_Data_Func_User_Data is
@@ -699,7 +703,11 @@ package body Gtk.Combo_Box is
           Func_Data   : User_Data_Type)
       is
       begin
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+         if Func = null then
+            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
+         else
+            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+         end if;
       end Set_Cell_Data_Func;
 
    end Set_Cell_Data_Func_User_Data;
@@ -801,7 +809,11 @@ package body Gtk.Combo_Box is
        Func      : Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func)
    is
    begin
-      C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), Internal_Gtk_Tree_View_Row_Separator_Func'Address, To_Address (Func), System.Null_Address);
+      if Func = null then
+         C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), System.Null_Address, System.Null_Address, System.Null_Address);
+      else
+         C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), Internal_Gtk_Tree_View_Row_Separator_Func'Address, To_Address (Func), System.Null_Address);
+      end if;
    end Set_Row_Separator_Func;
 
    package body Set_Row_Separator_Func_User_Data is
@@ -853,7 +865,11 @@ package body Gtk.Combo_Box is
           Data      : User_Data_Type)
       is
       begin
-         C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+         if Func = null then
+            C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
+         else
+            C_Gtk_Combo_Box_Set_Row_Separator_Func (Get_Object (Combo_Box), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+         end if;
       end Set_Row_Separator_Func;
 
    end Set_Row_Separator_Func_User_Data;

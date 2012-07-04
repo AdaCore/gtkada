@@ -247,7 +247,11 @@ package body Gtk.Recent_Action is
        Data_Destroy : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Gtk_Recent_Sort_Func'Address, To_Address (Sort_Func), Data_Destroy);
+      if Sort_Func = null then
+         C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), System.Null_Address, System.Null_Address, Data_Destroy);
+      else
+         C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Gtk_Recent_Sort_Func'Address, To_Address (Sort_Func), Data_Destroy);
+      end if;
    end Set_Sort_Func;
 
    package body Set_Sort_Func_User_Data is
@@ -292,7 +296,11 @@ package body Gtk.Recent_Action is
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Cb'Address, Users.Build (To_Address (Sort_Func), Sort_Data), Data_Destroy);
+         if Sort_Func = null then
+            C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), System.Null_Address, System.Null_Address, Data_Destroy);
+         else
+            C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Cb'Address, Users.Build (To_Address (Sort_Func), Sort_Data), Data_Destroy);
+         end if;
       end Set_Sort_Func;
 
    end Set_Sort_Func_User_Data;

@@ -788,6 +788,40 @@ class GIRClass(object):
            CB is an instance of Parameter representing the callback parameter.
         """
 
+        def call_to_c(gtk_func, values):
+            """Implement the call to the C function.
+               If the user passes a null callback, we always want to pass null
+               to C rather than passing our Internal_Callback'Address.
+
+               :param values: a dictionary of the parameters to pass to call().
+               :return: the code for the Ada function's body
+            """
+
+            values_if_null = copy.deepcopy(values)
+            values_if_null[cb.name.lower()] = "System.Null_Address"
+            values_if_null[user_data.lower()] = "System.Null_Address"
+
+            call1 = gtk_func.call_to_string(
+                gtk_func.call(
+                    in_pkg=self.pkg,
+                    extra_postcall="".join(call), values=values_if_null),
+                lang="ada->c")
+            if not call1.endswith(";"):
+                call1 += ";"
+
+            call2 = gtk_func.call_to_string(
+                gtk_func.call(in_pkg=self.pkg,
+                              extra_postcall="".join(call), values=values),
+                lang="ada->c")
+            if not call2.endswith(";"):
+                call2 += ";"
+
+            return """if %s = null then
+   %s
+else
+   %s
+end if;""" % (cb.name, call1, call2)
+
         cbname = cb.type.param
 
         # Compute the name of the Ada type representing the user callback
@@ -913,7 +947,6 @@ class GIRClass(object):
             values = {destroy: "System.Null_Address",
                       cb.name.lower(): "Internal_%s'Address" % funcname,
                       user_data.lower(): "%s'Address" % cb.name}
-
         else:
             nouser_profile.remove_param(destroy_data_params + [user_data])
             values = {destroy: "System.Null_Address",
@@ -922,10 +955,7 @@ class GIRClass(object):
 
         subp = nouser_profile.subprogram(
             name=adaname, local_vars=local_vars,
-            code=gtk_func.call_to_string(
-                gtk_func.call(in_pkg=self.pkg,
-                              extra_postcall="".join(call), values=values),
-                lang="ada->c"))
+            code=call_to_c(gtk_func, values))
         section.add(subp)
 
         # Now create a generic package that will provide access to
@@ -993,10 +1023,7 @@ class GIRClass(object):
             full_profile.replace_param(user_data, "User_Data_Type")
             subp2 = full_profile.subprogram(
                 name=adaname,
-                code=gtk_func.call_to_string(
-                    gtk_func.call(in_pkg=self.pkg,
-                                  extra_postcall="".join(call), values=values),
-                    lang="ada->c"))
+                code=call_to_c(gtk_func, values))
             sect2.add(subp2)
 
         return subp

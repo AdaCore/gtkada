@@ -98,7 +98,11 @@ package body Gtk.Main is
 
    function Key_Snooper_Install (Snooper : Gtk_Key_Snoop_Func) return Guint is
    begin
-      return C_Gtk_Key_Snooper_Install (Internal_Gtk_Key_Snoop_Func'Address, To_Address (Snooper));
+      if Snooper = null then
+         return C_Gtk_Key_Snooper_Install (System.Null_Address, System.Null_Address);
+      else
+         return C_Gtk_Key_Snooper_Install (Internal_Gtk_Key_Snoop_Func'Address, To_Address (Snooper));
+      end if;
    end Key_Snooper_Install;
 
    package body Key_Snooper_Install_User_Data is
@@ -147,7 +151,11 @@ package body Gtk.Main is
           Func_Data : User_Data_Type) return Guint
       is
       begin
-         return C_Gtk_Key_Snooper_Install (Internal_Cb'Address, Users.Build (To_Address (Snooper), Func_Data));
+         if Snooper = null then
+            return C_Gtk_Key_Snooper_Install (System.Null_Address, System.Null_Address);
+         else
+            return C_Gtk_Key_Snooper_Install (Internal_Cb'Address, Users.Build (To_Address (Snooper), Func_Data));
+         end if;
       end Key_Snooper_Install;
 
    end Key_Snooper_Install_User_Data;

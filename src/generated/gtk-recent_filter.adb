@@ -157,7 +157,11 @@ package body Gtk.Recent_Filter is
        Data_Destroy : Glib.G_Destroy_Notify_Address)
    is
    begin
-      C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Gtk_Recent_Filter_Func'Address, To_Address (Func), Data_Destroy);
+      if Func = null then
+         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, System.Null_Address, System.Null_Address, Data_Destroy);
+      else
+         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Gtk_Recent_Filter_Func'Address, To_Address (Func), Data_Destroy);
+      end if;
    end Add_Custom;
 
    package body Add_Custom_User_Data is
@@ -194,7 +198,11 @@ package body Gtk.Recent_Filter is
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
       begin
-         C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Data_Destroy);
+         if Func = null then
+            C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, System.Null_Address, System.Null_Address, Data_Destroy);
+         else
+            C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Data_Destroy);
+         end if;
       end Add_Custom;
 
       -----------------

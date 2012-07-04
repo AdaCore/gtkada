@@ -202,7 +202,11 @@ package body Gtk.Accel_Group is
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key
    is
    begin
-      return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Gtk_Accel_Group_Find_Func'Address, To_Address (Find_Func));
+      if Find_Func = null then
+         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address);
+      else
+         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Gtk_Accel_Group_Find_Func'Address, To_Address (Find_Func));
+      end if;
    end Find;
 
    package body Find_User_Data is
@@ -233,7 +237,11 @@ package body Gtk.Accel_Group is
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key
       is
       begin
-         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (To_Address (Find_Func), Data));
+         if Find_Func = null then
+            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address);
+         else
+            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (To_Address (Find_Func), Data));
+         end if;
       end Find;
 
       -----------------

@@ -224,7 +224,11 @@ package body Gtk.Menu is
        Detacher      : Gtk_Menu_Detach_Func)
    is
    begin
-      C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), Detacher'Address);
+      if Detacher = null then
+         C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), System.Null_Address);
+      else
+         C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), Detacher'Address);
+      end if;
    end Attach_To_Widget;
 
    ------------
@@ -371,7 +375,11 @@ package body Gtk.Menu is
        Activate_Time     : guint32 := 0)
    is
    begin
-      C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), Button, Activate_Time);
+      if Func = null then
+         C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, Button, Activate_Time);
+      else
+         C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), Button, Activate_Time);
+      end if;
    end Popup;
 
    ----------------------
@@ -388,7 +396,11 @@ package body Gtk.Menu is
        Activate_Time     : guint32)
    is
    begin
-      C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), System.Null_Address, Button, Activate_Time);
+      if Func = null then
+         C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, System.Null_Address, Button, Activate_Time);
+      else
+         C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), System.Null_Address, Button, Activate_Time);
+      end if;
    end Popup_For_Device;
 
    package body Popup_For_Device_User_Data is
@@ -466,7 +478,11 @@ package body Gtk.Menu is
           Activate_Time     : guint32)
       is
       begin
-         C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address, Button, Activate_Time);
+         if Func = null then
+            C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, Users.Free_Data'Address, Button, Activate_Time);
+         else
+            C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address, Button, Activate_Time);
+         end if;
       end Popup_For_Device;
 
    end Popup_For_Device_User_Data;
@@ -545,7 +561,11 @@ package body Gtk.Menu is
           Activate_Time     : guint32 := 0)
       is
       begin
-         C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Button, Activate_Time);
+         if Func = null then
+            C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, Button, Activate_Time);
+         else
+            C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Button, Activate_Time);
+         end if;
       end Popup;
 
    end Popup_User_Data;
