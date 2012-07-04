@@ -272,7 +272,7 @@ private
       Selected     : Child_Description_Access;
       Selected_Pos : Gtk.Widget.Gtk_Allocation;
 
-      Overlay : Cairo.Cairo_Surface;
+      Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
       --  A surface used during a resize operation
 
       Cursor_Double_H_Arrow : Gdk.Cursor.Gdk_Cursor;
