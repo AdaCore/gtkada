@@ -1070,8 +1070,10 @@ package body Gtkada.Multi_Paned is
          Split.Selected := null;
       end if;
 
-      Surface_Destroy (Split.Overlay);
-      Split.Overlay := Null_Surface;
+      if Split.Overlay /= Null_Surface then
+         Surface_Destroy (Split.Overlay);
+         Split.Overlay := Null_Surface;
+      end if;
 
       return False;
    end Button_Released;
