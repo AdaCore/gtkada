@@ -26,6 +26,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtk.GEntry;                 use Gtk.GEntry;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Combo_Box is
@@ -53,9 +54,11 @@ package body Gtk.Combo_Box is
      (Combo_Box : access Gtk_Combo_Box_Record)
    return UTF8_String is
    begin
-      return Combo_Box.Get_Model.Get_String
-        (Combo_Box.Get_Active_Iter,
-         Combo_Box.Get_Entry_Text_Column);
+      if not Combo_Box.Get_Has_Entry then
+         return "";
+      end if;
+
+      return Gtk_Entry (Combo_Box.Get_Child).Get_Text;
    end Get_Active_Text;
 
    function To_Gtk_Tree_View_Row_Separator_Func is new Ada.Unchecked_Conversion

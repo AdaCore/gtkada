@@ -442,7 +442,7 @@ package Gtk.Combo_Box is
    function Get_Active_Text
      (Combo_Box : access Gtk_Combo_Box_Record)
    return UTF8_String;
-   --  Return the currently active text
+   --  Return the text present in the entry if it has one, or the empty string
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

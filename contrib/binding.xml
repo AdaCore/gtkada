@@ -511,6 +511,8 @@ dialog for file selection.
      <method id="gtk_combo_box_get_popup_accessible" bind="False" />
      <method id="gtk_combo_box_get_active_iter" bind="False"/> <!-- below-->
      <extra>
+
+         <with_body pkg="Gtk.GEntry" />
         <spec>
    function Get_Active_Iter
      (Combo_Box : access Gtk_Combo_Box_Record)
@@ -520,7 +522,7 @@ dialog for file selection.
    function Get_Active_Text
      (Combo_Box : access Gtk_Combo_Box_Record)
       return UTF8_String;
-   --  Return the currently active text
+   --  Return the text present in the entry if it has one, or the empty string
 
         </spec>
         <body>
@@ -547,9 +549,11 @@ dialog for file selection.
      (Combo_Box : access Gtk_Combo_Box_Record)
       return UTF8_String is
    begin
-      return Combo_Box.Get_Model.Get_String
-        (Combo_Box.Get_Active_Iter,
-         Combo_Box.Get_Entry_Text_Column);
+      if not Combo_Box.Get_Has_Entry then
+         return "";
+      end if;
+
+      return Gtk_Entry (Combo_Box.Get_Child).Get_Text;
    end Get_Active_Text;
 
         </body>
