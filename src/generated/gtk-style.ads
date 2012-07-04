@@ -153,10 +153,10 @@ package Gtk.Style is
    ----------------------
 
    type Gtk_Border_Record is record
-      Left   : Gint;
-      Right  : Gint;
-      Top    : Gint;
-      Bottom : Gint;
+      Left   : Gint := 0;
+      Right  : Gint := 0;
+      Top    : Gint := 0;
+      Bottom : Gint := 0;
    end record;
    pragma Convention (C, Gtk_Border_Record);
    type Gtk_Border is access all Gtk_Border_Record;
