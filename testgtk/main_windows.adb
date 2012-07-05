@@ -800,7 +800,7 @@ package body Main_Windows is
       Add (Win, Vbox);
 
       --  Label
-      Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
+      Gtk_New (Label, "GtkAda, the portable Ada GUI");
       Override_Font (Label, From_String ("Helvetica Bold 18"));
       Pack_Start (Vbox, Label, Expand => False, Fill => False, Padding => 10);
 
