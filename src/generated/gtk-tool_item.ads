@@ -61,9 +61,6 @@ package Gtk.Tool_Item is
    ------------------
 
    procedure Gtk_New (Tool_Item : out Gtk_Tool_Item);
-   --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
-   --  Since: gtk+ 2.4
-
    procedure Initialize
       (Tool_Item : not null access Gtk_Tool_Item_Record'Class);
    --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item

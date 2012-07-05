@@ -56,18 +56,6 @@ package Gtk.Aspect_Frame is
        Yalign       : Gfloat;
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
-   --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
-   --  "label": Label text.
-   --  "xalign": Horizontal alignment of the child within the allocation of
-   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
-   --  aligned) to 1.0 (right aligned)
-   --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
-   --  to 1.0 (right aligned)
-   --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
-   --  from the requistion of the child.
-
    procedure Initialize
       (Aspect_Frame : not null access Gtk_Aspect_Frame_Record'Class;
        Label        : UTF8_String := "";

@@ -101,8 +101,6 @@ package Gtk.Calendar is
    ------------------
 
    procedure Gtk_New (Calendar : out Gtk_Calendar);
-   --  Creates a new calendar, with the current date being selected.
-
    procedure Initialize
       (Calendar : not null access Gtk_Calendar_Record'Class);
    --  Creates a new calendar, with the current date being selected.

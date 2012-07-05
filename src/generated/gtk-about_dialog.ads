@@ -102,9 +102,6 @@ package Gtk.About_Dialog is
    ------------------
 
    procedure Gtk_New (About : out Gtk_About_Dialog);
-   --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.
-   --  Since: gtk+ 2.6
-
    procedure Initialize
       (About : not null access Gtk_About_Dialog_Record'Class);
    --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.

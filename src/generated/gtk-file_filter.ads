@@ -115,14 +115,6 @@ package Gtk.File_Filter is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_File_Filter);
-   --  Creates a new Gtk.File_Filter.Gtk_File_Filter with no rules added to
-   --  it. Such a filter doesn't accept any files, so is not particularly
-   --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
-   --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
-   --  filter that accepts any file, use: |[ GtkFileFilter *filter =
-   --  gtk_file_filter_new (); gtk_file_filter_add_pattern (filter, "*"); ]|
-   --  Since: gtk+ 2.4
-
    procedure Initialize
       (Self : not null access Gtk_File_Filter_Record'Class);
    --  Creates a new Gtk.File_Filter.Gtk_File_Filter with no rules added to

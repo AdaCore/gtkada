@@ -49,9 +49,6 @@ package Gtk.Spinner is
    ------------------
 
    procedure Gtk_New (Spinner : out Gtk_Spinner);
-   --  Returns a new spinner widget. Not yet started.
-   --  Since: gtk+ 2.20
-
    procedure Initialize (Spinner : not null access Gtk_Spinner_Record'Class);
    --  Returns a new spinner widget. Not yet started.
    --  Since: gtk+ 2.20

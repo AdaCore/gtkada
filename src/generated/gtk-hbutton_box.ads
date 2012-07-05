@@ -48,8 +48,6 @@ package Gtk.Hbutton_Box is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
-   --  Creates a new horizontal button box.
-
    procedure Initialize
       (Widget : not null access Gtk_Hbutton_Box_Record'Class);
    --  Creates a new horizontal button box.

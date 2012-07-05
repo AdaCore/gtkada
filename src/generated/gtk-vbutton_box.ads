@@ -48,8 +48,6 @@ package Gtk.Vbutton_Box is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
-   --  Creates a new vertical button box.
-
    procedure Initialize
       (Widget : not null access Gtk_Vbutton_Box_Record'Class);
    --  Creates a new vertical button box.

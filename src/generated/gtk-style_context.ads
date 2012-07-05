@@ -255,15 +255,6 @@ package Gtk.Style_Context is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Style_Context);
-   --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style
-   --  context won't be attached to any widget, so you may want to call
-   --  Gtk.Style_Context.Set_Path yourself.
-   --  Note: This function is only useful when using the theming layer
-   --  separated from GTK+, if you are using
-   --  Gtk.Style_Context.Gtk_Style_Context to theme Gtk.Widget.Gtk_Widget<!--
-   --  -->s, use gtk_widget_get_style_context in order to get a style context
-   --  ready to theme the widget.
-
    procedure Initialize
       (Self : not null access Gtk_Style_Context_Record'Class);
    --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style

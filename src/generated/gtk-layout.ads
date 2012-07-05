@@ -82,12 +82,6 @@ package Gtk.Layout is
       (Layout      : out Gtk_Layout;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
-   --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
-   --  adjustment you'd like the layout to use for scrolling, pass null for
-   --  Hadjustment and Vadjustment.
-   --  "hadjustment": horizontal scroll adjustment, or null
-   --  "vadjustment": vertical scroll adjustment, or null
-
    procedure Initialize
       (Layout      : not null access Gtk_Layout_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;

@@ -190,10 +190,6 @@ package Gtk.Label is
    ------------------
 
    procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "");
-   --  Creates a new label with the given text inside it. You can pass null to
-   --  get an empty label widget.
-   --  "str": The text of the label
-
    procedure Initialize
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "");
@@ -204,21 +200,6 @@ package Gtk.Label is
    procedure Gtk_New_With_Mnemonic
       (Label : out Gtk_Label;
        Str   : UTF8_String);
-   --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
-   --  If characters in Str are preceded by an underscore, they are
-   --  underlined. If you need a literal underscore character in a label, use
-   --  '__' (two underscores). The first underlined character represents a
-   --  keyboard accelerator called a mnemonic. The mnemonic key can be used to
-   --  activate another widget, chosen automatically, or explicitly using
-   --  Gtk.Label.Set_Mnemonic_Widget.
-   --  If Gtk.Label.Set_Mnemonic_Widget is not called, then the first
-   --  activatable ancestor of the Gtk.Label.Gtk_Label will be chosen as the
-   --  mnemonic widget. For instance, if the label is inside a button or menu
-   --  item, the button or menu item will automatically become the mnemonic
-   --  widget and be activated by the mnemonic.
-   --  "str": The text of the label, with an underscore in front of the
-   --  mnemonic character
-
    procedure Initialize_With_Mnemonic
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String);

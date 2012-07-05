@@ -60,9 +60,6 @@ package Gtk.Font_Button is
    ------------------
 
    procedure Gtk_New (Font_Button : out Gtk_Font_Button);
-   --  Creates a new font picker widget.
-   --  Since: gtk+ 2.4
-
    procedure Initialize
       (Font_Button : not null access Gtk_Font_Button_Record'Class);
    --  Creates a new font picker widget.
@@ -71,10 +68,6 @@ package Gtk.Font_Button is
    procedure Gtk_New_With_Font
       (Font_Button : out Gtk_Font_Button;
        Fontname    : UTF8_String);
-   --  Creates a new font picker widget.
-   --  Since: gtk+ 2.4
-   --  "fontname": Name of font to display in font chooser dialog
-
    procedure Initialize_With_Font
       (Font_Button : not null access Gtk_Font_Button_Record'Class;
        Fontname    : UTF8_String);

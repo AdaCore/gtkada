@@ -59,8 +59,6 @@ package Gtk.Style_Properties is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Style_Properties);
-   --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties
-
    procedure Initialize
       (Self : not null access Gtk_Style_Properties_Record'Class);
    --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties

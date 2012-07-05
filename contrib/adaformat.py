@@ -1628,16 +1628,18 @@ class Section(object):
             for group in self._group_subprograms():
                 for s in group:
                     if isinstance(s, Subprogram):
-                        show_doc = not Section.group_getters_and_setters \
-                            or s == group[-1]
+                        show_doc = ((not Section.group_getters_and_setters
+                                     and not group[0].name.startswith("Gtk_New"))
+                                    or s == group[-1])
 
                         result.append(s.spec(pkg=pkg,
                                              show_doc=show_doc,
                                              indent=indent))
                     else:
+                        show_doc = True
                         result.append(s.spec())
 
-                    if s == group[-1] or not Section.group_getters_and_setters:
+                    if show_doc:
                         result.append("")
 
         return "\n".join(result)

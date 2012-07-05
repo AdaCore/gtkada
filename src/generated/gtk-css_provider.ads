@@ -776,8 +776,6 @@ package Gtk.Css_Provider is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Css_Provider);
-   --  Returns a newly created Gtk.Css_Provider.Gtk_Css_Provider.
-
    procedure Initialize
       (Self : not null access Gtk_Css_Provider_Record'Class);
    --  Returns a newly created Gtk.Css_Provider.Gtk_Css_Provider.

@@ -93,10 +93,6 @@ package Gtk.Expander is
    ------------------
 
    procedure Gtk_New (Expander : out Gtk_Expander; Label : UTF8_String);
-   --  Creates a new expander using Label as the text of the label.
-   --  Since: gtk+ 2.4
-   --  "label": the text of the label
-
    procedure Initialize
       (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String);
@@ -107,16 +103,6 @@ package Gtk.Expander is
    procedure Gtk_New_With_Mnemonic
       (Expander : out Gtk_Expander;
        Label    : UTF8_String := "");
-   --  Creates a new expander using Label as the text of the label. If
-   --  characters in Label are preceded by an underscore, they are underlined.
-   --  If you need a literal underscore character in a label, use '__' (two
-   --  underscores). The first underlined character represents a keyboard
-   --  accelerator called a mnemonic. Pressing Alt and that key activates the
-   --  button.
-   --  Since: gtk+ 2.4
-   --  "label": the text of the label with an underscore in front of the
-   --  mnemonic character
-
    procedure Initialize_With_Mnemonic
       (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String := "");

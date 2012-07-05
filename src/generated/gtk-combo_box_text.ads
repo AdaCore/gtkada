@@ -91,11 +91,6 @@ package Gtk.Combo_Box_Text is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Combo_Box_Text);
-   --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
-   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings. See
-   --  gtk_combo_box_entry_new_with_text.
-   --  Since: gtk+ 2.24
-
    procedure Initialize
       (Self : not null access Gtk_Combo_Box_Text_Record'Class);
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
@@ -104,11 +99,6 @@ package Gtk.Combo_Box_Text is
    --  Since: gtk+ 2.24
 
    procedure Gtk_New_With_Entry (Self : out Gtk_Combo_Box_Text);
-   --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
-   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings. The combo box
-   --  created by this function has an entry.
-   --  Since: gtk+ 2.24
-
    procedure Initialize_With_Entry
       (Self : not null access Gtk_Combo_Box_Text_Record'Class);
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a

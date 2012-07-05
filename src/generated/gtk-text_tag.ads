@@ -60,14 +60,6 @@ package Gtk.Text_Tag is
    ------------------
 
    procedure Gtk_New (Tag : out Gtk_Text_Tag; Name : UTF8_String := "");
-   --  Creates a Gtk.Text_Tag.Gtk_Text_Tag. Configure the tag using object
-   --  arguments, i.e. using g_object_set.
-   --  Newly created tags must be added to the tags table for the buffer you
-   --  intend to use them in, as in: "Gtk.Text_Tag_Table.Add (Get_Tag_Table
-   --  (Buffer), Tag)". See also Gtk.Text_Buffer.Create_Tag which is a more
-   --  convenient way of creating a tag.
-   --  "name": tag name, or null
-
    procedure Initialize
       (Tag  : not null access Gtk_Text_Tag_Record'Class;
        Name : UTF8_String := "");

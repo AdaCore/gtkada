@@ -49,9 +49,6 @@ package Gtk.Font_Selection_Dialog is
    procedure Gtk_New
       (Dialog : out Gtk_Font_Selection_Dialog;
        Title  : UTF8_String);
-   --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
-   --  "title": the title of the dialog window
-
    procedure Initialize
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record'Class;
        Title  : UTF8_String);

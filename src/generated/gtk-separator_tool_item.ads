@@ -57,9 +57,6 @@ package Gtk.Separator_Tool_Item is
    ------------------
 
    procedure Gtk_New (Item : out Gtk_Separator_Tool_Item);
-   --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
-   --  Since: gtk+ 2.4
-
    procedure Initialize
       (Item : not null access Gtk_Separator_Tool_Item_Record'Class);
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item

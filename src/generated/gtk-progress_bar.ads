@@ -70,8 +70,6 @@ package Gtk.Progress_Bar is
    ------------------
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar);
-   --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
-
    procedure Initialize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class);
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.

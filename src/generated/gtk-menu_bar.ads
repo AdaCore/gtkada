@@ -45,8 +45,6 @@ package Gtk.Menu_Bar is
    ------------------
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
-   --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
-
    procedure Initialize
       (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class);
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar

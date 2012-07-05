@@ -75,18 +75,6 @@ package Gtk.Recent_Chooser_Menu is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Recent_Chooser_Menu);
-   --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget.
-   --  This kind of widget shows the list of recently used resources as a
-   --  menu, each item as a menu item. Each item inside the menu might have an
-   --  icon, representing its MIME type, and a number, for mnemonic access.
-   --  This widget implements the Gtk.Recent_Chooser.Gtk_Recent_Chooser
-   --  interface.
-   --  This widget creates its own Gtk.Recent_Manager.Gtk_Recent_Manager
-   --  object. See the Gtk.Recent_Chooser_Menu.Gtk_New_For_Manager function to
-   --  know how to create a Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu
-   --  widget bound to another Gtk.Recent_Manager.Gtk_Recent_Manager object.
-   --  Since: gtk+ 2.10
-
    procedure Initialize
       (Self : not null access Gtk_Recent_Chooser_Menu_Record'Class);
    --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget.
@@ -105,16 +93,6 @@ package Gtk.Recent_Chooser_Menu is
       (Self    : out Gtk_Recent_Chooser_Menu;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
       ;
-   --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget
-   --  using Manager as the underlying recently used resources manager.
-   --  This is useful if you have implemented your own recent manager, or if
-   --  you have a customized instance of a
-   --  Gtk.Recent_Manager.Gtk_Recent_Manager object or if you wish to share a
-   --  common Gtk.Recent_Manager.Gtk_Recent_Manager object among multiple
-   --  Gtk.Recent_Chooser.Gtk_Recent_Chooser widgets.
-   --  Since: gtk+ 2.10
-   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
-
    procedure Initialize_For_Manager
       (Self    : not null access Gtk_Recent_Chooser_Menu_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)

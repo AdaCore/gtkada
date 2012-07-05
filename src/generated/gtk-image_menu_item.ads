@@ -51,9 +51,6 @@ package Gtk.Image_Menu_Item is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Image_Menu_Item);
-   --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item with an empty
-   --  label.
-
    procedure Initialize
       (Self : not null access Gtk_Image_Menu_Item_Record'Class);
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item with an empty
@@ -63,18 +60,6 @@ package Gtk.Image_Menu_Item is
       (Self        : out Gtk_Image_Menu_Item;
        Stock_Id    : UTF8_String;
        Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
-   --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing the
-   --  image and text from a stock item. Some stock ids have preprocessor
-   --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.
-   --  If you want this menu item to have changeable accelerators, then pass
-   --  in null for accel_group. Next call Gtk.Menu_Item.Set_Accel_Path with an
-   --  appropriate path for the menu item, use gtk_stock_lookup to look up the
-   --  standard accelerator for the stock item, and if one is found, call
-   --  Gtk.Accel_Map.Add_Entry to register it.
-   --  "stock_id": the name of the stock item.
-   --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
-   --  items accelerator to, or null.
-
    procedure Initialize_From_Stock
       (Self        : not null access Gtk_Image_Menu_Item_Record'Class;
        Stock_Id    : UTF8_String;
@@ -92,10 +77,6 @@ package Gtk.Image_Menu_Item is
    --  items accelerator to, or null.
 
    procedure Gtk_New (Self : out Gtk_Image_Menu_Item; Label : UTF8_String);
-   --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
-   --  label.
-   --  "label": the text of the menu item.
-
    procedure Initialize
       (Self  : not null access Gtk_Image_Menu_Item_Record'Class;
        Label : UTF8_String);
@@ -106,12 +87,6 @@ package Gtk.Image_Menu_Item is
    procedure Gtk_New_With_Mnemonic
       (Self  : out Gtk_Image_Menu_Item;
        Label : UTF8_String);
-   --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
-   --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
-   --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "label": the text of the menu item, with an underscore in front of the
-   --  mnemonic character
-
    procedure Initialize_With_Mnemonic
       (Self  : not null access Gtk_Image_Menu_Item_Record'Class;
        Label : UTF8_String);

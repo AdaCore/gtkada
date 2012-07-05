@@ -117,8 +117,6 @@ package Gtk.Drawing_Area is
    ------------------
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
-   --  Creates a new drawing area.
-
    procedure Initialize
       (Drawing_Area : not null access Gtk_Drawing_Area_Record'Class);
    --  Creates a new drawing area.

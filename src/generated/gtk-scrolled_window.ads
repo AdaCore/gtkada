@@ -87,14 +87,6 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : out Gtk_Scrolled_Window;
        Hadjustment     : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment     : Gtk.Adjustment.Gtk_Adjustment := null);
-   --  Creates a new scrolled window.
-   --  The two arguments are the scrolled window's adjustments; these will be
-   --  shared with the scrollbars and the child widget to keep the bars in sync
-   --  with the child. Usually you want to pass null for the adjustments, which
-   --  will cause the scrolled window to create them for you.
-   --  "hadjustment": horizontal adjustment
-   --  "vadjustment": vertical adjustment
-
    procedure Initialize
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record'Class;
        Hadjustment     : Gtk.Adjustment.Gtk_Adjustment := null;

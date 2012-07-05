@@ -78,10 +78,6 @@ package Gtk.Frame is
    ------------------
 
    procedure Gtk_New (Frame : out Gtk_Frame; Label : UTF8_String := "");
-   --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
-   --  is null, the label is omitted.
-   --  "label": the text to use as the label of the frame
-
    procedure Initialize
       (Frame : not null access Gtk_Frame_Record'Class;
        Label : UTF8_String := "");

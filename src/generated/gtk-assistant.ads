@@ -104,9 +104,6 @@ package Gtk.Assistant is
    ------------------
 
    procedure Gtk_New (Assistant : out Gtk_Assistant);
-   --  Creates a new Gtk.Assistant.Gtk_Assistant.
-   --  Since: gtk+ 2.10
-
    procedure Initialize
       (Assistant : not null access Gtk_Assistant_Record'Class);
    --  Creates a new Gtk.Assistant.Gtk_Assistant.

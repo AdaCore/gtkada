@@ -107,11 +107,6 @@ package Gtk.Box is
       (Box         : out Gtk_Box;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Gint);
-   --  Creates a new Gtk.Box.Gtk_Box.
-   --  Since: gtk+ 3.0
-   --  "orientation": the box's orientation.
-   --  "spacing": the number of pixels to place by default between children.
-
    procedure Initialize
       (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
@@ -128,14 +123,6 @@ package Gtk.Box is
       (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Hbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
-   --  "homogeneous": True if all children are to be given equal space
-   --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
-
    procedure Initialize_Hbox
       (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
@@ -155,14 +142,6 @@ package Gtk.Box is
       (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
-   --  Creates a new Gtk.Box.Gtk_Vbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
-   --  "homogeneous": True if all children are to be given equal space
-   --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
-
    procedure Initialize_Vbox
       (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;

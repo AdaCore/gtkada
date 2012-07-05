@@ -85,19 +85,6 @@ package Gtk.Window is
    procedure Gtk_New
       (Window   : out Gtk_Window;
        The_Type : Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
-   --  Creates a new Gtk.Window.Gtk_Window, which is a toplevel window that
-   --  can contain other widgets. Nearly always, the type of the window should
-   --  be GTK_WINDOW_TOPLEVEL. If you're implementing something like a popup
-   --  menu from scratch (which is a bad idea, just use Gtk.Menu.Gtk_Menu), you
-   --  might use GTK_WINDOW_POPUP. GTK_WINDOW_POPUP is not for dialogs, though
-   --  in some other toolkits dialogs are called "popups". In GTK+,
-   --  GTK_WINDOW_POPUP means a pop-up menu or pop-up tooltip. On X11, popup
-   --  windows are not controlled by the <link linkend="gtk-X11-arch">window
-   --  manager</link>.
-   --  If you simply want an undecorated window (no window borders), use
-   --  Gtk.Window.Set_Decorated, don't use GTK_WINDOW_POPUP.
-   --  "type": type of window
-
    procedure Initialize
       (Window   : not null access Gtk_Window_Record'Class;
        The_Type : Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
@@ -118,10 +105,6 @@ package Gtk.Window is
    pragma Import (C, Get_Type, "gtk_window_get_type");
 
    procedure Gtk_New (Window_Group : out Gtk_Window_Group);
-   --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with
-   --  Gtk.Widget.Grab_Add only affect windows within the same
-   --  Gtk.Window.Gtk_Window_Group.
-
    procedure Initialize
       (Window_Group : not null access Gtk_Window_Group_Record'Class);
    --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with

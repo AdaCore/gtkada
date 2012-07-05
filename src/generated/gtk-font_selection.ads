@@ -61,8 +61,6 @@ package Gtk.Font_Selection is
    ------------------
 
    procedure Gtk_New (Fontsel : out Gtk_Font_Selection);
-   --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
-
    procedure Initialize
       (Fontsel : not null access Gtk_Font_Selection_Record'Class);
    --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.

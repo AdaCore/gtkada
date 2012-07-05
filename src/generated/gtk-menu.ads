@@ -131,8 +131,6 @@ package Gtk.Menu is
    ------------------
 
    procedure Gtk_New (Menu : out Gtk_Menu);
-   --  Creates a new Gtk.Menu.Gtk_Menu
-
    procedure Initialize (Menu : not null access Gtk_Menu_Record'Class);
    --  Creates a new Gtk.Menu.Gtk_Menu
 

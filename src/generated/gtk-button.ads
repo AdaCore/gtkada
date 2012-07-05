@@ -59,13 +59,6 @@ package Gtk.Button is
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Button;
        Stock_Id : UTF8_String);
-   --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
-   --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
-   --  and GTK_STOCK_APPLY.
-   --  If Stock_Id is unknown, then it will be treated as a mnemonic label (as
-   --  for Gtk.Button.Gtk_New_With_Mnemonic).
-   --  "stock_id": the name of the stock item
-
    procedure Initialize_From_Stock
       (Button   : not null access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String);
@@ -77,10 +70,6 @@ package Gtk.Button is
    --  "stock_id": the name of the stock item
 
    procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
-   --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
-   --  containing the given text.
-   --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
-
    procedure Initialize
       (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String := "");
@@ -91,14 +80,6 @@ package Gtk.Button is
    procedure Gtk_New_With_Mnemonic
       (Button : out Gtk_Button;
        Label  : UTF8_String);
-   --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
-   --  in Label are preceded by an underscore, they are underlined. If you need
-   --  a literal underscore character in a label, use '__' (two underscores).
-   --  The first underlined character represents a keyboard accelerator called
-   --  a mnemonic. Pressing Alt and that key activates the button.
-   --  "label": The text of the button, with an underscore in front of the
-   --  mnemonic character
-
    procedure Initialize_With_Mnemonic
       (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String);

@@ -50,16 +50,6 @@ package Gtk.Toggle_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "");
-   --  Creates a new Gtk.Toggle_Action.Gtk_Toggle_Action object. To add the
-   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
-   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
-   --  Since: gtk+ 2.4
-   --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or null
-   --  "tooltip": A tooltip for the action, or null
-   --  "stock_id": The stock icon to display in widgets representing the
-   --  action, or null
-
    procedure Initialize
       (Action   : not null access Gtk_Toggle_Action_Record'Class;
        Name     : UTF8_String;

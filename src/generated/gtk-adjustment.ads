@@ -74,20 +74,6 @@ package Gtk.Adjustment is
        Step_Increment : Gdouble;
        Page_Increment : Gdouble;
        Page_Size      : Gdouble := 0.0);
-   --  Create a new adjustment. Value is the initial value of the adjustment.
-   --  It must be in the range (Lower .. Upper) and the adjustment's value will
-   --  never be outside this range. Step_Increment is the value used to make
-   --  minor adjustments, such as when the user clicks on the arrows of a
-   --  scrollbar. Page_Increment is used to make major adjustments, such as
-   --  when the user clicks in the through on a scrollbar. Page_Size is
-   --  deprecated, use the default value.
-   --  "value": the initial value.
-   --  "lower": the minimum value.
-   --  "upper": the maximum value.
-   --  "step_increment": the step increment.
-   --  "page_increment": the page increment.
-   --  "page_size": the page size.
-
    procedure Initialize
       (Adjustment     : not null access Gtk_Adjustment_Record'Class;
        Value          : Gdouble;

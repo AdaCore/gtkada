@@ -78,8 +78,6 @@ package Gtk.Status_Bar is
    ------------------
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
-   --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
-
    procedure Initialize
       (Statusbar : not null access Gtk_Status_Bar_Record'Class);
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.

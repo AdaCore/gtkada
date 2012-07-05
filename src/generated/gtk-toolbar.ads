@@ -64,8 +64,6 @@ package Gtk.Toolbar is
    ------------------
 
    procedure Gtk_New (Toolbar : out Gtk_Toolbar);
-   --  Creates a new toolbar.
-
    procedure Initialize (Toolbar : not null access Gtk_Toolbar_Record'Class);
    --  Creates a new toolbar.
 

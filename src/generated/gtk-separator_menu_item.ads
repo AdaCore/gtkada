@@ -47,8 +47,6 @@ package Gtk.Separator_Menu_Item is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
-   --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
-
    procedure Initialize
       (Widget : not null access Gtk_Separator_Menu_Item_Record'Class);
    --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.

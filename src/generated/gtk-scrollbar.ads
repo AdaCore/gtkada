@@ -69,12 +69,6 @@ package Gtk.Scrollbar is
       (Scrollbar   : out Gtk_Scrollbar;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   --  Creates a new scrollbar with the given orientation.
-   --  Since: gtk+ 3.0
-   --  "orientation": the scrollbar's orientation.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
-   --  create a new adjustment.
-
    procedure Initialize
       (Scrollbar   : not null access Gtk_Scrollbar_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
@@ -91,10 +85,6 @@ package Gtk.Scrollbar is
    procedure Gtk_New_Hscrollbar
       (Scrollbar  : out Gtk_Hscrollbar;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   --  Creates a new horizontal scrollbar.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
-   --  create a new adjustment
-
    procedure Initialize_Hscrollbar
       (Scrollbar  : not null access Gtk_Hscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -108,10 +98,6 @@ package Gtk.Scrollbar is
    procedure Gtk_New_Vscrollbar
       (Scrollbar  : out Gtk_Vscrollbar;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   --  Creates a new vertical scrollbar.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
-   --  create a new adjustment
-
    procedure Initialize_Vscrollbar
       (Scrollbar  : not null access Gtk_Vscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);

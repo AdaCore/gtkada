@@ -60,8 +60,6 @@ package Gtk.Style is
    ------------------
 
    procedure Gtk_New (Style : out Gtk_Style);
-   --  Creates a new Gtk.Style.Gtk_Style.
-
    procedure Initialize (Style : not null access Gtk_Style_Record'Class);
    --  Creates a new Gtk.Style.Gtk_Style.
 
