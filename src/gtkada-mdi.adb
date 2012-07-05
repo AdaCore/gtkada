@@ -1654,6 +1654,8 @@ package body Gtkada.MDI is
       Child            : constant MDI_Child := MDI_Child (Widget);
       Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
       W, H  : Gint;
+      Height : Gdouble;
+      Pat : Cairo_Pattern;
       X     : Gint := 1;
    begin
       --  Call this function so that for a dock item is highlighted if the
@@ -1668,13 +1670,18 @@ package body Gtkada.MDI is
       Update_Tab_Color (Child);
 
       Cairo.Save (Cr);
-      Set_Source_RGBA (Cr, Color);
+
+      Height := Gdouble (Get_Allocated_Height (Child.Title_Box));
+      Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Height);
+      Pattern_Add_Color_Stop_Rgba
+        (Pat, 0.0, Color.Red, Color.Green, Color.Blue, 1.0);
+      Pattern_Add_Color_Stop_Rgba
+        (Pat, 1.0, Color.Red, Color.Green, Color.Blue, 0.6);
+      Set_Source (Cr, Pat);
       Cairo.Rectangle
-        (Cr,
-         0.0, 0.0,
-         Gdouble (Get_Allocated_Width (Child.Title_Box)),
-         Gdouble (Get_Allocated_Height (Child.Title_Box)));
+        (Cr, 0.0, 0.0, H, Gdouble (Get_Allocated_Height (Child.Title_Box)));
       Cairo.Fill (Cr);
+      Pattern_Destroy (Pat);
 
       if Child.Icon /= null then
          W := Get_Width (Child.Icon);

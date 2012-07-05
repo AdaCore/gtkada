@@ -602,10 +602,28 @@ package Cairo is
    function Pattern_Create_Linear
      (X0, Y0, X1, Y1 : Gdouble) return Cairo_Pattern;
    pragma Import (C, Pattern_Create_Linear, "cairo_pattern_create_linear");
+   --  See Pattern_Add_Color_Stop to specify the colors
 
    function Pattern_Create_Radial
      (Cx0, Cy0, Radius0, Cx1, Cy1, Radius1 : Gdouble) return Cairo_Pattern;
    pragma Import (C, Pattern_Create_Radial, "cairo_pattern_create_radial");
+
+   procedure Pattern_Destroy (Pattern : Cairo_Pattern);
+   pragma Import (C, Pattern_Destroy, "cairo_pattern_destroy");
+
+   procedure Pattern_Add_Color_Stop_Rgb
+     (Pattern : Cairo_Pattern;
+      Offset  : Gdouble;
+      Red, Green, Blue : Gdouble);
+   pragma Import
+     (C, Pattern_Add_Color_Stop_Rgb, "cairo_pattern_add_color_stop_rgb");
+
+   procedure Pattern_Add_Color_Stop_Rgba
+     (Pattern : Cairo_Pattern;
+      Offset  : Gdouble;
+      Red, Green, Blue, Alpha : Gdouble);
+   pragma Import
+     (C, Pattern_Add_Color_Stop_Rgba, "cairo_pattern_add_color_stop_rgba");
 
    procedure Set_Source (Cr : Cairo_Context; Source : Cairo_Pattern);
    --  Cr: a cairo context
