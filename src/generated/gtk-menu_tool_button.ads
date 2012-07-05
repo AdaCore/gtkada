@@ -71,6 +71,12 @@ package Gtk.Menu_Tool_Button is
       (Menu        : out Gtk_Menu_Tool_Button;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "");
+   --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button using
+   --  Icon_Widget as icon and Label as label.
+   --  Since: gtk+ 2.6
+   --  "icon_widget": a widget that will be used as icon widget, or null
+   --  "label": a string that will be used as label, or null
+
    procedure Initialize
       (Menu        : not null access Gtk_Menu_Tool_Button_Record'Class;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
@@ -84,6 +90,12 @@ package Gtk.Menu_Tool_Button is
    procedure Gtk_New_From_Stock
       (Menu     : out Gtk_Menu_Tool_Button;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button. The new
+   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button will contain an icon and label
+   --  from the stock item indicated by Stock_Id.
+   --  Since: gtk+ 2.6
+   --  "stock_id": the name of a stock item
+
    procedure Initialize_From_Stock
       (Menu     : not null access Gtk_Menu_Tool_Button_Record'Class;
        Stock_Id : UTF8_String);
@@ -103,6 +115,11 @@ package Gtk.Menu_Tool_Button is
    function Get_Menu
       (Button : not null access Gtk_Menu_Tool_Button_Record)
        return Gtk.Menu.Gtk_Menu;
+   --  Gets the Gtk.Menu.Gtk_Menu associated with
+   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button.
+   --  with Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button
+   --  Since: gtk+ 2.6
+
    procedure Set_Menu
       (Button : not null access Gtk_Menu_Tool_Button_Record;
        Menu   : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -145,12 +162,14 @@ package Gtk.Menu_Tool_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Menu_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Menu_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Tool_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Menu_Tool_Button_Record;
        Use_Appearance : Boolean);

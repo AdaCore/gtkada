@@ -62,6 +62,8 @@ package Gtk.Handle_Box is
    ------------------
 
    procedure Gtk_New (Handle_Box : out Gtk_Handle_Box);
+   --  Create a new handle box.
+
    procedure Initialize
       (Handle_Box : not null access Gtk_Handle_Box_Record'Class);
    --  Create a new handle box.
@@ -81,6 +83,9 @@ package Gtk.Handle_Box is
    function Get_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Position_Type;
+   --  Gets the handle position of the handle box. See
+   --  Gtk.Handle_Box.Set_Handle_Position.
+
    procedure Set_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        Position   : Gtk.Enums.Gtk_Position_Type);
@@ -90,6 +95,9 @@ package Gtk.Handle_Box is
    function Get_Shadow_Type
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
+   --  Gets the type of shadow drawn around the handle box. See
+   --  Gtk.Handle_Box.Set_Shadow_Type.
+
    procedure Set_Shadow_Type
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        The_Type   : Gtk.Enums.Gtk_Shadow_Type);
@@ -100,6 +108,11 @@ package Gtk.Handle_Box is
    function Get_Snap_Edge
       (Handle_Box : not null access Gtk_Handle_Box_Record)
        return Gtk.Enums.Gtk_Position_Type;
+   --  Gets the edge used for determining reattachment of the handle box. See
+   --  Gtk.Handle_Box.Set_Snap_Edge.
+   --  (GtkPositionType)-1 if this is determined (as per default) from the
+   --  handle position.
+
    procedure Set_Snap_Edge
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        Edge       : Gtk.Enums.Gtk_Position_Type);

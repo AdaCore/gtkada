@@ -69,6 +69,9 @@ package Gtk.Status_Icon is
    ------------------
 
    procedure Gtk_New (Status_Icon : out Gtk_Status_Icon);
+   --  Creates an empty status icon object.
+   --  Since: gtk+ 2.10
+
    procedure Initialize
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class);
    --  Creates an empty status icon object.
@@ -77,6 +80,12 @@ package Gtk.Status_Icon is
    procedure Gtk_New_From_File
       (Status_Icon : out Gtk_Status_Icon;
        Filename    : UTF8_String);
+   --  Creates a status icon displaying the file Filename.
+   --  The image will be scaled down to fit in the available space in the
+   --  notification area, if necessary.
+   --  Since: gtk+ 2.10
+   --  "filename": a filename
+
    procedure Initialize_From_File
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Filename    : UTF8_String);
@@ -89,6 +98,11 @@ package Gtk.Status_Icon is
    procedure Gtk_New_From_Gicon
       (Status_Icon : out Gtk_Status_Icon;
        Icon        : Glib.G_Icon.G_Icon);
+   --  Creates a status icon displaying a GIcon. If the icon is a themed icon,
+   --  it will be updated when the theme changes.
+   --  Since: gtk+ 2.14
+   --  "icon": a GIcon
+
    procedure Initialize_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon        : Glib.G_Icon.G_Icon);
@@ -100,6 +114,12 @@ package Gtk.Status_Icon is
    procedure Gtk_New_From_Icon_Name
       (Status_Icon : out Gtk_Status_Icon;
        Icon_Name   : UTF8_String);
+   --  Creates a status icon displaying an icon from the current icon theme.
+   --  If the current icon theme is changed, the icon will be updated
+   --  appropriately.
+   --  Since: gtk+ 2.10
+   --  "icon_name": an icon name
+
    procedure Initialize_From_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon_Name   : UTF8_String);
@@ -112,6 +132,12 @@ package Gtk.Status_Icon is
    procedure Gtk_New_From_Pixbuf
       (Status_Icon : out Gtk_Status_Icon;
        Pixbuf      : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a status icon displaying Pixbuf.
+   --  The image will be scaled down to fit in the available space in the
+   --  notification area, if necessary.
+   --  Since: gtk+ 2.10
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+
    procedure Initialize_From_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Pixbuf      : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
@@ -124,6 +150,12 @@ package Gtk.Status_Icon is
    procedure Gtk_New_From_Stock
       (Status_Icon : out Gtk_Status_Icon;
        Stock_Id    : UTF8_String);
+   --  Creates a status icon displaying a stock icon. Sample stock icon names
+   --  are GTK_STOCK_OPEN, GTK_STOCK_QUIT. You can register your own stock icon
+   --  names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
+   --  Since: gtk+ 2.10
+   --  "stock_id": a stock icon id
+
    procedure Initialize_From_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Stock_Id    : UTF8_String);
@@ -143,6 +175,14 @@ package Gtk.Status_Icon is
    function Get_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Glib.G_Icon.G_Icon;
+   --  Retrieves the GIcon being displayed by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
+   --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Gicon (see
+   --  Gtk.Status_Icon.Get_Storage_Type). The caller of this function does not
+   --  own a reference to the returned GIcon.
+   --  If this function fails, Icon is left unchanged;
+   --  Since: gtk+ 2.14
+
    procedure Set_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Icon        : Glib.G_Icon.G_Icon);
@@ -153,6 +193,10 @@ package Gtk.Status_Icon is
 
    function Get_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
+   --  Returns the current value of the has-tooltip property. See
+   --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip for more information.
+   --  Since: gtk+ 2.16
+
    procedure Set_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Has_Tooltip : Boolean);
@@ -164,6 +208,13 @@ package Gtk.Status_Icon is
    function Get_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   --  Gets the name of the icon being displayed by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
+   --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Icon_Name (see
+   --  Gtk.Status_Icon.Get_Storage_Type). The returned string is owned by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
+   --  Since: gtk+ 2.10
+
    procedure Set_From_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Icon_Name   : UTF8_String);
@@ -175,6 +226,14 @@ package Gtk.Status_Icon is
    function Get_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
+   --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
+   --  Gtk.Status_Icon.Get_Storage_Type). The caller of this function does not
+   --  own a reference to the returned pixbuf.
+   --  or null if the image is empty.
+   --  Since: gtk+ 2.10
+
    procedure Set_From_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Pixbuf      : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
@@ -186,6 +245,9 @@ package Gtk.Status_Icon is
    function Get_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gdk.Screen.Gdk_Screen;
+   --  Returns the Gdk.Screen.Gdk_Screen associated with Status_Icon.
+   --  Since: gtk+ 2.12
+
    procedure Set_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Screen      : not null access Gdk.Screen.Gdk_Screen_Record'Class);
@@ -208,6 +270,14 @@ package Gtk.Status_Icon is
    function Get_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   --  Gets the id of the stock icon being displayed by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
+   --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Stock (see
+   --  Gtk.Status_Icon.Get_Storage_Type). The returned string is owned by the
+   --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
+   --  or null if the image is empty.
+   --  Since: gtk+ 2.10
+
    procedure Set_From_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Stock_Id    : UTF8_String);
@@ -228,6 +298,9 @@ package Gtk.Status_Icon is
    function Get_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   --  Gets the title of this tray icon. See Gtk.Status_Icon.Set_Title.
+   --  Since: gtk+ 2.18
+
    procedure Set_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Title       : UTF8_String);
@@ -240,6 +313,10 @@ package Gtk.Status_Icon is
    function Get_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   --  Gets the contents of the tooltip for Status_Icon.
+   --  returned string with g_free when done.
+   --  Since: gtk+ 2.16
+
    procedure Set_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Markup      : UTF8_String := "");
@@ -256,6 +333,10 @@ package Gtk.Status_Icon is
    function Get_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   --  Gets the contents of the tooltip for Status_Icon.
+   --  returned string with g_free when done.
+   --  Since: gtk+ 2.16
+
    procedure Set_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Text        : UTF8_String);
@@ -270,6 +351,11 @@ package Gtk.Status_Icon is
 
    function Get_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
+   --  Returns whether the status icon is visible or not. Note that being
+   --  visible does not guarantee that the user can actually see the icon, see
+   --  also Gtk.Status_Icon.Is_Embedded.
+   --  Since: gtk+ 2.10
+
    procedure Set_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Visible     : Boolean);

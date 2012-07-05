@@ -73,6 +73,15 @@ package Gtk.Table is
        Rows        : Guint;
        Columns     : Guint;
        Homogeneous : Boolean);
+   --  Create a new table. The width allocated to the table is divided into
+   --  Columns columns, which all have the same width if Homogeneous is True.
+   --  If Homogeneous is False, the width will be calculated with the children
+   --  contained in the table. Same behavior for the rows.
+   --  "rows": The number of rows the new table should have.
+   --  "columns": The number of columns the new table should have.
+   --  "homogeneous": If set to True, all table cells are resized to the size
+   --  of the cell containing the largest widget.
+
    procedure Initialize
       (Table       : not null access Gtk_Table_Record'Class;
        Rows        : Guint;
@@ -152,6 +161,10 @@ package Gtk.Table is
    function Get_Col_Spacing
       (Table  : not null access Gtk_Table_Record;
        Column : Guint) return Guint;
+   --  Gets the amount of space between column Col, and column Col + 1. See
+   --  Gtk.Table.Set_Col_Spacing.
+   --  "column": a column in the table, 0 indicates the first column
+
    procedure Set_Col_Spacing
       (Table   : not null access Gtk_Table_Record;
        Column  : Guint;
@@ -172,6 +185,9 @@ package Gtk.Table is
 
    function Get_Homogeneous
       (Table : not null access Gtk_Table_Record) return Boolean;
+   --  Returns whether the table cells are all constrained to the same width
+   --  and height. (See gtk_table_set_homogenous ())
+
    procedure Set_Homogeneous
       (Table       : not null access Gtk_Table_Record;
        Homogeneous : Boolean);
@@ -184,6 +200,10 @@ package Gtk.Table is
    function Get_Row_Spacing
       (Table : not null access Gtk_Table_Record;
        Row   : Guint) return Guint;
+   --  Gets the amount of space between row Row, and row Row + 1. See
+   --  Gtk.Table.Set_Row_Spacing.
+   --  "row": a row in the table, 0 indicates the first row
+
    procedure Set_Row_Spacing
       (Table   : not null access Gtk_Table_Record;
        Row     : Guint;

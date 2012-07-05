@@ -70,6 +70,18 @@ package Gtk.Font_Chooser is
    -------------
 
    function Get_Font (Self : Gtk_Font_Chooser) return UTF8_String;
+   --  Gets the currently-selected font name.
+   --  Note that this can be a different string than what you set with
+   --  Gtk.Font_Button.Set_Font, as the font chooser widget may normalize font
+   --  names and thus return a string with a different structure. For example,
+   --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
+   --  12".
+   --  Use pango_font_description_equal if you want to compare two font
+   --  descriptions.
+   --  of the current font, or null if no font is selected. You must free this
+   --  string with g_free.
+   --  Since: gtk+ 3.2
+
    procedure Set_Font (Self : Gtk_Font_Chooser; Fontname : UTF8_String);
    --  Sets the currently-selected font.
    --  Since: gtk+ 3.2
@@ -78,6 +90,17 @@ package Gtk.Font_Chooser is
    function Get_Font_Desc
       (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Description;
    pragma Import (C, Get_Font_Desc, "gtk_font_chooser_get_font_desc");
+   --  Gets the currently-selected font.
+   --  Note that this can be a different string than what you set with
+   --  Gtk.Font_Button.Set_Font, as the font chooser widget may normalize font
+   --  names and thus return a string with a different structure. For example,
+   --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
+   --  12".
+   --  Use pango_font_description_equal if you want to compare two font
+   --  descriptions.
+   --  current font, or null if no font is selected.
+   --  Since: gtk+ 3.2
+
    procedure Set_Font_Desc
       (Self      : Gtk_Font_Chooser;
        Font_Desc : Pango.Font.Pango_Font_Description);
@@ -111,6 +134,10 @@ package Gtk.Font_Chooser is
    --  Since: gtk+ 3.2
 
    function Get_Preview_Text (Self : Gtk_Font_Chooser) return UTF8_String;
+   --  Gets the text displayed in the preview area.
+   --  preview area
+   --  Since: gtk+ 3.2
+
    procedure Set_Preview_Text (Self : Gtk_Font_Chooser; Text : UTF8_String);
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
@@ -118,6 +145,10 @@ package Gtk.Font_Chooser is
    --  "text": the text to display in the preview area
 
    function Get_Show_Preview_Entry (Self : Gtk_Font_Chooser) return Boolean;
+   --  Returns whether the preview entry is shown or not.
+   --  or False if it is hidden.
+   --  Since: gtk+ 3.2
+
    procedure Set_Show_Preview_Entry
       (Self               : Gtk_Font_Chooser;
        Show_Preview_Entry : Boolean);

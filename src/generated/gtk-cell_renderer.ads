@@ -162,6 +162,11 @@ package Gtk.Cell_Renderer is
       (Cell   : not null access Gtk_Cell_Renderer_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   --  Fills in Xalign and Yalign with the appropriate values of Cell.
+   --  Since: gtk+ 2.18
+   --  "xalign": location to fill in with the x alignment of the cell, or null
+   --  "yalign": location to fill in with the y alignment of the cell, or null
+
    procedure Set_Alignment
       (Cell   : not null access Gtk_Cell_Renderer_Record;
        Xalign : Gfloat;
@@ -175,6 +180,11 @@ package Gtk.Cell_Renderer is
       (Cell   : not null access Gtk_Cell_Renderer_Record;
        Width  : out Gint;
        Height : out Gint);
+   --  Fills in Width and Height with the appropriate size of Cell.
+   --  "width": location to fill in with the fixed width of the cell, or null
+   --  "height": location to fill in with the fixed height of the cell, or
+   --  null
+
    procedure Set_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
        Width  : Gint;
@@ -188,6 +198,11 @@ package Gtk.Cell_Renderer is
       (Cell : not null access Gtk_Cell_Renderer_Record;
        Xpad : out Gint;
        Ypad : out Gint);
+   --  Fills in Xpad and Ypad with the appropriate values of Cell.
+   --  Since: gtk+ 2.18
+   --  "xpad": location to fill in with the x padding of the cell, or null
+   --  "ypad": location to fill in with the y padding of the cell, or null
+
    procedure Set_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
        Xpad : Gint;
@@ -268,6 +283,9 @@ package Gtk.Cell_Renderer is
 
    function Get_Sensitive
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
+   --  Returns the cell renderer's sensitivity.
+   --  Since: gtk+ 2.18
+
    procedure Set_Sensitive
       (Cell      : not null access Gtk_Cell_Renderer_Record;
        Sensitive : Boolean);
@@ -314,6 +332,9 @@ package Gtk.Cell_Renderer is
 
    function Get_Visible
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
+   --  Returns the cell renderer's visibility.
+   --  Since: gtk+ 2.18
+
    procedure Set_Visible
       (Cell    : not null access Gtk_Cell_Renderer_Record;
        Visible : Boolean);

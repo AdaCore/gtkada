@@ -45,6 +45,8 @@ package Gtk.Menu_Bar is
    ------------------
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
+   --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
+
    procedure Initialize
       (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class);
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
@@ -59,6 +61,10 @@ package Gtk.Menu_Bar is
    function Get_Child_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record)
        return Gtk.Enums.Gtk_Pack_Direction;
+   --  Retrieves the current child pack direction of the menubar. See
+   --  Gtk.Menu_Bar.Set_Child_Pack_Direction.
+   --  Since: gtk+ 2.8
+
    procedure Set_Child_Pack_Direction
       (Menu_Bar       : not null access Gtk_Menu_Bar_Record;
        Child_Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
@@ -69,6 +75,10 @@ package Gtk.Menu_Bar is
    function Get_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record)
        return Gtk.Enums.Gtk_Pack_Direction;
+   --  Retrieves the current pack direction of the menubar. See
+   --  Gtk.Menu_Bar.Set_Pack_Direction.
+   --  Since: gtk+ 2.8
+
    procedure Set_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record;
        Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);

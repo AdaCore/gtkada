@@ -88,6 +88,10 @@ package Gdk.Device is
    function Get_Axis_Use
       (Self  : not null access Gdk_Device_Record;
        Index : Guint) return Gdk_Axis_Use;
+   --  Returns the axis use for Index_.
+   --  Since: gtk+ 2.20
+   --  "index_": the index of the axis.
+
    procedure Set_Axis_Use
       (Self  : not null access Gdk_Device_Record;
        Index : Guint;
@@ -115,6 +119,9 @@ package Gdk.Device is
 
    function Get_Mode
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Mode;
+   --  Determines the mode of the device.
+   --  Since: gtk+ 2.20
+
    function Set_Mode
       (Self : not null access Gdk_Device_Record;
        Mode : Gdk_Input_Mode) return Boolean;

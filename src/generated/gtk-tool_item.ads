@@ -61,6 +61,9 @@ package Gtk.Tool_Item is
    ------------------
 
    procedure Gtk_New (Tool_Item : out Gtk_Tool_Item);
+   --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
+   --  Since: gtk+ 2.4
+
    procedure Initialize
       (Tool_Item : not null access Gtk_Tool_Item_Record'Class);
    --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
@@ -84,6 +87,10 @@ package Gtk.Tool_Item is
 
    function Get_Expand
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether Tool_Item is allocated extra space. See
+   --  Gtk.Tool_Item.Set_Expand.
+   --  Since: gtk+ 2.4
+
    procedure Set_Expand
       (Tool_Item : not null access Gtk_Tool_Item_Record;
        Expand    : Boolean);
@@ -96,6 +103,11 @@ package Gtk.Tool_Item is
 
    function Get_Homogeneous
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether Tool_Item is the same size as other homogeneous items.
+   --  See Gtk.Tool_Item.Set_Homogeneous.
+   --  items.
+   --  Since: gtk+ 2.4
+
    procedure Set_Homogeneous
       (Tool_Item   : not null access Gtk_Tool_Item_Record;
        Homogeneous : Boolean);
@@ -117,6 +129,10 @@ package Gtk.Tool_Item is
 
    function Get_Is_Important
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether Tool_Item is considered important. See
+   --  Gtk.Tool_Item.Set_Is_Important
+   --  Since: gtk+ 2.4
+
    procedure Set_Is_Important
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Is_Important : Boolean);
@@ -141,6 +157,18 @@ package Gtk.Tool_Item is
    function Get_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String) return Gtk.Menu_Item.Gtk_Menu_Item;
+   --  If Menu_Item_Id matches the string passed to
+   --  Gtk.Tool_Item.Set_Proxy_Menu_Item return the corresponding
+   --  Gtk.Menu_Item.Gtk_Menu_Item.
+   --  Custom subclasses of Gtk.Tool_Item.Gtk_Tool_Item should use this
+   --  function to update their menu item when the Gtk.Tool_Item.Gtk_Tool_Item
+   --  changes. That the Menu_Item_Id<!-- -->s must match ensures that a
+   --  Gtk.Tool_Item.Gtk_Tool_Item will not inadvertently change a menu item
+   --  that they did not create.
+   --  Gtk.Tool_Item.Set_Proxy_Menu_Item, if the Menu_Item_Id<!-- -->s match.
+   --  Since: gtk+ 2.4
+   --  "menu_item_id": a string used to identify the menu item
+
    procedure Set_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
@@ -212,6 +240,10 @@ package Gtk.Tool_Item is
 
    function Get_Use_Drag_Window
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether Tool_Item has a drag window. See
+   --  Gtk.Tool_Item.Set_Use_Drag_Window.
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Drag_Window
       (Tool_Item       : not null access Gtk_Tool_Item_Record;
        Use_Drag_Window : Boolean);
@@ -224,6 +256,11 @@ package Gtk.Tool_Item is
 
    function Get_Visible_Horizontal
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether the Tool_Item is visible on toolbars that are docked
+   --  horizontally.
+   --  docked horizontally.
+   --  Since: gtk+ 2.4
+
    procedure Set_Visible_Horizontal
       (Tool_Item          : not null access Gtk_Tool_Item_Record;
        Visible_Horizontal : Boolean);
@@ -235,6 +272,10 @@ package Gtk.Tool_Item is
 
    function Get_Visible_Vertical
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
+   --  Returns whether Tool_Item is visible when the toolbar is docked
+   --  vertically. See Gtk.Tool_Item.Set_Visible_Vertical.
+   --  Since: gtk+ 2.4
+
    procedure Set_Visible_Vertical
       (Tool_Item        : not null access Gtk_Tool_Item_Record;
        Visible_Vertical : Boolean);
@@ -302,12 +343,14 @@ package Gtk.Tool_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Tool_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tool_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tool_Item_Record;
        Use_Appearance : Boolean);

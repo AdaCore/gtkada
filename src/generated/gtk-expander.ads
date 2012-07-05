@@ -93,6 +93,10 @@ package Gtk.Expander is
    ------------------
 
    procedure Gtk_New (Expander : out Gtk_Expander; Label : UTF8_String);
+   --  Creates a new expander using Label as the text of the label.
+   --  Since: gtk+ 2.4
+   --  "label": the text of the label
+
    procedure Initialize
       (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String);
@@ -103,6 +107,16 @@ package Gtk.Expander is
    procedure Gtk_New_With_Mnemonic
       (Expander : out Gtk_Expander;
        Label    : UTF8_String := "");
+   --  Creates a new expander using Label as the text of the label. If
+   --  characters in Label are preceded by an underscore, they are underlined.
+   --  If you need a literal underscore character in a label, use '__' (two
+   --  underscores). The first underlined character represents a keyboard
+   --  accelerator called a mnemonic. Pressing Alt and that key activates the
+   --  button.
+   --  Since: gtk+ 2.4
+   --  "label": the text of the label with an underscore in front of the
+   --  mnemonic character
+
    procedure Initialize_With_Mnemonic
       (Expander : not null access Gtk_Expander_Record'Class;
        Label    : UTF8_String := "");
@@ -125,6 +139,11 @@ package Gtk.Expander is
 
    function Get_Expanded
       (Expander : not null access Gtk_Expander_Record) return Boolean;
+   --  Queries a Gtk.Expander.Gtk_Expander and returns its current state.
+   --  Returns True if the child widget is revealed.
+   --  See Gtk.Expander.Set_Expanded.
+   --  Since: gtk+ 2.4
+
    procedure Set_Expanded
       (Expander : not null access Gtk_Expander_Record;
        Expanded : Boolean);
@@ -136,6 +155,18 @@ package Gtk.Expander is
 
    function Get_Label
       (Expander : not null access Gtk_Expander_Record) return UTF8_String;
+   --  Fetches the text from a label widget including any embedded underlines
+   --  indicating mnemonics and Pango markup, as set by Gtk.Expander.Set_Label.
+   --  If the label text has not been set the return value will be null. This
+   --  will be the case if you create an empty button with gtk_button_new to
+   --  use as a container.
+   --  Note that this function behaved differently in versions prior to 2.14
+   --  and used to return the label text stripped of embedded underlines
+   --  indicating mnemonics and Pango markup. This problem can be avoided by
+   --  fetching the label text directly from the label widget.
+   --  by the widget and must not be modified or freed.
+   --  Since: gtk+ 2.4
+
    procedure Set_Label
       (Expander : not null access Gtk_Expander_Record;
        Label    : UTF8_String := "");
@@ -146,6 +177,11 @@ package Gtk.Expander is
 
    function Get_Label_Fill
       (Expander : not null access Gtk_Expander_Record) return Boolean;
+   --  Returns whether the label widget will fill all available horizontal
+   --  space allocated to Expander.
+   --  available horizontal space
+   --  Since: gtk+ 2.22
+
    procedure Set_Label_Fill
       (Expander   : not null access Gtk_Expander_Record;
        Label_Fill : Boolean);
@@ -158,6 +194,11 @@ package Gtk.Expander is
    function Get_Label_Widget
       (Expander : not null access Gtk_Expander_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the label widget for the frame. See
+   --  Gtk.Expander.Set_Label_Widget.
+   --  or null if there is none
+   --  Since: gtk+ 2.4
+
    procedure Set_Label_Widget
       (Expander     : not null access Gtk_Expander_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -168,6 +209,10 @@ package Gtk.Expander is
 
    function Get_Resize_Toplevel
       (Expander : not null access Gtk_Expander_Record) return Boolean;
+   --  Returns whether the expander will resize the toplevel widget containing
+   --  the expander upon resizing and collpasing.
+   --  Since: gtk+ 3.2
+
    procedure Set_Resize_Toplevel
       (Expander        : not null access Gtk_Expander_Record;
        Resize_Toplevel : Boolean);
@@ -178,6 +223,9 @@ package Gtk.Expander is
 
    function Get_Spacing
       (Expander : not null access Gtk_Expander_Record) return Gint;
+   --  Gets the value set by Gtk.Expander.Set_Spacing.
+   --  Since: gtk+ 2.4
+
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
        Spacing  : Gint);
@@ -188,6 +236,11 @@ package Gtk.Expander is
 
    function Get_Use_Markup
       (Expander : not null access Gtk_Expander_Record) return Boolean;
+   --  Returns whether the label's text is interpreted as marked up with the
+   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>. See
+   --  Gtk.Expander.Set_Use_Markup.
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Markup
       (Expander   : not null access Gtk_Expander_Record;
        Use_Markup : Boolean);
@@ -199,6 +252,11 @@ package Gtk.Expander is
 
    function Get_Use_Underline
       (Expander : not null access Gtk_Expander_Record) return Boolean;
+   --  Returns whether an embedded underline in the expander label indicates a
+   --  mnemonic. See Gtk.Expander.Set_Use_Underline.
+   --  label indicates the mnemonic accelerator keys
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Underline
       (Expander      : not null access Gtk_Expander_Record;
        Use_Underline : Boolean);

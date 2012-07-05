@@ -49,6 +49,11 @@ package Gtk.Volume_Button is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Volume_Button);
+   --  Creates a Gtk.Volume_Button.Gtk_Volume_Button, with a range between 0.0
+   --  and 1.0, with a stepping of 0.02. Volume values can be obtained and
+   --  modified using the functions from Gtk.Scale_Button.Gtk_Scale_Button.
+   --  Since: gtk+ 2.12
+
    procedure Initialize
       (Widget : not null access Gtk_Volume_Button_Record'Class);
    --  Creates a Gtk.Volume_Button.Gtk_Volume_Button, with a range between 0.0
@@ -73,12 +78,14 @@ package Gtk.Volume_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Volume_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Volume_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Volume_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Volume_Button_Record;
        Use_Appearance : Boolean);
@@ -90,6 +97,7 @@ package Gtk.Volume_Button is
    function Get_Orientation
       (Self : not null access Gtk_Volume_Button_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Volume_Button_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

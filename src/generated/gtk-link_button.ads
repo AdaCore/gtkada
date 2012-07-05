@@ -60,6 +60,10 @@ package Gtk.Link_Button is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Link_Button; URI : UTF8_String);
+   --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
+   --  Since: gtk+ 2.10
+   --  "uri": a valid URI
+
    procedure Initialize
       (Widget : not null access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String);
@@ -71,6 +75,11 @@ package Gtk.Link_Button is
       (Widget : out Gtk_Link_Button;
        URI    : UTF8_String;
        Label  : UTF8_String := "");
+   --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
+   --  Since: gtk+ 2.10
+   --  "uri": a valid URI
+   --  "label": the text of the button
+
    procedure Initialize_With_Label
       (Widget : not null access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String;
@@ -89,6 +98,10 @@ package Gtk.Link_Button is
 
    function Get_Uri
       (Widget : not null access Gtk_Link_Button_Record) return UTF8_String;
+   --  Retrieves the URI set using Gtk.Link_Button.Set_Uri.
+   --  and should not be modified or freed.
+   --  Since: gtk+ 2.10
+
    procedure Set_Uri
       (Widget : not null access Gtk_Link_Button_Record;
        URI    : UTF8_String);
@@ -99,6 +112,13 @@ package Gtk.Link_Button is
 
    function Get_Visited
       (Widget : not null access Gtk_Link_Button_Record) return Boolean;
+   --  Retrieves the 'visited' state of the URI where the
+   --  Gtk.Link_Button.Gtk_Link_Button points. The button becomes visited when
+   --  it is clicked. If the URI is changed on the button, the 'visited' state
+   --  is unset again.
+   --  The state may also be changed using Gtk.Link_Button.Set_Visited.
+   --  Since: gtk+ 2.14
+
    procedure Set_Visited
       (Widget  : not null access Gtk_Link_Button_Record;
        Visited : Boolean);
@@ -122,12 +142,14 @@ package Gtk.Link_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Link_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Link_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Link_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Link_Button_Record;
        Use_Appearance : Boolean);

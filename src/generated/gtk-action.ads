@@ -95,6 +95,17 @@ package Gtk.Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "");
+   --  Creates a new Gtk.Action.Gtk_Action object. To add the action to a
+   --  Gtk.Action_Group.Gtk_Action_Group and set the accelerator for the
+   --  action, call Gtk.Action_Group.Add_Action_With_Accel. See <xref
+   --  linkend="XML-UI"/> for information on allowed action names.
+   --  Since: gtk+ 2.4
+   --  "name": A unique name for the action
+   --  "label": the label displayed in menu items and on buttons, or null
+   --  "tooltip": a tooltip for the action, or null
+   --  "stock_id": the stock icon to display in widgets representing the
+   --  action, or null
+
    procedure Initialize
       (Action   : not null access Gtk_Action_Record'Class;
        Name     : UTF8_String;
@@ -180,6 +191,11 @@ package Gtk.Action is
 
    function Get_Accel_Path
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Returns the accel path for this action.
+   --  if none is set. The returned string is owned by GTK+ and must not be
+   --  freed or modified.
+   --  Since: gtk+ 2.6
+
    procedure Set_Accel_Path
       (Action     : not null access Gtk_Action_Record;
        Accel_Path : UTF8_String);
@@ -194,6 +210,11 @@ package Gtk.Action is
 
    function Get_Always_Show_Image
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Returns whether Action<!-- -->'s menu item proxies will ignore the
+   --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show their
+   --  image, if available.
+   --  Since: gtk+ 2.20
+
    procedure Set_Always_Show_Image
       (Action      : not null access Gtk_Action_Record;
        Always_Show : Boolean);
@@ -207,6 +228,9 @@ package Gtk.Action is
 
    function Get_Gicon
       (Action : not null access Gtk_Action_Record) return Glib.G_Icon.G_Icon;
+   --  Gets the gicon of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Gicon
       (Action : not null access Gtk_Action_Record;
        Icon   : Glib.G_Icon.G_Icon);
@@ -216,6 +240,9 @@ package Gtk.Action is
 
    function Get_Icon_Name
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Gets the icon name of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Icon_Name
       (Action    : not null access Gtk_Action_Record;
        Icon_Name : UTF8_String);
@@ -225,6 +252,9 @@ package Gtk.Action is
 
    function Get_Is_Important
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Checks whether Action is important or not
+   --  Since: gtk+ 2.16
+
    procedure Set_Is_Important
       (Action       : not null access Gtk_Action_Record;
        Is_Important : Boolean);
@@ -235,6 +265,9 @@ package Gtk.Action is
 
    function Get_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Gets the label text of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Label
       (Action : not null access Gtk_Action_Record;
        Label  : UTF8_String);
@@ -258,6 +291,11 @@ package Gtk.Action is
 
    function Get_Sensitive
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Returns whether the action itself is sensitive. Note that this doesn't
+   --  necessarily mean effective sensitivity. See Gtk.Action.Is_Sensitive for
+   --  that.
+   --  Since: gtk+ 2.4
+
    procedure Set_Sensitive
       (Action    : not null access Gtk_Action_Record;
        Sensitive : Boolean);
@@ -269,6 +307,9 @@ package Gtk.Action is
 
    function Get_Short_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Gets the short label text of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Short_Label
       (Action      : not null access Gtk_Action_Record;
        Short_Label : UTF8_String);
@@ -278,6 +319,9 @@ package Gtk.Action is
 
    function Get_Stock_Id
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Gets the stock id of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Stock_Id
       (Action   : not null access Gtk_Action_Record;
        Stock_Id : UTF8_String);
@@ -287,6 +331,9 @@ package Gtk.Action is
 
    function Get_Tooltip
       (Action : not null access Gtk_Action_Record) return UTF8_String;
+   --  Gets the tooltip text of Action.
+   --  Since: gtk+ 2.16
+
    procedure Set_Tooltip
       (Action  : not null access Gtk_Action_Record;
        Tooltip : UTF8_String);
@@ -296,6 +343,11 @@ package Gtk.Action is
 
    function Get_Visible
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Returns whether the action itself is visible. Note that this doesn't
+   --  necessarily mean effective visibility. See Gtk.Action.Is_Sensitive for
+   --  that.
+   --  Since: gtk+ 2.4
+
    procedure Set_Visible
       (Action  : not null access Gtk_Action_Record;
        Visible : Boolean);
@@ -307,6 +359,9 @@ package Gtk.Action is
 
    function Get_Visible_Horizontal
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Checks whether Action is visible when horizontal
+   --  Since: gtk+ 2.16
+
    procedure Set_Visible_Horizontal
       (Action             : not null access Gtk_Action_Record;
        Visible_Horizontal : Boolean);
@@ -316,6 +371,9 @@ package Gtk.Action is
 
    function Get_Visible_Vertical
       (Action : not null access Gtk_Action_Record) return Boolean;
+   --  Checks whether Action is visible when horizontal
+   --  Since: gtk+ 2.16
+
    procedure Set_Visible_Vertical
       (Action           : not null access Gtk_Action_Record;
        Visible_Vertical : Boolean);

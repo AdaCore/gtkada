@@ -82,6 +82,12 @@ package Gtk.Layout is
       (Layout      : out Gtk_Layout;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
+   --  adjustment you'd like the layout to use for scrolling, pass null for
+   --  Hadjustment and Vadjustment.
+   --  "hadjustment": horizontal scroll adjustment, or null
+   --  "vadjustment": vertical scroll adjustment, or null
+
    procedure Initialize
       (Layout      : not null access Gtk_Layout_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
@@ -109,6 +115,12 @@ package Gtk.Layout is
       (Layout : not null access Gtk_Layout_Record;
        Width  : out Guint;
        Height : out Guint);
+   --  Gets the size that has been set on the layout, and that determines the
+   --  total extents of the layout's scrollbar area. See gtk_layout_set_size
+   --  ().
+   --  "width": location to store the width set on Layout, or null
+   --  "height": location to store the height set on Layout, or null
+
    procedure Set_Size
       (Layout : not null access Gtk_Layout_Record;
        Width  : Guint;
@@ -151,6 +163,7 @@ package Gtk.Layout is
    function Get_Hadjustment
       (Self : not null access Gtk_Layout_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+
    procedure Set_Hadjustment
       (Self        : not null access Gtk_Layout_Record;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -158,6 +171,7 @@ package Gtk.Layout is
    function Get_Hscroll_Policy
       (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
+
    procedure Set_Hscroll_Policy
       (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
@@ -165,6 +179,7 @@ package Gtk.Layout is
    function Get_Vadjustment
       (Self : not null access Gtk_Layout_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+
    procedure Set_Vadjustment
       (Self        : not null access Gtk_Layout_Record;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -172,6 +187,7 @@ package Gtk.Layout is
    function Get_Vscroll_Policy
       (Self : not null access Gtk_Layout_Record)
        return Gtk.Enums.Gtk_Scrollable_Policy;
+
    procedure Set_Vscroll_Policy
       (Self   : not null access Gtk_Layout_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);

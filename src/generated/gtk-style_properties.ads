@@ -59,6 +59,8 @@ package Gtk.Style_Properties is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Style_Properties);
+   --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties
+
    procedure Initialize
       (Self : not null access Gtk_Style_Properties_Record'Class);
    --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties
@@ -79,6 +81,13 @@ package Gtk.Style_Properties is
        State    : Gtk.Enums.Gtk_State_Flags;
        Value    : out Glib.Values.GValue;
        Exists   : out Boolean);
+   --  Gets a style property from Props for the given state. When done with
+   --  Value, g_value_unset needs to be called to free any allocated memory.
+   --  Since: gtk+ 3.0
+   --  "property": style property name
+   --  "state": state to retrieve the property value for
+   --  "value": return location for the style property value.
+
    procedure Set_Property
       (Self     : not null access Gtk_Style_Properties_Record;
        Property : UTF8_String;

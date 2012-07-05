@@ -56,6 +56,8 @@ package Gtk.Tearoff_Menu_Item is
    ------------------
 
    procedure Gtk_New (Menu_Item : out Gtk_Tearoff_Menu_Item);
+   --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.
+
    procedure Initialize
       (Menu_Item : not null access Gtk_Tearoff_Menu_Item_Record'Class);
    --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.
@@ -77,12 +79,14 @@ package Gtk.Tearoff_Menu_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Tearoff_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tearoff_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tearoff_Menu_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tearoff_Menu_Item_Record;
        Use_Appearance : Boolean);

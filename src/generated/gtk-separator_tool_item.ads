@@ -57,6 +57,9 @@ package Gtk.Separator_Tool_Item is
    ------------------
 
    procedure Gtk_New (Item : out Gtk_Separator_Tool_Item);
+   --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+   --  Since: gtk+ 2.4
+
    procedure Initialize
       (Item : not null access Gtk_Separator_Tool_Item_Record'Class);
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
@@ -71,6 +74,10 @@ package Gtk.Separator_Tool_Item is
 
    function Get_Draw
       (Item : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
+   --  Returns whether Item is drawn as a line, or just blank. See
+   --  Gtk.Separator_Tool_Item.Set_Draw.
+   --  Since: gtk+ 2.4
+
    procedure Set_Draw
       (Item : not null access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
@@ -94,12 +101,14 @@ package Gtk.Separator_Tool_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Separator_Tool_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Separator_Tool_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Separator_Tool_Item_Record;
        Use_Appearance : Boolean);

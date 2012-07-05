@@ -93,6 +93,8 @@ package Gtk.Socket is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Socket);
+   --  Create a new empty Gtk.Socket.Gtk_Socket.
+
    procedure Initialize (Self : not null access Gtk_Socket_Record'Class);
    --  Create a new empty Gtk.Socket.Gtk_Socket.
 

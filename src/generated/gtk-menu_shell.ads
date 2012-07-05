@@ -100,6 +100,9 @@ package Gtk.Menu_Shell is
 
    function Get_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record) return Boolean;
+   --  Returns True if the menu shell will take the keyboard focus on popup.
+   --  Since: gtk+ 2.8
+
    procedure Set_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Take_Focus : Boolean);

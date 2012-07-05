@@ -60,6 +60,9 @@ package Gtk.Font_Button is
    ------------------
 
    procedure Gtk_New (Font_Button : out Gtk_Font_Button);
+   --  Creates a new font picker widget.
+   --  Since: gtk+ 2.4
+
    procedure Initialize
       (Font_Button : not null access Gtk_Font_Button_Record'Class);
    --  Creates a new font picker widget.
@@ -68,6 +71,10 @@ package Gtk.Font_Button is
    procedure Gtk_New_With_Font
       (Font_Button : out Gtk_Font_Button;
        Fontname    : UTF8_String);
+   --  Creates a new font picker widget.
+   --  Since: gtk+ 2.4
+   --  "fontname": Name of font to display in font chooser dialog
+
    procedure Initialize_With_Font
       (Font_Button : not null access Gtk_Font_Button_Record'Class;
        Fontname    : UTF8_String);
@@ -85,6 +92,14 @@ package Gtk.Font_Button is
    function Get_Font_Name
       (Font_Button : not null access Gtk_Font_Button_Record)
        return UTF8_String;
+   --  Retrieves the name of the currently selected font. This name includes
+   --  style and size information as well. If you want to render something with
+   --  the font, use this string with pango_font_description_from_string . If
+   --  you're interested in peeking certain values (family name, style, size,
+   --  weight) just query these properties from the
+   --  Pango.Font_Description.Pango_Font_Description object.
+   --  Since: gtk+ 2.4
+
    function Set_Font_Name
       (Font_Button : not null access Gtk_Font_Button_Record;
        Fontname    : UTF8_String) return Boolean;
@@ -94,6 +109,9 @@ package Gtk.Font_Button is
 
    function Get_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
+   --  Returns whether the font size will be shown in the label.
+   --  Since: gtk+ 2.4
+
    procedure Set_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record;
        Show_Size   : Boolean);
@@ -104,6 +122,9 @@ package Gtk.Font_Button is
 
    function Get_Show_Style
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
+   --  Returns whether the name of the font style will be shown in the label.
+   --  Since: gtk+ 2.4
+
    procedure Set_Show_Style
       (Font_Button : not null access Gtk_Font_Button_Record;
        Show_Style  : Boolean);
@@ -115,6 +136,9 @@ package Gtk.Font_Button is
    function Get_Title
       (Font_Button : not null access Gtk_Font_Button_Record)
        return UTF8_String;
+   --  Retrieves the title of the font chooser dialog.
+   --  Since: gtk+ 2.4
+
    procedure Set_Title
       (Font_Button : not null access Gtk_Font_Button_Record;
        Title       : UTF8_String);
@@ -124,6 +148,9 @@ package Gtk.Font_Button is
 
    function Get_Use_Font
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
+   --  Returns whether the selected font is used in the label.
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Font
       (Font_Button : not null access Gtk_Font_Button_Record;
        Use_Font    : Boolean);
@@ -134,6 +161,9 @@ package Gtk.Font_Button is
 
    function Get_Use_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
+   --  Returns whether the selected size is used in the label.
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Size
       (Font_Button : not null access Gtk_Font_Button_Record;
        Use_Size    : Boolean);
@@ -192,12 +222,14 @@ package Gtk.Font_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Font_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Font_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Font_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Font_Button_Record;
        Use_Appearance : Boolean);
@@ -208,6 +240,7 @@ package Gtk.Font_Button is
 
    function Get_Font
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String;
+
    procedure Set_Font
       (Self     : not null access Gtk_Font_Button_Record;
        Fontname : UTF8_String);
@@ -215,6 +248,7 @@ package Gtk.Font_Button is
    function Get_Font_Desc
       (Self : not null access Gtk_Font_Button_Record)
        return Pango.Font.Pango_Font_Description;
+
    procedure Set_Font_Desc
       (Self      : not null access Gtk_Font_Button_Record;
        Font_Desc : Pango.Font.Pango_Font_Description);
@@ -232,12 +266,14 @@ package Gtk.Font_Button is
 
    function Get_Preview_Text
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String;
+
    procedure Set_Preview_Text
       (Self : not null access Gtk_Font_Button_Record;
        Text : UTF8_String);
 
    function Get_Show_Preview_Entry
       (Self : not null access Gtk_Font_Button_Record) return Boolean;
+
    procedure Set_Show_Preview_Entry
       (Self               : not null access Gtk_Font_Button_Record;
        Show_Preview_Entry : Boolean);

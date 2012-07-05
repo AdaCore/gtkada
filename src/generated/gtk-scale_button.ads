@@ -60,6 +60,17 @@ package Gtk.Scale_Button is
        Max    : Gdouble;
        Step   : Gdouble;
        Icons  : GNAT.Strings.String_List);
+   --  Creates a Gtk.Scale_Button.Gtk_Scale_Button, with a range between Min
+   --  and Max, with a stepping of Step.
+   --  Since: gtk+ 2.12
+   --  "size": a stock icon size
+   --  "min": the minimum value of the scale (usually 0)
+   --  "max": the maximum value of the scale (usually 100)
+   --  "step": the stepping of value when a scroll-wheel event, or up/down
+   --  arrow event occurs (usually 2)
+   --  "icons": a null-terminated array of icon names, or null if you want to
+   --  set the list later with Gtk.Scale_Button.Set_Icons
+
    procedure Initialize
       (Button : not null access Gtk_Scale_Button_Record'Class;
        Size   : Gtk.Enums.Gtk_Icon_Size;
@@ -88,6 +99,11 @@ package Gtk.Scale_Button is
    function Get_Adjustment
       (Button : not null access Gtk_Scale_Button_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   --  Gets the Gtk.Adjustment.Gtk_Adjustment associated with the
+   --  Gtk.Scale_Button.Gtk_Scale_Button's scale. See Gtk.GRange.Get_Adjustment
+   --  for details.
+   --  Since: gtk+ 2.12
+
    procedure Set_Adjustment
       (Button     : not null access Gtk_Scale_Button_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
@@ -118,6 +134,9 @@ package Gtk.Scale_Button is
 
    function Get_Value
       (Button : not null access Gtk_Scale_Button_Record) return Gdouble;
+   --  Gets the current value of the scale button.
+   --  Since: gtk+ 2.12
+
    procedure Set_Value
       (Button : not null access Gtk_Scale_Button_Record;
        Value  : Gdouble);
@@ -151,12 +170,14 @@ package Gtk.Scale_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Scale_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Scale_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Scale_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Scale_Button_Record;
        Use_Appearance : Boolean);
@@ -168,6 +189,7 @@ package Gtk.Scale_Button is
    function Get_Orientation
       (Self : not null access Gtk_Scale_Button_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Scale_Button_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

@@ -77,6 +77,12 @@ package Gtk.Scale is
       (Scale       : out Gtk_Scale;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   --  Creates a new Gtk.Scale.Gtk_Scale.
+   --  Since: gtk+ 3.0
+   --  "orientation": the scale's orientation.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale, or null to create a new adjustment.
+
    procedure Initialize
       (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
@@ -93,6 +99,19 @@ package Gtk.Scale is
        Min         : Gdouble;
        Max         : Gdouble;
        Step        : Gdouble);
+   --  Creates a new scale widget with the given orientation that lets the
+   --  user input a number between Min and Max (including Min and Max) with the
+   --  increment Step. Step must be nonzero; it's the distance the slider moves
+   --  when using the arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
+   --  Since: gtk+ 3.0
+   --  "orientation": the scale's orientation.
+   --  "min": minimum value
+   --  "max": maximum value
+   --  "step": step increment (tick size) used with keyboard shortcuts
+
    procedure Initialize_With_Range
       (Scale       : not null access Gtk_Scale_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
@@ -118,14 +137,33 @@ package Gtk.Scale is
    procedure Gtk_New_Hscale
       (Scale      : out Gtk_Hscale;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Hscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Initialize_Hscale
       (Scale      : not null access Gtk_Hscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Hscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Gtk_New_Hscale
       (Scale : out Gtk_Hscale;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble);
+   --  Creates a new horizontal scale widget that lets the user input a number
+   --  between Min and Max (including Min and Max) with the increment Step.
+   --  Step must be nonzero; it's the distance the slider moves when using the
+   --  arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
+   --  "min": minimum value
+   --  "max": maximum value
+   --  "step": step increment (tick size) used with keyboard shortcuts
+
    procedure Initialize_Hscale
       (Scale : not null access Gtk_Hscale_Record'Class;
        Min   : Gdouble;
@@ -148,14 +186,33 @@ package Gtk.Scale is
    procedure Gtk_New_Vscale
       (Scale      : out Gtk_Vscale;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Vscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Initialize_Vscale
       (Scale      : not null access Gtk_Vscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Vscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Gtk_New_Vscale
       (Scale : out Gtk_Vscale;
        Min   : Gdouble;
        Max   : Gdouble;
        Step  : Gdouble);
+   --  Creates a new vertical scale widget that lets the user input a number
+   --  between Min and Max (including Min and Max) with the increment Step.
+   --  Step must be nonzero; it's the distance the slider moves when using the
+   --  arrow keys to adjust the scale value.
+   --  Note that the way in which the precision is derived works best if Step
+   --  is a power of ten. If the resulting precision is not suitable for your
+   --  needs, use Gtk.Scale.Set_Digits to correct it.
+   --  "min": minimum value
+   --  "max": maximum value
+   --  "step": step increment (tick size) used with keyboard shortcuts
+
    procedure Initialize_Vscale
       (Scale : not null access Gtk_Vscale_Record'Class;
        Min   : Gdouble;
@@ -206,6 +263,8 @@ package Gtk.Scale is
 
    function Get_Digits
       (Scale : not null access Gtk_Scale_Record) return Gint;
+   --  Gets the number of decimal places that are displayed in the value.
+
    procedure Set_Digits
       (Scale      : not null access Gtk_Scale_Record;
        The_Digits : Gint);
@@ -217,6 +276,9 @@ package Gtk.Scale is
 
    function Get_Draw_Value
       (Scale : not null access Gtk_Scale_Record) return Boolean;
+   --  Returns whether the current value is displayed as a string next to the
+   --  slider.
+
    procedure Set_Draw_Value
       (Scale      : not null access Gtk_Scale_Record;
        Draw_Value : Boolean);
@@ -250,6 +312,8 @@ package Gtk.Scale is
    function Get_Value_Pos
       (Scale : not null access Gtk_Scale_Record)
        return Gtk.Enums.Gtk_Position_Type;
+   --  Gets the position in which the current value is displayed.
+
    procedure Set_Value_Pos
       (Scale : not null access Gtk_Scale_Record;
        Pos   : Gtk.Enums.Gtk_Position_Type);
@@ -266,6 +330,7 @@ package Gtk.Scale is
    function Get_Orientation
       (Self : not null access Gtk_Scale_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Scale_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

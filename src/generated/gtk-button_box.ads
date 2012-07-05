@@ -56,6 +56,10 @@ package Gtk.Button_Box is
    procedure Gtk_New
       (Widget      : out Gtk_Button_Box;
        Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box' orientation.
+
    procedure Initialize
       (Widget      : not null access Gtk_Button_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation);
@@ -74,6 +78,10 @@ package Gtk.Button_Box is
       (Widget : not null access Gtk_Button_Box_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Boolean;
+   --  Returns whether the child is exempted from homogenous sizing.
+   --  Since: gtk+ 3.2
+   --  "child": a child of Widget
+
    procedure Set_Child_Non_Homogeneous
       (Widget          : not null access Gtk_Button_Box_Record;
        Child           : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -87,6 +95,10 @@ package Gtk.Button_Box is
       (Widget : not null access Gtk_Button_Box_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Boolean;
+   --  Returns whether Child should appear in a secondary group of children.
+   --  Since: gtk+ 2.4
+   --  "child": a child of Widget
+
    procedure Set_Child_Secondary
       (Widget       : not null access Gtk_Button_Box_Record;
        Child        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -109,6 +121,8 @@ package Gtk.Button_Box is
    function Get_Layout
       (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
+   --  Retrieves the method being used to arrange the buttons in a button box.
+
    procedure Set_Layout
       (Widget       : not null access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
@@ -125,6 +139,7 @@ package Gtk.Button_Box is
    function Get_Orientation
       (Self : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Button_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

@@ -566,6 +566,11 @@ package Gtk.Widget is
 
    function Drag_Dest_Get_Track_Motion
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Returns whether the widget has been configured to always emit
+   --  Gtk.Widget.Gtk_Widget::drag-motion signals.
+   --  Gtk.Widget.Gtk_Widget::drag-motion events
+   --  Since: gtk+ 2.10
+
    procedure Drag_Dest_Set_Track_Motion
       (Widget       : not null access Gtk_Widget_Record;
        Track_Motion : Boolean);
@@ -741,6 +746,24 @@ package Gtk.Widget is
    procedure Get_Allocation
       (Widget     : not null access Gtk_Widget_Record;
        Allocation : out Gtk_Allocation);
+   --  Retrieves the widget's allocation.
+   --  Note, when implementing a Gtk.Container.Gtk_Container: a widget's
+   --  allocation will be its "adjusted" allocation, that is, the widget's
+   --  parent container typically calls Gtk.Widget.Size_Allocate with an
+   --  allocation, and that allocation is then adjusted (to handle margin and
+   --  alignment for example) before assignment to the widget.
+   --  Gtk.Widget.Get_Allocation returns the adjusted allocation that was
+   --  actually assigned to the widget. The adjusted allocation is guaranteed
+   --  to be completely contained within the Gtk.Widget.Size_Allocate
+   --  allocation, however. So a Gtk.Container.Gtk_Container is guaranteed that
+   --  its children stay inside the assigned bounds, but not that they have
+   --  exactly the bounds the container assigned. There is no way to get the
+   --  original allocation assigned by Gtk.Widget.Size_Allocate, since it isn't
+   --  stored; if a container implementation needs that information it will
+   --  have to track it itself.
+   --  Since: gtk+ 2.18
+   --  "allocation": a pointer to a Gtk_Allocation to copy to
+
    procedure Set_Allocation
       (Widget     : not null access Gtk_Widget_Record;
        Allocation : in out Gtk_Allocation);
@@ -770,6 +793,11 @@ package Gtk.Widget is
 
    function Get_App_Paintable
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether the application intends to draw on the widget in an
+   --  Gtk.Widget.Gtk_Widget::draw handler.
+   --  See Gtk.Widget.Set_App_Paintable
+   --  Since: gtk+ 2.18
+
    procedure Set_App_Paintable
       (Widget        : not null access Gtk_Widget_Record;
        App_Paintable : Boolean);
@@ -787,6 +815,10 @@ package Gtk.Widget is
 
    function Get_Can_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget can be a default widget. See
+   --  Gtk.Widget.Set_Can_Default.
+   --  Since: gtk+ 2.18
+
    procedure Set_Can_Default
       (Widget      : not null access Gtk_Widget_Record;
        Can_Default : Boolean);
@@ -797,6 +829,10 @@ package Gtk.Widget is
 
    function Get_Can_Focus
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget can own the input focus. See
+   --  Gtk.Widget.Set_Can_Focus.
+   --  Since: gtk+ 2.18
+
    procedure Set_Can_Focus
       (Widget    : not null access Gtk_Widget_Record;
        Can_Focus : Boolean);
@@ -828,6 +864,11 @@ package Gtk.Widget is
 
    function Get_Child_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Gets the value set with Gtk.Widget.Set_Child_Visible. If you feel a
+   --  need to use this function, your code probably needs reorganization.
+   --  This function is only useful for container implementations and never
+   --  should be called by an application.
+
    procedure Set_Child_Visible
       (Widget     : not null access Gtk_Widget_Record;
        Is_Visible : Boolean);
@@ -848,6 +889,10 @@ package Gtk.Widget is
 
    function Get_Composite_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   --  Obtains the composite name of a widget.
+   --  a composite child. The string should be freed when it is no longer
+   --  needed.
+
    procedure Set_Composite_Name
       (Widget : not null access Gtk_Widget_Record;
        Name   : UTF8_String);
@@ -859,6 +904,11 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class)
        return Boolean;
+   --  Returns whether Device can interact with Widget and its children. See
+   --  Gtk.Widget.Set_Device_Enabled.
+   --  Since: gtk+ 3.0
+   --  "device": a Gdk.Device.Gdk_Device
+
    procedure Set_Device_Enabled
       (Widget  : not null access Gtk_Widget_Record;
        Device  : not null access Gdk.Device.Gdk_Device_Record'Class;
@@ -876,6 +926,12 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class)
        return Gdk.Event.Gdk_Event_Mask;
+   --  Returns the events mask for the widget corresponding to an specific
+   --  device. These are the events that the widget will receive when Device
+   --  operates on it.
+   --  Since: gtk+ 3.0
+   --  "device": a Gdk.Device.Gdk_Device
+
    procedure Set_Device_Events
       (Widget : not null access Gtk_Widget_Record;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class;
@@ -897,6 +953,9 @@ package Gtk.Widget is
    function Get_Direction
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_Text_Direction;
+   --  Gets the reading direction for a particular widget. See
+   --  Gtk.Widget.Set_Direction.
+
    procedure Set_Direction
       (Widget : not null access Gtk_Widget_Record;
        Dir    : Gtk.Enums.Gtk_Text_Direction);
@@ -926,6 +985,10 @@ package Gtk.Widget is
 
    function Get_Double_Buffered
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether the widget is double buffered.
+   --  See Gtk.Widget.Set_Double_Buffered
+   --  Since: gtk+ 2.18
+
    procedure Set_Double_Buffered
       (Widget          : not null access Gtk_Widget_Record;
        Double_Buffered : Boolean);
@@ -948,6 +1011,10 @@ package Gtk.Widget is
    function Get_Events
       (Widget : not null access Gtk_Widget_Record)
        return Gdk.Event.Gdk_Event_Mask;
+   --  Returns the event mask for the widget (a bitfield containing flags from
+   --  the Gdk.Event.Gdk_Event_Mask enumeration). These are the events that the
+   --  widget will receive.
+
    procedure Set_Events
       (Widget : not null access Gtk_Widget_Record;
        Events : Gdk.Event.Gdk_Event_Mask);
@@ -965,6 +1032,8 @@ package Gtk.Widget is
 
    function Get_Halign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:halign property.
+
    procedure Set_Halign
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align);
@@ -974,6 +1043,10 @@ package Gtk.Widget is
 
    function Get_Has_Tooltip
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Returns the current value of the has-tooltip property. See
+   --  Gtk.Widget.Gtk_Widget:has-tooltip for more information.
+   --  Since: gtk+ 2.12
+
    procedure Set_Has_Tooltip
       (Widget      : not null access Gtk_Widget_Record;
        Has_Tooltip : Boolean);
@@ -984,6 +1057,10 @@ package Gtk.Widget is
 
    function Get_Has_Window
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget has a Gdk.Window.Gdk_Window of its own. See
+   --  Gtk.Widget.Set_Has_Window.
+   --  Since: gtk+ 2.18
+
    procedure Set_Has_Window
       (Widget     : not null access Gtk_Widget_Record;
        Has_Window : Boolean);
@@ -1001,6 +1078,18 @@ package Gtk.Widget is
 
    function Get_Hexpand
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Gets whether the widget would like any available extra horizontal
+   --  space. When a user resizes a Gtk.Window.Gtk_Window, widgets with
+   --  expand=TRUE generally receive the extra space. For example, a list or
+   --  scrollable area or document in your window would often be set to expand.
+   --  Containers should use Gtk.Widget.Compute_Expand rather than this
+   --  function, to see whether a widget, or any of its children, has the
+   --  expand flag set. If any child of a widget wants to expand, the parent
+   --  may ask to expand also.
+   --  This function only looks at the widget's own hexpand flag, rather than
+   --  computing whether the entire widget tree rooted at this widget wants to
+   --  expand.
+
    procedure Set_Hexpand
       (Widget : not null access Gtk_Widget_Record;
        Expand : Boolean);
@@ -1027,6 +1116,14 @@ package Gtk.Widget is
 
    function Get_Hexpand_Set
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Gets whether Gtk.Widget.Set_Hexpand has been used to explicitly set the
+   --  expand flag on this widget.
+   --  If hexpand is set, then it overrides any computed expand value based on
+   --  child widgets. If hexpand is not set, then the expand value depends on
+   --  whether any children of the widget would like to expand.
+   --  There are few reasons to use this function, but it's here for
+   --  completeness and consistency.
+
    procedure Set_Hexpand_Set
       (Widget : not null access Gtk_Widget_Record;
        Set    : Boolean);
@@ -1044,6 +1141,9 @@ package Gtk.Widget is
 
    function Get_Mapped
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Whether the widget is mapped.
+   --  Since: gtk+ 2.20
+
    procedure Set_Mapped
       (Widget : not null access Gtk_Widget_Record;
        Mapped : Boolean);
@@ -1055,6 +1155,9 @@ package Gtk.Widget is
 
    function Get_Margin_Bottom
       (Widget : not null access Gtk_Widget_Record) return Gint;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-bottom property.
+   --  Since: gtk+ 3.0
+
    procedure Set_Margin_Bottom
       (Widget : not null access Gtk_Widget_Record;
        Margin : Gint);
@@ -1065,6 +1168,9 @@ package Gtk.Widget is
 
    function Get_Margin_Left
       (Widget : not null access Gtk_Widget_Record) return Gint;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-left property.
+   --  Since: gtk+ 3.0
+
    procedure Set_Margin_Left
       (Widget : not null access Gtk_Widget_Record;
        Margin : Gint);
@@ -1075,6 +1181,9 @@ package Gtk.Widget is
 
    function Get_Margin_Right
       (Widget : not null access Gtk_Widget_Record) return Gint;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-right property.
+   --  Since: gtk+ 3.0
+
    procedure Set_Margin_Right
       (Widget : not null access Gtk_Widget_Record;
        Margin : Gint);
@@ -1085,6 +1194,9 @@ package Gtk.Widget is
 
    function Get_Margin_Top
       (Widget : not null access Gtk_Widget_Record) return Gint;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-top property.
+   --  Since: gtk+ 3.0
+
    procedure Set_Margin_Top
       (Widget : not null access Gtk_Widget_Record;
        Margin : Gint);
@@ -1095,6 +1207,10 @@ package Gtk.Widget is
 
    function Get_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   --  Retrieves the name of a widget. See Gtk.Widget.Set_Name for the
+   --  significance of widget names.
+   --  should not be modified or freed
+
    procedure Set_Name
       (Widget : not null access Gtk_Widget_Record;
        Name   : UTF8_String);
@@ -1110,6 +1226,11 @@ package Gtk.Widget is
 
    function Get_No_Show_All
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Returns the current value of the Gtk.Widget.Gtk_Widget:no-show-all
+   --  property, which determines whether calls to Gtk.Widget.Show_All will
+   --  affect this widget.
+   --  Since: gtk+ 2.4
+
    procedure Set_No_Show_All
       (Widget      : not null access Gtk_Widget_Record;
        No_Show_All : Boolean);
@@ -1137,6 +1258,8 @@ package Gtk.Widget is
 
    function Get_Parent
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
+   --  Returns the parent container of Widget.
+
    procedure Set_Parent
       (Widget : not null access Gtk_Widget_Record;
        Parent : not null access Gtk_Widget_Record'Class);
@@ -1150,6 +1273,8 @@ package Gtk.Widget is
    function Get_Parent_Window
       (Widget : not null access Gtk_Widget_Record)
        return Gdk.Window.Gdk_Window;
+   --  Gets Widget's parent window.
+
    procedure Set_Parent_Window
       (Widget        : not null access Gtk_Widget_Record;
        Parent_Window : Gdk.Window.Gdk_Window);
@@ -1266,6 +1391,9 @@ package Gtk.Widget is
 
    function Get_Realized
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget is realized.
+   --  Since: gtk+ 2.20
+
    procedure Set_Realized
       (Widget   : not null access Gtk_Widget_Record;
        Realized : Boolean);
@@ -1277,6 +1405,13 @@ package Gtk.Widget is
 
    function Get_Receives_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether Widget is alyways treated as default widget withing
+   --  its toplevel when it has the focus, even if another widget is the
+   --  default.
+   --  See Gtk.Widget.Set_Receives_Default.
+   --  False otherwise
+   --  Since: gtk+ 2.18
+
    procedure Set_Receives_Default
       (Widget           : not null access Gtk_Widget_Record;
        Receives_Default : Boolean);
@@ -1340,6 +1475,12 @@ package Gtk.Widget is
 
    function Get_Sensitive
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Returns the widget's sensitivity (in the sense of returning the value
+   --  that has been set using Gtk.Widget.Set_Sensitive).
+   --  The effective sensitivity of a widget is however determined by both its
+   --  own and its parent widget's sensitivity. See Gtk.Widget.Is_Sensitive.
+   --  Since: gtk+ 2.18
+
    procedure Set_Sensitive
       (Widget    : not null access Gtk_Widget_Record;
        Sensitive : Boolean := True);
@@ -1353,10 +1494,48 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Width  : out Gint;
        Height : out Gint);
+   --  Gets the size request that was explicitly set for the widget using
+   --  Gtk.Widget.Set_Size_Request. A value of -1 stored in Width or Height
+   --  indicates that that dimension has not been set explicitly and the
+   --  natural requisition of the widget will be used intead. See
+   --  Gtk.Widget.Set_Size_Request. To get the size a widget will actually
+   --  request, call Gtk.Widget.Get_Preferred_Size instead of this function.
+   --  "width": return location for width, or null
+   --  "height": return location for height, or null
+
    procedure Set_Size_Request
       (Widget : not null access Gtk_Widget_Record;
        Width  : Gint := -1;
        Height : Gint := -1);
+   --  Sets the minimum size of a widget; that is, the widget's size request
+   --  will be Width by Height. You can use this function to force a widget to
+   --  be either larger or smaller than it normally would be.
+   --  In most cases, Gtk.Window.Set_Default_Size is a better choice for
+   --  toplevel windows than this function; setting the default size will still
+   --  allow users to shrink the window. Setting the size request will force
+   --  them to leave the window at least as large as the size request. When
+   --  dealing with window sizes, Gtk.Window.Set_Geometry_Hints can be a useful
+   --  function as well.
+   --  Note the inherent danger of setting any fixed size - themes,
+   --  translations into other languages, different fonts, and user action can
+   --  all change the appropriate size for a given widget. So, it's basically
+   --  impossible to hardcode a size that will always be correct.
+   --  The size request of a widget is the smallest size a widget can accept
+   --  while still functioning well and drawing itself correctly. However in
+   --  some strange cases a widget may be allocated less than its requested
+   --  size, and in many cases a widget may be allocated more space than it
+   --  requested.
+   --  If the size request in a given direction is -1 (unset), then the
+   --  "natural" size request of the widget will be used instead.
+   --  Widgets can't actually be allocated a size less than 1 by 1, but you
+   --  can pass 0,0 to this function to mean "as small as possible."
+   --  The size request set here does not include any margin from the
+   --  Gtk.Widget.Gtk_Widget properties margin-left, margin-right, margin-top,
+   --  and margin-bottom, but it does include pretty much all other padding or
+   --  border properties set by any subclass of Gtk.Widget.Gtk_Widget.
+   --  "width": width Widget should request, or -1 to unset
+   --  "height": height Widget should request, or -1 to unset
+
    procedure Size_Request
       (Widget      : not null access Gtk_Widget_Record;
        Requisition : out Gtk_Requisition);
@@ -1379,6 +1558,10 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_State_Type;
    pragma Obsolescent (Get_State);
+   --  Returns the widget's state. See Gtk.Widget.Set_State.
+   --  Since: gtk+ 2.18
+   --  Deprecated since None, 3.0. Use Gtk.Widget.Get_State_Flags instead.
+
    procedure Set_State
       (Widget : not null access Gtk_Widget_Record;
        State  : Gtk.Enums.Gtk_State_Type);
@@ -1392,6 +1575,12 @@ package Gtk.Widget is
    function Get_State_Flags
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Enums.Gtk_State_Flags;
+   --  Returns the widget state as a flag set. It is worth mentioning that the
+   --  effective Gtk.Enums.Gtk_State_Flag_Insensitive state will be returned,
+   --  that is, also based on parent insensitivity, even if Widget itself is
+   --  sensitive.
+   --  Since: gtk+ 3.0
+
    procedure Set_State_Flags
       (Widget : not null access Gtk_Widget_Record;
        Flags  : Gtk.Enums.Gtk_State_Flags;
@@ -1412,6 +1601,9 @@ package Gtk.Widget is
    function Get_Style
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Style.Gtk_Style;
+   --  Simply an accessor function that returns Widget->style.
+   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+
    procedure Set_Style
       (Widget : not null access Gtk_Widget_Record;
        Style  : access Gtk.Style.Gtk_Style_Record'Class);
@@ -1423,6 +1615,9 @@ package Gtk.Widget is
 
    function Get_Support_Multidevice
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Returns True if Widget is multiple pointer aware. See
+   --  Gtk.Widget.Set_Support_Multidevice for more information.
+
    procedure Set_Support_Multidevice
       (Widget              : not null access Gtk_Widget_Record;
        Support_Multidevice : Boolean);
@@ -1436,6 +1631,10 @@ package Gtk.Widget is
 
    function Get_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   --  Gets the contents of the tooltip for Widget.
+   --  returned string with g_free when done.
+   --  Since: gtk+ 2.12
+
    procedure Set_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record;
        Markup : UTF8_String := "");
@@ -1451,6 +1650,10 @@ package Gtk.Widget is
 
    function Get_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
+   --  Gets the contents of the tooltip for Widget.
+   --  returned string with g_free when done.
+   --  Since: gtk+ 2.12
+
    procedure Set_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record;
        Text   : UTF8_String);
@@ -1464,6 +1667,11 @@ package Gtk.Widget is
 
    function Get_Tooltip_Window
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
+   --  Returns the Gtk.Window.Gtk_Window of the current tooltip. This can be
+   --  the GtkWindow created by default, or the custom tooltip window set using
+   --  Gtk.Widget.Set_Tooltip_Window.
+   --  Since: gtk+ 2.12
+
    procedure Set_Tooltip_Window
       (Widget        : not null access Gtk_Widget_Record;
        Custom_Window : access Gtk_Widget_Record'Class);
@@ -1499,6 +1707,8 @@ package Gtk.Widget is
 
    function Get_Valign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
+   --  Gets the value of the Gtk.Widget.Gtk_Widget:valign property.
+
    procedure Set_Valign
       (Widget : not null access Gtk_Widget_Record;
        Align  : Gtk_Align);
@@ -1508,6 +1718,9 @@ package Gtk.Widget is
 
    function Get_Vexpand
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Gets whether the widget would like any available extra vertical space.
+   --  See Gtk.Widget.Get_Hexpand for more detail.
+
    procedure Set_Vexpand
       (Widget : not null access Gtk_Widget_Record;
        Expand : Boolean);
@@ -1517,6 +1730,10 @@ package Gtk.Widget is
 
    function Get_Vexpand_Set
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Gets whether Gtk.Widget.Set_Vexpand has been used to explicitly set the
+   --  expand flag on this widget.
+   --  See Gtk.Widget.Get_Hexpand_Set for more detail.
+
    procedure Set_Vexpand_Set
       (Widget : not null access Gtk_Widget_Record;
        Set    : Boolean);
@@ -1527,6 +1744,12 @@ package Gtk.Widget is
 
    function Get_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether the widget is visible. Note that this doesn't take
+   --  into account whether the widget's parent is also visible or the widget
+   --  is obscured in any way.
+   --  See Gtk.Widget.Set_Visible.
+   --  Since: gtk+ 2.18
+
    procedure Set_Visible
       (Widget  : not null access Gtk_Widget_Record;
        Visible : Boolean);
@@ -1542,6 +1765,8 @@ package Gtk.Widget is
    function Get_Visual
       (Widget : not null access Gtk_Widget_Record)
        return Gdk.Visual.Gdk_Visual;
+   --  Gets the visual that will be used to render Widget.
+
    procedure Set_Visual
       (Widget : not null access Gtk_Widget_Record;
        Visual : Gdk.Visual.Gdk_Visual);
@@ -1556,6 +1781,9 @@ package Gtk.Widget is
    function Get_Window
       (Widget : not null access Gtk_Widget_Record)
        return Gdk.Window.Gdk_Window;
+   --  Returns the widget's window if it is realized, null otherwise
+   --  Since: gtk+ 2.14
+
    procedure Set_Window
       (Widget : not null access Gtk_Widget_Record;
        Window : Gdk.Window.Gdk_Window);
@@ -2407,6 +2635,9 @@ package Gtk.Widget is
    ---------------
 
    function Get_Default_Direction return Gtk.Enums.Gtk_Text_Direction;
+   --  Obtains the current default reading direction. See
+   --  Gtk.Widget.Set_Default_Direction.
+
    procedure Set_Default_Direction (Dir : Gtk.Enums.Gtk_Text_Direction);
    --  Sets the default reading direction for widgets where the direction has
    --  not been explicitly set by Gtk.Widget.Set_Direction.

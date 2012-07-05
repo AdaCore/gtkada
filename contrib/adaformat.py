@@ -1510,10 +1510,15 @@ class Section(object):
        There is a single section with a given name in the package
     """
 
-    group_getters_and_setters = True
+    group_getters_and_setters = False
     # If true, a getter will be displayed with its corresponding setter.
     # Only one doc will be displayed for the two, and no separation line
     # will be output.
+
+    sort_alphabetically = False
+    # If true, subprograms are all sorted alphabetically, otherwise the
+    # order is alphabetical for getters, but setters appear just after the
+    # getter.
 
     def __init__(self, pkg, name):
         self.pkg = pkg  # The instance of Package in which the section is
@@ -1565,7 +1570,8 @@ class Section(object):
            in the group appeared.
         """
 
-        if Section.group_getters_and_setters:
+        if Section.group_getters_and_setters \
+                or not Section.sort_alphabetically:
             result = []
             tmp = dict()  # group_name => [subprograms]
 
@@ -1581,6 +1587,7 @@ class Section(object):
                         .replace("Initialize", "") \
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
+
                 if base_name(s.name) == "Gtk_New":
                     # Always create a new group for Gtk_New, since they all
                     # have different parameters. But we still want to group
@@ -1621,12 +1628,16 @@ class Section(object):
             for group in self._group_subprograms():
                 for s in group:
                     if isinstance(s, Subprogram):
-                        result.append(s.spec(pkg=pkg, show_doc=s == group[-1],
+                        show_doc = not Section.group_getters_and_setters \
+                            or s == group[-1]
+
+                        result.append(s.spec(pkg=pkg,
+                                             show_doc=show_doc,
                                              indent=indent))
                     else:
                         result.append(s.spec())
 
-                    if s == group[-1]:
+                    if s == group[-1] or not Section.group_getters_and_setters:
                         result.append("")
 
         return "\n".join(result)

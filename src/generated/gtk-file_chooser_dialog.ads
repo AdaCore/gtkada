@@ -180,6 +180,13 @@ package Gtk.File_Chooser_Dialog is
        Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
+   --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This
+   --  function is analogous to gtk_dialog_new_with_buttons.
+   --  Since: gtk+ 2.4
+   --  "title": Title of the dialog, or null
+   --  "parent": Transient parent of the dialog, or null
+   --  "action": Open or save mode for the dialog
+
    procedure Initialize
       (Dialog : not null access Gtk_File_Chooser_Dialog_Record'Class;
        Title  : UTF8_String := "";
@@ -218,6 +225,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Action
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action;
+
    procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
@@ -225,6 +233,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Create_Folders
       (Chooser        : not null access Gtk_File_Chooser_Dialog_Record;
        Create_Folders : Boolean);
@@ -232,6 +241,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Current_Folder
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return UTF8_String;
+
    function Set_Current_Folder
       (Chooser  : not null access Gtk_File_Chooser_Dialog_Record;
        Filename : UTF8_String) return Boolean;
@@ -239,6 +249,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return UTF8_String;
+
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        URI     : UTF8_String) return Boolean;
@@ -246,6 +257,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Do_Overwrite_Confirmation
       (Chooser                   : not null access Gtk_File_Chooser_Dialog_Record;
        Do_Overwrite_Confirmation : Boolean);
@@ -253,6 +265,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Extra_Widget
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+
    procedure Set_Extra_Widget
       (Chooser      : not null access Gtk_File_Chooser_Dialog_Record;
        Extra_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -260,6 +273,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Filename
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return UTF8_String;
+
    function Set_Filename
       (Chooser  : not null access Gtk_File_Chooser_Dialog_Record;
        Filename : UTF8_String) return Boolean;
@@ -271,6 +285,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.File_Filter.Gtk_File_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
@@ -279,6 +294,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Local_Only
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_File_Chooser_Dialog_Record;
        Local_Only : Boolean);
@@ -294,6 +310,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Preview_Widget
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+
    procedure Set_Preview_Widget
       (Chooser        : not null access Gtk_File_Chooser_Dialog_Record;
        Preview_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -301,6 +318,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Preview_Widget_Active
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Preview_Widget_Active
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Active  : Boolean);
@@ -308,6 +326,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Select_Multiple
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_File_Chooser_Dialog_Record;
        Select_Multiple : Boolean);
@@ -315,6 +334,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Show_Hidden
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Show_Hidden
       (Chooser     : not null access Gtk_File_Chooser_Dialog_Record;
        Show_Hidden : Boolean);
@@ -322,6 +342,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return UTF8_String;
+
    function Set_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        URI     : UTF8_String) return Boolean;
@@ -333,6 +354,7 @@ package Gtk.File_Chooser_Dialog is
    function Get_Use_Preview_Label
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Use_Preview_Label
       (Chooser   : not null access Gtk_File_Chooser_Dialog_Record;
        Use_Label : Boolean);

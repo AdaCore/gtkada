@@ -81,6 +81,10 @@ package Gtk.Scrollable is
 
    function Get_Hadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
+   --  Retrieves the Gtk.Adjustment.Gtk_Adjustment used for horizontal
+   --  scrolling.
+   --  Since: gtk+ 3.0
+
    procedure Set_Hadjustment
       (Self        : Gtk_Scrollable;
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -91,6 +95,9 @@ package Gtk.Scrollable is
    function Get_Hscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
    pragma Import (C, Get_Hscroll_Policy, "gtk_scrollable_get_hscroll_policy");
+   --  Gets the horizontal Gtk.Enums.Gtk_Scrollable_Policy.
+   --  Since: gtk+ 3.0
+
    procedure Set_Hscroll_Policy
       (Self   : Gtk_Scrollable;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
@@ -103,6 +110,10 @@ package Gtk.Scrollable is
 
    function Get_Vadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
+   --  Retrieves the Gtk.Adjustment.Gtk_Adjustment used for vertical
+   --  scrolling.
+   --  Since: gtk+ 3.0
+
    procedure Set_Vadjustment
       (Self        : Gtk_Scrollable;
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -113,6 +124,9 @@ package Gtk.Scrollable is
    function Get_Vscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
    pragma Import (C, Get_Vscroll_Policy, "gtk_scrollable_get_vscroll_policy");
+   --  Gets the vertical Gtk.Enums.Gtk_Scrollable_Policy.
+   --  Since: gtk+ 3.0
+
    procedure Set_Vscroll_Policy
       (Self   : Gtk_Scrollable;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);

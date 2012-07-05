@@ -190,6 +190,10 @@ package Gtk.Label is
    ------------------
 
    procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "");
+   --  Creates a new label with the given text inside it. You can pass null to
+   --  get an empty label widget.
+   --  "str": The text of the label
+
    procedure Initialize
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "");
@@ -200,6 +204,21 @@ package Gtk.Label is
    procedure Gtk_New_With_Mnemonic
       (Label : out Gtk_Label;
        Str   : UTF8_String);
+   --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
+   --  If characters in Str are preceded by an underscore, they are
+   --  underlined. If you need a literal underscore character in a label, use
+   --  '__' (two underscores). The first underlined character represents a
+   --  keyboard accelerator called a mnemonic. The mnemonic key can be used to
+   --  activate another widget, chosen automatically, or explicitly using
+   --  Gtk.Label.Set_Mnemonic_Widget.
+   --  If Gtk.Label.Set_Mnemonic_Widget is not called, then the first
+   --  activatable ancestor of the Gtk.Label.Gtk_Label will be chosen as the
+   --  mnemonic widget. For instance, if the label is inside a button or menu
+   --  item, the button or menu item will automatically become the mnemonic
+   --  widget and be activated by the mnemonic.
+   --  "str": The text of the label, with an underscore in front of the
+   --  mnemonic character
+
    procedure Initialize_With_Mnemonic
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String);
@@ -227,6 +246,9 @@ package Gtk.Label is
 
    function Get_Angle
       (Label : not null access Gtk_Label_Record) return Gdouble;
+   --  Gets the angle of rotation for the label. See Gtk.Label.Set_Angle.
+   --  Since: gtk+ 2.6
+
    procedure Set_Angle
       (Label : not null access Gtk_Label_Record;
        Angle : Gdouble);
@@ -241,6 +263,13 @@ package Gtk.Label is
    function Get_Attributes
       (Label : not null access Gtk_Label_Record)
        return Pango.Attributes.Pango_Attr_List;
+   --  Gets the attribute list that was set on the label using
+   --  Gtk.Label.Set_Attributes, if any. This function does not reflect
+   --  attributes that come from the labels markup (see Gtk.Label.Set_Markup).
+   --  If you want to get the effective attributes for the label, use
+   --  pango_layout_get_attribute (gtk_label_get_layout (label)).
+   --  if none was set.
+
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
        Attrs : in out Pango.Attributes.Pango_Attr_List);
@@ -269,6 +298,10 @@ package Gtk.Label is
    function Get_Ellipsize
       (Label : not null access Gtk_Label_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
+   --  Returns the ellipsizing position of the label. See
+   --  Gtk.Label.Set_Ellipsize.
+   --  Since: gtk+ 2.6
+
    procedure Set_Ellipsize
       (Label : not null access Gtk_Label_Record;
        Mode  : Pango.Layout.Pango_Ellipsize_Mode);
@@ -280,6 +313,8 @@ package Gtk.Label is
    function Get_Justify
       (Label : not null access Gtk_Label_Record)
        return Gtk.Enums.Gtk_Justification;
+   --  Returns the justification of the label. See Gtk.Label.Set_Justify.
+
    procedure Set_Justify
       (Label : not null access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification);
@@ -293,6 +328,10 @@ package Gtk.Label is
 
    function Get_Label
       (Label : not null access Gtk_Label_Record) return UTF8_String;
+   --  Fetches the text from a label widget including any embedded underlines
+   --  indicating mnemonics and Pango markup. (See Gtk.Label.Get_Text).
+   --  owned by the widget and must not be modified or freed.
+
    procedure Set_Label
       (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String);
@@ -330,6 +369,9 @@ package Gtk.Label is
 
    function Get_Line_Wrap
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Returns whether lines in the label are automatically wrapped. See
+   --  Gtk.Label.Set_Line_Wrap.
+
    procedure Set_Line_Wrap
       (Label : not null access Gtk_Label_Record;
        Wrap  : Boolean);
@@ -346,6 +388,10 @@ package Gtk.Label is
    function Get_Line_Wrap_Mode
       (Label : not null access Gtk_Label_Record)
        return Pango.Enums.Wrap_Mode;
+   --  Returns line wrap mode used by the label. See
+   --  Gtk.Label.Set_Line_Wrap_Mode.
+   --  Since: gtk+ 2.10
+
    procedure Set_Line_Wrap_Mode
       (Label     : not null access Gtk_Label_Record;
        Wrap_Mode : Pango.Enums.Wrap_Mode);
@@ -357,6 +403,10 @@ package Gtk.Label is
 
    function Get_Max_Width_Chars
       (Label : not null access Gtk_Label_Record) return Gint;
+   --  Retrieves the desired maximum width of Label, in characters. See
+   --  Gtk.Label.Set_Width_Chars.
+   --  Since: gtk+ 2.6
+
    procedure Set_Max_Width_Chars
       (Label   : not null access Gtk_Label_Record;
        N_Chars : Gint);
@@ -373,6 +423,10 @@ package Gtk.Label is
    function Get_Mnemonic_Widget
       (Label : not null access Gtk_Label_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the target of the mnemonic (keyboard shortcut) of this label.
+   --  See Gtk.Label.Set_Mnemonic_Widget.
+   --  or null if none has been set and the default algorithm will be used.
+
    procedure Set_Mnemonic_Widget
       (Label  : not null access Gtk_Label_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -393,6 +447,8 @@ package Gtk.Label is
 
    function Get_Selectable
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Gets the value set by Gtk.Label.Set_Selectable.
+
    procedure Set_Selectable
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean);
@@ -412,6 +468,9 @@ package Gtk.Label is
 
    function Get_Single_Line_Mode
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Returns whether the label is in single line mode.
+   --  Since: gtk+ 2.6
+
    procedure Set_Single_Line_Mode
       (Label            : not null access Gtk_Label_Record;
        Single_Line_Mode : Boolean);
@@ -421,6 +480,11 @@ package Gtk.Label is
 
    function Get_Text
       (Label : not null access Gtk_Label_Record) return UTF8_String;
+   --  Fetches the text from a label widget, as displayed on the screen. This
+   --  does not include any embedded underlines indicating mnemonics or Pango
+   --  markup. (See Gtk.Label.Get_Label)
+   --  string used by the label, and must not be modified.
+
    procedure Set_Text
       (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String);
@@ -431,6 +495,9 @@ package Gtk.Label is
 
    function Get_Track_Visited_Links
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Returns whether the label is currently keeping track of clicked links.
+   --  Since: gtk+ 2.18
+
    procedure Set_Track_Visited_Links
       (Label       : not null access Gtk_Label_Record;
        Track_Links : Boolean);
@@ -441,6 +508,10 @@ package Gtk.Label is
 
    function Get_Use_Markup
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Returns whether the label's text is interpreted as marked up with the
+   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>. See
+   --  gtk_label_set_use_markup ().
+
    procedure Set_Use_Markup
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean);
@@ -451,6 +522,10 @@ package Gtk.Label is
 
    function Get_Use_Underline
       (Label : not null access Gtk_Label_Record) return Boolean;
+   --  Returns whether an embedded underline in the label indicates a
+   --  mnemonic. See Gtk.Label.Set_Use_Underline.
+   --  the mnemonic accelerator keys.
+
    procedure Set_Use_Underline
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean);
@@ -460,6 +535,10 @@ package Gtk.Label is
 
    function Get_Width_Chars
       (Label : not null access Gtk_Label_Record) return Gint;
+   --  Retrieves the desired width of Label, in characters. See
+   --  Gtk.Label.Set_Width_Chars.
+   --  Since: gtk+ 2.6
+
    procedure Set_Width_Chars
       (Label   : not null access Gtk_Label_Record;
        N_Chars : Gint);

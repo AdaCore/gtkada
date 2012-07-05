@@ -85,6 +85,19 @@ package Gtk.Window is
    procedure Gtk_New
       (Window   : out Gtk_Window;
        The_Type : Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
+   --  Creates a new Gtk.Window.Gtk_Window, which is a toplevel window that
+   --  can contain other widgets. Nearly always, the type of the window should
+   --  be GTK_WINDOW_TOPLEVEL. If you're implementing something like a popup
+   --  menu from scratch (which is a bad idea, just use Gtk.Menu.Gtk_Menu), you
+   --  might use GTK_WINDOW_POPUP. GTK_WINDOW_POPUP is not for dialogs, though
+   --  in some other toolkits dialogs are called "popups". In GTK+,
+   --  GTK_WINDOW_POPUP means a pop-up menu or pop-up tooltip. On X11, popup
+   --  windows are not controlled by the <link linkend="gtk-X11-arch">window
+   --  manager</link>.
+   --  If you simply want an undecorated window (no window borders), use
+   --  Gtk.Window.Set_Decorated, don't use GTK_WINDOW_POPUP.
+   --  "type": type of window
+
    procedure Initialize
       (Window   : not null access Gtk_Window_Record'Class;
        The_Type : Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
@@ -105,6 +118,10 @@ package Gtk.Window is
    pragma Import (C, Get_Type, "gtk_window_get_type");
 
    procedure Gtk_New (Window_Group : out Gtk_Window_Group);
+   --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with
+   --  Gtk.Widget.Grab_Add only affect windows within the same
+   --  Gtk.Window.Gtk_Window_Group.
+
    procedure Initialize
       (Window_Group : not null access Gtk_Window_Group_Record'Class);
    --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with
@@ -217,6 +234,9 @@ package Gtk.Window is
 
    function Get_Accept_Focus
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Accept_Focus.
+   --  Since: gtk+ 2.4
+
    procedure Set_Accept_Focus
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -227,6 +247,9 @@ package Gtk.Window is
 
    function Get_Decorated
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window has been set to have decorations such as a
+   --  title bar via Gtk.Window.Set_Decorated.
+
    procedure Set_Decorated
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -246,6 +269,12 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Width  : out Gint;
        Height : out Gint);
+   --  Gets the default size of the window. A value of -1 for the width or
+   --  height indicates that a default size has not been explicitly set for
+   --  that dimension, so the "natural" size of the window will be used.
+   --  "width": location to store the default width, or null
+   --  "height": location to store the default height, or null
+
    procedure Set_Default_Size
       (Window : not null access Gtk_Window_Record;
        Width  : Gint;
@@ -285,6 +314,10 @@ package Gtk.Window is
 
    function Get_Deletable
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window has been set to have a close button via
+   --  Gtk.Window.Set_Deletable.
+   --  Since: gtk+ 2.10
+
    procedure Set_Deletable
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -302,6 +335,9 @@ package Gtk.Window is
 
    function Get_Destroy_With_Parent
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window will be destroyed with its transient parent.
+   --  See gtk_window_set_destroy_with_parent ().
+
    procedure Set_Destroy_With_Parent
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -314,6 +350,11 @@ package Gtk.Window is
    function Get_Focus
       (Window : not null access Gtk_Window_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the current focused widget within the window. Note that this
+   --  is the widget that would have the focus if the toplevel window focused;
+   --  if the toplevel window is not focused then 'gtk_widget_has_focus
+   --  (widget)' will not be True for the widget.
+
    procedure Set_Focus
       (Window : not null access Gtk_Window_Record;
        Focus  : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -327,6 +368,10 @@ package Gtk.Window is
 
    function Get_Focus_On_Map
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Focus_On_Map.
+   --  mapped.
+   --  Since: gtk+ 2.6
+
    procedure Set_Focus_On_Map
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -337,6 +382,10 @@ package Gtk.Window is
 
    function Get_Focus_Visible
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value of the Gtk.Window.Gtk_Window:focus-visible property.
+   --  in this window.
+   --  Since: gtk+ 3.2
+
    procedure Set_Focus_Visible
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -347,6 +396,8 @@ package Gtk.Window is
    function Get_Gravity
       (Window : not null access Gtk_Window_Record)
        return Gdk.Window.Gdk_Gravity;
+   --  Gets the value set by Gtk.Window.Set_Gravity.
+
    procedure Set_Gravity
       (Window  : not null access Gtk_Window_Record;
        Gravity : Gdk.Window.Gdk_Gravity);
@@ -365,6 +416,9 @@ package Gtk.Window is
 
    function Get_Has_Resize_Grip
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Determines whether the window may have a resize grip.
+   --  Since: gtk+ 3.0
+
    procedure Set_Has_Resize_Grip
       (Window : not null access Gtk_Window_Record;
        Value  : Boolean);
@@ -378,6 +432,9 @@ package Gtk.Window is
    function Get_Icon
       (Window : not null access Gtk_Window_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Gets the value set by Gtk.Window.Set_Icon (or if you've called
+   --  Gtk.Window.Set_Icon_List, gets the first icon in the icon list).
+
    procedure Set_Icon
       (Window : not null access Gtk_Window_Record;
        Icon   : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
@@ -400,6 +457,9 @@ package Gtk.Window is
    function Get_Icon_List
       (Window : not null access Gtk_Window_Record)
        return Glib.Object.Object_Simple_List.GList;
+   --  Retrieves the list of icons set by Gtk.Window.Set_Icon_List. The list
+   --  is copied, but the reference count on each member won't be incremented.
+
    procedure Set_Icon_List
       (Window : not null access Gtk_Window_Record;
        List   : Glib.Object.Object_Simple_List.GList);
@@ -426,6 +486,11 @@ package Gtk.Window is
 
    function Get_Icon_Name
       (Window : not null access Gtk_Window_Record) return UTF8_String;
+   --  Returns the name of the themed icon for the window, see
+   --  Gtk.Window.Set_Icon_Name.
+   --  no themed icon
+   --  Since: gtk+ 2.6
+
    procedure Set_Icon_Name
       (Window : not null access Gtk_Window_Record;
        Name   : UTF8_String := "");
@@ -439,6 +504,10 @@ package Gtk.Window is
    function Get_Mnemonic_Modifier
       (Window : not null access Gtk_Window_Record)
        return Gdk.Types.Gdk_Modifier_Type;
+   --  Returns the mnemonic modifier for this window. See
+   --  Gtk.Window.Set_Mnemonic_Modifier.
+   --  mnemonics on this window.
+
    procedure Set_Mnemonic_Modifier
       (Window   : not null access Gtk_Window_Record;
        Modifier : Gdk.Types.Gdk_Modifier_Type);
@@ -448,6 +517,10 @@ package Gtk.Window is
 
    function Get_Mnemonics_Visible
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value of the Gtk.Window.Gtk_Window:mnemonics-visible property.
+   --  in this window.
+   --  Since: gtk+ 2.20
+
    procedure Set_Mnemonics_Visible
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -457,6 +530,9 @@ package Gtk.Window is
 
    function Get_Modal
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window is modal. See Gtk.Window.Set_Modal.
+   --  establishes a grab when shown
+
    procedure Set_Modal
       (Window : not null access Gtk_Window_Record;
        Modal  : Boolean := true);
@@ -470,6 +546,10 @@ package Gtk.Window is
 
    function Get_Opacity
       (Window : not null access Gtk_Window_Record) return Gdouble;
+   --  Fetches the requested opacity for this window. See
+   --  Gtk.Window.Set_Opacity.
+   --  Since: gtk+ 2.12
+
    procedure Set_Opacity
       (Window  : not null access Gtk_Window_Record;
        Opacity : Gdouble);
@@ -487,6 +567,40 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Root_X : out Gint;
        Root_Y : out Gint);
+   --  This function returns the position you need to pass to Gtk.Window.Move
+   --  to keep Window in its current position. This means that the meaning of
+   --  the returned value varies with window gravity. See Gtk.Window.Move for
+   --  more details.
+   --  If you haven't changed the window gravity, its gravity will be
+   --  GDK_GRAVITY_NORTH_WEST. This means that Gtk.Window.Get_Position gets the
+   --  position of the top-left corner of the window manager frame for the
+   --  window. Gtk.Window.Move sets the position of this same top-left corner.
+   --  Gtk.Window.Get_Position is not 100% reliable because the X Window
+   --  System does not specify a way to obtain the geometry of the decorations
+   --  placed on a window by the window manager. Thus GTK+ is using a "best
+   --  guess" that works with most window managers.
+   --  Moreover, nearly all window managers are historically broken with
+   --  respect to their handling of window gravity. So moving a window to its
+   --  current position as returned by Gtk.Window.Get_Position tends to result
+   --  in moving the window slightly. Window managers are slowly getting better
+   --  over time.
+   --  If a window has gravity GDK_GRAVITY_STATIC the window manager frame is
+   --  not relevant, and thus Gtk.Window.Get_Position will always produce
+   --  accurate results. However you can't use static gravity to do things like
+   --  place a window in a corner of the screen, because static gravity ignores
+   --  the window manager decorations.
+   --  If you are saving and restoring your application's window positions,
+   --  you should know that it's impossible for applications to do this without
+   --  getting it somewhat wrong because applications do not have sufficient
+   --  knowledge of window manager state. The Correct Mechanism is to support
+   --  the session management protocol (see the "GnomeClient" object in the
+   --  GNOME libraries for example) and allow the window manager to save your
+   --  window sizes and positions.
+   --  "root_x": eturn location for X coordinate of gravity-determined
+   --  reference point, or null
+   --  "root_y": return location for Y coordinate of gravity-determined
+   --  reference point, or null
+
    procedure Set_Position
       (Window   : not null access Gtk_Window_Record;
        Position : Gtk.Enums.Gtk_Window_Position);
@@ -497,6 +611,8 @@ package Gtk.Window is
 
    function Get_Resizable
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Resizable.
+
    procedure Set_Resizable
       (Window    : not null access Gtk_Window_Record;
        Resizable : Boolean);
@@ -516,6 +632,10 @@ package Gtk.Window is
 
    function Get_Role
       (Window : not null access Gtk_Window_Record) return UTF8_String;
+   --  Returns the role of the window. See Gtk.Window.Set_Role for further
+   --  explanation.
+   --  returned is owned by the widget and must not be modified or freed.
+
    procedure Set_Role
       (Window : not null access Gtk_Window_Record;
        Role   : UTF8_String);
@@ -535,6 +655,9 @@ package Gtk.Window is
    function Get_Screen
       (Window : not null access Gtk_Window_Record)
        return Gdk.Screen.Gdk_Screen;
+   --  Returns the Gdk.Screen.Gdk_Screen associated with Window.
+   --  Since: gtk+ 2.2
+
    procedure Set_Screen
       (Window : not null access Gtk_Window_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
@@ -588,6 +711,9 @@ package Gtk.Window is
 
    function Get_Skip_Pager_Hint
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Skip_Pager_Hint.
+   --  Since: gtk+ 2.2
+
    procedure Set_Skip_Pager_Hint
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -600,6 +726,9 @@ package Gtk.Window is
 
    function Get_Skip_Taskbar_Hint
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Skip_Taskbar_Hint
+   --  Since: gtk+ 2.2
+
    procedure Set_Skip_Taskbar_Hint
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -610,6 +739,10 @@ package Gtk.Window is
 
    function Get_Title
       (Window : not null access Gtk_Window_Record) return UTF8_String;
+   --  Retrieves the title of the window. See Gtk.Window.Set_Title.
+   --  been set explicitely. The returned string is owned by the widget and
+   --  must not be modified or freed.
+
    procedure Set_Title
       (Window : not null access Gtk_Window_Record;
        Title  : UTF8_String);
@@ -624,6 +757,10 @@ package Gtk.Window is
 
    function Get_Transient_For
       (Window : not null access Gtk_Window_Record) return Gtk_Window;
+   --  Fetches the transient parent for this window. See
+   --  Gtk.Window.Set_Transient_For.
+   --  if no transient parent has been set.
+
    procedure Set_Transient_For
       (Window : not null access Gtk_Window_Record;
        Parent : access Gtk_Window_Record'Class);
@@ -641,6 +778,8 @@ package Gtk.Window is
    function Get_Type_Hint
       (Window : not null access Gtk_Window_Record)
        return Gdk.Window.Gdk_Window_Type_Hint;
+   --  Gets the type hint for this window. See Gtk.Window.Set_Type_Hint.
+
    procedure Set_Type_Hint
       (Window : not null access Gtk_Window_Record;
        Hint   : Gdk.Window.Gdk_Window_Type_Hint);
@@ -654,6 +793,9 @@ package Gtk.Window is
 
    function Get_Urgency_Hint
       (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Gets the value set by Gtk.Window.Set_Urgency_Hint
+   --  Since: gtk+ 2.8
+
    procedure Set_Urgency_Hint
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
@@ -1123,6 +1265,10 @@ package Gtk.Window is
    ---------------
 
    function Get_Default_Icon_List return Glib.Object.Object_Simple_List.GList;
+   --  Gets the value set by Gtk.Window.Set_Default_Icon_List. The list is a
+   --  copy and should be freed with g_list_free, but the pixbufs in the list
+   --  have not had their reference count incremented.
+
    procedure Set_Default_Icon_List
       (List : Glib.Object.Object_Simple_List.GList);
    --  Sets an icon list to be used as fallback for windows that haven't had
@@ -1133,6 +1279,12 @@ package Gtk.Window is
    --  "list": a list of Gdk.Pixbuf.Gdk_Pixbuf
 
    function Get_Default_Icon_Name return UTF8_String;
+   --  Returns the fallback icon name for windows that has been set with
+   --  Gtk.Window.Set_Default_Icon_Name. The returned string is owned by GTK+
+   --  and should not be modified. It is only valid until the next call to
+   --  Gtk.Window.Set_Default_Icon_Name.
+   --  Since: gtk+ 2.16
+
    procedure Set_Default_Icon_Name (Name : UTF8_String);
    --  Sets an icon to be used as fallback for windows that haven't had
    --  Gtk.Window.Set_Icon_List called on them from a named themed icon, see

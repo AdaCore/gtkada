@@ -121,6 +121,9 @@ package Gtk.Entry_Completion is
    ------------------
 
    procedure Gtk_New (Completion : out Gtk_Entry_Completion);
+   --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
+   --  Since: gtk+ 2.4
+
    procedure Initialize
       (Completion : not null access Gtk_Entry_Completion_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
@@ -130,6 +133,12 @@ package Gtk.Entry_Completion is
       (Completion : out Gtk_Entry_Completion;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       ;
+   --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
+   --  the specified Area to layout cells in the underlying
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
+   --  Since: gtk+ 3.0
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
+
    procedure Initialize_With_Area
       (Completion : not null access Gtk_Entry_Completion_Record'Class;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
@@ -177,6 +186,10 @@ package Gtk.Entry_Completion is
    function Get_Inline_Completion
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean;
+   --  Returns whether the common prefix of the possible completions should be
+   --  automatically inserted in the entry.
+   --  Since: gtk+ 2.6
+
    procedure Set_Inline_Completion
       (Completion        : not null access Gtk_Entry_Completion_Record;
        Inline_Completion : Boolean);
@@ -188,6 +201,9 @@ package Gtk.Entry_Completion is
    function Get_Inline_Selection
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean;
+   --  Returns True if inline-selection mode is turned on.
+   --  Since: gtk+ 2.12
+
    procedure Set_Inline_Selection
       (Completion       : not null access Gtk_Entry_Completion_Record;
        Inline_Selection : Boolean);
@@ -198,6 +214,9 @@ package Gtk.Entry_Completion is
 
    function Get_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
+   --  Returns the minimum key length as set for Completion.
+   --  Since: gtk+ 2.4
+
    procedure Set_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record;
        Length     : Gint);
@@ -211,6 +230,11 @@ package Gtk.Entry_Completion is
    function Get_Model
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model;
+   --  Returns the model the Gtk.Entry_Completion.Gtk_Entry_Completion is
+   --  using as data source. Returns null if the model is unset.
+   --  is currently being used
+   --  Since: gtk+ 2.4
+
    procedure Set_Model
       (Completion : not null access Gtk_Entry_Completion_Record;
        Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
@@ -223,6 +247,9 @@ package Gtk.Entry_Completion is
    function Get_Popup_Completion
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean;
+   --  Returns whether the completions should be presented in a popup window.
+   --  Since: gtk+ 2.6
+
    procedure Set_Popup_Completion
       (Completion       : not null access Gtk_Entry_Completion_Record;
        Popup_Completion : Boolean);
@@ -233,6 +260,11 @@ package Gtk.Entry_Completion is
    function Get_Popup_Set_Width
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean;
+   --  Returns whether the completion popup window will be resized to the
+   --  width of the entry.
+   --  the entry
+   --  Since: gtk+ 2.8
+
    procedure Set_Popup_Set_Width
       (Completion      : not null access Gtk_Entry_Completion_Record;
        Popup_Set_Width : Boolean);
@@ -245,6 +277,11 @@ package Gtk.Entry_Completion is
    function Get_Popup_Single_Match
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean;
+   --  Returns whether the completion popup window will appear even if there
+   --  is only a single match.
+   --  number of matches
+   --  Since: gtk+ 2.8
+
    procedure Set_Popup_Single_Match
       (Completion         : not null access Gtk_Entry_Completion_Record;
        Popup_Single_Match : Boolean);
@@ -258,6 +295,9 @@ package Gtk.Entry_Completion is
 
    function Get_Text_Column
       (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
+   --  Returns the column in the model of Completion to get strings from.
+   --  Since: gtk+ 2.6
+
    procedure Set_Text_Column
       (Completion : not null access Gtk_Entry_Completion_Record;
        Column     : Gint);

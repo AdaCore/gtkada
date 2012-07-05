@@ -54,6 +54,18 @@ package Gtk.Radio_Action is
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
        Value    : Gint);
+   --  Creates a new Gtk.Radio_Action.Gtk_Radio_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.4
+   --  "name": A unique name for the action
+   --  "label": The label displayed in menu items and on buttons, or null
+   --  "tooltip": A tooltip for this action, or null
+   --  "stock_id": The stock icon to display in widgets representing this
+   --  action, or null
+   --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
+   --  return if this action is selected.
+
    procedure Initialize
       (Action   : not null access Gtk_Radio_Action_Record'Class;
        Name     : UTF8_String;
@@ -82,6 +94,10 @@ package Gtk.Radio_Action is
 
    function Get_Current_Value
       (Action : not null access Gtk_Radio_Action_Record) return Gint;
+   --  Obtains the value property of the currently active member of the group
+   --  to which Action belongs.
+   --  Since: gtk+ 2.4
+
    procedure Set_Current_Value
       (Action        : not null access Gtk_Radio_Action_Record;
        Current_Value : Gint);
@@ -93,6 +109,16 @@ package Gtk.Radio_Action is
    function Get_Group
       (Action : not null access Gtk_Radio_Action_Record)
        return Gtk.Widget.Widget_SList.GSlist;
+   --  Returns the list representing the radio group for this object. Note
+   --  that the returned list is only valid until the next change to the group.
+   --  A common way to set up a group of radio group is the following: |[
+   --  GSList *group = NULL; GtkRadioAction *action;
+   --  while (/* more actions to add */) { action = gtk_radio_action_new
+   --  (...);
+   --  gtk_radio_action_set_group (action, group); group =
+   --  gtk_radio_action_get_group (action); } ]|
+   --  Since: gtk+ 2.4
+
    procedure Set_Group
       (Action : not null access Gtk_Radio_Action_Record;
        Group  : Gtk.Widget.Widget_SList.GSlist);

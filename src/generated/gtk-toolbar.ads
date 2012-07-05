@@ -64,6 +64,8 @@ package Gtk.Toolbar is
    ------------------
 
    procedure Gtk_New (Toolbar : out Gtk_Toolbar);
+   --  Creates a new toolbar.
+
    procedure Initialize (Toolbar : not null access Gtk_Toolbar_Record'Class);
    --  Creates a new toolbar.
 
@@ -89,6 +91,9 @@ package Gtk.Toolbar is
    function Get_Icon_Size
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Icon_Size;
+   --  Retrieves the icon size for the toolbar. See Gtk.Toolbar.Set_Icon_Size.
+   --  the toolbar.
+
    procedure Set_Icon_Size
       (Toolbar   : not null access Gtk_Toolbar_Record;
        Icon_Size : Gtk.Enums.Gtk_Icon_Size);
@@ -133,6 +138,10 @@ package Gtk.Toolbar is
 
    function Get_Show_Arrow
       (Toolbar : not null access Gtk_Toolbar_Record) return Boolean;
+   --  Returns whether the toolbar has an overflow menu. See
+   --  Gtk.Toolbar.Set_Show_Arrow.
+   --  Since: gtk+ 2.4
+
    procedure Set_Show_Arrow
       (Toolbar    : not null access Gtk_Toolbar_Record;
        Show_Arrow : Boolean := True);
@@ -145,6 +154,9 @@ package Gtk.Toolbar is
    function Get_Style
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Toolbar_Style;
+   --  Retrieves whether the toolbar has text, icons, or both . See
+   --  Gtk.Toolbar.Set_Style.
+
    procedure Set_Style
       (Toolbar : not null access Gtk_Toolbar_Record;
        Style   : Gtk.Enums.Gtk_Toolbar_Style);
@@ -196,6 +208,7 @@ package Gtk.Toolbar is
    function Get_Orientation
       (Self : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Toolbar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

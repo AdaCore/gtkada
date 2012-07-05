@@ -118,6 +118,9 @@ package Gtk.Editable is
    --  "end_pos": end of text
 
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
+   --  Retrieves whether Editable is editable. See
+   --  Gtk.Spin_Button.Set_Editable.
+
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
    --  "is_editable": True if the user is allowed to edit the text in the
@@ -125,6 +128,10 @@ package Gtk.Editable is
 
    function Get_Position (Editable : Gtk_Editable) return Gint;
    pragma Import (C, Get_Position, "gtk_editable_get_position");
+   --  Retrieves the current position of the cursor relative to the start of
+   --  the content of the editable.
+   --  Note that this position is in characters, not in bytes.
+
    procedure Set_Position (Editable : Gtk_Editable; Position : Gint);
    pragma Import (C, Set_Position, "gtk_editable_set_position");
    --  Sets the cursor position in the editable to the given value.

@@ -78,6 +78,11 @@ package Gtk.File_Chooser_Button is
       (Button : out Gtk_File_Chooser_Button;
        Title  : UTF8_String;
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
+   --  Creates a new file-selecting button widget.
+   --  Since: gtk+ 2.6
+   --  "title": the title of the browse dialog.
+   --  "action": the open mode for the widget.
+
    procedure Initialize
       (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Title  : UTF8_String;
@@ -90,6 +95,17 @@ package Gtk.File_Chooser_Button is
    procedure Gtk_New_With_Dialog
       (Button : out Gtk_File_Chooser_Button;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Creates a Gtk.File_Chooser_Button.Gtk_File_Chooser_Button widget which
+   --  uses Dialog as its file-picking window.
+   --  Note that Dialog must be a Gtk.Dialog.Gtk_Dialog (or subclass) which
+   --  implements the Gtk.File_Chooser.Gtk_File_Chooser interface and must not
+   --  have GTK_DIALOG_DESTROY_WITH_PARENT set.
+   --  Also note that the dialog needs to have its confirmative button added
+   --  with response GTK_RESPONSE_ACCEPT or GTK_RESPONSE_OK in order for the
+   --  button to take over the file selected in the dialog.
+   --  Since: gtk+ 2.6
+   --  "dialog": the widget to use as dialog
+
    procedure Initialize_With_Dialog
       (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -114,6 +130,11 @@ package Gtk.File_Chooser_Button is
    function Get_Focus_On_Click
       (Button : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+   --  Returns whether the button grabs focus when it is clicked with the
+   --  mouse. See Gtk.File_Chooser_Button.Set_Focus_On_Click.
+   --  the mouse.
+   --  Since: gtk+ 2.10
+
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_File_Chooser_Button_Record;
        Focus_On_Click : Boolean);
@@ -128,6 +149,10 @@ package Gtk.File_Chooser_Button is
    function Get_Title
       (Button : not null access Gtk_File_Chooser_Button_Record)
        return UTF8_String;
+   --  Retrieves the title of the browse dialog used by Button. The returned
+   --  value should not be modified or freed.
+   --  Since: gtk+ 2.6
+
    procedure Set_Title
       (Button : not null access Gtk_File_Chooser_Button_Record;
        Title  : UTF8_String);
@@ -137,6 +162,10 @@ package Gtk.File_Chooser_Button is
 
    function Get_Width_Chars
       (Button : not null access Gtk_File_Chooser_Button_Record) return Gint;
+   --  Retrieves the width in characters of the Button widget's entry and/or
+   --  label.
+   --  Since: gtk+ 2.6
+
    procedure Set_Width_Chars
       (Button  : not null access Gtk_File_Chooser_Button_Record;
        N_Chars : Gint);
@@ -167,6 +196,7 @@ package Gtk.File_Chooser_Button is
    function Get_Action
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.File_Chooser.Gtk_File_Chooser_Action;
+
    procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
@@ -174,6 +204,7 @@ package Gtk.File_Chooser_Button is
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Create_Folders
       (Chooser        : not null access Gtk_File_Chooser_Button_Record;
        Create_Folders : Boolean);
@@ -181,6 +212,7 @@ package Gtk.File_Chooser_Button is
    function Get_Current_Folder
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return UTF8_String;
+
    function Set_Current_Folder
       (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String) return Boolean;
@@ -188,6 +220,7 @@ package Gtk.File_Chooser_Button is
    function Get_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return UTF8_String;
+
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        URI     : UTF8_String) return Boolean;
@@ -195,6 +228,7 @@ package Gtk.File_Chooser_Button is
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Do_Overwrite_Confirmation
       (Chooser                   : not null access Gtk_File_Chooser_Button_Record;
        Do_Overwrite_Confirmation : Boolean);
@@ -202,6 +236,7 @@ package Gtk.File_Chooser_Button is
    function Get_Extra_Widget
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Widget.Gtk_Widget;
+
    procedure Set_Extra_Widget
       (Chooser      : not null access Gtk_File_Chooser_Button_Record;
        Extra_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -209,6 +244,7 @@ package Gtk.File_Chooser_Button is
    function Get_Filename
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return UTF8_String;
+
    function Set_Filename
       (Chooser  : not null access Gtk_File_Chooser_Button_Record;
        Filename : UTF8_String) return Boolean;
@@ -220,6 +256,7 @@ package Gtk.File_Chooser_Button is
    function Get_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.File_Filter.Gtk_File_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
@@ -228,6 +265,7 @@ package Gtk.File_Chooser_Button is
    function Get_Local_Only
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_File_Chooser_Button_Record;
        Local_Only : Boolean);
@@ -243,6 +281,7 @@ package Gtk.File_Chooser_Button is
    function Get_Preview_Widget
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Widget.Gtk_Widget;
+
    procedure Set_Preview_Widget
       (Chooser        : not null access Gtk_File_Chooser_Button_Record;
        Preview_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -250,6 +289,7 @@ package Gtk.File_Chooser_Button is
    function Get_Preview_Widget_Active
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Preview_Widget_Active
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Active  : Boolean);
@@ -257,6 +297,7 @@ package Gtk.File_Chooser_Button is
    function Get_Select_Multiple
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_File_Chooser_Button_Record;
        Select_Multiple : Boolean);
@@ -264,6 +305,7 @@ package Gtk.File_Chooser_Button is
    function Get_Show_Hidden
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Show_Hidden
       (Chooser     : not null access Gtk_File_Chooser_Button_Record;
        Show_Hidden : Boolean);
@@ -271,6 +313,7 @@ package Gtk.File_Chooser_Button is
    function Get_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return UTF8_String;
+
    function Set_Uri
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        URI     : UTF8_String) return Boolean;
@@ -282,6 +325,7 @@ package Gtk.File_Chooser_Button is
    function Get_Use_Preview_Label
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+
    procedure Set_Use_Preview_Label
       (Chooser   : not null access Gtk_File_Chooser_Button_Record;
        Use_Label : Boolean);
@@ -340,6 +384,7 @@ package Gtk.File_Chooser_Button is
    function Get_Orientation
       (Self : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_File_Chooser_Button_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

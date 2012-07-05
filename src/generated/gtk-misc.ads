@@ -69,6 +69,11 @@ package Gtk.Misc is
       (Misc   : not null access Gtk_Misc_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   --  Gets the X and Y alignment of the widget within its allocation. See
+   --  Gtk.Misc.Set_Alignment.
+   --  "xalign": location to store X alignment of Misc, or null
+   --  "yalign": location to store Y alignment of Misc, or null
+
    procedure Set_Alignment
       (Misc   : not null access Gtk_Misc_Record;
        Xalign : Gfloat;
@@ -87,6 +92,11 @@ package Gtk.Misc is
       (Misc : not null access Gtk_Misc_Record;
        Xpad : out Gint;
        Ypad : out Gint);
+   --  Gets the padding in the X and Y directions of the widget. See
+   --  Gtk.Misc.Set_Padding.
+   --  "xpad": location to store padding in the X direction, or null
+   --  "ypad": location to store padding in the Y direction, or null
+
    procedure Set_Padding
       (Misc : not null access Gtk_Misc_Record;
        Xpad : Gint;

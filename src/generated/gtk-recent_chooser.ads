@@ -97,6 +97,9 @@ package Gtk.Recent_Chooser is
 
    function Get_Current_Uri
       (Chooser : Gtk_Recent_Chooser) return UTF8_String;
+   --  Gets the URI currently selected by Chooser.
+   --  Since: gtk+ 2.10
+
    function Set_Current_Uri
       (Chooser : Gtk_Recent_Chooser;
        URI     : UTF8_String) return Boolean;
@@ -107,6 +110,10 @@ package Gtk.Recent_Chooser is
    function Get_Filter
       (Chooser : Gtk_Recent_Chooser)
        return Gtk.Recent_Filter.Gtk_Recent_Filter;
+   --  Gets the Gtk.Recent_Filter.Gtk_Recent_Filter object currently used by
+   --  Chooser to affect the display of the recently used resources.
+   --  Since: gtk+ 2.10
+
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
@@ -130,6 +137,11 @@ package Gtk.Recent_Chooser is
 
    function Get_Limit (Chooser : Gtk_Recent_Chooser) return Gint;
    pragma Import (C, Get_Limit, "gtk_recent_chooser_get_limit");
+   --  Gets the number of items returned by
+   --  Gtk.Recent_Chooser_Widget.Get_Items and gtk_recent_chooser_get_uris.
+   --  returned.
+   --  Since: gtk+ 2.10
+
    procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Gint);
    pragma Import (C, Set_Limit, "gtk_recent_chooser_set_limit");
    --  Sets the number of items that should be returned by
@@ -138,6 +150,10 @@ package Gtk.Recent_Chooser is
    --  "limit": a positive integer, or -1 for all items
 
    function Get_Local_Only (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Gets whether only local resources should be shown in the recently used
+   --  resources selector. See Gtk.Recent_Chooser_Widget.Set_Local_Only
+   --  Since: gtk+ 2.10
+
    procedure Set_Local_Only
       (Chooser    : Gtk_Recent_Chooser;
        Local_Only : Boolean);
@@ -150,6 +166,9 @@ package Gtk.Recent_Chooser is
 
    function Get_Select_Multiple
       (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Gets whether Chooser can select multiple items.
+   --  Since: gtk+ 2.10
+
    procedure Set_Select_Multiple
       (Chooser         : Gtk_Recent_Chooser;
        Select_Multiple : Boolean);
@@ -158,6 +177,9 @@ package Gtk.Recent_Chooser is
    --  "select_multiple": True if Chooser can select more than one item
 
    function Get_Show_Icons (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Retrieves whether Chooser should show an icon near the resource.
+   --  Since: gtk+ 2.10
+
    procedure Set_Show_Icons
       (Chooser    : Gtk_Recent_Chooser;
        Show_Icons : Boolean);
@@ -167,6 +189,11 @@ package Gtk.Recent_Chooser is
    --  "show_icons": whether to show an icon near the resource
 
    function Get_Show_Not_Found (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Retrieves whether Chooser should show the recently used resources that
+   --  were not found.
+   --  False otheriwse.
+   --  Since: gtk+ 2.10
+
    procedure Set_Show_Not_Found
       (Chooser        : Gtk_Recent_Chooser;
        Show_Not_Found : Boolean);
@@ -176,6 +203,11 @@ package Gtk.Recent_Chooser is
    --  "show_not_found": whether to show the local items we didn't find
 
    function Get_Show_Private (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Returns whether Chooser should display recently used resources
+   --  registered as private.
+   --  False otherwise.
+   --  Since: gtk+ 2.10
+
    procedure Set_Show_Private
       (Chooser      : Gtk_Recent_Chooser;
        Show_Private : Boolean);
@@ -184,6 +216,11 @@ package Gtk.Recent_Chooser is
    --  "show_private": True to show private items, False otherwise
 
    function Get_Show_Tips (Chooser : Gtk_Recent_Chooser) return Boolean;
+   --  Gets whether Chooser should display tooltips containing the full path
+   --  of a recently user resource.
+   --  False otherwise.
+   --  Since: gtk+ 2.10
+
    procedure Set_Show_Tips
       (Chooser   : Gtk_Recent_Chooser;
        Show_Tips : Boolean);
@@ -196,6 +233,9 @@ package Gtk.Recent_Chooser is
    function Get_Sort_Type
       (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type;
    pragma Import (C, Get_Sort_Type, "gtk_recent_chooser_get_sort_type");
+   --  Gets the value set by Gtk.Recent_Chooser_Widget.Set_Sort_Type.
+   --  Since: gtk+ 2.10
+
    procedure Set_Sort_Type
       (Chooser   : Gtk_Recent_Chooser;
        Sort_Type : Gtk_Recent_Sort_Type);

@@ -254,6 +254,9 @@ package Gtk.Activatable is
 
    function Get_Related_Action
       (Self : Gtk_Activatable) return Gtk.Action.Gtk_Action;
+   --  Gets the related Gtk.Action.Gtk_Action for Activatable.
+   --  Since: gtk+ 2.16
+
    procedure Set_Related_Action
       (Self   : Gtk_Activatable;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
@@ -267,6 +270,10 @@ package Gtk.Activatable is
 
    function Get_Use_Action_Appearance
       (Self : Gtk_Activatable) return Boolean;
+   --  Gets whether this activatable should reset its layout and appearance
+   --  when setting the related action or when the action changes appearance.
+   --  Since: gtk+ 2.16
+
    procedure Set_Use_Action_Appearance
       (Self           : Gtk_Activatable;
        Use_Appearance : Boolean);

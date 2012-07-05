@@ -70,6 +70,8 @@ package Gtk.Progress_Bar is
    ------------------
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar);
+   --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
+
    procedure Initialize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class);
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
@@ -84,6 +86,10 @@ package Gtk.Progress_Bar is
    function Get_Ellipsize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
+   --  Returns the ellipsizing position of the progressbar. See
+   --  Gtk.Progress_Bar.Set_Ellipsize.
+   --  Since: gtk+ 2.6
+
    procedure Set_Ellipsize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Mode         : Pango.Layout.Pango_Ellipsize_Mode);
@@ -95,6 +101,8 @@ package Gtk.Progress_Bar is
    function Get_Fraction
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Gdouble;
+   --  Returns the current fraction of the task that's been completed.
+
    procedure Set_Fraction
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble);
@@ -105,6 +113,8 @@ package Gtk.Progress_Bar is
    function Get_Inverted
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean;
+   --  Gets the value set by Gtk.Progress_Bar.Set_Inverted
+
    procedure Set_Inverted
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Inverted     : Boolean);
@@ -115,6 +125,8 @@ package Gtk.Progress_Bar is
    function Get_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Gdouble;
+   --  Retrieves the pulse step set with Gtk.Progress_Bar.Set_Pulse_Step
+
    procedure Set_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Fraction     : Gdouble);
@@ -125,6 +137,10 @@ package Gtk.Progress_Bar is
    function Get_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean;
+   --  Gets the value of the Gtk.Progress_Bar.Gtk_Progress_Bar::show-text
+   --  property. See Gtk.Progress_Bar.Set_Show_Text.
+   --  Since: gtk+ 3.0
+
    procedure Set_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Show_Text    : Boolean);
@@ -142,6 +158,12 @@ package Gtk.Progress_Bar is
    function Get_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return UTF8_String;
+   --  Retrieves the text displayed superimposed on the progress bar, if any,
+   --  otherwise null. The return value is a reference to the text, not a copy
+   --  of it, so will become invalid if you change the text in the progress
+   --  bar.
+   --  and should not be modified or freed.
+
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Text         : UTF8_String := "");
@@ -173,6 +195,7 @@ package Gtk.Progress_Bar is
    function Get_Orientation
       (Self : not null access Gtk_Progress_Bar_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Progress_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

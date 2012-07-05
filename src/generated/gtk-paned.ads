@@ -98,6 +98,10 @@ package Gtk.Paned is
    procedure Gtk_New
       (Paned       : out Gtk_Paned;
        Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Paned.Gtk_Paned widget.
+   --  Since: gtk+ 3.0
+   --  "orientation": the paned's orientation.
+
    procedure Initialize
       (Paned       : not null access Gtk_Paned_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation);
@@ -109,6 +113,8 @@ package Gtk.Paned is
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
    procedure Gtk_New_Hpaned (Paned : out Gtk_Hpaned);
+   --  The children will be displayed next to each other
+
    procedure Initialize_Hpaned
       (Paned : not null access Gtk_Hpaned_Record'Class);
    --  The children will be displayed next to each other
@@ -117,6 +123,8 @@ package Gtk.Paned is
    pragma Import (C, Get_Type_Hpaned, "gtk_hpaned_get_type");
 
    procedure Gtk_New_Vpaned (Paned : out Gtk_Vpaned);
+   --  The children will be displayed one on top of the other
+
    procedure Initialize_Vpaned
       (Paned : not null access Gtk_Vpaned_Record'Class);
    --  The children will be displayed one on top of the other
@@ -168,6 +176,8 @@ package Gtk.Paned is
 
    function Get_Position
       (Paned : not null access Gtk_Paned_Record) return Gint;
+   --  Obtains the position of the divider between the two panes.
+
    procedure Set_Position
       (Paned    : not null access Gtk_Paned_Record;
        Position : Gint);
@@ -210,6 +220,7 @@ package Gtk.Paned is
    function Get_Orientation
       (Self : not null access Gtk_Paned_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Paned_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

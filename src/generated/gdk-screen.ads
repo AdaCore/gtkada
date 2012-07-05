@@ -89,6 +89,10 @@ package Gdk.Screen is
    function Get_Font_Options
       (Screen : not null access Gdk_Screen_Record)
        return Cairo.Cairo_Font_Options;
+   --  Gets any options previously set with Gdk.Screen.Set_Font_Options.
+   --  font options have been set.
+   --  Since: gtk+ 2.10
+
    procedure Set_Font_Options
       (Screen  : not null access Gdk_Screen_Record;
        Options : in out Cairo.Cairo_Font_Options);
@@ -194,6 +198,11 @@ package Gdk.Screen is
 
    function Get_Resolution
       (Screen : not null access Gdk_Screen_Record) return Gdouble;
+   --  Gets the resolution for font handling on the screen; see
+   --  Gdk.Screen.Set_Resolution for full details.
+   --  has been set.
+   --  Since: gtk+ 2.10
+
    procedure Set_Resolution
       (Screen : not null access Gdk_Screen_Record;
        Dpi    : Gdouble);

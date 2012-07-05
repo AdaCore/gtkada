@@ -104,6 +104,9 @@ package Gtk.Assistant is
    ------------------
 
    procedure Gtk_New (Assistant : out Gtk_Assistant);
+   --  Creates a new Gtk.Assistant.Gtk_Assistant.
+   --  Since: gtk+ 2.10
+
    procedure Initialize
       (Assistant : not null access Gtk_Assistant_Record'Class);
    --  Creates a new Gtk.Assistant.Gtk_Assistant.
@@ -142,6 +145,11 @@ package Gtk.Assistant is
 
    function Get_Current_Page
       (Assistant : not null access Gtk_Assistant_Record) return Gint;
+   --  Returns the page number of the current page.
+   --  page in the Assistant, or -1 if the Assistant has no pages, or no
+   --  current page.
+   --  Since: gtk+ 2.10
+
    procedure Set_Current_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint);
@@ -171,6 +179,10 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Boolean;
+   --  Gets whether Page is complete.
+   --  Since: gtk+ 2.10
+   --  "page": a page of Assistant
+
    procedure Set_Page_Complete
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -187,6 +199,13 @@ package Gtk.Assistant is
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Header_Image);
+   --  Gets the header image for Page.
+   --  or null if there's no header image for the page
+   --  add your header decoration to the page content instead.
+   --  Since: gtk+ 2.10
+   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown;
+   --  "page": a page of Assistant
+
    procedure Set_Page_Header_Image
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -204,6 +223,13 @@ package Gtk.Assistant is
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Side_Image);
+   --  Gets the side image for Page.
+   --  or null if there's no side image for the page
+   --  shown anymore.
+   --  Since: gtk+ 2.10
+   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not
+   --  "page": a page of Assistant
+
    procedure Set_Page_Side_Image
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -222,6 +248,10 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return UTF8_String;
+   --  Gets the title for Page.
+   --  Since: gtk+ 2.10
+   --  "page": a page of Assistant
+
    procedure Set_Page_Title
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -237,6 +267,10 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Assistant_Page_Type;
+   --  Gets the page type of Page.
+   --  Since: gtk+ 2.10
+   --  "page": a page of Assistant
+
    procedure Set_Page_Type
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;

@@ -47,6 +47,8 @@ package Gtk.Separator_Menu_Item is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Separator_Menu_Item);
+   --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
+
    procedure Initialize
       (Widget : not null access Gtk_Separator_Menu_Item_Record'Class);
    --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
@@ -68,12 +70,14 @@ package Gtk.Separator_Menu_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Separator_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Separator_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Separator_Menu_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Separator_Menu_Item_Record;
        Use_Appearance : Boolean);

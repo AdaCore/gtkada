@@ -87,6 +87,14 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : out Gtk_Scrolled_Window;
        Hadjustment     : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment     : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new scrolled window.
+   --  The two arguments are the scrolled window's adjustments; these will be
+   --  shared with the scrollbars and the child widget to keep the bars in sync
+   --  with the child. Usually you want to pass null for the adjustments, which
+   --  will cause the scrolled window to create them for you.
+   --  "hadjustment": horizontal adjustment
+   --  "vadjustment": vertical adjustment
+
    procedure Initialize
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record'Class;
        Hadjustment     : Gtk.Adjustment.Gtk_Adjustment := null;
@@ -129,6 +137,10 @@ package Gtk.Scrolled_Window is
    function Get_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   --  Returns the horizontal scrollbar's adjustment, used to connect the
+   --  horizontal scrollbar to the child widget's horizontal scroll
+   --  functionality.
+
    procedure Set_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Hadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
@@ -146,6 +158,9 @@ package Gtk.Scrolled_Window is
    function Get_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gint;
+   --  Gets the minimal content height of Scrolled_Window, or -1 if not set.
+   --  Since: gtk+ 3.0
+
    procedure Set_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Height          : Gint);
@@ -158,6 +173,9 @@ package Gtk.Scrolled_Window is
    function Get_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gint;
+   --  Gets the minimum content width of Scrolled_Window, or -1 if not set.
+   --  Since: gtk+ 3.0
+
    procedure Set_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Width           : Gint);
@@ -170,6 +188,11 @@ package Gtk.Scrolled_Window is
    function Get_Placement
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Enums.Gtk_Corner_Type;
+   --  Gets the placement of the contents with respect to the scrollbars for
+   --  the scrolled window. See Gtk.Scrolled_Window.Set_Placement.
+   --  See also Gtk.Scrolled_Window.Set_Placement and
+   --  Gtk.Scrolled_Window.Unset_Placement.
+
    procedure Set_Placement
       (Scrolled_Window  : not null access Gtk_Scrolled_Window_Record;
        Window_Placement : Gtk.Enums.Gtk_Corner_Type);
@@ -187,6 +210,13 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
        Hscrollbar_Policy : out Gtk.Enums.Gtk_Policy_Type;
        Vscrollbar_Policy : out Gtk.Enums.Gtk_Policy_Type);
+   --  Retrieves the current policy values for the horizontal and vertical
+   --  scrollbars. See Gtk.Scrolled_Window.Set_Policy.
+   --  "hscrollbar_policy": location to store the policy for the horizontal
+   --  scrollbar, or null.
+   --  "vscrollbar_policy": location to store the policy for the vertical
+   --  scrollbar, or null.
+
    procedure Set_Policy
       (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
        Hscrollbar_Policy : Gtk.Enums.Gtk_Policy_Type;
@@ -205,6 +235,9 @@ package Gtk.Scrolled_Window is
    function Get_Shadow_Type
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
+   --  Gets the shadow type of the scrolled window. See
+   --  Gtk.Scrolled_Window.Set_Shadow_Type.
+
    procedure Set_Shadow_Type
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        The_Type        : Gtk.Enums.Gtk_Shadow_Type);
@@ -215,6 +248,9 @@ package Gtk.Scrolled_Window is
    function Get_Vadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   --  Returns the vertical scrollbar's adjustment, used to connect the
+   --  vertical scrollbar to the child widget's vertical scroll functionality.
+
    procedure Set_Vadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Vadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)

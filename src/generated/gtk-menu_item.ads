@@ -64,6 +64,8 @@ package Gtk.Menu_Item is
    ------------------
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item);
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item.
+
    procedure Initialize
       (Menu_Item : not null access Gtk_Menu_Item_Record'Class);
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item.
@@ -71,6 +73,10 @@ package Gtk.Menu_Item is
    procedure Gtk_New_With_Label
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item whose child is a
+   --  Gtk.Label.Gtk_Label.
+   --  "label": the text for the label
+
    procedure Initialize_With_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String);
@@ -81,6 +87,12 @@ package Gtk.Menu_Item is
    procedure Gtk_New_With_Mnemonic
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item containing a label.
+   --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the menu item.
+   --  "label": The text of the button, with an underscore in front of the
+   --  mnemonic character
+
    procedure Initialize_With_Mnemonic
       (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String);
@@ -107,6 +119,11 @@ package Gtk.Menu_Item is
 
    function Get_Accel_Path
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
+   --  Retrieve the accelerator path that was previously set on Menu_Item.
+   --  See Gtk.Menu_Item.Set_Accel_Path for details.
+   --  item's functionality, or null if not set
+   --  Since: gtk+ 2.14
+
    procedure Set_Accel_Path
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
        Accel_Path : UTF8_String := "");
@@ -130,6 +147,10 @@ package Gtk.Menu_Item is
 
    function Get_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
+   --  Sets Text on the Menu_Item label
+   --  string used by the label, and must not be modified.
+   --  Since: gtk+ 2.16
+
    procedure Set_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Label     : UTF8_String);
@@ -139,6 +160,11 @@ package Gtk.Menu_Item is
 
    function Get_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
+   --  Returns whether the Menu_Item reserves space for the submenu indicator,
+   --  regardless if it has a submenu or not.
+   --  submenu indicator
+   --  Since: gtk+ 3.0
+
    procedure Set_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Reserve   : Boolean);
@@ -151,6 +177,11 @@ package Gtk.Menu_Item is
    function Get_Right_Justified
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
    pragma Obsolescent (Get_Right_Justified);
+   --  Gets whether the menu item appears justified at the right side of the
+   --  menu bar.
+   --  far right if added to a menu bar.
+   --  Deprecated since 3.2, See Gtk.Menu_Item.Set_Right_Justified
+
    procedure Set_Right_Justified
       (Menu_Item       : not null access Gtk_Menu_Item_Record;
        Right_Justified : Boolean := True);
@@ -168,6 +199,9 @@ package Gtk.Menu_Item is
    function Get_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Gets the submenu underneath this menu item, if any. See
+   --  Gtk.Menu_Item.Set_Submenu.
+
    procedure Set_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Submenu   : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -177,6 +211,11 @@ package Gtk.Menu_Item is
 
    function Get_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
+   --  Checks if an underline in the text indicates the next character should
+   --  be used for the mnemonic accelerator key.
+   --  indicates the mnemonic accelerator key.
+   --  Since: gtk+ 2.16
+
    procedure Set_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Setting   : Boolean);
@@ -229,12 +268,14 @@ package Gtk.Menu_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Menu_Item_Record;
        Use_Appearance : Boolean);

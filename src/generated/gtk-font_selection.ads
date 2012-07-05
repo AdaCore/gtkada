@@ -61,6 +61,8 @@ package Gtk.Font_Selection is
    ------------------
 
    procedure Gtk_New (Fontsel : out Gtk_Font_Selection);
+   --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
+
    procedure Initialize
       (Fontsel : not null access Gtk_Font_Selection_Record'Class);
    --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
@@ -94,6 +96,16 @@ package Gtk.Font_Selection is
       (Fontsel : not null access Gtk_Font_Selection_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Font_Name);
+   --  Gets the currently-selected font name.
+   --  Note that this can be a different string than what you set with
+   --  Gtk.Font_Selection.Set_Font_Name, as the font selection widget may
+   --  normalize font names and thus return a string with a different
+   --  structure. For example, "Helvetica Italic Bold 12" could be normalized
+   --  to "Helvetica Bold Italic 12". Use pango_font_description_equal if you
+   --  want to compare two font descriptions.
+   --  no font is selected. You must free this string with g_free.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+
    function Set_Font_Name
       (Fontsel  : not null access Gtk_Font_Selection_Record;
        Fontname : UTF8_String) return Boolean;
@@ -120,6 +132,10 @@ package Gtk.Font_Selection is
       (Fontsel : not null access Gtk_Font_Selection_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
+   --  Gets the text displayed in the preview area.
+   --  This string is owned by the widget and should not be modified or freed
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+
    procedure Set_Preview_Text
       (Fontsel : not null access Gtk_Font_Selection_Record;
        Text    : UTF8_String);
@@ -165,6 +181,7 @@ package Gtk.Font_Selection is
    function Get_Orientation
       (Self : not null access Gtk_Font_Selection_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Font_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

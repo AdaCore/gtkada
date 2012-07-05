@@ -96,6 +96,8 @@ package Gdk.Drag_Contexts is
    function Get_Device
       (Self : not null access Drag_Context_Record)
        return Gdk.Device.Gdk_Device;
+   --  Returns the Gdk.Device.Gdk_Device associated to the drag context.
+
    procedure Set_Device
       (Self   : not null access Drag_Context_Record;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class);

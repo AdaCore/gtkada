@@ -59,6 +59,13 @@ package Gtk.Button is
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Button;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Button.Gtk_Button containing the image and text from
+   --  a stock item. Some stock ids have preprocessor macros like GTK_STOCK_OK
+   --  and GTK_STOCK_APPLY.
+   --  If Stock_Id is unknown, then it will be treated as a mnemonic label (as
+   --  for Gtk.Button.Gtk_New_With_Mnemonic).
+   --  "stock_id": the name of the stock item
+
    procedure Initialize_From_Stock
       (Button   : not null access Gtk_Button_Record'Class;
        Stock_Id : UTF8_String);
@@ -70,6 +77,10 @@ package Gtk.Button is
    --  "stock_id": the name of the stock item
 
    procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
+   --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
+   --  containing the given text.
+   --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
+
    procedure Initialize
       (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String := "");
@@ -80,6 +91,14 @@ package Gtk.Button is
    procedure Gtk_New_With_Mnemonic
       (Button : out Gtk_Button;
        Label  : UTF8_String);
+   --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
+   --  in Label are preceded by an underscore, they are underlined. If you need
+   --  a literal underscore character in a label, use '__' (two underscores).
+   --  The first underlined character represents a keyboard accelerator called
+   --  a mnemonic. Pressing Alt and that key activates the button.
+   --  "label": The text of the button, with an underscore in front of the
+   --  mnemonic character
+
    procedure Initialize_With_Mnemonic
       (Button : not null access Gtk_Button_Record'Class;
        Label  : UTF8_String);
@@ -113,6 +132,11 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   --  Gets the alignment of the child in the button.
+   --  Since: gtk+ 2.4
+   --  "xalign": return location for horizontal alignment
+   --  "yalign": return location for vertical alignment
+
    procedure Set_Alignment
       (Button : not null access Gtk_Button_Record;
        Xalign : Gfloat;
@@ -134,6 +158,11 @@ package Gtk.Button is
 
    function Get_Focus_On_Click
       (Button : not null access Gtk_Button_Record) return Boolean;
+   --  Returns whether the button grabs focus when it is clicked with the
+   --  mouse. See Gtk.Button.Set_Focus_On_Click.
+   --  the mouse.
+   --  Since: gtk+ 2.4
+
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_Button_Record;
        Focus_On_Click : Boolean);
@@ -148,6 +177,11 @@ package Gtk.Button is
    function Get_Image
       (Button : not null access Gtk_Button_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Gets the widget that is currenty set as the image of Button. This may
+   --  have been explicitly set by Gtk.Button.Set_Image or constructed by
+   --  Gtk.Button.Gtk_New_From_Stock.
+   --  Since: gtk+ 2.6
+
    procedure Set_Image
       (Button : not null access Gtk_Button_Record;
        Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -161,6 +195,9 @@ package Gtk.Button is
    function Get_Image_Position
       (Button : not null access Gtk_Button_Record)
        return Gtk.Enums.Gtk_Position_Type;
+   --  Gets the position of the image relative to the text inside the button.
+   --  Since: gtk+ 2.10
+
    procedure Set_Image_Position
       (Button   : not null access Gtk_Button_Record;
        Position : Gtk.Enums.Gtk_Position_Type);
@@ -170,6 +207,12 @@ package Gtk.Button is
 
    function Get_Label
       (Button : not null access Gtk_Button_Record) return UTF8_String;
+   --  Fetches the text from the label of the button, as set by
+   --  Gtk.Button.Set_Label. If the label text has not been set the return
+   --  value will be null. This will be the case if you create an empty button
+   --  with gtk_button_new to use as a container.
+   --  by the widget and must not be modified or freed.
+
    procedure Set_Label
       (Button : not null access Gtk_Button_Record;
        Label  : UTF8_String);
@@ -181,6 +224,8 @@ package Gtk.Button is
    function Get_Relief
       (Button : not null access Gtk_Button_Record)
        return Gtk.Enums.Gtk_Relief_Style;
+   --  Returns the current relief style of the given Gtk.Button.Gtk_Button.
+
    procedure Set_Relief
       (Button   : not null access Gtk_Button_Record;
        Newstyle : Gtk.Enums.Gtk_Relief_Style);
@@ -193,6 +238,9 @@ package Gtk.Button is
 
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean;
+   --  Returns whether the button label is a stock item.
+   --  select a stock item instead of being used directly as the label text.
+
    procedure Set_Use_Stock
       (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean);
@@ -202,6 +250,10 @@ package Gtk.Button is
 
    function Get_Use_Underline
       (Button : not null access Gtk_Button_Record) return Boolean;
+   --  Returns whether an embedded underline in the button label indicates a
+   --  mnemonic. See gtk_button_set_use_underline ().
+   --  indicates the mnemonic accelerator keys.
+
    procedure Set_Use_Underline
       (Button        : not null access Gtk_Button_Record;
        Use_Underline : Boolean);
@@ -244,12 +296,14 @@ package Gtk.Button is
    function Get_Related_Action
       (Self : not null access Gtk_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Button_Record;
        Use_Appearance : Boolean);

@@ -145,12 +145,24 @@ package Gtk.Image is
    ------------------
 
    procedure Gtk_New (Image : out Gtk_Image);
+   --  Creates a new empty Gtk.Image.Gtk_Image widget.
+
    procedure Initialize (Image : not null access Gtk_Image_Record'Class);
    --  Creates a new empty Gtk.Image.Gtk_Image widget.
 
    procedure Gtk_New
       (Image     : out Gtk_Image;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+   --  Creates a Gtk.Image.Gtk_Image displaying the given animation. The
+   --  Gtk.Image.Gtk_Image does not assume a reference to the animation; you
+   --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
+   --  add its own reference rather than adopting yours.
+   --  Note that the animation frames are shown using a timeout with
+   --  G_PRIORITY_DEFAULT. When using animations to indicate busyness, keep in
+   --  mind that the animation will only be shown if the main loop is not busy
+   --  with something that has a higher priority.
+   --  "animation": an animation
+
    procedure Initialize
       (Image     : not null access Gtk_Image_Record'Class;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
@@ -165,6 +177,19 @@ package Gtk.Image is
    --  "animation": an animation
 
    procedure Gtk_New (Image : out Gtk_Image; Filename : UTF8_String);
+   --  Creates a new Gtk.Image.Gtk_Image displaying the file Filename. If the
+   --  file isn't found or can't be loaded, the resulting Gtk.Image.Gtk_Image
+   --  will display a "broken image" icon. This function never returns null, it
+   --  always returns a valid Gtk.Image.Gtk_Image widget.
+   --  If the file contains an animation, the image will contain an animation.
+   --  If you need to detect failures to load the file, use
+   --  Gdk.Pixbuf.Gdk_New_From_File to load the file yourself, then create the
+   --  Gtk.Image.Gtk_Image from the pixbuf. (Or for animations, use
+   --  Gdk.Pixbuf.Gdk_New_From_File).
+   --  The storage type (gtk_image_get_storage_type) of the returned image is
+   --  not defined, it will be whatever is appropriate for displaying the file.
+   --  "filename": a filename
+
    procedure Initialize
       (Image    : not null access Gtk_Image_Record'Class;
        Filename : UTF8_String);
@@ -185,6 +210,14 @@ package Gtk.Image is
       (Image : out Gtk_Image;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
+   --  theme. If the icon name isn't known, a "broken image" icon will be
+   --  displayed instead. If the current icon theme is changed, the icon will
+   --  be updated appropriately.
+   --  Since: gtk+ 2.14
+   --  "icon": an icon
+   --  "size": a stock icon size
+
    procedure Initialize_From_Gicon
       (Image : not null access Gtk_Image_Record'Class;
        Icon  : Glib.G_Icon.G_Icon;
@@ -201,6 +234,14 @@ package Gtk.Image is
       (Image     : out Gtk_Image;
        Icon_Name : UTF8_String;
        Size      : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a Gtk.Image.Gtk_Image displaying an icon from the current icon
+   --  theme. If the icon name isn't known, a "broken image" icon will be
+   --  displayed instead. If the current icon theme is changed, the icon will
+   --  be updated appropriately.
+   --  Since: gtk+ 2.6
+   --  "icon_name": an icon name
+   --  "size": a stock icon size
+
    procedure Initialize_From_Icon_Name
       (Image     : not null access Gtk_Image_Record'Class;
        Icon_Name : UTF8_String;
@@ -217,6 +258,19 @@ package Gtk.Image is
       (Image    : out Gtk_Image;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a Gtk.Image.Gtk_Image displaying an icon set. Sample stock
+   --  sizes are GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_SMALL_TOOLBAR. Instead of
+   --  using this function, usually it's better to create a
+   --  Gtk.Icon_Factory.Gtk_Icon_Factory, put your icon sets in the icon
+   --  factory, add the icon factory to the list of default factories with
+   --  Gtk.Icon_Factory.Add_Default, and then use Gtk.Image.Gtk_New. This will
+   --  allow themes to override the icon you ship with your application.
+   --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set;
+   --  you still need to unref it if you own references. Gtk.Image.Gtk_Image
+   --  will add its own reference rather than adopting yours.
+   --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
+   --  "size": a stock icon size
+
    procedure Initialize
       (Image    : not null access Gtk_Image_Record'Class;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
@@ -237,6 +291,15 @@ package Gtk.Image is
    procedure Gtk_New
       (Image  : out Gtk_Image;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a new Gtk.Image.Gtk_Image displaying Pixbuf. The
+   --  Gtk.Image.Gtk_Image does not assume a reference to the pixbuf; you still
+   --  need to unref it if you own references. Gtk.Image.Gtk_Image will add its
+   --  own reference rather than adopting yours.
+   --  Note that this function just creates an Gtk.Image.Gtk_Image from the
+   --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
+   --  Should you want that, you should use Gtk.Image.Gtk_New.
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
+
    procedure Initialize
       (Image  : not null access Gtk_Image_Record'Class;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
@@ -253,6 +316,14 @@ package Gtk.Image is
       (Image    : out Gtk_Image;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a Gtk.Image.Gtk_Image displaying a stock icon. Sample stock
+   --  icon names are GTK_STOCK_OPEN, GTK_STOCK_QUIT. Sample stock sizes are
+   --  GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_SMALL_TOOLBAR. If the stock icon name
+   --  isn't known, the image will be empty. You can register your own stock
+   --  icon names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
+   --  "stock_id": a stock icon name
+   --  "size": a stock icon size
+
    procedure Initialize
       (Image    : not null access Gtk_Image_Record'Class;
        Stock_Id : UTF8_String;
@@ -279,14 +350,35 @@ package Gtk.Image is
    function Get
       (Image : not null access Gtk_Image_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf_Animation;
+   --  Gets the Gdk_Pixbuf_Animation being displayed by the
+   --  Gtk.Image.Gtk_Image. The storage type of the image must be
+   --  Gtk.Image.Image_Empty or Gtk.Image.Image_Animation (see
+   --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
+   --  reference to the returned animation.
+   --  the image is empty
+
    procedure Get
       (Image : not null access Gtk_Image_Record;
        Gicon : out Glib.G_Icon.G_Icon;
        Size  : out Gtk.Enums.Gtk_Icon_Size);
+   --  Gets the GIcon and size being displayed by the Gtk.Image.Gtk_Image. The
+   --  storage type of the image must be Gtk.Image.Image_Empty or
+   --  Gtk.Image.Image_Gicon (see Gtk.Image.Get_Storage_Type). The caller of
+   --  this function does not own a reference to the returned GIcon.
+   --  Since: gtk+ 2.14
+   --  "gicon": place to store a GIcon, or null
+   --  "size": place to store an icon size, or null
+
    procedure Get
       (Image    : not null access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
+   --  Gets the icon set and size being displayed by the Gtk.Image.Gtk_Image.
+   --  The storage type of the image must be Gtk.Image.Image_Empty or
+   --  Gtk.Image.Image_Icon_Set (see Gtk.Image.Get_Storage_Type).
+   --  "icon_set": location to store a Gtk.Icon_Set.Gtk_Icon_Set, or null
+   --  "size": location to store a stock icon size, or null
+
    function Get
       (Image : not null access Gtk_Image_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
@@ -299,6 +391,9 @@ package Gtk.Image is
 
    function Get_Pixel_Size
       (Image : not null access Gtk_Image_Record) return Gint;
+   --  Gets the pixel size used for named icons.
+   --  Since: gtk+ 2.6
+
    procedure Set_Pixel_Size
       (Image      : not null access Gtk_Image_Record;
        Pixel_Size : Gint);
@@ -317,20 +412,39 @@ package Gtk.Image is
    procedure Set
       (Image     : not null access Gtk_Image_Record;
        Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+   --  Causes the Gtk.Image.Gtk_Image to display the given animation (or
+   --  display nothing, if you set the animation to null).
+   --  "animation": the Gdk_Pixbuf_Animation
+
    procedure Set
       (Image    : not null access Gtk_Image_Record;
        Filename : UTF8_String := "");
+   --  See Gtk.Image.Gtk_New for details.
+   --  "filename": a filename or null
+
    procedure Set
       (Image : not null access Gtk_Image_Record;
        Icon  : Glib.G_Icon.G_Icon;
        Size  : Gtk.Enums.Gtk_Icon_Size);
+   --  See Gtk.Image.Gtk_New_From_Gicon for details.
+   --  Since: gtk+ 2.14
+   --  "icon": an icon
+   --  "size": an icon size
+
    procedure Set
       (Image    : not null access Gtk_Image_Record;
        Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  See Gtk.Image.Gtk_New for details.
+   --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
+   --  "size": a stock icon size
+
    procedure Set
       (Image  : not null access Gtk_Image_Record;
        Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  See Gtk.Image.Gtk_New for details.
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf or null
+
    procedure Set
       (Image    : not null access Gtk_Image_Record;
        Stock_Id : UTF8_String;

@@ -65,6 +65,16 @@ package Gtk.Recent_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "");
+   --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.12
+   --  "name": a unique name for the action
+   --  "label": the label displayed in menu items and on buttons, or null
+   --  "tooltip": a tooltip for the action, or null
+   --  "stock_id": the stock icon to display in widgets representing the
+   --  action, or null
+
    procedure Initialize
       (Widget   : not null access Gtk_Recent_Action_Record'Class;
        Name     : UTF8_String;
@@ -89,6 +99,18 @@ package Gtk.Recent_Action is
        Stock_Id : UTF8_String := "";
        Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
       ;
+   --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.12
+   --  "name": a unique name for the action
+   --  "label": the label displayed in menu items and on buttons, or null
+   --  "tooltip": a tooltip for the action, or null
+   --  "stock_id": the stock icon to display in widgets representing the
+   --  action, or null
+   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager, or null for using
+   --  the default Gtk.Recent_Manager.Gtk_Recent_Manager
+
    procedure Initialize_For_Manager
       (Widget   : not null access Gtk_Recent_Action_Record'Class;
        Name     : UTF8_String;
@@ -118,6 +140,9 @@ package Gtk.Recent_Action is
 
    function Get_Show_Numbers
       (Widget : not null access Gtk_Recent_Action_Record) return Boolean;
+   --  Returns the value set by Gtk.Recent_Chooser_Menu.Set_Show_Numbers.
+   --  Since: gtk+ 2.12
+
    procedure Set_Show_Numbers
       (Widget       : not null access Gtk_Recent_Action_Record;
        Show_Numbers : Boolean);
@@ -193,6 +218,7 @@ package Gtk.Recent_Action is
    function Get_Current_Uri
       (Chooser : not null access Gtk_Recent_Action_Record)
        return UTF8_String;
+
    function Set_Current_Uri
       (Chooser : not null access Gtk_Recent_Action_Record;
        URI     : UTF8_String) return Boolean;
@@ -200,6 +226,7 @@ package Gtk.Recent_Action is
    function Get_Filter
       (Chooser : not null access Gtk_Recent_Action_Record)
        return Gtk.Recent_Filter.Gtk_Recent_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
@@ -211,42 +238,49 @@ package Gtk.Recent_Action is
 
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Action_Record) return Gint;
+
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Action_Record;
        Limit   : Gint);
 
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_Recent_Action_Record;
        Local_Only : Boolean);
 
    function Get_Select_Multiple
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_Recent_Action_Record;
        Select_Multiple : Boolean);
 
    function Get_Show_Icons
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Show_Icons
       (Chooser    : not null access Gtk_Recent_Action_Record;
        Show_Icons : Boolean);
 
    function Get_Show_Not_Found
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Show_Not_Found
       (Chooser        : not null access Gtk_Recent_Action_Record;
        Show_Not_Found : Boolean);
 
    function Get_Show_Private
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Show_Private
       (Chooser      : not null access Gtk_Recent_Action_Record;
        Show_Private : Boolean);
 
    function Get_Show_Tips
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;
+
    procedure Set_Show_Tips
       (Chooser   : not null access Gtk_Recent_Action_Record;
        Show_Tips : Boolean);
@@ -254,6 +288,7 @@ package Gtk.Recent_Action is
    function Get_Sort_Type
       (Chooser : not null access Gtk_Recent_Action_Record)
        return Gtk.Recent_Chooser.Gtk_Recent_Sort_Type;
+
    procedure Set_Sort_Type
       (Chooser   : not null access Gtk_Recent_Action_Record;
        Sort_Type : Gtk.Recent_Chooser.Gtk_Recent_Sort_Type);

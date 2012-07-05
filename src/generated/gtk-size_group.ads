@@ -129,6 +129,9 @@ package Gtk.Size_Group is
    procedure Gtk_New
       (Size_Group : out Gtk_Size_Group;
        Mode       : Size_Group_Mode := Both);
+   --  Create a new Gtk.Size_Group.Gtk_Size_Group.
+   --  "mode": the mode for the new size group.
+
    procedure Initialize
       (Size_Group : not null access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both);
@@ -156,6 +159,9 @@ package Gtk.Size_Group is
 
    function Get_Ignore_Hidden
       (Size_Group : not null access Gtk_Size_Group_Record) return Boolean;
+   --  Returns if invisible widgets are ignored when calculating the size.
+   --  Since: gtk+ 2.8
+
    procedure Set_Ignore_Hidden
       (Size_Group    : not null access Gtk_Size_Group_Record;
        Ignore_Hidden : Boolean);
@@ -168,6 +174,8 @@ package Gtk.Size_Group is
    function Get_Mode
       (Size_Group : not null access Gtk_Size_Group_Record)
        return Size_Group_Mode;
+   --  Gets the current mode of the size group. See Gtk.Size_Group.Set_Mode.
+
    procedure Set_Mode
       (Size_Group : not null access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode);

@@ -49,6 +49,9 @@ package Gtk.Font_Selection_Dialog is
    procedure Gtk_New
       (Dialog : out Gtk_Font_Selection_Dialog;
        Title  : UTF8_String);
+   --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
+   --  "title": the title of the dialog window
+
    procedure Initialize
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record'Class;
        Title  : UTF8_String);
@@ -76,6 +79,17 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Font_Name);
+   --  Gets the currently-selected font name.
+   --  Note that this can be a different string than what you set with
+   --  Gtk.Font_Selection_Dialog.Set_Font_Name, as the font selection widget
+   --  may normalize font names and thus return a string with a different
+   --  structure. For example, "Helvetica Italic Bold 12" could be normalized
+   --  to "Helvetica Bold Italic 12". Use pango_font_description_equal if you
+   --  want to compare two font descriptions.
+   --  font is selected. You must free this string with g_free.
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+
    function Set_Font_Name
       (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean;
@@ -110,6 +124,11 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
+   --  Gets the text displayed in the preview area.
+   --  This string is owned by the widget and should not be modified or freed
+   --  Deprecated since 3.2, Use
+   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+
    procedure Set_Preview_Text
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String);

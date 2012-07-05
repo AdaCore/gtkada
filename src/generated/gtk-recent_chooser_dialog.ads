@@ -87,6 +87,7 @@ package Gtk.Recent_Chooser_Dialog is
       (Widget : out Gtk_Recent_Chooser_Dialog;
        Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class);
+
    procedure Initialize
       (Widget : not null access Gtk_Recent_Chooser_Dialog_Record'Class;
        Title  : UTF8_String := "";
@@ -97,6 +98,7 @@ package Gtk.Recent_Chooser_Dialog is
        Title   : UTF8_String := "";
        Parent  : access Gtk.Window.Gtk_Window_Record'Class;
        Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
+
    procedure Initialize_For_Manager
       (Widget  : not null access Gtk_Recent_Chooser_Dialog_Record'Class;
        Title   : UTF8_String := "";
@@ -175,6 +177,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return UTF8_String;
+
    function Set_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        URI     : UTF8_String) return Boolean;
@@ -182,6 +185,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Gtk.Recent_Filter.Gtk_Recent_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
@@ -194,6 +198,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Gint;
+
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        Limit   : Gint);
@@ -201,6 +206,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_Recent_Chooser_Dialog_Record;
        Local_Only : Boolean);
@@ -208,6 +214,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Select_Multiple
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_Recent_Chooser_Dialog_Record;
        Select_Multiple : Boolean);
@@ -215,6 +222,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Show_Icons
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Show_Icons
       (Chooser    : not null access Gtk_Recent_Chooser_Dialog_Record;
        Show_Icons : Boolean);
@@ -222,6 +230,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Show_Not_Found
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Show_Not_Found
       (Chooser        : not null access Gtk_Recent_Chooser_Dialog_Record;
        Show_Not_Found : Boolean);
@@ -229,6 +238,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Show_Private
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Show_Private
       (Chooser      : not null access Gtk_Recent_Chooser_Dialog_Record;
        Show_Private : Boolean);
@@ -236,6 +246,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Show_Tips
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Boolean;
+
    procedure Set_Show_Tips
       (Chooser   : not null access Gtk_Recent_Chooser_Dialog_Record;
        Show_Tips : Boolean);
@@ -243,6 +254,7 @@ package Gtk.Recent_Chooser_Dialog is
    function Get_Sort_Type
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
        return Gtk.Recent_Chooser.Gtk_Recent_Sort_Type;
+
    procedure Set_Sort_Type
       (Chooser   : not null access Gtk_Recent_Chooser_Dialog_Record;
        Sort_Type : Gtk.Recent_Chooser.Gtk_Recent_Sort_Type);

@@ -49,12 +49,19 @@ package Gtk.Invisible is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Invisible);
+   --  Creates a new Gtk.Invisible.Gtk_Invisible.
+
    procedure Initialize (Self : not null access Gtk_Invisible_Record'Class);
    --  Creates a new Gtk.Invisible.Gtk_Invisible.
 
    procedure Gtk_New_For_Screen
       (Self   : out Gtk_Invisible;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
+   --  Creates a new Gtk.Invisible.Gtk_Invisible object for a specified screen
+   --  Since: gtk+ 2.2
+   --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
+   --  Gtk.Invisible.Gtk_Invisible will be created.
+
    procedure Initialize_For_Screen
       (Self   : not null access Gtk_Invisible_Record'Class;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
@@ -73,6 +80,9 @@ package Gtk.Invisible is
    function Get_Screen
       (Self : not null access Gtk_Invisible_Record)
        return Gdk.Screen.Gdk_Screen;
+   --  Returns the Gdk.Screen.Gdk_Screen object associated with Invisible
+   --  Since: gtk+ 2.2
+
    procedure Set_Screen
       (Self   : not null access Gtk_Invisible_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);

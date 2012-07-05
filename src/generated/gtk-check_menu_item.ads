@@ -53,6 +53,9 @@ package Gtk.Check_Menu_Item is
    procedure Gtk_New
       (Check_Menu_Item : out Gtk_Check_Menu_Item;
        Label           : UTF8_String := "");
+   --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
+   --  "label": the string to use for the label.
+
    procedure Initialize
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record'Class;
        Label           : UTF8_String := "");
@@ -62,6 +65,12 @@ package Gtk.Check_Menu_Item is
    procedure Gtk_New_With_Mnemonic
       (Check_Menu_Item : out Gtk_Check_Menu_Item;
        Label           : UTF8_String);
+   --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item containing a
+   --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
+   --  so underscores in Label indicate the mnemonic for the menu item.
+   --  "label": The text of the button, with an underscore in front of the
+   --  character
+
    procedure Initialize_With_Mnemonic
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record'Class;
        Label           : UTF8_String);
@@ -81,6 +90,9 @@ package Gtk.Check_Menu_Item is
    function Get_Active
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean;
+   --  Returns whether the check menu item is active. See
+   --  gtk_check_menu_item_set_active ().
+
    procedure Set_Active
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
        Is_Active       : Boolean);
@@ -90,6 +102,10 @@ package Gtk.Check_Menu_Item is
    function Get_Draw_As_Radio
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean;
+   --  Returns whether Check_Menu_Item looks like a
+   --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item
+   --  Since: gtk+ 2.4
+
    procedure Set_Draw_As_Radio
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
        Draw_As_Radio   : Boolean);
@@ -102,6 +118,8 @@ package Gtk.Check_Menu_Item is
    function Get_Inconsistent
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean;
+   --  Retrieves the value set by Gtk.Check_Menu_Item.Set_Inconsistent.
+
    procedure Set_Inconsistent
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
        Setting         : Boolean);
@@ -133,12 +151,14 @@ package Gtk.Check_Menu_Item is
    function Get_Related_Action
       (Self : not null access Gtk_Check_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Check_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Check_Menu_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Check_Menu_Item_Record;
        Use_Appearance : Boolean);

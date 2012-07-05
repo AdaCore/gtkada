@@ -72,6 +72,13 @@ package Gtk.Tool_Button is
       (Button      : out Gtk_Tool_Button;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "");
+   --  Creates a new GtkToolButton using Icon_Widget as icon and Label as
+   --  label.
+   --  Since: gtk+ 2.4
+   --  "icon_widget": a Gtk.Misc.Gtk_Misc widget that will be used as icon
+   --  widget, or null
+   --  "label": a string that will be used as label, or null
+
    procedure Initialize
       (Button      : not null access Gtk_Tool_Button_Record'Class;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
@@ -86,6 +93,13 @@ package Gtk.Tool_Button is
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Tool_Button;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button containing the image and
+   --  text from a stock item. Some stock ids have preprocessor macros like
+   --  GTK_STOCK_OK and GTK_STOCK_APPLY.
+   --  It is an error if Stock_Id is not a name of a stock item.
+   --  Since: gtk+ 2.4
+   --  "stock_id": the name of the stock item
+
    procedure Initialize_From_Stock
       (Button   : not null access Gtk_Tool_Button_Record'Class;
        Stock_Id : UTF8_String);
@@ -105,6 +119,11 @@ package Gtk.Tool_Button is
 
    function Get_Icon_Name
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
+   --  Returns the name of the themed icon for the tool button, see
+   --  Gtk.Tool_Button.Set_Icon_Name.
+   --  no themed icon
+   --  Since: gtk+ 2.8
+
    procedure Set_Icon_Name
       (Button    : not null access Gtk_Tool_Button_Record;
        Icon_Name : UTF8_String := "");
@@ -118,6 +137,11 @@ package Gtk.Tool_Button is
    function Get_Icon_Widget
       (Button : not null access Gtk_Tool_Button_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Return the widget used as icon widget on Button. See
+   --  Gtk.Tool_Button.Set_Icon_Widget.
+   --  on Button, or null.
+   --  Since: gtk+ 2.4
+
    procedure Set_Icon_Widget
       (Button      : not null access Gtk_Tool_Button_Record;
        Icon_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -129,6 +153,11 @@ package Gtk.Tool_Button is
 
    function Get_Label
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
+   --  Returns the label used by the tool button, or null if the tool button
+   --  doesn't have a label. or uses a the label from a stock item. The
+   --  returned string is owned by GTK+, and must not be modified or freed.
+   --  Since: gtk+ 2.4
+
    procedure Set_Label
       (Button : not null access Gtk_Tool_Button_Record;
        Label  : UTF8_String := "");
@@ -143,6 +172,11 @@ package Gtk.Tool_Button is
    function Get_Label_Widget
       (Button : not null access Gtk_Tool_Button_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Returns the widget used as label on Button. See
+   --  Gtk.Tool_Button.Set_Label_Widget.
+   --  on Button, or null.
+   --  Since: gtk+ 2.4
+
    procedure Set_Label_Widget
       (Button       : not null access Gtk_Tool_Button_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -156,6 +190,10 @@ package Gtk.Tool_Button is
 
    function Get_Stock_Id
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
+   --  Returns the name of the stock item. See Gtk.Tool_Button.Set_Stock_Id.
+   --  The returned string is owned by GTK+ and must not be freed or modifed.
+   --  Since: gtk+ 2.4
+
    procedure Set_Stock_Id
       (Button   : not null access Gtk_Tool_Button_Record;
        Stock_Id : UTF8_String := "");
@@ -168,6 +206,12 @@ package Gtk.Tool_Button is
 
    function Get_Use_Underline
       (Button : not null access Gtk_Tool_Button_Record) return Boolean;
+   --  Returns whether underscores in the label property are used as mnemonics
+   --  on menu items on the overflow menu. See
+   --  Gtk.Tool_Button.Set_Use_Underline.
+   --  mnemonics on menu items on the overflow menu.
+   --  Since: gtk+ 2.4
+
    procedure Set_Use_Underline
       (Button        : not null access Gtk_Tool_Button_Record;
        Use_Underline : Boolean);
@@ -195,12 +239,14 @@ package Gtk.Tool_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tool_Button_Record;
        Use_Appearance : Boolean);

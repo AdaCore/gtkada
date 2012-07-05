@@ -123,6 +123,12 @@ package Gtk.Buildable is
    --  "childname": name of child
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String;
+   --  Gets the name of the Buildable object.
+   --  Gtk.Builder.Gtk_Builder sets the name based on the the <link
+   --  linkend="BUILDER-UI">GtkBuilder UI definition</link> used to construct
+   --  the Buildable.
+   --  Since: gtk+ 2.12
+
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String);
    --  Sets the name of the Buildable object.
    --  Since: gtk+ 2.12

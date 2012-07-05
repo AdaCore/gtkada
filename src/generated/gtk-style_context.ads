@@ -255,6 +255,15 @@ package Gtk.Style_Context is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Style_Context);
+   --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style
+   --  context won't be attached to any widget, so you may want to call
+   --  Gtk.Style_Context.Set_Path yourself.
+   --  Note: This function is only useful when using the theming layer
+   --  separated from GTK+, if you are using
+   --  Gtk.Style_Context.Gtk_Style_Context to theme Gtk.Widget.Gtk_Widget<!--
+   --  -->s, use gtk_widget_get_style_context in order to get a style context
+   --  ready to theme the widget.
+
    procedure Initialize
       (Self : not null access Gtk_Style_Context_Record'Class);
    --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style
@@ -379,6 +388,9 @@ package Gtk.Style_Context is
    function Get_Direction
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.Gtk_Text_Direction;
+   --  Returns the widget direction used for rendering.
+   --  Since: gtk+ 3.0
+
    procedure Set_Direction
       (Self      : not null access Gtk_Style_Context_Record;
        Direction : Gtk.Enums.Gtk_Text_Direction);
@@ -402,6 +414,9 @@ package Gtk.Style_Context is
    function Get_Junction_Sides
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.Gtk_Junction_Sides;
+   --  Returns the sides where rendered elements connect visually with others.
+   --  Since: gtk+ 3.0
+
    procedure Set_Junction_Sides
       (Self  : not null access Gtk_Style_Context_Record;
        Sides : Gtk.Enums.Gtk_Junction_Sides);
@@ -440,6 +455,9 @@ package Gtk.Style_Context is
    function Get_Path
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Widget.Gtk_Widget_Path;
+   --  Returns the widget path used for style matching.
+   --  Since: gtk+ 3.0
+
    procedure Set_Path
       (Self : not null access Gtk_Style_Context_Record;
        Path : Gtk.Widget.Gtk_Widget_Path);
@@ -466,6 +484,8 @@ package Gtk.Style_Context is
    function Get_Screen
       (Self : not null access Gtk_Style_Context_Record)
        return Gdk.Screen.Gdk_Screen;
+   --  Returns the Gdk.Screen.Gdk_Screen to which Context is attached.
+
    procedure Set_Screen
       (Self   : not null access Gtk_Style_Context_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
@@ -480,6 +500,9 @@ package Gtk.Style_Context is
    function Get_State
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.Gtk_State_Flags;
+   --  Returns the state used when rendering.
+   --  Since: gtk+ 3.0
+
    procedure Set_State
       (Self  : not null access Gtk_Style_Context_Record;
        Flags : Gtk.Enums.Gtk_State_Flags);

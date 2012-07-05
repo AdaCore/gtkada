@@ -58,6 +58,8 @@ package Gtk.Color_Selection is
    ------------------
 
    procedure Gtk_New (Colorsel : out Gtk_Color_Selection);
+   --  Creates a new GtkColorSelection.
+
    procedure Initialize
       (Colorsel : not null access Gtk_Color_Selection_Record'Class);
    --  Creates a new GtkColorSelection.
@@ -71,6 +73,8 @@ package Gtk.Color_Selection is
 
    function Get_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
+   --  Returns the current alpha value.
+
    procedure Set_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Alpha    : Guint16);
@@ -82,6 +86,9 @@ package Gtk.Color_Selection is
    procedure Get_Current_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color);
+   --  Sets Color to be the current color in the GtkColorSelection widget.
+   --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
+
    procedure Set_Current_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color);
@@ -93,6 +100,10 @@ package Gtk.Color_Selection is
    procedure Get_Current_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA);
+   --  Sets Rgba to be the current color in the GtkColorSelection widget.
+   --  Since: gtk+ 3.0
+   --  "rgba": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
+
    procedure Set_Current_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA);
@@ -104,6 +115,9 @@ package Gtk.Color_Selection is
 
    function Get_Has_Opacity_Control
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
+   --  Determines whether the colorsel has an opacity control.
+   --  False if it does't
+
    procedure Set_Has_Opacity_Control
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean);
@@ -112,6 +126,8 @@ package Gtk.Color_Selection is
 
    function Get_Has_Palette
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
+   --  Determines whether the color selector has a color palette.
+
    procedure Set_Has_Palette
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Palette : Boolean);
@@ -120,6 +136,8 @@ package Gtk.Color_Selection is
 
    function Get_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
+   --  Returns the previous alpha value.
+
    procedure Set_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Alpha    : Guint16);
@@ -131,6 +149,9 @@ package Gtk.Color_Selection is
    procedure Get_Previous_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : out Gdk.Color.Gdk_Color);
+   --  Fills Color in with the original color value.
+   --  "color": a Gdk.Color.Gdk_Color to fill in with the original color value
+
    procedure Set_Previous_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color);
@@ -144,6 +165,10 @@ package Gtk.Color_Selection is
    procedure Get_Previous_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA);
+   --  Fills Rgba in with the original color value.
+   --  Since: gtk+ 3.0
+   --  "rgba": a Gdk.RGBA.Gdk_RGBA to fill in with the original color value
+
    procedure Set_Previous_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA);
@@ -196,6 +221,7 @@ package Gtk.Color_Selection is
    function Get_Orientation
       (Self : not null access Gtk_Color_Selection_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Color_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

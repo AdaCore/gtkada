@@ -98,6 +98,9 @@ package Gtk.Combo_Box is
    ------------------
 
    procedure Gtk_New (Combo_Box : out Gtk_Combo_Box);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
+   --  Since: gtk+ 2.4
+
    procedure Initialize
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
@@ -106,6 +109,10 @@ package Gtk.Combo_Box is
    procedure Gtk_New_With_Area
       (Combo_Box : out Gtk_Combo_Box;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
+   --  cells.
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+
    procedure Initialize_With_Area
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
@@ -116,6 +123,10 @@ package Gtk.Combo_Box is
    procedure Gtk_New_With_Area_And_Entry
       (Combo_Box : out Gtk_Combo_Box;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+   --  The new combo box will use Area to layout cells.
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+
    procedure Initialize_With_Area_And_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
@@ -124,6 +135,8 @@ package Gtk.Combo_Box is
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
 
    procedure Gtk_New_With_Entry (Combo_Box : out Gtk_Combo_Box);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+
    procedure Initialize_With_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
@@ -132,6 +145,11 @@ package Gtk.Combo_Box is
       (Combo_Box : out Gtk_Combo_Box;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
+   --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
+   --  Model.
+   --  Since: gtk+ 2.4
+   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
+
    procedure Initialize_With_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
@@ -145,6 +163,10 @@ package Gtk.Combo_Box is
       (Combo_Box : out Gtk_Combo_Box;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
       ;
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
+   --  the model initialized to Model.
+   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
+
    procedure Initialize_With_Model_And_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
@@ -162,6 +184,14 @@ package Gtk.Combo_Box is
 
    function Get_Active
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the index of the currently active item, or -1 if there's no
+   --  active item. If the model is a non-flat treemodel, and the active item
+   --  is not an immediate child of the root of the tree, this function returns
+   --  'gtk_tree_path_get_indices (path)[0]', where 'path' is the
+   --  Gtk.Tree_Path.Gtk_Tree_Path of the active item.
+   --  or -1 if there's no active item.
+   --  Since: gtk+ 2.4
+
    procedure Set_Active
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Index     : Gint);
@@ -172,6 +202,18 @@ package Gtk.Combo_Box is
 
    function Get_Active_Id
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
+   --  Returns the ID of the active row of Combo_Box. This value is taken from
+   --  the active row and the column specified by the
+   --  Gtk.Combo_Box.Gtk_Combo_Box:id-column property of Combo_Box (see
+   --  Gtk.Combo_Box.Set_Id_Column).
+   --  The returned value is an interned string which means that you can
+   --  compare the pointer by value to other interned strings and that you must
+   --  not free it.
+   --  If the Gtk.Combo_Box.Gtk_Combo_Box:id-column property of Combo_Box is
+   --  not set, or if no row is active, or if the active row has a null ID
+   --  value, then null is returned.
+   --  Since: gtk+ 3.0
+
    function Set_Active_Id
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Active_Id : UTF8_String := "") return Boolean;
@@ -188,6 +230,8 @@ package Gtk.Combo_Box is
 
    function Get_Add_Tearoffs
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   --  Gets the current value of the :add-tearoffs property.
+
    procedure Set_Add_Tearoffs
       (Combo_Box    : not null access Gtk_Combo_Box_Record;
        Add_Tearoffs : Boolean);
@@ -198,6 +242,13 @@ package Gtk.Combo_Box is
    function Get_Button_Sensitivity
       (Combo_Box : not null access Gtk_Combo_Box_Record)
        return Gtk.Enums.Gtk_Sensitivity_Type;
+   --  Returns whether the combo box sets the dropdown button sensitive or not
+   --  when there are no items in the model.
+   --  is sensitive when the model is empty, Gtk.Enums.Sensitivity_Off if the
+   --  button is always insensitive or Gtk.Enums.Sensitivity_Auto if it is only
+   --  sensitive as long as the model has one item to be selected.
+   --  Since: gtk+ 2.14
+
    procedure Set_Button_Sensitivity
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
        Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
@@ -210,6 +261,9 @@ package Gtk.Combo_Box is
 
    function Get_Column_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the column with column span information for Combo_Box.
+   --  Since: gtk+ 2.6
+
    procedure Set_Column_Span_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
        Column_Span : Gint);
@@ -221,6 +275,10 @@ package Gtk.Combo_Box is
 
    function Get_Entry_Text_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the column which Combo_Box is using to get the strings from to
+   --  display in the internal entry.
+   --  Since: gtk+ 2.24
+
    procedure Set_Entry_Text_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
        Text_Column : Gint);
@@ -235,6 +293,11 @@ package Gtk.Combo_Box is
 
    function Get_Focus_On_Click
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   --  Returns whether the combo box grabs focus when it is clicked with the
+   --  mouse. See Gtk.Combo_Box.Set_Focus_On_Click.
+   --  clicked with the mouse.
+   --  Since: gtk+ 2.6
+
    procedure Set_Focus_On_Click
       (Combo_Box      : not null access Gtk_Combo_Box_Record;
        Focus_On_Click : Boolean);
@@ -253,6 +316,10 @@ package Gtk.Combo_Box is
 
    function Get_Id_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the column which Combo_Box is using to get string IDs for
+   --  values from.
+   --  Since: gtk+ 3.0
+
    procedure Set_Id_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Id_Column : Gint);
@@ -265,6 +332,11 @@ package Gtk.Combo_Box is
    function Get_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model;
+   --  Returns the Gtk.Tree_Model.Gtk_Tree_Model which is acting as data
+   --  source for Combo_Box.
+   --  during construction.
+   --  Since: gtk+ 2.4
+
    procedure Set_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
@@ -279,6 +351,10 @@ package Gtk.Combo_Box is
 
    function Get_Popup_Fixed_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   --  Gets whether the popup uses a fixed width matching the allocated width
+   --  of the combo box.
+   --  Since: gtk+ 3.0
+
    procedure Set_Popup_Fixed_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Fixed     : Boolean);
@@ -289,6 +365,9 @@ package Gtk.Combo_Box is
 
    procedure Get_Row_Separator_Func
       (Combo_Box : not null access Gtk_Combo_Box_Record);
+   --  Returns the current row separator function.
+   --  Since: gtk+ 2.6
+
    procedure Set_Row_Separator_Func
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Func      : Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func);
@@ -300,6 +379,9 @@ package Gtk.Combo_Box is
 
    function Get_Row_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the column with row span information for Combo_Box.
+   --  Since: gtk+ 2.6
+
    procedure Set_Row_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Row_Span  : Gint);
@@ -311,6 +393,11 @@ package Gtk.Combo_Box is
 
    function Get_Title
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
+   --  Gets the current title of the menu in tearoff mode. See
+   --  Gtk.Combo_Box.Set_Add_Tearoffs.
+   --  string which must not be freed.
+   --  Since: gtk+ 2.10
+
    procedure Set_Title
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Title     : UTF8_String);
@@ -320,6 +407,11 @@ package Gtk.Combo_Box is
 
    function Get_Wrap_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+   --  Returns the wrap width which is used to determine the number of columns
+   --  for the popup menu. If the wrap width is larger than 1, the combo box is
+   --  in table mode.
+   --  Since: gtk+ 2.6
+
    procedure Set_Wrap_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Width     : Gint);

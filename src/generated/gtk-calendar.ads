@@ -101,6 +101,8 @@ package Gtk.Calendar is
    ------------------
 
    procedure Gtk_New (Calendar : out Gtk_Calendar);
+   --  Creates a new calendar, with the current date being selected.
+
    procedure Initialize
       (Calendar : not null access Gtk_Calendar_Record'Class);
    --  Creates a new calendar, with the current date being selected.
@@ -135,6 +137,10 @@ package Gtk.Calendar is
 
    function Get_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record) return Gint;
+   --  Queries the height of detail cells, in rows. See
+   --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
+   --  Since: gtk+ 2.14
+
    procedure Set_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record;
        Rows     : Gint);
@@ -145,6 +151,10 @@ package Gtk.Calendar is
 
    function Get_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record) return Gint;
+   --  Queries the width of detail cells, in characters. See
+   --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
+   --  Since: gtk+ 2.14
+
    procedure Set_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record;
        Chars    : Gint);
@@ -156,6 +166,9 @@ package Gtk.Calendar is
    function Get_Display_Options
       (Calendar : not null access Gtk_Calendar_Record)
        return Gtk_Calendar_Display_Options;
+   --  Returns the current display options of Calendar.
+   --  Since: gtk+ 2.4
+
    procedure Set_Display_Options
       (Calendar : not null access Gtk_Calendar_Record;
        Flags    : Gtk_Calendar_Display_Options);

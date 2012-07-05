@@ -75,6 +75,18 @@ package Gtk.Recent_Chooser_Menu is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Recent_Chooser_Menu);
+   --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget.
+   --  This kind of widget shows the list of recently used resources as a
+   --  menu, each item as a menu item. Each item inside the menu might have an
+   --  icon, representing its MIME type, and a number, for mnemonic access.
+   --  This widget implements the Gtk.Recent_Chooser.Gtk_Recent_Chooser
+   --  interface.
+   --  This widget creates its own Gtk.Recent_Manager.Gtk_Recent_Manager
+   --  object. See the Gtk.Recent_Chooser_Menu.Gtk_New_For_Manager function to
+   --  know how to create a Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu
+   --  widget bound to another Gtk.Recent_Manager.Gtk_Recent_Manager object.
+   --  Since: gtk+ 2.10
+
    procedure Initialize
       (Self : not null access Gtk_Recent_Chooser_Menu_Record'Class);
    --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget.
@@ -93,6 +105,16 @@ package Gtk.Recent_Chooser_Menu is
       (Self    : out Gtk_Recent_Chooser_Menu;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
       ;
+   --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget
+   --  using Manager as the underlying recently used resources manager.
+   --  This is useful if you have implemented your own recent manager, or if
+   --  you have a customized instance of a
+   --  Gtk.Recent_Manager.Gtk_Recent_Manager object or if you wish to share a
+   --  common Gtk.Recent_Manager.Gtk_Recent_Manager object among multiple
+   --  Gtk.Recent_Chooser.Gtk_Recent_Chooser widgets.
+   --  Since: gtk+ 2.10
+   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
+
    procedure Initialize_For_Manager
       (Self    : not null access Gtk_Recent_Chooser_Menu_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
@@ -116,6 +138,9 @@ package Gtk.Recent_Chooser_Menu is
 
    function Get_Show_Numbers
       (Self : not null access Gtk_Recent_Chooser_Menu_Record) return Boolean;
+   --  Returns the value set by Gtk.Recent_Chooser_Menu.Set_Show_Numbers.
+   --  Since: gtk+ 2.10
+
    procedure Set_Show_Numbers
       (Self         : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Numbers : Boolean);
@@ -186,12 +211,14 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Related_Action
       (Self : not null access Gtk_Recent_Chooser_Menu_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Recent_Chooser_Menu_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Recent_Chooser_Menu_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Recent_Chooser_Menu_Record;
        Use_Appearance : Boolean);
@@ -212,6 +239,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return UTF8_String;
+
    function Set_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        URI     : UTF8_String) return Boolean;
@@ -219,6 +247,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Gtk.Recent_Filter.Gtk_Recent_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
@@ -230,6 +259,7 @@ package Gtk.Recent_Chooser_Menu is
 
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record) return Gint;
+
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        Limit   : Gint);
@@ -237,6 +267,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_Recent_Chooser_Menu_Record;
        Local_Only : Boolean);
@@ -244,6 +275,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Select_Multiple
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_Recent_Chooser_Menu_Record;
        Select_Multiple : Boolean);
@@ -251,6 +283,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Show_Icons
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Show_Icons
       (Chooser    : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Icons : Boolean);
@@ -258,6 +291,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Show_Not_Found
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Show_Not_Found
       (Chooser        : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Not_Found : Boolean);
@@ -265,6 +299,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Show_Private
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Show_Private
       (Chooser      : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Private : Boolean);
@@ -272,6 +307,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Show_Tips
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean;
+
    procedure Set_Show_Tips
       (Chooser   : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Tips : Boolean);
@@ -279,6 +315,7 @@ package Gtk.Recent_Chooser_Menu is
    function Get_Sort_Type
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Gtk.Recent_Chooser.Gtk_Recent_Sort_Type;
+
    procedure Set_Sort_Type
       (Chooser   : not null access Gtk_Recent_Chooser_Menu_Record;
        Sort_Type : Gtk.Recent_Chooser.Gtk_Recent_Sort_Type);

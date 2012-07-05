@@ -54,6 +54,12 @@ package Gtk.Entry_Buffer is
       (Self            : out Gtk_Entry_Buffer;
        Initial_Chars   : UTF8_String := "";
        N_Initial_Chars : Gint);
+   --  Create a new GtkEntryBuffer object.
+   --  Optionally, specify initial text to set in the buffer.
+   --  Since: gtk+ 2.18
+   --  "initial_chars": initial buffer text, or null
+   --  "n_initial_chars": number of characters in Initial_Chars, or -1
+
    procedure Initialize
       (Self            : not null access Gtk_Entry_Buffer_Record'Class;
        Initial_Chars   : UTF8_String := "";
@@ -118,6 +124,11 @@ package Gtk.Entry_Buffer is
 
    function Get_Max_Length
       (Self : not null access Gtk_Entry_Buffer_Record) return Gint;
+   --  Retrieves the maximum allowed length of the text in Buffer. See
+   --  Gtk.Entry_Buffer.Set_Max_Length.
+   --  in Gtk.Entry_Buffer.Gtk_Entry_Buffer, or 0 if there is no maximum.
+   --  Since: gtk+ 2.18
+
    procedure Set_Max_Length
       (Self       : not null access Gtk_Entry_Buffer_Record;
        Max_Length : Gint);
@@ -131,6 +142,13 @@ package Gtk.Entry_Buffer is
 
    function Get_Text
       (Self : not null access Gtk_Entry_Buffer_Record) return UTF8_String;
+   --  Retrieves the contents of the buffer.
+   --  The memory pointer returned by this call will not change unless this
+   --  object emits a signal, or is finalized.
+   --  string. This string points to internally allocated storage in the
+   --  buffer and must not be freed, modified or stored.
+   --  Since: gtk+ 2.18
+
    procedure Set_Text
       (Self    : not null access Gtk_Entry_Buffer_Record;
        Chars   : UTF8_String;

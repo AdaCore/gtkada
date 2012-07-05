@@ -59,6 +59,10 @@ package Gtk.Arrow is
       (Arrow       : out Gtk_Arrow;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
+   --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
+   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
+
    procedure Initialize
       (Arrow       : not null access Gtk_Arrow_Record'Class;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;

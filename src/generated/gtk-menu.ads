@@ -131,6 +131,8 @@ package Gtk.Menu is
    ------------------
 
    procedure Gtk_New (Menu : out Gtk_Menu);
+   --  Creates a new Gtk.Menu.Gtk_Menu
+
    procedure Initialize (Menu : not null access Gtk_Menu_Record'Class);
    --  Creates a new Gtk.Menu.Gtk_Menu
 
@@ -182,6 +184,9 @@ package Gtk.Menu is
    function Get_Accel_Group
       (Menu : not null access Gtk_Menu_Record)
        return Gtk.Accel_Group.Gtk_Accel_Group;
+   --  Gets the Gtk.Accel_Group.Gtk_Accel_Group which holds global
+   --  accelerators for the menu. See Gtk.Menu.Set_Accel_Group.
+
    procedure Set_Accel_Group
       (Menu        : not null access Gtk_Menu_Record;
        Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
@@ -195,6 +200,9 @@ package Gtk.Menu is
 
    function Get_Accel_Path
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
+   --  Retrieves the accelerator path set on the menu.
+   --  Since: gtk+ 2.14
+
    procedure Set_Accel_Path
       (Menu       : not null access Gtk_Menu_Record;
        Accel_Path : UTF8_String := "");
@@ -221,6 +229,11 @@ package Gtk.Menu is
    function Get_Active
       (Menu : not null access Gtk_Menu_Record)
        return Gtk.Menu_Item.Gtk_Menu_Item;
+   --  Returns the selected menu item from the menu. This is used by the
+   --  Gtk_Option_Menu.
+   --  in the menu. If a selection has not yet been made, the first menu item
+   --  is selected.
+
    procedure Set_Active
       (Menu  : not null access Gtk_Menu_Record;
        Index : Guint);
@@ -234,6 +247,10 @@ package Gtk.Menu is
    --  Returns the Gtk.Widget.Gtk_Widget that the menu is attached to.
 
    function Get_Monitor (Menu : not null access Gtk_Menu_Record) return Gint;
+   --  Retrieves the number of the monitor on which to show the menu.
+   --  be popped up or -1, if no monitor has been set
+   --  Since: gtk+ 2.14
+
    procedure Set_Monitor
       (Menu        : not null access Gtk_Menu_Record;
        Monitor_Num : Gint);
@@ -250,6 +267,10 @@ package Gtk.Menu is
 
    function Get_Reserve_Toggle_Size
       (Menu : not null access Gtk_Menu_Record) return Boolean;
+   --  Returns whether the menu reserves space for toggles and icons,
+   --  regardless of their actual presence.
+   --  Since: gtk+ 2.18
+
    procedure Set_Reserve_Toggle_Size
       (Menu                : not null access Gtk_Menu_Record;
        Reserve_Toggle_Size : Boolean);
@@ -260,6 +281,8 @@ package Gtk.Menu is
 
    function Get_Tearoff_State
       (Menu : not null access Gtk_Menu_Record) return Boolean;
+   --  Returns whether the menu is torn off. See Gtk.Menu.Set_Tearoff_State.
+
    procedure Set_Tearoff_State
       (Menu     : not null access Gtk_Menu_Record;
        Torn_Off : Boolean);
@@ -271,6 +294,10 @@ package Gtk.Menu is
 
    function Get_Title
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
+   --  Returns the title of the menu. See Gtk.Menu.Set_Title.
+   --  has no title set on it. This string is owned by GTK+ and should not be
+   --  modified or freed.
+
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
        Title : UTF8_String);

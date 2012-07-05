@@ -249,6 +249,11 @@ package Gtk.Container is
        Child         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Property_Name : UTF8_String;
        Value         : in out Glib.Values.GValue);
+   --  Gets the value of a child property for Child and Container.
+   --  "child": a widget which is a child of Container
+   --  "property_name": the name of the property to get
+   --  "value": a location to return the value
+
    procedure Child_Set_Property
       (Container     : not null access Gtk_Container_Record;
        Child         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -356,6 +361,9 @@ package Gtk.Container is
 
    function Get_Border_Width
       (Container : not null access Gtk_Container_Record) return Guint;
+   --  Retrieves the border width of the container. See
+   --  Gtk.Container.Set_Border_Width.
+
    procedure Set_Border_Width
       (Container    : not null access Gtk_Container_Record;
        Border_Width : Guint);
@@ -380,6 +388,13 @@ package Gtk.Container is
    function Get_Focus_Child
       (Container : not null access Gtk_Container_Record)
        return Gtk.Widget.Gtk_Widget;
+   --  Returns the current focus child widget inside Container. This is not
+   --  the currently focused widget. That can be obtained by calling
+   --  Gtk.Window.Get_Focus.
+   --  focus inside Container when the Conatiner is focussed, or null if none
+   --  is set.
+   --  Since: gtk+ 2.14
+
    procedure Set_Focus_Child
       (Container : not null access Gtk_Container_Record;
        Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -395,6 +410,10 @@ package Gtk.Container is
    function Get_Focus_Hadjustment
       (Container : not null access Gtk_Container_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   --  Retrieves the horizontal focus adjustment for the container. See
+   --  gtk_container_set_focus_hadjustment ().
+   --  none has been set.
+
    procedure Set_Focus_Hadjustment
       (Container  : not null access Gtk_Container_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
@@ -413,6 +432,10 @@ package Gtk.Container is
    function Get_Focus_Vadjustment
       (Container : not null access Gtk_Container_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
+   --  Retrieves the vertical focus adjustment for the container. See
+   --  Gtk.Container.Set_Focus_Vadjustment.
+   --  none has been set.
+
    procedure Set_Focus_Vadjustment
       (Container  : not null access Gtk_Container_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
@@ -439,6 +462,9 @@ package Gtk.Container is
    function Get_Resize_Mode
       (Container : not null access Gtk_Container_Record)
        return Gtk.Enums.Gtk_Resize_Mode;
+   --  Returns the resize mode for the container. See
+   --  gtk_container_set_resize_mode ().
+
    procedure Set_Resize_Mode
       (Container   : not null access Gtk_Container_Record;
        Resize_Mode : Gtk.Enums.Gtk_Resize_Mode);

@@ -63,6 +63,11 @@ package Gtk.Recent_Chooser_Widget is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Recent_Chooser_Widget);
+   --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget
+   --  object. This is an embeddable widget used to access the recently used
+   --  resources list.
+   --  Since: gtk+ 2.10
+
    procedure Initialize
       (Widget : not null access Gtk_Recent_Chooser_Widget_Record'Class);
    --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget
@@ -74,6 +79,14 @@ package Gtk.Recent_Chooser_Widget is
       (Widget  : out Gtk_Recent_Chooser_Widget;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
       ;
+   --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget with
+   --  a specified recent manager.
+   --  This is useful if you have implemented your own recent manager, or if
+   --  you have a customized instance of a
+   --  Gtk.Recent_Manager.Gtk_Recent_Manager object.
+   --  Since: gtk+ 2.10
+   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
+
    procedure Initialize_For_Manager
       (Widget  : not null access Gtk_Recent_Chooser_Widget_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
@@ -149,6 +162,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Orientation
       (Self : not null access Gtk_Recent_Chooser_Widget_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Recent_Chooser_Widget_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
@@ -165,6 +179,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return UTF8_String;
+
    function Set_Current_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        URI     : UTF8_String) return Boolean;
@@ -172,6 +187,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Gtk.Recent_Filter.Gtk_Recent_Filter;
+
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
@@ -184,6 +200,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Gint;
+
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        Limit   : Gint);
@@ -191,6 +208,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Local_Only
       (Chooser    : not null access Gtk_Recent_Chooser_Widget_Record;
        Local_Only : Boolean);
@@ -198,6 +216,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Select_Multiple
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Select_Multiple
       (Chooser         : not null access Gtk_Recent_Chooser_Widget_Record;
        Select_Multiple : Boolean);
@@ -205,6 +224,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Show_Icons
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Show_Icons
       (Chooser    : not null access Gtk_Recent_Chooser_Widget_Record;
        Show_Icons : Boolean);
@@ -212,6 +232,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Show_Not_Found
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Show_Not_Found
       (Chooser        : not null access Gtk_Recent_Chooser_Widget_Record;
        Show_Not_Found : Boolean);
@@ -219,6 +240,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Show_Private
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Show_Private
       (Chooser      : not null access Gtk_Recent_Chooser_Widget_Record;
        Show_Private : Boolean);
@@ -226,6 +248,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Show_Tips
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Boolean;
+
    procedure Set_Show_Tips
       (Chooser   : not null access Gtk_Recent_Chooser_Widget_Record;
        Show_Tips : Boolean);
@@ -233,6 +256,7 @@ package Gtk.Recent_Chooser_Widget is
    function Get_Sort_Type
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
        return Gtk.Recent_Chooser.Gtk_Recent_Sort_Type;
+
    procedure Set_Sort_Type
       (Chooser   : not null access Gtk_Recent_Chooser_Widget_Record;
        Sort_Type : Gtk.Recent_Chooser.Gtk_Recent_Sort_Type);

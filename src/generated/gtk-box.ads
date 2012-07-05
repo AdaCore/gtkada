@@ -107,6 +107,11 @@ package Gtk.Box is
       (Box         : out Gtk_Box;
        Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Gint);
+   --  Creates a new Gtk.Box.Gtk_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box's orientation.
+   --  "spacing": the number of pixels to place by default between children.
+
    procedure Initialize
       (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
@@ -123,6 +128,14 @@ package Gtk.Box is
       (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
+   --  Creates a new Gtk.Box.Gtk_Hbox.
+   --  wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
+   --  "homogeneous": True if all children are to be given equal space
+   --  allotments.
+   --  "spacing": the number of pixels to place by default between children.
+
    procedure Initialize_Hbox
       (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
@@ -142,6 +155,14 @@ package Gtk.Box is
       (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
+   --  Creates a new Gtk.Box.Gtk_Vbox.
+   --  wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
+   --  "homogeneous": True if all children are to be given equal space
+   --  allotments.
+   --  "spacing": the number of pixels to place by default between children.
+
    procedure Initialize_Vbox
       (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
@@ -163,6 +184,9 @@ package Gtk.Box is
 
    function Get_Homogeneous
       (Box : not null access Gtk_Box_Record) return Boolean;
+   --  Returns whether the box is homogeneous (all children are the same
+   --  size). See Gtk.Box.Set_Homogeneous.
+
    procedure Set_Homogeneous
       (Box         : not null access Gtk_Box_Record;
        Homogeneous : Boolean);
@@ -172,6 +196,8 @@ package Gtk.Box is
    --  for variable allotments
 
    function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint;
+   --  Gets the value set by Gtk.Box.Set_Spacing.
+
    procedure Set_Spacing
       (Box     : not null access Gtk_Box_Record;
        Spacing : Gint);
@@ -234,6 +260,17 @@ package Gtk.Box is
        Fill      : out Boolean;
        Padding   : out Guint;
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
+   --  Obtains information about how Child is packed into Box.
+   --  "child": the Gtk.Widget.Gtk_Widget of the child to query
+   --  "expand": pointer to return location for Gtk.Box.Gtk_Box:expand child
+   --  property
+   --  "fill": pointer to return location for Gtk.Box.Gtk_Box:fill child
+   --  property
+   --  "padding": pointer to return location for Gtk.Box.Gtk_Box:padding child
+   --  property
+   --  "pack_type": pointer to return location for Gtk.Box.Gtk_Box:pack-type
+   --  child property
+
    procedure Set_Child_Packing
       (Box       : not null access Gtk_Box_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -281,6 +318,7 @@ package Gtk.Box is
    function Get_Orientation
       (Self : not null access Gtk_Box_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

@@ -78,6 +78,8 @@ package Gtk.Status_Bar is
    ------------------
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
+   --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
+
    procedure Initialize
       (Statusbar : not null access Gtk_Status_Bar_Record'Class);
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
@@ -149,6 +151,7 @@ package Gtk.Status_Bar is
    function Get_Orientation
       (Self : not null access Gtk_Status_Bar_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
       (Self        : not null access Gtk_Status_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);

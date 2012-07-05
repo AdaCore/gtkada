@@ -92,6 +92,13 @@ package Gtk.Toggle_Button is
    procedure Gtk_New
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String := "");
+   --  Initialize a button. If Label is "", then no label is created inside
+   --  the button and you will have to provide your own child through a call to
+   --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
+   --  toggle button.
+   --  "label": a string containing the message to be placed in the toggle
+   --  button.
+
    procedure Initialize
       (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String := "");
@@ -105,6 +112,12 @@ package Gtk.Toggle_Button is
    procedure Gtk_New_With_Mnemonic
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String);
+   --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
+   --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the button.
+   --  "label": the text of the button, with an underscore in front of the
+   --  mnemonic character
+
    procedure Initialize_With_Mnemonic
       (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String);
@@ -124,6 +137,10 @@ package Gtk.Toggle_Button is
    function Get_Active
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
+   --  Queries a Gtk.Toggle_Button.Gtk_Toggle_Button and returns its current
+   --  state. Returns True if the toggle button is pressed in and False if it
+   --  is raised.
+
    procedure Set_Active
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Is_Active     : Boolean);
@@ -134,6 +151,8 @@ package Gtk.Toggle_Button is
    function Get_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
+   --  Gets the value set by Gtk.Toggle_Button.Set_Inconsistent.
+
    procedure Set_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Setting       : Boolean := True);
@@ -150,6 +169,10 @@ package Gtk.Toggle_Button is
    function Get_Mode
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
+   --  Retrieves whether the button is displayed as a separate indicator and
+   --  label. See Gtk.Toggle_Button.Set_Mode.
+   --  and label.
+
    procedure Set_Mode
       (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
        Draw_Indicator : Boolean);
@@ -183,12 +206,14 @@ package Gtk.Toggle_Button is
    function Get_Related_Action
       (Self : not null access Gtk_Toggle_Button_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
       (Self   : not null access Gtk_Toggle_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Toggle_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean);

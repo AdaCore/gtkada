@@ -46,6 +46,9 @@ package Gtk.Event_Box is
    ------------------
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
+   --  Create a new box.
+   --  The box's child can then be set using the Gtk.Container.Add function.
+
    procedure Initialize
       (Event_Box : not null access Gtk_Event_Box_Record'Class);
    --  Create a new box.
@@ -60,6 +63,11 @@ package Gtk.Event_Box is
 
    function Get_Above_Child
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event box window is above or below the windows of
+   --  its child. See Gtk.Event_Box.Set_Above_Child for details.
+   --  window of its child
+   --  Since: gtk+ 2.4
+
    procedure Set_Above_Child
       (Event_Box   : not null access Gtk_Event_Box_Record;
        Above_Child : Boolean);
@@ -74,6 +82,10 @@ package Gtk.Event_Box is
 
    function Get_Visible_Window
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event box has a visible window. See
+   --  Gtk.Event_Box.Set_Visible_Window for details.
+   --  Since: gtk+ 2.4
+
    procedure Set_Visible_Window
       (Event_Box      : not null access Gtk_Event_Box_Record;
        Visible_Window : Boolean);

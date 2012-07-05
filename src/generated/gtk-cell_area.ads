@@ -501,6 +501,12 @@ package Gtk.Cell_Area is
        Renderer      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Property_Name : UTF8_String;
        Value         : in out Glib.Values.GValue);
+   --  Gets the value of a cell property for Renderer in Area.
+   --  Since: gtk+ 3.0
+   --  "renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer inside Area
+   --  "property_name": the name of the property to get
+   --  "value": a location to return the value
+
    procedure Cell_Set_Property
       (Self          : not null access Gtk_Cell_Area_Record;
        Renderer      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
@@ -706,6 +712,9 @@ package Gtk.Cell_Area is
    function Get_Focus_Cell
       (Self : not null access Gtk_Cell_Area_Record)
        return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   --  Retrieves the currently focused cell for Area
+   --  Since: gtk+ 3.0
+
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)

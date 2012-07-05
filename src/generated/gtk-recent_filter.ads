@@ -133,6 +133,16 @@ package Gtk.Recent_Filter is
    ------------------
 
    procedure Gtk_New (Filter : out Gtk_Recent_Filter);
+   --  Creates a new Gtk.Recent_Filter.Gtk_Recent_Filter with no rules added
+   --  to it. Such filter does not accept any recently used resources, so is
+   --  not particularly useful until you add rules with
+   --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
+   --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
+   --  a filter that accepts any recently used resource, use: |[
+   --  GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --  gtk_recent_filter_add_pattern (filter, "*"); ]|
+   --  Since: gtk+ 2.10
+
    procedure Initialize
       (Filter : not null access Gtk_Recent_Filter_Record'Class);
    --  Creates a new Gtk.Recent_Filter.Gtk_Recent_Filter with no rules added
@@ -266,6 +276,11 @@ package Gtk.Recent_Filter is
 
    function Get_Name
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String;
+   --  Gets the human-readable name for the filter. See
+   --  Gtk.Recent_Filter.Set_Name.
+   --  is owned by the filter object and should not be freed.
+   --  Since: gtk+ 2.10
+
    procedure Set_Name
       (Filter : not null access Gtk_Recent_Filter_Record;
        Name   : UTF8_String);

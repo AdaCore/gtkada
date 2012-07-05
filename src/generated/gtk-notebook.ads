@@ -83,6 +83,8 @@ package Gtk.Notebook is
    ------------------
 
    procedure Gtk_New (Notebook : out Gtk_Notebook);
+   --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
+
    procedure Initialize
       (Notebook : not null access Gtk_Notebook_Record'Class);
    --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
@@ -124,6 +126,11 @@ package Gtk.Notebook is
    function Get_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
        Pack_Type : Gtk.Enums.Gtk_Pack_Type) return Gtk.Widget.Gtk_Widget;
+   --  Gets one of the action widgets. See Gtk.Notebook.Set_Action_Widget.
+   --  or null when this action widget has not been set
+   --  Since: gtk+ 2.20
+   --  "pack_type": pack type of the action widget to receive
+
    procedure Set_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
        Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -140,6 +147,10 @@ package Gtk.Notebook is
 
    function Get_Current_Page
       (Notebook : not null access Gtk_Notebook_Record) return Gint;
+   --  Returns the page number of the current page.
+   --  page in the notebook. If the notebook has no pages, then -1 will be
+   --  returned.
+
    procedure Set_Current_Page
       (Notebook : not null access Gtk_Notebook_Record;
        Page_Num : Gint := -1);
@@ -153,6 +164,10 @@ package Gtk.Notebook is
 
    function Get_Group_Name
       (Notebook : not null access Gtk_Notebook_Record) return UTF8_String;
+   --  Gets the current group name for Notebook.
+   --  or null if none is set.
+   --  Since: gtk+ 2.24
+
    procedure Set_Group_Name
       (Notebook   : not null access Gtk_Notebook_Record;
        Group_Name : UTF8_String := "");
@@ -167,6 +182,11 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the menu label widget of the page containing Child.
+   --  notebook page does not have a menu label other than the default (the
+   --  tab label).
+   --  "child": a widget contained in a page of Notebook
+
    procedure Set_Menu_Label
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -179,6 +199,12 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return UTF8_String;
+   --  Retrieves the text of the menu label for the page containing Child.
+   --  widget does not have a menu label other than the default menu label, or
+   --  the menu label widget is not a Gtk.Label.Gtk_Label. The string is owned
+   --  by the widget and must not be freed.
+   --  "child": the child widget of a page of the notebook.
+
    procedure Set_Menu_Label_Text
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -202,6 +228,9 @@ package Gtk.Notebook is
 
    function Get_Scrollable
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
+   --  Returns whether the tab label area has arrows for scrolling. See
+   --  Gtk.Notebook.Set_Scrollable.
+
    procedure Set_Scrollable
       (Notebook   : not null access Gtk_Notebook_Record;
        Scrollable : Boolean := True);
@@ -211,6 +240,9 @@ package Gtk.Notebook is
 
    function Get_Show_Border
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
+   --  Returns whether a bevel will be drawn around the notebook pages. See
+   --  Gtk.Notebook.Set_Show_Border.
+
    procedure Set_Show_Border
       (Notebook    : not null access Gtk_Notebook_Record;
        Show_Border : Boolean := True);
@@ -221,6 +253,9 @@ package Gtk.Notebook is
 
    function Get_Show_Tabs
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
+   --  Returns whether the tabs of the notebook are shown. See
+   --  Gtk.Notebook.Set_Show_Tabs.
+
    procedure Set_Show_Tabs
       (Notebook  : not null access Gtk_Notebook_Record;
        Show_Tabs : Boolean := True);
@@ -231,6 +266,10 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Boolean;
+   --  Returns whether the tab contents can be detached from Notebook.
+   --  Since: gtk+ 2.10
+   --  "child": a child Gtk.Widget.Gtk_Widget
+
    procedure Set_Tab_Detachable
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -268,6 +307,11 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk.Widget.Gtk_Widget;
+   --  Returns the tab label widget for the page Child. null is returned if
+   --  Child is not in Notebook or if no tab label has specifically been set
+   --  for Child.
+   --  "child": the page
+
    procedure Set_Tab_Label
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -281,6 +325,11 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return UTF8_String;
+   --  Retrieves the text of the tab label for the page containing Child.
+   --  tab label widget is not a Gtk.Label.Gtk_Label. The string is owned by
+   --  the widget and must not be freed.
+   --  "child": a widget contained in a page of Notebook
+
    procedure Set_Tab_Label_Text
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -293,6 +342,9 @@ package Gtk.Notebook is
    function Get_Tab_Pos
       (Notebook : not null access Gtk_Notebook_Record)
        return Gtk.Enums.Gtk_Position_Type;
+   --  Gets the edge at which the tabs for switching pages in the notebook are
+   --  drawn.
+
    procedure Set_Tab_Pos
       (Notebook : not null access Gtk_Notebook_Record;
        Pos      : Gtk.Enums.Gtk_Position_Type);
@@ -304,6 +356,10 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Boolean;
+   --  Gets whether the tab can be reordered via drag and drop or not.
+   --  Since: gtk+ 2.10
+   --  "child": a child Gtk.Widget.Gtk_Widget
+
    procedure Set_Tab_Reorderable
       (Notebook    : not null access Gtk_Notebook_Record;
        Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;

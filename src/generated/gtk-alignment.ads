@@ -69,6 +69,19 @@ package Gtk.Alignment is
        Yalign    : Gfloat;
        Xscale    : Gfloat;
        Yscale    : Gfloat);
+   --  Creates a new Gtk.Alignment.Gtk_Alignment.
+   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
+   --  to 1 (right).
+   --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
+   --  (bottom).
+   --  "xscale": the amount that the child widget expands horizontally to fill
+   --  up unused space, from 0 to 1. A value of 0 indicates that the child
+   --  widget should never expand. A value of 1 indicates that the child widget
+   --  will expand to fill all of the space allocated for the
+   --  Gtk.Alignment.Gtk_Alignment.
+   --  "yscale": the amount that the child widget expands vertically to fill
+   --  up unused space, from 0 to 1. The values are similar to Xscale.
+
    procedure Initialize
       (Alignment : not null access Gtk_Alignment_Record'Class;
        Xalign    : Gfloat;
@@ -101,6 +114,18 @@ package Gtk.Alignment is
        Padding_Bottom : out Guint;
        Padding_Left   : out Guint;
        Padding_Right  : out Guint);
+   --  Gets the padding on the different sides of the widget. See
+   --  gtk_alignment_set_padding ().
+   --  Since: gtk+ 2.4
+   --  "padding_top": location to store the padding for the top of the widget,
+   --  or null
+   --  "padding_bottom": location to store the padding for the bottom of the
+   --  widget, or null
+   --  "padding_left": location to store the padding for the left of the
+   --  widget, or null
+   --  "padding_right": location to store the padding for the right of the
+   --  widget, or null
+
    procedure Set_Padding
       (Alignment      : not null access Gtk_Alignment_Record;
        Padding_Top    : Guint;
