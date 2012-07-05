@@ -24,17 +24,22 @@
 with Ada.Numerics; use Ada.Numerics;
 
 with Glib;         use Glib;
+with Glib.Error;   use Glib.Error;
 
 with Cairo;        use Cairo;
 with Pango.Cairo;  use Pango.Cairo;
 with Gdk.Cairo;    use Gdk.Cairo;
-with Gdk.RGBA;          use Gdk.RGBA;
+with Gdk.Display;  use Gdk.Display;
+with Gdk.RGBA;     use Gdk.RGBA;
+with Gdk.Screen;   use Gdk.Screen;
 with Gdk.Window;
 
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Style_Context; use Gtk.Style_Context;
 with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
+with Gtk.Css_Provider;   use Gtk.Css_Provider;
+with Gtk.Style_Provider; use Gtk.Style_Provider;
 
 package body Gtkada.Style is
 
@@ -507,5 +512,32 @@ package body Gtkada.Style is
       Destroy (Ctx);
       return Surface;
    end Snapshot;
+
+   -------------------
+   -- Load_Css_File --
+   -------------------
+
+   procedure Load_Css_File
+     (Path : String; Error : access procedure (Str : String) := null)
+   is
+      Css     : Gtk_Css_Provider;
+      Display : Gdk_Display;
+      Screen  : Gdk_Screen;
+      Err     : aliased GError;
+   begin
+      Gtk_New (Css);
+      if not Css.Load_From_Path (Path, Err'Access) then
+         if Error /= null then
+            Error (Get_Message (Err));
+         end if;
+      else
+         Display := Get_Default;
+         Screen  := Get_Default_Screen (Display);
+         Gtk.Style_Context.Add_Provider_For_Screen
+           (Screen, +Css, Priority => Priority_Theme + 1);
+      end if;
+
+      Unref (Css);
+   end Load_Css_File;
 
 end Gtkada.Style;

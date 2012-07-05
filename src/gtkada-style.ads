@@ -159,9 +159,19 @@ package Gtkada.Style is
    --  As a result, those would not be drawn on a non-screen surface (such as
    --  an internal Image_Surface).
 
-   --------------------------
-   -- Context manipulation --
-   --------------------------
+   ---------
+   -- CSS --
+   ---------
+
+   procedure Load_Css_File
+     (Path : String; Error : access procedure (Str : String) := null);
+   --  Load CSS file and register it as a default CSS provider for the whole
+   --  application.
+   --  In case of error, the procedure Error is called if defined.
+
+   ------------------------
+   -- Cairo manipulation --
+   ------------------------
 
    function Snapshot
      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
