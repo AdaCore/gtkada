@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Style_Context.Gtk_Style_Context is an object that stores styling
 --  information affecting a widget defined by Gtk.Widget.Gtk_Widget_Path.

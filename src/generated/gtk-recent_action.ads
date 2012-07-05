@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Recent_Action.Gtk_Recent_Action represents a list of recently used
 --  files, which can be shown by widgets such as

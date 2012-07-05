@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The GdkRGBA structure is used to represent a (possibly translucent) color,
 --  in a way that is compatible with cairos notion of color.

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Chooser.Gtk_Recent_Chooser is an interface that can be
 --  implemented by widgets displaying the list of recently used files. In GTK+,

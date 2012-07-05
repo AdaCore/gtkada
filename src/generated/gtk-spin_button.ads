@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Spin_Button.Gtk_Spin_Button is an ideal way to allow the user to set
 --  the value of some attribute. Rather than having to directly type a number

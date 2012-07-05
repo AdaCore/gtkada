@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The "system tray" or notification area is normally used for transient
 --  icons that indicate some special state. For example, a system tray icon

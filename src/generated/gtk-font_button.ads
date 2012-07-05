@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Font_Button.Gtk_Font_Button is a button which displays the
 --  currently selected font an allows to open a font chooser dialog to change

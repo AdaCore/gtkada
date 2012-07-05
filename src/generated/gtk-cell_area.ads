@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Area.Gtk_Cell_Area is an abstract class for
 --  Gtk.Cell_Layout.Gtk_Cell_Layout widgets (also referred to as "layouting

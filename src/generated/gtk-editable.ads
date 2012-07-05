@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Editable.Gtk_Editable interface is an interface which should be
 --  implemented by text editing widgets, such as Gtk.GEntry.Gtk_Entry and

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Entry_Buffer.Gtk_Entry_Buffer class contains the actual text
 --  displayed in a Gtk.GEntry.Gtk_Entry widget.

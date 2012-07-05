@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkSeparator is a horizontal or vertical separator widget, depending on
 --  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used

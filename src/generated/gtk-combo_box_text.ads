@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GtkComboBoxText is a simple variant of Gtk.Combo_Box.Gtk_Combo_Box that
 --  hides the model-view complexity for simple text-only use cases.

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  You may wish to begin by reading the <link linkend="TextWidget">text
 --  widget conceptual overview</link> which gives an overview of all the

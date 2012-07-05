@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu is a widget suitable for
 --  displaying recently used files inside a menu. It can be used to set a

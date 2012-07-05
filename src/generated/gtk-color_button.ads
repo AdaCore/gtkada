@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Color_Button.Gtk_Color_Button is a button which displays the
 --  currently selected color an allows to open a color selection dialog to

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget is a widget suitable
 --  for selecting recently used files. It is the main building block of a

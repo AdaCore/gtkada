@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkBuildable allows objects to extend and customize thier deserialization
 --  from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>. The

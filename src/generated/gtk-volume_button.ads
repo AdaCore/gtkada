@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Volume_Button.Gtk_Volume_Button is a subclass of
 --  Gtk.Scale_Button.Gtk_Scale_Button that has been tailored for use as a

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Tool_Shell.Gtk_Tool_Shell interface allows container widgets to
 --  provide additional information when embedding Gtk.Tool_Item.Gtk_Tool_Item

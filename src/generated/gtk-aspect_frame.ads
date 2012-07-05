@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Aspect_Frame.Gtk_Aspect_Frame is useful when you want pack a
 --  widget so that it can resize but always retains the same aspect ratio. For

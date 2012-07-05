@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object is created by a
 --  given Gtk.Cell_Area.Gtk_Cell_Area implementation via its

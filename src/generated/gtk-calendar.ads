@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Calendar.Gtk_Calendar is a widget that displays a Gregorian calendar,
 --  one month at a time. It can be created with Gtk.Calendar.Gtk_New.

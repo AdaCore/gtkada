@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Scale_Button.Gtk_Scale_Button provides a button which pops up a scale
 --  widget. This kind of widget is commonly used for volume controls in

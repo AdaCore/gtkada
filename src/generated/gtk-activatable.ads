@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Activatable widgets can be connected to a Gtk.Action.Gtk_Action and
 --  reflects the state of its action. A Gtk.Activatable.Gtk_Activatable can

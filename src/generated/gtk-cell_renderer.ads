@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Renderer.Gtk_Cell_Renderer is a base class of a set of
 --  objects used for rendering a cell to a cairo_t. These objects are used

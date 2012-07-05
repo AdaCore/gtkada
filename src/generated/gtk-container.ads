@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GTK+ user interface is constructed by nesting widgets inside widgets.
 --  Container widgets are the inner nodes in the resulting tree of widgets:

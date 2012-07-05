@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button is a widget that lets
 --  the user select a file. It implements the Gtk.File_Chooser.Gtk_File_Chooser

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gdk.Screen.Gdk_Screen objects are the GDK representation of the screen on
 --  which windows can be displayed and on which the pointer moves. X originally

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gdk.Device.Gdk_Device object represents a single input device, such as
 --  a keyboard, a mouse, a touchpad, etc.

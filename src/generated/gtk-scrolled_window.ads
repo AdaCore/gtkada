@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Scrolled_Window.Gtk_Scrolled_Window is a Gtk.Bin.Gtk_Bin subclass:
 --  it's a container the accepts a single child widget.

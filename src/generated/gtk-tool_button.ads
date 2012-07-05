@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Tool_Button.Gtk_Tool_Button<!-- -->s are Gtk_Tool_Items containing
 --  buttons.

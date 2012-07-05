@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Together with Gtk.Plug.Gtk_Plug, Gtk.Socket.Gtk_Socket provides the
 --  ability to embed widgets from one process into another process in a fashion

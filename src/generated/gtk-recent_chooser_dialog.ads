@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog is a dialog box
 --  suitable for displaying the recently used documents. This widgets works by

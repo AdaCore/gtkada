@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkStyleProperties provides the storage for style information that is used
 --  by Gtk.Style_Context.Gtk_Style_Context and other

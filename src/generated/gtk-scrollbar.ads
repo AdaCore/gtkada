@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Scrollbar.Gtk_Scrollbar widget is a horizontal or vertical
 --  scrollbar, depending on the value of the

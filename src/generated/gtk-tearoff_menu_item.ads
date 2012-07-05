@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item is a special
 --  Gtk.Menu_Item.Gtk_Menu_Item which is used to tear off and reattach its

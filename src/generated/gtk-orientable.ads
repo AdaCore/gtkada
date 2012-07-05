@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Orientable.Gtk_Orientable interface is implemented by all widgets
 --  that can be oriented horizontally or vertically. Historically, such widgets

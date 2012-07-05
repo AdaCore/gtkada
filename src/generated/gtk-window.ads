@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GtkWindow is a toplevel window which can contain other widgets. Windows
 --  normally have decorations that are under the control of the windowing

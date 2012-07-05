@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk_Separator_Item is a Gtk.Tool_Item.Gtk_Tool_Item that separates
 --  groups of other Gtk_Tool_Items. Depending on the theme, a

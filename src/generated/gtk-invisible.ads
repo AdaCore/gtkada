@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Invisible.Gtk_Invisible widget is used internally in GTK+, and is
 --  probably not very useful for application developers.

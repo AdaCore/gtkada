@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.GRange.Gtk_Range is the common base class for widgets which visualize
 --  an adjustment, e.g Gtk.Scale.Gtk_Scale or Gtk.Scrollbar.Gtk_Scrollbar.

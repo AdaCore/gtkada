@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Drawing_Area.Gtk_Drawing_Area widget is used for creating custom
 --  user interface elements. It's essentially a blank widget; you can draw on

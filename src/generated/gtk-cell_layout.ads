@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
 --  objects which want to provide a

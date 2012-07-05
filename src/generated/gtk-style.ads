@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Style.Gtk_Style object encapsulates the information that provides
 --  the look and feel for a widget.

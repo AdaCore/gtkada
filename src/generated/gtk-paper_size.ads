@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkPaperSize handles paper sizes. It uses the standard called <ulink
 --  url="http://www.pwg.org/standards.html">"PWG 5101.1-2002 PWG: Standard for

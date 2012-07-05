@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Actions represent operations that the user can be perform, along with some
 --  information how it should be presented in the interface. Each action

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GtkComboBox is a widget that allows the user to choose from a list of
 --  valid choices. The GtkComboBox displays the selected choice. When

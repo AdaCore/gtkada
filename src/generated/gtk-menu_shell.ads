@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Menu_Shell.Gtk_Menu_Shell is the abstract base class used to derive
 --  the Gtk.Menu.Gtk_Menu and Gtk.Menu_Bar.Gtk_Menu_Bar subclasses.

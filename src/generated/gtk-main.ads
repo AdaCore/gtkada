@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device; use Gdk.Device;

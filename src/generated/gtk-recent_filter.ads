@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Recent_Filter.Gtk_Recent_Filter can be used to restrict the files
 --  being shown in a Gtk.Recent_Chooser.Gtk_Recent_Chooser. Files can be

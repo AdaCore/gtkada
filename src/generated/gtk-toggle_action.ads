@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Toggle_Action.Gtk_Toggle_Action corresponds roughly to a
 --  Gtk.Check_Menu_Item.Gtk_Check_Menu_Item. It has an "active" state

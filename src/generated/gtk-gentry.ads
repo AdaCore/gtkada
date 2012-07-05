@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.GEntry.Gtk_Entry widget is a single line text entry widget. A
 --  fairly large set of key bindings are supported by default. If the entered

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Progress_Bar.Gtk_Progress_Bar is typically used to display the
 --  progress of a long running operation. It provides a visual clue that

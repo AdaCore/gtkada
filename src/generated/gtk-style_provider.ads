@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkStyleProvider is an interface used to provide style information to a
 --  Gtk.Style_Context.Gtk_Style_Context. See Gtk.Style_Context.Add_Provider and

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog is a dialog box suitable
 --  for use with "File/Open" or "File/Save as" commands. This widget works by

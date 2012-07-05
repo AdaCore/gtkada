@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Basic tooltips can be realized simply by using Gtk.Widget.Set_Tooltip_Text
 --  or Gtk.Widget.Set_Tooltip_Markup without any explicit tooltip object.

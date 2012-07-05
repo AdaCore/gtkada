@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Cell_Editable.Gtk_Cell_Editable interface must be implemented for
 --  widgets to be usable when editing the contents of a

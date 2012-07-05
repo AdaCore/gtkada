@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget widget lists the
 --  available fonts, styles and sizes, allowing the user to select a font. It

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkWidget is the base class all widgets in GTK+ derive from. It manages
 --  the widget lifecycle, states and style.

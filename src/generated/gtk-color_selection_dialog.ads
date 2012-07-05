@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
 --  user to select a color much like the Gtk_File_Selection provides a standard

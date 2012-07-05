@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Handle_Box.Gtk_Handle_Box widget allows a portion of a window to
 --  be "torn off". It is a bin widget which displays its child and a handle

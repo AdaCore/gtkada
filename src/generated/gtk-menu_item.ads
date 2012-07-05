@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Menu_Item.Gtk_Menu_Item widget and the derived widgets are the
 --  only valid childs for menus. Their function is to correctly handle

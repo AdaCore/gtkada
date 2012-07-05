@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A toolbar is created with a call to Gtk.Toolbar.Gtk_New.
 --

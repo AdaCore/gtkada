@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkCssProvider is an object implementing the
 --  Gtk.Style_Provider.Gtk_Style_Provider interface. It is able to parse <ulink

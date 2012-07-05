@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Entry_Completion.Gtk_Entry_Completion is an auxiliary object to be
 --  used in conjunction with Gtk.GEntry.Gtk_Entry to provide the completion

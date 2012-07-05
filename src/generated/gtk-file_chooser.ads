@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.File_Chooser.Gtk_File_Chooser is an interface that can be implemented
 --  by file selection widgets. In GTK+, the main objects that implement this

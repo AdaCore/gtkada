@@ -49,7 +49,7 @@ generate: force
 		--xml-file=contrib/binding.xml \
 		--ada-output=src/generated/tmp.ada \
 		--c-output=src/misc_generated.c
-	cd src/generated; gnatchop -q -w tmp.ada
+	cd src/generated; gnatchop -gnat05 -q -w tmp.ada
 
 clean-generic:
 	-${RM} core

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk_Color_Selection widget is a complex dialog that allows the user to
 --  select a color based either on its (Red, Green, Blue) or its (Hue,

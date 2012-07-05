@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Check_Menu_Item.Gtk_Check_Menu_Item is a menu item that maintains
 --  the state of a boolean value in addition to a Gtk.Menu_Item.Gtk_Menu_Item

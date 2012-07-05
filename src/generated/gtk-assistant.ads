@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Assistant.Gtk_Assistant is a widget used to represent a generally
 --  complex operation splitted in several steps, guiding the user through its

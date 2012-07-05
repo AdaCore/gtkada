@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Manager.Gtk_Recent_Manager provides a facility for adding,
 --  removing and looking up recently used files. Each recently used file is

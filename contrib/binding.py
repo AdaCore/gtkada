@@ -1681,7 +1681,7 @@ See Glib.Properties for more information on properties)""")
         self.pkg = gir.get_package(into or self.name,
                                    ctype=self.ctype,
                                    doc=girdoc)
-        self.pkg.language_version = "pragma Ada_05;"
+        # self.pkg.language_version = "pragma Ada_05;"
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)

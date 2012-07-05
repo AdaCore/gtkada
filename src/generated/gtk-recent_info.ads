@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Recent_Info.Gtk_Recent_Info is an opaque data structure whose members
 --  can only be accessed using the provided API.

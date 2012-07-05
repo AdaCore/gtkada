@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GtkSpinner widget displays an icon-size spinning animation. It is often
 --  used as an alternative to a Gtk.Progress_Bar.Gtk_Progress_Bar for

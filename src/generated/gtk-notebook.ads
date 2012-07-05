@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  The Gtk.Notebook.Gtk_Notebook widget is a Gtk.Container.Gtk_Container
 --  whose children are pages that can be switched between using tab labels

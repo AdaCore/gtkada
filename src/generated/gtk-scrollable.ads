@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Scrollable.Gtk_Scrollable is an interface that is implemented by
 --  widgets with native scrolling ability.

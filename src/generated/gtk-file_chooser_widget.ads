@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget is a widget suitable for
 --  selecting files. It is the main building block of a

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a button and a small additional

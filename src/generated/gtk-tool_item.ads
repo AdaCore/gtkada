@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  Gtk.Tool_Item.Gtk_Tool_Item<!-- -->s are widgets that can appear on a
 --  toolbar. To create a toolbar item that contain something else than a

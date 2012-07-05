@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A GtkFileFilter can be used to restrict the files being shown in a
 --  Gtk.File_Chooser.Gtk_File_Chooser. Files can be filtered based on their

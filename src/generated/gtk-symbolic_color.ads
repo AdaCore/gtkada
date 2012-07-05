@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  GtkSymbolicColor is a boxed type that represents a symbolic color. It is
 --  the result of parsing a <link

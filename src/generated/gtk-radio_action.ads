@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Ada_05;
 --  <description>
 --  A Gtk.Radio_Action.Gtk_Radio_Action is similar to
 --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item. A number of radio actions can be
