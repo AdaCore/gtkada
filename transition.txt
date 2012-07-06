@@ -63,6 +63,8 @@ Gdk.Drawable
 
 All Draw_* subprograms have been removed: use Cairo for low-level drawing.
 
+The type Gdk_Drawable no longer exists.
+
 Gdk.Event
 =========
 

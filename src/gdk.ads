@@ -39,10 +39,8 @@ package Gdk is
    pragma Preelaborate;
 
    type Gdk_GC is new Glib.C_Proxy;
-   type Gdk_Pixmap is new Glib.C_Proxy;
    type Gdk_Window is new Glib.C_Proxy;
    type Gdk_Cursor is new Glib.C_Proxy;
-   type Gdk_Bitmap is new Glib.C_Proxy;
    type Gdk_Colormap is new Glib.C_Proxy;
    type Gdk_Visual is new Glib.C_Proxy;
    type Gdk_Font is new Glib.C_Proxy;
