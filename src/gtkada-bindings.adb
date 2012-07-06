@@ -162,11 +162,18 @@ package body Gtkada.Bindings is
    function Value_And_Free
      (Str : Interfaces.C.Strings.chars_ptr) return String
    is
-      Val : constant String := Value (Str);
-      Tmp : chars_ptr := Str;
    begin
-      Free (Tmp);
-      return Val;
+      if Str = Null_Ptr then
+         return "";
+      end if;
+
+      declare
+         Val : constant String := Value (Str);
+         Tmp : chars_ptr := Str;
+      begin
+         Free (Tmp);
+         return Val;
+      end;
    end Value_And_Free;
 
 end Gtkada.Bindings;
