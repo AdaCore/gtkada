@@ -116,9 +116,7 @@ package Gdk.RGBA is
    -- GtkAda additions --
    ----------------------
 
-   Null_RGBA : constant Gdk_RGBA :=
-     (Glib.Gdouble'First, Glib.Gdouble'First,
-      Glib.Gdouble'First, Glib.Gdouble'First);
+   Null_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
 
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
