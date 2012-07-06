@@ -35,7 +35,8 @@ package body Gtk.Text_Tag is
 
    function Convert (R : System.Address) return Gtk.Text_Tag.Gtk_Text_Tag is
       Stub : Gtk.Text_Tag.Gtk_Text_Tag_Record;begin
-         return Gtk.Text_Tag.Gtk_Text_Tag (Glib.Object.Get_User_Data (R, Stub));end Convert;
+         return Gtk.Text_Tag.Gtk_Text_Tag (Glib.Object.Get_User_Data (R, Stub));
+      end Convert;
 
    package Type_Conversion_Gtk_Text_Tag is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Text_Tag_Record);

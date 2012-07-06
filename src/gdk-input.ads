@@ -29,7 +29,6 @@
 
 with Gdk.Event;
 with Gdk.Types;
-with Gdk.Window;
 with Glib;
 
 package Gdk.Input is
@@ -39,7 +38,7 @@ package Gdk.Input is
    procedure Gdk_Exit;
 
    procedure Set_Extension_Events
-     (Window : in Gdk.Window.Gdk_Window;
+     (Window : in Gdk.Gdk_Window;
       Mask   : in Gdk.Event.Gdk_Event_Mask;
       Mode   : in Gdk.Types.Gdk_Extension_Mode);
    --  ??? Check that Mask is indeed of type GdkEventMask.

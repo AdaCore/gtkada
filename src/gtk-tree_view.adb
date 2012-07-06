@@ -101,10 +101,9 @@ package body Gtk.Tree_View is
    --------------------
 
    function Get_Bin_Window
-     (Tree_View : access Gtk_Tree_View_Record) return Gdk.Window.Gdk_Window
+     (Tree_View : access Gtk_Tree_View_Record) return Gdk.Gdk_Window
    is
-      function Internal
-        (Tree_View : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Tree_View : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_tree_view_get_bin_window");
 
    begin

@@ -109,7 +109,7 @@ package body Gdk.Dnd is
    ----------------
 
    function Drag_Begin
-     (Window  : Gdk.Window.Gdk_Window;
+     (Window  : Gdk.Gdk_Window;
       Targets : Target_List)
       return Drag_Context
    is
@@ -148,11 +148,11 @@ package body Gdk.Dnd is
 
    procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;
-      Drag_Window : Gdk.Window.Gdk_Window;
+      Drag_Window : Gdk.Gdk_Window;
       Screen      : Gdk.Screen.Gdk_Screen;
       X_Root      : Gint;
       Y_Root      : Gint;
-      Dest_Window : Gdk.Window.Gdk_Window;
+      Dest_Window : Gdk.Gdk_Window;
       Protocol    : Drag_Protocol)
    is
       procedure Internal
@@ -180,7 +180,7 @@ package body Gdk.Dnd is
 
    function Drag_Motion
      (Context          : Drag_Context;
-      Dest_Window      : Gdk.Window.Gdk_Window;
+      Dest_Window      : Gdk.Gdk_Window;
       Protocol         : Drag_Protocol;
       X_Root           : Gint;
       Y_Root           : Gint;

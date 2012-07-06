@@ -86,10 +86,9 @@ package body Gtk.Socket is
    ---------------------
 
    function Get_Plug_Window
-      (Self : not null access Gtk_Socket_Record)
-       return Gdk.Window.Gdk_Window
+      (Self : not null access Gtk_Socket_Record) return Gdk.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Self : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_socket_get_plug_window");
    begin
       return Internal (Get_Object (Self));

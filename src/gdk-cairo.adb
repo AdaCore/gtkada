@@ -30,13 +30,13 @@ package body Gdk.Cairo is
    -- Create --
    ------------
 
-   function Create (Drawable : Gdk_Drawable) return Cairo_Context is
-      function Internal (S : System.Address) return Cairo_Context;
+   function Create (Window : Gdk_Window) return Cairo_Context is
+      function Internal (S : Gdk_Window) return Cairo_Context;
       pragma Import (C, Internal, "gdk_cairo_create");
 
       Cr : Cairo_Context;
    begin
-      Cr := Internal (To_Address (Drawable));
+      Cr := Internal (Window);
       return Cr;
    end Create;
 

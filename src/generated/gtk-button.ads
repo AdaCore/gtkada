@@ -36,7 +36,7 @@
 --  <testgtk>create_buttons.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;      use Gdk.Window;
+with Gdk;             use Gdk;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -131,8 +131,7 @@ package Gtk.Button is
    --  is bottom aligned
 
    function Get_Event_Window
-      (Button : not null access Gtk_Button_Record)
-       return Gdk.Window.Gdk_Window;
+      (Button : not null access Gtk_Button_Record) return Gdk.Gdk_Window;
    --  Returns the button's event window if it is realized, null otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22

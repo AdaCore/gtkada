@@ -33,7 +33,6 @@ with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Main;
 with Glib.Xml_Int;
-with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.RGBA;
@@ -1075,8 +1074,8 @@ private
       Focus_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
 
-      Cursor_Cross      : Gdk.Cursor.Gdk_Cursor;
-      Cursor_Fleur      : Gdk.Cursor.Gdk_Cursor;
+      Cursor_Cross      : Gdk.Gdk_Cursor;
+      Cursor_Fleur      : Gdk.Gdk_Cursor;
       --  Cached cursors
 
       Draw_Title_Bars   : Title_Bars_Policy := Always;

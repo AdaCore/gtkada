@@ -175,11 +175,9 @@ package body Gtk.Button is
    ----------------------
 
    function Get_Event_Window
-      (Button : not null access Gtk_Button_Record)
-       return Gdk.Window.Gdk_Window
+      (Button : not null access Gtk_Button_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Button : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Button : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_button_get_event_window");
    begin
       return Internal (Get_Object (Button));

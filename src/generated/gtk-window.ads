@@ -1042,7 +1042,7 @@ package Gtk.Window is
    --  This function sets up hints about how a window can be resized by the
    --  user. You can set a minimum and maximum size; allowed resize increments
    --  (e.g. for xterm, you can only resize by the size of a character); aspect
-   --  ratios; and more. See the Gdk_Geometry struct.
+   --  ratios; and more. See the Gdk.Window.Gdk_Geometry struct.
    --  "geometry_widget": widget the geometry hints will be applied to or null
    --  "geometry": struct containing geometry information or null
    --  "geom_mask": mask indicating which struct fields should be paid
@@ -1370,7 +1370,7 @@ package Gtk.Window is
    --  should not be set by applications.
    --
    --  Name: Gravity_Property
-   --  Type: Gdk.Gravity
+   --  Type: Gdk.Window.Gdk_Gravity
    --  Flags: read-write
    --  The window gravity of the window. See Gtk.Window.Move and
    --  Gdk.Window.Gdk_Gravity for more details about window gravity.
@@ -1468,7 +1468,7 @@ package Gtk.Window is
    --  Flags: read-write
    --
    --  Name: Type_Hint_Property
-   --  Type: Gdk.Window_Type_Hint
+   --  Type: Gdk.Window.Gdk_Window_Type_Hint
    --  Flags: read-write
    --
    --  Name: Urgency_Hint_Property
@@ -1488,7 +1488,7 @@ package Gtk.Window is
    Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean;
    Focus_On_Map_Property : constant Glib.Properties.Property_Boolean;
    Focus_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Gravity_Property : constant Glib.Properties.Property_Boxed;
+   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity;
    Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
    Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
    Icon_Property : constant Glib.Properties.Property_Object;
@@ -1507,7 +1507,7 @@ package Gtk.Window is
    Title_Property : constant Glib.Properties.Property_String;
    Transient_For_Property : constant Glib.Properties.Property_Object;
    The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type;
-   Type_Hint_Property : constant Glib.Properties.Property_Boxed;
+   Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint;
    Urgency_Hint_Property : constant Glib.Properties.Property_Boolean;
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position;
 
@@ -1562,8 +1562,8 @@ private
      Glib.Properties.Build ("focus-on-map");
    Focus_Visible_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("focus-visible");
-   Gravity_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gravity");
+   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity :=
+     Gdk.Window.Build ("gravity");
    Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-resize-grip");
    Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean :=
@@ -1600,8 +1600,8 @@ private
      Glib.Properties.Build ("transient-for");
    The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type :=
      Gtk.Enums.Build ("type");
-   Type_Hint_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("type-hint");
+   Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint :=
+     Gdk.Window.Build ("type-hint");
    Urgency_Hint_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("urgency-hint");
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position :=

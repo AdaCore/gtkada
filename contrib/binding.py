@@ -580,6 +580,9 @@ class GIRClass(object):
         # Search for the GtkAda binding information
 
         self.gtkpkg = gtkada.get_pkg(self.ctype)
+        if not self.gtkpkg.bindtype:
+            self.has_toplevel_type = False
+            self.is_gobject = False
 
         # Register naming exceptions for this class
 
@@ -604,16 +607,25 @@ class GIRClass(object):
                 t = Tagged(pkg)
 
             naming.add_type_exception(cname=node.get(ctype_qname), type=t)
-
             classtype = naming.type(name=self.ctype)
-            typename = classtype.ada   # The type we are mapping
+            typename = classtype.ada
             self.name = package_name(typename)
+
+            self.ada_package_name = self.name
+
+            if not self.has_toplevel_type:
+                # Compute the package name ignoring the type_exceptions. For
+                # instance, we have defined that GdkWindow is mapped to
+                # Gdk.Gdk_Window, but the operations should go into the package
+                # Gdk.Window.Gdk_Window.
+                self.ada_package_name = package_name(pkg)
 
         else:
             typename = ""
             self.name = package_name(pkg)
-
-        self.gtkpkg.register_types(adapkg=self.name)
+            self.ada_package_name = self.name
+            
+        self.gtkpkg.register_types(adapkg=self.ada_package_name)
 
         # Compute information that will be used for the binding
 
@@ -694,7 +706,8 @@ class GIRClass(object):
             print "No binding for %s: varargs" % cname
             return None
 
-        is_import = self._func_is_direct_import(profile)
+        is_import = self._func_is_direct_import(profile) \
+            and not gtkmethod.return_as_param()
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         adaname = naming.protect_keywords(adaname)
 
@@ -1064,8 +1077,14 @@ end if;""" % (cb.name, call1, call2)
             self._subst["params"] = ""
             self._subst["internal_params"] = ""
 
-        profile.returns = AdaType(
-            "System.Address", pkg=self.pkg, in_spec=False)
+        if self.is_gobject or self.is_record_with_ptr:
+            profile.returns = AdaType(
+                "System.Address", pkg=self.pkg, in_spec=False)
+        else:
+            profile.returns = AdaType(
+                "%(typename)s" % self._subst,
+                pkg=self.pkg, in_spec=False)
+
         local_vars = []
         code = []
         internal = Subprogram(
@@ -1077,7 +1096,16 @@ end if;""" % (cb.name, call1, call2)
         call = internal.call(in_pkg=self.pkg)
         assert(call[1] is not None)   # A function
 
-        adaname = gtkmethod.ada_name() or "Gtk_%s" % name
+        gtk_new_prefix = "Gtk_New"
+
+        adaname = gtkmethod.ada_name()
+        if not adaname:
+            if cname.startswith("gdk_"):
+                gtk_new_prefix = "Gdk_New"
+                adaname = "Gdk_%s" % name    # e.g.  Gdk_New
+            else:
+                adaname = "Gtk_%s" % name    # e.g.  Gtk_New
+
         selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
         if self.is_gobject:
@@ -1091,7 +1119,8 @@ end if;""" % (cb.name, call1, call2)
                     type=AdaType(selftype, pkg=self.pkg, in_spec=True),
                     mode="not null access")] + profile.params
             initialize = Subprogram(
-                name=adaname.replace("Gtk_New", "%s.Initialize" % self.pkg.name),
+                name=adaname.replace(
+                    gtk_new_prefix, "%s.Initialize" % self.pkg.name),
                 plist=initialize_params,
                 local_vars=local_vars + call[2],
                 doc=profile.doc,
@@ -1117,7 +1146,7 @@ end if;""" % (cb.name, call1, call2)
             section.add(gtk_new)
             section.add(initialize)
 
-        else:
+        elif self.is_record_with_ptr:
             gtk_new = Subprogram(
                 name=adaname,
                 plist=[Parameter(
@@ -1127,6 +1156,22 @@ end if;""" % (cb.name, call1, call2)
                         mode="out")] + profile.params,
                 local_vars=local_vars + call[2],
                 code="%s%s.Ptr := %s" % (call[0], selfname, call[1]),
+                doc=profile.doc)
+
+            gtk_new.add_nested(internal)
+            section.add(gtk_new)
+
+        else:
+            # likely a Proxy
+            gtk_new = Subprogram(
+                name=adaname,
+                plist=[Parameter(
+                        name=selfname,
+                        type=AdaType("%(typename)s" % self._subst,
+                                     pkg=self.pkg, in_spec=True),
+                        mode="out")] + profile.params,
+                local_vars=local_vars + call[2],
+                code="%s%s := %s" % (call[0], selfname, call[1]),
                 doc=profile.doc)
 
             gtk_new.add_nested(internal)
@@ -1175,6 +1220,7 @@ end if;""" % (cb.name, call1, call2)
 
             if not self.gtktype.is_subtype() \
                     and not self.is_interface \
+                    and self.is_gobject \
                     and self._subst["parent"] is not None:
 
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False)
@@ -1473,10 +1519,16 @@ See Glib.Properties for more information on properties)""")
 
             decl += "function Convert (R : %s) return System.Address;\n" % (
                 ctype.ada)
-            body += "function Convert (R : %s) return System.Address is\n" % (
+            body += "function Convert (R : %s) return System.Address is\nbegin\n" % (
                 ctype.ada)
-            body += "begin\nreturn Get_Object (R);\nend Convert;\n\n"
 
+            if self.is_gobject or self.is_record_with_ptr:
+                body += "return Get_Object (R);"
+            else:
+                # a proxy
+                body += "return Glib.To_Address (Glib.C_Proxy (R));"
+
+            body += "\nend Convert;\n\n"
 
         conv = "Address->%s" % ctype.ada
         if conv not in self.conversions:
@@ -1487,15 +1539,19 @@ See Glib.Properties for more information on properties)""")
             body += "function Convert (R : System.Address) return %s is\n" % (
                 ctype.ada)
 
-            if isinstance(ctype, Tagged):
+            if isinstance(ctype, Tagged) or self.is_record_with_ptr:
                 # Not a GObject ?
                 body += "begin\nreturn From_Object(R);"
-            else:
+
+            elif self.is_gobject:
                 body += "Stub : %s_Record;" % ctype.ada
                 body += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
                     ctype.ada)
+            else:
+                body += "begin\nreturn %s" % ctype.ada \
+                    + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
 
-            body += "end Convert;"
+            body += "\nend Convert;"
 
         if singleList:
             pkg = "GSlist"
@@ -1595,15 +1651,22 @@ See Glib.Properties for more information on properties)""")
         decl = ""
 
         if node.tag == nenumeration:
+            # Ignore values that map to a negative integer. They are in general
+            # internal values for gtk+ (for instance in Gdk.Cursor.Gdk_Cursor_Type
+
             section.add(
                 "type %s is " % base
-                + "(\n" + ",\n".join(m[0] for m in members) + ");\n"
+                + "(\n" + ",\n".join(m[0] for m in members
+                                     if m[1] >= 0)
+                + ");\n"
                 + "pragma Convention (C, %s);\n" % base)
             section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
             if not is_default_representation:
                 repr = ("   for %s use (\n" % base
-                        + ",\n".join("      %s => %s" % m for m in members)
+                        + ",\n".join("      %s => %s" % m 
+                                     for m in sorted(members, key=lambda m:m[1])
+                                     if m[1] >= 0)
                         + ");\n")
                 section.add(repr)
 
@@ -1678,7 +1741,7 @@ See Glib.Properties for more information on properties)""")
                 cname=self.ctype,
                 type=GObject(typename))
 
-        self.pkg = gir.get_package(into or self.name,
+        self.pkg = gir.get_package(into or self.ada_package_name,
                                    ctype=self.ctype,
                                    doc=girdoc)
         # self.pkg.language_version = "pragma Ada_05;"

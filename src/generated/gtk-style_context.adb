@@ -521,14 +521,14 @@ package body Gtk.Style_Context is
 
    procedure Notify_State_Change
       (Self        : not null access Gtk_Style_Context_Record;
-       Window      : Gdk.Window.Gdk_Window;
+       Window      : Gdk.Gdk_Window;
        Region_Id   : System.Address;
        State       : Gtk.Enums.Gtk_State_Type;
        State_Value : Boolean)
    is
       procedure Internal
          (Self        : System.Address;
-          Window      : Gdk.Window.Gdk_Window;
+          Window      : Gdk.Gdk_Window;
           Region_Id   : System.Address;
           State       : Gtk.Enums.Gtk_State_Type;
           State_Value : Integer);
@@ -644,13 +644,13 @@ package body Gtk.Style_Context is
 
    procedure Scroll_Animations
       (Self   : not null access Gtk_Style_Context_Record;
-       Window : Gdk.Window.Gdk_Window;
+       Window : Gdk.Gdk_Window;
        Dx     : Gint;
        Dy     : Gint)
    is
       procedure Internal
          (Self   : System.Address;
-          Window : Gdk.Window.Gdk_Window;
+          Window : Gdk.Gdk_Window;
           Dx     : Gint;
           Dy     : Gint);
       pragma Import (C, Internal, "gtk_style_context_scroll_animations");
@@ -664,11 +664,9 @@ package body Gtk.Style_Context is
 
    procedure Set_Background
       (Self   : not null access Gtk_Style_Context_Record;
-       Window : Gdk.Window.Gdk_Window)
+       Window : Gdk.Gdk_Window)
    is
-      procedure Internal
-         (Self   : System.Address;
-          Window : Gdk.Window.Gdk_Window);
+      procedure Internal (Self : System.Address; Window : Gdk.Gdk_Window);
       pragma Import (C, Internal, "gtk_style_context_set_background");
    begin
       Internal (Get_Object (Self), Window);

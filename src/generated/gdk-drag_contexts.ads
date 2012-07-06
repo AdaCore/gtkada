@@ -23,8 +23,8 @@
 
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk;                     use Gdk;
 with Gdk.Device;              use Gdk.Device;
-with Gdk.Window;              use Gdk.Window;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -88,8 +88,7 @@ package Gdk.Drag_Contexts is
    --  Since: gtk+ 2.22
 
    function Get_Dest_Window
-      (Self : not null access Drag_Context_Record)
-       return Gdk.Window.Gdk_Window;
+      (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
    --  Returns the destination windw for the DND operation.
    --  Since: gtk+ 3.0
 
@@ -116,9 +115,8 @@ package Gdk.Drag_Contexts is
    --  Since: gtk+ 2.22
 
    function Get_Source_Window
-      (Self : not null access Drag_Context_Record)
-       return Gdk.Window.Gdk_Window;
-   --  Returns the Gdk.Window.Gdk_Window where the DND operation started.
+      (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
+   --  Returns the Gdk.Gdk_Window where the DND operation started.
    --  Since: gtk+ 2.22
 
    function Get_Suggested_Action

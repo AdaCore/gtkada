@@ -38,27 +38,15 @@ pragma Warnings (On);
 package Gdk is
    pragma Preelaborate;
 
-   subtype C_Proxy is Glib.C_Proxy;
-
-   type Gdk_GC is new C_Proxy;
-
-   type Gdk_Drawable is new C_Proxy;
-   subtype Gdk_Window is Gdk_Drawable;
-   subtype Gdk_Pixmap is Gdk_Drawable;
-   subtype Gdk_Bitmap is Gdk_Drawable;
-
-   type Gdk_Screen is new C_Proxy;
-
-   type Gdk_Colormap is new C_Proxy;
-
-   type Gdk_Visual is new C_Proxy;
-
-   type Gdk_Font is new C_Proxy;
-
-   type Gdk_Image is new C_Proxy;
-
-   type Gdk_Region is new C_Proxy;
-
-   type Gdk_Window_Attr is new C_Proxy;
-
+   type Gdk_GC is new Glib.C_Proxy;
+   type Gdk_Pixmap is new Glib.C_Proxy;
+   type Gdk_Window is new Glib.C_Proxy;
+   type Gdk_Cursor is new Glib.C_Proxy;
+   type Gdk_Bitmap is new Glib.C_Proxy;
+   type Gdk_Colormap is new Glib.C_Proxy;
+   type Gdk_Visual is new Glib.C_Proxy;
+   type Gdk_Font is new Glib.C_Proxy;
+   type Gdk_Image is new Glib.C_Proxy;
+   type Gdk_Region is new Glib.C_Proxy;
+   type Gdk_Window_Attr is new Glib.C_Proxy;
 end Gdk;

@@ -42,7 +42,7 @@
 --  <group>Scrolling</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;     use Gdk.Window;
+with Gdk;            use Gdk;
 with Glib;           use Glib;
 with Glib.Types;     use Glib.Types;
 with Gtk.Adjustment; use Gtk.Adjustment;
@@ -80,8 +80,7 @@ package Gtk.Viewport is
    -------------
 
    function Get_Bin_Window
-      (Viewport : not null access Gtk_Viewport_Record)
-       return Gdk.Window.Gdk_Window;
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
 
@@ -98,8 +97,7 @@ package Gtk.Viewport is
    --  "type": the new shadow type.
 
    function Get_View_Window
-      (Viewport : not null access Gtk_Viewport_Record)
-       return Gdk.Window.Gdk_Window;
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
 

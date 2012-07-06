@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gdk;                 use Gdk;
 with Gdk.Dnd;             use Gdk.Dnd;
 with Gdk.Types;           use Gdk.Types;
 with Glib.Properties;     use Glib.Properties;

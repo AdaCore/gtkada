@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Display; use Gdk.Display;
 with Glib.Object; use Glib.Object;
 with Ada.Unchecked_Deallocation;
@@ -597,8 +596,8 @@ package body Gdk.Pixbuf is
    -- Get_Image --
    ---------------
 
-   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf is
-      function Internal (Cursor : Gdk.Cursor.Gdk_Cursor) return System.Address;
+   function Get_Image (Cursor : Gdk.Gdk_Cursor) return Gdk_Pixbuf is
+      function Internal (Cursor : Gdk.Gdk_Cursor) return System.Address;
       pragma Import (C, Internal, "gdk_cursor_get_image");
 
    begin
@@ -947,7 +946,7 @@ package body Gdk.Pixbuf is
    -------------------------
 
    procedure Gdk_New_From_Pixbuf
-     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+     (Cursor  : out Gdk.Gdk_Cursor;
       Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
       Pixbuf  : Gdk_Pixbuf;
       X       : Glib.Gint;

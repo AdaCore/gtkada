@@ -22,13 +22,14 @@
       <method id="gdk_device_grab" bind="False"/><!-- no support for Gdk_Grab_Ownership yet -->
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
       <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support for Gdk_Device_Type_Master lists -->
+
       <extra>
          <spec>
    procedure Get_Window_At_Position
       (Self   : not null access Gdk_Device_Record;
        Win_X  : out Gint;
        Win_Y  : out Gint;
-       Window : out Gdk.Window.Gdk_Window);
+       Window : out Gdk.Gdk_Window);
    --  Obtains the window underneath Device, returning the location of the
    --  device in Win_X and Win_Y. Returns null if the window tree under Device
    --  is not known to GDK (for example, belongs to another application).
@@ -47,21 +48,19 @@
       (Self   : not null access Gdk_Device_Record;
        Win_X  : out Gint;
        Win_Y  : out Gint;
-       Window : out Gdk.Window.Gdk_Window)
+       Window : out Gdk.Gdk_Window)
    is
       function Internal
          (Self      : System.Address;
           Acc_Win_X : access Gint;
-          Acc_Win_Y : access Gint) return Gdk.Window.Gdk_Window;
+          Acc_Win_Y : access Gint) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_device_get_window_at_position");
       Acc_Win_X  : aliased Gint;
       Acc_Win_Y  : aliased Gint;
-      Tmp_Return : Gdk.Window.Gdk_Window;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
+      Window := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
       Win_X := Acc_Win_X;
       Win_Y := Acc_Win_Y;
-      Window :=  Tmp_Return;
    end Get_Window_At_Position;
          </body>
       </extra>
@@ -85,9 +84,12 @@
      <doc group="Gdk, the low-level API"/>
      <parameter name="self" ada="Screen"/>
      <method id="gdk_screen_get_setting" bind="False" />
-     <method id="gdk_screen_get_toplevel_windows" return="WindowList" />
-     <method id="gdk_screen_get_window_stack" return="WindowList" />
-     <method id="gdk_screen_list_visuals" return="WindowList" />
+
+     <method id="gdk_screen_get_toplevel_windows" return="WindowList" bind="False"/>  <!--  circular dep -->
+     <method id="gdk_screen_get_window_stack" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
+     <method id="gdk_screen_list_visuals" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
+     <method id="gdk_screen_get_root_window" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
+     <method id="gdk_screen_get_active_window" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
      <extra>
        <with_spec pkg="Gdk.Types" />
        <spec>
@@ -407,7 +409,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
      <extra>
         <spec>
    type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
-      (Screen   : Gdk.Gdk_Screen;
+      (Screen   : System.Address;  --  Convert to Gdk_Screen with Get_User_Data
        Colors   : Gdk.Color.Gdk_Color_Unconstrained_Array;
        N_Colors : Gint);
    pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);
@@ -1234,6 +1236,7 @@ See Gtk_Text_View for a multiple-line text editing widget.
            </gir:parameters>
         </gir:constructor>
 
+        <with_spec pkg="Gdk.Screen" />
         <spec>
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
@@ -1251,7 +1254,7 @@ See Gtk_Text_View for a multiple-line text editing widget.
    --  Use this function after adding all the buttons to your dialog.
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null)  return Boolean;
+     (Screen : Gdk.Screen.Gdk_Screen := null)  return Boolean;
    --  Returns True if dialogs are expected to use an alternative button order
    --  on the given screen (or current screen if null) . See
    --  Set_Alternative_Button_Order_From_Array for more details about
@@ -1281,12 +1284,12 @@ See Gtk_Text_View for a multiple-line text editing widget.
    end Set_Alternative_Button_Order_From_Array;
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null) return Boolean
+     (Screen : Gdk.Screen.Gdk_Screen := null) return Boolean
    is
-      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      function Internal (Screen : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
    begin
-      return Boolean'Val (Internal (Screen));
+      return Boolean'Val (Internal (Get_Object (Screen)));
    end Gtk_Alternative_Dialog_Button_Order;
         </body>
 
@@ -3187,6 +3190,100 @@ creating a tag.
    begin
       return Boolean'Val (Internal (gnat_argc'Address, gnat_argv'Address));
    end Init_Check;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GdkCursor" bindtype="False">
+     <enum ctype="GdkCursorType" prefix="GDK_"/>
+
+     <method id="gdk_cursor_new_from_pixbuf" bind="False" />  <!--  in gdk.pixbuf -->
+     <method id="gdk_cursor_get_image" bind="False" />  <!--  in gdk.pixbuf -->
+
+     <method id="gdk_cursor_unref" bind="False" />  <!--  obsolete -->
+     <method id="gdk_cursor_ref" bind="False" />  <!--  obsolete -->
+     <extra>
+       <spec>
+   procedure Ref (Self : Gdk.Gdk_Cursor);
+   pragma Import (C, Ref, "g_object_ref");
+
+   procedure Unref (Self : Gdk.Gdk_Cursor);
+   pragma Import (C, Unref, "g_object_unref");
+       </spec>
+     </extra>
+   </package>
+
+   <package id="GdkWindow" bindtype="False">
+     <record ctype="GdkGeometry"/>
+     <enum ctype="GdkWindowWindowClass" prefix="GDK_" ada="Gdk_Window_Class"/>
+     <enum ctype="GdkWindowEdge" prefix="GDK_"/>
+     <enum ctype="GdkWindowType" prefix="GDK_"/>
+     <enum ctype="GdkWindowAttributesType" prefix="GDK_"/>
+     <enum ctype="GdkWindowHints" prefix="GDK_"/>
+     <enum ctype="GdkWindowTypeHint" prefix="GDK_"/>
+     <enum ctype="GdkWMDecoration" prefix="GDK_"/>
+     <enum ctype="GdkWMFunction" prefix="GDK_"/>
+     <enum ctype="GdkGravity" prefix="GDK_"/>
+     <list ada="Gdk_Window_List" ctype="GdkWindow"/>
+     <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
+     <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
+     <method id="gdk_window_get_children" return="GdkWindowList"/>
+     <method id="gdk_window_get_decorations" return_as_param="Has_Decorations"/>
+     <method id="gdk_window_get_device_position" return_as_param="Window"/>
+     <method id="gdk_window_get_origin" return="void"/>
+     <method id="gdk_window_get_pointer" return_as_param="Window"/>
+     <method id="gdk_window_peek_children" return="GdkWindowList" />
+     <method id="gdk_window_at_pointer" return_as_param="Window"/>
+
+<!--     <method id="gdk_window_get_events" bind="False" /> <!- circular dep with GdkEvent -->
+<!--     <method id="gdk_window_set_events" bind="False" /> <!- circular dep with GdkEvent -->
+<!--     <method id="gdk_window_get_device_events" bind="False" /> <!- circular dep with GdkEvent -->
+<!--     <method id="gdk_window_set_device_events" bind="False" /> <!- circular dep with GdkEvent -->
+<!--     <method id="gdk_window_get_source_events" bind="False" /> <!- circular dep with GdkEvent -->
+<!--     <method id="gdk_window_set_source_events" bind="False" /> <!- circular dep with GdkEvent -->
+
+     <method id="gdk_window_set_icon_list" bind="False"/> <!--  needs PixbufList -->
+     <method id="gdk_window_get_drag_protocol" return_as_param="Protocol" bind="False"/> <!--  circular dep with GdkDragContent -->
+
+     <method id="gdk_window_get_user_data" bind="False"/>  <!-- see below -->
+
+     <extra>
+       <spec>
+   function Get_User_Data (Window : Gdk_Window) return Glib.Object.GObject;
+   --  Return the widget to which events are reported when they happen on
+   --  Window. This is the widget that was set through the call to
+   --  Set_User_data.
+
+   procedure Set_User_Data
+     (Window : Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class);
+   --  Sets a special field in the window.
+   --  All the events reported by the Xserver (or the Windows server) for
+   --  Window will be redirected to Widget through the standard signals
+   --  "expose_event", "button_press_event", ...
+   --  You almost always need to call this function after creating a new
+   --  Gdk_Window yourself, or you won't be able to handle the events.
+       </spec>
+       <body>
+   function Get_User_Data (Window : Gdk_Window) return Glib.Object.GObject is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_get_user_data");
+      Data : aliased System.Address;
+      Stub : GObject_Record;
+   begin
+      Internal (Window, Data'Address);
+      return Get_User_Data (Data, Stub);
+   end Get_User_Data;
+
+   procedure Set_User_Data
+     (Window : Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class)
+   is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_set_user_data");
+   begin
+      Internal (Window, Get_Object (Widget));
+   end Set_User_Data;
        </body>
      </extra>
    </package>

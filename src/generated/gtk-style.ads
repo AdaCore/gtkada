@@ -42,8 +42,8 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
+with Gdk;             use Gdk;
 with Gdk.Color;       use Gdk.Color;
-with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
@@ -73,7 +73,7 @@ package Gtk.Style is
    procedure Apply_Default_Background
       (Style      : not null access Gtk_Style_Record;
        Cr         : Cairo.Cairo_Context;
-       Window     : Gdk.Window.Gdk_Window;
+       Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type;
        X          : Gint;
        Y          : Gint;
@@ -83,7 +83,7 @@ package Gtk.Style is
 
    function Attach
       (Style  : not null access Gtk_Style_Record;
-       Window : Gdk.Window.Gdk_Window) return Gtk_Style;
+       Window : Gdk.Gdk_Window) return Gtk_Style;
    --  Attaches a style to a window; this process allocates the colors and
    --  creates the GC's for the style - it specializes it to a particular
    --  visual. The process may involve the creation of a new style if the style
@@ -93,7 +93,7 @@ package Gtk.Style is
    --  If the style is newly created, the style parameter will be unref'ed,
    --  and the new style will have a reference count belonging to the caller.
    --  Deprecated:3.0: Use Gtk.Widget.Style_Attach instead
-   --  "window": a Gdk.Window.Gdk_Window.
+   --  "window": a Gdk.Gdk_Window.
 
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style;
    --  Creates a copy of the passed in Gtk.Style.Gtk_Style object.
@@ -139,12 +139,12 @@ package Gtk.Style is
 
    procedure Set_Background
       (Style      : not null access Gtk_Style_Record;
-       Window     : Gdk.Window.Gdk_Window;
+       Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type);
    --  Sets the background of Window to the background color or pixmap
    --  specified by Style for the given state.
    --  Deprecated:3.0: Use Gtk.Style_Context.Set_Background instead
-   --  "window": a Gdk.Window.Gdk_Window
+   --  "window": a Gdk.Gdk_Window
    --  "state_type": a state
 
    ----------------------

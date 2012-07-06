@@ -36,7 +36,7 @@ with Gdk.RGBA;     use Gdk.RGBA;
 
 package Gdk.Cairo is
 
-   function Create (Drawable : Gdk_Drawable) return Cairo_Context;
+   function Create (Window : Gdk.Gdk_Window) return Cairo_Context;
    --  Creates a Cairo context for drawing to Drawable.
    --
    --  Note that due to double-buffering, Cairo contexts created
@@ -45,20 +45,6 @@ package Gdk.Cairo is
    --
    --  Returns a newly created Cairo context. The result should be freed with
    --  Cairo.Destroy.
-
-   procedure Set_Source_Pixmap
-     (Cr       : Cairo_Context;
-      Pixmap   : Gdk_Drawable;
-      Pixmap_X : Gdouble;
-      Pixmap_Y : Gdouble);
-   --  Cr: a Cairo_Context
-   --  Pixmap: a Gdk_Pixmap
-   --  Pixmap_X: X coordinate of location to place upper left corner of Pixmap
-   --  Pixmap_Y: Y coordinate of location to place upper left corner of Pixmap
-   --
-   --  Sets the given pixmap as the source pattern for the Cairo context.
-   --  The pattern has an extend mode of CAIRO_EXTEND_NONE and is aligned
-   --  so that the origin of Pixmap is Pixmap_X, Pixmap_Y
 
    procedure Set_Source_Pixbuf
      (Cr       : Cairo_Context;
@@ -83,6 +69,5 @@ package Gdk.Cairo is
    --  Set the specified Color as the source of Cr.
 
 private
-   pragma Import (C, Set_Source_Pixmap, "gdk_cairo_set_source_pixmap");
    pragma Import (C, Set_Source_Color, "gdk_cairo_set_source_color");
 end Gdk.Cairo;

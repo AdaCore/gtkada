@@ -76,7 +76,7 @@
 --  onscreen, or when it's covered by another window and then uncovered. You
 --  can also force an expose event by adding to the "damage region" of the
 --  drawing area's window; Gtk.Widget.Queue_Draw_Area and
---  gdk_window_invalidate_rect are equally good ways to do this. You'll then
+--  Gdk.Window.Invalidate_Rect are equally good ways to do this. You'll then
 --  get a draw signal for the invalid region.
 --
 --  The available routines for drawing are documented on the <link

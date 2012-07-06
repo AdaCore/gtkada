@@ -41,6 +41,7 @@ with Glib.Graphs;                        use Glib.Graphs;
 with Glib.Main;                          use Glib.Main;
 with Glib.Object;                        use Glib.Object;
 
+with Gdk;                                use Gdk;
 with Gdk.Cairo;                          use Gdk.Cairo;
 with Gdk.Color;                          use Gdk.Color;
 with Gdk.Cursor;                         use Gdk.Cursor;
@@ -55,6 +56,7 @@ with Gtk.Adjustment;                     use Gtk.Adjustment;
 with Gtk.Arguments;                      use Gtk.Arguments;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;
+with Gtk.Main;
 with Gtk.Widget;                         use Gtk.Widget;
 
 with Gtkada.Handlers;                    use Gtkada.Handlers;
@@ -71,7 +73,7 @@ package body Gtkada.Canvas is
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Double_Elementary_Functions;
 
-   use type Gdk_Window;
+   use type Gdk.Gdk_Window;
    use type System.Address;
 
    Traces : constant Boolean := False;
@@ -367,7 +369,7 @@ package body Gtkada.Canvas is
      (Canvas         : access Interactive_Canvas_Record'Class;
       X1, Y1, X2, Y2 : out Gdouble)
    is
-      X_Ignored, Y_Ignored, Depth_Ignored : Gint;
+      X_Ignored, Y_Ignored : Gint;
 
       Hadj : constant Gtk_Adjustment := Canvas.Get_Hadjustment;
       Vadj : constant Gtk_Adjustment := Canvas.Get_Vadjustment;
@@ -389,8 +391,7 @@ package body Gtkada.Canvas is
       Get_Geometry
         (Canvas.Get_Window,
          X_Ignored, Y_Ignored,
-         Window_Width, Window_Height,
-         Depth_Ignored);
+         Window_Width, Window_Height);
 
       Canvas.Get_Size (Canvas_Width, Canvas_Height);
 
@@ -1570,7 +1571,7 @@ package body Gtkada.Canvas is
       Canvas_X, Canvas_Y : Gdouble := 0.5)
    is
       pragma Unreferenced (Canvas_Y, Canvas_X);
-      X_Ignored, Y_Ignored, Depth_Ignored : Gint;
+      X_Ignored, Y_Ignored : Gint;
       Window_Width, Window_Height : Gint;
 
       Canvas_Width, Canvas_Height : Guint;
@@ -1589,8 +1590,7 @@ package body Gtkada.Canvas is
       Get_Geometry
         (Canvas.Get_Window,
          X_Ignored, Y_Ignored,
-         Window_Width, Window_Height,
-         Depth_Ignored);
+         Window_Width, Window_Height);
 
       Canvas.Get_Size (Canvas_Width, Canvas_Height);
 
@@ -2708,7 +2708,7 @@ package body Gtkada.Canvas is
       Event : Gdk_Event) return Boolean
    is
       Canvas  : constant Interactive_Canvas := Interactive_Canvas (Canv);
-      Cursor  : Gdk.Cursor.Gdk_Cursor;
+      Cursor  : Gdk.Gdk_Cursor;
       Handled : Boolean;
 
    begin
@@ -2830,8 +2830,6 @@ package body Gtkada.Canvas is
       pragma Unreferenced (Dead);
 
       Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
-      Mask                           : Gdk_Modifier_Type;
-      W                              : Gdk_Window;
    begin
       if Get_Window (Event) /= Get_Bin_Window (Canvas) then
          return False;
@@ -2853,8 +2851,8 @@ package body Gtkada.Canvas is
       --  directly, but establish the timeout callbacks that will take care
       --  of the scrolling
 
-      Get_Pointer
-        (Get_Window (Canvas), Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
+      Mouse_X_Canvas := Gint (Get_X (Event));
+      Mouse_Y_Canvas := Gint (Get_Y (Event));
 
       Test_Scrolling_Box
         (Canvas            => Canvas,
@@ -3062,14 +3060,13 @@ package body Gtkada.Canvas is
       X_Scroll : out Gdouble;
       Y_Scroll : out Gdouble)
    is
-      X_Ignored, Y_Ignored, Depth_Ignored : Gint;
+      X_Ignored, Y_Ignored : Gint;
       Width, Height : Gint;
    begin
       Get_Geometry
         (Canvas.Get_Window,
          X_Ignored, Y_Ignored,
-         Width, Height,
-         Depth_Ignored);
+         Width, Height);
 
       if Mouse_X_In_Canvas < Scrolling_Margin then
          X_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
@@ -3115,8 +3112,10 @@ package body Gtkada.Canvas is
          Put_Line ("Scrolling timeout");
       end if;
 
-      Get_Pointer
-        (Get_Window (Canvas), Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
+      Get_Device_Position
+        (Get_Window (Canvas),
+         Gtk.Main.Get_Current_Event_Device,
+         Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
 
       Test_Scrolling_Box
         (Canvas, Mouse_X_Canvas, Mouse_Y_Canvas, X_Scroll, Y_Scroll);
@@ -3176,7 +3175,7 @@ package body Gtkada.Canvas is
          Cairo.Translate
            (Cr, Gdouble (Rect.X), Gdouble (Rect.Y));
 
-         Rectangle
+         Cairo.Rectangle
            (Cr,
             0.5,
             0.5,
@@ -3211,7 +3210,7 @@ package body Gtkada.Canvas is
                   Y := Y - Y mod Gint (Canvas.Grid_Size);
                end if;
 
-               Rectangle
+               Cairo.Rectangle
                  (Cr,
                   Gdouble (X) + 0.5,
                   Gdouble (Y) + 0.5,

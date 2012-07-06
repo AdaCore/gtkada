@@ -229,10 +229,10 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;              use Cairo;
+with Gdk;                use Gdk;
 with Gdk.Pixbuf;         use Gdk.Pixbuf;
 with Gdk.RGBA;           use Gdk.RGBA;
 with Gdk.Screen;         use Gdk.Screen;
-with Gdk.Window;         use Gdk.Window;
 with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
 with Glib.Properties;    use Glib.Properties;
@@ -573,7 +573,7 @@ package Gtk.Style_Context is
 
    procedure Notify_State_Change
       (Self        : not null access Gtk_Style_Context_Record;
-       Window      : Gdk.Window.Gdk_Window;
+       Window      : Gdk.Gdk_Window;
        Region_Id   : System.Address;
        State       : Gtk.Enums.Gtk_State_Type;
        State_Value : Boolean);
@@ -607,7 +607,7 @@ package Gtk.Style_Context is
    --  Note that State is used when finding the transition parameters, which
    --  is why the style places the transition under the :hover pseudo-class.
    --  Since: gtk+ 3.0
-   --  "window": a Gdk.Window.Gdk_Window
+   --  "window": a Gdk.Gdk_Window
    --  "region_id": animatable region to notify on, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
    --  "state": state to trigger transition for
@@ -668,25 +668,25 @@ package Gtk.Style_Context is
 
    procedure Scroll_Animations
       (Self   : not null access Gtk_Style_Context_Record;
-       Window : Gdk.Window.Gdk_Window;
+       Window : Gdk.Gdk_Window;
        Dx     : Gint;
        Dy     : Gint);
-   --  This function is analogous to gdk_window_scroll, and should be called
+   --  This function is analogous to Gdk.Window.Scroll, and should be called
    --  together with it so the invalidation areas for any ongoing animation are
    --  scrolled together with it.
    --  Since: gtk+ 3.0
-   --  "window": a Gdk.Window.Gdk_Window used previously in
+   --  "window": a Gdk.Gdk_Window used previously in
    --  Gtk.Style_Context.Notify_State_Change
    --  "dx": Amount to scroll in the X axis
    --  "dy": Amount to scroll in the Y axis
 
    procedure Set_Background
       (Self   : not null access Gtk_Style_Context_Record;
-       Window : Gdk.Window.Gdk_Window);
+       Window : Gdk.Gdk_Window);
    --  Sets the background of Window to the background pattern or color
    --  specified in Context for its current state.
    --  Since: gtk+ 3.0
-   --  "window": a Gdk.Window.Gdk_Window
+   --  "window": a Gdk.Gdk_Window
 
    procedure State_Is_Running
       (Self       : not null access Gtk_Style_Context_Record;

@@ -70,7 +70,7 @@
 --  <testgtk>create_paned.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;      use Gdk.Window;
+with Gdk;             use Gdk;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -158,12 +158,10 @@ package Gtk.Paned is
    --  Since: gtk+ 2.4
 
    function Get_Handle_Window
-      (Paned : not null access Gtk_Paned_Record)
-       return Gdk.Window.Gdk_Window;
-   --  Returns the Gdk.Window.Gdk_Window of the handle. This function is
-   --  useful when handling button or motion events because it enables the
-   --  callback to distinguish between the window of the paned, a child and the
-   --  handle.
+      (Paned : not null access Gtk_Paned_Record) return Gdk.Gdk_Window;
+   --  Returns the Gdk.Gdk_Window of the handle. This function is useful when
+   --  handling button or motion events because it enables the callback to
+   --  distinguish between the window of the paned, a child and the handle.
    --  Since: gtk+ 2.20
 
    function Get_Position

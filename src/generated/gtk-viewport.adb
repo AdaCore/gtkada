@@ -67,11 +67,9 @@ package body Gtk.Viewport is
    --------------------
 
    function Get_Bin_Window
-      (Viewport : not null access Gtk_Viewport_Record)
-       return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_bin_window");
    begin
       return Internal (Get_Object (Viewport));
@@ -97,11 +95,9 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_View_Window
-      (Viewport : not null access Gtk_Viewport_Record)
-       return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_view_window");
    begin
       return Internal (Get_Object (Viewport));

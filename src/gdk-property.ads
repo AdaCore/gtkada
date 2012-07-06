@@ -28,7 +28,6 @@
 with Glib; use Glib;
 
 with Gdk.Types;
-with Gdk.Window;
 
 package Gdk.Property is
 
@@ -45,7 +44,7 @@ package Gdk.Property is
    --  Convert from an atom to a string
 
    procedure Get
-     (Window               : Gdk.Window.Gdk_Window;
+     (Window               : Gdk.Gdk_Window;
       Property             : Gdk.Types.Gdk_Atom;
       The_Type             : Gdk.Types.Gdk_Atom;
       Offset               : Gulong;
@@ -57,7 +56,7 @@ package Gdk.Property is
       Success              : out Boolean);
 
    procedure Change
-     (Window    : Gdk.Window.Gdk_Window;
+     (Window    : Gdk.Gdk_Window;
       Property  : Gdk.Types.Gdk_Atom;
       The_Type  : Gdk.Types.Gdk_Atom;
       Format    : Gint;
@@ -65,7 +64,7 @@ package Gdk.Property is
       Data      : Guchar_Array);
 
    procedure Delete
-     (Window   : Gdk.Window.Gdk_Window;
+     (Window   : Gdk.Gdk_Window;
       Property : Gdk.Types.Gdk_Atom);
 
 private

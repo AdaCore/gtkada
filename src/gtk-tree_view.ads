@@ -34,7 +34,6 @@ with Glib.Properties;
 with Gdk.Dnd;
 with Gdk.Rectangle;
 with Gdk.Types;
-with Gdk.Window;
 with Gtk;
 with Gtk.Cell_Renderer;
 with Gtk.Container;
@@ -413,7 +412,7 @@ package Gtk.Tree_View is
    --  realized.
 
    function Get_Bin_Window
-     (Tree_View : access Gtk_Tree_View_Record) return Gdk.Window.Gdk_Window;
+     (Tree_View : access Gtk_Tree_View_Record) return Gdk.Gdk_Window;
    --  Return the window that Tree_View renders to.
    --  This is used primarily to compare to Get_Window (Event) to confirm that
    --  the event on Tree_View is on the right window.

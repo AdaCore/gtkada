@@ -61,7 +61,7 @@ package body Gtkada.Multi_Paned is
 
    type Resize_Handle is record
       Position : Gtk.Widget.Gtk_Allocation;
-      Win      : Gdk.Window.Gdk_Window;
+      Win      : Gdk.Gdk_Window;
    end record;
    No_Handle : constant Resize_Handle := ((0, 0, 0, 0), null);
 

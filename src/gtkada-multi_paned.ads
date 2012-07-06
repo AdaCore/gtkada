@@ -30,8 +30,8 @@
 --  <testgtk>create_splittable.adb</testgtk>
 
 with Cairo;         use Cairo;
+with Gdk;
 with Glib;          use Glib;
-with Gdk.Cursor;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
@@ -275,8 +275,8 @@ private
       Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
       --  A surface used during a resize operation
 
-      Cursor_Double_H_Arrow : Gdk.Cursor.Gdk_Cursor;
-      Cursor_Double_V_Arrow : Gdk.Cursor.Gdk_Cursor;
+      Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
+      Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
 
       Opaque_Resizing        : Boolean := False;
    end record;

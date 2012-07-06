@@ -37,7 +37,8 @@ package body Gtk.Widget is
 
    function Convert (R : System.Address) return Gtk.Widget.Gtk_Widget is
       Stub : Gtk.Widget.Gtk_Widget_Record;begin
-         return Gtk.Widget.Gtk_Widget (Glib.Object.Get_User_Data (R, Stub));end Convert;
+         return Gtk.Widget.Gtk_Widget (Glib.Object.Get_User_Data (R, Stub));
+      end Convert;
 
 
    function Get_Allocation
@@ -406,13 +407,13 @@ package body Gtk.Widget is
 
    procedure Drag_Dest_Set_Proxy
       (Widget          : not null access Gtk_Widget_Record;
-       Proxy_Window    : Gdk.Window.Gdk_Window;
+       Proxy_Window    : Gdk.Gdk_Window;
        Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
        Use_Coordinates : Boolean)
    is
       procedure Internal
          (Widget          : System.Address;
-          Proxy_Window    : Gdk.Window.Gdk_Window;
+          Proxy_Window    : Gdk.Gdk_Window;
           Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
           Use_Coordinates : Integer);
       pragma Import (C, Internal, "gtk_drag_dest_set_proxy");
@@ -1076,11 +1077,9 @@ package body Gtk.Widget is
    -----------------------
 
    function Get_Parent_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Widget : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Widget : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_widget_get_parent_window");
    begin
       return Internal (Get_Object (Widget));
@@ -1273,11 +1272,9 @@ package body Gtk.Widget is
    ---------------------
 
    function Get_Root_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Widget : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Widget : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_widget_get_root_window");
    begin
       return Internal (Get_Object (Widget));
@@ -1515,11 +1512,9 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Widget : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Widget : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_widget_get_window");
    begin
       return Internal (Get_Object (Widget));
@@ -2722,11 +2717,11 @@ package body Gtk.Widget is
 
    procedure Set_Parent_Window
       (Widget        : not null access Gtk_Widget_Record;
-       Parent_Window : Gdk.Window.Gdk_Window)
+       Parent_Window : Gdk.Gdk_Window)
    is
       procedure Internal
          (Widget        : System.Address;
-          Parent_Window : Gdk.Window.Gdk_Window);
+          Parent_Window : Gdk.Gdk_Window);
       pragma Import (C, Internal, "gtk_widget_set_parent_window");
    begin
       Internal (Get_Object (Widget), Parent_Window);
@@ -3009,11 +3004,9 @@ package body Gtk.Widget is
 
    procedure Set_Window
       (Widget : not null access Gtk_Widget_Record;
-       Window : Gdk.Window.Gdk_Window)
+       Window : Gdk.Gdk_Window)
    is
-      procedure Internal
-         (Widget : System.Address;
-          Window : Gdk.Window.Gdk_Window);
+      procedure Internal (Widget : System.Address; Window : Gdk.Gdk_Window);
       pragma Import (C, Internal, "gtk_widget_set_window");
    begin
       Internal (Get_Object (Widget), Window);

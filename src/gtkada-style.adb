@@ -489,7 +489,7 @@ package body Gtkada.Style is
       Window_Provider  : Gtk_Widget := Gtk_Widget (Widget);
    begin
       Surface := Gdk.Window.Create_Similar_Surface
-        (Window  => Get_Window (Widget),
+        (Self    => Get_Window (Widget),
          Content => Cairo_Content_Color,
          Width   => Get_Allocated_Width (Widget),
          Height  => Get_Allocated_Height (Widget));

@@ -36,11 +36,12 @@ interfaces = ("Activatable",
 # List of widgets to bind.
 # Contains C type names
 
-binding = ("GdkDevice",
+binding = ("GdkCursor",
+           "GdkDevice",
            "GdkDragContext",
            "GdkRGBA",
            "GdkScreen",
-           #"GdkWindow",
+           "GdkWindow",
 
            "GtkAboutDialog",
            "GtkAccelGroup",
@@ -197,7 +198,6 @@ naming.cname_to_adaname = {
     "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
     "gtk_builder_add_from_file": "Gtk.Builder.Add_From_File",
     "gtk_builder_add_from_string": "Gtk.Builder.Add_From_String",
-#    "gtk_container_add": "Gtk.Container.Add"
 }
 
 # Maps GIR's "name" to a "c:type". This isn't needed for the classes
@@ -261,6 +261,9 @@ naming.type_exceptions = {
                       "Gdk.RGBA.Property_RGBA"),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
+    "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
+    "cairo_pattern_t*":      Proxy("Cairo.Cairo_Pattern"),
+    "cairo_surface_t*":      Proxy("Cairo.Cairo_Surface"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
@@ -330,14 +333,12 @@ naming.type_exceptions = {
     "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkVisual*":         Proxy("Gdk.Visual.Gdk_Visual"),
-    "GdkWindow*":         Proxy("Gdk.Window.Gdk_Window"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
     "GdkBitmap*":         Proxy("Gdk.Bitmap.Gdk_Bitmap"),
     "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
     "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
-    "GdkScreen":          GObject("Gdk.Screen.Gdk_Screen"),
     # ??? The above should not be needed, we should infer it from the Gir.
     # we need it to generate the "Stub" object in Gdk.Device.Get_Position
     "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA", None,
@@ -345,9 +346,11 @@ naming.type_exceptions = {
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),
-    "GdkGravity":         Proxy("Gdk.Window.Gdk_Gravity"),
-    "GdkWindowEdge":      Proxy("Gdk.Window.Gdk_Window_Edge"),
-    "GdkGeometry*":       Proxy("Gdk.Window.Gdk_Geometry"),
-    "GdkWindowHints":     Proxy("Gdk.Window.Gdk_Window_Hints"),
-    "GdkWindowTypeHint":  Proxy("Gdk.Window.Gdk_Window_Type_Hint"),
+    "GdkWindowAttr*":     Proxy("Gdk.Gdk_Window_Attr"),
+
+    # Override type: we do not want to show they derive from GObject
+    "GdkCursor":         Proxy("Gdk.Gdk_Cursor"),
+    "GdkCursor*":        Proxy("Gdk.Gdk_Cursor"),
+    "GdkWindow":         Proxy("Gdk.Gdk_Window"),
+    "GdkWindow*":        Proxy("Gdk.Gdk_Window"),
 }

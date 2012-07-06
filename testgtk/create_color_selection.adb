@@ -35,6 +35,7 @@ with Gtk.Settings;                use Gtk.Settings;
 with Common;                      use Common;
 with Ada.Text_IO;                 use Ada.Text_IO;
 with Gtk.Widget;                  use Gtk.Widget;
+with System;
 
 package body Create_Color_Selection is
 
@@ -53,7 +54,7 @@ package body Create_Color_Selection is
    --  Called when the dialog is destroyed
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen;
+     (Screen : System.Address;
       Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
       N_Colors : Gint);
    pragma Convention (C, On_Palette_Changed);
@@ -98,7 +99,7 @@ package body Create_Color_Selection is
    ------------------------
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen;
+     (Screen : System.Address;
       Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
       N_Colors : Gint)
    is

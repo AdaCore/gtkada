@@ -44,9 +44,9 @@
 --  you can align it (center, left, right) and add padding to it, using
 --  Gtk.Misc.Gtk_Misc methods.
 --
---  Gtk.Image.Gtk_Image is a "no window" widget (has no Gdk.Window.Gdk_Window
---  of its own), so by default does not receive events. If you want to receive
---  events on the image, such as button clicks, place the image inside a
+--  Gtk.Image.Gtk_Image is a "no window" widget (has no Gdk.Gdk_Window of its
+--  own), so by default does not receive events. If you want to receive events
+--  on the image, such as button clicks, place the image inside a
 --  Gtk.Event_Box.Gtk_Event_Box, then connect to the event signals on the event
 --  box.
 --

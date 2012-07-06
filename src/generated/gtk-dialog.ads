@@ -140,6 +140,7 @@
 --  <testgtk>create_dialog.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Screen;    use Gdk.Screen;
 with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;
 with Gtk.Box;       use Gtk.Box;
@@ -366,7 +367,7 @@ package Gtk.Dialog is
    --  Use this function after adding all the buttons to your dialog.
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null)  return Boolean;
+     (Screen : Gdk.Screen.Gdk_Screen := null)  return Boolean;
    --  Returns True if dialogs are expected to use an alternative button order
    --  on the given screen (or current screen if null) . See
    --  Set_Alternative_Button_Order_From_Array for more details about

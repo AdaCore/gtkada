@@ -39,11 +39,11 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
+with Gdk;             use Gdk;
 with Gdk.Display;     use Gdk.Display;
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Gdk.Types;       use Gdk.Types;
 with Gdk.Visual;      use Gdk.Visual;
-with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
@@ -63,22 +63,6 @@ package Gdk.Screen is
    -------------
    -- Methods --
    -------------
-
-   function Get_Active_Window
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window;
-   --  Returns the screen's currently active window.
-   --  On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property on
-   --  the root window, as described in the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink>. If there is no currently currently active window,
-   --  or the window manager does not support the _NET_ACTIVE_WINDOW hint, this
-   --  function returns null.
-   --  On other platforms, this function may return null, depending on whether
-   --  it is implementable on that platform.
-   --  The returned window should be unrefed using g_object_unref when no
-   --  longer needed.
-   --  Since: gtk+ 2.10
 
    function Get_Display
       (Screen : not null access Gdk_Screen_Record)
@@ -127,13 +111,13 @@ package Gdk.Screen is
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
-       Window : Gdk.Window.Gdk_Window) return Gint;
+       Window : Gdk.Gdk_Window) return Gint;
    --  Returns the number of the monitor in which the largest area of the
    --  bounding rectangle of Window resides.
    --  or if Window does not intersect any monitors, a monitor, close to
    --  Window.
    --  Since: gtk+ 2.2
-   --  "window": a Gdk.Window.Gdk_Window
+   --  "window": a Gdk.Gdk_Window
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
@@ -226,32 +210,15 @@ package Gdk.Screen is
    --  to provide appropriate display.
    --  This functionality is not implemented in the Windows backend.
    --  For setting an overall opacity for a top-level window, see
-   --  gdk_window_set_opacity.
+   --  Gdk.Window.Set_Opacity.
    --  alpha channel or null if the capability is not available.
    --  Since: gtk+ 2.8
-
-   function Get_Root_Window
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window;
-   --  Gets the root window of Screen.
-   --  Since: gtk+ 2.2
 
    function Get_System_Visual
       (Screen : not null access Gdk_Screen_Record)
        return Gdk.Visual.Gdk_Visual;
    --  Get the system's default visual for Screen. This is the visual for the
    --  root window of the display. The return value should not be freed.
-   --  Since: gtk+ 2.2
-
-   function Get_Toplevel_Windows
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList;
-   --  Obtains a list of all toplevel windows known to GDK on the screen
-   --  Screen. A toplevel window is a child of the root window (see
-   --  gdk_get_default_root_window).
-   --  The returned list should be freed with g_list_free, but its elements
-   --  need not be freed.
-   --  list of toplevel windows, free with g_list_free
    --  Since: gtk+ 2.2
 
    function Get_Width
@@ -265,25 +232,6 @@ package Gdk.Screen is
    --  this value will not be correct.
    --  Since: gtk+ 2.2
 
-   function Get_Window_Stack
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList;
-   --  Returns a GList of Gdk.Window.Gdk_Window<!-- -->s representing the
-   --  current window stack.
-   --  On X11, this is done by inspecting the _NET_CLIENT_LIST_STACKING
-   --  property on the root window, as described in the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink>. If the window manager does not support the
-   --  _NET_CLIENT_LIST_STACKING hint, this function returns null.
-   --  On other platforms, this function may return null, depending on whether
-   --  it is implementable on that platform.
-   --  The returned list is newly allocated and owns references to the windows
-   --  it contains, so it should be freed using g_list_free and its windows
-   --  unrefed using g_object_unref when no longer needed.
-   --  a list of Gdk.Window.Gdk_Window<!-- -->s for the current window stack,
-   --  or null.
-   --  Since: gtk+ 2.10
-
    function Is_Composited
       (Screen : not null access Gdk_Screen_Record) return Boolean;
    --  Returns whether windows with an RGBA visual can reasonably be expected
@@ -292,17 +240,6 @@ package Gdk.Screen is
    --  compositing Screen.
    --  expected to have their alpha channels drawn correctly on the screen.
    --  Since: gtk+ 2.10
-
-   function List_Visuals
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList;
-   --  Lists the available visuals for the specified Screen. A visual
-   --  describes a hardware image data format. For example, a visual might
-   --  support 24-bit color, or 8-bit color, and might expect pixels to be in a
-   --  certain format.
-   --  Call g_list_free on the return value when you're finished with it.
-   --  a list of visuals; the list must be freed, but not its contents
-   --  Since: gtk+ 2.2
 
    function Make_Display_Name
       (Screen : not null access Gdk_Screen_Record) return UTF8_String;

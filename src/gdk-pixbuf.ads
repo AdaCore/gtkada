@@ -46,7 +46,6 @@ with Cairo;
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
-with Gdk.Cursor;
 with Gdk.Display;
 
 package Gdk.Pixbuf is
@@ -587,7 +586,7 @@ package Gdk.Pixbuf is
    -------------
 
    procedure Gdk_New_From_Pixbuf
-     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+     (Cursor  : out Gdk.Gdk_Cursor;
       Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
       Pixbuf  : Gdk_Pixbuf;
       X       : Glib.Gint;
@@ -603,7 +602,7 @@ package Gdk.Pixbuf is
    --  On the X backend, support for RGBA cursors requires a sufficently new
    --  version of the X Render extension.
 
-   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf;
+   function Get_Image (Cursor : Gdk.Gdk_Cursor) return Gdk_Pixbuf;
    --  Return the image stored in the cursor
 
    --  <doc_ignore>

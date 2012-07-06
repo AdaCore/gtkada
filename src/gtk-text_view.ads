@@ -35,7 +35,6 @@
 
 with Glib.Properties;
 with Gdk.Rectangle;
-with Gdk.Window;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Text_Attributes;
@@ -222,7 +221,7 @@ package Gtk.Text_View is
 
    function Get_Window
      (Text_View : access Gtk_Text_View_Record;
-      Win       : Gtk.Enums.Gtk_Text_Window_Type) return Gdk.Window.Gdk_Window;
+      Win       : Gtk.Enums.Gtk_Text_Window_Type) return Gdk.Gdk_Window;
    --  Retrieve the Gdk_Window corresponding to an area of the text view;
    --  possible windows include the overall widget window, child windows on the
    --  left, right, top, bottom, and the window that displays the text buffer.
@@ -231,7 +230,7 @@ package Gtk.Text_View is
 
    function Get_Window_Type
      (Text_View : access Gtk_Text_View_Record;
-      Window    : Gdk.Window.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type;
+      Window    : Gdk.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type;
    --  Usually used to find out which window an event corresponds to.
    --  If you connect to an event signal on Text_View, this function should be
    --  called on Get_Window (Event) to see which window it was.

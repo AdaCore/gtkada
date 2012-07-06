@@ -30,10 +30,7 @@
 --  <group>Gdk, the low-level API</group>
 
 with Glib; use Glib;
-
-with Gdk.Cursor;
 with Gdk.Event;
-with Gdk.Window;
 
 package Gdk.Main is
 
@@ -61,11 +58,11 @@ package Gdk.Main is
       Gdk_Grab_Frozen);
 
    function Pointer_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
-      Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
-      Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Confine_To   : Gdk.Gdk_Window := null;
+      Cursor       : Gdk.Gdk_Cursor := null;
       Time         : Guint32 := 0) return Gdk_Grab_Status;
    --  Grab the pointer to a specific window.
    --    - Window is the window which will receive the grab
@@ -84,7 +81,7 @@ package Gdk.Main is
    --  Tell wether there is an active pointer grab in effect.
 
    function Keyboard_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Time         : Guint32 := 0) return Gdk_Grab_Status;
    --  Grab the keyboard to a specific window.

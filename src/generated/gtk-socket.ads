@@ -76,7 +76,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;    use Gdk.Window;
+with Gdk;           use Gdk;
 with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;
 with Gtk.Buildable; use Gtk.Buildable;
@@ -128,8 +128,7 @@ package Gtk.Socket is
    --  window before you can make this call.
 
    function Get_Plug_Window
-      (Self : not null access Gtk_Socket_Record)
-       return Gdk.Window.Gdk_Window;
+      (Self : not null access Gtk_Socket_Record) return Gdk.Gdk_Window;
    --  Retrieves the window of the plug. Use this to check if the plug has
    --  been created inside of the socket.
    --  Since: gtk+ 2.14

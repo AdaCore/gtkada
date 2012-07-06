@@ -29,6 +29,7 @@
 --  <group>Configuration and Themes</group>
 
 with Gdk;
+with Gdk.Screen;
 with Glib.Object;
 with Glib.Properties;
 with Glib.Values;
@@ -43,7 +44,8 @@ package Gtk.Settings is
    --  Gets the settings object for the default GDK screen, creating
    --  it if necessary.
 
-   function Get_For_Screen (Screen : Gdk.Gdk_Screen) return Gtk_Settings;
+   function Get_For_Screen
+      (Screen : Gdk.Screen.Gdk_Screen) return Gtk_Settings;
    --  Gets the settings object for Screen, creating it if necessary.
 
    function Get_Type return Glib.GType;

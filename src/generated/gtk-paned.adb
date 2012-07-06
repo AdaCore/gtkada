@@ -168,11 +168,9 @@ package body Gtk.Paned is
    -----------------------
 
    function Get_Handle_Window
-      (Paned : not null access Gtk_Paned_Record)
-       return Gdk.Window.Gdk_Window
+      (Paned : not null access Gtk_Paned_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Paned : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Paned : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_paned_get_handle_window");
    begin
       return Internal (Get_Object (Paned));

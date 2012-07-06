@@ -58,7 +58,7 @@
 --  <testgtk>create_layout.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;      use Gdk.Window;
+with Gdk;             use Gdk;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -100,8 +100,7 @@ package Gtk.Layout is
    -------------
 
    function Get_Bin_Window
-      (Layout : not null access Gtk_Layout_Record)
-       return Gdk.Window.Gdk_Window;
+      (Layout : not null access Gtk_Layout_Record) return Gdk.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
 

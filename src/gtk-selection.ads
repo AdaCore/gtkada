@@ -70,7 +70,7 @@ with GNAT.Strings;
 
 package Gtk.Selection is
 
-   type Selection_Data is new Gdk.C_Proxy;
+   type Selection_Data is new Glib.C_Proxy;
    --  Contents of a selection or a drag-and-drop operation.
    --  This structure can only be created internally by GtkAda. However, you
    --  need to be able to access it to get the selection.
@@ -214,7 +214,7 @@ package Gtk.Selection is
    -- Target_List --
    -----------------
 
-   type Target_List is new Gdk.C_Proxy;
+   type Target_List is new Glib.C_Proxy;
    --  A list of targets.
    --  You can only manipulate this list through the functions below.
 

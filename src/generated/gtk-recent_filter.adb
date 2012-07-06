@@ -35,7 +35,8 @@ package body Gtk.Recent_Filter is
 
    function Convert (R : System.Address) return Gtk.Recent_Filter.Gtk_Recent_Filter is
       Stub : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;begin
-         return Gtk.Recent_Filter.Gtk_Recent_Filter (Glib.Object.Get_User_Data (R, Stub));end Convert;
+         return Gtk.Recent_Filter.Gtk_Recent_Filter (Glib.Object.Get_User_Data (R, Stub));
+      end Convert;
 
    function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Recent_Filter_Func);

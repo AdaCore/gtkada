@@ -114,14 +114,13 @@ package Gtk.Scrolled_Window is
    --  unscrollable child to a viewport, then adding the viewport to the
    --  scrolled window. If a child has native scrolling, use Gtk.Container.Add
    --  instead of this function.
-   --  The viewport scrolls the child by moving its Gdk.Window.Gdk_Window, and
-   --  takes the size of the child to be the size of its toplevel
-   --  Gdk.Window.Gdk_Window. This will be very wrong for most widgets that
-   --  support native scrolling; for example, if you add a widget such as
-   --  Gtk.Tree_View.Gtk_Tree_View with a viewport, the whole widget will
-   --  scroll, including the column headings. Thus, widgets with native
-   --  scrolling support should not be used with the Gtk.Viewport.Gtk_Viewport
-   --  proxy.
+   --  The viewport scrolls the child by moving its Gdk.Gdk_Window, and takes
+   --  the size of the child to be the size of its toplevel Gdk.Gdk_Window.
+   --  This will be very wrong for most widgets that support native scrolling;
+   --  for example, if you add a widget such as Gtk.Tree_View.Gtk_Tree_View
+   --  with a viewport, the whole widget will scroll, including the column
+   --  headings. Thus, widgets with native scrolling support should not be used
+   --  with the Gtk.Viewport.Gtk_Viewport proxy.
    --  A widget supports scrolling natively if it implements the
    --  Gtk.Scrollable.Gtk_Scrollable interface.
    --  "child": the widget you want to scroll

@@ -56,7 +56,7 @@ private
    pragma Import (C, Get_Type, "gdk_keymap_get_type");
    pragma Import (C, To_Unicode, "gdk_keyval_to_unicode");
 
-   type Gdk_Keymap is new C_Proxy;
+   type Gdk_Keymap is new Glib.C_Proxy;
 end Gdk.Keyval;
 
 --  missing:

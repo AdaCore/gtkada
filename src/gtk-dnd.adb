@@ -326,13 +326,13 @@ package body Gtk.Dnd is
 
    procedure Dest_Set_Proxy
      (Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Proxy_Window    : Gdk.Window.Gdk_Window;
+      Proxy_Window    : Gdk.Gdk_Window;
       Protocol        : Drag_Protocol;
       Use_Coordinates : Boolean)
    is
       procedure Internal
         (Widget          : System.Address;
-         Proxy_Window    : Gdk.Window.Gdk_Window;
+         Proxy_Window    : Gdk.Gdk_Window;
          Protocol        : Drag_Protocol;
          Use_Coordinates : Gint);
       pragma Import (C, Internal, "gtk_drag_dest_set_proxy");

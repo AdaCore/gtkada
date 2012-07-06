@@ -32,10 +32,10 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk;                     use Gdk;
 with Gdk.Display;             use Gdk.Display;
 with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
-with Gdk.Window;              use Gdk.Window;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -152,14 +152,14 @@ package Gdk.Device is
 
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
-       Window : Gdk.Window.Gdk_Window;
+       Window : Gdk.Gdk_Window;
        Axes   : in out Gdouble;
        Mask   : in out Gdk.Types.Gdk_Modifier_Type);
    --  Gets the current state of a pointer device relative to Window. As a
    --  slave device coordinates are those of its master pointer, This function
    --  may not be called on devices of type Gdk.Device.Gdk_Device_Type_Slave,
    --  unless there is an ongoing grab on them, see gdk_device_grab.
-   --  "window": a Gdk.Window.Gdk_Window.
+   --  "window": a Gdk.Gdk_Window.
    --  "axes": an array of doubles to store the values of the axes of Device
    --  in, or null.
    --  "mask": location to store the modifiers, or null.
@@ -208,7 +208,7 @@ package Gdk.Device is
      (Self   : not null access Gdk_Device_Record;
       Win_X  : out Gint;
       Win_Y  : out Gint;
-      Window : out Gdk.Window.Gdk_Window);
+      Window : out Gdk.Gdk_Window);
    --  Obtains the window underneath Device, returning the location of the
    --  device in Win_X and Win_Y. Returns null if the window tree under Device
    --  is not known to GDK (for example, belongs to another application).

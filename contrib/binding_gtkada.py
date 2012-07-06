@@ -10,6 +10,8 @@ The syntax of that file is as follows:
 Where the package node is defined as follows:
     <package id="..."       <!-- mandatory, ctype -->
              obsolescent="..." <!--  Whether this package is obsolete -->
+             bindtype="..."  <!-- False if the type should not be bound, only
+                                  its methods -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -166,6 +168,11 @@ class GtkAdaPackage(object):
     def __init__(self, node):
         self.node = node
         self.doc = []
+
+        if node:
+            self.bindtype = node.get("bindtype", "t").lower() != "false"
+        else:
+            self.bindtype = True
 
     def register_types(self, adapkg):
         """If we are going to generate some enumerations in the package, we

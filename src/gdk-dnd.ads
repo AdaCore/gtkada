@@ -26,7 +26,6 @@ with Glib; use Glib;
 with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Types; use Gdk.Types;
 with Gdk.Screen;
-with Gdk.Window;
 with Gtk;
 with Gtk.Selection; use Gtk.Selection;
 
@@ -60,7 +59,7 @@ package Gdk.Dnd is
    function Drag_Get_Selection (Context : Drag_Context) return Gdk_Atom;
 
    function Drag_Begin
-     (Window  : Gdk.Window.Gdk_Window;
+     (Window  : Gdk.Gdk_Window;
       Targets : Target_List) return Drag_Context;
 
    function Drag_Context_Get_Protocol
@@ -70,16 +69,16 @@ package Gdk.Dnd is
 
    procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;
-      Drag_Window : Gdk.Window.Gdk_Window;
+      Drag_Window : Gdk.Gdk_Window;
       Screen      : Gdk.Screen.Gdk_Screen;
       X_Root      : Gint;
       Y_Root      : Gint;
-      Dest_Window : Gdk.Window.Gdk_Window;
+      Dest_Window : Gdk.Gdk_Window;
       Protocol    : Drag_Protocol);
 
    function Drag_Motion
      (Context          : Drag_Context;
-      Dest_Window      : Gdk.Window.Gdk_Window;
+      Dest_Window      : Gdk.Gdk_Window;
       Protocol         : Drag_Protocol;
       X_Root           : Gint;
       Y_Root           : Gint;

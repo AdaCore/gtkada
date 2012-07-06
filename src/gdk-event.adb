@@ -267,7 +267,7 @@ package body Gdk.Event is
       Addr : constant Gdk_Window := Internal (Event);
 
    begin
-      if Addr = Null_Window then
+      if Addr = null then
          raise Invalid_Field;
       end if;
 
@@ -720,11 +720,11 @@ package body Gdk.Event is
    procedure Allocate
      (Event      : out Gdk_Event;
       Event_Type : Gdk_Event_Type;
-      Window     : Gdk.Window.Gdk_Window)
+      Window     : Gdk.Gdk_Window)
    is
       function Internal
         (Event_Type : Gdk_Event_Type;
-         Win        : Gdk.Window.Gdk_Window) return Gdk_Event;
+         Win        : Gdk.Gdk_Window) return Gdk_Event;
       pragma Import (C, Internal, "ada_gdk_event_create");
 
    begin
@@ -1164,7 +1164,7 @@ package body Gdk.Event is
 
    function To_Address (C : Gdk_Event) return System.Address is
    begin
-      return Glib.To_Address (Gdk.C_Proxy (C));
+      return Glib.To_Address (Glib.C_Proxy (C));
    end To_Address;
 
    ----------------

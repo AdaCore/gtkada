@@ -84,7 +84,6 @@ with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.Types;
-with Gdk.Window;
 
 with Gtk.Widget;
 with Gtk.Selection;  use Gtk.Selection;
@@ -152,7 +151,7 @@ package Gtk.Dnd is
 
    procedure Dest_Set_Proxy
      (Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Proxy_Window    : Gdk.Window.Gdk_Window;
+      Proxy_Window    : Gdk.Gdk_Window;
       Protocol        : Drag_Protocol;
       Use_Coordinates : Boolean);
    --  Set this widget as a proxy for drops to another window.

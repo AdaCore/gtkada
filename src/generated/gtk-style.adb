@@ -60,7 +60,7 @@ package body Gtk.Style is
    procedure Apply_Default_Background
       (Style      : not null access Gtk_Style_Record;
        Cr         : Cairo.Cairo_Context;
-       Window     : Gdk.Window.Gdk_Window;
+       Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type;
        X          : Gint;
        Y          : Gint;
@@ -70,7 +70,7 @@ package body Gtk.Style is
       procedure Internal
          (Style      : System.Address;
           Cr         : Cairo.Cairo_Context;
-          Window     : Gdk.Window.Gdk_Window;
+          Window     : Gdk.Gdk_Window;
           State_Type : Gtk.Enums.Gtk_State_Type;
           X          : Gint;
           Y          : Gint;
@@ -87,11 +87,11 @@ package body Gtk.Style is
 
    function Attach
       (Style  : not null access Gtk_Style_Record;
-       Window : Gdk.Window.Gdk_Window) return Gtk_Style
+       Window : Gdk.Gdk_Window) return Gtk_Style
    is
       function Internal
          (Style  : System.Address;
-          Window : Gdk.Window.Gdk_Window) return System.Address;
+          Window : Gdk.Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gtk_style_attach");
       Stub_Gtk_Style : Gtk_Style_Record;
    begin
@@ -187,12 +187,12 @@ package body Gtk.Style is
 
    procedure Set_Background
       (Style      : not null access Gtk_Style_Record;
-       Window     : Gdk.Window.Gdk_Window;
+       Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type)
    is
       procedure Internal
          (Style      : System.Address;
-          Window     : Gdk.Window.Gdk_Window;
+          Window     : Gdk.Gdk_Window;
           State_Type : Gtk.Enums.Gtk_State_Type);
       pragma Import (C, Internal, "gtk_style_set_background");
    begin

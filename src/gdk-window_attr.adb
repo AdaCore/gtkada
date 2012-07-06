@@ -56,7 +56,7 @@ package body Gdk.Window_Attr is
       Visual            : Gdk.Visual.Gdk_Visual := null;
       Window_Type       : Gdk.Window.Gdk_Window_Type :=
         Gdk.Window.Window_Root;
-      Cursor            : Gdk.Cursor.Gdk_Cursor := null;
+      Cursor            : Gdk.Gdk_Cursor := null;
       Wmclass_Name      : String := "";
       Wmclass_Class     : String := "";
       Override_Redirect : Boolean := True)

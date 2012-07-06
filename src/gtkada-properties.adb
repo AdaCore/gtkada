@@ -21,7 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gdk;                      use Gdk;
 with Gdk.Color;                use Gdk.Color;
+with Gdk.Display;              use Gdk.Display;
 with Gdk.Event;                use Gdk.Event;
 with Gdk.Main;                 use Gdk.Main;
 with Gdk.Types;                use Gdk.Types;
@@ -45,6 +47,7 @@ with Gtk.Event_Box;            use Gtk.Event_Box;
 with Gtk.Label;                use Gtk.Label;
 with Gtk.GEntry;               use Gtk.GEntry;
 with Gtk.Handlers;             use Gtk.Handlers;
+with Gtk.Main;
 with Gtk.Notebook;             use Gtk.Notebook;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
 with Gtk.Spin_Button;          use Gtk.Spin_Button;
@@ -1171,11 +1174,18 @@ package body Gtkada.Properties is
       Mask        : Gdk_Modifier_Type;
       Win_Result  : Gdk_Window;
    begin
-      Window_At_Pointer (X, Y, Window => Win);
+      Gdk.Display.Get_Window_At_Pointer
+         (Gdk.Display.Get_Default, X, Y, Win => Win);
       if Win /= null then
          Tmp := Gtk_Widget (Get_User_Data (Win));
          if Tmp /= null then
-            Get_Pointer (Win, X, Y, Mask, Win_Result);
+            Get_Device_Position
+               (Win,
+                Device => Gtk.Main.Get_Current_Event_Device,
+                X      => X,
+                Y      => Y,
+                Mask   => Mask,
+                Window => Win_Result);
             Result := Widget_At (Tmp, X, Y);
          end if;
       end if;

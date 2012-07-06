@@ -24,7 +24,6 @@
 
 --  <group>Gdk, the low-level API</group>
 
-with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Visual;
 with Gdk.Window;
@@ -55,7 +54,7 @@ package Gdk.Window_Attr is
       Visual            : Gdk.Visual.Gdk_Visual := null;
       Window_Type       : Gdk.Window.Gdk_Window_Type :=
         Gdk.Window.Window_Root;
-      Cursor            : Gdk.Cursor.Gdk_Cursor := null;
+      Cursor            : Gdk.Gdk_Cursor := null;
       Wmclass_Name      : String := "";
       Wmclass_Class     : String := "";
       Override_Redirect : Boolean := True);
@@ -125,11 +124,11 @@ package Gdk.Window_Attr is
 
    procedure Set_Cursor
      (Window_Attr : Gdk_Window_Attr;
-      Cursor      : Gdk.Cursor.Gdk_Cursor);
+      Cursor      : Gdk.Gdk_Cursor);
 
    function Get_Cursor
      (Window_Attr : Gdk_Window_Attr)
-      return Gdk.Cursor.Gdk_Cursor;
+      return Gdk.Gdk_Cursor;
 
    procedure Set_Wmclass_Name
      (Window_Attr  : Gdk_Window_Attr;

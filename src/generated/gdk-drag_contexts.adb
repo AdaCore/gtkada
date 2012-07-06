@@ -49,10 +49,9 @@ package body Gdk.Drag_Contexts is
    ---------------------
 
    function Get_Dest_Window
-      (Self : not null access Drag_Context_Record)
-       return Gdk.Window.Gdk_Window
+      (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Self : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_drag_context_get_dest_window");
    begin
       return Internal (Get_Object (Self));
@@ -104,10 +103,9 @@ package body Gdk.Drag_Contexts is
    -----------------------
 
    function Get_Source_Window
-      (Self : not null access Drag_Context_Record)
-       return Gdk.Window.Gdk_Window
+      (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window
    is
-      function Internal (Self : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Self : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_drag_context_get_source_window");
    begin
       return Internal (Get_Object (Self));

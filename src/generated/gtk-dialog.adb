@@ -44,12 +44,12 @@ package body Gtk.Dialog is
    end Set_Alternative_Button_Order_From_Array;
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null) return Boolean
+     (Screen : Gdk.Screen.Gdk_Screen := null) return Boolean
    is
-      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      function Internal (Screen : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
    begin
-      return Boolean'Val (Internal (Screen));
+      return Boolean'Val (Internal (Get_Object (Screen)));
    end Gtk_Alternative_Dialog_Button_Order;
 
    package Type_Conversion_Gtk_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator

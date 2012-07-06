@@ -227,6 +227,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with Cairo.Region;            use Cairo.Region;
+with Gdk;                     use Gdk;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Device;              use Gdk.Device;
 with Gdk.Display;             use Gdk.Display;
@@ -238,7 +239,6 @@ with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Gdk.Visual;              use Gdk.Visual;
-with Gdk.Window;              use Gdk.Window;
 with Glib;                    use Glib;
 with Glib.GSlist;             use Glib.GSlist;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -584,7 +584,7 @@ package Gtk.Widget is
 
    procedure Drag_Dest_Set_Proxy
       (Widget          : not null access Gtk_Widget_Record;
-       Proxy_Window    : Gdk.Window.Gdk_Window;
+       Proxy_Window    : Gdk.Gdk_Window;
        Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
        Use_Coordinates : Boolean);
    --  Sets this widget as a proxy for drops to another window.
@@ -705,8 +705,8 @@ package Gtk.Widget is
    procedure Error_Bell (Widget : not null access Gtk_Widget_Record);
    --  Notifies the user about an input-related error on this widget. If the
    --  Gtk.Settings.Gtk_Settings:gtk-error-bell setting is True, it calls
-   --  gdk_window_beep, otherwise it does nothing.
-   --  Note that the effect of gdk_window_beep can be configured in many ways,
+   --  Gdk.Window.Beep, otherwise it does nothing.
+   --  Note that the effect of Gdk.Window.Beep can be configured in many ways,
    --  depending on the windowing backend and the desktop environment or window
    --  manager that is used.
    --  Since: gtk+ 2.12
@@ -719,7 +719,7 @@ package Gtk.Widget is
    --  function to do so). If you want to synthesize an event though, don't use
    --  this function; instead, use Gtk.Main.Main_Do_Event so the event will
    --  behave as if it were in the event queue. Don't synthesize expose events;
-   --  instead, use gdk_window_invalidate_rect to invalidate a region of the
+   --  instead, use Gdk.Window.Invalidate_Rect to invalidate a region of the
    --  window.
    --  the event was handled)
    --  "event": a Gdk_Event
@@ -915,9 +915,9 @@ package Gtk.Widget is
        Enabled : Boolean);
    --  Enables or disables a Gdk.Device.Gdk_Device to interact with Widget and
    --  all its children.
-   --  It does so by descending through the Gdk.Window.Gdk_Window hierarchy
-   --  and enabling the same mask that is has for core events (i.e. the one
-   --  that gdk_window_get_events returns).
+   --  It does so by descending through the Gdk.Gdk_Window hierarchy and
+   --  enabling the same mask that is has for core events (i.e. the one that
+   --  Gdk.Window.Get_Events returns).
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
    --  "enabled": whether to enable the device
@@ -994,10 +994,10 @@ package Gtk.Widget is
        Double_Buffered : Boolean);
    --  Widgets are double buffered by default; you can use this function to
    --  turn off the buffering. "Double buffered" simply means that
-   --  gdk_window_begin_paint_region and gdk_window_end_paint are called
+   --  Gdk.Window.Begin_Paint_Region and Gdk.Window.End_Paint are called
    --  automatically around expose events sent to the widget.
    --  gdk_window_begin_paint diverts all drawing to a widget's window to an
-   --  offscreen buffer, and gdk_window_end_paint draws the buffer to the
+   --  offscreen buffer, and Gdk.Window.End_Paint draws the buffer to the
    --  screen. The result is that users see the window update in one smooth
    --  step, and don't see individual graphics primitives being rendered.
    --  In very simple terms, double buffered widgets don't flicker, so you
@@ -1057,20 +1057,20 @@ package Gtk.Widget is
 
    function Get_Has_Window
       (Widget : not null access Gtk_Widget_Record) return Boolean;
-   --  Determines whether Widget has a Gdk.Window.Gdk_Window of its own. See
+   --  Determines whether Widget has a Gdk.Gdk_Window of its own. See
    --  Gtk.Widget.Set_Has_Window.
    --  Since: gtk+ 2.18
 
    procedure Set_Has_Window
       (Widget     : not null access Gtk_Widget_Record;
        Has_Window : Boolean);
-   --  Specifies whether Widget has a Gdk.Window.Gdk_Window of its own. Note
-   --  that all realized widgets have a non-null "window" pointer
-   --  (gtk_widget_get_window never returns a null window when a widget is
-   --  realized), but for many of them it's actually the Gdk.Window.Gdk_Window
-   --  of one of its parent widgets. Widgets that do not create a %window for
-   --  themselves in Gtk.Widget.Gtk_Widget::realize must announce this by
-   --  calling this function with Has_Window = False.
+   --  Specifies whether Widget has a Gdk.Gdk_Window of its own. Note that all
+   --  realized widgets have a non-null "window" pointer (gtk_widget_get_window
+   --  never returns a null window when a widget is realized), but for many of
+   --  them it's actually the Gdk.Gdk_Window of one of its parent widgets.
+   --  Widgets that do not create a %window for themselves in
+   --  Gtk.Widget.Gtk_Widget::realize must announce this by calling this
+   --  function with Has_Window = False.
    --  This function should only be called by widget implementations, and they
    --  should call it in their init function.
    --  Since: gtk+ 2.18
@@ -1271,13 +1271,12 @@ package Gtk.Widget is
    --  "parent": parent container
 
    function Get_Parent_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window;
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window;
    --  Gets Widget's parent window.
 
    procedure Set_Parent_Window
       (Widget        : not null access Gtk_Widget_Record;
-       Parent_Window : Gdk.Window.Gdk_Window);
+       Parent_Window : Gdk.Gdk_Window);
    --  Sets a non default parent window for Widget.
    --  For GtkWindow classes, setting a Parent_Window effects whether the
    --  window is a toplevel window or can be embedded into other widgets.
@@ -1451,15 +1450,14 @@ package Gtk.Widget is
    --  "requisition": a pointer to a Gtk.Widget.Gtk_Requisition to copy to
 
    function Get_Root_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window;
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window;
    --  Get the root window where this widget is located. This function can
    --  only be called after the widget has been added to a widget hierarchy
    --  with Gtk.Window.Gtk_Window at the top.
    --  The root window is useful for such purposes as creating a popup
-   --  Gdk.Window.Gdk_Window associated with the window. In general, you should
-   --  only create display specific resources when a widget has been realized,
-   --  and you should free those resources when the widget is unrealized.
+   --  Gdk.Gdk_Window associated with the window. In general, you should only
+   --  create display specific resources when a widget has been realized, and
+   --  you should free those resources when the widget is unrealized.
    --  Since: gtk+ 2.2
 
    function Get_Screen
@@ -1623,9 +1621,9 @@ package Gtk.Widget is
        Support_Multidevice : Boolean);
    --  Enables or disables multiple pointer awareness. If this setting is
    --  True, Widget will start receiving multiple, per device enter/leave
-   --  events. Note that if custom Gdk.Window.Gdk_Window<!-- -->s are created
-   --  in Gtk.Widget.Gtk_Widget::realize, gdk_window_set_support_multidevice
-   --  will have to be called manually on them.
+   --  events. Note that if custom Gdk.Gdk_Window<!-- -->s are created in
+   --  Gtk.Widget.Gtk_Widget::realize, Gdk.Window.Set_Support_Multidevice will
+   --  have to be called manually on them.
    --  Since: gtk+ 3.0
    --  "support_multidevice": True to support input from multiple devices.
 
@@ -1779,25 +1777,24 @@ package Gtk.Widget is
    --  "visual": visual to be used or null to unset a previous one
 
    function Get_Window
-      (Widget : not null access Gtk_Widget_Record)
-       return Gdk.Window.Gdk_Window;
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Window;
    --  Returns the widget's window if it is realized, null otherwise
    --  Since: gtk+ 2.14
 
    procedure Set_Window
       (Widget : not null access Gtk_Widget_Record;
-       Window : Gdk.Window.Gdk_Window);
+       Window : Gdk.Gdk_Window);
    --  Sets a widget's window. This function should only be used in a widget's
    --  Gtk.Widget.Gtk_Widget::realize implementation. The %window passed is
    --  usually either new window created with gdk_window_new, or the window of
    --  its parent widget as returned by Gtk.Widget.Get_Parent_Window.
-   --  Widgets must indicate whether they will create their own
-   --  Gdk.Window.Gdk_Window by calling Gtk.Widget.Set_Has_Window. This is
-   --  usually done in the widget's init function.
+   --  Widgets must indicate whether they will create their own Gdk.Gdk_Window
+   --  by calling Gtk.Widget.Set_Has_Window. This is usually done in the
+   --  widget's init function.
    --  Note:
    --  This function does not add any reference to Window.
    --  Since: gtk+ 2.18
-   --  "window": a Gdk.Window.Gdk_Window
+   --  "window": a Gdk.Gdk_Window
 
    procedure Grab_Add (Widget : not null access Gtk_Widget_Record);
    --  Makes Widget the current grabbed widget.
@@ -1907,7 +1904,7 @@ package Gtk.Widget is
        Region : Cairo.Region.Cairo_Region);
    --  Sets an input shape for this widget's GDK window. This allows for
    --  windows which react to mouse click in a nonrectangular region, see
-   --  gdk_window_input_shape_combine_region for more information.
+   --  Gdk.Window.Input_Shape_Combine_Region for more information.
    --  Since: gtk+ 3.0
    --  "region": shape to be added, or null to remove an existing shape
 
@@ -1937,7 +1934,7 @@ package Gtk.Widget is
    --  Widget's screen.
    --  Please note that the semantics of this call will change in the future
    --  if used on a widget that has a composited window in its hierarchy (as
-   --  set by gdk_window_set_composited).
+   --  set by Gdk.Window.Set_Composited).
    --  channel being drawn correctly.
    --  Since: gtk+ 2.10
 
@@ -2248,7 +2245,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Region : Cairo.Region.Cairo_Region);
    --  Invalidates the rectangular area of Widget defined by Region by calling
-   --  gdk_window_invalidate_region on the widget's window and all its child
+   --  Gdk.Window.Invalidate_Region on the widget's window and all its child
    --  windows. Once the main loop becomes idle (after the current batch of
    --  events has been processed, roughly), the window will receive expose
    --  events for the union of all regions that have been invalidated.
@@ -2399,9 +2396,9 @@ package Gtk.Widget is
    --  time it is used is when propagating an expose event to a child NO_WINDOW
    --  widget, and that is normally done using Gtk.Container.Propagate_Draw.
    --  If you want to force an area of a window to be redrawn, use
-   --  gdk_window_invalidate_rect or gdk_window_invalidate_region. To cause the
+   --  Gdk.Window.Invalidate_Rect or Gdk.Window.Invalidate_Region. To cause the
    --  redraw to be done immediately, follow that call with a call to
-   --  gdk_window_process_updates.
+   --  Gdk.Window.Process_Updates.
    --  the event was handled)
    --  "event": a expose Gdk_Event
 
@@ -2474,7 +2471,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Region : Cairo.Region.Cairo_Region);
    --  Sets a shape for this widget's GDK window. This allows for transparent
-   --  windows etc., see gdk_window_shape_combine_region for more information.
+   --  windows etc., see Gdk.Window.Shape_Combine_Region for more information.
    --  Since: gtk+ 3.0
    --  "region": shape to be added, or null to remove an existing shape
 
@@ -2515,7 +2512,7 @@ package Gtk.Widget is
    procedure Style_Attach (Widget : not null access Gtk_Widget_Record);
    pragma Obsolescent (Style_Attach);
    --  This function attaches the widget's Gtk.Style.Gtk_Style to the widget's
-   --  Gdk.Window.Gdk_Window. It is a replacement for
+   --  Gdk.Gdk_Window. It is a replacement for
    --    widget->style = gtk_style_attach (widget->style, widget->window);
    --  and should only ever be called in a derived widget's "realize"
    --  implementation which does not chain up to its parent class' "realize"
@@ -2929,8 +2926,8 @@ package Gtk.Widget is
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_BUTTON_PRESS_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -2946,8 +2943,8 @@ package Gtk.Widget is
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_BUTTON_RELEASE_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_BUTTON_RELEASE_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -2990,9 +2987,9 @@ package Gtk.Widget is
    --  The ::configure-event signal will be emitted when the size, position or
    --  stacking of the Widget's window has changed.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this
-   --  mask automatically for all new windows.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
+   --  automatically for all new windows.
    --
    --  False to propagate the event further.
    --
@@ -3037,14 +3034,14 @@ package Gtk.Widget is
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event) return Boolean;
    --    --  "event": the event which triggered this signal
-   --  The ::destroy-event signal is emitted when a Gdk.Window.Gdk_Window is
+   --  The ::destroy-event signal is emitted when a Gdk.Gdk_Window is
    --  destroyed. You rarely get this signal, because most widgets disconnect
    --  themselves from their window before they destroy it, so no widget owns
    --  the window at destroy time.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this
-   --  mask automatically for all new windows.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
+   --  automatically for all new windows.
    --
    --  False to propagate the event further.
    --
@@ -3295,8 +3292,8 @@ package Gtk.Widget is
    --  The ::enter-notify-event will be emitted when the pointer enters the
    --  Widget's window.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_ENTER_NOTIFY_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_ENTER_NOTIFY_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3350,8 +3347,8 @@ package Gtk.Widget is
    --  The ::focus-in-event signal will be emitted when the keyboard focus
    --  enters the Widget's window.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_FOCUS_CHANGE_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_FOCUS_CHANGE_MASK mask.
    --
    --  False to propagate the event further.
    --
@@ -3365,8 +3362,8 @@ package Gtk.Widget is
    --  The ::focus-out-event signal will be emitted when the keyboard focus
    --  leaves the Widget's window.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_FOCUS_CHANGE_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_FOCUS_CHANGE_MASK mask.
    --
    --  False to propagate the event further.
    --
@@ -3427,8 +3424,8 @@ package Gtk.Widget is
    --  signal emission will reoccur at the key-repeat rate when the key is kept
    --  pressed.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_KEY_PRESS_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_KEY_PRESS_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3443,8 +3440,8 @@ package Gtk.Widget is
    --    --  "event": the Gdk_Event_Key which triggered this signal.
    --  The ::key-release-event signal is emitted when a key is released.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_KEY_RELEASE_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_KEY_RELEASE_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3473,8 +3470,8 @@ package Gtk.Widget is
    --  The ::leave-notify-event will be emitted when the pointer leaves the
    --  Widget's window.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_LEAVE_NOTIFY_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_LEAVE_NOTIFY_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3493,9 +3490,9 @@ package Gtk.Widget is
    --  The ::map-event signal will be emitted when the Widget's window is
    --  mapped. A window is mapped when it becomes visible on the screen.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this
-   --  mask automatically for all new windows.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
+   --  automatically for all new windows.
    --
    --  False to propagate the event further.
    --
@@ -3512,10 +3509,10 @@ package Gtk.Widget is
    --        Event : Gdk.Event_Motion) return Boolean;
    --    --  "event": the Gdk_Event_Motion which triggered this signal.
    --  The ::motion-notify-event signal is emitted when the pointer moves over
-   --  the widget's Gdk.Window.Gdk_Window.
+   --  the widget's Gdk.Gdk_Window.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_POINTER_MOTION_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_POINTER_MOTION_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3558,8 +3555,8 @@ package Gtk.Widget is
    --  The ::property-notify-event signal will be emitted when a property on
    --  the Widget's window has been changed or deleted.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_PROPERTY_CHANGE_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_PROPERTY_CHANGE_MASK mask.
    --
    --  False to propagate the event further.
    --
@@ -3570,8 +3567,8 @@ package Gtk.Widget is
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Proximity) return Boolean;
    --    --  "event": the Gdk_Event_Proximity which triggered this signal.
-   --  To receive this signal the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_PROXIMITY_IN_MASK mask.
+   --  To receive this signal the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_PROXIMITY_IN_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3584,8 +3581,8 @@ package Gtk.Widget is
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Proximity) return Boolean;
    --    --  "event": the Gdk_Event_Proximity which triggered this signal.
-   --  To receive this signal the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_PROXIMITY_OUT_MASK mask.
+   --  To receive this signal the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_PROXIMITY_OUT_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3643,8 +3640,8 @@ package Gtk.Widget is
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_BUTTON_PRESS_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
    --
@@ -3762,9 +3759,9 @@ package Gtk.Widget is
    --  The ::unmap-event signal will be emitted when the Widget's window is
    --  unmapped. A window is unmapped when it becomes invisible on the screen.
    --
-   --  To receive this signal, the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this
-   --  mask automatically for all new windows.
+   --  To receive this signal, the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
+   --  automatically for all new windows.
    --
    --  False to propagate the event further.
    --
@@ -3781,8 +3778,8 @@ package Gtk.Widget is
    --  The ::visibility-notify-event will be emitted when the Widget's window
    --  is obscured or unobscured.
    --
-   --  To receive this signal the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_VISIBILITY_NOTIFY_MASK mask.
+   --  To receive this signal the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_VISIBILITY_NOTIFY_MASK mask.
    --
    --  False to propagate the event further.
    --
@@ -3796,9 +3793,9 @@ package Gtk.Widget is
    --  The ::window-state-event will be emitted when the state of the toplevel
    --  window associated to the Widget changes.
    --
-   --  To receive this signal the Gdk.Window.Gdk_Window associated to the
-   --  widget needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this
-   --  mask automatically for all new windows.
+   --  To receive this signal the Gdk.Gdk_Window associated to the widget
+   --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
+   --  automatically for all new windows.
    --
    --  event. False to propagate the event further.
    --

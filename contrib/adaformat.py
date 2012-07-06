@@ -613,7 +613,15 @@ class AdaNaming(object):
 
     def ctype_from_girname(self, girname):
         """Return the C type corresponding to a GIR name"""
-        return self.girname_to_ctype.get(girname, "Gtk%s" % girname)
+
+        if not girname:
+            return ""
+        elif girname.startswith("Gdk") or girname.startswith("Gtk"):
+            default = girname
+        else:
+            default = "Gtk%s" % girname
+
+        return self.girname_to_ctype.get(girname, default)
 
     def adamethod_name(self, cname, warning_if_not_found=True):
         """Return the ada name corresponding to the C method's name"""
@@ -1584,11 +1592,12 @@ class Section(object):
                 name = base_name(s.name).replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
+                        .replace("Gdk_New", "") \
                         .replace("Initialize", "") \
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
 
-                if base_name(s.name) == "Gtk_New":
+                if base_name(s.name) in ("Gtk_New", "Gdk_New"):
                     # Always create a new group for Gtk_New, since they all
                     # have different parameters. But we still want to group
                     # Gtk_New and Initialize.

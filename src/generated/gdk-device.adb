@@ -32,21 +32,19 @@ package body Gdk.Device is
      (Self   : not null access Gdk_Device_Record;
       Win_X  : out Gint;
       Win_Y  : out Gint;
-      Window : out Gdk.Window.Gdk_Window)
+      Window : out Gdk.Gdk_Window)
    is
       function Internal
         (Self      : System.Address;
          Acc_Win_X : access Gint;
-         Acc_Win_Y : access Gint) return Gdk.Window.Gdk_Window;
+         Acc_Win_Y : access Gint) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_device_get_window_at_position");
       Acc_Win_X  : aliased Gint;
       Acc_Win_Y  : aliased Gint;
-      Tmp_Return : Gdk.Window.Gdk_Window;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
+      Window := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
       Win_X := Acc_Win_X;
       Win_Y := Acc_Win_Y;
-      Window :=  Tmp_Return;
    end Get_Window_At_Position;
 
    package Type_Conversion_Gdk_Device is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -196,13 +194,13 @@ package body Gdk.Device is
 
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
-       Window : Gdk.Window.Gdk_Window;
+       Window : Gdk.Gdk_Window;
        Axes   : in out Gdouble;
        Mask   : in out Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
          (Self   : System.Address;
-          Window : Gdk.Window.Gdk_Window;
+          Window : Gdk.Gdk_Window;
           Axes   : in out Gdouble;
           Mask   : in out Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gdk_device_get_state");

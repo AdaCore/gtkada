@@ -32,7 +32,6 @@
 --  <c_version>2.8.17</c_version>
 
 with Glib;        use Glib;
-with Gdk;         use Gdk;
 
 pragma Warnings (Off);
 with Glib.Object; use Glib.Object;
@@ -64,7 +63,7 @@ package Gtk is
    --  Note: Gtk_Type_* constants have been replaced by GType_* constants
    --  in Glib.
 
-   type Gtk_Notebook_Page is new Gdk.C_Proxy;
+   type Gtk_Notebook_Page is new Glib.C_Proxy;
    --  A page of the notebook.
    --  It can contain a single child, and is also associated with a tab
    --  label used to select that page in the notebook.

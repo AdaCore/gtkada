@@ -366,7 +366,8 @@ package body Gtk.Paper_Size is
 
    function Convert (R : System.Address) return Gtk.Paper_Size.Gtk_Paper_Size is
    begin
-      return From_Object(R);end Convert;
+      return From_Object(R);
+   end Convert;
 
    -----------------
    -- Get_Default --

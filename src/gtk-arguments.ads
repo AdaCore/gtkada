@@ -73,7 +73,7 @@ package Gtk.Arguments is
    function To_Notebook_Page
      (Args : Gtk_Args; Num : Positive) return Gtk_Notebook_Page;
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
-   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
+   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Glib.C_Proxy;
    function To_Object
      (Args : Gtk_Args; Num : Positive) return Glib.Object.GObject;
    --  This function can return null, if the C object was not created.

@@ -67,11 +67,9 @@ package body Gtk.Layout is
    --------------------
 
    function Get_Bin_Window
-      (Layout : not null access Gtk_Layout_Record)
-       return Gdk.Window.Gdk_Window
+      (Layout : not null access Gtk_Layout_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Layout : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Layout : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_layout_get_bin_window");
    begin
       return Internal (Get_Object (Layout));

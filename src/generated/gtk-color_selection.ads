@@ -188,7 +188,7 @@ package Gtk.Color_Selection is
    ----------------------
 
    type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
-     (Screen   : Gdk.Gdk_Screen;
+     (Screen   : System.Address;--  Convert to Gdk_Screen with Get_User_Data
       Colors   : Gdk.Color.Gdk_Color_Unconstrained_Array;
       N_Colors : Gint);
    pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);

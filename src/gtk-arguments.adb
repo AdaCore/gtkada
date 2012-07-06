@@ -71,7 +71,7 @@ package body Gtk.Arguments is
    -- To_C_Proxy --
    ----------------
 
-   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy is
+   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Glib.C_Proxy is
    begin
       return Get_Proxy (Nth (Args, Guint (Num)));
    end To_C_Proxy;

@@ -25,6 +25,7 @@ with Unchecked_Conversion;
 
 with Cairo;            use Cairo;
 with Glib;             use Glib;
+with Gdk;              use Gdk;
 with Gdk.Cursor;       use Gdk.Cursor;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Window;       use Gdk.Window;
@@ -108,7 +109,7 @@ package body Create_Cursors is
 
       C      : Gint := Get_Value_As_Int (Spinner);
       Window : constant Gdk_Window := Get_Window (Widget);
-      Cursor : Gdk_Cursor := Null_Cursor;
+      Cursor : Gdk_Cursor := null;
    begin
       C := C mod 154;
       Gdk_New (Cursor, To_Cursor (C));

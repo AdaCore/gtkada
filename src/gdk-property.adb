@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Glib.Object;  use Glib.Object;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 
@@ -80,7 +81,7 @@ package body Gdk.Property is
    ------------
 
    procedure Change
-     (Window    : Gdk.Window.Gdk_Window;
+     (Window    : Gdk.Gdk_Window;
       Property  : Gdk.Types.Gdk_Atom;
       The_Type  : Gdk.Types.Gdk_Atom;
       Format    : Gint;
@@ -88,7 +89,7 @@ package body Gdk.Property is
       Data      : Guchar_Array)
    is
       procedure Internal
-        (Window    : Gdk.Window.Gdk_Window;
+        (Window    : Gdk.Gdk_Window;
          Property  : Gdk.Types.Gdk_Atom;
          The_Type  : Gdk.Types.Gdk_Atom;
          Format    : Gint;
@@ -98,7 +99,8 @@ package body Gdk.Property is
       pragma Import (C, Internal, "gdk_property_change");
 
    begin
-      Internal (Window, Property, The_Type, Format, Mode, Data, Data'Length);
+      Internal (Window, Property, The_Type, Format,
+                Mode, Data, Data'Length);
    end Change;
 
    ---------
@@ -106,7 +108,7 @@ package body Gdk.Property is
    ---------
 
    procedure Get
-     (Window               : Gdk.Window.Gdk_Window;
+     (Window               : Gdk.Gdk_Window;
       Property             : Gdk.Types.Gdk_Atom;
       The_Type             : Gdk.Types.Gdk_Atom;
       Offset               : Gulong;
@@ -118,7 +120,7 @@ package body Gdk.Property is
       Success              : out Boolean)
    is
       procedure Internal
-        (Window               : Gdk.Window.Gdk_Window;
+        (Window               : Gdk_Window;
          Property             : Gdk.Types.Gdk_Atom;
          The_Type             : Gdk.Types.Gdk_Atom;
          Offset               : Gulong;

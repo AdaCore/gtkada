@@ -420,12 +420,12 @@ package body Gtk.Text_View is
 
    function Get_Window
      (Text_View : access Gtk_Text_View_Record;
-      Win       : Gtk.Enums.Gtk_Text_Window_Type) return Gdk.Window.Gdk_Window
+      Win       : Gtk.Enums.Gtk_Text_Window_Type) return Gdk.Gdk_Window
    is
       function Internal
         (Text_View : System.Address;
          Win       : Gtk.Enums.Gtk_Text_Window_Type)
-         return Gdk.Window.Gdk_Window;
+         return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_text_view_get_window");
 
    begin
@@ -438,11 +438,11 @@ package body Gtk.Text_View is
 
    function Get_Window_Type
      (Text_View : access Gtk_Text_View_Record;
-      Window    : Gdk.Window.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type
+      Window    : Gdk.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type
    is
       function Internal
         (Text_View : System.Address;
-         Window    : Gdk.Window.Gdk_Window) return Gint;
+         Window    : Gdk.Gdk_Window) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_window_type");
 
    begin

@@ -70,12 +70,12 @@ package body Gdk.Main is
    -------------------
 
    function Keyboard_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
-         (Window       : Gdk.Window.Gdk_Window;
+         (Window       : Gdk_Window;
           Owner_Events : Gint;
           Time         : Guint32) return Gint;
       pragma Import (C, Internal, "gdk_keyboard_grab");
@@ -102,19 +102,19 @@ package body Gdk.Main is
    ------------------
 
    function Pointer_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
-      Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
-      Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Confine_To   : Gdk.Gdk_Window := null;
+      Cursor       : Gdk.Gdk_Cursor := null;
       Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
-        (Window       : Gdk.Window.Gdk_Window;
+        (Window       : Gdk_Window;
          Owner_Events : Gint;
          Event_Mask   : Gint;
-         Confine_To   : Gdk.Window.Gdk_Window;
-         Cursor       : Gdk.Cursor.Gdk_Cursor;
+         Confine_To   : Gdk_Window;
+         Cursor       : Gdk_Cursor;
          Time         : Guint32) return Gint;
       pragma Import (C, Internal, "gdk_pointer_grab");
 

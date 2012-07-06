@@ -24,6 +24,7 @@
 with Glib.Values;          use Glib.Values;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
+with Gdk.Screen;           use Gdk.Screen;
 with Glib.Type_Conversion_Hooks;
 
 package body Gtk.Settings is
@@ -48,12 +49,13 @@ package body Gtk.Settings is
    -- Get_For_Screen --
    --------------------
 
-   function Get_For_Screen (Screen : Gdk.Gdk_Screen) return Gtk_Settings is
-      function Internal (Screen : Gdk.Gdk_Screen) return System.Address;
+   function Get_For_Screen (Screen : Gdk_Screen) return Gtk_Settings is
+      function Internal (Screen : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_settings_get_for_screen");
       Stub : Gtk_Settings_Record;
    begin
-      return Gtk_Settings (Get_User_Data (Internal (Screen), Stub));
+      return Gtk_Settings
+         (Get_User_Data (Internal (Get_Object (Screen)), Stub));
    end Get_For_Screen;
 
    -------------------------

@@ -104,21 +104,6 @@ package body Gdk.Screen is
      (Get_Type'Access, Gdk_Screen_Record);
    pragma Unreferenced (Type_Conversion_Gdk_Screen);
 
-   -----------------------
-   -- Get_Active_Window --
-   -----------------------
-
-   function Get_Active_Window
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window
-   is
-      function Internal
-         (Screen : System.Address) return Gdk.Window.Gdk_Window;
-      pragma Import (C, Internal, "gdk_screen_get_active_window");
-   begin
-      return Internal (Get_Object (Screen));
-   end Get_Active_Window;
-
    -----------------
    -- Get_Display --
    -----------------
@@ -199,11 +184,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
-       Window : Gdk.Window.Gdk_Window) return Gint
+       Window : Gdk.Gdk_Window) return Gint
    is
       function Internal
          (Screen : System.Address;
-          Window : Gdk.Window.Gdk_Window) return Gint;
+          Window : Gdk.Gdk_Window) return Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_at_window");
    begin
       return Internal (Get_Object (Screen), Window);
@@ -342,21 +327,6 @@ package body Gdk.Screen is
       return Internal (Get_Object (Screen));
    end Get_Rgba_Visual;
 
-   ---------------------
-   -- Get_Root_Window --
-   ---------------------
-
-   function Get_Root_Window
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window
-   is
-      function Internal
-         (Screen : System.Address) return Gdk.Window.Gdk_Window;
-      pragma Import (C, Internal, "gdk_screen_get_root_window");
-   begin
-      return Internal (Get_Object (Screen));
-   end Get_Root_Window;
-
    -----------------------
    -- Get_System_Visual --
    -----------------------
@@ -371,22 +341,6 @@ package body Gdk.Screen is
    begin
       return Internal (Get_Object (Screen));
    end Get_System_Visual;
-
-   --------------------------
-   -- Get_Toplevel_Windows --
-   --------------------------
-
-   function Get_Toplevel_Windows
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList
-   is
-      function Internal (Screen : System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_screen_get_toplevel_windows");
-      Tmp_Return : Gdk.Window.Gdk_Window_List.GList;
-   begin
-      Gdk.Window.Gdk_Window_List.Set_Object (Tmp_Return, Internal (Get_Object (Screen)));
-      return Tmp_Return;
-   end Get_Toplevel_Windows;
 
    ---------------
    -- Get_Width --
@@ -414,22 +368,6 @@ package body Gdk.Screen is
       return Internal (Get_Object (Screen));
    end Get_Width_Mm;
 
-   ----------------------
-   -- Get_Window_Stack --
-   ----------------------
-
-   function Get_Window_Stack
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList
-   is
-      function Internal (Screen : System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_screen_get_window_stack");
-      Tmp_Return : Gdk.Window.Gdk_Window_List.GList;
-   begin
-      Gdk.Window.Gdk_Window_List.Set_Object (Tmp_Return, Internal (Get_Object (Screen)));
-      return Tmp_Return;
-   end Get_Window_Stack;
-
    -------------------
    -- Is_Composited --
    -------------------
@@ -442,22 +380,6 @@ package body Gdk.Screen is
    begin
       return Boolean'Val (Internal (Get_Object (Screen)));
    end Is_Composited;
-
-   ------------------
-   -- List_Visuals --
-   ------------------
-
-   function List_Visuals
-      (Screen : not null access Gdk_Screen_Record)
-       return Gdk.Window.Gdk_Window_List.GList
-   is
-      function Internal (Screen : System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_screen_list_visuals");
-      Tmp_Return : Gdk.Window.Gdk_Window_List.GList;
-   begin
-      Gdk.Window.Gdk_Window_List.Set_Object (Tmp_Return, Internal (Get_Object (Screen)));
-      return Tmp_Return;
-   end List_Visuals;
 
    -----------------------
    -- Make_Display_Name --

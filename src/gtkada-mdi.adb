@@ -58,6 +58,7 @@ with Pango.Layout;            use Pango.Layout;
 with Gdk;                     use Gdk;
 with Gdk.Cairo;               use Gdk.Cairo;
 with Gdk.Cursor;              use Gdk.Cursor;
+with Gdk.Display;             use Gdk.Display;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
@@ -1294,7 +1295,7 @@ package body Gtkada.MDI is
 
       if MDI.Get_Realized then
          if Background_Color /= Null_RGBA then
-            Set_Background_RGBA (Get_Window (MDI), Background_Color);
+            Set_Background_Rgba (Get_Window (MDI), Background_Color);
             Need_Redraw := True;
          end if;
 
@@ -1351,7 +1352,7 @@ package body Gtkada.MDI is
       M           : constant MDI_Window := MDI_Window (MDI);
 
    begin
-      Gdk.Window.Set_Background_RGBA (Get_Window (M), M.Background_Color);
+      Gdk.Window.Set_Background_Rgba (Get_Window (M), M.Background_Color);
 
       if M.Cursor_Cross = null then
          Gdk_New (M.Cursor_Cross, Cross);
@@ -2792,7 +2793,7 @@ package body Gtkada.MDI is
       end if;
 
       if Title_Changed or else Short_Title_Changed then
-         if Get_Window (Child) /= Null_Window then
+         if Get_Window (Child) /= null then
             Queue_Draw (Child);
          end if;
          if Child.MDI /= null then
@@ -6933,7 +6934,6 @@ package body Gtkada.MDI is
       Ref_Window : Gdk.Gdk_Window := null)
    is
       Root_X, Root_Y : Gint;
-      Success : Boolean;
    begin
       case Mode is
          when Destroy =>
@@ -6970,7 +6970,7 @@ package body Gtkada.MDI is
                   (MDI.Dnd_Rectangle.Width,
                    MDI.Dnd_Rectangle.Height);
 
-               Get_Origin (Ref_Window, Root_X, Root_Y, Success);
+               Get_Origin (Ref_Window, Root_X, Root_Y);
 
                Move (MDI.Dnd_Target_Window,
                      Root_X + MDI.Dnd_Rectangle.X,
@@ -6994,7 +6994,7 @@ package body Gtkada.MDI is
       Event : Gdk_Event)
    is
       Tmp : Gdk_Grab_Status;
-      Win : Gdk.Window.Gdk_Window;
+      Win : Gdk.Gdk_Window;
       pragma Unreferenced (Tmp);
    begin
       --  Focus and raise the child. Raise_Child must be called explicitly
@@ -7073,7 +7073,8 @@ package body Gtkada.MDI is
       X, Y                        : Gint;
       Alloc                       : Gtk_Allocation;
    begin
-      Window_At_Pointer (X, Y, Win);
+      Gdk.Display.Get_Window_At_Pointer
+         (Get_Display (Get_Window (MDI)), X, Y, Win);
 
       if (MDI.Dnd_Target_Window /= null
           and then Win = Get_Window (MDI.Dnd_Target_Window))
