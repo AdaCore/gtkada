@@ -274,7 +274,7 @@ package Gtk.Action is
       (Action : not null access Gtk_Action_Record)
        return Gtk.Widget.Widget_SList.GSlist;
    --  Returns the proxy widgets for an action. See also
-   --  Gtk.Volume_Button.Get_Related_Action.
+   --  Gtk.Activatable.Get_Related_Action.
    --  and must not be modified.
    --  Since: gtk+ 2.4
 

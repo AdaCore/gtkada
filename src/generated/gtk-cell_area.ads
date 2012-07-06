@@ -1001,7 +1001,7 @@ package Gtk.Cell_Area is
       --  "tree_model": the model
       --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
       --  value for
-      --  "data": user data passed to Gtk.Cell_Area.Set_Cell_Data_Func
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;

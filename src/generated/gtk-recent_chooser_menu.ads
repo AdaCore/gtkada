@@ -35,14 +35,13 @@
 --  support multiple filters, as it has no way to let the user choose between
 --  them as the Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget and
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog widgets do. Thus using
---  Gtk.Recent_Chooser_Widget.Add_Filter on a
+--  Gtk.Recent_Chooser.Add_Filter on a
 --  Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget will yield the same
---  effects as using Gtk.Recent_Chooser_Widget.Set_Filter, replacing any
---  currently set filter with the supplied filter;
---  Gtk.Recent_Chooser_Widget.Remove_Filter will remove any currently set
---  Gtk.Recent_Filter.Gtk_Recent_Filter object and will unset the current
---  filter; Gtk.Recent_Chooser_Widget.List_Filters will return a list
---  containing a single Gtk.Recent_Filter.Gtk_Recent_Filter object.
+--  effects as using Gtk.Recent_Chooser.Set_Filter, replacing any currently set
+--  filter with the supplied filter; Gtk.Recent_Chooser.Remove_Filter will
+--  remove any currently set Gtk.Recent_Filter.Gtk_Recent_Filter object and
+--  will unset the current filter; Gtk.Recent_Chooser.List_Filters will return
+--  a list containing a single Gtk.Recent_Filter.Gtk_Recent_Filter object.
 --
 --  Recently used files are supported since GTK+ 2.10.
 --

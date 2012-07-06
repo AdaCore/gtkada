@@ -88,8 +88,8 @@ package body Gtk.Style_Properties is
       Tmp_Return   : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Property, State, Acc_Value'Access);
-      Value := Acc_Value;
       Free (Tmp_Property);
+      Value := Acc_Value;
       Exists := Boolean'Val (Tmp_Return);
    end Get_Property;
 
@@ -230,7 +230,7 @@ package body Gtk.Style_Properties is
           Acc_Pspec : access Glib.Param_Spec;
           Acc_Value : access Glib.Values.GValue) return Integer;
       pragma Import (C, Internal, "gtk_style_provider_get_style_property");
-      Acc_Pspec  : aliased Glib.Param_Spec;
+      Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
       Tmp_Return : Integer;
    begin

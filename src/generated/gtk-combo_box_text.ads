@@ -231,7 +231,7 @@ package Gtk.Combo_Box_Text is
       --  "tree_model": the model
       --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
       --  value for
-      --  "data": user data passed to Gtk.Combo_Box_Text.Set_Cell_Data_Func
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record'Class;

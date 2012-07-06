@@ -199,11 +199,13 @@ class CType(object):
             returns = self.convert_from_c()
             ret = returns and returns[2]
 
+            additional_tmp_vars = [] if not returns else returns[3]
+
             if ret and ret != "%(var)s" and mode != "in":
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos (Param)) is invalid
                 tmp = "Tmp_%s" % name
-                tmpvars = [Local_Var(name=tmp, type=self.cparam)]
+                tmpvars = [Local_Var(name=tmp, type=self.cparam, aliased=True)]
 
                 if "%(tmp)s" in ret:
                     tmp2 = "Tmp2_%s" % name
@@ -221,7 +223,7 @@ class CType(object):
                     call=wrapper % tmp,
                     precall="",
                     postcall=postcall,
-                    tmpvars=tmpvars)
+                    tmpvars=tmpvars + additional_tmp_vars)
 
             elif "%(tmp)" in self.convert_to_c():
                 # The conversion sets the temporary variable itself
@@ -230,7 +232,8 @@ class CType(object):
                     call=wrapper % tmp,
                     precall=self.convert_to_c() % {"var":name, "tmp":tmp},
                     postcall=self.cleanup % tmp,
-                    tmpvars=[Local_Var(name=tmp, type=self.cparam)])
+                    tmpvars=[Local_Var(name=tmp, type=self.cparam)]
+                       + []) # additional_tmp_vars
 
             elif self.cleanup:
                 tmp = "Tmp_%s" % name
@@ -263,7 +266,7 @@ class CType(object):
 
             if ret_convert and ret_convert != "%(var)s" and mode != "in":
                 tmp = "Tmp_%s" % name
-                tmpvars = [Local_Var(name=tmp, type=self.ada)]
+                tmpvars = [Local_Var(name=tmp, type=self.ada)] + ret[3]
 
                 if "%(tmp)s" in ret_convert:
                     tmp2 = "Tmp2_%s" % name
@@ -372,7 +375,9 @@ class GObject(CType):
         else:
             conv = "%s (Get_User_Data (%%(var)s, %s))" % (self.ada, stub)
 
-        return (self.param, self.cparam, conv,
+        return (self.param, 
+                self.cparam, 
+                conv,
                 [Local_Var(
                     stub, AdaType("%s_Record" % self.ada, in_spec=False))])
 
@@ -384,10 +389,7 @@ class GObject(CType):
 
     def as_ada_param(self, pkg):
         if self.userecord:
-            if self.allow_none:
-                prefix = ""
-            else:
-                prefix = "not null "
+            prefix = "" if self.allow_none else "not null "
 
             if self.classwide:
                 self.param = "%saccess %s_Record'Class" % (prefix, self.ada)
@@ -1061,6 +1063,9 @@ class Local_Var(object):
         self.default = default
         self.aliased = aliased
 
+    def __repr__(self):
+        return "<Local_Var name=%s type=%s>" % (self.name, self.type)
+
     def set_type(self, type):
         if isinstance(type, str):
             self.type = AdaType(type)
@@ -1097,6 +1102,7 @@ class Local_Var(object):
            implemented in the given language. See comments at the beginning
            of this package for valid values of LANG.
            'pkg' is the instance of Package in which the call occurs.
+           :return: an instance of VariableCall
         """
         assert(lang in ("ada->ada", "c->ada", "ada->c"))
 
@@ -1125,10 +1131,17 @@ class Parameter(Local_Var):
         self.doc  = doc
 
     def _type(self, lang, pkg):
-        t = super(Parameter, self)._type(lang=lang, pkg=pkg)
         mode = self.mode
         if self.mode == "access_c":
             mode = "access"
+
+        if mode == "in" or not hasattr(self.type, "userecord"):
+            t = super(Parameter, self)._type(lang=lang, pkg=pkg)
+        else:
+            userec = self.type.userecord
+            self.type.userecord = False
+            t = super(Parameter, self)._type(lang=lang, pkg=pkg)
+            self.type.userecord = userec
 
         if mode != "in":
             return "%s %s" % (mode, t)
@@ -1410,7 +1423,7 @@ class Subprogram(object):
             params.append(c.call)
             tmpvars.extend(c.tmpvars)
             precall += c.precall
-            postcall += c.postcall
+            postcall = c.postcall + postcall
 
         if params:
             call = "%s (%s)" % (self.name, ", ".join(params))
@@ -1430,20 +1443,20 @@ class Subprogram(object):
                     call = returns[2] % {"var":call, "tmp":"Tmp_Return"}
 
                     tmpvars.append(Local_Var("Tmp_Return", returns[0]))
-                    return ("%s%s;%s" % (precall, call, postcall),
+                    result = ("%s%s;%s" % (precall, call, postcall),
                             "Tmp_Return",
                             tmpvars)
 
                 elif postcall:
                     tmpvars.append(Local_Var("Tmp_Return", returns[1]))
                     call = "Tmp_Return := %s" % call
-                    return ("%s%s;%s" % (precall, call, postcall),
+                    result = ("%s%s;%s" % (precall, call, postcall),
                             returns[2] % {"var": "Tmp_Return"},
                             tmpvars)
 
                 else:
                     # No need for a temporary variable
-                    return (precall, returns[2] % {"var":call}, tmpvars)
+                    result = (precall, returns[2] % {"var":call}, tmpvars)
 
             else:
                 if postcall:
@@ -1452,16 +1465,18 @@ class Subprogram(object):
                     # returns an unconstrained array though.
                     tmpvars.append(Local_Var("Tmp_Return", returns[0]))
                     call = "Tmp_Return := %s" % call
-                    return ("%s%s;%s" % (precall, call, postcall),
+                    result = ("%s%s;%s" % (precall, call, postcall),
                             "Tmp_Return",
                             tmpvars)
                 else:
                     # No need for a temporary variable
-                    return (precall, call, tmpvars)
+                    result = (precall, call, tmpvars)
 
         else:
             # A procedure
-            return ("%s%s;%s" % (precall, call, postcall), None, tmpvars)
+            result = ("%s%s;%s" % (precall, call, postcall), None, tmpvars)
+
+        return result
 
     def call_to_string(self, call, lang="ada->ada"):
         """CALL is the result of call() above.

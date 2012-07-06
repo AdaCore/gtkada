@@ -93,6 +93,7 @@ binding = ("GdkCursor",
            "GtkHScale",
            "GtkHScrollbar",
            "GtkHSeparator",
+           "GtkIconView",
            "GtkImage",
            "GtkImageMenuItem",
            "GtkInvisible",
@@ -140,6 +141,7 @@ binding = ("GdkCursor",
            "GtkTable",
            "GtkTearoffMenuItem",
            "GtkTextTag",
+           # "GtkTreePath",   #  into GtkTreeModel
            "GtkToggleAction",
            "GtkToggleButton",
            "GtkToggleToolButton",
@@ -288,12 +290,12 @@ naming.type_exceptions = {
     "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
 
     # Specific to this binding generator (referenced from binding.xml)
-    "WindowList":  List("Gdk.Window.Gdk_Window_List.GList"),
     "VisualList":  List("Gdk.Visual.Gdk_Visual_List.GList"),
     "ObjectList":  List("Glib.Object.Object_Simple_List.GList"),
     "ObjectSList": List("Glib.Object.Object_List.GSlist"),
     "StringList":  List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
+    "TreePathList": List("Gtk.Tree_Model.Gtk_Tree_Path_List.Glist"),
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
@@ -315,6 +317,7 @@ naming.type_exceptions = {
     "GtkRange":        GObject("Gtk.GRange.Gtk_Range"),
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
+    "GtkTreePath*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Path"),
     "GtkVButtonBox":   GObject("Gtk.Vbutton_Box.Gtk_Vbutton_Box"),
 
     "GtkRcStyle":      GObject("Gtk.Rc.Gtk_Rc_Style"),

@@ -87,10 +87,10 @@ package body Gtk.Toggle_Action is
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
       Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id);
-      Free (Tmp_Name);
-      Free (Tmp_Label);
-      Free (Tmp_Tooltip);
       Free (Tmp_Stock_Id);
+      Free (Tmp_Tooltip);
+      Free (Tmp_Label);
+      Free (Tmp_Name);
       Set_Object (Action, Tmp_Return);
    end Initialize;
 

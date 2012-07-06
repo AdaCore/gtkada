@@ -34,8 +34,8 @@
 --  gtk_cell_layout_set_attributes, which means that the value of the attribute
 --  can change from cell to cell as they are rendered by the cell renderer.
 --  Finally, it is possible to specify a function with
---  Gtk.Entry_Completion.Set_Cell_Data_Func that is called to determine the
---  value of the attribute for each cell that is rendered.
+--  Gtk.Cell_Layout.Set_Cell_Data_Func that is called to determine the value of
+--  the attribute for each cell that is rendered.
 --
 --  == GtkCellLayouts as GtkBuildable ==
 --

@@ -27,14 +27,14 @@
 --  is used in the Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget to
 --  provide a dialog box for selecting fonts.
 --
---  To set the font which is initially selected, use Gtk.Font_Button.Set_Font
---  or Gtk.Font_Button.Set_Font_Desc.
+--  To set the font which is initially selected, use Gtk.Font_Chooser.Set_Font
+--  or Gtk.Font_Chooser.Set_Font_Desc.
 --
---  To get the selected font use Gtk.Font_Button.Get_Font or
---  Gtk.Font_Button.Get_Font_Desc.
+--  To get the selected font use Gtk.Font_Chooser.Get_Font or
+--  Gtk.Font_Chooser.Get_Font_Desc.
 --
 --  To change the text which is shown in the preview area, use
---  Gtk.Font_Button.Set_Preview_Text.
+--  Gtk.Font_Chooser.Set_Preview_Text.
 --
 --  </description>
 
@@ -72,7 +72,7 @@ package Gtk.Font_Chooser is
    function Get_Font (Self : Gtk_Font_Chooser) return UTF8_String;
    --  Gets the currently-selected font name.
    --  Note that this can be a different string than what you set with
-   --  Gtk.Font_Button.Set_Font, as the font chooser widget may normalize font
+   --  Gtk.Font_Chooser.Set_Font, as the font chooser widget may normalize font
    --  names and thus return a string with a different structure. For example,
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".
@@ -92,7 +92,7 @@ package Gtk.Font_Chooser is
    pragma Import (C, Get_Font_Desc, "gtk_font_chooser_get_font_desc");
    --  Gets the currently-selected font.
    --  Note that this can be a different string than what you set with
-   --  Gtk.Font_Button.Set_Font, as the font chooser widget may normalize font
+   --  Gtk.Font_Chooser.Set_Font, as the font chooser widget may normalize font
    --  names and thus return a string with a different structure. For example,
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".

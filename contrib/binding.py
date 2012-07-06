@@ -343,22 +343,24 @@ class SubprogramProfile(object):
         for p in self.params:
             n = p.name
             m = p.mode
-            t = p.type
 
             if self.returns is not None and m != "in":
                 m = "access_c"
                 n = "Acc_%s" % p.name
-                localvars.append(Local_Var(
+                var = Local_Var(
                     name="Acc_%s" % p.name,
                     aliased=True,
-                    type=t))
+                    default="" if p.mode != "in out" else p.name,
+                    type=p.type)
+                var.type.userecord = False
+                localvars.append(var)
 
                 if p.mode == "access":
                     code.append("%s.all := Acc_%s;" % (p.name, p.name))
                 else:
                     code.append("%s := Acc_%s;" % (p.name, p.name))
 
-            result.append(Parameter(name=n, mode=m, type=t))
+            result.append(Parameter(name=n, mode=m, type=p.type))
 
         return result;
 
@@ -624,7 +626,7 @@ class GIRClass(object):
             typename = ""
             self.name = package_name(pkg)
             self.ada_package_name = self.name
-            
+
         self.gtkpkg.register_types(adapkg=self.ada_package_name)
 
         # Compute information that will be used for the binding
@@ -635,7 +637,7 @@ class GIRClass(object):
             "cname": self.ctype or ""}
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
-                         showdoc=True):
+                         showdoc=True, isinherited=False):
         cname = c.get(cidentifier)
 
         if gtkmethod is None:
@@ -649,7 +651,8 @@ class GIRClass(object):
                 gtkmethod=gtkmethod,
                 profile=profile,
                 showdoc=showdoc,
-                ismethod=ismethod)
+                ismethod=ismethod,
+                isinherited=isinherited)
         else:
             naming.add_cmethod(
                 cname, gtkmethod.ada_name() or cname)  # Avoid warning later on.
@@ -690,8 +693,9 @@ class GIRClass(object):
                                   profile=None,
                                   showdoc=True,
                                   adaname=None,
-                                  ismethod=False):
-        """Generate a binding for a function.
+                                  ismethod=False,
+                                  isinherited=False):
+        """Generate a binding for a function.,
            This returns None if no binding was made, an instance of Subprogram
            otherwise.
            `adaname' is the name of the generated Ada subprograms. By default,
@@ -711,7 +715,8 @@ class GIRClass(object):
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         adaname = naming.protect_keywords(adaname)
 
-        naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
+        if not isinherited:
+            naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
         if ismethod:
             self._add_self_param(
@@ -1495,7 +1500,7 @@ See Glib.Properties for more information on properties)""")
                         if interfmethod.bind():
                             self._handle_function(
                                 section, c, showdoc=False, gtkmethod=gtkmethod,
-                                ismethod=True)
+                                ismethod=True, isinherited=True)
 
             section = self.pkg.section("Interfaces")
             section.add_comment(
@@ -1664,7 +1669,7 @@ See Glib.Properties for more information on properties)""")
 
             if not is_default_representation:
                 repr = ("   for %s use (\n" % base
-                        + ",\n".join("      %s => %s" % m 
+                        + ",\n".join("      %s => %s" % m
                                      for m in sorted(members, key=lambda m:m[1])
                                      if m[1] >= 0)
                         + ");\n")
@@ -1977,6 +1982,7 @@ for name in interfaces:
 for the_ctype in binding:
     try:
         gir.classes[the_ctype].generate(gir)
+
     except KeyError:
         cl = gtkada.get_pkg(the_ctype)
         if not cl:

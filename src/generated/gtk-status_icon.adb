@@ -638,7 +638,7 @@ package body Gtk.Status_Icon is
           Push_In : out Integer;
           Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");
-      Tmp_Push_In : Integer;
+      Tmp_Push_In : aliased Integer;
    begin
       Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));
       Push_In := Boolean'Val (Tmp_Push_In);

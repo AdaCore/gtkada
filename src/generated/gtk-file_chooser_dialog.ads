@@ -92,12 +92,12 @@
 --     * To save a file for the first time, as for a
 --  <guimenuitem>File/Save</guimenuitem> command. Use
 --  GTK_FILE_CHOOSER_ACTION_SAVE, and suggest a name such as "Untitled" with
---  Gtk.File_Chooser_Widget.Set_Current_Name.
+--  Gtk.File_Chooser.Set_Current_Name.
 --
 --     * To save a file under a different name, as for a
 --  <guimenuitem>File/Save As</guimenuitem> command. Use
 --  GTK_FILE_CHOOSER_ACTION_SAVE, and set the existing filename with
---  Gtk.File_Chooser_Widget.Set_Filename.
+--  Gtk.File_Chooser.Set_Filename.
 --
 --     * To choose a folder instead of a file. Use
 --  GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
@@ -105,12 +105,12 @@
 --  Note:
 --
 --  Old versions of the file chooser's documentation suggested using
---  Gtk.File_Chooser_Widget.Set_Current_Folder in various situations, with the
+--  Gtk.File_Chooser.Set_Current_Folder in various situations, with the
 --  intention of letting the application suggest a reasonable default folder.
 --  This is no longer considered to be a good policy, as now the file chooser
 --  is able to make good suggestions on its own. In general, you should only
 --  cause the file chooser to show a specific folder when it is appropriate to
---  use Gtk.File_Chooser_Widget.Set_Filename, i.e. when you are doing a
+--  use Gtk.File_Chooser.Set_Filename, i.e. when you are doing a
 --  <guimenuitem>File/Save As</guimenuitem> command *and* you already have a
 --  file saved somewhere.
 --

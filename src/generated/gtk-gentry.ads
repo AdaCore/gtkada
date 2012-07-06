@@ -555,7 +555,7 @@ package Gtk.GEntry is
    function Get_Text
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    --  Retrieves the contents of the entry widget. See also
-   --  Gtk.Spin_Button.Get_Chars.
+   --  Gtk.Editable.Get_Chars.
    --  This is equivalent to:
    --    gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry));
    --  string. This string points to internally allocated storage in the

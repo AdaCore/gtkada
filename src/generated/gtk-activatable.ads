@@ -39,8 +39,8 @@
 --  Gtk.Activatable.Gtk_Activatable:use-action-appearance properties need to be
 --  handled by the implementor. Handling these properties is mostly a matter of
 --  installing the action pointer and boolean flag on your instance, and
---  calling Gtk.Volume_Button.Do_Set_Related_Action and
---  Gtk.Volume_Button.Sync_Action_Properties at the appropriate times.
+--  calling Gtk.Activatable.Do_Set_Related_Action and
+--  Gtk.Activatable.Sync_Action_Properties at the appropriate times.
 --
 --  == A class fragment implementing Gtk.Activatable.Gtk_Activatable ==
 --
@@ -77,7 +77,7 @@
 --       iface->update = foo_bar_activatable_update;
 --       iface->sync_action_properties = foo_bar_activatable_sync_action_properties;
 --    }
---    ... Break the reference using Gtk.Volume_Button.Do_Set_Related_Action...
+--    ... Break the reference using Gtk.Activatable.Do_Set_Related_Action...
 --    static void
 --    foo_bar_dispose (GObject *object)
 --    {
@@ -147,8 +147,8 @@
 --          gtk_activatable_sync_action_properties (GTK_ACTIVATABLE (bar), priv->action);
 --       }
 --    }
---    ... call Gtk.Volume_Button.Do_Set_Related_Action and then assign the action pointer,
---    no need to reference the action here since Gtk.Volume_Button.Do_Set_Related_Action already
+--    ... call Gtk.Activatable.Do_Set_Related_Action and then assign the action pointer,
+--    no need to reference the action here since Gtk.Activatable.Do_Set_Related_Action already
 --    holds a reference here for you...
 --    static void
 --    foo_bar_set_related_action (FooBar    *bar,
@@ -264,7 +264,7 @@ package Gtk.Activatable is
    --  Note:
    --  Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:related-action property and call
-   --  Gtk.Volume_Button.Do_Set_Related_Action when it changes.
+   --  Gtk.Activatable.Do_Set_Related_Action when it changes.
    --  Since: gtk+ 2.16
    --  "action": the Gtk.Action.Gtk_Action to set
 
@@ -282,8 +282,7 @@ package Gtk.Activatable is
    --  Note:
    --  Gtk.Activatable.Gtk_Activatable implementors need to handle the
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance property and call
-   --  Gtk.Volume_Button.Sync_Action_Properties to update Activatable if
-   --  needed.
+   --  Gtk.Activatable.Sync_Action_Properties to update Activatable if needed.
    --  Since: gtk+ 2.16
    --  "use_appearance": whether to use the actions appearance
 

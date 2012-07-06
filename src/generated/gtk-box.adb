@@ -229,12 +229,12 @@ package body Gtk.Box is
           Padding   : out Guint;
           Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_box_query_child_packing");
-      Tmp_Expand : Integer;
-      Tmp_Fill   : Integer;
+      Tmp_Expand : aliased Integer;
+      Tmp_Fill   : aliased Integer;
    begin
       Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Pack_Type);
-      Expand := Boolean'Val (Tmp_Expand);
       Fill := Boolean'Val (Tmp_Fill);
+      Expand := Boolean'Val (Tmp_Expand);
    end Query_Child_Packing;
 
    -------------------

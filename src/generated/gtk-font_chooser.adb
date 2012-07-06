@@ -56,7 +56,7 @@ package body Gtk.Font_Chooser is
    pragma Convention (C, Internal_Gtk_Font_Filter_Func);
    --  "family": a Pango.Font_Family.Pango_Font_Family
    --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-   --  "data": user data passed to Gtk.Font_Button.Set_Filter_Func
+   --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
    -----------------------------------
    -- Internal_Gtk_Font_Filter_Func --
@@ -171,10 +171,10 @@ package body Gtk.Font_Chooser is
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used for deciding what fonts get shown
       --  in a Gtk.Font_Chooser.Gtk_Font_Chooser. See
-      --  Gtk.Font_Button.Set_Filter_Func.
+      --  Gtk.Font_Chooser.Set_Filter_Func.
       --  "family": a Pango.Font_Family.Pango_Font_Family
       --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-      --  "data": user data passed to Gtk.Font_Button.Set_Filter_Func
+      --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
       -----------------
       -- Internal_Cb --

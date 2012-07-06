@@ -118,8 +118,7 @@ package Gtk.Editable is
    --  "end_pos": end of text
 
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
-   --  Retrieves whether Editable is editable. See
-   --  Gtk.Spin_Button.Set_Editable.
+   --  Retrieves whether Editable is editable. See Gtk.Editable.Set_Editable.
 
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.

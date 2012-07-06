@@ -64,6 +64,21 @@ package Gdk.Screen is
    -- Methods --
    -------------
 
+   function Get_Active_Window
+      (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window;
+   --  Returns the screen's currently active window.
+   --  On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property on
+   --  the root window, as described in the <ulink
+   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
+   --  Manager Hints</ulink>. If there is no currently currently active window,
+   --  or the window manager does not support the _NET_ACTIVE_WINDOW hint, this
+   --  function returns null.
+   --  On other platforms, this function may return null, depending on whether
+   --  it is implementable on that platform.
+   --  The returned window should be unrefed using g_object_unref when no
+   --  longer needed.
+   --  Since: gtk+ 2.10
+
    function Get_Display
       (Screen : not null access Gdk_Screen_Record)
        return Gdk.Display.Gdk_Display;
@@ -213,6 +228,11 @@ package Gdk.Screen is
    --  Gdk.Window.Set_Opacity.
    --  alpha channel or null if the capability is not available.
    --  Since: gtk+ 2.8
+
+   function Get_Root_Window
+      (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window;
+   --  Gets the root window of Screen.
+   --  Since: gtk+ 2.2
 
    function Get_System_Visual
       (Screen : not null access Gdk_Screen_Record)

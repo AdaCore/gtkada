@@ -102,8 +102,8 @@ package body Gdk.RGBA is
       Tmp_Return : Integer;
    begin
       Tmp_Return := Internal (Acc_Self'Access, Tmp_Spec);
-      Self := Acc_Self;
       Free (Tmp_Spec);
+      Self := Acc_Self;
       Success := Boolean'Val (Tmp_Return);
    end Parse;
 

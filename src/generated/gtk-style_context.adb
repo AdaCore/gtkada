@@ -421,8 +421,8 @@ package body Gtk.Style_Context is
       Tmp_Return       : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Region_Name, Acc_Flags_Return'Access);
-      Flags_Return := Acc_Flags_Return;
       Free (Tmp_Region_Name);
+      Flags_Return := Acc_Flags_Return;
       Is_Defined := Boolean'Val (Tmp_Return);
    end Has_Region;
 
@@ -489,8 +489,8 @@ package body Gtk.Style_Context is
       Tmp_Return     : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
-      Color := Acc_Color;
       Free (Tmp_Color_Name);
+      Color := Acc_Color;
       Found := Boolean'Val (Tmp_Return);
    end Lookup_Color;
 

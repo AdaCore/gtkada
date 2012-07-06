@@ -97,8 +97,8 @@ package body Gtk.Css_Provider is
       Tmp_Return : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Acc_Error'Access);
-      Error.all := Acc_Error;
       Free (Tmp_Path);
+      Error.all := Acc_Error;
       return Boolean'Val (Tmp_Return);
    end Load_From_Path;
 
@@ -153,7 +153,7 @@ package body Gtk.Css_Provider is
           Acc_Pspec : access Glib.Param_Spec;
           Acc_Value : access Glib.Values.GValue) return Integer;
       pragma Import (C, Internal, "gtk_style_provider_get_style_property");
-      Acc_Pspec  : aliased Glib.Param_Spec;
+      Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
       Tmp_Return : Integer;
    begin
@@ -198,8 +198,8 @@ package body Gtk.Css_Provider is
          Tmp_Variant := New_String (Variant);
       end if;
       Tmp_Return := Internal (Tmp_Name, Tmp_Variant);
-      Free (Tmp_Name);
       Free (Tmp_Variant);
+      Free (Tmp_Name);
       return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Tmp_Return, Stub_Gtk_Css_Provider));
    end Get_Named;
 

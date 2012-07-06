@@ -405,7 +405,7 @@ package Gtk.Entry_Completion is
       --  "tree_model": the model
       --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
       --  value for
-      --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;

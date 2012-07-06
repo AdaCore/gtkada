@@ -104,6 +104,19 @@ package body Gdk.Screen is
      (Get_Type'Access, Gdk_Screen_Record);
    pragma Unreferenced (Type_Conversion_Gdk_Screen);
 
+   -----------------------
+   -- Get_Active_Window --
+   -----------------------
+
+   function Get_Active_Window
+      (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window
+   is
+      function Internal (Screen : System.Address) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "gdk_screen_get_active_window");
+   begin
+      return Internal (Get_Object (Screen));
+   end Get_Active_Window;
+
    -----------------
    -- Get_Display --
    -----------------
@@ -326,6 +339,19 @@ package body Gdk.Screen is
    begin
       return Internal (Get_Object (Screen));
    end Get_Rgba_Visual;
+
+   ---------------------
+   -- Get_Root_Window --
+   ---------------------
+
+   function Get_Root_Window
+      (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window
+   is
+      function Internal (Screen : System.Address) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "gdk_screen_get_root_window");
+   begin
+      return Internal (Get_Object (Screen));
+   end Get_Root_Window;
 
    -----------------------
    -- Get_System_Visual --

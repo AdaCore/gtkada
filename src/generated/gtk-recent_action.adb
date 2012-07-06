@@ -153,10 +153,10 @@ package body Gtk.Recent_Action is
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
       Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id);
-      Free (Tmp_Name);
-      Free (Tmp_Label);
-      Free (Tmp_Tooltip);
       Free (Tmp_Stock_Id);
+      Free (Tmp_Tooltip);
+      Free (Tmp_Label);
+      Free (Tmp_Name);
       Set_Object (Widget, Tmp_Return);
    end Initialize;
 
@@ -202,10 +202,10 @@ package body Gtk.Recent_Action is
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
       Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id, Get_Object_Or_Null (GObject (Manager)));
-      Free (Tmp_Name);
-      Free (Tmp_Label);
-      Free (Tmp_Tooltip);
       Free (Tmp_Stock_Id);
+      Free (Tmp_Tooltip);
+      Free (Tmp_Label);
+      Free (Tmp_Name);
       Set_Object (Widget, Tmp_Return);
    end Initialize_For_Manager;
 

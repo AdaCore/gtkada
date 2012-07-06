@@ -1589,8 +1589,8 @@ package body Gtk.Window is
       Tmp_Wmclass_Class : Interfaces.C.Strings.chars_ptr := New_String (Wmclass_Class);
    begin
       Internal (Get_Object (Window), Tmp_Wmclass_Name, Tmp_Wmclass_Class);
-      Free (Tmp_Wmclass_Name);
       Free (Tmp_Wmclass_Class);
+      Free (Tmp_Wmclass_Name);
    end Set_Wmclass;
 
    -----------

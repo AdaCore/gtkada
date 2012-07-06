@@ -116,7 +116,7 @@ package body Gtk.Combo_Box is
    --  "tree_model": the model
    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
    --  value for
-   --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
+   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : System.Address;
@@ -674,7 +674,7 @@ package body Gtk.Combo_Box is
       --  "tree_model": the model
       --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
       --  value for
-      --  "data": user data passed to Gtk.Entry_Completion.Set_Cell_Data_Func
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --

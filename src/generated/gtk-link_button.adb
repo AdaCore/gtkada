@@ -98,8 +98,8 @@ package body Gtk.Link_Button is
          Tmp_Label := New_String (Label);
       end if;
       Tmp_Return := Internal (Tmp_URI, Tmp_Label);
-      Free (Tmp_URI);
       Free (Tmp_Label);
+      Free (Tmp_URI);
       Set_Object (Widget, Tmp_Return);
    end Initialize_With_Label;
 

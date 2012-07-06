@@ -85,8 +85,8 @@ package body Gtk.Paper_Size is
       Tmp_Return       : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Name, Tmp_Display_Name, Width, Height, Unit);
-      Free (Tmp_Name);
       Free (Tmp_Display_Name);
+      Free (Tmp_Name);
       Widget.Ptr := Tmp_Return;
    end Gtk_New_Custom;
 
@@ -133,8 +133,8 @@ package body Gtk.Paper_Size is
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Ppd_Name, Tmp_Ppd_Display_Name, Width, Height);
-      Free (Tmp_Ppd_Name);
       Free (Tmp_Ppd_Display_Name);
+      Free (Tmp_Ppd_Name);
       Widget.Ptr := Tmp_Return;
    end Gtk_New_From_Ppd;
 

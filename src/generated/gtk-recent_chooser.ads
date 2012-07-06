@@ -85,7 +85,7 @@ package Gtk.Recent_Chooser is
    --  Adds Filter to the list of Gtk.Recent_Filter.Gtk_Recent_Filter objects
    --  held by Chooser.
    --  If no previous filter objects were defined, this function will call
-   --  Gtk.Recent_Chooser_Widget.Set_Filter.
+   --  Gtk.Recent_Chooser.Set_Filter.
    --  Since: gtk+ 2.10
    --  "filter": a Gtk.Recent_Filter.Gtk_Recent_Filter
 
@@ -137,21 +137,21 @@ package Gtk.Recent_Chooser is
 
    function Get_Limit (Chooser : Gtk_Recent_Chooser) return Gint;
    pragma Import (C, Get_Limit, "gtk_recent_chooser_get_limit");
-   --  Gets the number of items returned by
-   --  Gtk.Recent_Chooser_Widget.Get_Items and gtk_recent_chooser_get_uris.
+   --  Gets the number of items returned by Gtk.Recent_Chooser.Get_Items and
+   --  gtk_recent_chooser_get_uris.
    --  returned.
    --  Since: gtk+ 2.10
 
    procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Gint);
    pragma Import (C, Set_Limit, "gtk_recent_chooser_set_limit");
    --  Sets the number of items that should be returned by
-   --  Gtk.Recent_Chooser_Widget.Get_Items and gtk_recent_chooser_get_uris.
+   --  Gtk.Recent_Chooser.Get_Items and gtk_recent_chooser_get_uris.
    --  Since: gtk+ 2.10
    --  "limit": a positive integer, or -1 for all items
 
    function Get_Local_Only (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Gets whether only local resources should be shown in the recently used
-   --  resources selector. See Gtk.Recent_Chooser_Widget.Set_Local_Only
+   --  resources selector. See Gtk.Recent_Chooser.Set_Local_Only
    --  Since: gtk+ 2.10
 
    procedure Set_Local_Only
@@ -233,7 +233,7 @@ package Gtk.Recent_Chooser is
    function Get_Sort_Type
       (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type;
    pragma Import (C, Get_Sort_Type, "gtk_recent_chooser_get_sort_type");
-   --  Gets the value set by Gtk.Recent_Chooser_Widget.Set_Sort_Type.
+   --  Gets the value set by Gtk.Recent_Chooser.Set_Sort_Type.
    --  Since: gtk+ 2.10
 
    procedure Set_Sort_Type

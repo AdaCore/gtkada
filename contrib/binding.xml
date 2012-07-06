@@ -88,8 +88,6 @@
      <method id="gdk_screen_get_toplevel_windows" return="WindowList" bind="False"/>  <!--  circular dep -->
      <method id="gdk_screen_get_window_stack" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
      <method id="gdk_screen_list_visuals" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
-     <method id="gdk_screen_get_root_window" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
-     <method id="gdk_screen_get_active_window" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
      <extra>
        <with_spec pkg="Gdk.Types" />
        <spec>
@@ -3284,6 +3282,78 @@ creating a tag.
    begin
       Internal (Window, Get_Object (Widget));
    end Set_User_Data;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkIconView">
+     <parameter name="self" ada="Icon_View"/>
+     <enum ctype="GtkIconViewDropPosition" prefix="GTK_ICON_VIEW_"/>
+     <method id="gtk_icon_view_get_cursor" return_as_param="Cursor_Is_Set"/>
+     <method id="gtk_icon_view_get_dest_item_at_pos" return_as_param="Has_Item"/>
+     <method id="gtk_icon_view_get_item_at_pos" return_as_param="Has_Item"/>
+     <method id="gtk_icon_view_get_selected_items" return="TreePathList"/>
+     <method id="gtk_icon_view_get_tooltip_context" return_as_param="Success"/>
+     <method id="gtk_icon_view_get_visible_range" return="void"/>
+
+     <method id="gtk_icon_view_enable_model_drag_source" bind="False"/> <!-- see below -->
+     <method id="gtk_icon_view_enable_model_drag_dest" bind="False"/> <!-- see below -->
+     <extra>
+       <with_spec pkg="Gtk.Selection"/>
+       <with_spec pkg="Gdk.Dnd"/>
+       <with_spec pkg="Gdk.Types"/>
+       <spec>
+   procedure Enable_Model_Drag_Dest
+     (Icon_View : access Gtk_Icon_View_Record;
+      Targets   : Gtk.Selection.Target_Entry_Array;
+      Actions   : Gdk.Dnd.Drag_Action);
+   --  Turns Icon_view into a drop destination for automatic DND.
+   --  Targets is the list of targets that the drag will support.
+
+   procedure Enable_Model_Drag_Source
+     (Icon_View         : access Gtk_Icon_View_Record;
+      Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
+      Targets           : Gtk.Selection.Target_Entry_Array;
+      Actions           : Gdk.Dnd.Drag_Action);
+   --  Turns Icon_view into a drag source for automatic DND.
+   --  Start_Button_Mask is the allowed buttons to start drag.
+       </spec>
+       <body>
+   procedure Enable_Model_Drag_Dest
+     (Icon_View : access Gtk_Icon_View_Record;
+      Targets   : Target_Entry_Array;
+      Actions   : Drag_Action)
+   is
+      procedure Internal
+        (Icon_View : System.Address;
+         Targets   : System.Address;
+         N_Targets : Gint;
+         Actions   : Drag_Action);
+      pragma Import (C, Internal, "gtk_icon_view_enable_model_drag_dest");
+   begin
+      Internal (Get_Object (Icon_View),
+                Targets (Targets'First)'Address, Targets'Length,
+                Actions);
+   end Enable_Model_Drag_Dest;
+
+   procedure Enable_Model_Drag_Source
+     (Icon_View         : access Gtk_Icon_View_Record;
+      Start_Button_Mask : Gdk_Modifier_Type;
+      Targets           : Target_Entry_Array;
+      Actions           : Drag_Action)
+   is
+      procedure Internal
+        (Icon_View         : System.Address;
+         Start_Button_Mask : Gdk_Modifier_Type;
+         Targets           : System.Address;
+         N_Targets         : Gint;
+         Actions           : Drag_Action);
+      pragma Import (C, Internal, "gtk_icon_view_enable_model_drag_source");
+   begin
+      Internal (Get_Object (Icon_View), Start_Button_Mask,
+                Targets (Targets'First)'Address, Targets'Length,
+                Actions);
+   end Enable_Model_Drag_Source;
        </body>
      </extra>
    </package>

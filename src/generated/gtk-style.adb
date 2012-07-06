@@ -176,8 +176,8 @@ package body Gtk.Style is
       Tmp_Return     : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Style), Tmp_Color_Name, Acc_Color'Access);
-      Color := Acc_Color;
       Free (Tmp_Color_Name);
+      Color := Acc_Color;
       Found := Boolean'Val (Tmp_Return);
    end Lookup_Color;
 

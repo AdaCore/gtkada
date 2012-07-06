@@ -2228,8 +2228,8 @@ package body Gtk.Widget is
          Tmp_Detail := New_String (Detail);
       end if;
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Size, Tmp_Detail);
-      Free (Tmp_Stock_Id);
       Free (Tmp_Detail);
+      Free (Tmp_Stock_Id);
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Render_Icon;
 

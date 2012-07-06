@@ -242,8 +242,8 @@ package body Gtk.Recent_Manager is
          Tmp_New_Uri := New_String (New_Uri);
       end if;
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI, Tmp_New_Uri);
-      Free (Tmp_URI);
       Free (Tmp_New_Uri);
+      Free (Tmp_URI);
       return Boolean'Val (Tmp_Return);
    end Move_Item;
 

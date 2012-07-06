@@ -322,8 +322,8 @@ package Gtk.Combo_Box is
    --  set model (if applicable). If model is null, then it will unset the
    --  model.
    --  Note that this function does not clear the cell renderers, you have to
-   --  call Gtk.Entry_Completion.Clear yourself if you need to set up different
-   --  cell renderers for the new model.
+   --  call Gtk.Cell_Layout.Clear yourself if you need to set up different cell
+   --  renderers for the new model.
    --  Since: gtk+ 2.4
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
 
@@ -480,7 +480,7 @@ package Gtk.Combo_Box is
       --  "tree_model": the model
       --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
       --  value for
-      --  "data": user data passed to Gtk.Combo_Box.Set_Cell_Data_Func
+      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record'Class;
