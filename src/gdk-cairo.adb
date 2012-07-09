@@ -64,12 +64,9 @@ package body Gdk.Cairo is
 
    procedure Set_Source_RGBA
      (Cr       : Cairo_Context;
-      Color    : Gdk.RGBA.Gdk_RGBA)
-   is
-      procedure Internal (Cr : Cairo_Context; Color : System.Address);
-      pragma Import (C, Internal, "gdk_cairo_set_source_rgba");
+      Color    : Gdk.RGBA.Gdk_RGBA) is
    begin
-      Internal (Cr, Color'Address);
+      Set_Source_Rgba (Cr, Color.Red, Color.Green, Color.Blue, Color.Alpha);
    end Set_Source_RGBA;
 
 end Gdk.Cairo;
