@@ -1,0 +1,274 @@
+--- src/glib-convert.adb.orig	2012-07-09 12:49:29.232400000 +0200
++++ src/glib-convert.adb	2012-07-09 12:53:50.017600000 +0200
+@@ -195,7 +195,7 @@
+         (URI      : String;
+          Hostname : access chars_ptr;
+          Error    : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_from_uri");
++      pragma Import (C, Internal, "g_filename_from_uri_utf8");
+ 
+       S   : constant chars_ptr := Internal (URI & ASCII.NUL, Hostname, Error);
+       Str : constant String := Value (S);
+@@ -219,7 +219,7 @@
+          Bytes_Read    : System.Address := System.Null_Address;
+          Bytes_Written : System.Address := System.Null_Address;
+          Error         : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_from_utf8");
++      pragma Import (C, Internal, "g_filename_from_utf8_utf8");
+ 
+       S   : constant chars_ptr := Internal
+         (UTF8_String, UTF8_String'Length, Error => Error);
+@@ -243,7 +243,7 @@
+         (URI      : String;
+          Hostname : System.Address;
+          Error    : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_to_uri");
++      pragma Import (C, Internal, "g_filename_to_uri_utf8");
+ 
+       S    : chars_ptr;
+       Host : aliased constant String := Hostname & ASCII.NUL;
+@@ -277,7 +277,7 @@
+          Bytes_Read    : System.Address := System.Null_Address;
+          Bytes_Written : System.Address := System.Null_Address;
+          Error         : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_to_utf8");
++      pragma Import (C, Internal, "g_filename_to_utf8_utf8");
+ 
+       S   : constant chars_ptr := Internal
+         (OS_String, OS_String'Length, Error => Error);
+--- src/glib-module.adb.orig	2012-07-09 12:56:01.666000000 +0200
++++ src/glib-module.adb	2012-07-09 12:57:50.366800000 +0200
+@@ -30,11 +30,8 @@
+    ----------------------
+ 
+    function Module_Supported return Boolean is
+-      function Internal return Gint;
+-      pragma Import (C, Internal, "g_module_supported");
+-
+    begin
+-      return Internal /= 0;
++      return False;
+    end Module_Supported;
+ 
+    -----------------
+@@ -45,13 +42,8 @@
+      (File_Name : String;
+       Flags     : Module_Flags := Module_Bind_Lazy) return G_Module
+    is
+-      function Internal
+-        (File_Name : String;
+-         Flags     : Module_Flags) return G_Module;
+-      pragma Import (C, Internal, "g_module_open");
+-
+    begin
+-      return Internal (File_Name & ASCII.NUL, Flags);
++      return null;
+    end Module_Open;
+ 
+    ------------------
+@@ -59,11 +51,8 @@
+    ------------------
+ 
+    function Module_Close (Module : G_Module) return Boolean is
+-      function Internal (Module : G_Module) return Gint;
+-      pragma Import (C, Internal, "g_module_close");
+-
+    begin
+-      return Internal (Module) /= 0;
++      return False;
+    end Module_Close;
+ 
+    ------------------
+@@ -71,11 +60,8 @@
+    ------------------
+ 
+    function Module_Error return String is
+-      function Internal return chars_ptr;
+-      pragma Import (C, Internal, "g_module_error");
+-
+    begin
+-      return Value (Internal);
++      return "";
+    end Module_Error;
+ 
+    ---------------------------
+@@ -106,11 +92,8 @@
+    -----------------
+ 
+    function Module_Name (Module : G_Module) return String is
+-      function Internal (Module : G_Module) return chars_ptr;
+-      pragma Import (C, Internal, "g_module_name");
+-
+    begin
+-      return Value (Internal (Module));
++      return "";
+    end Module_Name;
+ 
+    -----------------------
+@@ -121,12 +104,8 @@
+      (Directory   : String;
+       Module_Name : String) return String
+    is
+-      function Internal
+-        (Directory : String; Module_Name : String) return chars_ptr;
+-      pragma Import (C, Internal, "g_module_build_path");
+-
+    begin
+-      return Value (Internal (Directory & ASCII.NUL, Module_Name & ASCII.NUL));
++      return "";
+    end Module_Build_Path;
+ 
+ end Glib.Module;
+--- src/gdk-pixbuf.adb.orig	2012-07-09 12:59:21.689200000 +0200
++++ src/gdk-pixbuf.adb	2012-07-09 13:00:43.994800000 +0200
+@@ -417,7 +417,7 @@
+       function Internal
+         (Filename : String;
+          Error    : access GError) return System.Address;
+-      pragma Import (C, Internal, "gdk_pixbuf_new_from_file");
++      pragma Import (C, Internal, "gdk_pixbuf_new_from_file_utf8");
+ 
+       Err : aliased GError;
+ 
+@@ -438,7 +438,7 @@
+       function Internal
+         (Filename : String;
+          Error    : access GError) return Gdk_Pixbuf_Animation;
+-      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file");
++      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file_utf8");
+ 
+       Err : aliased GError;
+ 
+--- src/gtk-plug.ads.orig	2012-07-09 13:02:56.423200000 +0200
++++ src/gtk-plug.ads	2012-07-09 13:03:13.364800000 +0200
+@@ -55,9 +55,6 @@
+    function Get_Id (Plug : access Gtk_Plug_Record) return Guint32;
+    --  Return the low level window id associated with Plug.
+ 
+-   function Get_Type return Gtk.Gtk_Type;
+-   --  Return the internal value associated with a Gtk_Plug.
+-
+    -------------
+    -- Signals --
+    -------------
+@@ -75,7 +72,6 @@
+ 
+ private
+    type Gtk_Plug_Record is new Gtk.Window.Gtk_Window_Record with null record;
+-   pragma Import (C, Get_Type, "gtk_plug_get_type");
+ end Gtk.Plug;
+ 
+ --  No binding: gtk_plug_construct
+--- src/gtk-plug.adb.orig	2012-07-09 13:01:17.831200000 +0200
++++ src/gtk-plug.adb	2012-07-09 13:03:40.711600000 +0200
+@@ -28,10 +28,6 @@
+ 
+ package body Gtk.Plug is
+ 
+-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+-     (Get_Type'Access, Gtk_Plug_Record);
+-   pragma Warnings (Off, Type_Conversion);
+-
+    -------------
+    -- Gtk_New --
+    -------------
+@@ -49,11 +45,8 @@
+    procedure Initialize
+      (Plug : access Gtk_Plug_Record'Class; Socket_Id : Guint32)
+    is
+-      function Internal (Socket_Id : Guint32) return System.Address;
+-      pragma Import (C, Internal, "gtk_plug_new");
+-
+    begin
+-      Set_Object (Plug, Internal (Socket_Id));
++      null;
+    end Initialize;
+ 
+    ------------
+@@ -61,11 +54,8 @@
+    ------------
+ 
+    function Get_Id (Plug : access Gtk_Plug_Record) return Guint32 is
+-      function Internal (Plug : System.Address) return Guint32;
+-      pragma Import (C, Internal, "gtk_plug_get_id");
+-
+    begin
+-      return Internal (Get_Object (Plug));
++      return 0;
+    end Get_Id;
+ 
+ end Gtk.Plug;
+--- src/generated/gtk-socket.ads.orig	2012-07-09 13:09:26.251600000 +0200
++++ src/generated/gtk-socket.ads	2012-07-09 13:09:35.861200000 +0200
+@@ -96,9 +96,6 @@
+    procedure Initialize (Self : not null access Gtk_Socket_Record'Class);
+    --  Create a new empty Gtk.Socket.Gtk_Socket.
+ 
+-   function Get_Type return Glib.GType;
+-   pragma Import (C, Get_Type, "gtk_socket_get_type");
+-
+    -------------
+    -- Methods --
+    -------------
+--- src/generated/gtk-socket.adb.orig	2012-07-09 13:06:42.030400000 +0200
++++ src/generated/gtk-socket.adb	2012-07-09 13:10:12.490000000 +0200
+@@ -27,10 +27,6 @@
+ 
+ package body Gtk.Socket is
+ 
+-   package Type_Conversion_Gtk_Socket is new Glib.Type_Conversion_Hooks.Hook_Registrator
+-     (Get_Type'Access, Gtk_Socket_Record);
+-   pragma Unreferenced (Type_Conversion_Gtk_Socket);
+-
+    -------------
+    -- Gtk_New --
+    -------------
+@@ -46,10 +42,8 @@
+    ----------------
+ 
+    procedure Initialize (Self : not null access Gtk_Socket_Record'Class) is
+-      function Internal return System.Address;
+-      pragma Import (C, Internal, "gtk_socket_new");
+    begin
+-      Set_Object (Self, Internal);
++      null;
+    end Initialize;
+ 
+    ------------
+@@ -60,10 +54,8 @@
+       (Self   : not null access Gtk_Socket_Record;
+        Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+    is
+-      procedure Internal (Self : System.Address; Window : System.Address);
+-      pragma Import (C, Internal, "gtk_socket_add_id");
+    begin
+-      Internal (Get_Object (Self), Get_Object (Window));
++      null;
+    end Add_Id;
+ 
+    ------------
+@@ -74,11 +66,8 @@
+       (Self : not null access Gtk_Socket_Record)
+        return Gtk.Window.Gtk_Window
+    is
+-      function Internal (Self : System.Address) return System.Address;
+-      pragma Import (C, Internal, "gtk_socket_get_id");
+-      Stub_Gtk_Window : Gtk.Window.Gtk_Window_Record;
+    begin
+-      return Gtk.Window.Gtk_Window (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Window));
++      return null;
+    end Get_Id;
+ 
+    ---------------------
+@@ -88,10 +77,8 @@
+    function Get_Plug_Window
+       (Self : not null access Gtk_Socket_Record) return Gdk.Gdk_Window
+    is
+-      function Internal (Self : System.Address) return Gdk.Gdk_Window;
+-      pragma Import (C, Internal, "gtk_socket_get_plug_window");
+    begin
+-      return Internal (Get_Object (Self));
++      return null;
+    end Get_Plug_Window;
+ 
+ end Gtk.Socket;
