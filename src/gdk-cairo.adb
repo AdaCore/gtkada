@@ -69,7 +69,7 @@ package body Gdk.Cairo is
       procedure Internal (Cr : Cairo_Context; Color : System.Address);
       pragma Import (C, Internal, "gdk_cairo_set_source_rgba");
    begin
-      Internal (Cr, Gdk_RGBA_Or_Null (Color'Address));
+      Internal (Cr, Color'Address);
    end Set_Source_RGBA;
 
 end Gdk.Cairo;
