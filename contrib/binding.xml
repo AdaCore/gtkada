@@ -370,6 +370,16 @@
 
 
    <!-- ###################################################
+        Gtk.Cairo
+        ###################################################-->
+
+   <package id="GtkCairo">
+      <doc group="Drawing"/>
+      <function id="gtk_cairo_transform_to_window" ada="Transform_To_Window" />
+      <function id="gtk_cairo_should_draw_window" ada="Should_Draw_Window" />
+   </package>
+
+   <!-- ###################################################
         Gtk.Cell_Area_Context
         ###################################################-->
 
