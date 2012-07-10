@@ -1181,10 +1181,7 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
       Ctx     : constant Gtk_Style_Context := Get_Style_Context (Paned);
-      Alloc   : Gtk_Allocation;
    begin
-      Get_Allocation (Paned, Alloc);
-
       loop
          Current := Get (Iter);
          exit when Current = null;
@@ -1192,20 +1189,23 @@ package body Gtkada.Multi_Paned is
          if not Is_Last_Visible (Current)
            and then Current.Visible
          then
+            Save (Cr);
+            Transform_To_Window (Cr, Paned, Current.Handle.Win);
             Gtk.Style_Context.Render_Background
               (Context => Ctx,
                Cr      => Cr,
-               X       => Gdouble (Current.Handle.Position.X - Alloc.X),
-               Y       => Gdouble (Current.Handle.Position.Y - Alloc.Y),
+               X       => 0.0,
+               Y       => 0.0,
                Width   => Gdouble (Current.Handle.Position.Width),
                Height  => Gdouble (Current.Handle.Position.Height));
             Gtk.Style_Context.Render_Handle
               (Context => Ctx,
                Cr      => Cr,
-               X       => Gdouble (Current.Handle.Position.X - Alloc.X),
-               Y       => Gdouble (Current.Handle.Position.Y - Alloc.Y),
+               X       => 0.0,
+               Y       => 0.0,
                Width   => Gdouble (Current.Handle.Position.Width),
                Height  => Gdouble (Current.Handle.Position.Height));
+            Restore (Cr);
          end if;
 
          Next (Iter);
