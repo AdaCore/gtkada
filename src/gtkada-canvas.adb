@@ -2867,6 +2867,7 @@ package body Gtkada.Canvas is
                Put_Line ("Button_Motion, within the scrolling box,"
                          & " starting timeout");
             end if;
+            Canvas.Scrolling_Device := Gtk.Main.Get_Current_Event_Device;
             Canvas.Scrolling_Timeout_Id := Canvas_Timeout.Timeout_Add
               (Timeout_Between_Scrolls, Scrolling_Timeout'Access, Canvas);
          end if;
@@ -3112,9 +3113,10 @@ package body Gtkada.Canvas is
          Put_Line ("Scrolling timeout");
       end if;
 
+      W := Get_Window (Canvas);
+
       Get_Device_Position
-        (Get_Window (Canvas),
-         Gtk.Main.Get_Current_Event_Device,
+        (Get_Window (Canvas), Canvas.Scrolling_Device,
          Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
 
       Test_Scrolling_Box

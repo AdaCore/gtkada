@@ -99,6 +99,7 @@ with Cairo;
 with Cairo.Region;
 
 with Gdk.Color;
+with Gdk.Device;
 with Gdk.Event;
 
 with Glib;
@@ -1017,6 +1018,7 @@ private
       --  Layout used to draw the annotations
 
       Scrolling_Timeout_Id : Glib.Main.G_Source_Id := 0;
+      Scrolling_Device     : Gdk.Device.Gdk_Device;
 
       Orthogonal_Links : Boolean := False;
       --  True if the links should be orthogonal
