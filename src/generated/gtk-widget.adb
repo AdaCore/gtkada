@@ -3284,4 +3284,38 @@ package body Gtk.Widget is
       Internal (Dir);
    end Set_Default_Direction;
 
+   ------------------------
+   -- Should_Draw_Window --
+   ------------------------
+
+   function Should_Draw_Window
+      (Cr     : Cairo.Cairo_Context;
+       Window : Gdk.Gdk_Window) return Boolean
+   is
+      function Internal
+         (Cr     : Cairo.Cairo_Context;
+          Window : Gdk.Gdk_Window) return Integer;
+      pragma Import (C, Internal, "gtk_cairo_should_draw_window");
+   begin
+      return Boolean'Val (Internal (Cr, Window));
+   end Should_Draw_Window;
+
+   -------------------------
+   -- Transform_To_Window --
+   -------------------------
+
+   procedure Transform_To_Window
+      (Cr     : Cairo.Cairo_Context;
+       Widget : not null access Gtk_Widget_Record'Class;
+       Window : Gdk.Gdk_Window)
+   is
+      procedure Internal
+         (Cr     : Cairo.Cairo_Context;
+          Widget : System.Address;
+          Window : Gdk.Gdk_Window);
+      pragma Import (C, Internal, "gtk_cairo_transform_to_window");
+   begin
+      Internal (Cr, Get_Object (Widget), Window);
+   end Transform_To_Window;
+
 end Gtk.Widget;

@@ -2669,6 +2669,37 @@ package Gtk.Widget is
    --  (scrolled_window->hscrollbar, GTK_WIDGET (scrolled_window));
    --  g_object_ref (scrolled_window->hscrollbar); ]|
 
+   procedure Transform_To_Window
+      (Cr     : Cairo.Cairo_Context;
+       Widget : not null access Gtk_Widget_Record'Class;
+       Window : Gdk.Gdk_Window);
+   --  Transforms the given cairo context Cr that from Widget-relative
+   --  coordinates to Window-relative coordinates. If the Widget's window is
+   --  not an ancestor of Window, no modification will be applied.
+   --  This is the inverse to the transformation GTK applies when preparing an
+   --  expose event to be emitted with the Gtk.Widget.Gtk_Widget::draw signal.
+   --  It is intended to help porting multiwindow widgets from GTK+ 2 to the
+   --  rendering architecture of GTK+ 3.
+   --  Since: gtk+ 3.0
+   --  "cr": the cairo context to transform
+   --  "widget": the widget the context is currently centered for
+   --  "window": the window to transform the context to
+
+   function Should_Draw_Window
+      (Cr     : Cairo.Cairo_Context;
+       Window : Gdk.Gdk_Window) return Boolean;
+   --  This function is supposed to be called in Gtk.Widget.Gtk_Widget::draw
+   --  implementations for widgets that support multiple windows. Cr must be
+   --  untransformed from invoking of the draw function. This function will
+   --  return True if the contents of the given Window are supposed to be drawn
+   --  and False otherwise. Note that when the drawing was not initiated by the
+   --  windowing system this function will return True for all windows, so you
+   --  need to draw the bottommost window first. Also, do not use "else if"
+   --  statements to check which window should be drawn.
+   --  Since: gtk+ 3.0
+   --  "cr": a cairo context
+   --  "window": the window to check. Window may not be an input-only window.
+
    ----------------
    -- Properties --
    ----------------
