@@ -155,6 +155,9 @@ package Gdk.Types is
    Button3_Mask  : constant Gdk_Modifier_Type;
    Button4_Mask  : constant Gdk_Modifier_Type;
    Button5_Mask  : constant Gdk_Modifier_Type;
+   Super_Mask    : constant Gdk_Modifier_Type;
+   Hyper_Mask    : constant Gdk_Modifier_Type;
+   Meta_Mask     : constant Gdk_Modifier_Type;
    Release_Mask  : constant Gdk_Modifier_Type;
    Modifier_Mask : constant Gdk_Modifier_Type;
 
@@ -237,8 +240,11 @@ private
    Button3_Mask : constant Gdk_Modifier_Type := 2 ** 10;
    Button4_Mask : constant Gdk_Modifier_Type := 2 ** 11;
    Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
-   Release_Mask  : constant Gdk_Modifier_Type := 2 ** 13;
-   Modifier_Mask : constant Gdk_Modifier_Type := 16#3FFF#;
+   Super_Mask    : constant Gdk_Modifier_Type := 2 ** 26;
+   Hyper_Mask    : constant Gdk_Modifier_Type := 2 ** 27;
+   Meta_Mask     : constant Gdk_Modifier_Type := 2 ** 28;
+   Release_Mask  : constant Gdk_Modifier_Type := 2 ** 30;
+   Modifier_Mask : constant Gdk_Modifier_Type := 16#5C001FFF#;
 
    function Internal_Defaut_Modifier_Mask return Gdk_Modifier_Type;
    pragma Import
