@@ -1680,8 +1680,9 @@ package body Gtkada.MDI is
         (Pat, 1.0, Color.Red, Color.Green, Color.Blue, 0.6);
       Set_Source (Cr, Pat);
       Cairo.Rectangle
-        (Cr, 0.0, 0.0, Height,
-         Gdouble (Get_Allocated_Height (Child.Title_Box)));
+        (Cr, 0.0, 0.0,
+         Gdouble (Get_Allocated_Width (Child.Title_Box)),
+         Height);
       Cairo.Fill (Cr);
       Pattern_Destroy (Pat);
 
