@@ -6283,7 +6283,11 @@ package body Gtkada.MDI is
                end if;
 
                Set_Attribute
-                 (MDI.Perspectives, "state", Gdk_Window_State'Image (State));
+                 (MDI.Perspectives, "state",
+                  Gdk_Window_State'Image
+                  (State
+                   and (not Window_State_Below)
+                   and (not Window_State_Above)));
                Set_Attribute
                  (Central, "perspective", Current_Perspective (MDI));
             end if;

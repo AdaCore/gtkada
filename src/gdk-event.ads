@@ -202,15 +202,18 @@ package Gdk.Event is
    type Gdk_Window_State is mod 2 ** 32;
    --  State of a Window. Default is 0.
 
-   Window_State_Withdraw  : constant Gdk_Window_State := 2 ** 0;
+   Window_State_Withdrawn   : constant Gdk_Window_State := 2 ** 0;
 
-   Window_State_Iconified : constant Gdk_Window_State := 2 ** 1;
+   Window_State_Iconified   : constant Gdk_Window_State := 2 ** 1;
    --  Window is iconified on the desktop
 
-   Window_State_Maximized : constant Gdk_Window_State := 2 ** 2;
+   Window_State_Maximized   : constant Gdk_Window_State := 2 ** 2;
    --  Window is maximized on the desktop
 
-   Window_State_Sticky    : constant Gdk_Window_State := 2 ** 3;
+   Window_State_Sticky      : constant Gdk_Window_State := 2 ** 3;
+   Window_State_Full_Screen : constant Gdk_Window_State := 2 ** 4;
+   Window_State_Above       : constant Gdk_Window_State := 2 ** 5;
+   Window_State_Below       : constant Gdk_Window_State := 2 ** 6;
 
    type Gdk_Setting_Action is
      (Setting_Action_New,
