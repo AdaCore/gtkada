@@ -1206,14 +1206,6 @@ package body Gtkada.Multi_Paned is
                Y       => Gdouble (Current.Handle.Position.Y - Alloc.Y),
                Width   => Gdouble (Current.Handle.Position.Width),
                Height  => Gdouble (Current.Handle.Position.Height));
-
-         --  Hide could cause another Expose event to be sent, resulting in an
-         --  infinite loop. So we first check whether it is already visible
-
-         elsif Current.Handle.Win /= null
-           and then Is_Visible (Current.Handle.Win)
-         then
-            Hide (Current.Handle.Win);
          end if;
 
          Next (Iter);
