@@ -1904,11 +1904,6 @@ package body Gtkada.MDI is
       Print_Debug
         ("Button release, drag=" & Drag_Status'Image (C.MDI.In_Drag));
 
-      --  ??? Should also be set on the children
-      Set_Events (Get_Window (C),
-                  C.Get_Events and (not Button_Motion_Mask)
-                  and (not Pointer_Motion_Mask));
-
       Pointer_Ungrab (Time => 0);
 
       if Get_Window (Child) /= Get_Window (Event) then
@@ -2435,7 +2430,9 @@ package body Gtkada.MDI is
 
       Add_Events
         (Child, Button_Press_Mask
-         or Button_Release_Mask);
+           or Button_Motion_Mask
+           or Button_Release_Mask
+           or Pointer_Motion_Mask);
       Return_Callback.Connect
         (Child, Signal_Button_Press_Event,
          Return_Callback.To_Marshaller (Button_Pressed'Access));
@@ -3705,7 +3702,7 @@ package body Gtkada.MDI is
          end if;
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
-         Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
+         Pack_Start (Box, Child.Tab_Label, Expand => True, Fill => True);
 
          if (Child.Flags and Destroy_Button) /= 0 then
             Close_Button.Gtk_New (Close, Event, Child, False);
@@ -7034,9 +7031,6 @@ package body Gtkada.MDI is
          Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
          Child.MDI.In_Drag := In_Pre_Drag;
          Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
-
-         Add_Events
-           (Child, Button_Motion_Mask or Pointer_Motion_Mask);
 
       else
          Print_Debug ("Child is floating, did not initiate DnD");
