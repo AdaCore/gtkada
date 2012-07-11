@@ -120,10 +120,6 @@ package body Close_Button is
 
       Button.Set_Size_Request
         (Button.Default_Size, Button.Default_Size + 2);
-      Button.Set_Hexpand (False);
-      Button.Set_Vexpand (True);
-      Button.Set_Halign (Align_End);
-      Button.Set_Valign (Align_Fill);
 
       Set_Events
         (Button,
