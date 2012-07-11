@@ -1657,7 +1657,7 @@ package body Gtkada.MDI is
       W, H  : Gint;
       Height : Gdouble;
       Pat : Cairo_Pattern;
-      X     : Gint := 1;
+      X     : Gint := 2;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1699,7 +1699,7 @@ package body Gtkada.MDI is
          Paint (Cr);
          Restore (Cr);
 
-         X := X + W + 1;
+         X := X + W + 2;
       end if;
 
       if Child.MDI.Use_Short_Titles_For_Floats then
@@ -1710,7 +1710,9 @@ package body Gtkada.MDI is
 
       Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
       Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
-      Move_To (Cr, Gdouble (X), 0.0);
+      Move_To
+        (Cr, Gdouble (X),
+         Gdouble ((Get_Allocated_Height (Child.Title_Box) - H) / 2));
       Show_Layout (Cr, Child.MDI.Title_Layout);
       Cairo.Restore (Cr);
 
