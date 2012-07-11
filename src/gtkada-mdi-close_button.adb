@@ -111,15 +111,20 @@ package body Close_Button is
       --  pixmaps, but we lower this size to 14px to be able to draw the extra
       --  border for the hilight.
 
-      --  In the tab, we keep it small however so that this does not take too
-      --  much space.
+      --  In the tab, we keep it smaller, as space is limited there.
       if In_Titlebar then
          Button.Default_Size := 14;
       else
          Button.Default_Size := 11;
       end if;
 
-      Set_Size_Request (Button, Button.Default_Size, Button.Default_Size + 4);
+      Button.Set_Size_Request
+        (Button.Default_Size, Button.Default_Size + 2);
+      Button.Set_Hexpand (False);
+      Button.Set_Vexpand (True);
+      Button.Set_Halign (Align_End);
+      Button.Set_Valign (Align_Fill);
+
       Set_Events
         (Button,
          Get_Events (Button) or Pointer_Motion_Mask or
@@ -162,10 +167,10 @@ package body Close_Button is
       Button  : constant Gtkada_MDI_Close_Button :=
                   Gtkada_MDI_Close_Button (Widget);
       Alpha   : Gdouble;
-      X, Y    : Gint;
       Width   : Gint;
       Height  : Gint;
       dW      : Gdouble;
+      dX, dY  : Gdouble;
       Cross_W : Gdouble;
       Bg      : Gdk_RGBA;
       Base    : Cairo_Color;
@@ -186,8 +191,6 @@ package body Close_Button is
 
       if Button.Get_Realized then
          Button.Get_Allocation (Alloc);
-         X      := Alloc.X;
-         Y      := Alloc.Y;
          Width  := Alloc.Width;
          Height := Alloc.Height;
 
@@ -198,17 +201,19 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 4 : we want at least 1 px margin (so *2) + 1px for the
+         --  Height - 4 : we want 1px for the
          --  thin hilight effect at the bottom of the button. We add another px
          --  to center the button (compensate the hilight size).
-         if dW > Gdouble (Height - 4) then
-            dW := Gdouble (Height - 4);
+         if dW > Gdouble (Height - 2) then
+            dW := Gdouble (Height - 2);
          end if;
 
-         X := X + Width - Gint (dW);
-         Y := Y + (Height - Gint (dW)) / 2;
-
          Cairo.Save (Cr);
+
+         dX := Gdouble (Width - Gint (dW));
+         dY := Gdouble ((Height - Gint (dW)) / 2);
+         Cairo.Translate (Cr, dX, dY);
+
          Cairo.Set_Line_Width (Cr, 1.0);
          Cross_W := dW * 0.7;
 
