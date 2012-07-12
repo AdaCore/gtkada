@@ -68,14 +68,14 @@ package body Gtk.Css_Provider is
       function Internal
          (Self      : System.Address;
           Data      : Interfaces.C.Strings.chars_ptr;
-          Length    : Gint;
+          Length    : Gint := -1;
           Acc_Error : access Glib.Error.GError) return Integer;
       pragma Import (C, Internal, "gtk_css_provider_load_from_data");
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Data   : Interfaces.C.Strings.chars_ptr := New_String (Data);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Data, Length, Acc_Error'Access);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Data, -1, Acc_Error'Access);
       Free (Tmp_Data);
       if Error /= null then
          Error.all := Acc_Error;

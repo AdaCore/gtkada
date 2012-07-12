@@ -365,7 +365,14 @@ class SubprogramProfile(object):
                 else:
                     code.append("%s := Acc_%s;" % (p.name, p.name))
 
-            result.append(Parameter(name=n, mode=m, type=p.type))
+            # If we do not bind the parameter in the Ada profile, we will need
+            # to substitute its default value instead. But we don't want to
+            # systematically put the default value, which is in Ada. We would
+            # end up with Interfaces.C.Strings.chars_ptr=""
+
+            result.append(Parameter(name=n, mode=m, type=p.type,
+                                    default=p.default if not p.ada_binding else None,
+                                    ada_binding=p.ada_binding))
 
         return result;
 

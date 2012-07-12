@@ -1155,12 +1155,30 @@ class Parameter(Local_Var):
 
     def as_call(self, pkg, lang="ada->ada", value=None):
         """'pkg' is the package instance in which the call occurs."""
-        return super(Parameter, self).as_call(
-            pkg=pkg, lang=lang, mode=self.mode, value=value)
+
+        if not self.ada_binding:
+            if self.default is not None:
+                return VariableCall(call=self.default,
+                                    precall='', postcall='', tmpvars=[])
+            else:
+                return VariableCall(call="Parameter not bound in Ada",
+                                    precall='', postcall='', tmpvars=[])
+        else:
+            return super(Parameter, self).as_call(
+                pkg=pkg, lang=lang, mode=self.mode, value=value)
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
         return self.type.direct_cmap()
+
+    def value(self):
+        if not self.ada_binding:
+            if self.default is not None:
+                return self.default
+            else:
+                return "Parameter not bound in Ada"
+        else:
+            return self.ada_binding
 
 
 def base_name(qname):
