@@ -61,10 +61,9 @@ package body Gtk.Css_Provider is
    --------------------
 
    function Load_From_Data
-      (Self   : not null access Gtk_Css_Provider_Record;
-       Data   : UTF8_String;
-       Length : Gint := -1;
-       Error  : access Glib.Error.GError) return Boolean
+      (Self  : not null access Gtk_Css_Provider_Record;
+       Data  : UTF8_String;
+       Error : access Glib.Error.GError) return Boolean
    is
       function Internal
          (Self      : System.Address;

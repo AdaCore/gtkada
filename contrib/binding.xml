@@ -3195,7 +3195,7 @@ creating a tag.
    <package id="GtkCssProvider">
      <method id="gtk_css_provider_load_from_data">
        <parameter name="data" ctype="char*"/>
-       <parameter name="length" default="-1" ctype="gint"/>
+       <parameter name="length" default="-1" ada="" ctype="gint"/>
        <parameter name="error" direction="access"/>
      </method>
      <method id="gtk_css_provider_load_from_path">

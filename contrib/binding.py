@@ -429,9 +429,13 @@ class SubprogramProfile(object):
                    convention=None, lang="ada"):
         """Return an instance of Subprogram with the corresponding profile"""
 
+        params = self.params
+        if lang == "ada":
+            params = [p for p in self.params if p.ada_binding]
+
         subp = Subprogram(
                 name=name,
-                plist=self.params,
+                plist=params,
                 returns=self.returns,
                 showdoc=showdoc,
                 doc=self.doc,
@@ -472,7 +476,10 @@ class SubprogramProfile(object):
         for p in params.findall(nparam):
             name = p.get("name")
             gtkparam = gtkmethod.get_param(name=name)
-            name = gtkparam.ada_name() or name  # override
+            adan = gtkparam.ada_name()
+
+            ada_binding = adan is None or adan != ""
+            name = adan or name  # override default computed name
 
             default = gtkparam.get_default()
             allow_access=not default
@@ -529,6 +536,7 @@ class SubprogramProfile(object):
                           type=type,
                           mode=mode,
                           default=default,
+                          ada_binding=ada_binding,
                           doc=doc))
 
         return result

@@ -70,7 +70,10 @@ Where the package node is defined as follows:
          </doc>
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param -->
-            ada="..."      <!-- optional, name to use in Ada -->
+            ada="..."      <!-- optional, name to use in Ada. If empty, the
+                                parameter will be omitted in the Ada profile,
+                                but kept in the C profile.
+                           -->
             type="..."     <!-- optional, override Ada type.
                                 The value will be passed as is to C, unless
                                 it is "Glib.Object.GObject", in which
@@ -130,7 +133,7 @@ Where the package node is defined as follows:
 
           <!-- Code will be put after generated subprograms-->
           <spec>...     <!-- optional, code to insert in spec -->
-          <body before="true">...     <!-- optional, code to insert in body 
+          <body before="true">...     <!-- optional, code to insert in body
                                By default, it is inserted before the generated code,
                                unless 'before' is set to "false" -->
 

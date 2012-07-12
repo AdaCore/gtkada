@@ -375,8 +375,8 @@ class GObject(CType):
         else:
             conv = "%s (Get_User_Data (%%(var)s, %s))" % (self.ada, stub)
 
-        return (self.param, 
-                self.cparam, 
+        return (self.param,
+                self.cparam,
                 conv,
                 [Local_Var(
                     stub, AdaType("%s_Record" % self.ada, in_spec=False))])
@@ -1120,15 +1120,21 @@ class Local_Var(object):
 
 
 class Parameter(Local_Var):
-    __slots__ = ["name", "type", "default", "aliased", "mode", "doc"]
+    __slots__ = ["name", "type", "default", "aliased", "mode", "doc",
+                 "ada_binding"]
 
-    def __init__(self, name, type, default="", doc="", mode="in"):
+    def __init__(self, name, type, default="", doc="", mode="in",
+                 ada_binding=True):
         """A mode "access_c" indicates an "access" parameter for which
            calls will use a 'Access.
+           :param ada_binding: if False, the parameter will not be displayed
+              in the profile of Ada subprograms (although, of course, it will
+              be passed to the C subprograms)
         """
         super(Parameter, self).__init__(name, type, default)
         self.mode = mode
         self.doc  = doc
+        self.ada_binding = ada_binding
 
     def _type(self, lang, pkg):
         mode = self.mode
