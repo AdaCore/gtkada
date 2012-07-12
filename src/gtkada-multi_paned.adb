@@ -142,6 +142,7 @@ package body Gtkada.Multi_Paned is
    function On_Draw
      (Paned : access Gtk_Widget_Record'Class;
       Cr    : Cairo_Context) return Boolean;
+   function On_Draw_Proxy is new Proxy_Draw (On_Draw);
    --  Redraw all the handles
 
    procedure Move_Handle
@@ -526,8 +527,7 @@ package body Gtkada.Multi_Paned is
          Class_Record => Paned_Class_Record,
          Type_Name    => "GtkAdaMultiPaned",
          Parameters   => (1 .. 0 => (1 => GType_None)));
-      Set_Draw_Handler (Paned_Class_Record, On_Draw'Access);
-
+      Set_Default_Draw_Handler (Paned_Class_Record, On_Draw_Proxy'Access);
       Set_Default_Size_Allocate_Handler
         (Paned_Class_Record, Size_Allocate_Paned'Access);
 

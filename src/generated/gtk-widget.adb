@@ -42,39 +42,26 @@ package body Gtk.Widget is
 
 
    function Convert is new Ada.Unchecked_Conversion
-     (System.Address, Draw_Handler);
-   function Convert is new Ada.Unchecked_Conversion
      (Draw_Handler, System.Address);
 
-   procedure Set_Draw_Handler
+   function Proxy_Draw
+     (W  : System.Address;
+      Cr : Cairo.Cairo_Context) return Gboolean
+   is
+      Stub : Gtk_Widget_Record;
+      W2 : constant Gtk_Widget := Gtk_Widget (Get_User_Data (W, Stub));
+   begin
+      return Boolean'Pos (Draw (W2, Cr));
+   end Proxy_Draw;
+
+   procedure Set_Default_Draw_Handler
      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
    is
       procedure Internal (K : GObject_Class; H : System.Address);
       pragma Import (C, Internal, "ada_gtk_set_draw_handler");
    begin
       Internal (Klass, Convert (Handler));
-   end Set_Draw_Handler;
-
-   function Proxy_Draw
-     (W : System.Address; Cr : Cairo.Cairo_Context;
-      Do_Draw : System.Address) return Gboolean;
-   pragma Export (C, Proxy_Draw, "ada_gtk_proxy_draw");
-
-   function Proxy_Draw
-     (W       : System.Address;
-      Cr      : Cairo.Cairo_Context;
-      Do_Draw : System.Address) return Gboolean
-   is
-      Stub : Gtk_Widget_Record;
-      WA : Gtk_Widget;
-      User_Draw : Draw_Handler;
-      Result : Boolean;
-   begin
-      WA := Gtk_Widget (Get_User_Data_Fast (W, Stub));
-      User_Draw := Convert (Do_Draw);
-      Result := User_Draw (WA, Cr);
-      return Boolean'Pos (Result);
-   end Proxy_Draw;
+   end Set_Default_Draw_Handler;
 
    function Get_Allocation
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access

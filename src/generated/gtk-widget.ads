@@ -2627,17 +2627,27 @@ package Gtk.Widget is
    --  widgets, and should be reserved for advanced customization of the
    --  standard widgets.
 
-   type Draw_Handler is access function
+   generic
+   with function Draw
      (W  : access Gtk_Widget_Record'Class;
       Cr : Cairo.Cairo_Context) return Boolean;
+   function Proxy_Draw
+     (W  : System.Address; Cr : Cairo.Cairo_Context) return Gboolean;
+   pragma Convention (C, Proxy_Draw);
+
+   type Draw_Handler is access function
+     (W  : System.Address;
+      Cr : Cairo.Cairo_Context) return Gboolean;
+   pragma Convention (C, Draw_Handler);
    --  A function responsible for drawing a widget.
    --  See also Gtk.Container.Draw_Windowless_Children.
 
-   procedure Set_Draw_Handler
+   procedure Set_Default_Draw_Handler
      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
    --  Override the default drawing function. This in general gives more
    --  control than connection to Signal_Draw, however a widget is responsible
    --  for drawing its children.
+   --  Use the generic Proxy_Draw to create a suitable callback.
 
    ---------------
    -- Functions --

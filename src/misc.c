@@ -527,33 +527,6 @@ ada_get_nth_virtual_function (GObjectClass* class, gint num)
   return virtual_functions + num * sizeof (gpointer);
 }
 
-/**
- * Additional space in each class for GtkAda-specific support
- * fields. We need an additional field to store the GtkAda draw
- * handler (since the "draw" field used by gtk+ itself must point to
- * a function with Convention C, and receives a GtkWidget*, not a
- * Gtk.Widget.Gtk_Widget).
- */
-
-#define EXTRA_CLASS_SPACE (1 * sizeof(void*))
-#define GTKADA_DEFAULT_DRAW_HANDLE(klass, query) (void**)((guint8*)(klass) + query.class_size - sizeof(void*))
-
-extern gboolean ada_gtk_proxy_draw (GtkWidget*, cairo_t*, void* ada_draw);
-//  exported from Ada
-
-static gboolean draw_first_level (GtkWidget* w, cairo_t* c) {
-  GTypeQuery query;
-  GObjectClass* klass = G_OBJECT_GET_CLASS(w);
-  GType ancestor = G_TYPE_FROM_CLASS (klass);
-  g_type_query (ancestor, &query);
-
-  void* ada_draw = *GTKADA_DEFAULT_DRAW_HANDLE(klass, query);
-  printf("MANU draw_first_level klass=%p size=%d ada_draw=%p\n",
-         klass, query.class_size, ada_draw);
-  printf("MANU ada_gtk_proxy=%p\n", ada_gtk_proxy_draw);
-  return ada_gtk_proxy_draw(w, c, ada_draw);
-}
-
 void
 ada_gtk_set_draw_handler
    (GObjectClass* klass, 
@@ -561,13 +534,7 @@ ada_gtk_set_draw_handler
 {
 
   if (draw && GTK_IS_WIDGET_CLASS(klass)) {
-      GTypeQuery query;
-      GType ancestor = G_TYPE_FROM_CLASS (klass);
-      g_type_query (ancestor, &query);
-
-      printf ("MANU set draw_handler=%p klass=%p size=%d\n", draw, klass, query.class_size);
-      *GTKADA_DEFAULT_DRAW_HANDLE(klass, query) = draw;
-      GTK_WIDGET_CLASS(klass)->draw = draw_first_level;
+      GTK_WIDGET_CLASS(klass)->draw = draw;
   }  
 }
 
@@ -591,8 +558,6 @@ ada_initialize_class_record
          to worry, since this is only allocated once per user's widget type,
          and might be used until the end of the application */
 
-      printf ("MANU initialize_class_record %s\n", type_name);
-
       /* Right now, object->klass points to the ancestor's class */
       GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
       GTypeInfo * class_info = g_new (GTypeInfo, 1);
@@ -606,7 +571,6 @@ ada_initialize_class_record
                                                 
       class_info->class_size = query.class_size
           + nsignals * sizeof (void*)
-          + EXTRA_CLASS_SPACE
           + sizeof (GObjectGetPropertyFunc)
           + sizeof (GObjectSetPropertyFunc)
           + sizeof (void*); /* Last one is for virtual functions */
@@ -621,8 +585,6 @@ ada_initialize_class_record
       class_info->n_preallocs = 0;
       class_info->instance_init = NULL;
       class_info->value_table = NULL;
-
-      printf ("MANU ancestor size=%d new size=%d\n", query.class_size, class_info->class_size);
 
       /* Need to create a new type, otherwise Gtk+ won't free objects of
          this type */
