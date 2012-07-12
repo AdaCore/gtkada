@@ -113,13 +113,13 @@ package body Close_Button is
 
       --  In the tab, we keep it smaller, as space is limited there.
       if In_Titlebar then
-         Button.Default_Size := 14;
+         Button.Default_Size := 12;
       else
          Button.Default_Size := 11;
       end if;
 
       Button.Set_Size_Request
-        (Button.Default_Size, Button.Default_Size + 2);
+        (Button.Default_Size, Button.Default_Size + 4);
 
       Set_Events
         (Button,
