@@ -233,7 +233,9 @@ package body Gtkada.MDI is
    --  If there are no visible pages and Hide_If_Empty is true, then the
    --  notebook itself is hidden
 
-   procedure Update_Tab_Color (Child : access MDI_Child_Record'Class);
+   procedure Update_Tab_Color
+     (Note    : Gtk_Notebook;
+      Focused : Boolean);
    --  Change the background color of the notebook tab containing child,
    --  depending on whether the child is selected or not.
 
@@ -277,6 +279,9 @@ package body Gtkada.MDI is
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
+
+   procedure Map_MDI (MDI : access Gtk_Widget_Record'Class);
+   --  Called when the child is mapped
 
    procedure Set_Dnd_Source
      (Widget : access Gtk_Widget_Record'Class;
@@ -899,6 +904,9 @@ package body Gtkada.MDI is
         (MDI, Gtk.Widget.Signal_Realize,
          Widget_Callback.To_Marshaller (Realize_MDI'Access));
       Widget_Callback.Connect
+        (MDI, Gtk.Widget.Signal_Map,
+         Widget_Callback.To_Marshaller (Map_MDI'Access));
+      Widget_Callback.Connect
         (MDI, Signal_Destroy,
          Widget_Callback.To_Marshaller (Destroy_MDI'Access));
       Widget_Callback.Connect
@@ -1396,7 +1404,6 @@ package body Gtkada.MDI is
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
          Set_Child_Title_Bar (C);
-         Update_Tab_Color (C);
          List := Widget_List.Next (List);
       end loop;
    end Reset_Title_Bars_And_Colors;
@@ -1406,7 +1413,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
-      M           : constant MDI_Window := MDI_Window (MDI);
+      M : constant MDI_Window := MDI_Window (MDI);
 
    begin
       if M.Cursor_Cross = null then
@@ -1415,6 +1422,19 @@ package body Gtkada.MDI is
 
       Queue_Resize (MDI);
    end Realize_MDI;
+
+   -------------
+   -- Map_MDI --
+   -------------
+
+   procedure Map_MDI (MDI : access Gtk_Widget_Record'Class) is
+      M : constant MDI_Window := MDI_Window (MDI);
+
+   begin
+      if M.Focus_Child /= null then
+         Update_Tab_Color (Get_Notebook (M.Focus_Child), True);
+      end if;
+   end Map_MDI;
 
    -----------------
    -- Destroy_MDI --
@@ -1742,8 +1762,6 @@ package body Gtkada.MDI is
       end if;
 
       --  Set the color of the notebook page and label.
-
-      Update_Tab_Color (Child);
 
       Cairo.Save (Cr);
 
@@ -3174,27 +3192,26 @@ package body Gtkada.MDI is
    -- Update_Tab_Color --
    ----------------------
 
-   procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
-      Note  : constant Gtk_Notebook := Get_Notebook (Child);
-      Modified : Boolean := False;
+   procedure Update_Tab_Color
+     (Note    : Gtk_Notebook;
+      Focused : Boolean)
+   is
    begin
-      if Note /= null then
-         if MDI_Child (Child) = Child.MDI.Focus_Child then
-            if not Get_Style_Context (Note).Has_Class ("mdifocused") then
-               Get_Style_Context (Note).Add_Class ("mdifocused");
-               Modified := True;
-            end if;
-         else
-            if Get_Style_Context (Note).Has_Class ("mdifocused") then
-               Get_Style_Context (Note).Remove_Class ("mdifocused");
-               Modified := True;
-            end if;
-         end if;
-
-         if Modified then
-            Note.Queue_Draw;
-         end if;
+      if Note = null then
+         return;
       end if;
+
+      if not Note.Get_Mapped then
+         return;
+      end if;
+
+      if not Focused then
+         Get_Style_Context (Note).Remove_Class ("mdifocused");
+      else
+         Get_Style_Context (Note).Add_Class ("mdifocused");
+      end if;
+
+      Note.Queue_Draw;
    end Update_Tab_Color;
 
    ---------------------
@@ -3234,10 +3251,10 @@ package body Gtkada.MDI is
       Print_Debug ("Set_Focus_Child on " & Get_Title (C));
 
       if Previous_Focus_Child /= null then
-         Update_Tab_Color (Previous_Focus_Child);
+         Update_Tab_Color (Get_Notebook (Previous_Focus_Child), False);
       end if;
 
-      Update_Tab_Color (C);
+      Update_Tab_Color (Get_Notebook (C), True);
 
       Ref (C);
       Remove (C.MDI.Items, Gtk_Widget (Child));
@@ -3791,8 +3808,6 @@ package body Gtkada.MDI is
          Set_Tab_Label (Note, Child, Event);
          Show_All (Event);
 
-         Update_Tab_Color (Child);
-
          Return_Callback.Object_Connect
            (Event, Signal_Button_Press_Event,
             Return_Callback.To_Marshaller
@@ -3901,6 +3916,10 @@ package body Gtkada.MDI is
       Set_Tab_Reorderable (Note, Child, Reorderable => True);
 
       Configure_Notebook_Tabs (MDI, Note);
+
+      if Child = Child.MDI.Focus_Child then
+         Update_Tab_Color (Note, True);
+      end if;
 
       Update_Tab_Label (Child);
 
@@ -4194,6 +4213,10 @@ package body Gtkada.MDI is
       Child := MDI_Child (C);
       Child.Tab_Label := null;
       Set_State (Child, Normal);
+
+      if Child.MDI.Focus_Child = Child then
+         Update_Tab_Color (Get_Notebook (Child), False);
+      end if;
 
       if not Note.In_Destruction then
          Print_Debug ("Removed_From_Notebook: " & Get_Title (Child));
