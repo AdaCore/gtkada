@@ -356,7 +356,12 @@ class SubprogramProfile(object):
                 localvars.append(var)
 
                 if p.mode == "access":
-                    code.append("%s.all := Acc_%s;" % (p.name, p.name))
+                    if p.type.allow_none:
+                        code.append(
+                            "if %s /= null then %s.all := Acc_%s; end if;"
+                            % (p.name, p.name, p.name))
+                    else:
+                        code.append("%s.all := Acc_%s;" % (p.name, p.name))
                 else:
                     code.append("%s := Acc_%s;" % (p.name, p.name))
 
@@ -1846,7 +1851,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                         # Go before the body of generated subprograms, so that
                         # we can add type definition
                         section.add_code(p.text, specs=False)
-                        
+
 
         self._constructors()
         self._method_get_type()
