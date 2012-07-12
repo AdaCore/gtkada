@@ -1841,11 +1841,12 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                         cname=p.get("ctype"),
                         type=Proxy(p.get("ada"), p.get("properties", None)))
                     section.add_code(p.text)
-
                 elif p.tag == "body":
-                    # Go before the body of generated subprograms, so that
-                    # we can add type definition
-                    section.add_code(p.text, specs=False)
+                    if p.get("before", "true").lower() == "true":
+                        # Go before the body of generated subprograms, so that
+                        # we can add type definition
+                        section.add_code(p.text, specs=False)
+                        
 
         self._constructors()
         self._method_get_type()
@@ -1857,6 +1858,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                 if p.tag == "spec":
                     s = s or self.pkg.section("GtkAda additions")
                     s.add_code(p.text)
+                elif p.tag == "body" \
+                        and p.get("before", "true").lower() != "true":
+                    s.add_code(p.text, specs=False)
+
 
         self._functions()
         self._globals()

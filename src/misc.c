@@ -370,7 +370,8 @@ ada_gtk_dialog_new_with_buttons (const gchar     *title,
                                  GtkWindow       *parent,
                                  GtkDialogFlags   flags)
 {
-  return gtk_dialog_new_with_buttons (title, parent, flags, NULL);
+  return gtk_dialog_new_with_buttons (title, parent, flags, 
+                                      NULL /* first_button_text*/, NULL);
 }
 
 GtkWidget*
@@ -526,7 +527,51 @@ ada_get_nth_virtual_function (GObjectClass* class, gint num)
   return virtual_functions + num * sizeof (gpointer);
 }
 
-void*
+/**
+ * Additional space in each class for GtkAda-specific support
+ * fields. We need an additional field to store the GtkAda draw
+ * handler (since the "draw" field used by gtk+ itself must point to
+ * a function with Convention C, and receives a GtkWidget*, not a
+ * Gtk.Widget.Gtk_Widget).
+ */
+
+#define EXTRA_CLASS_SPACE (1 * sizeof(void*))
+#define GTKADA_DEFAULT_DRAW_HANDLE(klass, query) (void**)((guint8*)(klass) + query.class_size - sizeof(void*))
+
+extern gboolean ada_gtk_proxy_draw (GtkWidget*, cairo_t*, void* ada_draw);
+//  exported from Ada
+
+static gboolean draw_first_level (GtkWidget* w, cairo_t* c) {
+  GTypeQuery query;
+  GObjectClass* klass = G_OBJECT_GET_CLASS(w);
+  GType ancestor = G_TYPE_FROM_CLASS (klass);
+  g_type_query (ancestor, &query);
+
+  void* ada_draw = *GTKADA_DEFAULT_DRAW_HANDLE(klass, query);
+  printf("MANU draw_first_level klass=%p size=%d ada_draw=%p\n",
+         klass, query.class_size, ada_draw);
+  printf("MANU ada_gtk_proxy=%p\n", ada_gtk_proxy_draw);
+  return ada_gtk_proxy_draw(w, c, ada_draw);
+}
+
+void
+ada_gtk_set_draw_handler
+   (GObjectClass* klass, 
+    gboolean (*draw) (GtkWidget *, cairo_t*))
+{
+
+  if (draw && GTK_IS_WIDGET_CLASS(klass)) {
+      GTypeQuery query;
+      GType ancestor = G_TYPE_FROM_CLASS (klass);
+      g_type_query (ancestor, &query);
+
+      printf ("MANU set draw_handler=%p klass=%p size=%d\n", draw, klass, query.class_size);
+      *GTKADA_DEFAULT_DRAW_HANDLE(klass, query) = draw;
+      GTK_WIDGET_CLASS(klass)->draw = draw_first_level;
+  }  
+}
+
+GObjectClass*
 ada_initialize_class_record
   (GObject*      object,
    gint          nsignals,
@@ -543,8 +588,10 @@ ada_initialize_class_record
   if (!old_class_record)
     {
       /* Note: The memory allocated in this function is never freed. No need
-	 to worry, since this is only allocated once per user's widget type,
-	 and might be used until the end of the application */
+         to worry, since this is only allocated once per user's widget type,
+         and might be used until the end of the application */
+
+      printf ("MANU initialize_class_record %s\n", type_name);
 
       /* Right now, object->klass points to the ancestor's class */
       GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
@@ -556,12 +603,13 @@ ada_initialize_class_record
 
       /* We need to know the ancestor's class/instance sizes */
       g_type_query (ancestor, &query);
-
+                                                
       class_info->class_size = query.class_size
-	+ nsignals * sizeof (void*)
-	+ sizeof (GObjectGetPropertyFunc)
-	+ sizeof (GObjectSetPropertyFunc)
-	+ sizeof (void*); /* Last one if for virtual functions */
+          + nsignals * sizeof (void*)
+          + EXTRA_CLASS_SPACE
+          + sizeof (GObjectGetPropertyFunc)
+          + sizeof (GObjectSetPropertyFunc)
+          + sizeof (void*); /* Last one is for virtual functions */
       class_info->base_init = NULL;
       class_info->base_finalize = NULL;
       class_info->class_init = NULL;
@@ -574,6 +622,8 @@ ada_initialize_class_record
       class_info->instance_init = NULL;
       class_info->value_table = NULL;
 
+      printf ("MANU ancestor size=%d new size=%d\n", query.class_size, class_info->class_size);
+
       /* Need to create a new type, otherwise Gtk+ won't free objects of
          this type */
       new_type = g_type_register_static (ancestor, type_name, class_info, 0);
@@ -582,36 +632,32 @@ ada_initialize_class_record
       g_assert (klass != NULL);
 
       /* Initialize signals */
-      for (j = 0; j < nsignals; j++)
-	{
-	  int count = 0;
-	  guint id;
-	  GClosure *closure;
+      for (j = 0; j < nsignals; j++) {
+         int count = 0;
+         guint id;
+         GClosure *closure;
+       
+         while (count < max_parameters &&
+                 (parameters [j * max_parameters + count] != G_TYPE_NONE)) {
+               count++;
+         }
 
-	  while (count < max_parameters
-		 &&
-		 (parameters [j * max_parameters + count] != G_TYPE_NONE))
-	    {
-	      count++;
-	    }
-
-
-	  closure = g_signal_type_cclosure_new
-	    (new_type, query.class_size + j * sizeof (void*)); /* offset */
-
-	  id = g_signal_newv
-	    (signals[j],                       /* signal_name */
-	     new_type,                         /* itype */
-	     G_SIGNAL_RUN_LAST,                /* signal_flags */
-	     closure,                          /* class_closure */
-	     NULL,                             /* accumulator */
-	     NULL,                             /* accu_data */
-	     g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
-	       Ada level ??? This probably makes the widget unusable from C */
-	     G_TYPE_NONE,                      /* return_type */
-	     count,                            /* n_params */
-	     parameters + j * max_parameters); /* param_types */
-	}
+         closure = g_signal_type_cclosure_new
+             (new_type, query.class_size + j * sizeof (void*)); /* offset */
+       
+         id = g_signal_newv
+           (signals[j],                       /* signal_name */
+            new_type,                         /* itype */
+            G_SIGNAL_RUN_LAST,                /* signal_flags */
+            closure,                          /* class_closure */
+            NULL,                             /* accumulator */
+            NULL,                             /* accu_data */
+            g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
+              Ada level ??? This probably makes the widget unusable from C */
+            G_TYPE_NONE,                      /* return_type */
+            count,                            /* n_params */
+            parameters + j * max_parameters); /* param_types */
+       }
 
       /* Initialize the function pointers for the new signals to NULL */
       memset ((char*)(klass) + query.class_size, 0,
@@ -626,16 +672,16 @@ ada_initialize_class_record
 		     + nsignals * sizeof (void*))) = virtual;
 
       for (j = 0; j < num_virtual_functions; j++) {
-	virtual [j] = virtual_functions [j];
+          virtual [j] = virtual_functions [j];
       }
-
     }
-  else
-    {
+
+  else {
       klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
     }
 
   ((GTypeInstance*)object)->g_class = (GTypeClass*) klass;
+
   return klass;
 }
 
@@ -644,6 +690,13 @@ ada_widget_set_realize (GtkWidget *widget, void (* realize) (GtkWidget *))
 {
   GTK_WIDGET_GET_CLASS (widget)->realize = realize;
 }
+
+void
+ada_widget_set_draw (GtkWidget *widget, gboolean (*draw) (GtkWidget *, cairo_t*))
+{
+  GTK_WIDGET_GET_CLASS (widget)->draw = draw;
+}
+
 
 void
 ada_gtk_widget_set_default_size_allocate_handler
@@ -2644,7 +2697,7 @@ ada_gflags_get_nick (GFlagsValue* value)
  ** GParamSpec                           **
  ******************************************/
 
-char*
+const char*
 ada_gparam_get_name (GParamSpec* param)
 {
   return param->name;

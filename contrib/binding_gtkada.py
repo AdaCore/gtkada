@@ -130,7 +130,9 @@ Where the package node is defined as follows:
 
           <!-- Code will be put after generated subprograms-->
           <spec>...     <!-- optional, code to insert in spec -->
-          <body>...     <!-- optional, code to insert in body -->
+          <body before="true">...     <!-- optional, code to insert in body 
+                               By default, it is inserted before the generated code,
+                               unless 'before' is set to "false" -->
 
           <type            <!-- Maps a C type to an Ada type -->
              ctype="..."   <!-- Mandatory: c type name -->

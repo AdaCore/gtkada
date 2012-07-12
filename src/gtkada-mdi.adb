@@ -265,6 +265,13 @@ package body Gtkada.MDI is
       return Boolean;
    --  Draw the child (and the title bar)
 
+   function Draw_Dnd_Target_Window
+     (MDI    : access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
+      return Boolean;
+   --  Draw the target window, which shows where the window being dragged will
+   --  be inserted.
+
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
 
@@ -1643,6 +1650,26 @@ package body Gtkada.MDI is
       end if;
    end Set_Child_Title_Bar;
 
+   ----------------------------
+   -- Draw_Dnd_Target_Window --
+   ----------------------------
+
+   function Draw_Dnd_Target_Window
+     (MDI    : access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
+      return Boolean
+   is
+      Color : Gdk_RGBA := MDI_Window (MDI).Focus_Title_Color;
+   begin
+      Color.Alpha := 0.3;
+      Set_Source_RGBA (Cr, Color);
+      Paint (Cr);
+      --  Cairo.Rectangle (Cr, 0.0, 0.0, 500.0, 500.0);
+      --  Cairo.Fill (Cr);
+
+      return False;
+   end Draw_Dnd_Target_Window;
+
    ----------------
    -- Draw_Child --
    ----------------
@@ -1736,6 +1763,7 @@ package body Gtkada.MDI is
 
       Frame : Gtk_Frame;
       Box   : Gtk_Box;
+      Event : Gtk_Event_Box;
       Pos   : constant Integer := Ada.Strings.Fixed.Index
         (MDI.Dnd_Message.all, "(#)");
    begin
@@ -1743,16 +1771,21 @@ package body Gtkada.MDI is
          Gtk_New (MDI.Dnd_Window, Window_Popup);
          Set_Transient_For (MDI.Dnd_Window, Gtk_Window (Get_Toplevel (MDI)));
          Set_Position (MDI.Dnd_Window, Win_Pos_Center_On_Parent);
-         Override_Background_Color
-           (MDI.Dnd_Window, Gtk_State_Flag_Normal, MDI.Focus_Title_Color);
          Set_Keep_Above (MDI.Dnd_Window, True);
+         MDI.Dnd_Window.Set_App_Paintable (True);
+
+         Gtk_New (Event);
+         Add (MDI.Dnd_Window, Event);
+         Override_Background_Color
+           (Event, Gtk_State_Flag_Normal, MDI.Focus_Title_Color);
 
          Gtk_New (Frame);
-         Add (MDI.Dnd_Window, Frame);
+         Frame.Set_Shadow_Type (Shadow_In);
+         Add (Event, Frame);
 
          Gtk_New_Vbox (Box, Homogeneous => False);
+         Box.Set_Border_Width (10);
          Add (Frame, Box);
-         Set_Border_Width (Box, 10);
 
          Gtk_New (MDI.Dnd_Window_Label, "");
          Set_Use_Markup (MDI.Dnd_Window_Label, True);
@@ -6956,17 +6989,19 @@ package body Gtkada.MDI is
                Gtk_New (MDI.Dnd_Target_Window, Window_Popup);
                Set_Transient_For
                  (MDI.Dnd_Target_Window, Gtk_Window (Get_Toplevel (MDI)));
-               Set_Events (MDI.Dnd_Target_Window, Exposure_Mask);
-               Override_Background_Color
-                 (MDI.Dnd_Target_Window, Gtk_State_Flag_Normal,
-                  MDI.Focus_Title_Color);
                Set_Decorated (MDI.Dnd_Target_Window, False);
                Set_Accept_Focus (MDI.Dnd_Target_Window, False);
+               Set_Events (MDI.Dnd_Target_Window, Exposure_Mask);
+               MDI.Dnd_Target_Window.Set_App_Paintable (True);
 
                Realize (MDI.Dnd_Target_Window);
 
-               --  This will not work on all Unix platforms, though...
-               Set_Opacity (Get_Window (MDI.Dnd_Target_Window), 0.5);
+               Return_Callback.Object_Connect
+                 (MDI.Dnd_Target_Window, Signal_Draw,
+                  Return_Callback.To_Marshaller
+                     (Draw_Dnd_Target_Window'Access),
+                  Slot_Object => MDI,
+                  After => True);
             end if;
 
             if Ref_Window /= null then
