@@ -790,7 +790,8 @@ package Gtk.Css_Provider is
    function Load_From_Data
       (Self   : not null access Gtk_Css_Provider_Record;
        Data   : UTF8_String;
-       Length : Gint := -1) return Boolean;
+       Length : Gint := -1;
+       Error  : access Glib.Error.GError) return Boolean;
    --  Loads Data into Css_Provider, making it clear any previously loaded
    --  information.
    --  "data": CSS data loaded in memory

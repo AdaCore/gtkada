@@ -63,18 +63,22 @@ package body Gtk.Css_Provider is
    function Load_From_Data
       (Self   : not null access Gtk_Css_Provider_Record;
        Data   : UTF8_String;
-       Length : Gint := -1) return Boolean
+       Length : Gint := -1;
+       Error  : access Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Data   : Interfaces.C.Strings.chars_ptr;
-          Length : Gint) return Integer;
+         (Self      : System.Address;
+          Data      : Interfaces.C.Strings.chars_ptr;
+          Length    : Gint;
+          Acc_Error : access Glib.Error.GError) return Integer;
       pragma Import (C, Internal, "gtk_css_provider_load_from_data");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Data   : Interfaces.C.Strings.chars_ptr := New_String (Data);
       Tmp_Return : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Data, Length);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Data, Length, Acc_Error'Access);
       Free (Tmp_Data);
+      Error.all := Acc_Error;
       return Boolean'Val (Tmp_Return);
    end Load_From_Data;
 
