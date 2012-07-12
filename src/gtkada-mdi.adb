@@ -42,9 +42,11 @@ with System.Address_Image;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
+with GNAT.OS_Lib;
 with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
+with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -77,6 +79,7 @@ with Gtk.Box;                 use Gtk.Box;
 with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Container;           use Gtk.Container;
+with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Dialog;              use Gtk.Dialog;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
@@ -92,6 +95,7 @@ with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style_Context;       use Gtk.Style_Context;
+with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
 
@@ -106,6 +110,8 @@ package body Gtkada.MDI is
    Traces : constant Boolean := False;
    --  True if traces should be activated
 
+   Css_Loaded : Boolean := False;
+
    Traces_Indent : Natural := 0;
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
@@ -115,9 +121,6 @@ package body Gtkada.MDI is
    Default_Title_Bar_Color : constant String := "#AAAAAA";
    --  Default color to use for the title bar of children that do not
    --  have the focus.
-
-   Default_MDI_Background_Color : constant String := "#666666";
-   --  Default background color to use for the MDI window
 
    Default_Title_Font : constant String := "Sans 8";
    --  Default title font for the children
@@ -827,6 +830,7 @@ package body Gtkada.MDI is
 
       Ctx : Gtk_Style_Context;
       Success : Boolean;
+
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
 
@@ -847,9 +851,18 @@ package body Gtkada.MDI is
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
 
-      Parse (MDI.Background_Color, Default_MDI_Background_Color, Success);
       Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
       Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
+
+      if not Css_Loaded then
+         Css_Loaded := True;
+         Gtk_New (MDI.Css_Provider);
+         Get_Style_Context (MDI).Add_Provider
+           (+MDI.Css_Provider, Priority_Application);
+         Gtk.Style_Context.Add_Provider_For_Screen
+           (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
+            Priority => Gtk.Style_Provider.Priority_Application);
+      end if;
 
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
@@ -863,7 +876,6 @@ package body Gtkada.MDI is
 
       Configure
         (MDI,
-         Background_Color  => MDI.Background_Color,
          Title_Bar_Color   => MDI.Title_Bar_Color,
          Focus_Title_Color => MDI.Focus_Title_Color);
 
@@ -1226,7 +1238,6 @@ package body Gtkada.MDI is
       Opaque_Resize             : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
       Title_Font                : Pango_Font_Description := null;
-      Background_Color          : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Title_Bar_Color           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Focus_Title_Color         : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars           : Title_Bars_Policy   := Always;
@@ -1234,14 +1245,16 @@ package body Gtkada.MDI is
         Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic)
    is
-      Desc        : Pango_Font_Description;
-      W, H        : Gint;
-      C           : MDI_Child;
-      Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
-      Iter        : Child_Iterator;
+      Desc         : Pango_Font_Description;
+      W, H         : Gint;
+      C            : MDI_Child;
+      Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
+      Iter         : Child_Iterator;
       Old_Tabs_Pos : constant Gtk_Position_Type := MDI.Tabs_Position;
-      Pos_Changed : constant Boolean := Old_Tabs_Pos /= Tabs_Position;
-      Note        : Gtk_Notebook;
+      Pos_Changed  : constant Boolean := Old_Tabs_Pos /= Tabs_Position;
+      Note         : Gtk_Notebook;
+      Success      : Boolean;
+      pragma Unreferenced (Success);
 
    begin
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
@@ -1262,13 +1275,55 @@ package body Gtkada.MDI is
       Get_Pixel_Size (MDI.Title_Layout, W, H);
       MDI.Title_Bar_Height := 2 + H;
 
-      MDI.Focus_Title_Color := Focus_Title_Color;
+      if MDI.Focus_Title_Color /= Focus_Title_Color then
+         MDI.Focus_Title_Color := Focus_Title_Color;
+
+         --  Ideally, we would load the CSS using
+         --  Gtk.CSS_Provider.Load_From_Data. However this call is awfully
+         --  slow compared to Load_From_Path. So we create a temp file with
+         --  the css, and then load it.
+         declare
+            function G_File_Open_Tmp
+              (Tmpl  : System.Address := System.Null_Address;
+               Path  : access Interfaces.C.Strings.chars_ptr;
+               Error : access Glib.Error.GError)
+               return GNAT.OS_Lib.File_Descriptor;
+            pragma Import (C, G_File_Open_Tmp, "g_file_open_tmp");
+            Fd   : GNAT.OS_Lib.File_Descriptor;
+            Path : aliased Interfaces.C.Strings.chars_ptr;
+            Err  : aliased GError;
+            N    : Integer;
+            pragma Unreferenced (N);
+            Css  : constant String :=
+                     ".mdifocused tab:active {" & ASCII.LF &
+                     " background-color: " &
+                     Gdk.RGBA.To_String
+                       (MDI.Focus_Title_Color) & ";" & ASCII.LF &
+                     " background-image: none;" & ASCII.LF &
+                     "}" & ASCII.LF &
+                     ".mdifocused {" & ASCII.LF &
+                     " background-color: " & ASCII.LF &
+                     Gdk.RGBA.To_String
+                       (MDI.Focus_Title_Color) & ";" & ASCII.LF &
+                     "}" & ASCII.LF;
+
+         begin
+            Fd := G_File_Open_Tmp (Path => Path'Access, Error => Err'Access);
+
+            N := GNAT.OS_Lib.Write (Fd, Css'Address, Css'Length);
+            GNAT.OS_Lib.Close (Fd);
+
+            Success := MDI.Css_Provider.Load_From_Path
+              (Interfaces.C.Strings.Value (Path), Err'Access);
+
+            GNAT.OS_Lib.Delete_File
+              (Interfaces.C.Strings.Value (Path), Success);
+            Interfaces.C.Strings.Free (Path);
+         end;
+
+      end if;
 
       --  Ignore changes in colors, unless the MDI is realized
-
-      if Background_Color /= Null_RGBA then
-         MDI.Background_Color  := Background_Color;
-      end if;
 
       if Title_Bar_Color /= Null_RGBA then
          MDI.Title_Bar_Color   := Title_Bar_Color;
@@ -1301,11 +1356,6 @@ package body Gtkada.MDI is
       end loop;
 
       if MDI.Get_Realized then
-         if Background_Color /= Null_RGBA then
-            Set_Background_Rgba (Get_Window (MDI), Background_Color);
-            Need_Redraw := True;
-         end if;
-
          if Title_Bar_Color /= Null_RGBA then
             Need_Redraw := True;
          end if;
@@ -1359,8 +1409,6 @@ package body Gtkada.MDI is
       M           : constant MDI_Window := MDI_Window (MDI);
 
    begin
-      Gdk.Window.Set_Background_Rgba (Get_Window (M), M.Background_Color);
-
       if M.Cursor_Cross = null then
          Gdk_New (M.Cursor_Cross, Cross);
       end if;
@@ -3127,30 +3175,24 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
-      Color : Gdk_RGBA := Null_RGBA;
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
-      EventBox : Gtk_Widget;
+      Modified : Boolean := False;
    begin
       if Note /= null then
-         EventBox := Get_Tab_Label (Note, Child);
-
          if MDI_Child (Child) = Child.MDI.Focus_Child then
-            if EventBox /= null then
-               Get_Style_Context (EventBox).Add_Class ("active");
+            if not Get_Style_Context (Note).Has_Class ("mdifocused") then
+               Get_Style_Context (Note).Add_Class ("mdifocused");
+               Modified := True;
             end if;
-
-            Color := Child.MDI.Focus_Title_Color;
          else
-            Color := White_RGBA;
-            if EventBox /= null then
-               Get_Style_Context (EventBox).Remove_Class ("active");
+            if Get_Style_Context (Note).Has_Class ("mdifocused") then
+               Get_Style_Context (Note).Remove_Class ("mdifocused");
+               Modified := True;
             end if;
          end if;
 
-         --  Note.Override_Background_Color (Gtk_State_Flag_Normal, Color);
-
-         if EventBox /= null then
-            EventBox.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+         if Modified then
+            Note.Queue_Draw;
          end if;
       end if;
    end Update_Tab_Color;

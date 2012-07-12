@@ -39,6 +39,7 @@ with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
+with Gtk.Css_Provider;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
@@ -121,7 +122,6 @@ package Gtkada.MDI is
       Opaque_Resize             : Boolean := False;
       Close_Floating_Is_Unfloat : Boolean := True;
       Title_Font         : Pango.Font.Pango_Font_Description := null;
-      Background_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Title_Bar_Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Focus_Title_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
@@ -1045,17 +1045,17 @@ private
       Dnd_Message : String_Access;
       --  The message displayed during a dnd operation (see Set_Dnd_Message)
 
-      Accel_Path_Prefix  : String_Access;
+      Accel_Path_Prefix   : String_Access;
       --  The Accel path used for the dynamic menu
 
-      Menu               : Gtk.Menu.Gtk_Menu;
-      Float_Menu_Item    : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
-      Float_Menu_Item_Id : Gtk.Handlers.Handler_Id;
-      Close_Menu_Item    : Gtk.Menu_Item.Gtk_Menu_Item;
+      Menu                : Gtk.Menu.Gtk_Menu;
+      Float_Menu_Item     : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
+      Float_Menu_Item_Id  : Gtk.Handlers.Handler_Id;
+      Close_Menu_Item     : Gtk.Menu_Item.Gtk_Menu_Item;
       --  The dynamic menu used to provide access to the most common
       --  functions of MDI.
 
-      Tab_Factory : Tab_Contextual_Menu_Factory;
+      Tab_Factory         : Tab_Contextual_Menu_Factory;
       --  Build the contextual menu when right-clicking on tabs
 
       Title_Layout        : Pango.Layout.Pango_Layout;
@@ -1069,13 +1069,13 @@ private
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
 
-      Background_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
-      Title_Bar_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
-      Focus_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Title_Bar_Color     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Css_Provider        : Gtk.Css_Provider.Gtk_Css_Provider;
 
-      Cursor_Cross      : Gdk.Gdk_Cursor;
-      Cursor_Fleur      : Gdk.Gdk_Cursor;
+      Cursor_Cross        : Gdk.Gdk_Cursor;
+      Cursor_Fleur        : Gdk.Gdk_Cursor;
       --  Cached cursors
 
       Draw_Title_Bars   : Title_Bars_Policy := Always;

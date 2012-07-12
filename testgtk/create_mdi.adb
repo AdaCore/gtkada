@@ -139,14 +139,12 @@ package body Create_MDI is
    ------------------
 
    procedure Do_Configure (MDI : access MDI_Window_Record'Class) is
-      Bg_Color, Title_Color, Focus_Color : Gdk_RGBA;
+      Title_Color, Focus_Color : Gdk_RGBA;
       Success : Boolean;
    begin
-      Parse (Bg_Color, "#8A8A8A", Success);
       Parse (Title_Color, "#7D7D7D", Success);
       Parse (Focus_Color, "#5894FA", Success);
       Configure (MDI,
-                 Background_Color  => Bg_Color,
                  Title_Bar_Color   => Title_Color,
                  Focus_Title_Color => Focus_Color,
                  Opaque_Resize     => Opaque,
