@@ -30,7 +30,7 @@ GTKADA_GL_LIBS=
 endif
 
 GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada \
-  $(GTKADA_GL_LIBS) @GTK_LIBS@ $(TARGET_LFLAGS)
+  $(GTKADA_GL_LIBS) @GTK_LIBS_FOR_GNATMAKE@ $(TARGET_LFLAGS)
 
 all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
 

@@ -247,6 +247,8 @@ dnl
     gtk_config_micro_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
 
+    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's,-framework ,-framework=,g'`
+
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
     CFLAGS="$CFLAGS $GTK_CFLAGS"
@@ -362,6 +364,7 @@ main ()
   AC_SUBST(GTK_PREFIX)
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
+  AC_SUBST(GTK_LIBS_FOR_GNATMAKE)
   rm -f conf.gtktest
 ])
 
