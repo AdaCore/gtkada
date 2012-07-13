@@ -370,7 +370,7 @@ ada_gtk_dialog_new_with_buttons (const gchar     *title,
                                  GtkWindow       *parent,
                                  GtkDialogFlags   flags)
 {
-  return gtk_dialog_new_with_buttons (title, parent, flags, 
+  return gtk_dialog_new_with_buttons (title, parent, flags,
                                       NULL /* first_button_text*/, NULL);
 }
 
@@ -3341,3 +3341,15 @@ ada_gdk_get_default_modifier ()
   return GDK_CONTROL_MASK;
 #endif
 }
+
+
+// GtkPlug is only build on X11 backends
+
+#ifndef GDK_WINDOWING_X11
+int gtk_plug_get_type() {
+   return 0;
+}
+int gtk_socket_get_type() {
+   return 0;
+}
+#endif
