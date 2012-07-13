@@ -36,7 +36,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <glib/gmain.h>
+//#include <glib/gmain.h>
 
 #include <pango/pango.h>
 

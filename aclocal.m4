@@ -87,10 +87,10 @@ make them preselected in project files (static libraries are preselected by defa
       ;;
    *darwin*)
       SO_EXT=.dylib
-      BUILD_SHARED=no
-#      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
-      FPIC=-fno-common
-      TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined,suppress"
+      BUILD_SHARED=yes
+      SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
+      FPIC=-fPIC
+      #TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined,suppress"
       ;;
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This
