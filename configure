@@ -602,6 +602,7 @@ HAVE_GETTEXT
 GETTEXT_INTL
 USE_NLS
 DEFINE_UNDERLINE_ERROR
+GTK_LIBS_FOR_GNATMAKE
 GTK_LIBS
 GTK_CFLAGS
 GTK_PREFIX
@@ -3361,6 +3362,8 @@ $as_echo_n "checking for GTK - version >= $min_gtk_version... " >&6; }
     gtk_config_micro_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
 
+    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's,-framework ,-framework=,g'`
+
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
     CFLAGS="$CFLAGS $GTK_CFLAGS"
@@ -3501,6 +3504,7 @@ rm -f core conftest.err conftest.$ac_objext \
      GTK_LIBS=""
      as_fn_error $? "Test for GTK failed. See the file 'INSTALL' for help." "$LINENO" 5
   fi
+
 
 
 
