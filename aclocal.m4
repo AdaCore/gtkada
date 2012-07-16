@@ -87,7 +87,9 @@ make them preselected in project files (static libraries are preselected by defa
       ;;
    *darwin*)
       SO_EXT=.dylib
-      BUILD_SHARED=yes
+      if test x$CAN_BUILD_SHARED = xyes ; then
+         BUILD_SHARED=yes
+      fi
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
       FPIC=-fPIC
       #TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined,suppress"
