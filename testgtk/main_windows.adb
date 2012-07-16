@@ -139,7 +139,7 @@ package body Main_Windows is
 
    package Notebook_Cb is new Gtk.Handlers.Callback (Gtk_Notebook_Record);
 
-   Help_Dialog : Gtk.Dialog.Gtk_Dialog;
+   Help_Dialog : aliased Gtk.Dialog.Gtk_Dialog;
    Help_Text   : Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  The dialog used to display the help window
 
@@ -480,6 +480,10 @@ package body Main_Windows is
          Help_Dialog.Set_Resizable (True);
          Set_Title (Help_Dialog, "testgtk help");
          Set_Default_Size (Help_Dialog, 640, 450);
+         Destroy_Dialog_Handler.Connect
+           (Help_Dialog, "destroy",
+            Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
+            Help_Dialog'Access);
 
          Set_Spacing (Get_Content_Area (Help_Dialog), 3);
 
