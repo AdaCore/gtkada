@@ -60,6 +60,10 @@ procedure Testcairo is
 
    --  The tests implemented in this example program
 
+   package Window_Cb is new Gtk.Handlers.Return_Callback
+     (Gtk_Window_Record, Boolean);
+
+   type Doc_Array is array (Test_Type) of Unbounded_String;
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Drawing_Area_Record, Boolean);
 
@@ -89,7 +93,9 @@ procedure Testcairo is
    procedure On_Print_Cb  (Widget : access Gtk_Button_Record'Class);
    --  Callback on a click on the "Print" button
 
-   type Doc_Array is array (Test_Type) of Unbounded_String;
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) return Boolean;
+   --  Callback for delete_event on the main window.
 
    function "-"
      (S : String) return Unbounded_String
@@ -109,6 +115,19 @@ procedure Testcairo is
       Clip_And_Paint  => -"Painting and clipping",
       Surface_And_Png => -"Using surfaces and saving to PNG",
       Image           => -"Rendering an image as background");
+
+   ---------------------------------
+   -- On_Main_Window_Delete_Event --
+   ---------------------------------
+
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) return Boolean
+   is
+      pragma Unreferenced (Object);
+   begin
+      Gtk.Main.Main_Quit;
+      return True;
+   end On_Main_Window_Delete_Event;
 
    -------------
    -- On_Draw --
@@ -271,6 +290,10 @@ begin
 
    Event_Cb.Connect (Area, Signal_Draw,
                      Event_Cb.To_Marshaller (On_Draw'Access));
+
+   Window_Cb.Connect
+     (Win, "delete_event",
+      Window_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
 
    Show_All (Win);
    Gtk.Main.Main;
