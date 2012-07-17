@@ -12,6 +12,9 @@ Where the package node is defined as follows:
              obsolescent="..." <!--  Whether this package is obsolete -->
              bindtype="..."  <!-- False if the type should not be bound, only
                                   its methods -->
+             into="..."      <!-- optional, the package to bind types and
+                                  methods into -->
+             ada="..."       <!-- optional, the packge's ada name -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -150,7 +153,6 @@ Where the package node is defined as follows:
 
 from xml.etree.cElementTree import parse, QName, tostring, SubElement
 from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum, package_name
-
 
 class GtkAda(object):
 
@@ -325,6 +327,11 @@ class GtkAdaPackage(object):
     def into(self):
         if self.node is not None:
             return self.node.get("into", None)
+        return None
+
+    def ada_name(self):
+        if self.node is not None:
+            return self.node.get("ada", None)
         return None
 
     def is_obsolete(self):
