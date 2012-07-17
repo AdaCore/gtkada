@@ -409,9 +409,8 @@ class Tagged(GObject):
         return (self.param, self.cparam, "From_Object (%(var)s)", [])
 
     def as_ada_param(self, pkg):
-        self.userecord = False
-        return super(Tagged, self).as_ada_param(pkg)
-
+        # Make sure to bind as a CType here, not as a GOBject
+        return CType.as_ada_param(self, pkg)
 
 class UTF8(CType):
     def __init__(self):
@@ -1760,8 +1759,8 @@ class Package(object):
            Automatic casing is performed. If specs is True, the withs are
            added to the specs of the package, otherwise to the body
         """
-        if pkg in ("", "System"):
-            return   # Not needed, already done in gtk.ads
+        if pkg == "":
+            return
 
         if type(pkg) == str:
             pkg = [pkg]
