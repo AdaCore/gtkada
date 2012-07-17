@@ -282,10 +282,14 @@ class SubprogramProfile(object):
         profile = SubprogramProfile()
         profile.node = node
         profile.gtkmethod = gtkmethod
-        profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
 
+        # make sure to init the 'returns' field before the parameters, to be
+        # able to correctly set the parameters direction ('in out' or 'out'
+        # case)
         if not ignore_return:
             profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
+
+        profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
 
         profile.doc = profile._getdoc(gtkmethod, node)
         return profile
@@ -478,6 +482,9 @@ class SubprogramProfile(object):
         if params is None:
             return []
 
+        # Check whether we'll bind to a procedure or to a function
+        is_function = self.returns and not gtkmethod.return_as_param()
+
         result = []
 
         for p in params.findall(nparam):
@@ -533,6 +540,9 @@ class SubprogramProfile(object):
                 mode = "in out"
             else:
                 mode = "in"
+
+            if is_function and direction not in ("in", "access"):
+                mode = "access"
 
             doc = p.findtext(ndoc, "")
             if doc:
@@ -611,7 +621,10 @@ class GIRClass(object):
         n = naming.case(self.ctype)
 
         into = self.gtkpkg.into()
-        if into:
+        ada = self.gtkpkg.ada_name()
+        if ada:
+            pkg = ada
+        elif into:
             into = naming.case(into)
             pkg = naming.protect_keywords(into.replace("_", ".", 1))
         else:
@@ -632,6 +645,8 @@ class GIRClass(object):
             classtype = naming.type(name=self.ctype)
             typename = classtype.ada
             self.name = package_name(typename)
+            if ada != None:
+                self.name = ada
 
             self.ada_package_name = self.name
 
@@ -1128,6 +1143,9 @@ end if;""" % (cb.name, call1, call2)
             if cname.startswith("gdk_"):
                 gtk_new_prefix = "Gdk_New"
                 adaname = "Gdk_%s" % name    # e.g.  Gdk_New
+            elif cname.startswith("g_"):
+                gtk_new_prefix = "G_New"
+                adaname = "G_%s" % name      # e.g.  G_New
             else:
                 adaname = "Gtk_%s" % name    # e.g.  Gtk_New
 
@@ -1608,16 +1626,27 @@ See Glib.Properties for more information on properties)""")
         fields = []
         for field in node.findall(nfield):
             name = field.get("name")
-            type = field.findall(ntype)
 
-            if not type:
-                print "Field has no type: %s.%s" % (ctype, name)
-            else:
+            ftype = None
+            type = field.findall(ntype)
+            cb   = field.findall(ncallback)
+
+            if type:
                 ftype = override_fields.get(name, None)
                 if ftype is None:
                     ftype = naming.type(
                         name="", cname=type[0].get(ctype_qname))
 
+            elif cb:
+                # ??? JL: Should properly bind the callback here.
+                # For now, we just use a System.Address to maintain the record
+                # integrity
+                ftype = override_fields.get(name, None)
+                if ftype is None:
+                    ftype = AdaType(
+                        "System.Address", pkg=self.pkg)
+
+            if ftype != None:
                 ftype = ftype.record_field_type(pkg=self.pkg)
                 self.pkg.add_with(package_name(ftype))
 
@@ -1681,7 +1710,8 @@ See Glib.Properties for more information on properties)""")
 
             section.add(
                 "type %s is " % base
-                + "(\n" + ",\n".join(m[0] for m in members
+                + "(\n" + ",\n".join(m[0]
+                                     for m in sorted(members, key=lambda m:m[1])
                                      if m[1] >= 0)
                 + ");\n"
                 + "pragma Convention (C, %s);\n" % base)
@@ -1764,7 +1794,7 @@ See Glib.Properties for more information on properties)""")
             naming.add_type_exception(
                 override=True,
                 cname=self.ctype,
-                type=GObject(typename))
+                type=Tagged(typename))
 
         self.pkg = gir.get_package(into or self.ada_package_name,
                                    ctype=self.ctype,
