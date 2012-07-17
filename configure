@@ -3355,7 +3355,7 @@ $as_echo_n "checking for GTK - version >= $min_gtk_version... " >&6; }
   else
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK --libs`
+    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
     gtk_config_major_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
     gtk_config_minor_version=`$PKG_CONFIG $GTK --modversion | \
