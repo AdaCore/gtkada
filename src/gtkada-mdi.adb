@@ -1291,14 +1291,7 @@ package body Gtkada.MDI is
          --  slow compared to Load_From_Path. So we create a temp file with
          --  the css, and then load it.
          declare
-            function G_File_Open_Tmp
-              (Tmpl  : System.Address := System.Null_Address;
-               Path  : access Interfaces.C.Strings.chars_ptr;
-               Error : access Glib.Error.GError)
-               return GNAT.OS_Lib.File_Descriptor;
-            pragma Import (C, G_File_Open_Tmp, "g_file_open_tmp");
             Fd   : GNAT.OS_Lib.File_Descriptor;
-            Path : aliased Interfaces.C.Strings.chars_ptr;
             Err  : aliased GError;
             N    : Integer;
             pragma Unreferenced (N);
@@ -1315,18 +1308,17 @@ package body Gtkada.MDI is
                        (MDI.Focus_Title_Color) & ";" & ASCII.LF &
                      "}" & ASCII.LF;
 
+            Path : GNAT.OS_Lib.String_Access;
          begin
-            Fd := G_File_Open_Tmp (Path => Path'Access, Error => Err'Access);
+            GNAT.OS_Lib.Create_Temp_File (Fd, Path);
 
             N := GNAT.OS_Lib.Write (Fd, Css'Address, Css'Length);
             GNAT.OS_Lib.Close (Fd);
 
-            Success := MDI.Css_Provider.Load_From_Path
-              (Interfaces.C.Strings.Value (Path), Err'Access);
+            Success := MDI.Css_Provider.Load_From_Path (Path.all, Err'Access);
 
-            GNAT.OS_Lib.Delete_File
-              (Interfaces.C.Strings.Value (Path), Success);
-            Interfaces.C.Strings.Free (Path);
+            GNAT.OS_Lib.Delete_File (Path.all, Success);
+            Free (Path);
          end;
 
       end if;
