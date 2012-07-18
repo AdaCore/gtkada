@@ -71,7 +71,8 @@ package Glib is
    type Guint64 is mod 2 ** 64;
 
    type Gsize is new C.size_t;
-   type Gssize is new C.long;
+   type Gssize is
+     range -(2 ** (C.Size_T'Size - 1)) .. (2 ** (C.Size_T'Size - 1) - 1);
 
    type Gunichar is new Guint32;
 
