@@ -1649,6 +1649,9 @@ See Glib.Properties for more information on properties)""")
                 if ftype is None:
                     ftype = AdaType(
                         "System.Address", pkg=self.pkg)
+            else:
+                print "WARNING: Field has no type: %s.%s" % (ctype, name)
+                print " generation of the record is most certainly incorrect"
 
             if ftype != None:
                 ftype = ftype.record_field_type(pkg=self.pkg)
@@ -1795,10 +1798,19 @@ See Glib.Properties for more information on properties)""")
             # want to use "Gtk.Box.Gtk_HBox" rather than "Gtk.HBox.Gtk_HBox"
             # which doesn't exist
             typename = "%s.%s" % (into, self._subst["typename"])
+
+            # retrieve the old type
+            oldtype = naming.type(cname=self.ctype)
+            newtype = None
+            # and create the new one accordingly
+            if isinstance(oldtype, Tagged):
+                newtype = Tagged(typename)
+            else:
+                newtype = GObject(typename)
             naming.add_type_exception(
                 override=True,
                 cname=self.ctype,
-                type=Tagged(typename))
+                type=newtype)
 
         self.pkg = gir.get_package(into or self.ada_package_name,
                                    ctype=self.ctype,
