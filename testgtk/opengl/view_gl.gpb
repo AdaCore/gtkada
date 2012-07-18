@@ -234,7 +234,8 @@ package body View_Gl is
                        Dest => Area.Mesh_Info.Quat);
 
             --  orientation has changed, redraw mesh
-            Queue_Draw_Area (Area, Rect.X, Rect.Y, Rect.Width, Rect.Height);
+            Queue_Draw_Area
+              (Area, Rect.X, Rect.Y, Rect.Width, Rect.Height);
          end;
       end if;
 
