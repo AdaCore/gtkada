@@ -854,26 +854,27 @@ class GIRClass(object):
             values_if_null[cb.name.lower()] = "System.Null_Address"
             values_if_null[user_data.lower()] = "System.Null_Address"
 
-            call1 = gtk_func.call_to_string(
-                gtk_func.call(
-                    in_pkg=self.pkg,
-                    extra_postcall="".join(call), values=values_if_null),
-                lang="ada->c")
+            exec1 = gtk_func.call(
+                in_pkg=self.pkg,
+                extra_postcall="".join(call), values=values_if_null)
+
+            call1 = gtk_func.call_to_string(exec1, lang="ada->c")
             if not call1.endswith(";"):
                 call1 += ";"
 
-            call2 = gtk_func.call_to_string(
-                gtk_func.call(in_pkg=self.pkg,
-                              extra_postcall="".join(call), values=values),
-                lang="ada->c")
+            exec2 = gtk_func.call(
+                in_pkg=self.pkg,
+                extra_postcall="".join(call), values=values)
+
+            call2 = gtk_func.call_to_string(exec2, lang="ada->c")
             if not call2.endswith(";"):
                 call2 += ";"
 
-            return """if %s = null then
+            return ("""if %s = null then
    %s
 else
    %s
-end if;""" % (cb.name, call1, call2)
+end if;""" % (cb.name, call1, call2), exec2[2])
 
         cbname = cb.type.param
 
@@ -1006,9 +1007,11 @@ end if;""" % (cb.name, call1, call2)
                       cb.name.lower(): "Internal_%s'Address" % funcname,
                       user_data.lower(): "To_Address (%s)" % cb.name}
 
+        c_call = call_to_c(gtk_func, values)
+
         subp = nouser_profile.subprogram(
-            name=adaname, local_vars=local_vars,
-            code=call_to_c(gtk_func, values))
+            name=adaname, local_vars=c_call[1],
+            code=c_call[0])
         section.add(subp)
 
         # Now create a generic package that will provide access to
@@ -1074,9 +1077,10 @@ end if;""" % (cb.name, call1, call2)
             full_profile.remove_param(destroy_data_params)
             full_profile.replace_param(cb.name, funcname)
             full_profile.replace_param(user_data, "User_Data_Type")
+            c_call = call_to_c(gtk_func, values)
             subp2 = full_profile.subprogram(
-                name=adaname,
-                code=call_to_c(gtk_func, values))
+                name=adaname, local_vars=c_call[1],
+                code=c_call[0])
             sect2.add(subp2)
 
         return subp
@@ -1476,7 +1480,7 @@ See Glib.Properties for more information on properties)""")
             if name in ("Atk.ImplementorIface",):
                 continue
 
-            type = naming.type(name)
+            type = naming.type(self.gir.interfaces[name].ctype)
             if "." in type.ada:
                 self.pkg.add_with(type.ada[:type.ada.rfind(".")])
                 self.pkg.add_with("Glib.Types")
