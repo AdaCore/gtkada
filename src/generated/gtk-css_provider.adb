@@ -68,7 +68,7 @@ package body Gtk.Css_Provider is
       function Internal
          (Self      : System.Address;
           Data      : Interfaces.C.Strings.chars_ptr;
-          Length    : Gint := -1;
+          Length    : gssize := -1;
           Acc_Error : access Glib.Error.GError) return Integer;
       pragma Import (C, Internal, "gtk_css_provider_load_from_data");
       Acc_Error  : aliased Glib.Error.GError;

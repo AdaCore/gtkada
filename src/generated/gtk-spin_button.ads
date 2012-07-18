@@ -511,7 +511,7 @@ package Gtk.Spin_Button is
    --  "input"
    --     function Handler
    --       (Self      : access Gtk_Spin_Button_Record'Class;
-   --        New_Value : out Gdouble) return Gint;
+   --        New_Value : access Gdouble) return Gint;
    --    --  "new_value": return location for the new value
    --  The ::input signal can be used to influence the conversion of the users
    --  input into a double value. The signal handler is expected to use

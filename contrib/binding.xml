@@ -2476,14 +2476,14 @@ __PRE__
        with function Draw
           (W  : access Gtk_Widget_Record'Class;
            Cr : Cairo.Cairo_Context) return Boolean;
-   function Proxy_Draw 
+   function Proxy_Draw
       (W  : System.Address; Cr : Cairo.Cairo_Context) return Gboolean;
    pragma Convention (C, Proxy_Draw);
 
    type Draw_Handler is access function
-     (W  : System.Address; 
+     (W  : System.Address;
       Cr : Cairo.Cairo_Context) return Gboolean;
-   pragma Convention (C, Draw_Handler);  
+   pragma Convention (C, Draw_Handler);
    --  A function responsible for drawing a widget.
    --  See also Gtk.Container.Draw_Windowless_Children.
 
@@ -2500,7 +2500,7 @@ __PRE__
    function Convert is new Ada.Unchecked_Conversion
       (Draw_Handler, System.Address);
 
-   function Proxy_Draw 
+   function Proxy_Draw
       (W  : System.Address;
        Cr : Cairo.Cairo_Context) return Gboolean
    is
@@ -3195,7 +3195,7 @@ creating a tag.
    <package id="GtkCssProvider">
      <method id="gtk_css_provider_load_from_data">
        <parameter name="data" ctype="char*"/>
-       <parameter name="length" default="-1" ada="" ctype="gint"/>
+       <parameter name="length" default="-1" ada=""/>
        <parameter name="error" direction="access"/>
      </method>
      <method id="gtk_css_provider_load_from_path">

@@ -1759,7 +1759,7 @@ class Package(object):
            Automatic casing is performed. If specs is True, the withs are
            added to the specs of the package, otherwise to the body
         """
-        if pkg == "":
+        if pkg in ("", "System"):
             return
 
         if type(pkg) == str:
