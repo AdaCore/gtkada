@@ -1286,39 +1286,22 @@ package body Gtkada.MDI is
       if MDI.Focus_Title_Color /= Focus_Title_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
 
-         --  Ideally, we would load the CSS using
-         --  Gtk.CSS_Provider.Load_From_Data. However this call is awfully
-         --  slow compared to Load_From_Path. So we create a temp file with
-         --  the css, and then load it.
          declare
-            Fd   : GNAT.OS_Lib.File_Descriptor;
-            Err  : aliased GError;
-            N    : Integer;
-            pragma Unreferenced (N);
+            Err  : GError_Access;
             Css  : constant String :=
-                     ".mdifocused tab:active {" & ASCII.LF &
-                     " background-color: " &
-                     Gdk.RGBA.To_String
-                       (MDI.Focus_Title_Color) & ";" & ASCII.LF &
-                     " background-image: none;" & ASCII.LF &
-                     "}" & ASCII.LF &
-                     ".mdifocused {" & ASCII.LF &
-                     " background-color: " & ASCII.LF &
-                     Gdk.RGBA.To_String
-                       (MDI.Focus_Title_Color) & ";" & ASCII.LF &
-                     "}" & ASCII.LF;
-
-            Path : GNAT.OS_Lib.String_Access;
+              ".mdifocused tab:active {" & ASCII.LF &
+              " background-color: " &
+              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
+              " background-image: none;" & ASCII.LF & "}" & ASCII.LF &
+              ".mdifocused {" & ASCII.LF & " background-color: " & ASCII.LF &
+              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
+              "}" & ASCII.LF;
          begin
-            GNAT.OS_Lib.Create_Temp_File (Fd, Path);
+            if MDI.Css_Provider = null then
+               Gtk_New (MDI.Css_Provider);
+            end if;
 
-            N := GNAT.OS_Lib.Write (Fd, Css'Address, Css'Length);
-            GNAT.OS_Lib.Close (Fd);
-
-            Success := MDI.Css_Provider.Load_From_Path (Path.all, Err'Access);
-
-            GNAT.OS_Lib.Delete_File (Path.all, Success);
-            Free (Path);
+            Success := MDI.Css_Provider.Load_From_Data (Css, Err);
          end;
 
       end if;
