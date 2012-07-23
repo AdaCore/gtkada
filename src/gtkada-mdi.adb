@@ -42,7 +42,6 @@ with System.Address_Image;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
-with GNAT.OS_Lib;
 with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
@@ -1287,7 +1286,7 @@ package body Gtkada.MDI is
          MDI.Focus_Title_Color := Focus_Title_Color;
 
          declare
-            Err  : GError_Access;
+            Err  : aliased GError;
             Css  : constant String :=
               ".mdifocused tab:active {" & ASCII.LF &
               " background-color: " &
@@ -1301,7 +1300,7 @@ package body Gtkada.MDI is
                Gtk_New (MDI.Css_Provider);
             end if;
 
-            Success := MDI.Css_Provider.Load_From_Data (Css, Err);
+            Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
          end;
 
       end if;

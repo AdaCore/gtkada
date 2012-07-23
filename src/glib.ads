@@ -72,7 +72,7 @@ package Glib is
 
    type Gsize is new C.size_t;
    type Gssize is
-     range -(2 ** (C.Size_T'Size - 1)) .. (2 ** (C.Size_T'Size - 1) - 1);
+     range -(2 ** (C.size_t'Size - 1)) .. (2 ** (C.size_t'Size - 1) - 1);
 
    type Gunichar is new Guint32;
 
