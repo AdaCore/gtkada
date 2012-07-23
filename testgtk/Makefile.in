@@ -22,10 +22,12 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
 OPENGL_LIBS= @GL_LIBS@
+OPENGL_FLAGS=@GL_CFLAGS@
 GTKADA_GL_LIBS=-lgtkada_gl
 else
 OPENGL_C_OBJECTS=
 OPENGL_LIBS=
+OPENGL_FLAGS=
 GTKADA_GL_LIBS=
 endif
 
@@ -42,7 +44,7 @@ opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
 	  opengl/view_gl.gpb opengl/view_gl.adb
 
 lw.o: opengl/lw.c opengl/lw.h
-	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
+	$(CC) -c opengl/lw.c -Iopengl ${OPENGL_FLAGS} @GTK_CFLAGS@
 
 install: force
 	$(MKDIR) "${DESTDIR}$(examples)"
