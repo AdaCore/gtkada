@@ -17,14 +17,16 @@ export PATH:=${bindir}:${PATH}
 DIRECTORIES=base_widget \
   calendar_combo        \
   composite_widget      \
+  display_switch        \
   doublebuffer          \
   documentation         \
   dynamic_cast          \
   gtk_examples          \
   tutorial              \
-  handlers		\
-  powergnu		\
+  handlers		         \
+  powergnu	          	\
   images                \
+  tooltips              \
   cursors               \
   user_data
 
@@ -49,6 +51,7 @@ install:
 	  mkdir -p "${DESTDIR}$(examples)/$${dir}"; \
 	  rm -f $${dir}/b~*; \
 	  cp -p $${dir}/*.ad? $${dir}/*.gpr "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
+	  cp -p $${dir}/*.xmp $${dir}/*.png $${dir}/*.tst "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
 	  cp -p $${dir}/Makefile "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
 	  cp -p $${dir}/README "${DESTDIR}$(examples)/$${dir}" 2>/dev/null; \
 	done
