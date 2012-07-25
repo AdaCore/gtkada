@@ -26,7 +26,6 @@ DIRECTORIES=base_widget \
   handlers		         \
   powergnu	          	\
   images                \
-  tooltips              \
   cursors               \
   user_data
 
