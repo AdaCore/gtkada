@@ -18,11 +18,6 @@ install: force
 	./generate_prj.sh GtkAda "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
 	${CP} gtkada.gpr ${prjdir}
 
-ifeq ($(HAVE_LIBGLADE), True)
-	./generate_prj.sh GtkAda_Glade "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
-	${CP} gtkada_glade.gpr ${prjdir}
-endif	
-
 ifeq ($(HAVE_OPENGL), True)
 	./generate_prj.sh GtkAda_GL "${DESTDIR}${prefix}" ${DEFAULT_LIBRARY_TYPE} ${SOVER} opengl "${libdir}"
 	${CP} gtkada_gl.gpr ${prjdir}
