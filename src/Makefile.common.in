@@ -112,11 +112,6 @@ ${OBJ_DIR}/${SONAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
           $(GTKADA_LIBS) $(GTK_LIBS) $(EXTERNAL_LIBS)
 	@cd ${OBJ_DIR}; $(RM) $(LIBNAME)
 	@cd ${OBJ_DIR}; $(LN) $(SONAME) $(LIBNAME)
-ifneq (${BUILD_TYPE},Debug)
-ifneq (${OS},Windows_NT)
-	@cd ${OBJ_DIR}; strip $(LIBNAME)
-endif
-endif
 	@cd ${OBJ_DIR}; ${CHMOD} +x ${LIBNAME}
 
 ${OBJ_DIR}/${ARCHIVENAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
