@@ -1,11 +1,10 @@
 #!/bin/sh
 
 module=${1:-}
-prefix=$2
-default_library_type="$3"
-version=$4
-subdir=$5
-libdir=$6
+default_library_type="$2"
+version=$3
+subdir=$4
+libdir=$4
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
@@ -62,15 +61,6 @@ echo_linker() {
             fi
          ;;
       esac
-
-   # Do nothing: since we are using library project files, these parameters
-   # are set automatically
-   #else
-   #   if [ $shared = 1 ]; then
-   #      echo "        \"-l${lcmodule}\""
-   #   else
-   #      echo "        \"$prefix/lib/static/lib${lcmodule}.a\""
-   #   fi
    fi
 }
 
