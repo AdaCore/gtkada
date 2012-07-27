@@ -4,7 +4,7 @@ module=${1:-}
 default_library_type="$2"
 version=$3
 subdir=$4
-libdir=$4
+libdir=$5
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
