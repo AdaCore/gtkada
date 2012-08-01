@@ -5,7 +5,7 @@ EXEC = power
 all: $(EXEC)
 
 power: force
-	gnatmake -m -gnatwu $(CFLAGS) $(EXEC) `gtkada-config`
+	gnatmake -m -Pdefault.gpr
 
 force:
 

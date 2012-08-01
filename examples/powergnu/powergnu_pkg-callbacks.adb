@@ -48,7 +48,8 @@ package body Powergnu_Pkg.Callbacks is
          Id := Push (Power.Statusbar1,
                  Power.Context,
                  Power.Current_Image'Img & " /" &
-                 Power.Num_Images'Img);
+                 Power.Num_Images'Img
+                 & "  Use keyboard LEFT and RIGHT keys to navigate");
       end Show_Image;
 
    begin
@@ -157,7 +158,8 @@ package body Powergnu_Pkg.Callbacks is
       Id := Push (Power.Statusbar1,
                   Power.Context,
                   Power.Current_Image'Img & " /" &
-                  Power.Num_Images'Img);
+                  Power.Num_Images'Img
+                  & " Use keyboard LEFT and RIGHT keys to navigate");
    end Load_File;
 
 end Powergnu_Pkg.Callbacks;
