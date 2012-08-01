@@ -15,6 +15,8 @@ begin
 
    if Argument_Count = 1 then
       Load_File (Powergnu, Argument (1));
+   else
+      Load_File (Powergnu, "file.tst");
    end if;
 
    Gtk.Main.Main;
