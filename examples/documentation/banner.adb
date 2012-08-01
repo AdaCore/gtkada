@@ -19,7 +19,8 @@ begin
    Set_Size_Request (Win, 300, 300);
 
    Gtk_New (Label,
-       "You should show a pixmap instead... (ctrl-c in terminal to exit)");
+       "You should show a pixmap instead..."
+       & ASCII.LF & "(ctrl-c in terminal to exit)");
    Add (Win, Label);
 
    Show_All (Win);
