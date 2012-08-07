@@ -28,7 +28,7 @@ ifeq ($(HAVE_OPENGL), True)
 endif	
 
 ifeq ($(HAVE_GNOME), True)
-	./generate_prj.sh GtkAda_Gnome ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
+	./generate_prj.sh GtkAda_Gnome ${DEFAULT_LIBRARY_TYPE} ${SOVER} gnome "${libdir}"
 	${CP} gtkada_gnome.gpr "${DESTDIR}${PRJDIR}"
 endif	
 

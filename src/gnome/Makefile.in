@@ -6,6 +6,7 @@ SRC_FILES     = gnome.o gnome-*.o bonobo*.o
 GTKADA_LIBS   = -L../../lib-obj -lgtkada  # relative to OBJ_DIR
 EXTERNAL_LIBS = @GNOME_LIBS@
 GPRFILE       = gnome
+INC_SUBDIR    = gnome
 
 include ../Makefile.common
 
