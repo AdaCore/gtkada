@@ -1,5 +1,5 @@
 all:
-	gnatmake test_handlers `gtkada-config`
+	gnatmake -Pdefault
 clean:
 	${RM} *.o *.ali b~* test_handlers
 
