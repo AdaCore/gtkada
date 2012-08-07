@@ -80,12 +80,12 @@ begin
    --  the second time you press button1, you get a critical error.
    Gtk_New_Hbox (Hbox);
    Pack_Start (Vbox, Hbox);
-   Gtk_New (Button1, "button1, user data");
+   Gtk_New (Button1, "button1, user data (will crash)");
    Pack_Start (Hbox, Button1);
    Gtk_New (Button2, "button2");
    Pack_Start (Hbox, Button2);
 
-   User_Callback.Connect
+   Id := User_Callback.Connect
      (Button1, "clicked",
       User_Callback.To_Marshaller (My_Destroy2'Unrestricted_Access),
       Gtk_Widget (Button2));
@@ -101,9 +101,9 @@ begin
    Gtk_New (Button2, "button2");
    Pack_Start (Hbox, Button2);
 
-   Data3 := new My_Data3' (Object => Gtk_Widget (Button1),
-                           Button => Gtk_Widget (Button2),
-                           Id     => (Null_Handler_Id, null));
+   Data3 := new My_Data3'(Object => Gtk_Widget (Button1),
+                          Button => Gtk_Widget (Button2),
+                          Id     => (Null_Handler_Id, null));
    Id := User_Callback3.Connect
      (Button1, "clicked",
       User_Callback3.To_Marshaller (My_Destroy3'Unrestricted_Access),
