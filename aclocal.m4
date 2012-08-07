@@ -249,7 +249,7 @@ dnl
     gtk_config_micro_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
 
-    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's,-framework ,-framework=,g'`
+    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g'`
 
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
