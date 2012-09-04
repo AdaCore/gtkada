@@ -126,7 +126,7 @@ package body Create_Color_Selection is
       Put ("Red=" & Guint16'Image (Red (Color)));
       Put (" Green=" & Guint16'Image (Green (Color)));
       Put (" Blue=" & Guint16'Image (Blue (Color)));
-      Put (" Alpha="
+      Put_Line (" Alpha="
            & Guint16'Image (Get_Current_Alpha (Get_Color_Selection (Dialog))));
    end Color_Ok;
 
