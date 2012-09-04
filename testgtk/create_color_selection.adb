@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                Copyright (C) 2000-2011, AdaCore                   --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -129,7 +129,7 @@ package body Create_Color_Selection is
       Put ("Red=" & Guint16'Image (Red (Color)));
       Put (" Green=" & Guint16'Image (Green (Color)));
       Put (" Blue=" & Guint16'Image (Blue (Color)));
-      Put (" Alpha="
+      Put_Line (" Alpha="
            & Guint16'Image (Get_Current_Alpha (Get_Colorsel (Dialog))));
    end Color_Ok;
 
