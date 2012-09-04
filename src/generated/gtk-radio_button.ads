@@ -74,7 +74,7 @@ package Gtk.Radio_Button is
    --  you are free to put any thing you want in it, including a pixmap. To
    --  initialize the group (when creating the first button), leave Group to
    --  the Null_List. You can later get the new group that is created with a
-   --  call to the Group subprogram below.
+   --  call to the Get_Group subprogram below.
    --  "group": an existing radio button group, or null if you are creating a
    --  new group.
    --  "label": the text label to display next to the radio button.
