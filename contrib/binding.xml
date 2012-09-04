@@ -1696,7 +1696,7 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
      <method id="gtk_radio_button_new" bind="False"/>
      <method id="gtk_radio_button_new_from_widget" bind="False"/>
      <method id="gtk_radio_button_new_with_label" ada="Gtk_New" >
-        <doc>Creates or initializes a new radio button, belonging to Group. If Label is left as the empty string, then the button will not have any child and you are free to put any thing you want in it, including a pixmap. To initialize the group (when creating the first button), leave Group to the Null_List. You can later get the new group that is created with a call to the Group subprogram below.</doc>
+        <doc>Creates or initializes a new radio button, belonging to Group. If Label is left as the empty string, then the button will not have any child and you are free to put any thing you want in it, including a pixmap. To initialize the group (when creating the first button), leave Group to the Null_List. You can later get the new group that is created with a call to the Get_Group subprogram below.</doc>
         <parameter name="group" default="Widget_SList.Null_List" ctype="WidgetSList"/>
         <parameter name="label" default='""' allow-none="1"/>
      </method>
