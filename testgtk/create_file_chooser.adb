@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006-2009, AdaCore              --
+--                     Copyright (C) 2006-2012, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -93,7 +93,7 @@ package body Create_File_Chooser is
       Set_Name (Filter2, "Ada Files");
 
       Gtk_New_Hbox (Hbox, Homogeneous => False);
-      Pack_Start (Box, Hbox, Fill => False);
+      Pack_Start (Box, Hbox, Fill => False, Expand => False);
       Gtk_New (File,
                Title   => "Select a file (Open mode)",
                Action  => Action_Open);
@@ -121,7 +121,7 @@ package body Create_File_Chooser is
       Set_Name (Filter1, "Directories only");
 
       Gtk_New_Hbox (Hbox, Homogeneous => False);
-      Pack_Start (Box, Hbox, Fill => False);
+      Pack_Start (Box, Hbox, Fill => False, Expand => False);
       Gtk_New (File,
                Title   => "Select a file (Open mode)",
                Action  => Action_Open);

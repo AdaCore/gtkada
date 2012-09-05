@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                Copyright (C) 2006-2011, AdaCore                   --
+--                Copyright (C) 2006-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -746,6 +746,10 @@ package body Gtkada.Properties is
    procedure Editor_Delete (Editor : access GObject_Record'Class) is
       Ed : constant Properties_Editor := Properties_Editor (Editor);
    begin
+      if Ed.Object /= null then
+         Weak_Unref (Ed.Object, Object_Destroyed'Access, Get_Object (Ed));
+      end if;
+
       if Global_Editor = Ed then
          Global_Editor := null;
       end if;
