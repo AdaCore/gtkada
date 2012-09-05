@@ -745,6 +745,10 @@ package body Gtkada.Properties is
    procedure Editor_Delete (Editor : access GObject_Record'Class) is
       Ed : constant Properties_Editor := Properties_Editor (Editor);
    begin
+      if Ed.Object /= null then
+         Weak_Unref (Ed.Object, Object_Destroyed'Access, Get_Object (Ed));
+      end if;
+
       if Global_Editor = Ed then
          Global_Editor := null;
       end if;

@@ -88,7 +88,7 @@ package body Create_File_Chooser is
       Set_Name (Filter2, "Ada Files");
 
       Gtk_New_Hbox (Hbox, Homogeneous => False);
-      Pack_Start (Box, Hbox, Fill => False);
+      Pack_Start (Box, Hbox, Fill => False, Expand => False);
       Gtk_New (File,
                Title   => "Select a file (Open mode)",
                Action  => Action_Open);
@@ -115,7 +115,7 @@ package body Create_File_Chooser is
       Set_Name (Filter1, "Directories only");
 
       Gtk_New_Hbox (Hbox, Homogeneous => False);
-      Pack_Start (Box, Hbox, Fill => False);
+      Pack_Start (Box, Hbox, Fill => False, Expand => False);
       Gtk_New (File,
                Title   => "Select a file (Open mode)",
                Action  => Action_Open);
