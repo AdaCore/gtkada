@@ -1,3 +1,7 @@
+-------------------------------------------------------------------------
+--    Copyright (C) 2000-2012, AdaCore                                 --
+-------------------------------------------------------------------------
+
 with Glib;        use Glib;
 with Glib.Values; use Glib.Values;
 with Gtk.Frame;   use Gtk.Frame;
@@ -64,7 +68,12 @@ package body Calendar_Combo is
    is
    begin
       Set_Text (Calendar.Label, Format_Date (Calendar.Cal));
-      Hide_Popdown_Window (Calendar);
+
+      --  We cannot hide the popdown window immediately here. Otherwise,
+      --  gtk+ ends up calling day_selected over and over again, increasing
+      --  the date every time (likely because it is trying to access a
+      --  widget from the GtkCalendar, but the latter has been destroyed
+      --  if we call Hide_Popdown_Window (Calendar)
    end Day_Selected;
 
    -------------
