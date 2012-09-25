@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                Copyright (C) 2000-2011, AdaCore                   --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -885,7 +885,7 @@ package body Create_Canvas is
         (Button, "clicked",
          Canvas_Cb.To_Marshaller (Add_Items'Access), Canvas);
 
-      Gtk_New (Button, "Add with Link ->Start");
+      Gtk_New (Button, "Add with Link->Start");
       Pack_Start (Bbox2, Button, Expand => False, Fill => True);
       Canvas_Cb.Object_Connect
         (Button, "clicked",
@@ -929,7 +929,7 @@ package body Create_Canvas is
       Gtk_New_Hbox (Small, Homogeneous => False);
       Gtk_New (Label, "Add:");
       Pack_Start (Small, Label, Expand => False, Fill => False);
-      Gtk_New (Adj, 10.0, 1.0, 300.0, 1.0, 30.0, 30.0);
+      Gtk_New (Adj, 10.0, 1.0, 300.0, 1.0, 30.0);
       Gtk_New (Num_Spin, Adj, 0.5, 0);
       Pack_Start (Small, Num_Spin, Expand => False, Fill => False);
       Pack_Start (Spin_Box, Small, Expand => False, Fill => False);
@@ -937,7 +937,7 @@ package body Create_Canvas is
       Gtk_New_Hbox (Small, Homogeneous => False);
       Gtk_New (Label, "Start:");
       Pack_Start (Small, Label, Expand => False, Fill => False);
-      Gtk_New (Adj, 1.0, 1.0, 300.0, 1.0, 30.0, 30.0);
+      Gtk_New (Adj, 1.0, 1.0, 300.0, 1.0, 30.0);
       Gtk_New (Start_Spin, Adj, 0.5, 0);
       Pack_Start (Small, Start_Spin, Expand => False, Fill => False);
       Pack_Start (Spin_Box, Small, Expand => False, Fill => False);
@@ -945,7 +945,7 @@ package body Create_Canvas is
       Gtk_New_Hbox (Small, Homogeneous => False);
       Gtk_New (Label, "End:");
       Pack_Start (Small, Label, Expand => False, Fill => False);
-      Gtk_New (Adj, 2.0, 1.0, 300.0, 1.0, 30.0, 30.0);
+      Gtk_New (Adj, 2.0, 1.0, 300.0, 1.0, 30.0);
       Gtk_New (End_Spin, Adj, 0.5, 0);
       Pack_Start (Small, End_Spin, Expand => False, Fill => False);
       Pack_Start (Spin_Box, Small, Expand => False, Fill => False);

@@ -1,3 +1,12 @@
+Known problems fixed in GtkAda 2.24.3
+
+- L924-024 GtkAda.Canvas default layout incorrect with self links
+  Problem:    When an item's first out link is a link to itself, this
+              item will not get a proper location through the default
+              automatic layout algorithm.
+  Workaround: Either make sure the self-link is not first, or specify
+              explicit coordinates for the item in the call to Put
+
 Known problems fixed in GtkAda 2.24.2
 
 - KC01-003 Changing the theme on-the-fly may cause a SIGSEGV
