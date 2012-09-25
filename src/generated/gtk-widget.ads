@@ -722,7 +722,7 @@ package Gtk.Widget is
    --  instead, use Gdk.Window.Invalidate_Rect to invalidate a region of the
    --  window.
    --  the event was handled)
-   --  "event": a Gdk_Event
+   --  "event": a Gdk.Event.Gdk_Event
 
    procedure Freeze_Child_Notify
       (Widget : not null access Gtk_Widget_Record);
@@ -2400,7 +2400,7 @@ package Gtk.Widget is
    --  redraw to be done immediately, follow that call with a call to
    --  Gdk.Window.Process_Updates.
    --  the event was handled)
-   --  "event": a expose Gdk_Event
+   --  "event": a expose Gdk.Event.Gdk_Event
 
    function Send_Focus_Change
       (Widget : not null access Gtk_Widget_Record;
@@ -2422,7 +2422,7 @@ package Gtk.Widget is
    --  gdk_event_free (event); ]|
    --  if the event was handled, and False otherwise
    --  Since: gtk+ 2.20
-   --  "event": a Gdk_Event of type GDK_FOCUS_CHANGE
+   --  "event": a Gdk.Event.Gdk_Event of type GDK_FOCUS_CHANGE
 
    procedure Set_Accel_Path
       (Widget      : not null access Gtk_Widget_Record;
@@ -3358,7 +3358,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event) return Boolean;
-   --    --  "event": the Gdk_Event which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event which triggered this signal
    --  The GTK+ main loop will emit three signals for each GDK event delivered
    --  to a widget: one generic ::event signal, another, more specific, signal
    --  that matches the type of event delivered (e.g.
@@ -3376,7 +3376,7 @@ package Gtk.Widget is
    --     procedure Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event);
-   --    --  "event": the Gdk_Event which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event which triggered this signal
    --  After the emission of the Gtk.Widget.Gtk_Widget::event signal and
    --  (optionally) the second more specific signal, ::event-after will be
    --  emitted regardless of the previous two signals handlers return values.

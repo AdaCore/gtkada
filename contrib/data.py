@@ -39,6 +39,7 @@ interfaces = ("Activatable",
 binding = ("GdkCursor",
            "GdkDevice",
            "GdkDragContext",
+           "GdkEvent",
            "GdkRGBA",
            "GdkScreen",
            "GdkWindow",
@@ -278,8 +279,6 @@ naming.type_exceptions = {
                                    "Pango.Font.Property_Font_Description"),
     "PangoFontFace*":   GObject("Pango.Font.Pango_Font_Face"),
     "PangoFontFamily*": GObject("Pango.Font.Pango_Font_Family"),
-
-    "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
 
     "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),

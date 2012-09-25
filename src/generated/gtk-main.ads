@@ -341,7 +341,7 @@ package Gtk.Main is
    --  returns null, otherwise returns the widget that received the event
    --  originally.
    --  received Event, or null
-   --  "event": a Gdk_Event
+   --  "event": a Gdk.Event.Gdk_Event
 
    procedure Propagate_Event
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;

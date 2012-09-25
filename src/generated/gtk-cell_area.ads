@@ -427,7 +427,7 @@ package Gtk.Cell_Area is
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area to activate
-   --  "event": the Gdk_Event for which cell activation should occur
+   --  "event": the Gdk.Event.Gdk_Event for which cell activation should occur
    --  "cell_area": the Gdk_Rectangle in Widget relative coordinates of
    --  Renderer for the current row.
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Renderer
@@ -558,7 +558,7 @@ package Gtk.Cell_Area is
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
    --  of data.
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "event": the Gdk_Event to handle
+   --  "event": the Gdk.Event.Gdk_Event to handle
    --  "cell_area": the Widget relative coordinates for Area
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in this
    --  row.

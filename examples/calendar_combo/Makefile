@@ -1,4 +1,4 @@
-main: force
+all main: force
 	gnatmake -Pdefault
 
 clean:

@@ -132,7 +132,7 @@ package Gtk.Cell_Renderer is
    --  Some cell renderers may use events; for example,
    --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle toggles when it gets a
    --  mouse click.
-   --  "event": a Gdk_Event
+   --  "event": a Gdk.Event.Gdk_Event
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
@@ -379,7 +379,7 @@ package Gtk.Cell_Renderer is
        Flags           : Gtk_Cell_Renderer_State)
        return Gtk.Cell_Editable.Gtk_Cell_Editable;
    --  Passes an activate event to the cell renderer for possible processing.
-   --  "event": a Gdk_Event
+   --  "event": a Gdk.Event.Gdk_Event
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
