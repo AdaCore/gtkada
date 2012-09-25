@@ -5,6 +5,8 @@ Known problems fixed in GtkAda 3.2.0
               the mouse and a button has never been pressed.
   Workaround: None known.
 
+Known problems fixed in GtkAda 2.24.2
+
 - K726-004 Support for dead keys under Windows
   Problem:    Under windows, the dead keys for acute accent and diaeresis,
               followed by a space, should produce respectively an apostrophe

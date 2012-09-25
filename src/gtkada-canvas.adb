@@ -854,7 +854,7 @@ package body Gtkada.Canvas is
       Item       : Canvas_Item;
       Links      : Edge_Iterator;
       Src_Item   : Canvas_Item := null;
-      X1, X3, Y1 : Gint;
+      X1, X3, Y1, Y3 : Gint;
       Num        : Gint;
       Coord      : aliased Cairo_Rectangle_Int;
       Status     : Cairo_Status;
@@ -888,15 +888,21 @@ package body Gtkada.Canvas is
             --  the widget we are adding.
 
             Links := First (Canvas.Children, Src => Vertex_Access (Item));
-            if not At_End (Links) then
+            while not At_End (Links) loop
                Src_Item := Canvas_Item (Get_Dest (Get (Links)));
-            else
+               exit when Src_Item /= Item;
+               Src_Item := null;
+               Next (Links);
+            end loop;
+
+            if Src_Item = null then
                Links := First (Canvas.Children, Dest => Vertex_Access (Item));
-               if not At_End (Links) then
+               while not At_End (Links) loop
                   Src_Item := Canvas_Item (Get_Src (Get (Links)));
-               else
+                  exit when Src_Item /= Item;
                   Src_Item := null;
-               end if;
+                  Next (Links);
+               end loop;
             end if;
 
             --  The rule is the following when we have a link to an existing
@@ -908,34 +914,31 @@ package body Gtkada.Canvas is
                Num := 0;
 
                if Vertical_Layout then
-                  X3 := Src_Item.Coord.Y;
-                  Y1 := Src_Item.Coord.X + Src_Item.Coord.Width + Step;
+                  X1 := Src_Item.Coord.X + Src_Item.Coord.Width + Step;
+                  Y3 := Src_Item.Coord.Y;
 
                   loop
                      case Num mod 3 is
                         when 0 =>
-                           X1 := X3;
+                           Y1 := Y3;
                         when 1 =>
-                           X1 := X3 - Step - Item.Coord.Height;
+                           Y1 := Y3 - Step - Item.Coord.Height;
                         when 2 =>
-                           X1 := X3 + Step + Item.Coord.Height;
+                           Y1 := Y3 + Step + Item.Coord.Height;
                         when others =>
                            null;
                      end case;
 
-                     Coord := (Y1, X1, Item.Coord.Width, Item.Coord.Height);
+                     Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
                      exit when
                        Contains_Rectangle
                          (Region, Coord'Access) = Cairo_Region_Overlap_Out;
 
                      Num := Num + 1;
                      if Num mod 3 = 0 then
-                        Y1 := Y1 + 2 * Step;
+                        X1 := X1 + 2 * Step;
                      end if;
                   end loop;
-
-                  Item.Coord.X := Y1;
-                  Item.Coord.Y := X1;
 
                else
                   X3 := Src_Item.Coord.X;
@@ -963,9 +966,6 @@ package body Gtkada.Canvas is
                         Y1 := Y1 + 2 * Step;
                      end if;
                   end loop;
-
-                  Item.Coord.X := X1;
-                  Item.Coord.Y := Y1;
                end if;
 
             else
@@ -986,10 +986,10 @@ package body Gtkada.Canvas is
                      X1 := X1 + 2 * Step;
                   end if;
                end loop;
-
-               Item.Coord.X := X1;
-               Item.Coord.Y := Y1;
             end if;
+
+            Item.Coord.X := X1;
+            Item.Coord.Y := Y1;
 
             Status := Union_Rectangle (Region, Item.Coord'Access);
          end if;
@@ -1105,7 +1105,7 @@ package body Gtkada.Canvas is
      (Canvas    : access Interactive_Canvas_Record;
       Algorithm : Layout_Algorithm) is
    begin
-      if Canvas.Layout /= null then
+      if Algorithm /= null then
          Canvas.Layout := Algorithm;
       end if;
    end Set_Layout_Algorithm;
@@ -1150,8 +1150,6 @@ package body Gtkada.Canvas is
       else
          Update_Adjustments (Canvas);
       end if;
-
-      Update_Adjustments (Canvas);
    end Put;
 
    ---------------
@@ -2444,12 +2442,19 @@ package body Gtkada.Canvas is
       X1, X2, Y1, Y2 : Gdouble;
    begin
       Get_Visible_World (Canvas, X1, Y1, X2, Y2);
-      Draw_Area
-        (Canvas,
-         (X      => Gint (X1),
-          Y      => Gint (Y1),
-          Width  => Gint (X2 - X1),
-          Height => Gint (Y2 - Y1)));
+
+      if X1 >= Gdouble (Gint'First)
+        and then X1 <= Gdouble (Gint'Last)
+        and then Y1 >= Gdouble (Gint'First)
+        and then Y1 <= Gdouble (Gint'Last)
+      then
+         Draw_Area
+           (Canvas,
+            (X      => Gint (X1),
+             Y      => Gint (Y1),
+             Width  => Gint (X2 - X1),
+             Height => Gint (Y2 - Y1)));
+      end if;
 
       return False;
    end On_Draw;
