@@ -400,12 +400,13 @@ package Gdk.Window is
    --  When using GTK+, the widget system automatically places calls to
    --  Gdk.Window.Begin_Paint_Region and Gdk.Window.End_Paint around emissions
    --  of the expose_event signal. That is, if you're writing an expose event
-   --  handler, you can assume that the exposed area in Gdk_Event_Expose has
-   --  already been cleared to the window background, is already set as the
-   --  clip region, and already has a backing store. Therefore in most cases,
-   --  application code need not call Gdk.Window.Begin_Paint_Region. (You can
-   --  disable the automatic calls around expose events on a widget-by-widget
-   --  basis by calling Gtk.Widget.Set_Double_Buffered.)
+   --  handler, you can assume that the exposed area in
+   --  Gdk.Event.Gdk_Event_Expose has already been cleared to the window
+   --  background, is already set as the clip region, and already has a backing
+   --  store. Therefore in most cases, application code need not call
+   --  Gdk.Window.Begin_Paint_Region. (You can disable the automatic calls
+   --  around expose events on a widget-by-widget basis by calling
+   --  Gtk.Widget.Set_Double_Buffered.)
    --  If you call this function multiple times before calling the matching
    --  Gdk.Window.End_Paint, the backing stores are pushed onto a stack.
    --  Gdk.Window.End_Paint copies the topmost backing store onscreen,
@@ -435,7 +436,7 @@ package Gdk.Window is
    --  "root_x": root window X coordinate of mouse click that began the drag
    --  "root_y": root window Y coordinate of mouse click that began the drag
    --  "timestamp": timestamp of mouse click that began the drag (use
-   --  gdk_event_get_time)
+   --  Gdk.Event.Get_Time)
 
    procedure Configure_Finished (Self : Gdk.Gdk_Window);
    pragma Import (C, Configure_Finished, "gdk_window_configure_finished");
@@ -909,8 +910,8 @@ package Gdk.Window is
    --  On the X11 platform, the geometry is obtained from the X server, so
    --  reflects the latest position of Window; this may be out-of-sync with the
    --  position of Window delivered in the most-recently-processed
-   --  Gdk_Event_Configure. Gdk.Window.Get_Position in contrast gets the
-   --  position from the most recent configure event.
+   --  Gdk.Event.Gdk_Event_Configure. Gdk.Window.Get_Position in contrast gets
+   --  the position from the most recent configure event.
    --  Note: If Window is not a toplevel, it is *much* better to call
    --  Gdk.Window.Get_Position, Gdk.Window.Get_Width and Gdk.Window.Get_Height
    --  instead, because it avoids the roundtrip to the X server and because
@@ -1008,7 +1009,7 @@ package Gdk.Window is
        Y    : out Gint);
    pragma Import (C, Get_Position, "gdk_window_get_position");
    --  Obtains the position of the window as reported in the
-   --  most-recently-processed Gdk_Event_Configure. Contrast with
+   --  most-recently-processed Gdk.Event.Gdk_Event_Configure. Contrast with
    --  Gdk.Window.Get_Geometry which queries the X server for the current
    --  window position, regardless of which events have been received or
    --  processed.
@@ -1067,10 +1068,11 @@ package Gdk.Window is
    --  "source": a Gdk_Input_Source to define the source class.
    --  "event_mask": event mask for Window
 
-   function Get_State (Self : Gdk.Gdk_Window) return Gdk_Window_State;
+   function Get_State
+      (Self : Gdk.Gdk_Window) return Gdk.Event.Gdk_Window_State;
    pragma Import (C, Get_State, "gdk_window_get_state");
    --  Gets the bitwise OR of the currently active window state flags, from
-   --  the Gdk_Window_State enumeration.
+   --  the Gdk.Event.Gdk_Window_State enumeration.
 
    function Get_Support_Multidevice (Self : Gdk.Gdk_Window) return Boolean;
    --  Returns True if the window is aware of the existence of multiple

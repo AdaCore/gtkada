@@ -2916,7 +2916,7 @@ should be freed with gdk_event_free().</doc>
           </parameter>
         </parameters>
       </constructor>
-      <method name="_get_angle"
+      <method name="get_angle"
               c:identifier="gdk_events_get_angle"
               version="3.0">
         <doc xml:whitespace="preserve">If both events contain X/Y information, this function will return %TRUE
@@ -2941,7 +2941,7 @@ Y axis.</doc>
           </parameter>
         </parameters>
       </method>
-      <method name="_get_center"
+      <method name="get_center"
               c:identifier="gdk_events_get_center"
               version="3.0">
         <doc xml:whitespace="preserve">If both events contain X/Y information, the center of both coordinates
@@ -2971,7 +2971,7 @@ will be returned in @x and @y.</doc>
           </parameter>
         </parameters>
       </method>
-      <method name="_get_distance"
+      <method name="get_distance"
               c:identifier="gdk_events_get_distance"
               version="3.0">
         <doc xml:whitespace="preserve">If both events have X/Y information, the distance between both coordinates
@@ -3651,7 +3651,7 @@ can also cause #GdkEventGrabBroken events.</doc>
         <type name="ModifierType"/>
       </field>
       <field name="keyval" writable="1">
-        <type name="guint" c:type="guint"/>
+        <type name="GdkKeyType" c:type="GdkKeyType"/>
       </field>
       <field name="length" writable="1">
         <type name="gint" c:type="gint"/>

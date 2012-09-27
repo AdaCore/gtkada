@@ -192,6 +192,10 @@ naming.cname_to_adaname = {
     "FALSE": "False",
     "NULL": "null",
 
+    "GDK_2BUTTON_PRESS": "Gdk_2button_Press",
+    "GDK_3BUTTON_PRESS": "Gdk_3button_Press",
+    "GDK_EVENT_LAST": None,
+
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
 
@@ -224,6 +228,7 @@ naming.girname_to_ctype = {
     "GObject.Object":      "GObject*",
     "GObject.Closure":     "GClosure*",
     "Cairo.Context":       "cairo_t",
+    "ModifierType":        "GdkModifierType",
     "GObject.InitiallyUnowned": "GObject*"  # An alias
 }
 
@@ -243,6 +248,7 @@ naming.exceptions = {
     "Raise": "Gdk_Raise",
     "Use": "GUse",
     "Uri": "URI",
+    "In": "Gtk_In",
 }
 
 # Maps C types to type descriptions.
@@ -262,6 +268,8 @@ naming.type_exceptions = {
 
     "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA",  # impose casing
                       "Gdk.RGBA.Property_RGBA"),
+    "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
+    "GdkEvent":         Proxy("Gdk.Event.Gdk_Event", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
     "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
@@ -285,7 +293,6 @@ naming.type_exceptions = {
     "GClosure*":         Proxy("System.Address", ""),
     "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),
     "GValue":            Proxy("Glib.Values.GValue", ""),
-    "GdkEventMask":      Enum("Gdk.Event.Gdk_Event_Mask"),
     "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
 
     # Specific to this binding generator (referenced from binding.xml)
@@ -332,7 +339,7 @@ naming.type_exceptions = {
                        "Gdk.Color.Property_Gdk_Color",
                        "Gdk.Color.Gdk_Color_Or_Null"),
     "GdkDragContext":     GObject("Gdk.Drag_Contexts.Drag_Context"),
-    "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
+#    "GdkEventKey*":       Proxy("Gdk.Event.Gdk_Event_Key"),
     "GdkFont":            Proxy("Gdk.Font.Gdk_Font"),
     "GdkVisual*":         Proxy("Gdk.Visual.Gdk_Visual"),
     "GdkPixmap*":         Proxy("Gdk.Pixmap.Gdk_Pixmap"),
@@ -340,7 +347,11 @@ naming.type_exceptions = {
     "GdkImage*":          Proxy("Gdk.Image.Gdk_Image"),
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
+
     "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+
+    "GdkRectangle":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),  # in gdkevents.h
+
     # ??? The above should not be needed, we should infer it from the Gir.
     # we need it to generate the "Stub" object in Gdk.Device.Get_Position
     "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA", None,

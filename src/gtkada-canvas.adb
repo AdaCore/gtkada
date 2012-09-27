@@ -483,9 +483,11 @@ package body Gtkada.Canvas is
       X_World : out Gdouble;
       Y_World : out Gdouble)
    is
+      X, Y : Gdouble;
    begin
-      X_World := (Canvas.World_X + Get_X (Event)) / Canvas.Zoom;
-      Y_World := (Canvas.World_Y + Get_Y (Event)) / Canvas.Zoom;
+      Get_Coords (Event, X, Y);
+      X_World := (Canvas.World_X + X) / Canvas.Zoom;
+      Y_World := (Canvas.World_Y + Y) / Canvas.Zoom;
    end To_World_Coordinates;
 
    ---------------------------
@@ -2715,9 +2717,10 @@ package body Gtkada.Canvas is
       Canvas  : constant Interactive_Canvas := Interactive_Canvas (Canv);
       Cursor  : Gdk.Gdk_Cursor;
       Handled : Boolean;
+      X, Y    : Gdouble;
 
    begin
-      if Get_Window (Event) /= Get_Bin_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
@@ -2732,6 +2735,7 @@ package body Gtkada.Canvas is
 
       if Traces then
          if Canvas.Item_Press /= null then
+            Get_Coords (Event, X, Y);
             Put_Line ("Clicked on Item at world coordinates ("
                       & Gdouble'Image (Canvas.World_X_At_Click)
                       & Gdouble'Image (Canvas.World_Y_At_Click)
@@ -2740,8 +2744,8 @@ package body Gtkada.Canvas is
                       & Gint'Image (Canvas.Item_Press.Coord.Y)
                       & Gint'Image (Canvas.Item_Press.Coord.Width)
                       & Gint'Image (Canvas.Item_Press.Coord.Height)
-                      & ") mouse=" & Gint'Image (Gint (Get_X (Event)))
-                      & Gint'Image (Gint (Get_Y (Event))));
+                      & ") mouse=" & Gint'Image (Gint (X))
+                      & Gint'Image (Gint (Y)));
          else
             Put_Line ("Clicked outside of item at world coordinates "
                       & Gdouble'Image (Canvas.World_X_At_Click)
@@ -2768,13 +2772,11 @@ package body Gtkada.Canvas is
                Add_To_Selection (Canvas, Canvas.Item_Press);
             end if;
          else
-            Set_X
-              (Event,
-               Canvas.World_X_At_Click - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y
-              (Event,
-               Canvas.World_Y_At_Click - Gdouble (Canvas.Item_Press.Coord.Y));
-            Handled := On_Button_Click (Canvas.Item_Press, Event);
+            Event.Button.X :=
+              Canvas.World_X_At_Click - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y :=
+               Canvas.World_Y_At_Click - Gdouble (Canvas.Item_Press.Coord.Y);
+            Handled := On_Button_Click (Canvas.Item_Press, Event.Button);
 
             if not Handled then
                --  If not handled, then:
@@ -2831,12 +2833,13 @@ package body Gtkada.Canvas is
       Canvas             : constant Interactive_Canvas :=
                              Interactive_Canvas (Canv);
       X_Scroll, Y_Scroll : Gdouble;
+      X, Y               : Gdouble;
       Dead               : Boolean;
       pragma Unreferenced (Dead);
 
       Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
    begin
-      if Get_Window (Event) /= Get_Bin_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
@@ -2845,19 +2848,20 @@ package body Gtkada.Canvas is
             New_X, New_Y : Gdouble;
          begin
             To_World_Coordinates (Canvas, Event, New_X, New_Y);
-            Set_X (Event, New_X - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y (Event, New_Y - Gdouble (Canvas.Item_Press.Coord.Y));
+            Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
 
-         return On_Button_Click (Canvas.Item_Press, Event);
+         return On_Button_Click (Canvas.Item_Press, Event.Button);
       end if;
 
       --  Are we in the scrolling box ? If yes, do not move the item
       --  directly, but establish the timeout callbacks that will take care
       --  of the scrolling
 
-      Mouse_X_Canvas := Gint (Get_X (Event));
-      Mouse_Y_Canvas := Gint (Get_Y (Event));
+      Get_Coords (Event, X, Y);
+      Mouse_X_Canvas := Gint (X);
+      Mouse_Y_Canvas := Gint (Y);
 
       Test_Scrolling_Box
         (Canvas            => Canvas,
@@ -2923,7 +2927,7 @@ package body Gtkada.Canvas is
       --  Restore the standard cursor
       Set_Cursor (Get_Bin_Window (Canvas), null);
 
-      if Get_Window (Event) /= Get_Bin_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
@@ -2940,11 +2944,11 @@ package body Gtkada.Canvas is
             New_X, New_Y : Gdouble;
          begin
             To_World_Coordinates (Canvas, Event, New_X, New_Y);
-            Set_X (Event, New_X - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y (Event, New_Y - Gdouble (Canvas.Item_Press.Coord.Y));
+            Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
 
-         Handled := On_Button_Click (Canvas.Item_Press, Event);
+         Handled := On_Button_Click (Canvas.Item_Press, Event.Button);
          Canvas.Item_Press := null;
 
          return Handled;

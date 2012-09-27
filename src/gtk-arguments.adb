@@ -22,7 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Arguments is
 
@@ -81,9 +81,13 @@ package body Gtk.Arguments is
    --------------
 
    function To_Event (Args : Gtk_Args; Num : Positive)
-     return Gdk.Event.Gdk_Event is
+      return Gdk.Event.Gdk_Event
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Gdk.Event.Gdk_Event);
+      Proxy : constant C_Proxy := Get_Proxy (Nth (Args, Guint (Num)));
    begin
-      return Gdk.Event.Gdk_Event (Get_Proxy (Nth (Args, Guint (Num))));
+      return Convert (Proxy);
    end To_Event;
 
    ----------------------
@@ -115,7 +119,7 @@ package body Gtk.Arguments is
    is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Unchecked_Conversion
+      function Internal is new Ada.Unchecked_Conversion
         (System.Address, Gtk.Widget.Gtk_Requisition_Access);
       pragma Warnings (On);
 
@@ -133,7 +137,7 @@ package body Gtk.Arguments is
    is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Unchecked_Conversion
+      function Internal is new Ada.Unchecked_Conversion
         (System.Address, Gtk.Widget.Gtk_Allocation_Access);
       pragma Warnings (On);
 

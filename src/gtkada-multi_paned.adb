@@ -835,6 +835,8 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
       pragma Unreferenced (Tmp);
+      X, Y : Gdouble;
+      Xroot, Yroot : Gdouble;
    begin
       if Get_Button (Event) /= 1 then
          return False;
@@ -844,7 +846,7 @@ package body Gtkada.Multi_Paned is
 
       while Get (Iter) /= null loop
          Current := Get (Iter);
-         if Current.Handle.Win = Get_Window (Event) then
+         if Current.Handle.Win = Event.Button.Window then
             Split.Selected := Current;
             exit;
          end if;
@@ -873,6 +875,9 @@ package body Gtkada.Multi_Paned is
 
       Split.Selected_Pos := Split.Selected.Handle.Position;
 
+      Get_Coords (Event, X, Y);
+      Get_Root_Coords (Event, Xroot, Yroot);
+
       case Split.Selected.Parent.Orientation is
          when Orientation_Vertical =>
             if Split.Cursor_Double_V_Arrow = null then
@@ -880,24 +885,23 @@ package body Gtkada.Multi_Paned is
             end if;
             Cursor := Split.Cursor_Double_V_Arrow;
             Split.Selected_Pos.Height := 0;
-            Split.Selected_Pos.Y :=
-              Split.Selected_Pos.Y + Gint (Get_Y (Event));
-            Split.Initial_Pos := Split.Selected.Handle.Position.Y
-              - Gint (Get_Y_Root (Event));
+            Split.Selected_Pos.Y := Split.Selected_Pos.Y + Gint (Y);
+            Split.Initial_Pos :=
+              Split.Selected.Handle.Position.Y - Gint (Yroot);
+
          when Orientation_Horizontal =>
             if Split.Cursor_Double_H_Arrow = null then
                Gdk_New (Split.Cursor_Double_H_Arrow, Sb_H_Double_Arrow);
             end if;
             Cursor := Split.Cursor_Double_H_Arrow;
             Split.Selected_Pos.Width := 0;
-            Split.Selected_Pos.X :=
-              Split.Selected_Pos.X + Gint (Get_X (Event));
-            Split.Initial_Pos := Split.Selected.Handle.Position.X
-              - Gint (Get_X_Root (Event));
+            Split.Selected_Pos.X := Split.Selected_Pos.X + Gint (X);
+            Split.Initial_Pos :=
+              Split.Selected.Handle.Position.X - Gint (Xroot);
       end case;
 
       Tmp := Pointer_Grab
-        (Get_Window (Event),
+        (Event.Button.Window,
          False,
          Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
          Cursor => Cursor,
@@ -1086,11 +1090,14 @@ package body Gtkada.Multi_Paned is
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
       New_Pos : Gint;
+      Xroot, Yroot : Gdouble;
    begin
       if Split.Selected /= null then
+         Get_Root_Coords (Event, Xroot, Yroot);
+
          case Split.Selected.Parent.Orientation is
             when Orientation_Horizontal =>
-               New_Pos := Gint (Get_X_Root (Event)) + Split.Initial_Pos;
+               New_Pos := Gint (Xroot) + Split.Initial_Pos;
                if New_Pos >= Split.Selected.Parent.X
                  and then New_Pos <= Split.Selected.Parent.X
                    + Gint (Split.Selected.Parent.Width)
@@ -1098,7 +1105,7 @@ package body Gtkada.Multi_Paned is
                   Split.Selected_Pos.X := New_Pos;
                end if;
             when Orientation_Vertical =>
-               New_Pos := Gint (Get_Y_Root (Event)) + Split.Initial_Pos;
+               New_Pos := Gint (Yroot) + Split.Initial_Pos;
                if New_Pos >= Split.Selected.Parent.Y
                  and then New_Pos <= Split.Selected.Parent.Y
                    + Gint (Split.Selected.Parent.Height)

@@ -2750,7 +2750,7 @@ package Gtk.Widget is
    --  Whether the widget is double buffered.
    --
    --  Name: Events_Property
-   --  Type: Gdk.Event_Mask
+   --  Type: Gdk.Event.Gdk_Event_Mask
    --  Flags: read-write
    --
    --  Name: Expand_Property
@@ -2933,7 +2933,7 @@ package Gtk.Widget is
    Can_Focus_Property : constant Glib.Properties.Property_Boolean;
    Composite_Child_Property : constant Glib.Properties.Property_Boolean;
    Double_Buffered_Property : constant Glib.Properties.Property_Boolean;
-   Events_Property : constant Glib.Properties.Property_Boxed;
+   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask;
    Expand_Property : constant Glib.Properties.Property_Boolean;
    Halign_Property : constant Gtk.Widget.Property_Gtk_Align;
    Has_Default_Property : constant Glib.Properties.Property_Boolean;
@@ -2975,7 +2975,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Button) return Boolean;
-   --    --  "event": the Gdk_Event_Button which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal.
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
@@ -2992,7 +2992,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Button) return Boolean;
-   --    --  "event": the Gdk_Event_Button which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal.
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
@@ -3036,7 +3036,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Configure) return Boolean;
-   --    --  "event": the Gdk_Event_Configure which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Configure which triggered this signal.
    --  The ::configure-event signal will be emitted when the size, position or
    --  stacking of the Widget's window has changed.
    --
@@ -3052,7 +3052,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Expose) return Boolean;
-   --    --  "event": the Gdk_Event_Expose event
+   --    --  "event": the Gdk.Event.Gdk_Event_Expose event
    --  Emitted when a redirected window belonging to Widget gets drawn into.
    --  The region/area members of the event shows what area of the redirected
    --  drawable was drawn into.
@@ -3341,7 +3341,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Crossing) return Boolean;
-   --    --  "event": the Gdk_Event_Crossing which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Crossing which triggered this signal.
    --  The ::enter-notify-event will be emitted when the pointer enters the
    --  Widget's window.
    --
@@ -3396,7 +3396,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Focus) return Boolean;
-   --    --  "event": the Gdk_Event_Focus which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Focus which triggered this signal.
    --  The ::focus-in-event signal will be emitted when the keyboard focus
    --  enters the Widget's window.
    --
@@ -3411,7 +3411,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Focus) return Boolean;
-   --    --  "event": the Gdk_Event_Focus which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Focus which triggered this signal.
    --  The ::focus-out-event signal will be emitted when the keyboard focus
    --  leaves the Widget's window.
    --
@@ -3426,7 +3426,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Grab_Broken) return Boolean;
-   --    --  "event": the Gdk_Event_Grab_Broken event
+   --    --  "event": the Gdk.Event.Gdk_Event_Grab_Broken event
    --  Emitted when a pointer or keyboard grab on a window belonging to Widget
    --  gets broken.
    --
@@ -3472,7 +3472,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Key) return Boolean;
-   --    --  "event": the Gdk_Event_Key which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Key which triggered this signal.
    --  The ::key-press-event signal is emitted when a key is pressed. The
    --  signal emission will reoccur at the key-repeat rate when the key is kept
    --  pressed.
@@ -3490,7 +3490,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Key) return Boolean;
-   --    --  "event": the Gdk_Event_Key which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Key which triggered this signal.
    --  The ::key-release-event signal is emitted when a key is released.
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
@@ -3519,7 +3519,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Crossing) return Boolean;
-   --    --  "event": the Gdk_Event_Crossing which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Crossing which triggered this signal.
    --  The ::leave-notify-event will be emitted when the pointer leaves the
    --  Widget's window.
    --
@@ -3539,7 +3539,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Any) return Boolean;
-   --    --  "event": the Gdk_Event_Any which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Any which triggered this signal.
    --  The ::map-event signal will be emitted when the Widget's window is
    --  mapped. A window is mapped when it becomes visible on the screen.
    --
@@ -3560,7 +3560,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Motion) return Boolean;
-   --    --  "event": the Gdk_Event_Motion which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Motion which triggered this signal.
    --  The ::motion-notify-event signal is emitted when the pointer moves over
    --  the widget's Gdk.Gdk_Window.
    --
@@ -3604,7 +3604,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Property) return Boolean;
-   --    --  "event": the Gdk_Event_Property which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Property which triggered this signal.
    --  The ::property-notify-event signal will be emitted when a property on
    --  the Widget's window has been changed or deleted.
    --
@@ -3619,7 +3619,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Proximity) return Boolean;
-   --    --  "event": the Gdk_Event_Proximity which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Proximity which triggered this signal.
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_PROXIMITY_IN_MASK mask.
    --
@@ -3633,7 +3633,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Proximity) return Boolean;
-   --    --  "event": the Gdk_Event_Proximity which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Proximity which triggered this signal.
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_PROXIMITY_OUT_MASK mask.
    --
@@ -3688,7 +3688,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Scroll) return Boolean;
-   --    --  "event": the Gdk_Event_Scroll which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal.
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
@@ -3706,7 +3706,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Selection) return Boolean;
-   --    --  "event": the Gdk_Event_Selection which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Selection which triggered this signal.
    --  The ::selection-clear-event signal will be emitted when the the
    --  Widget's window has lost ownership of a selection.
    --
@@ -3740,7 +3740,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Selection) return Boolean;
-   --    --  "event": the Gdk_Event_Selection which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Selection which triggered this signal.
    --  The ::selection-request-event signal will be emitted when another
    --  client requests ownership of the selection owned by the Widget's window.
    --
@@ -3808,7 +3808,7 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Any) return Boolean;
-   --    --  "event": the Gdk_Event_Any which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event_Any which triggered this signal
    --  The ::unmap-event signal will be emitted when the Widget's window is
    --  unmapped. A window is unmapped when it becomes invisible on the screen.
    --
@@ -3827,7 +3827,8 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Visibility) return Boolean;
-   --    --  "event": the Gdk_Event_Visibility which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Visibility which triggered this
+   --    --  signal.
    --  The ::visibility-notify-event will be emitted when the Widget's window
    --  is obscured or unobscured.
    --
@@ -3842,7 +3843,8 @@ package Gtk.Widget is
    --     function Handler
    --       (Self  : access Gtk_Widget_Record'Class;
    --        Event : Gdk.Event_Window_State) return Boolean;
-   --    --  "event": the Gdk_Event_Window_State which triggered this signal.
+   --    --  "event": the Gdk.Event.Gdk_Event_Window_State which triggered this
+   --    --  signal.
    --  The ::window-state-event will be emitted when the state of the toplevel
    --  window associated to the Widget changes.
    --
@@ -3934,8 +3936,8 @@ private
      Glib.Properties.Build ("composite-child");
    Double_Buffered_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("double-buffered");
-   Events_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("events");
+   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask :=
+     Gdk.Event.Build ("events");
    Expand_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("expand");
    Halign_Property : constant Gtk.Widget.Property_Gtk_Align :=

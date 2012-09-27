@@ -1042,7 +1042,7 @@ package body Gtkada.MDI is
       --  functions, since those are handled by the outside application.
 
       if Get_Event_Type (Event) = Key_Press then
-         Key := Get_Key_Val (Event);
+         Key := Event.Key.Keyval;
 
          if Key = Gdk.Types.Keysyms.GDK_BackSpace
            or else Key = Gdk.Types.Keysyms.GDK_Delete
@@ -1051,7 +1051,7 @@ package body Gtkada.MDI is
          else
             Delete_Text (D.Ent, Gint (D.Length), -1);
 
-            Set_State (Event, 0);
+            Event.Key.State := 0;
             Tmp := Return_Callback.Emit_By_Name
               (D.Ent, "key_press_event", Event);
          end if;
@@ -1060,7 +1060,7 @@ package body Gtkada.MDI is
          return True;
 
       elsif Get_Event_Type (Event) = Key_Release then
-         Key := Get_Key_Val (Event);
+         Key := Event.Key.Keyval;
 
          --  As soon as one of the modifiers of the initial key is released,
          --  we close the dialog
@@ -1528,7 +1528,9 @@ package body Gtkada.MDI is
             Print_Debug ("Close_Child, emitting delete_event");
             Indent_Debug (1);
 
-            Allocate (Event, Delete, Get_Window (MDI));
+            Gdk_New (Event, Delete);
+            Event.Any.Window := Get_Window (MDI);
+
             Prevent_Delete := Return_Callback.Emit_By_Name
               (Child.Initial, "delete_event", Event);
             Free (Event);
@@ -1903,7 +1905,7 @@ package body Gtkada.MDI is
       --  instance scrollbars do that), and thus wouldn't be useable anymore
       --  if we do a grab.
 
-      if Get_Window (Child) /= Get_Window (Event) then
+      if Get_Window (Child) /= Event.Button.Window then
          return False;
       end if;
 
@@ -1920,20 +1922,21 @@ package body Gtkada.MDI is
    is
       C    : constant MDI_Child := MDI_Child (Child);
       W, H : Gint;
+      X, Y : Gdouble;
    begin
       C.MDI.In_Drag := No_Drag;
 
       --  Double-click on left icon => close child
       if Get_Event_Type (Event) = Gdk_2button_Press
-        and then Get_Button (Event) = 1
+        and then Event.Button.Button = 1
       then
          if C.Icon /= null then
             W := Get_Width (C.Icon);
             H := Get_Height (C.Icon);
 
-            if Gint (Get_X (Event)) <= W
-              and then Gint (Get_Y (Event)) <= H
-            then
+            Get_Coords (Event, X, Y);
+
+            if Gint (X) <= W and then Gint (Y) <= H then
                Close_Child (C);
                return True;
             end if;
@@ -1941,7 +1944,7 @@ package body Gtkada.MDI is
          return False;
 
       elsif Get_Event_Type (Event) /= Button_Press
-        or else Get_Button (Event) /= 1
+        or else Event.Button.Button /= 1
       then
          return False;
       end if;
@@ -1981,7 +1984,7 @@ package body Gtkada.MDI is
 
       Pointer_Ungrab (Time => 0);
 
-      if Get_Window (Child) /= Get_Window (Event) then
+      if Get_Window (Child) /= Event.Button.Window then
          C.MDI.In_Drag := No_Drag;
          return False;
       end if;
@@ -2202,12 +2205,13 @@ package body Gtkada.MDI is
       Rect2    : Gdk_Rectangle;
       Tmp      : Gdk_Grab_Status;
       Position : Child_Position;
+      Xroot, Yroot : Gdouble;
       Delta_X, Delta_Y : Gint;
       pragma Unreferenced (Tmp);
       In_Central : Boolean;
 
    begin
-      if Get_Window (Child) /= Get_Window (Event) then
+      if Get_Window (Child) /= Event.Button.Window then
          return False;
       end if;
 
@@ -2327,8 +2331,10 @@ package body Gtkada.MDI is
             --  If we are still in the tabs area, do nothing so that tabs can
             --  be reordered graphically
 
-            Delta_X := abs (Gint (Get_X_Root (Event)) - C.MDI.Drag_Start_X);
-            Delta_Y := abs (Gint (Get_Y_Root (Event)) - C.MDI.Drag_Start_Y);
+            Get_Root_Coords (Event, Xroot, Yroot);
+
+            Delta_X := abs (Gint (Xroot) - C.MDI.Drag_Start_X);
+            Delta_Y := abs (Gint (Yroot) - C.MDI.Drag_Start_Y);
 
             Note := Get_Notebook (C);
             if Note /= null
@@ -7073,6 +7079,7 @@ package body Gtkada.MDI is
    is
       Tmp : Gdk_Grab_Status;
       Win : Gdk.Gdk_Window;
+      Xroot, Yroot : Gdouble;
       pragma Unreferenced (Tmp);
    begin
       --  Focus and raise the child. Raise_Child must be called explicitly
@@ -7103,8 +7110,9 @@ package body Gtkada.MDI is
             Cursor => null,
             Time   => 0);
 
-         Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
-         Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
+         Get_Root_Coords (Event, Xroot, Yroot);
+         Child.MDI.Drag_Start_X := Gint (Xroot);
+         Child.MDI.Drag_Start_Y := Gint (Yroot);
          Child.MDI.In_Drag := In_Pre_Drag;
          Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
 

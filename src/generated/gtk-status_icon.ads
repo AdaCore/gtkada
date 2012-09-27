@@ -534,7 +534,7 @@ package Gtk.Status_Icon is
    --     function Handler
    --       (Self  : access Gtk_Status_Icon_Record'Class;
    --        Event : Gdk.Event_Button) return Boolean;
-   --    --  "event": the Gdk_Event_Button which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
@@ -549,7 +549,7 @@ package Gtk.Status_Icon is
    --     function Handler
    --       (Self  : access Gtk_Status_Icon_Record'Class;
    --        Event : Gdk.Event_Button) return Boolean;
-   --    --  "event": the Gdk_Event_Button which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
@@ -615,7 +615,7 @@ package Gtk.Status_Icon is
    --     function Handler
    --       (Self  : access Gtk_Status_Icon_Record'Class;
    --        Event : Gdk.Event_Scroll) return Boolean;
-   --    --  "event": the Gdk_Event_Scroll which triggered this signal
+   --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.

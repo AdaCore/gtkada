@@ -138,7 +138,7 @@ package Gtk.Window is
    --  directly when overriding the standard key handling for a toplevel
    --  window.
    --  Since: gtk+ 2.4
-   --  "event": a Gdk_Event_Key
+   --  "event": a Gdk.Event.Gdk_Event_Key
 
    procedure Add_Accel_Group
       (Window      : not null access Gtk_Window_Record;
@@ -608,10 +608,10 @@ package Gtk.Window is
        Rect      : out Gdk.Rectangle.Gdk_Rectangle;
        retrieved : out Boolean);
    --  If a window has a resize grip, this will retrieve the grip position,
-   --  width and height into the specified Gdk_Rectangle.
+   --  width and height into the specified Gdk.Rectangle.Gdk_Rectangle.
    --  Since: gtk+ 3.0
-   --  "rect": a pointer to a Gdk_Rectangle which we should store the resize
-   --  grip area
+   --  "rect": a pointer to a Gdk.Rectangle.Gdk_Rectangle which we should
+   --  store the resize grip area
 
    function Get_Role
       (Window : not null access Gtk_Window_Record) return UTF8_String;
@@ -659,7 +659,7 @@ package Gtk.Window is
    --  linkend="gtk-X11-arch">window manager</link> for the initial window size
    --  (but this is not reliably the same as the size the window manager will
    --  actually select). The size obtained by Gtk.Window.Get_Size is the last
-   --  size received in a Gdk_Event_Configure, that is, GTK+ uses its
+   --  size received in a Gdk.Event.Gdk_Event_Configure, that is, GTK+ uses its
    --  locally-stored size, rather than querying the X server for the size. As
    --  a result, if you call Gtk.Window.Resize then immediately call
    --  Gtk.Window.Get_Size, the size won't have taken effect yet. After the
@@ -671,7 +671,7 @@ package Gtk.Window is
    --  the size and the time that you perform some action assuming that size is
    --  the current size. To avoid race conditions, connect to "configure-event"
    --  on the window and adjust your size-dependent state to match the size
-   --  delivered in the Gdk_Event_Configure.
+   --  delivered in the Gdk.Event.Gdk_Event_Configure.
    --  Note 2: The returned size does *not* include the size of the window
    --  manager decorations (aka the window frame or border). Those are not
    --  drawn by GTK+ and GTK+ has no reliable method of determining their size.
@@ -956,7 +956,7 @@ package Gtk.Window is
    --  this directly when overriding the standard key handling for a toplevel
    --  window.
    --  Since: gtk+ 2.4
-   --  "event": a Gdk_Event_Key
+   --  "event": a Gdk.Event.Gdk_Event_Key
 
    procedure Remove_Accel_Group
       (Window      : not null access Gtk_Window_Record;

@@ -363,18 +363,18 @@ package body Create_Canvas is
    is
       Rect : constant Cairo_Rectangle_Int := Get_Coord (Item);
    begin
-      if Get_Event_Type (Event) = Button_Press
-        and then Get_Button (Event) = 1
+      if Event.The_Type = Button_Press
+        and then Event.Button = 1
       then
-         if Gint (Get_Y (Event)) > Rect.Height - 4 then
+         if Gint (Event.Y) > Rect.Height - 4 then
             return True;
          end if;
 
-      elsif Get_Event_Type (Event) = Motion_Notify then
-         if Get_Y (Event) > 4.0 then
+      elsif Event.The_Type = Motion_Notify then
+         if Event.Y > 4.0 then
             Set_Screen_Size
               (Item, Get_Coord (Item).Width,
-               Gint (Get_Y (Event)));
+               Gint (Event.Y));
          end if;
 
          return True;

@@ -61,7 +61,8 @@ Where the package node is defined as follows:
            transfer-ownership='none'  <!-- set to 'full' to indicate the return
                                 value must be freed by the caller -->
            return_as_param="..." <!-- optional, replace return parameter with
-                                an out parameter with this name -->
+                                an out parameter with this name. Used to avoid
+                                functions with out parameters. -->
            return="..."    <!-- Override C type for the returned value, or
                                 "void" to change into procedure. -->
        >
@@ -112,7 +113,11 @@ Where the package node is defined as follows:
        <!-- Support for <record> types -->
        <record ctype="..."
              ada="..."     <!-- optional Ada name (no package info needed) -->
-       />
+       >
+           <union value="..." field="..."/>  <!--  once for each value of
+                                                   discriminant, mapping to
+                                                   relevant field --
+       </record>
 
        <!-- Instantiates a list of elements. These statements automatically
             define new ctypes which are the concatenation of the ctype given
@@ -246,17 +251,29 @@ class GtkAdaPackage(object):
         return result
 
     def add_record_type(self, ctype):
-        """Add explicit record to bind"""
+        """Add explicit record to bind, unless it is already mentioned
+           explictly in the <record> nodes.
+        """
 
         if self.node:
+            for rec in self.node.findall("record"):
+                if rec.get("ctype") == ctype:
+                    return
+
             SubElement(self.node, "record", {"ctype": ctype})
 
     def records(self):
         """Returns the list of record types, as a list of tuples:
-               [ (ctype name,  corresponding CType, [fields]) ...]
+               [ (ctype name,  corresponding CType, ada name, [fields],
+                 [union]) ...]
            Where fields is a dict for each field whose type is
            overridden:
                { name: CType, ... }
+           and union is a list of tuples (value, field) associating
+           a field of a <union> with the corresponding value of the
+           discriminant.
+
+           The returned list includes records added via add_record_type
         """
 
         result = []
@@ -268,9 +285,15 @@ class GtkAdaPackage(object):
                     override_fields[field.get("name")] = \
                         naming.type(name="", cname=field.get("ctype"))
 
+                unions = []
+                for field in rec.findall("union"):
+                    unions.append((field.get("value"), field.get("field")))
+
                 result.append((rec.get("ctype"),
-                               naming.type(name="", cname=rec.get("ctype")),
-                               override_fields))
+                               naming.type(name="",
+                                           cname=rec.get("ctype")),
+                               rec.get("ada"),
+                               override_fields, unions))
 
         return result
 

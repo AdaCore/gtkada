@@ -138,14 +138,15 @@ package Gdk.Screen is
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
-   --  Retrieves the Gdk_Rectangle representing the size and position of the
-   --  individual monitor within the entire screen area.
+   --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
+   --  position of the individual monitor within the entire screen area.
    --  Note that the size of the entire screen area can be retrieved via
    --  Gdk.Screen.Get_Width and Gdk.Screen.Get_Height.
    --  Since: gtk+ 2.2
    --  "monitor_num": the monitor number, between 0 and
    --  gdk_screen_get_n_monitors (screen)
-   --  "dest": a Gdk_Rectangle to be filled with the monitor geometry
+   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  geometry
 
    function Get_Monitor_Height_Mm
       (Screen      : not null access Gdk_Screen_Record;

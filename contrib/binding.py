@@ -59,10 +59,12 @@ nmethod = QName(uri, "method").text
 nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
 nrecord = QName(uri, "record").text
+nunion = QName(uri, "union").text
 nreturn = QName(uri, "return-value").text
 ntype = QName(uri, "type").text
 nvalue = QName(uri, "value").text
 nvarargs = QName(uri, "varargs").text
+
 
 class GIR(object):
     def __init__(self, files):
@@ -107,15 +109,19 @@ class GIR(object):
                 if cl.findall(nmethod):
                     self.classes[cl.get(ctype_qname)] = self._create_class(
                         root, cl, is_interface=False, is_gobject=False)
+                self.records[cl.get(ctype_qname)] = cl
+
+            k = "%s/%s" % (namespace, nunion)
+            for cl in root.findall(k):
+                if cl.findall(nmethod):
+                    self.classes[cl.get(ctype_qname)] = self._create_class(
+                        root, cl, is_interface=False, is_gobject=False)
+                self.records[cl.get(ctype_qname)] = cl
 
             for enums in (nenumeration, nbitfield):
                 k = "%s/%s" % (namespace, enums)
                 for cl in root.findall(k):
                     self.enums[cl.get(ctype_qname)] = cl
-
-            k = "%s/%s" % (namespace, nrecord)
-            for cl in root.findall(k):
-                self.records[cl.get(ctype_qname)] = cl
 
             self.globals.add(root)
 
@@ -1613,19 +1619,23 @@ See Glib.Properties for more information on properties)""")
         section.add_code(decl)
         section.add_code(body, specs=False)
 
-    def record_binding(self, section, ctype, type, override_fields):
-        """Create the binding for a <record> type.
+    def record_binding(
+        self, section, ctype, adaname, type, override_fields, unions):
+        """Create the binding for a <record> or <union> type.
            override_fields has the same format as returned by
            GtkAdaPackage.records()
         """
 
-        base = base_name(type.ada)
+        base = adaname or base_name(type.ada)
 
         try:
             node = gir.records[ctype]
         except KeyError:
             # The package doesn't contain a type (for instance GtkMain)
             return
+
+        is_union = node.tag == nunion
+        first_field_ctype = None
 
         fields = []
         for field in node.findall(nfield):
@@ -1638,8 +1648,15 @@ See Glib.Properties for more information on properties)""")
             if type:
                 ftype = override_fields.get(name, None)
                 if ftype is None:
-                    ftype = naming.type(
-                        name="", cname=type[0].get(ctype_qname))
+                    ctype = type[0].get(ctype_qname)
+                    if not ctype:
+                       # <type name="..."> has no c:type attribute, so we try
+                       # to map the name to a Girname
+                       ctype = naming.girname_to_ctype[type[0].get("name")]
+
+                    if not first_field_ctype:
+                        first_field_ctype = ctype
+                    ftype = naming.type(name="", cname=ctype)
 
             elif cb:
                 # ??? JL: Should properly bind the callback here.
@@ -1659,16 +1676,54 @@ See Glib.Properties for more information on properties)""")
 
                 fields.append((naming.case(name), ftype))
 
-        if fields:
-            section.add(
-                "\ntype %s is record\n" % base
-                + "\n".join("%s : %s;" % f for f in fields)
-                + "\nend record;\npragma Convention (C, %s);\n" % base)
-        else:
+        if not fields:
             section.add(
                 "\ntype %s is new Glib.C_Proxy;\n" % base)
 
+        elif is_union:
+           enums = self.get_enumeration_values(first_field_ctype)
+           enums_dict = {ctype: adatype for ctype, adatype in enums}
+           text = "\ntype %s (%s : %s := %s) is record\n" % (
+                            base, fields[0][0], fields[0][1],
+                            enums[0][1]) + \
+               "    case %s is\n" % fields[0][0]
+           for index, f in enumerate(fields):
+               if index != 0:
+                   when_stmt = []
+                   if unions:
+                       for v, key in unions:
+                           if key.lower() == f[0].lower():   # applies to field
+                               when_stmt.append(enums_dict[v])
+                   else:
+                       when_stmt = [enums[index][1]]
+
+                   if not when_stmt:
+                       print "ERROR: no discrimant value for field %s" % f[0]
+
+                   text += "\n      when %s =>\n %s : %s;\n" % (
+                            "\n          | ".join(when_stmt), f[0], f[1])
+
+           text += "   end case;\nend record;\n"
+           text += "pragma Convention (C, %s);\n" % base
+           text += "pragma Unchecked_Union(%s);\n" % base
+           section.add("\n" + text)
+
+        else:
+           section.add(
+                "\ntype %s is record\n" % base
+                + "\n".join("%s : %s;" % f for f in fields)
+                + "\nend record;\npragma Convention (C, %s);\n" % base)
+
         section.add(Code(node.findtext(ndoc, ""), iscomment=True))
+
+    def get_enumeration_values(sef, enum_ctype):
+        """Return the list of enumeration values for the given enum, as a list
+           of tuples  (C identifier, ada identifier)"""
+
+        node = gir.enums[enum_ctype]
+        return [(m.get(cidentifier), naming.adamethod_name(m.get(cidentifier)))
+                for m in node.findall(nmember)
+                if int(m.get("value")) >= 0]
 
     def enumeration_binding(self, section, ctype, type, prefix):
         """Add to the section the Ada type definition for the <enumeration>
@@ -1688,6 +1743,8 @@ See Glib.Properties for more information on properties)""")
         for member in node.findall(nmember):
             cname = member.get(cidentifier)
             m = naming.adamethod_name(cname, warning_if_not_found=False)
+            if m is None:
+                continue
 
             if cname == m:
                 # No special case ? Attempt a simple rule (remove leading
@@ -1885,8 +1942,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         for ctype, enum, prefix in self.gtkpkg.enumerations():
             self.enumeration_binding(section, ctype, enum, prefix)
 
-        for ctype, enum, override_fields in self.gtkpkg.records():
-            self.record_binding(section, ctype, enum, override_fields)
+        for ctype, enum, adaname, fields, unions in self.gtkpkg.records():
+            self.record_binding(
+               section, ctype, adaname, enum, fields, unions)
 
         for ada, ctype, single, sect_name in self.gtkpkg.lists():
             sect = self.pkg.section(sect_name)

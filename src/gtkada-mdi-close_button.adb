@@ -54,33 +54,22 @@ package body Close_Button is
    --  Draws a cross centered on W / 2.0 of current size and thin.
 
    function On_Tab_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
    function On_Tab_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
-   function On_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
-
-   function On_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+   function On_Enter (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   function On_Leave (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
    function On_Mouse_Pressed
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean;
 
    function On_Mouse_Released
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean;
 
    procedure Invalidate (Widget : access Gtk_Widget_Record'Class);
@@ -383,11 +372,8 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Tab_Over := True;
       Invalidate (Widget);
@@ -400,14 +386,12 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
+     (Widget : access Gtk_Widget_Record'Class)
       return Boolean
    is
    begin
       Gtkada_MDI_Close_Button (Widget).Tab_Over := False;
-
-      return On_Leave (Widget, Event);
+      return On_Leave (Widget);
    end On_Tab_Leave;
 
    --------------
@@ -415,11 +399,8 @@ package body Close_Button is
    --------------
 
    function On_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Over := True;
       Invalidate (Widget);
@@ -432,11 +413,8 @@ package body Close_Button is
    --------------
 
    function On_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Over := False;
       Gtkada_MDI_Close_Button (Widget).Pressed := False;
@@ -451,17 +429,16 @@ package body Close_Button is
 
    function On_Mouse_Pressed
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Button)
+      Event  : Gdk.Event.Gdk_Event)
       return Boolean
    is
       Button : constant Gtkada_MDI_Close_Button :=
                  Gtkada_MDI_Close_Button (Widget);
 
    begin
-      if Gdk.Event.Get_Button (Event) = 1 and then Button.Over then
+      if Event.Button.Button = 1 and then Button.Over then
          Button.Pressed := True;
          Invalidate (Widget);
-
          return True;
       end if;
 
@@ -474,16 +451,15 @@ package body Close_Button is
 
    function On_Mouse_Released
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean
    is
       Button : constant Gtkada_MDI_Close_Button :=
                  Gtkada_MDI_Close_Button (Widget);
 
    begin
-      if Button.Pressed and then Gdk.Event.Get_Button (Event) = 1 then
+      if Button.Pressed and then Event.Button.Button = 1 then
          Close_Child (Button.Child);
-
          return True;
       end if;
 

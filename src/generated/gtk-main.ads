@@ -313,10 +313,10 @@ package Gtk.Main is
    function Get_Current_Event return Gdk.Event.Gdk_Event;
    --  Obtains a copy of the event currently being processed by GTK+.
    --  For example, if you are handling a Gtk.Button.Gtk_Button::clicked
-   --  signal, the current event will be the Gdk_Event_Button that triggered
-   --  the ::clicked signal.
+   --  signal, the current event will be the Gdk.Event.Gdk_Event_Button that
+   --  triggered the ::clicked signal.
    --  null if there is no current event. The returned event must be freed
-   --  with gdk_event_free.
+   --  with Gdk.Event.Free.
 
    function Get_Current_Event_Time return guint32;
    --  If there is a current event and it has a timestamp, return that

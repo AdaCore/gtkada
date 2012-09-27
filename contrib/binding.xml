@@ -21,7 +21,8 @@
       <method id="gdk_device_get_position" bind="False"/><!-- pending resolution of a problem with generating the stub object -->
       <method id="gdk_device_grab" bind="False"/><!-- no support for Gdk_Grab_Ownership yet -->
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
-      <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support for Gdk_Device_Type_Master lists -->
+      <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support
+      for Gdk_Device_Type_Master lists -->
 
       <extra>
          <spec>
@@ -3445,6 +3446,217 @@ creating a tag.
    end Enable_Model_Drag_Source;
        </body>
      </extra>
+   </package>
+
+   <package id="GdkEvent">
+     <enum ctype="GdkEventType" prefix="GDK_"/>
+     <enum ctype="GdkEventMask" prefix="GDK_"/>
+     <enum ctype="GdkVisibilityState" prefix="GDK_"/>
+     <enum ctype="GdkScrollDirection" prefix="GDK_"/>
+     <enum ctype="GdkNotifyType" prefix="GDK_"/>
+     <enum ctype="GdkCrossingMode" prefix="GDK_"/>
+     <enum ctype="GdkPropertyState" prefix="GDK_"/>
+     <enum ctype="GdkWindowState" prefix="GDK_"/>
+     <enum ctype="GdkSettingAction" prefix="GDK_"/>
+     <enum ctype="GdkOwnerChange" prefix="GDK_"/>
+     <record ctype="GdkEventAny"/>
+     <record ctype="GdkEventButton"/>
+     <record ctype="GdkEventExpose"/>
+     <record ctype="GdkEventVisibility"/>
+     <record ctype="GdkEventMotion"/>
+     <record ctype="GdkEventScroll"/>
+     <record ctype="GdkEventKey"/>
+     <record ctype="GdkEventCrossing"/>
+     <record ctype="GdkEventFocus"/>
+     <record ctype="GdkEventConfigure"/>
+     <record ctype="GdkEventProperty"/>
+     <record ctype="GdkEventSelection"/>
+     <record ctype="GdkEventOwnerChange"/>
+     <record ctype="GdkEventProximity"/>
+     <record ctype="GdkEventDND"/>
+     <record ctype="GdkEventWindowState"/>
+     <record ctype="GdkEventSetting"/>
+     <record ctype="GdkEventGrabBroken"/>
+
+     <record ctype="GdkEvent" ada="Gdk_Event_Record">
+       <union value="GDK_DELETE" field="any"/>
+       <union value="GDK_DESTROY" field="any" />
+       <union value="GDK_EXPOSE" field="expose" />
+       <union value="GDK_MOTION_NOTIFY" field="motion" />
+       <union value="GDK_BUTTON_PRESS" field="button" />
+       <union value="GDK_2BUTTON_PRESS" field="button" />
+       <union value="GDK_3BUTTON_PRESS" field="button" />
+       <union value="GDK_BUTTON_RELEASE" field="button" />
+       <union value="GDK_KEY_PRESS" field="key" />
+       <union value="GDK_KEY_RELEASE" field="key" />
+       <union value="GDK_ENTER_NOTIFY" field="crossing" />
+       <union value="GDK_LEAVE_NOTIFY" field="crossing" />
+       <union value="GDK_FOCUS_CHANGE" field="focus_change" />
+       <union value="GDK_CONFIGURE" field="configure" />
+       <union value="GDK_MAP" field="any" />
+       <union value="GDK_UNMAP" field="any" />
+       <union value="GDK_PROPERTY_NOTIFY" field="property" />
+       <union value="GDK_SELECTION_CLEAR" field="selection" />
+       <union value="GDK_SELECTION_REQUEST" field="selection" />
+       <union value="GDK_SELECTION_NOTIFY" field="selection" />
+       <union value="GDK_PROXIMITY_IN" field="proximity" />
+       <union value="GDK_PROXIMITY_OUT" field="proximity" />
+       <union value="GDK_DRAG_ENTER" field="dnd" />
+       <union value="GDK_DRAG_LEAVE" field="dnd" />
+       <union value="GDK_DRAG_MOTION" field="dnd" />
+       <union value="GDK_DRAG_STATUS" field="dnd" />
+       <union value="GDK_DROP_START" field="dnd" />
+       <union value="GDK_DROP_FINISHED" field="dnd" />
+       <union value="GDK_CLIENT_EVENT" field="any" />
+       <union value="GDK_VISIBILITY_NOTIFY" field="visibility" />
+       <union value="GDK_SCROLL" field="scroll" />
+       <union value="GDK_WINDOW_STATE" field="window_state" />
+       <union value="GDK_SETTING" field="setting" />
+       <union value="GDK_OWNER_CHANGE" field="owner_change" />
+       <union value="GDK_GRAB_BROKEN" field="grab_broken" />
+       <union value="GDK_DAMAGE" field="expose" />
+       <union value="GDK_TOUCH_BEGIN" field="touch" />
+       <union value="GDK_TOUCH_UPDATE" field="touch" />
+       <union value="GDK_TOUCH_END" field="touch" />
+       <union value="GDK_TOUCH_CANCEL" field="touch" />
+     </record>
+
+     <method id="gdk_event_get_coords" return="void"/>
+     <method id="gdk_event_get_root_coords" return="void"/>
+     <method id="gdk_event_get_axis" return="void"/>
+     <method id="gdk_event_get_scroll_direction" return="void"/>
+     <method id="gdk_event_get_scroll_deltas" return="void"/>
+
+     <!--  These are getters provided by gtk+ itself. They are reused from our
+           own misc.c file, because we want GtkAda to raise exceptions instead.
+           See <extra> below
+     -->
+     <method id="gdk_event_get_button" bind="False"/>
+     <method id="gdk_event_get_state" bind="False"/>
+     <method id="gdk_event_get_click_count" bind="False"/>
+     <method id="gdk_event_get_keyval" bind="False"/>
+     <method id="gdk_event_get_keycode" bind="False"/>
+
+     <!--  Avoid circular dependencies  Event->Device->Display->Event -->
+     <method id="gdk_event_get_device" bind="False"/>
+     <method id="gdk_event_get_source_device" bind="False"/>
+     <method id="gdk_event_set_device" bind="False"/>
+     <method id="gdk_event_set_source_device" bind="False"/>
+     <method id="gdk_event_get_screen" bind="False"/>
+     <method id="gdk_event_set_screen" bind="False"/>
+
+     <function id="gdk_events_pending" ada="Events_Pending"/>
+     <function id="gdk_set_show_events" ada="Set_Show_Events"/>
+     <function id="gdk_get_show_events" ada="Get_Show_Events"/>
+
+     <extra>
+       <gir:method name="Get_Button" c:identifier="ada_gdk_event_get_button">
+         <gir:doc>Extract the button number from an event</gir:doc>
+         <gir:return-value><gir:type name="guint" c:type="guint"/></gir:return-value>
+       </gir:method>
+       <gir:method name="Get_State" c:identifier="ada_gdk_event_get_state">
+         <gir:doc>State of the mouse buttons and keyboard keys just prior to the event</gir:doc>
+         <gir:return-value><gir:type name="GdkModifierType" c:type="GdkModifierType"/></gir:return-value>
+       </gir:method>
+       <gir:method name="Get_Key_Val" c:identifier="ada_gdk_event_get_keyval">
+         <gir:doc>Code of the key that was pressed (and that generated the event)</gir:doc>
+         <gir:return-value><gir:type name="GdkKeyType" c:type="GdkKeyType"/></gir:return-value>
+       </gir:method>
+       <gir:method name="Get_Keycode" c:identifier="ada_gdk_event_get_keycode">
+         <gir:doc>Hardware key code of the key that was pressed</gir:doc>
+         <gir:return-value><gir:type name="guint" c:type="guint"/></gir:return-value>
+       </gir:method>
+       <gir:method name="Get_Event_Type" c:identifier="ada_gdk_event_get_event_type">
+         <gir:doc>The type of the event</gir:doc>
+         <gir:return-value><gir:type name="GdkEventType" c:type="GdkEventType"/></gir:return-value>
+       </gir:method>
+       <gir:method name="Get_Window" c:identifier="ada_gdk_event_get_window">
+         <gir:doc>The window to which the event was sent</gir:doc>
+         <gir:return-value><gir:type name="GdkWindow*" c:type="GdkWindow*"/></gir:return-value>
+       </gir:method>
+
+       <type ctype="GdkEvent*" ada="Gdk_Event">
+         type Gdk_Event is access all Gdk_Event_Record;
+       </type>
+       <with_spec pkg="Glib.Values" />
+       <spec>
+         function From_Address (C : System.Address) return Gdk_Event;
+         --  Convert a C handler to the matching Event structure.
+
+         function To_Address (C : Gdk_Event) return System.Address;
+         --  Convert an event to the underlying C handler.
+
+         function Get_Event (Value : Glib.Values.GValue) return Gdk_Event;
+         --  Convert a value into a Gdk_Event.
+
+         function To_Event (Event : access Gdk_Event_Button) return Gdk_Event;
+         function To_Event (Event : access Gdk_Event_Key) return Gdk_Event;
+         --  Cast Event into a Gdk_Event, which can be used to call some of
+         --  subprograms in the API. The return value is a pointer to Event,
+         --  which should therefore remain valid as long as the pointer is in
+         --  use.
+
+   -------------------------------
+   -- Some constants used below --
+   -------------------------------
+   --  This constants have the '-1' since in some cases gtk itself uses
+   --  the extrema to return some meaningful value (for instance, the result
+   --  of Get_Area can have the values Guint16'Last to mean the whole area).
+
+   Invalid_Gdouble_Value : constant Gdouble := Gdouble'Last - 1.0;
+   Invalid_Gint_Value    : constant Gint    := Gint'Last - 1;
+   Invalid_Guint_Value   : constant Guint   := Guint'Last - 1;
+   Invalid_Guint32_Value : constant Guint32 := Guint32'Last - 1;
+   Invalid_Gulong_Value  : constant Gulong  := Gulong'Last - 1;
+
+   pragma Export (C, Invalid_Gdouble_Value, "ada_gdk_invalid_gdouble_value");
+   pragma Export (C, Invalid_Gint_Value, "ada_gdk_invalid_gint_value");
+   pragma Export (C, Invalid_Guint_Value, "ada_gdk_invalid_guint_value");
+   pragma Export (C, Invalid_Guint32_Value, "ada_gdk_invalid_guint32_value");
+   pragma Export (C, Invalid_Gulong_Value, "ada_gdk_invalid_gulong_value");
+       </spec>
+       <body>
+   function From_Address (C : System.Address) return Gdk_Event is
+      function Convert is new Ada.Unchecked_Conversion
+           (Glib.C_Proxy, Gdk_Event);
+   begin
+      return Convert (Glib.C_Proxy'(Glib.To_Proxy (C)));
+   end From_Address;
+
+   function To_Address (C : Gdk_Event) return System.Address is
+      function Convert is new Ada.Unchecked_Conversion
+           (Gdk_Event, Glib.C_Proxy);
+   begin
+      return Glib.To_Address (Convert (C));
+   end To_Address;
+
+   function Get_Event (Value : Glib.Values.GValue) return Gdk_Event is
+      function Convert is new Ada.Unchecked_Conversion
+           (Glib.C_Proxy, Gdk_Event);
+   begin
+      return Convert (Glib.Values.Get_Proxy (Value));
+   end Get_Event;
+
+   function To_Event (Event : access Gdk_Event_Button) return Gdk_Event is
+      type Gdk_Event_Button_Access is access all Gdk_Event_Button;
+      function Convert is new Ada.Unchecked_Conversion
+           (Gdk_Event_Button_Access, Gdk_Event);
+   begin
+      return Convert (Gdk_Event_Button_Access (Event));
+   end To_Event;
+
+   function To_Event (Event : access Gdk_Event_Key) return Gdk_Event is
+      type Gdk_Event_Key_Access is access all Gdk_Event_Key;
+      function Convert is new Ada.Unchecked_Conversion
+         (Gdk_Event_Key_Access, Gdk_Event);
+   begin
+      return Convert (Gdk_Event_Key_Access (Event));
+   end To_Event;
+       </body>
+     </extra>
+
+     <doc group="Gdk, the low-level API"/>
+     <parameter name="self" ada="Event"/>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

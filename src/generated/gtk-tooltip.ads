@@ -172,7 +172,7 @@ package Gtk.Tooltip is
    --  the convenience functions for this: gtk_tree_view_set_tooltip_row and
    --  gtk_tree_view_set_tooltip_cell.
    --  Since: gtk+ 2.12
-   --  "rect": a Gdk_Rectangle
+   --  "rect": a Gdk.Rectangle.Gdk_Rectangle
 
    ---------------
    -- Functions --

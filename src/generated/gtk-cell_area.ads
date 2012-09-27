@@ -428,8 +428,8 @@ package Gtk.Cell_Area is
    --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area to activate
    --  "event": the Gdk.Event.Gdk_Event for which cell activation should occur
-   --  "cell_area": the Gdk_Rectangle in Widget relative coordinates of
-   --  Renderer for the current row.
+   --  "cell_area": the Gdk.Rectangle.Gdk_Rectangle in Widget relative
+   --  coordinates of Renderer for the current row.
    --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Renderer
 
    procedure Add
@@ -1173,8 +1173,8 @@ package Gtk.Cell_Area is
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started the
    --    --  edited
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
-   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative Gdk_Rectangle
-   --    --  coordinates where Editable should be added
+   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative
+   --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
    --    --  "path": the Gtk.Tree_Path.Gtk_Tree_Path string this edit was initiated
    --    --  for
    --  Indicates that editing has started on Renderer and that Editable should
