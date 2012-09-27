@@ -16,8 +16,9 @@ project Shared is
    package Compiler is
       case Build is
          when "Debug" =>
+             --  ??? -gnatwe removed temporarily. See L927-001
              for Default_Switches ("Ada") use
-                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O1");
+                ("-gnatQ", "-gnatwa", "-gnatay", "-g", "-O1");
          when "Production" =>
              for Default_Switches ("Ada") use
                 ("-gnatQ", "-O2", "-gnatn", "-gnatws");
