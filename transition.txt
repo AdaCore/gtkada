@@ -354,23 +354,13 @@ where the function "+" is defined by instantiating Implements_Editable:
 The Select_Region subprogram parameter name The_End has been normalized
 to End_Pos.
 
-Gtk.File_Chooser_Button
-=======================
+Gtk.Entry_Completion
+====================
 
-Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
-removed: use Gtk_New and Initialize instead.
-
-Gtk.File_Chooser_Dialog
-=======================
-
-Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
-removed: use Gtk_New and Initialize instead.
-
-Gtk.File_Chooser_Widget
-=======================
-
-Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
-removed: use Gtk_New and Initialize instead.
+The "match-selected" and "cursor-on-match" signals were erroneously
+given the internal filter model instead of the users model. This oversight
+has been fixed in GTK+ 3; if you have handlers for these signals, they
+will likely need slight adjustments. 
 
 Gtk.Enums
 =========
@@ -388,6 +378,24 @@ The following types were removed:
   GtkSubmenuDirection
   GtkSubmenuPlacement
   GtkTreeViewMode
+
+Gtk.File_Chooser_Button
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
+
+Gtk.File_Chooser_Dialog
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
+
+Gtk.File_Chooser_Widget
+=======================
+
+Subprograms Gtk_New_With_Backend and Initialize_With_Backend have been
+removed: use Gtk_New and Initialize instead.
 
 Gtk.File_Selection
 ==================
