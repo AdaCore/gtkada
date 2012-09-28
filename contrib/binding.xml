@@ -3659,6 +3659,21 @@ creating a tag.
      <parameter name="self" ada="Event"/>
    </package>
 
+   <package id="GtkRadioToolButton">
+     <method id="gtk_radio_tool_button_new">
+       <parameter name="group" ctype="WidgetSList"/>
+     </method>
+     <method id="gtk_radio_tool_button_new_from_stock">
+       <parameter name="group" ctype="WidgetSList"/>
+     </method>
+     <method id="gtk_radio_tool_button_set_group">
+       <parameter name="group" ctype="WidgetSList"/>
+     </method>
+     <method id="gtk_radio_tool_button_get_group" return="WidgetSList"/>
+     <method id="gtk_radio_tool_button_new_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+     <method id="gtk_radio_tool_button_new_with_stock_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
