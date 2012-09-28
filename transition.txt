@@ -630,6 +630,13 @@ Gtk.Scrolled_Window
 Set_Policy's parameters were renamed to Hscrollbar_Policy and
 Vscrollbar_Policy instead of H_Scrollbar_Policy and V_Scrollbar_Policy.
 
+Gtk.Socket / Gtk.Plug
+=====================
+
+The binding for these two packages was removed. They are not portable
+across platforms, and require access to the low-level X11 window ID,
+for which we do not provide a binding.
+
 Gtk.Spin_Button
 ===============
 
