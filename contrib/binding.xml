@@ -3674,6 +3674,54 @@ creating a tag.
      <method id="gtk_radio_tool_button_new_with_stock_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
    </package>
 
+   <package id="GtkTooltip"/>
+
+   <package id="GtkRadioMenuItem">
+     <parameter name="self" ada="Radio_Menu_Item" />
+
+     <!-- Merge two Gtk_New together -->
+     <method id="gtk_radio_menu_item_new" bind="False"/>
+     <method id="gtk_radio_menu_item_new_with_label" ada="Gtk_New" >
+       <parameter name="label" default='""' allow-none="1"/>
+       <parameter name="group" ctype="WidgetSList"/>
+      </method>
+     <method id="gtk_radio_menu_item_new_with_mnemonic" >
+       <parameter name="group" ctype="WidgetSList"/>
+      </method>
+     <method id="gtk_radio_menu_item_set_group">
+       <parameter name="group" ctype="WidgetSList"/>
+     </method>
+     <method id="gtk_radio_menu_item_get_group" return="WidgetSList"/>
+     <method id="gtk_radio_menu_item_new_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+     <method id="gtk_radio_menu_item_new_with_label_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+     <method id="gtk_radio_menu_item_new_with_mnemonic_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+     <extra>
+       <spec>
+   function Selected_Button (In_Group : Widget_SList.GSlist) return Natural;
+   --  Return the button number of the selected button in the group.
+   --  Note: This function is not part of Gtk+ itself, but is provided as a
+   --  convenient function
+       </spec>
+       <body>
+   function Selected_Button
+     (In_Group : Widget_SList.GSlist) return Natural
+   is
+      use Widget_SList;
+      J   : Natural := 0;
+      Tmp : Widget_SList.GSlist := In_Group;
+   begin
+      while Tmp /= Widget_SList.Null_List loop
+         exit when Get_Active (Gtk_Radio_Menu_Item (Get_Data (Tmp)));
+         Tmp := Next (Tmp);
+         J := J + 1;
+      end loop;
+
+      return J;
+   end Selected_Button;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
@@ -3684,9 +3732,6 @@ creating a tag.
    </package>
    <package id="GtkActionGroup">
      <parameter name="self" ada="Action_Group"/>
-   </package>
-
-   <package id="GtkTooltip">
    </package>
 
 </GIR>
