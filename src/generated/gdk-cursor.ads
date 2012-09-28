@@ -37,6 +37,8 @@ with Glib.Properties;         use Glib.Properties;
 package Gdk.Cursor is
 
    type Gdk_Cursor_Type is (
+      Blank_Cursor,
+      Cursor_Is_Pixmap,
       X_Cursor,
       Arrow,
       Based_Arrow_Down,
@@ -119,6 +121,8 @@ package Gdk.Cursor is
    --  The standard cursors available.
 
    for Gdk_Cursor_Type use (
+      Blank_Cursor => -2,
+      Cursor_Is_Pixmap => -1,
       X_Cursor => 0,
       Arrow => 2,
       Based_Arrow_Down => 4,

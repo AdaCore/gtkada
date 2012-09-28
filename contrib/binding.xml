@@ -3479,6 +3479,7 @@ creating a tag.
      <record ctype="GdkEventGrabBroken"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
+       <union value="GDK_NOTHING" field="any"/>
        <union value="GDK_DELETE" field="any"/>
        <union value="GDK_DESTROY" field="any" />
        <union value="GDK_EXPOSE" field="expose" />

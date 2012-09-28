@@ -1722,8 +1722,7 @@ See Glib.Properties for more information on properties)""")
 
         node = gir.enums[enum_ctype]
         return [(m.get(cidentifier), naming.adamethod_name(m.get(cidentifier)))
-                for m in node.findall(nmember)
-                if int(m.get("value")) >= 0]
+                for m in node.findall(nmember)]
 
     def enumeration_binding(self, section, ctype, type, prefix):
         """Add to the section the Ada type definition for the <enumeration>
@@ -1769,14 +1768,10 @@ See Glib.Properties for more information on properties)""")
         decl = ""
 
         if node.tag == nenumeration:
-            # Ignore values that map to a negative integer. They are in general
-            # internal values for gtk+ (for instance in Gdk.Cursor.Gdk_Cursor_Type
-
             section.add(
                 "type %s is " % base
                 + "(\n" + ",\n".join(m[0]
-                                     for m in sorted(members, key=lambda m:m[1])
-                                     if m[1] >= 0)
+                                     for m in sorted(members, key=lambda m:m[1]))
                 + ");\n"
                 + "pragma Convention (C, %s);\n" % base)
             section.add(Code(node.findtext(ndoc, ""), iscomment=True))
@@ -1784,8 +1779,7 @@ See Glib.Properties for more information on properties)""")
             if not is_default_representation:
                 repr = ("   for %s use (\n" % base
                         + ",\n".join("      %s => %s" % m
-                                     for m in sorted(members, key=lambda m:m[1])
-                                     if m[1] >= 0)
+                                     for m in sorted(members, key=lambda m:m[1]))
                         + ");\n")
                 section.add(repr)
 

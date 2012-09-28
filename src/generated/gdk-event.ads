@@ -65,6 +65,7 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 package Gdk.Event is
 
    type Gdk_Event_Type is (
+      Nothing,
       Delete,
       Destroy,
       Expose,
@@ -109,6 +110,7 @@ package Gdk.Event is
    --  emitted, the events are often transformed or filtered along the way.
 
    for Gdk_Event_Type use (
+      Nothing => -1,
       Delete => 0,
       Destroy => 1,
       Expose => 2,
@@ -546,10 +548,11 @@ package Gdk.Event is
    --  keyboard again. Note that implicit grabs (which are initiated by button
    --  presses) can also cause Gdk.Event.Gdk_Event_Grab_Broken events.
 
-   type Gdk_Event_Record (The_Type : Gdk_Event_Type := Gdk.Event.Delete) is record
+   type Gdk_Event_Record (The_Type : Gdk_Event_Type := Gdk.Event.Nothing) is record
       case The_Type is
 
-         when Gdk.Event.Delete
+         when Gdk.Event.Nothing
+         | Gdk.Event.Delete
          | Gdk.Event.Destroy
          | Gdk.Event.Map
          | Gdk.Event.Unmap
