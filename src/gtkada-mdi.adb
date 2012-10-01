@@ -1533,6 +1533,12 @@ package body Gtkada.MDI is
 
             Prevent_Delete := Return_Callback.Emit_By_Name
               (Child.Initial, "delete_event", Event);
+
+            --  Unref'ing the event causes an unref of Event.Any.Window.
+            --  Avoid this by setting this field to null before freeing the
+            --  event.
+            Event.Any.Window := null;
+
             Free (Event);
 
             Indent_Debug (-1);
