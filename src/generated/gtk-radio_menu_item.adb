@@ -89,14 +89,9 @@ package body Gtk.Radio_Menu_Item is
          (Group : System.Address;
           Label : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_label");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
-      end if;
       Tmp_Return := Internal (Gtk.Widget.Widget_SList.Get_Object (Group), Tmp_Label);
       Free (Tmp_Label);
       Set_Object (Radio_Menu_Item, Tmp_Return);

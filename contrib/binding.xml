@@ -3683,7 +3683,7 @@ creating a tag.
      <!-- Merge two Gtk_New together -->
      <method id="gtk_radio_menu_item_new" bind="False"/>
      <method id="gtk_radio_menu_item_new_with_label" ada="Gtk_New" >
-       <parameter name="label" default='""' allow-none="1"/>
+       <parameter name="label" default='""' allow-none="0"/>
        <parameter name="group" ctype="WidgetSList"/>
       </method>
      <method id="gtk_radio_menu_item_new_with_mnemonic" >
