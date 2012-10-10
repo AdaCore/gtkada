@@ -6371,7 +6371,8 @@ package body Gtkada.MDI is
                   Gdk_Window_State'Image
                   (State
                    and (not Window_State_Below)
-                   and (not Window_State_Above)));
+                   and (not Window_State_Above)
+                   and (not Window_State_Focused)));
                Set_Attribute
                  (Central, "perspective", Current_Perspective (MDI));
             end if;
