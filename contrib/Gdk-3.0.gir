@@ -18278,6 +18278,10 @@ gtk_window_parse_geometry() automatically sets these flags.</doc>
               value="64"
               c:identifier="GDK_WINDOW_STATE_BELOW"
               glib:nick="below"/>
+      <member name="below"
+              value="128"
+              c:identifier="GDK_WINDOW_STATE_FOCUSED"
+              glib:nick="below"/>
     </bitfield>
     <enumeration name="WindowType"
                  glib:type-name="GdkWindowType"

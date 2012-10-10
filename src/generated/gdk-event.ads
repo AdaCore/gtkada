@@ -245,6 +245,7 @@ package Gdk.Event is
    Window_State_Fullscreen : constant Gdk_Window_State := 16;
    Window_State_Above : constant Gdk_Window_State := 32;
    Window_State_Below : constant Gdk_Window_State := 64;
+   Window_State_Focused : constant Gdk_Window_State := 128;
 
    type Gdk_Setting_Action is (
       Setting_Action_New,
