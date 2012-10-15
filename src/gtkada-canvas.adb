@@ -780,6 +780,16 @@ package body Gtkada.Canvas is
 
             Next (Current);
          end loop;
+
+         if X_Min = Gdouble'Last then
+            --  This can happen if there is no visible item:
+            --  in this case, return a box of size 0.
+            X_Min := 0.0;
+            X_Max := 0.0;
+            Y_Min := 0.0;
+            Y_Max := 0.0;
+         end if;
+
       end if;
    end Get_Bounding_Box;
 
