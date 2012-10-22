@@ -632,6 +632,35 @@ the rest of the toolkit.  Gtk_New is implemented as a procedure rather
 than as a function, and the use of GNAT.Strings.String_List replaces
 Gtkada.Types.Chars_Ptr_Array throughout.
 
+Gtk.Selection
+=============
+
+This package has been renamed Gtk.Selection_Data, for homogeneity with
+the naming conventions.
+
+Gtk.Selection.Selection_Data is now called 
+Gtk.Selection_Data.Gtk_Selection_Data.
+
+Handling of Target_Lists has been moved to the new package Gtk.Target_List,
+ along with Target_Entry_Array.
+The type Gtk_Target_Entry has been moved to the new package Gtk.Target_Entry.
+
+The way of obtaining the selection data from callbacks using the Args/GValues
+approach has changed, from
+
+      Data  : constant Gtk.Selection.Selection_Data :=
+        Gtk.Selection.Selection_Data (Get_Proxy (Nth (Args, 2)));
+
+to:
+
+      Data  : constant Gtk.Selection_Data.Gtk_Selection_Data :=
+        From_Object (Get_Address (Nth (Args, 2)));
+
+The type Target_Flags has been moved to Gtk.Enums.Gtk_Target_Flags.
+
+The flag corresponding to Target_No_Constraint has been removed: use the
+value 0 instead.
+
 Gtk.Scrolled_Window
 ===================
 
