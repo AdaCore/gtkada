@@ -42,15 +42,15 @@ with Gtk.Frame;                use Gtk.Frame;
 with Gtk.Icon_View;            use Gtk.Icon_View;
 with Gtk.List_Store;           use Gtk.List_Store;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
-with Gtk.Selection;            use Gtk.Selection;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Gtk.Target_List;          use Gtk.Target_List;
 
 package body Create_Icon_View is
 
    Item_Targets : constant Target_Entry_Array :=
      (1 => (Target => New_String ("GTK_TREE_MODEL_ROW"),
-            Flags  => Target_Same_App,
+            Flags  => Gtk_Target_Same_App,
             Info   => 0));
 
    procedure Fill_Model (List : Gtk_List_Store);
