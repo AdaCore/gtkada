@@ -54,7 +54,7 @@ with Gtk.Cell_Renderer;       use Gtk.Cell_Renderer;
 with Gtk.Container;           use Gtk.Container;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Scrollable;          use Gtk.Scrollable;
-with Gtk.Selection;           use Gtk.Selection;
+with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Tooltip;             use Gtk.Tooltip;
 with Gtk.Tree_Model;          use Gtk.Tree_Model;
 
@@ -748,7 +748,7 @@ package Gtk.Icon_View is
 
    procedure Enable_Model_Drag_Dest
      (Icon_View : access Gtk_Icon_View_Record;
-      Targets   : Gtk.Selection.Target_Entry_Array;
+      Targets   : Gtk.Target_List.Target_Entry_Array;
       Actions   : Gdk.Dnd.Drag_Action);
    --  Turns Icon_view into a drop destination for automatic DND.
    --  Targets is the list of targets that the drag will support.
@@ -756,7 +756,7 @@ package Gtk.Icon_View is
    procedure Enable_Model_Drag_Source
      (Icon_View         : access Gtk_Icon_View_Record;
       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-      Targets           : Gtk.Selection.Target_Entry_Array;
+      Targets           : Gtk.Target_List.Target_Entry_Array;
       Actions           : Gdk.Dnd.Drag_Action);
    --  Turns Icon_view into a drag source for automatic DND.
    --  Start_Button_Mask is the allowed buttons to start drag.

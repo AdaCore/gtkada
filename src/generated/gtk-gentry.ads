@@ -87,8 +87,8 @@ with Gtk.Entry_Buffer;        use Gtk.Entry_Buffer;
 with Gtk.Entry_Completion;    use Gtk.Entry_Completion;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Image;               use Gtk.Image;
-with Gtk.Selection;           use Gtk.Selection;
 with Gtk.Style;               use Gtk.Style;
+with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Widget;              use Gtk.Widget;
 with Pango.Layout;            use Pango.Layout;
 
@@ -657,7 +657,7 @@ package Gtk.GEntry is
    procedure Set_Icon_Drag_Source
       (The_Entry   : not null access Gtk_Entry_Record;
        Icon_Pos    : Gtk_Entry_Icon_Position;
-       Target_List : Gtk.Selection.Target_List;
+       Target_List : Gtk.Target_List.Gtk_Target_List;
        Actions     : Gdk.Drag_Contexts.Gdk_Drag_Action);
    --  Sets up the icon at the given position so that GTK+ will start a drag
    --  operation when the user clicks and drags the icon.

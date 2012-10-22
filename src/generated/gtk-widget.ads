@@ -380,7 +380,7 @@ package Gtk.Widget is
    --  "accel_group": accel group for this widget, added to its toplevel
    --  "accel_key": GDK keyval of the accelerator
    --  "accel_mods": modifier key combination of the accelerator
-   --  "accel_flags": flag accelerators, e.g. Gtk.Accel_Group.Accel_Visible
+   --  "accel_flags": flag accelerators, e.g. Gtk.Target_List.Accel_Visible
 
    procedure Add_Device_Events
       (Widget : not null access Gtk_Widget_Record;
@@ -544,7 +544,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the image targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use gtk_target_list_add_image_targets and
+   --  another value, use Gtk.Target_List.Add_Image_Targets and
    --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -552,7 +552,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the text targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use gtk_target_list_add_text_targets and
+   --  another value, use Gtk.Target_List.Add_Text_Targets and
    --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -560,7 +560,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the URI targets supported by Gtk_Selection to the target list of
    --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use gtk_target_list_add_uri_targets and
+   --  another value, use Gtk.Target_List.Add_Uri_Targets and
    --  gtk_drag_dest_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -625,7 +625,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the writable image targets supported by Gtk_Selection to the target
    --  list of the drag source. The targets are added with Info = 0. If you
-   --  need another value, use gtk_target_list_add_image_targets and
+   --  need another value, use Gtk.Target_List.Add_Image_Targets and
    --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -633,7 +633,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the text targets supported by Gtk_Selection to the target list of
    --  the drag source. The targets are added with Info = 0. If you need
-   --  another value, use gtk_target_list_add_text_targets and
+   --  another value, use Gtk.Target_List.Add_Text_Targets and
    --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -641,7 +641,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record);
    --  Add the URI targets supported by Gtk_Selection to the target list of
    --  the drag source. The targets are added with Info = 0. If you need
-   --  another value, use gtk_target_list_add_uri_targets and
+   --  another value, use Gtk.Target_List.Add_Uri_Targets and
    --  gtk_drag_source_set_target_list.
    --  Since: gtk+ 2.6
 
@@ -3149,7 +3149,7 @@ package Gtk.Widget is
    --  site requests the data which is dragged. It is the responsibility of the
    --  signal handler to fill Data with the data in the format which is
    --  indicated by Info. See gtk_selection_data_set and
-   --  gtk_selection_data_set_text.
+   --  Gtk.Selection_Data.Set_Text.
    --
    --  "drag-data-received"
    --     procedure Handler

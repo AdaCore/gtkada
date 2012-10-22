@@ -408,6 +408,16 @@ package Gtk.Enums is
    --  drawing, so states can be used for subparts of a widget as well as
    --  entire widgets.
 
+   type Gtk_Target_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Target_Flags);
+   --  The Gtk.Enums.Gtk_Target_Flags enumeration is used to specify
+   --  constraints on an entry in a Gtk_Target_Table.
+
+   Gtk_Target_Same_App : constant Gtk_Target_Flags := 1;
+   Gtk_Target_Same_Widget : constant Gtk_Target_Flags := 2;
+   Gtk_Target_Other_App : constant Gtk_Target_Flags := 4;
+   Gtk_Target_Other_Widget : constant Gtk_Target_Flags := 8;
+
    type Gtk_Text_Direction is (
       Text_Dir_None,
       Text_Dir_Ltr,
@@ -652,6 +662,10 @@ package Gtk.Enums is
    package Gtk_State_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_State_Type);
    type Property_Gtk_State_Type is new Gtk_State_Type_Properties.Property;
+
+   package Gtk_Target_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Target_Flags);
+   type Property_Gtk_Target_Flags is new Gtk_Target_Flags_Properties.Property;
 
    package Gtk_Text_Direction_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Text_Direction);
