@@ -86,7 +86,7 @@ with Gdk.Pixbuf;
 with Gdk.Types;
 
 with Gtk.Widget;
-with Gtk.Selection;  use Gtk.Selection;
+with Gtk.Target_List; use Gtk.Target_List;
 
 package Gtk.Dnd is
 
@@ -168,9 +168,10 @@ package Gtk.Dnd is
 
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List);
+      Target_List : Gtk.Target_List.Gtk_Target_List);
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Target_List.Gtk_Target_List;
    --  Sets the target types that this widget can accept from drag-and-drop.
    --  The widget must first be made into a drag destination with
    --  Dest_Set.
@@ -189,7 +190,7 @@ package Gtk.Dnd is
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Context     : Gdk.Drag_Contexts.Drag_Context;
-      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
+      Target_List : Gtk.Target_List.Gtk_Target_List) return Gdk.Types.Gdk_Atom;
    --  Looks for a match between the targets set for context and the
    --  Target_List, returning the first matching target, otherwise returning
    --  GDK_NONE. Target_List should usually be the return value from
@@ -241,9 +242,10 @@ package Gtk.Dnd is
 
    procedure Source_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List);
+      Target_List : Gtk.Target_List.Gtk_Target_List);
    function Source_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Target_List.Gtk_Target_List;
    --  Changes the target types that this widget offers for drag-and-drop. The
    --  widget must first be made into a drag source with Source_Set.
 
@@ -317,7 +319,7 @@ package Gtk.Dnd is
 
    function Drag_Begin
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Targets : Target_List;
+      Targets : Gtk_Target_List;
       Actions : Drag_Action;
       Button  : Gint;
       Event   : Gdk.Event.Gdk_Event) return Drag_Context;

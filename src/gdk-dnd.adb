@@ -110,7 +110,7 @@ package body Gdk.Dnd is
 
    function Drag_Begin
      (Window  : Gdk.Gdk_Window;
-      Targets : Target_List)
+      Targets : Gtk.Target_List.Gtk_Target_List)
       return Drag_Context
    is
       function Internal
@@ -121,7 +121,7 @@ package body Gdk.Dnd is
       Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
       return Drag_Context
-        (Get_User_Data (Internal (Window, Targets.all'Address), Stub));
+        (Get_User_Data (Internal (Window, Targets.Ptr), Stub));
    end Drag_Begin;
 
    -----------------------

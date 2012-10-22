@@ -25,7 +25,7 @@ with Glib;          use Glib;
 with Glib.Values;   use Glib.Values;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Dnd;       use Gtk.Dnd;
-with Gtk.Selection; use Gtk.Selection;
+with Gtk.Target_List; use Gtk.Target_List;
 with Gdk.Types;     use Gdk.Types;
 with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Button;    use Gtk.Button;
@@ -41,6 +41,7 @@ with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Pixbuf;    use Gdk.Pixbuf;
 with Gdk.Window;    use Gdk.Window;
 with Gtk.Frame;     use Gtk.Frame;
+with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package body Create_Dnd is
 
@@ -326,21 +327,21 @@ package body Create_Dnd is
      Gtk.Handlers.Return_Callback (Gtk.Widget.Gtk_Widget_Record, Boolean);
 
    Target_Table : constant Target_Entry_Array
-     := ((+"STRING",        Target_No_Constraint, My_Target_String1),
-         (+"text/plain",    Target_No_Constraint, My_Target_String2),
-         (+"text/uri-list", Target_No_Constraint, My_Target_Url),
-         (+"application/x-rootwin-drop", Target_No_Constraint,
+     := ((+"STRING",        0, My_Target_String1),
+         (+"text/plain",    0, My_Target_String2),
+         (+"text/uri-list", 0, My_Target_Url),
+         (+"application/x-rootwin-drop", 0,
           My_Target_Rootwin));
    --  all the known data types in this application. Any MIME type can be used,
    --  as well a strings defined in the motif protocol, like "STRING".
 
    Target_Table_String : constant Target_Entry_Array
-     := ((+"STRING",        Target_No_Constraint, My_Target_String1),
-         (+"text/plain",    Target_No_Constraint, My_Target_String2));
+     := ((+"STRING",        0, My_Target_String1),
+         (+"text/plain",    0, My_Target_String2));
    --  For a drop site that only accepts Data of type STRING or text/plain
 
    Target_Table_Url : constant Target_Entry_Array
-     := (1 => (+"text/uri-list", Target_No_Constraint, My_Target_Url));
+     := (1 => (+"text/uri-list", 0, My_Target_Url));
    --  For a drop site that only accepts Data of type url.
 
    ----------
@@ -453,8 +454,8 @@ package body Create_Dnd is
          Drag_Context (Get_Object (Nth (Args, 1)));
       X       : constant Gint  := Get_Int (Nth (Args, 2));
       Y       : constant Gint  := Get_Int (Nth (Args, 3));
-      Data    : constant Selection_Data :=
-         Selection_Data (Get_Proxy (Nth (Args, 4)));
+      Data    : constant Gtk_Selection_Data :=
+         From_Object (Get_Address (Nth (Args, 4)));
 
       Info : constant Guint := Get_Uint (Nth (Args, 5));
       --  third item of the Target_Entry
@@ -547,8 +548,8 @@ package body Create_Dnd is
          Drag_Context (Get_Object (Nth (Args, 1)));
       X       : constant Gint  := Get_Int (Nth (Args, 2));
       Y       : constant Gint  := Get_Int (Nth (Args, 3));
-      Data    : constant Selection_Data :=
-         Selection_Data (Get_Proxy (Nth (Args, 4)));
+      Data    : constant Gtk_Selection_Data :=
+         From_Object (Get_Address (Nth (Args, 4)));
       Info : constant Guint := Get_Uint (Nth (Args, 5));
       Time : constant Guint := Get_Uint (Nth (Args, 6));
       pragma Unreferenced (Widget, X, Y, Info);
@@ -583,8 +584,8 @@ package body Create_Dnd is
    is
       Context : constant Drag_Context :=
          Drag_Context (Get_Object (Nth (Args, 1)));
-      Data    : constant Selection_Data :=
-         Selection_Data (Get_Proxy (Nth (Args, 2)));
+      Data    : constant Gtk_Selection_Data :=
+         From_Object (Get_Address (Nth (Args, 2)));
       Info : constant Guint := Get_Uint (Nth (Args, 3));
       Time : constant Guint := Get_Uint (Nth (Args, 4));
       pragma Unreferenced (Widget, Context, Time);

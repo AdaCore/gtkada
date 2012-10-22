@@ -24,7 +24,7 @@
 with Gtkada.C;              use Gtkada.C;
 with Gdk.Types;             use Gdk.Types;
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
-with Gtk.Selection;         use Gtk.Selection;
+with Gtk.Selection_Data;    use Gtk.Selection_Data;
 with Gtkada.Types;
 with System;                use System;
 
@@ -138,7 +138,7 @@ package body Gtk.Clipboard is
 
    procedure Set_Can_Store
      (Clipboard : Gtk_Clipboard;
-      Targets   : Gtk.Selection.Target_Entry_Array)
+      Targets   : Gtk.Target_List.Target_Entry_Array)
    is
       procedure Internal
         (Clipboard : Gtk_Clipboard;
@@ -159,7 +159,7 @@ package body Gtk.Clipboard is
 
    function Set_With_Data
      (Clipboard  : Gtk_Clipboard;
-      Targets    : Target_Entry_Array;
+      Targets    : Gtk.Target_List.Target_Entry_Array;
       Get_Func   : Gtk_Clipboard_Get_Func;
       Clear_Func : Gtk_Clipboard_Clear_Func;
       User_Data  : System.Address)
@@ -186,7 +186,7 @@ package body Gtk.Clipboard is
 
    function Set_With_Owner
      (Clipboard  : Gtk_Clipboard;
-      Targets    : Target_Entry_Array;
+      Targets    : Gtk.Target_List.Target_Entry_Array;
       Get_Func   : Gtk_Clipboard_Get_Func;
       Clear_Func : Gtk_Clipboard_Clear_Func;
       Owner      : access Glib.Object.GObject_Record'Class)

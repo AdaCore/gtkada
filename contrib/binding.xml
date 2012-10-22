@@ -2630,6 +2630,7 @@ __PRE__
      <enum ctype="GtkSortType"/>
      <enum ctype="GtkStateFlags" prefix=""/>
      <enum ctype="GtkStateType"/>
+     <enum ctype="GtkTargetFlags" prefix=""/>
      <enum ctype="GtkTextDirection"/>
      <enum ctype="GtkTextWindowType"/>
      <enum ctype="GtkTreeViewGridLines" prefix="GTK_TREE_VIEW_"/>
@@ -3389,13 +3390,13 @@ creating a tag.
      <method id="gtk_icon_view_enable_model_drag_source" bind="False"/> <!-- see below -->
      <method id="gtk_icon_view_enable_model_drag_dest" bind="False"/> <!-- see below -->
      <extra>
-       <with_spec pkg="Gtk.Selection"/>
+       <with_spec pkg="Gtk.Target_List"/>
        <with_spec pkg="Gdk.Dnd"/>
        <with_spec pkg="Gdk.Types"/>
        <spec>
    procedure Enable_Model_Drag_Dest
      (Icon_View : access Gtk_Icon_View_Record;
-      Targets   : Gtk.Selection.Target_Entry_Array;
+      Targets   : Gtk.Target_List.Target_Entry_Array;
       Actions   : Gdk.Dnd.Drag_Action);
    --  Turns Icon_view into a drop destination for automatic DND.
    --  Targets is the list of targets that the drag will support.
@@ -3403,7 +3404,7 @@ creating a tag.
    procedure Enable_Model_Drag_Source
      (Icon_View         : access Gtk_Icon_View_Record;
       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-      Targets           : Gtk.Selection.Target_Entry_Array;
+      Targets           : Gtk.Target_List.Target_Entry_Array;
       Actions           : Gdk.Dnd.Drag_Action);
    --  Turns Icon_view into a drag source for automatic DND.
    --  Start_Button_Mask is the allowed buttons to start drag.
@@ -3673,6 +3674,246 @@ creating a tag.
      <method id="gtk_radio_tool_button_get_group" return="WidgetSList"/>
      <method id="gtk_radio_tool_button_new_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
      <method id="gtk_radio_tool_button_new_with_stock_from_widget" bind="False"/> <!-- gir file misses Group parameter-->
+   </package>
+
+   <package id="GtkSelectionData">
+     <parameter name="self" ada="Selection"/>
+
+     <method id="gtk_selection_data_targets_include_rich_text" bind="False"/> <!-- circular dependency on gtk.text_buffer -->
+     <method id="gtk_selection_data_get_data_with_length" bind="False"/> <!-- not convenient, has an access gint and returns an array -->
+     <method id="gtk_selection_data_set" bind="False"/> <!-- manual binding below -->
+     <method id="gtk_selection_data_get_targets" bind="False"/> <!-- manual binding below -->
+
+     <method id="gtk_selection_data_get_data" return="System.Address"/>
+
+     <extra>
+        <spec>
+   ---------------
+   -- Selection --
+   ---------------
+
+   function Make_Atom (Num : Gulong) return Gdk.Types.Gdk_Atom;
+   pragma Import (C, Make_Atom, "ada_make_atom");
+   --  Auxiliary subprogram
+
+   subtype Gdk_Selection is Gdk.Types.Gdk_Atom;
+   --  These are predefined atom values for several common selections.
+   --  You are of course free to create new ones, but most of the time you
+   --  should simply use Selection_Primary unless you foresee the need for
+   --  multiple simultaneous selections.
+   --  To access the clipboard on windows machines, you might need to create
+   --  a new selection with Gdk.Property.Atom_Intern ("CLIPBOARD");
+
+   Selection_Primary   : constant Gdk_Selection := Make_Atom (1);
+   Selection_Secondary : constant Gdk_Selection := Make_Atom (2);
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : System.Address;
+      Length    : Gint);
+   --  General form of Selection_Data_Set.
+   --  Any data can be transmitted. Length is the number of bytes in Data.
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String);
+   --  Set the data for a selection (special case for strings)
+   --  This function is generally called when a drag-and-drop operation
+   --  ask the source widget for the data to be transmitted. In that case,
+   --  a Selection_Data was already transmitted and is given as a handler
+   --  parameter for the signal "drag_data_get". The_Type can simply be
+   --  extracted from the Selection_Data.
+
+   function Get_Targets
+     (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom_Array;
+   --  Gets the contents of Selection_Data as an array of targets.
+   --  This can be used to interpret the results of getting
+   --  the standard TARGETS target that is always supplied for
+   --  any selection.
+   --  This is different from Get_Target, which indicate the current format
+   --  that the selection contains. Get_Targets only applies when Get_Target
+   --  is "TARGETS".
+
+   function Get_Data_As_String (Selection : Gtk_Selection_Data) return String;
+   --  Return the data as a string.
+   --  This is only a convenience function, since it simply creates a string
+   --  from the return of Get_Data.
+        </spec>
+
+        <with_body pkg="Gtkada.C" />
+        <body>
+   package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
+      Natural, Gdk.Types.Gdk_Atom_Array);
+
+   ------------------------
+   -- Selection_Data_Set --
+   ------------------------
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : System.Address;
+      Length    : Gint)
+   is
+      procedure Internal
+        (Selection : System.Address;
+         The_Type  : Gdk.Types.Gdk_Atom;
+         Format    : Gint;
+         Data      : System.Address;
+         Length    : Gint);
+      pragma Import (C, Internal, "gtk_selection_data_set");
+
+   begin
+      Internal (Get_Object (Selection), The_Type, Format, Data, Length);
+   end Selection_Data_Set;
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String) is
+   begin
+      Selection_Data_Set
+        (Selection, The_Type, Format, Data'Address, Data'Length);
+   end Selection_Data_Set;
+
+   -----------------
+   -- Get_Targets --
+   -----------------
+
+   function Get_Targets
+     (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom_Array
+   is
+      use Atom_Arrays;
+      function Internal
+        (Selection : System.Address;
+         Targets   : access Unbounded_Array_Access;
+         N_Atoms   : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_get_targets");
+
+      Output    : aliased Unbounded_Array_Access;
+      N         : aliased Gint;
+   begin
+      if Internal
+         (Get_Object (Selection),
+          Output'Unchecked_Access,
+          N'Unchecked_Access) = 0
+      then
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Atom_Array := To_Array (Output, Integer (N));
+      begin
+         G_Free (Output);
+         return Result;
+      end;
+   end Get_Targets;
+
+   ------------------------
+   -- Get_Data_As_String --
+   ------------------------
+
+   function Get_Data_As_String
+     (Selection : Gtk_Selection_Data) return String
+   is
+      function Internal
+        (Selection : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_selection_data_get_data");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Selection)));
+   end Get_Data_As_String;
+        </body>
+     </extra>
+   </package>
+
+
+   <package id="GtkTargetEntry">
+     <parameter name="self" ada="Target_Entry"/>
+
+     <record ctype="GtkTargetEntry">
+       <field name="flags" ctype="GtkTargetFlags"/>
+     </record>
+
+     <method id="gtk_target_entry_copy" bind="False"/> <!-- requires From_Object -->
+
+     <method id="gtk_target_entry_new">
+        <parameter name="Flags" ctype="GtkTargetFlags"/>
+     </method>
+   </package>
+
+   <package id="GtkTargetList">
+     <parameter name="self" ada="List"/>
+     <enum ctype="GtkAccelFlags" prefix="GTK_"/>
+
+     <method id="gtk_target_list_add_rich_text_targets" bind="False"/> <!-- circular dependency clipboard, text_buffer -->
+
+     <method id="gtk_target_list_new" bind="False"/> <!-- manual binding below -->
+     <method id="gtk_target_list_add_table" bind="False"/> <!-- manual binding below -->
+
+     <method id="gtk_target_list_find"
+         return_as_param="Found" />
+
+     <extra>
+       <with_spec pkg="Gtk.Target_Entry" />
+       <spec>
+   type Target_Entry_Array is array (Natural range &lt;&gt;) of Gtk_Target_Entry;
+
+   Any_Target_Entry : Target_Entry_Array (1 .. 0);
+   --  To be used for drop sites that accept any kind of data.
+
+   procedure Gtk_New
+      (List   : out Gtk_Target_List;
+      Targets : Target_Entry_Array);
+   --  Creates a new Gtk.Target_List.Gtk_Target_List from an array of
+   --  Gtk.Target_Entry.Gtk_Target_Entry.
+
+   procedure Add_Table
+      (List    : Gtk_Target_List;
+       Targets : Target_Entry_Array);
+   --  Prepends a table of Gtk.Target_Entry.Gtk_Target_Entry to a target list.
+       </spec>
+       <body>
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (List   : out Gtk_Target_List;
+       Targets : Target_Entry_Array)
+   is
+      function Internal
+         (Targets  : System.Address;
+          Ntargets : Guint) return System.Address;
+      pragma Import (C, Internal, "gtk_target_list_new");
+   begin
+      List.Ptr := Internal (Targets'Address, Targets'Length);
+   end Gtk_New;
+
+   ---------------
+   -- Add_Table --
+   ---------------
+
+   procedure Add_Table
+      (List    : Gtk_Target_List;
+       Targets : Target_Entry_Array)
+   is
+      procedure Internal
+         (List     : System.Address;
+          Targets  : System.Address;
+          Ntargets : Guint);
+      pragma Import (C, Internal, "gtk_target_list_add_table");
+   begin
+      Internal (Get_Object (List), Targets'Address, Targets'Length);
+   end Add_Table;
+       </body>
+     </extra>
    </package>
 
    <package id="GtkTooltip"/>

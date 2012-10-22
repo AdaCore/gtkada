@@ -76,7 +76,8 @@
 
 with Gdk.Pixbuf;
 with Gdk.Types;
-with Gtk.Selection;
+with Gtk.Selection_Data;
+with Gtk.Target_List;
 with Gtk.Widget;
 with Interfaces.C.Strings;
 with System;
@@ -132,7 +133,7 @@ package Gtk.Clipboard is
 
    procedure Set_Can_Store
      (Clipboard : Gtk_Clipboard;
-      Targets   : Gtk.Selection.Target_Entry_Array);
+      Targets   : Gtk.Target_List.Target_Entry_Array);
    --  Hints that the clipboard data should be stored somewhere when the
    --  application exits or when Store is called.
    --  This value is reset when the clipboard owner changes. Where the
@@ -253,13 +254,14 @@ package Gtk.Clipboard is
 
    type Gtk_Clipboard_Get_Func is access procedure
      (Clipboard          : Gtk_Clipboard;
-      Selection_Data     : Gtk.Selection.Selection_Data;
+      Selection_Data     : Gtk.Selection_Data.Gtk_Selection_Data;
       Info               : Guint;
       User_Data_Or_Owner : System.Address);
    pragma Convention (C, Gtk_Clipboard_Get_Func);
    --  Called when the actual clipboard data is requested. Selection_Data
    --  should be modified to return the data.
-   --  Info describes the expected format (see Gtk.Selection.Target_Entry).
+   --  Info describes the expected format
+   --  (see Gtk.Selection_Data.Target_Entry).
    --  If User_Data is the owner (ie when you used Set_With_Owner), you must
    --  convert it to a proper Gtk_Widget by using Gtk.Widget.Convert.
 
@@ -274,7 +276,7 @@ package Gtk.Clipboard is
 
    type Gtk_Clipboard_Received_Func is access procedure
      (Clipboard      : Gtk_Clipboard;
-      Selection_Data : Gtk.Selection.Selection_Data;
+      Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
       User_Data      : System.Address);
    pragma Convention (C, Gtk_Clipboard_Received_Func);
    --  Called when data from the clipboard is made available to the application
@@ -290,7 +292,7 @@ package Gtk.Clipboard is
 
    function Set_With_Data
      (Clipboard  : Gtk_Clipboard;
-      Targets    : Gtk.Selection.Target_Entry_Array;
+      Targets    : Gtk.Target_List.Target_Entry_Array;
       Get_Func   : Gtk_Clipboard_Get_Func;
       Clear_Func : Gtk_Clipboard_Clear_Func;
       User_Data  : System.Address)
@@ -305,7 +307,7 @@ package Gtk.Clipboard is
 
    function Set_With_Owner
      (Clipboard  : Gtk_Clipboard;
-      Targets    : Gtk.Selection.Target_Entry_Array;
+      Targets    : Gtk.Target_List.Target_Entry_Array;
       Get_Func   : Gtk_Clipboard_Get_Func;
       Clear_Func : Gtk_Clipboard_Clear_Func;
       Owner      : access Glib.Object.GObject_Record'Class)
@@ -324,7 +326,7 @@ package Gtk.Clipboard is
    function Wait_For_Contents
      (Clipboard : Gtk_Clipboard;
       Target    : Gdk.Types.Gdk_Atom)
-      return Gtk.Selection.Selection_Data;
+      return Gtk.Selection_Data.Gtk_Selection_Data;
    --  Requests the contents of the clipboard using the given target. This
    --  function waits for the data to be received using the main loop, so
    --  events, timeouts, etc, may be dispatched during the wait.
@@ -337,7 +339,8 @@ package Gtk.Clipboard is
    --  insensitive or not.
    --  If you want to see if there's text available on the clipboard, use
    --  Wait_Is_Text_Available instead.
-   --  The value for Target is similar to the one in Gtk.Selection.Target_Entry
+   --  The value for Target is similar to the one in
+   --  Gtk.Selection_Data.Target_Entry
 
    procedure Request_Contents
      (Clipboard : Gtk_Clipboard;

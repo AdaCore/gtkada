@@ -39,7 +39,7 @@ with Gtk.Cell_Renderer;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.GEntry;
-with Gtk.Selection;
+with Gtk.Target_List;
 with Gtk.Tooltip;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
@@ -799,7 +799,7 @@ package Gtk.Tree_View is
 
    procedure Enable_Model_Drag_Dest
      (Tree_View : access Gtk_Tree_View_Record;
-      Targets   : Gtk.Selection.Target_Entry_Array;
+      Targets   : Gtk.Target_List.Target_Entry_Array;
       Actions   : Gdk.Dnd.Drag_Action);
    --  Turns Tree_View into a drop destination for automatic drag-and-drop.
    --  Targets is the table of targets that the drag will support.
@@ -808,7 +808,7 @@ package Gtk.Tree_View is
    procedure Enable_Model_Drag_Source
      (Tree_View         : access Gtk_Tree_View_Record;
       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-      Targets           : Gtk.Selection.Target_Entry_Array;
+      Targets           : Gtk.Target_List.Target_Entry_Array;
       Actions           : Gdk.Dnd.Drag_Action);
    --  Turns Tree_View into a drag source for automatic DND.
    --  Targets is the list of targets that the drag will support.

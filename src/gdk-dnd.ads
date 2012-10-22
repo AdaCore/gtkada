@@ -27,7 +27,8 @@ with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Types; use Gdk.Types;
 with Gdk.Screen;
 with Gtk;
-with Gtk.Selection; use Gtk.Selection;
+with Gtk.Target_List;
+with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package Gdk.Dnd is
 
@@ -60,7 +61,7 @@ package Gdk.Dnd is
 
    function Drag_Begin
      (Window  : Gdk.Gdk_Window;
-      Targets : Target_List) return Drag_Context;
+      Targets : Gtk.Target_List.Gtk_Target_List) return Drag_Context;
 
    function Drag_Context_Get_Protocol
      (Context  : Drag_Context;

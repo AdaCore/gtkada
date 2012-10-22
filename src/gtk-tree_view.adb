@@ -27,7 +27,7 @@ with Gdk.Dnd;               use Gdk.Dnd;
 with Gdk.Types;             use Gdk.Types;
 with Gtk;                   use Gtk;
 with Gtk.Cell_Renderer;     use Gtk.Cell_Renderer;
-with Gtk.Selection;         use Gtk.Selection;
+with Gtk.Target_List;       use Gtk.Target_List;
 with Gtk.Tree_Model;        use Gtk.Tree_Model;
 with Gtk.Tree_View_Column;  use Gtk.Tree_View_Column;
 
@@ -1507,7 +1507,7 @@ package body Gtk.Tree_View is
 
    procedure Enable_Model_Drag_Dest
      (Tree_View : access Gtk_Tree_View_Record;
-      Targets   : Gtk.Selection.Target_Entry_Array;
+      Targets   : Gtk.Target_List.Target_Entry_Array;
       Actions   : Gdk.Dnd.Drag_Action)
    is
       procedure Internal
@@ -1528,7 +1528,7 @@ package body Gtk.Tree_View is
    procedure Enable_Model_Drag_Source
      (Tree_View         : access Gtk_Tree_View_Record;
       Start_Button_Mask : Gdk_Modifier_Type;
-      Targets           : Gtk.Selection.Target_Entry_Array;
+      Targets           : Gtk.Target_List.Target_Entry_Array;
       Actions           : Gdk.Dnd.Drag_Action)
    is
       procedure Internal

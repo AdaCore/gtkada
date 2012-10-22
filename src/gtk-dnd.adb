@@ -25,6 +25,7 @@ with Gdk.Event;  use Gdk.Event;
 with Gdk.Types;  use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Target_List; use Gtk.Target_List;
 
 package body Gtk.Dnd is
 
@@ -187,14 +188,14 @@ package body Gtk.Dnd is
 
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List)
+      Target_List : Gtk.Target_List.Gtk_Target_List)
    is
       procedure Internal
         (Widget      : System.Address;
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.all'Address);
+      Internal (Get_Object (Widget), Target_List.Ptr);
    end Dest_Set_Target_List;
 
    --------------------------
@@ -202,13 +203,16 @@ package body Gtk.Dnd is
    --------------------------
 
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk_Target_List
    is
       function Internal (Widget : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
+      T : Gtk_Target_List;
    begin
-      return To_Proxy (Internal (Get_Object (Widget)));
+      T.Ptr := (Internal (Get_Object (Widget)));
+      return T;
    end Dest_Get_Target_List;
 
    ----------------------------
@@ -217,14 +221,14 @@ package body Gtk.Dnd is
 
    procedure Source_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List)
+      Target_List : Gtk.Target_List.Gtk_Target_List)
    is
       procedure Internal
         (Widget      : System.Address;
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_source_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.all'Address);
+      Internal (Get_Object (Widget), Target_List.Ptr);
    end Source_Set_Target_List;
 
    ----------------------------
@@ -232,13 +236,17 @@ package body Gtk.Dnd is
    ----------------------------
 
    function Source_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk_Target_List
    is
       function Internal (Widget : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_drag_source_get_target_list");
+
+      T : Gtk_Target_List;
    begin
-      return To_Proxy (Internal (Get_Object (Widget)));
+      T.Ptr := Internal (Get_Object (Widget));
+      return T;
    end Source_Get_Target_List;
 
    ----------------------
@@ -248,7 +256,7 @@ package body Gtk.Dnd is
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Context     : Gdk.Drag_Contexts.Drag_Context;
-      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
+      Target_List : Gtk.Target_List.Gtk_Target_List) return Gdk.Types.Gdk_Atom
    is
       function Internal
         (Widget      : System.Address;
@@ -258,7 +266,7 @@ package body Gtk.Dnd is
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
       return Internal
-        (Get_Object (Widget), Get_Object (Context), Target_List.all'Address);
+        (Get_Object (Widget), Get_Object (Context), Target_List.Ptr);
    end Dest_Find_Target;
 
    ---------------------------
@@ -484,14 +492,14 @@ package body Gtk.Dnd is
 
    function Drag_Begin
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Targets : Target_List;
+      Targets : Gtk_Target_List;
       Actions : Drag_Action;
       Button  : Gint;
       Event   : Gdk.Event.Gdk_Event) return Drag_Context
    is
       function Internal
         (Widget  : System.Address;
-         Targets : Target_List;
+         Targets : Gtk_Target_List;
          Actions : Drag_Action;
          Button  : Gint;
          Event   : System.Address) return System.Address;

@@ -37,7 +37,7 @@ with Gtk.Hbutton_Box;        use Gtk.Hbutton_Box;
 with Gtk.Image;              use Gtk.Image;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
-with Gtk.Selection;          use Gtk.Selection;
+with Gtk.Selection_Data;     use Gtk.Selection_Data;
 with Gtk.Text_Buffer;        use Gtk.Text_Buffer;
 with Gtk.Text_Iter;          use Gtk.Text_Iter;
 with Gtk.Text_View;          use Gtk.Text_View;
@@ -140,7 +140,7 @@ package body Create_Clipboard is
       Clipboard : constant Gtk_Clipboard := Get;
       Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter;
-      Data  : Selection_Data;
+      Data  : Gtk_Selection_Data;
       First, Last : Gtk_Text_Iter;
       As_String : Boolean;
       As_Image  : Boolean;
@@ -183,7 +183,7 @@ package body Create_Clipboard is
       begin
          Data := Wait_For_Contents (Clipboard, Atom_Intern (Format));
 
-         if Data /= null then
+         if Data.Ptr /= System.Null_Address then
             Insert
               (Contents,
                First,
@@ -194,7 +194,7 @@ package body Create_Clipboard is
               (Contents,
                First,
                "Type=     "
-               & Atom_Name (Get_Type (Data))
+               & Atom_Name (Get_Data_Type (Data))
                & ASCII.LF);
             Insert
               (Contents,
@@ -217,7 +217,7 @@ package body Create_Clipboard is
                   "As_String=" & Get_Data_As_String (Data));
             end if;
 
-            Selection_Data_Free (Data);
+            Free (Data);
          end if;
       end;
    end On_Select_Format;

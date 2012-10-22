@@ -42,7 +42,7 @@
 --  <group>Trees and Lists</group>
 
 with Glib.Types;
-with Gtk.Selection;
+with Gtk.Selection_Data;
 with Gtk.Tree_Model;
 
 package Gtk.Tree_Dnd is
@@ -56,7 +56,7 @@ package Gtk.Tree_Dnd is
    function Drag_Dest_Drag_Data_Received
      (Drag_Dest      : Gtk_Tree_Drag_Dest;
       Dest           : Gtk.Tree_Model.Gtk_Tree_Path;
-      Selection_Data : Gtk.Selection.Selection_Data)
+      Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
       return Boolean;
    --  Asks the Drag_Dest to insert a row before the path Dest,
    --  deriving the contents of the row from Selection_Data. If Dest is
@@ -68,7 +68,7 @@ package Gtk.Tree_Dnd is
    function Drag_Dest_Row_Drop_Possible
      (Drag_Dest      : Gtk_Tree_Drag_Dest;
       Dest_Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-      Selection_Data : Gtk.Selection.Selection_Data)
+      Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
       return Boolean;
    --  Determines whether a drop is possible before the given Dest_Path,
    --  at the same depth as Dest_Path. i.e., can we drop the data in
@@ -89,7 +89,7 @@ package Gtk.Tree_Dnd is
    function Drag_Source_Drag_Data_Get
      (Drag_Source    : Gtk_Tree_Drag_Source;
       Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-      Selection_Data : Gtk.Selection.Selection_Data)
+      Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
       return Boolean;
    --  Asks the Drag_Source to fill in Selection_Data with a
    --  representation of the row at Path. Get_Target (Selection_Data) gives
@@ -105,7 +105,7 @@ package Gtk.Tree_Dnd is
    --  this interface, the row is assumed draggable.
 
    procedure Get_Row_Drag_Data
-     (Selection_Data : Gtk.Selection.Selection_Data;
+     (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
       Tree_Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
       Path           : out Gtk.Tree_Model.Gtk_Tree_Path;
       Success        : out Boolean);
@@ -122,7 +122,7 @@ package Gtk.Tree_Dnd is
    --  The returned path must be freed with
 
    function Set_Row_Drag_Data
-     (Selection_Data : Gtk.Selection.Selection_Data;
+     (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
       Tree_Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path           : Gtk.Tree_Model.Gtk_Tree_Path)
       return Boolean;
@@ -134,6 +134,3 @@ private
    pragma Import (C, Drag_Source_Get_Type, "gtk_tree_drag_source_get_type");
 
 end Gtk.Tree_Dnd;
-
-
-
