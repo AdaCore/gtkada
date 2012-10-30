@@ -769,6 +769,35 @@ ada_gnode_first_child (GNode * node)
 
 /*
  *
+ * object macros
+ *
+ */
+
+guint32 ada_object_flags (GtkObject * object)
+{
+  return GTK_OBJECT_FLAGS (object);
+}
+
+void
+ada_object_set_flags (GtkObject * object, guint32 flags)
+{
+  GTK_OBJECT_SET_FLAGS (object, flags);
+}
+
+gint
+ada_object_flag_is_set (GtkObject * object, guint32 flag)
+{
+  return ((GTK_OBJECT_FLAGS (object) & flag) != 0);
+}
+
+void
+ada_object_unset_flags (GtkObject * object, guint32 flags)
+{
+  GTK_OBJECT_UNSET_FLAGS (object, flags);
+}
+
+/*
+ *
  * Widget macros
  *
  */
