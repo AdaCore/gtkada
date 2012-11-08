@@ -132,11 +132,10 @@ package body Gtk.Selection_Data is
    ----------
 
    function Copy (Selection : Gtk_Selection_Data) return Gtk_Selection_Data is
-      function Internal
-         (Selection : System.Address) return Gtk_Selection_Data;
+      function Internal (Selection : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_selection_data_copy");
    begin
-      return Internal (Get_Object (Selection));
+      return From_Object (Internal (Get_Object (Selection)));
    end Copy;
 
    ----------
