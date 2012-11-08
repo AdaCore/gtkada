@@ -57,10 +57,8 @@ package body Create_Clipboard is
    --  Called when a new format is selected
 
    procedure On_Image_Retrieved
-     (Clipboard : Gtk_Clipboard;
-      Pixbuf    : System.Address;
-      Data      : System.Address);
-   pragma Convention (C, On_Image_Retrieved);
+     (Clipboard : not null access Gtk_Clipboard_Record'Class;
+      Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Called when the image has been retrieved from the clipboard
 
    List     : Gtk_List_Store;
@@ -92,24 +90,13 @@ package body Create_Clipboard is
    ------------------------
 
    procedure On_Image_Retrieved
-     (Clipboard : Gtk_Clipboard;
-      Pixbuf    : System.Address;
-      Data      : System.Address)
+     (Clipboard : not null access Gtk_Clipboard_Record'Class;
+      Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       pragma Unreferenced (Clipboard);
-      pragma Unreferenced (Data);
-      First : Gtk_Text_Iter;
-      P     : constant Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Convert (Pixbuf);
 
    begin
-      if P /= null then
-         Set (Image, P);
-      else
-         Get_Start_Iter (Contents, First);
-         Insert (Contents, First,
-                 "!! Could not retrieve the image from the clipboard!!!"
-                 & ASCII.LF);
-      end if;
+      Set (Image, Pixbuf);
    end On_Image_Retrieved;
 
    -------------
@@ -168,8 +155,7 @@ package body Create_Clipboard is
          & ASCII.LF);
 
       if As_Image then
-         Request_Image
-           (Clipboard, On_Image_Retrieved'Access, System.Null_Address);
+         Request_Image (Clipboard, On_Image_Retrieved'Access);
       end if;
 
       Get_Selected (Get_Selection (Gtk_Tree_View (View)), Model, Iter);
