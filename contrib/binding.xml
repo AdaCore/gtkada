@@ -918,6 +918,98 @@ on how all the parameters for the boxes work.
       <parameter name="self" ada="Arrow"/>
    </package>
 
+   <package id="GtkClipboard">
+      <parameter name="self" ada="Clipboard"/>
+      <method id="gtk_clipboard_get">
+         <parameter name="selection" default="Gdk.Types.Gdk_None"/>
+      </method>
+      <method id="gtk_clipboard_get_for_display">
+         <parameter name="selection" default="Gdk.Types.Gdk_None"/>
+      </method>
+      <method id="gtk_clipboard_request_rich_text">
+         <parameter name="buffer" ctype="GObject"/>
+      </method>
+      <method id="gtk_clipboard_wait_is_rich_text_available">
+         <parameter name="buffer" ctype="GObject"/>
+      </method>
+      <method id="gtk_clipboard_set_can_store">
+         <parameter name="targets" type="Gtk.Target_List.Target_Entry_Array"/>
+      </method>
+
+      <method id="gtk_clipboard_set_text">
+         <parameter name="text" ctype="char*"/>
+         <parameter name="len" default="-1" ada=""/>
+      </method>
+
+      <method id="gtk_clipboard_set_with_data" bind="false" />
+      <method id="gtk_clipboard_set_with_owner" bind="false" />
+      <!-- need to ask Manu why callback type Gtk_Clipboard_Get_Func is not generated -->
+
+      <method id="gtk_clipboard_request_uris" bind="false" />
+      <!--  need to ask Manu why Internal_Gtk_Clipboard_Urireceived_Func does not compile -->
+
+      <method id="gtk_clipboard_wait_for_rich_text" bind="false" /> <!--  Returns an array, not practical -->
+
+      <method id="gtk_clipboard_wait_for_targets" bind="false" /> <!-- bound manually below -->
+
+      <extra>
+         <spec>
+   function Wait_For_Targets
+     (Clipboard : not null access Gtk_Clipboard_Record)
+     return Gdk.Types.Gdk_Atom_Array;
+   --  Returns a list of targets that are present on the clipboard, or an empty
+   --  array if there aren't any targets available.
+   --  This function waits for the data to be received using the main
+   --  loop, so events, timeouts, etc, may be dispatched during the wait.
+         </spec>
+         <with_body pkg="GtkAda.C" />
+         <body>
+    package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
+      Natural, Gdk.Types.Gdk_Atom_Array);
+
+   ----------------------
+   -- Wait_For_Targets --
+   ----------------------
+
+   function Wait_For_Targets
+     (Clipboard : not null access Gtk_Clipboard_Record)
+     return Gdk.Types.Gdk_Atom_Array
+   is
+      use Atom_Arrays;
+      function Internal
+        (Clipboard : System.Address;
+         Targets   : access Unbounded_Array_Access;
+         N_Targets : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_targets");
+
+      Output    : aliased Unbounded_Array_Access;
+      N_Targets : aliased Gint;
+   begin
+      if Internal
+        (Get_Object (Clipboard),
+         Output'Unchecked_Access,
+         N_Targets'Unchecked_Access) = 0
+      then
+         G_Free (Output);
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Atom_Array :=
+           To_Array (Output, Integer (N_Targets));
+      begin
+         if Output /= null then
+            G_Free (Output);
+         end if;
+
+         return Result;
+      end;
+   end Wait_For_Targets;
+         </body>
+      </extra>
+   </package>
+
    <!-- #######################################################
         ## Gtk.Viewport
         #######################################################-->
