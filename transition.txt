@@ -297,6 +297,14 @@ Gtk.Combo_Box_Entry
 
 This widget has been removed: use a Gtk.Combo_Box instead.
 
+Gtk.Clipboard
+=============
+
+The base type is now a GObject_Record instead of an opaque type: use the
+GObject facilities for lifecycle management.
+
+There are now separate "User_Data" generic version for callback-based methods.
+
 Gtk.Ctree
 =========
 
