@@ -35,11 +35,11 @@
 --  the actual data. When you set the contents of the clipboard, you can either
 --  supply the data directly (via functions like Gtk.Clipboard.Set_Text), or
 --  you can supply a callback to be called at a later time when the data is
---  needed (via gtk_clipboard_set_with_data or gtk_clipboard_set_with_owner.)
+--  needed (via Gtk.Clipboard.Set_With_Data or Gtk.Clipboard.Set_With_Owner.)
 --  Providing a callback also avoids having to make copies of the data when it
 --  is not needed.
 --
---  gtk_clipboard_set_with_data and gtk_clipboard_set_with_owner are quite
+--  Gtk.Clipboard.Set_With_Data and Gtk.Clipboard.Set_With_Owner are quite
 --  similar; the choice between the two depends mostly on which is more
 --  convenient in a particular situation. The former is most useful when you
 --  want to have a blob of data with callbacks to convert it into the various
@@ -49,7 +49,7 @@
 --  example, for the PRIMARY clipboard, when an entry widget provides the
 --  clipboard's contents the contents are simply the text within the selected
 --  region.) If the contents change, the entry widget can call
---  gtk_clipboard_set_with_owner to update the timestamp for clipboard
+--  Gtk.Clipboard.Set_With_Owner to update the timestamp for clipboard
 --  ownership, without having to worry about Clear_Func being called.
 --
 --  Requesting the data from the clipboard is essentially asynchronous. If the
@@ -154,8 +154,8 @@ package Gtk.Clipboard is
 
    procedure Clear (Clipboard : not null access Gtk_Clipboard_Record);
    --  Clears the contents of the clipboard. Generally this should only be
-   --  called between the time you call gtk_clipboard_set_with_owner or
-   --  gtk_clipboard_set_with_data, and when the Clear_Func you supplied is
+   --  called between the time you call Gtk.Clipboard.Set_With_Owner or
+   --  Gtk.Clipboard.Set_With_Data, and when the Clear_Func you supplied is
    --  called. Otherwise, the clipboard may be owned by someone else.
 
    function Get_Display
@@ -168,9 +168,9 @@ package Gtk.Clipboard is
       (Clipboard : not null access Gtk_Clipboard_Record)
        return Glib.Object.GObject;
    --  If the clipboard contents callbacks were set with
-   --  gtk_clipboard_set_with_owner, and the gtk_clipboard_set_with_data or
+   --  Gtk.Clipboard.Set_With_Owner, and the Gtk.Clipboard.Set_With_Data or
    --  Gtk.Clipboard.Clear has not subsequently called, returns the owner set
-   --  by gtk_clipboard_set_with_owner.
+   --  by Gtk.Clipboard.Set_With_Owner.
    --  otherwise null.
 
    procedure Request_Contents

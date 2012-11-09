@@ -522,6 +522,9 @@ class Callback(CType):
         CType.__init__(self, ada, "")
         self.cparam = "System.Address"
 
+    def __repr__(self):
+        return "<Callback %s>" % self.ada
+
     def convert_from_c(self):
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user

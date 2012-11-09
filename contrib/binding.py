@@ -268,7 +268,7 @@ class SubprogramProfile(object):
         # The following fields are used to handle callback parameters
         # and generate an Ada generic
 
-        self.callback_param = -1  # index of the callback parameter
+        self.callback_param = []  # indexes of the callback parameter
         self.user_data_param = -1 # index of the "user data" parameter
         self.destroy_param = -1   # index of the parameter to destroy data
 
@@ -308,13 +308,13 @@ class SubprogramProfile(object):
         return profile
 
     def callback_param_info(self):
-        """If there is one callback parameter in this profile, return it
-           so that we can generate the appropriate function.
-           Returns None if there is no such parameter.
+        """If there is one or more callback parameters in this profile, return
+           them so that we can generate the appropriate function.  Returns None
+           if there are no such parameters.
         """
-        if self.callback_param == -1:
+        if not self.callback_param:
             return None
-        return self.params[self.callback_param]
+        return [self.params[p] for p in self.callback_param]
 
     def callback_destroy(self):
         if self.destroy_param < 0:
@@ -395,8 +395,9 @@ class SubprogramProfile(object):
     def add_param(self, pos, param):
         """Add a new parameter in the list, at the given position"""
         self.params.insert(pos, param)
-        if self.callback_param != -1 and self.callback_param >= pos:
-            self.callback_param += 1
+        if self.callback_param:
+            self.callback_param = [p + 1 if p >= pos else p
+                                   for p in self.callback_param]
         if self.user_data_param >= 0 and self.user_data_param >= pos:
             self.user_data_param += 1
         if self.destroy_param >= 0 and self.destroy_param >= pos:
@@ -535,7 +536,7 @@ class SubprogramProfile(object):
 
                 if p.get("scope") != "async" \
                         or type.ada != "Glib.G_Destroy_Notify_Address":
-                    self.callback_param = len(result)
+                    self.callback_param.append(len(result))
                     self.user_data_param = int(p.get("closure", "-1")) - 1
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
@@ -842,11 +843,17 @@ class GIRClass(object):
               can pass their own user data type. We then need to generate the
               proper Destroy callback that C will call to free that user data.
 
-           PROFILE is an instance of SubprogramProfile.
-           CNAME is the name of the gtk+ C function.
-           ADANAME is the name of the corresponding Ada function.
-           CB is an instance of Parameter representing the callback parameter.
+           :profile: is an instance of SubprogramProfile.
+           :cname: is the name of the gtk+ C function.
+           :adaname: is the name of the corresponding Ada function.
+           :cb: is a list of Parameter instances representing the callback
+              parameters.
         """
+
+        if len(cb) > 1:
+            print "No binding for %s: multiple callback parameters" % cname
+            return
+        cb = cb[0]
 
         def call_to_c(gtk_func, values):
             """Implement the call to the C function.
@@ -981,9 +988,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         call = []
         gtk_func_profile = copy.deepcopy(profile)
 
-        callback = profile.callback_param_info()
-        if callback is not None:
-            gtk_func_profile.replace_param(callback.name, "System.Address")
+        if cb is not None:
+            gtk_func_profile.replace_param(cb.name, "System.Address")
 
         if cb_user_data is not None:
             gtk_func_profile.replace_param(destroy, "System.Address")
