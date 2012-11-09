@@ -271,7 +271,7 @@ package body Gtk.GEntry is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Icon_Pos));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Name;
 
    ---------------------
@@ -321,7 +321,7 @@ package body Gtk.GEntry is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_stock");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry), Icon_Pos));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry), Icon_Pos));
    end Get_Icon_Stock;
 
    ---------------------------
@@ -473,7 +473,7 @@ package body Gtk.GEntry is
          (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_placeholder_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry)));
    end Get_Placeholder_Text;
 
    ---------------------------
@@ -513,7 +513,7 @@ package body Gtk.GEntry is
          (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry)));
    end Get_Text;
 
    -------------------

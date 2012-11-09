@@ -98,7 +98,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_comments");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Comments;
 
    -------------------
@@ -112,7 +112,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_copyright");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Copyright;
 
    ---------------------
@@ -141,7 +141,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_license");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_License;
 
    ----------------------
@@ -183,7 +183,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Logo_Icon_Name;
 
    ----------------------
@@ -197,7 +197,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_program_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Program_Name;
 
    ----------------------------
@@ -211,7 +211,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_translator_credits");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Translator_Credits;
 
    -----------------
@@ -225,7 +225,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_version");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Version;
 
    -----------------
@@ -239,7 +239,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Website;
 
    -----------------------
@@ -253,7 +253,7 @@ package body Gtk.About_Dialog is
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Website_Label;
 
    ----------------------

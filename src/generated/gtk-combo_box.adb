@@ -26,6 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.GEntry;                 use Gtk.GEntry;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Combo_Box is
@@ -346,7 +347,7 @@ package body Gtk.Combo_Box is
          (Combo_Box : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_combo_box_get_active_id");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Combo_Box)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Combo_Box)));
    end Get_Active_Id;
 
    ----------------------
@@ -507,7 +508,7 @@ package body Gtk.Combo_Box is
          (Combo_Box : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_combo_box_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Combo_Box)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Combo_Box)));
    end Get_Title;
 
    --------------------

@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Action is
@@ -215,7 +216,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_accel_path");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Accel_Path;
 
    ---------------------------
@@ -255,7 +256,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Icon_Name;
 
    ----------------------
@@ -282,7 +283,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Label;
 
    --------------
@@ -296,7 +297,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Name;
 
    -----------------
@@ -339,7 +340,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_short_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Short_Label;
 
    ------------------
@@ -353,7 +354,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_stock_id");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Stock_Id;
 
    -----------------
@@ -367,7 +368,7 @@ package body Gtk.Action is
          (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_action_get_tooltip");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Action)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
    end Get_Tooltip;
 
    -----------------

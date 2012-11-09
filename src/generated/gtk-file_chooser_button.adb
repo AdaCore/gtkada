@@ -122,7 +122,7 @@ package body Gtk.File_Chooser_Button is
          (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_file_chooser_button_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Button)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Button)));
    end Get_Title;
 
    ---------------------

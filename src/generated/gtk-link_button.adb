@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Link_Button is
@@ -114,7 +115,7 @@ package body Gtk.Link_Button is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_link_button_get_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
    end Get_Uri;
 
    -----------------

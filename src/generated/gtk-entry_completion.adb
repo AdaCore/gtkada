@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Entry_Completion is
@@ -129,7 +130,7 @@ package body Gtk.Entry_Completion is
       Func                      : constant Gtk_Entry_Completion_Match_Func := To_Gtk_Entry_Completion_Match_Func (User_Data);
       Stub_Gtk_Entry_Completion : Gtk_Entry_Completion_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Interfaces.C.Strings.Value (Key), Iter));
+      return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
    end Internal_Gtk_Entry_Completion_Match_Func;
 
    package Type_Conversion_Gtk_Entry_Completion is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -227,7 +228,7 @@ package body Gtk.Entry_Completion is
          (Completion : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_completion_get_completion_prefix");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Completion)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Completion)));
    end Get_Completion_Prefix;
 
    ---------------
@@ -581,7 +582,7 @@ package body Gtk.Entry_Completion is
          D                         : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Entry_Completion : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
       begin
-         return Boolean'Pos (To_Gtk_Entry_Completion_Match_Func (D.Func) (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Interfaces.C.Strings.Value (Key), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Entry_Completion_Match_Func (D.Func) (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
       end Internal_Cb;
 
       --------------------

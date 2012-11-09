@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Cell_Area is
@@ -704,7 +705,7 @@ package body Gtk.Cell_Area is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_cell_area_get_current_path_string");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Current_Path_String;
 
    ---------------------

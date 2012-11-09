@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Label is
@@ -132,7 +133,7 @@ package body Gtk.Label is
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_current_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Current_Uri;
 
    -------------------
@@ -176,7 +177,7 @@ package body Gtk.Label is
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Label;
 
    ----------------
@@ -343,7 +344,7 @@ package body Gtk.Label is
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Text;
 
    -----------------------------

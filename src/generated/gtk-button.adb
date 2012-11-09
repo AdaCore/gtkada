@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Button is
@@ -237,7 +238,7 @@ package body Gtk.Button is
          (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_button_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Button)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Button)));
    end Get_Label;
 
    ----------------

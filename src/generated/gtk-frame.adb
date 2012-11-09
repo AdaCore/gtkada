@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Frame is
@@ -77,7 +78,7 @@ package body Gtk.Frame is
          (Frame : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Frame)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Frame)));
    end Get_Label;
 
    ---------------------

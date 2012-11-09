@@ -26,6 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Menu is
@@ -267,7 +268,7 @@ package body Gtk.Menu is
          (Menu : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_menu_get_accel_path");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Menu)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu)));
    end Get_Accel_Path;
 
    ----------------
@@ -347,7 +348,7 @@ package body Gtk.Menu is
          (Menu : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_menu_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Menu)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu)));
    end Get_Title;
 
    -------------

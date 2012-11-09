@@ -147,7 +147,7 @@ package body Gtk.Font_Button is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_button_get_font_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Font_Button)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Font_Button)));
    end Get_Font_Name;
 
    -------------------
@@ -189,7 +189,7 @@ package body Gtk.Font_Button is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_button_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Font_Button)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Font_Button)));
    end Get_Title;
 
    ------------------

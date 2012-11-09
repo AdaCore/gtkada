@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Buildable is
@@ -157,7 +158,7 @@ package body Gtk.Buildable is
          (Self : Gtk_Buildable) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_buildable_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Self));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
    end Get_Name;
 
    ---------------------

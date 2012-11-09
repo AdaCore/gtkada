@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Expander is
@@ -122,7 +123,7 @@ package body Gtk.Expander is
          (Expander : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_expander_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Expander)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Expander)));
    end Get_Label;
 
    --------------------

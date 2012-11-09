@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
+with Gtkada.Bindings;          use Gtkada.Bindings;
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 
 package body Gtk.Main is
@@ -174,7 +175,7 @@ package body Gtk.Main is
           Required_Micro : Guint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_check_version");
    begin
-      return Interfaces.C.Strings.Value (Internal (Required_Major, Required_Minor, Required_Micro));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Required_Major, Required_Minor, Required_Micro));
    end Check_Version;
 
    ---------------------

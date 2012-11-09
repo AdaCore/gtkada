@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Recent_Filter is
 
@@ -314,7 +315,7 @@ package body Gtk.Recent_Filter is
          (Filter : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_filter_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Filter)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Filter)));
    end Get_Name;
 
    ----------------

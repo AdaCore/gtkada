@@ -102,7 +102,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_description");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Description;
 
    ----------------------
@@ -114,7 +114,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_display_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Display_Name;
 
    ---------------
@@ -154,7 +154,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_mime_type");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Mime_Type;
 
    ------------------
@@ -200,7 +200,7 @@ package body Gtk.Recent_Info is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Uri;
 
    ---------------------

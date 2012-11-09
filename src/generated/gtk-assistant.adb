@@ -26,6 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Assistant is
@@ -254,7 +255,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_assistant_get_page_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Assistant), Get_Object (Page)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Assistant), Get_Object (Page)));
    end Get_Page_Title;
 
    -------------------

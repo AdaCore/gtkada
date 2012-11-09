@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gdk.Device is
@@ -172,7 +173,7 @@ package body Gdk.Device is
          (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gdk_device_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Self)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Name;
 
    ----------------

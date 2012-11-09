@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Progress_Bar is
@@ -140,7 +141,7 @@ package body Gtk.Progress_Bar is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_progress_bar_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Progress_Bar)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Progress_Bar)));
    end Get_Text;
 
    -----------

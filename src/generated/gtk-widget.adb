@@ -1049,7 +1049,7 @@ package body Gtk.Widget is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_widget_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
    end Get_Name;
 
    ---------------------

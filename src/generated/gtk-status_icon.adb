@@ -247,7 +247,7 @@ package body Gtk.Status_Icon is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Status_Icon)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
    end Get_Icon_Name;
 
    ----------------
@@ -306,7 +306,7 @@ package body Gtk.Status_Icon is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_stock");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Status_Icon)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
    end Get_Stock;
 
    ----------------------
@@ -337,7 +337,7 @@ package body Gtk.Status_Icon is
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Status_Icon)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
    end Get_Title;
 
    ------------------------

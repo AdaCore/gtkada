@@ -137,7 +137,7 @@ package body Gtk.Font_Selection_Dialog is
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_preview_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Dialog)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Dialog)));
    end Get_Preview_Text;
 
    -------------------

@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Window is
@@ -492,7 +493,7 @@ package body Gtk.Window is
          (Window : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_window_get_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Window)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Window)));
    end Get_Icon_Name;
 
    ---------------------------
@@ -612,7 +613,7 @@ package body Gtk.Window is
          (Window : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_window_get_role");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Window)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Window)));
    end Get_Role;
 
    ----------------
@@ -685,7 +686,7 @@ package body Gtk.Window is
          (Window : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_window_get_title");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Window)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Window)));
    end Get_Title;
 
    -----------------------
@@ -1658,7 +1659,7 @@ package body Gtk.Window is
       function Internal return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_window_get_default_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal);
+      return Gtkada.Bindings.Value_Allowing_Null (Internal);
    end Get_Default_Icon_Name;
 
    --------------------

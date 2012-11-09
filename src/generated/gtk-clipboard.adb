@@ -341,7 +341,7 @@ package body Gtk.Clipboard is
       Func               : constant Gtk_Clipboard_Text_Received_Func := To_Gtk_Clipboard_Text_Received_Func (Data);
       Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Interfaces.C.Strings.Value (Text));
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gtkada.Bindings.Value_Allowing_Null (Text));
    end Internal_Gtk_Clipboard_Text_Received_Func;
 
    ---------------------------------------------
@@ -757,7 +757,7 @@ package body Gtk.Clipboard is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Interfaces.C.Strings.Value (Text), D.Data.all);
+         To_Gtk_Clipboard_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gtkada.Bindings.Value_Allowing_Null (Text), D.Data.all);
       end Internal_Cb;
 
       ------------------

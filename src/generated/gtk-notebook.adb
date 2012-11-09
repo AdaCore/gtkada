@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Notebook is
@@ -166,7 +167,7 @@ package body Gtk.Notebook is
          (Notebook : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_notebook_get_group_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Notebook)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Notebook)));
    end Get_Group_Name;
 
    --------------------
@@ -201,7 +202,7 @@ package body Gtk.Notebook is
           Child    : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_notebook_get_menu_label_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Notebook), Get_Object (Child)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Notebook), Get_Object (Child)));
    end Get_Menu_Label_Text;
 
    -----------------
@@ -335,7 +336,7 @@ package body Gtk.Notebook is
           Child    : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_notebook_get_tab_label_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Notebook), Get_Object (Child)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Notebook), Get_Object (Child)));
    end Get_Tab_Label_Text;
 
    -----------------

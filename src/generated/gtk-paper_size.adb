@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Paper_Size is
@@ -227,7 +228,7 @@ package body Gtk.Paper_Size is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_display_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
    end Get_Display_Name;
 
    ----------------
@@ -255,7 +256,7 @@ package body Gtk.Paper_Size is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
    end Get_Name;
 
    ------------------
@@ -267,7 +268,7 @@ package body Gtk.Paper_Size is
          (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_ppd_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
    end Get_Ppd_Name;
 
    ---------------
@@ -371,7 +372,7 @@ package body Gtk.Paper_Size is
       function Internal return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_default");
    begin
-      return Interfaces.C.Strings.Value (Internal);
+      return Gtkada.Bindings.Value_Allowing_Null (Internal);
    end Get_Default;
 
    ---------------------
