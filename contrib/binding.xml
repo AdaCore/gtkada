@@ -935,12 +935,16 @@ on how all the parameters for the boxes work.
          <parameter name="text" ctype="char*"/>
          <parameter name="len" default="-1" ada=""/>
       </method>
+
       <method id="gtk_clipboard_set_with_data" bind="false" />
       <method id="gtk_clipboard_set_with_owner" bind="false" />
-      <!-- need to ask Manu why callback type Gtk_Clipboard_Get_Func is not generated -->
+<!--
+      need to ask Manu why callback type Gtk_Clipboard_Get_Func is not generated
 
       <method id="gtk_clipboard_request_uris" bind="false" />
-      <!--  need to ask Manu why Internal_Gtk_Clipboard_Urireceived_Func does not compile -->
+           need to ask Manu why Internal_Gtk_Clipboard_Urireceived_Func does
+           not compile
+-->
 
       <method id="gtk_clipboard_wait_for_rich_text" bind="false" /> <!--  Returns an array, not practical -->
       <method id="gtk_clipboard_wait_for_targets" bind="false" /> <!-- bound manually below -->

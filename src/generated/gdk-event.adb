@@ -87,7 +87,7 @@ package body Gdk.Event is
    --  i.e. when Gdk.Event.Handler_Set is called with another event handler.
 
    procedure Internal_Gdk_Event_Func
-      (Event : Gdk_Event;
+      (Event : Gdk.Event.Gdk_Event;
        Data  : System.Address);
    pragma Convention (C, Internal_Gdk_Event_Func);
    --  "event": the Gdk.Event.Gdk_Event to process.
@@ -99,7 +99,7 @@ package body Gdk.Event is
    -----------------------------
 
    procedure Internal_Gdk_Event_Func
-      (Event : Gdk_Event;
+      (Event : Gdk.Event.Gdk_Event;
        Data  : System.Address)
    is
       Func : constant Gdk_Event_Func := To_Gdk_Event_Func (Data);

@@ -48,7 +48,7 @@ package body Gtk.Accel_Group is
    --  "data": data to pass to Find_Func
 
    function Internal_Gtk_Accel_Group_Find_Func
-      (Key     : Gtk_Accel_Key;
+      (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
        Data    : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Accel_Group_Find_Func);
@@ -58,7 +58,7 @@ package body Gtk.Accel_Group is
    ----------------------------------------
 
    function Internal_Gtk_Accel_Group_Find_Func
-      (Key     : Gtk_Accel_Key;
+      (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
        Data    : System.Address) return Integer
    is

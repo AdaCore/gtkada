@@ -383,7 +383,7 @@ class SubprogramProfile(object):
                                     default=p.default if not p.ada_binding else None,
                                     ada_binding=p.ada_binding))
 
-        return result;
+        return result
 
     def set_class_wide(self):
         """This profile is not for a primitive operation, but for a class-wide
@@ -443,7 +443,9 @@ class SubprogramProfile(object):
 
     def subprogram(self, name, showdoc=True, local_vars=[], code=[],
                    convention=None, lang="ada"):
-        """Return an instance of Subprogram with the corresponding profile"""
+        """Return an instance of Subprogram with the corresponding profile.
+           lang is one of "ada", "c->ada" or "ada->c".
+        """
 
         params = self.params
         if lang == "ada":
@@ -780,8 +782,8 @@ class GIRClass(object):
             internal=Subprogram(
                 name="Internal",
                 returns=profile.returns,
+                lang="ada->c",
                 plist=profile.c_params(local_vars, call)).import_c(cname)
-            internal.set_param_lang("c")
 
             ret = gtkmethod.return_as_param()
             execute = internal.call(
@@ -925,7 +927,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 # System.Address for widgets.
 
                 nouser_cb_profile = copy.deepcopy(cb_profile)
-                subp = nouser_cb_profile.subprogram(name="", lang="c")
+                subp = nouser_cb_profile.subprogram(name="", lang="ada->c")
                 section.add_code(
                     "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
                 section.add_code(
@@ -966,8 +968,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     local_vars=[Local_Var("Func", "constant %s" % funcname,
                                           "To_%s (%s)" % (funcname, cb_user_data))]
                         + ada_func_call[2],
+                    lang="c->ada",
                     code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
-                body_cb.set_param_lang("c")
                 body_cb.convention = "C"
                 body_cb.doc = []
                 section.add(body_cb, in_spec=False)
@@ -988,7 +990,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         gtk_func_profile.unset_default_values()
         gtk_func = gtk_func_profile.subprogram(
-            name=naming.case("C_%s" % cname), lang="c").import_c(cname)
+            name=naming.case("C_%s" % cname), lang="ada->c").import_c(cname)
 
         # This function is shared both by the version without user_data and by
         # the generic package, so we need to put it directly in the package,
@@ -1068,8 +1070,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                                       "Users.Convert (%s)" % user_data2)]
                             + user_cb_call[2],
                 convention="C",
+                lang="c->ada",
                 code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
-            internal_cb.set_param_lang("c")
             sect2.add(internal_cb, in_spec=False)
 
             values = {destroy: "Users.Free_Data'Address",
@@ -1138,9 +1140,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         code = []
         internal = Subprogram(
             name="Internal",
+            lang="ada->c",
             plist=profile.c_params(local_vars, code),
             returns=profile.returns).import_c(cname)
-        internal.set_param_lang("c")
 
         call = internal.call(in_pkg=self.pkg)
         assert(call[1] is not None)   # A function

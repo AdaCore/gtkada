@@ -236,7 +236,7 @@ naming.girname_to_ctype = {
     "GObject.Closure":     "GClosure*",
     "Cairo.Context":       "cairo_t",
     "ModifierType":        "GdkModifierType",
-    "GObject.InitiallyUnowned": "GObject*"  # An alias
+    "GObject.InitiallyUnowned": "GObject*",  # An alias
 }
 
 # Naming exceptions. In particular maps Ada keywords.

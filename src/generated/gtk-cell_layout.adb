@@ -53,7 +53,7 @@ package body Gtk.Cell_Layout is
    --  "destroy": destroy notify for Func_Data
 
    procedure Internal_Cell_Data_Func
-      (Cell_Layout : Gtk_Cell_Layout;
+      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : System.Address;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -71,7 +71,7 @@ package body Gtk.Cell_Layout is
    -----------------------------
 
    procedure Internal_Cell_Data_Func
-      (Cell_Layout : Gtk_Cell_Layout;
+      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : System.Address;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;

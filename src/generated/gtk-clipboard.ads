@@ -137,6 +137,10 @@ package Gtk.Clipboard is
    --  "text": the text received, as a UTF-8 encoded string, or null if
    --  retrieving the data failed.
 
+   type Gtk_Clipboard_Urireceived_Func is access procedure
+     (Clipboard : not null access Gtk_Clipboard_Record'Class;
+      Uris      : GNAT.Strings.String_List);
+
    ------------------
    -- Constructors --
    ------------------
@@ -404,6 +408,47 @@ package Gtk.Clipboard is
       --  "user_data": user data to pass to Callback.
 
    end Request_Text_User_Data;
+
+   procedure Request_Uris
+      (Clipboard : not null access Gtk_Clipboard_Record;
+       Callback  : Gtk_Clipboard_Urireceived_Func);
+   --  Requests the contents of the clipboard as URIs. When the URIs are later
+   --  received Callback will be called.
+   --  The Uris parameter to Callback will contain the resulting array of URIs
+   --  if the request succeeded, or null if it failed. This could happen for
+   --  various reasons, in particular if the clipboard was empty or if the
+   --  contents of the clipboard could not be converted into URI form.
+   --  Since: gtk+ 2.14
+   --  "callback": a function to call when the URIs are received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Request_Uris_User_Data is
+
+      type Gtk_Clipboard_Urireceived_Func is access procedure
+        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
+         Uris      : GNAT.Strings.String_List;
+         Data      : User_Data_Type);
+
+      procedure Request_Uris
+         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
+          Callback  : Gtk_Clipboard_Urireceived_Func;
+          User_Data : User_Data_Type);
+      --  Requests the contents of the clipboard as URIs. When the URIs are
+      --  later received Callback will be called.
+      --  The Uris parameter to Callback will contain the resulting array of
+      --  URIs if the request succeeded, or null if it failed. This could
+      --  happen for various reasons, in particular if the clipboard was empty
+      --  or if the contents of the clipboard could not be converted into URI
+      --  form.
+      --  Since: gtk+ 2.14
+      --  "callback": a function to call when the URIs are received, or the
+      --  retrieval fails. (It will always be called one way or the other.)
+      --  "user_data": user data to pass to Callback.
+
+   end Request_Uris_User_Data;
 
    procedure Set_Can_Store
       (Clipboard : not null access Gtk_Clipboard_Record;

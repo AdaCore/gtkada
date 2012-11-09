@@ -66,7 +66,7 @@ package body Gtk.Recent_Filter is
    --  needed.
 
    function Internal_Gtk_Recent_Filter_Func
-      (Filter_Info : Gtk_Recent_Filter_Info;
+      (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
        User_Data   : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Recent_Filter_Func);
    --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
@@ -79,7 +79,7 @@ package body Gtk.Recent_Filter is
    -------------------------------------
 
    function Internal_Gtk_Recent_Filter_Func
-      (Filter_Info : Gtk_Recent_Filter_Info;
+      (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
        User_Data   : System.Address) return Integer
    is
       Func : constant Gtk_Recent_Filter_Func := To_Gtk_Recent_Filter_Func (User_Data);

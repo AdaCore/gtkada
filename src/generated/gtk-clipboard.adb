@@ -104,6 +104,12 @@ package body Gtk.Clipboard is
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Clipboard_Text_Received_Func, System.Address);
 
+   function To_Gtk_Clipboard_Urireceived_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Urireceived_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Urireceived_Func, System.Address);
+
    procedure C_Gtk_Clipboard_Request_Contents
       (Clipboard : System.Address;
        Target    : Gdk.Types.Gdk_Atom;
@@ -187,6 +193,22 @@ package body Gtk.Clipboard is
    --  retrieval fails. (It will always be called one way or the other.)
    --  "user_data": user data to pass to Callback.
 
+   procedure C_Gtk_Clipboard_Request_Uris
+      (Clipboard : System.Address;
+       Callback  : System.Address;
+       User_Data : System.Address);
+   pragma Import (C, C_Gtk_Clipboard_Request_Uris, "gtk_clipboard_request_uris");
+   --  Requests the contents of the clipboard as URIs. When the URIs are later
+   --  received Callback will be called.
+   --  The Uris parameter to Callback will contain the resulting array of URIs
+   --  if the request succeeded, or null if it failed. This could happen for
+   --  various reasons, in particular if the clipboard was empty or if the
+   --  contents of the clipboard could not be converted into URI form.
+   --  Since: gtk+ 2.14
+   --  "callback": a function to call when the URIs are received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
+
    procedure Internal_Gtk_Clipboard_Image_Received_Func
       (Clipboard : System.Address;
        Pixbuf    : System.Address;
@@ -236,6 +258,12 @@ package body Gtk.Clipboard is
    --  "text": the text received, as a UTF-8 encoded string, or null if
    --  retrieving the data failed.
    --  "data": the User_Data supplied to Gtk.Clipboard.Request_Text.
+
+   procedure Internal_Gtk_Clipboard_Urireceived_Func
+      (Clipboard : System.Address;
+       Uris      : chars_ptr_array_access;
+       Data      : System.Address);
+   pragma Convention (C, Internal_Gtk_Clipboard_Urireceived_Func);
 
    ------------------------------------------------
    -- Internal_Gtk_Clipboard_Image_Received_Func --
@@ -315,6 +343,21 @@ package body Gtk.Clipboard is
    begin
       Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Interfaces.C.Strings.Value (Text));
    end Internal_Gtk_Clipboard_Text_Received_Func;
+
+   ---------------------------------------------
+   -- Internal_Gtk_Clipboard_Urireceived_Func --
+   ---------------------------------------------
+
+   procedure Internal_Gtk_Clipboard_Urireceived_Func
+      (Clipboard : System.Address;
+       Uris      : chars_ptr_array_access;
+       Data      : System.Address)
+   is
+      Func               : constant Gtk_Clipboard_Urireceived_Func := To_Gtk_Clipboard_Urireceived_Func (Data);
+      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+   begin
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), To_String_List (Uris.all));
+   end Internal_Gtk_Clipboard_Urireceived_Func;
 
    package Type_Conversion_Gtk_Clipboard is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Clipboard_Record);
@@ -735,6 +778,73 @@ package body Gtk.Clipboard is
       end Request_Text;
 
    end Request_Text_User_Data;
+
+   ------------------
+   -- Request_Uris --
+   ------------------
+
+   procedure Request_Uris
+      (Clipboard : not null access Gtk_Clipboard_Record;
+       Callback  : Gtk_Clipboard_Urireceived_Func)
+   is
+   begin
+      if Callback = null then
+         C_Gtk_Clipboard_Request_Uris (Get_Object (Clipboard), System.Null_Address, System.Null_Address);
+      else
+         C_Gtk_Clipboard_Request_Uris (Get_Object (Clipboard), Internal_Gtk_Clipboard_Urireceived_Func'Address, To_Address (Callback));
+      end if;
+   end Request_Uris;
+
+   package body Request_Uris_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gtk_Clipboard_Urireceived_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Clipboard_Urireceived_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Clipboard_Urireceived_Func, System.Address);
+
+      procedure Internal_Cb
+         (Clipboard : System.Address;
+          Uris      : chars_ptr_array_access;
+          Data      : System.Address);
+      pragma Convention (C, Internal_Cb);
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (Clipboard : System.Address;
+          Uris      : chars_ptr_array_access;
+          Data      : System.Address)
+      is
+         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+      begin
+         To_Gtk_Clipboard_Urireceived_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), To_String_List (Uris.all), D.Data.all);
+      end Internal_Cb;
+
+      ------------------
+      -- Request_Uris --
+      ------------------
+
+      procedure Request_Uris
+         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
+          Callback  : Gtk_Clipboard_Urireceived_Func;
+          User_Data : User_Data_Type)
+      is
+      begin
+         if Callback = null then
+            C_Gtk_Clipboard_Request_Uris (Get_Object (Clipboard), System.Null_Address, System.Null_Address);
+         else
+            C_Gtk_Clipboard_Request_Uris (Get_Object (Clipboard), Internal_Cb'Address, Users.Build (To_Address (Callback), User_Data));
+         end if;
+      end Request_Uris;
+
+   end Request_Uris_User_Data;
 
    -------------------
    -- Set_Can_Store --

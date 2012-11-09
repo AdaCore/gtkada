@@ -55,7 +55,7 @@ package body Gtk.File_Filter is
    --  "notify": function to call to free Data when it is no longer needed.
 
    function Internal_Gtk_File_Filter_Func
-      (Filter_Info : Gtk_File_Filter_Info;
+      (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
        Data        : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_File_Filter_Func);
    --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
@@ -67,7 +67,7 @@ package body Gtk.File_Filter is
    -----------------------------------
 
    function Internal_Gtk_File_Filter_Func
-      (Filter_Info : Gtk_File_Filter_Info;
+      (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
        Data        : System.Address) return Integer
    is
       Func : constant Gtk_File_Filter_Func := To_Gtk_File_Filter_Func (Data);

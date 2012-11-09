@@ -13,13 +13,21 @@ from collections import namedtuple, defaultdict
 # values should be converted:
 #
 #     LANG should be one of:
-#        "ada->ada":  the value of the parameter is read from an Ada
+#        "ada":  the value of the parameter is read from an Ada
 #           value (as subprogram whose code is Ada) and passed to a
 #           similar subprogram. No conversion needed.
 #        "ada->c": all Ada values will be converted to their C equivalent,
 #           since the target subprogram's code is written in C.
 #        "c->ada": case of C callbacks: the value is passed from C to
 #           an Ada subprogram in the user application.
+#
+#     As an example, here is what the types for a list of strings
+#     would look like in all languages:
+#
+#           "ada"    -> String_List
+#           "c->ada" -> chars_ptr_array_access (no bounds given by C)
+#           "ada->c" -> chars_ptr_arra (bounds will be ignored anyway,
+#                         and it is simpler to pass this type).
 
 class CType(object):
     """Describes the types in the various cases where they can be used.
@@ -181,7 +189,7 @@ class CType(object):
             return self.cparam
 
     def as_call(
-        self, name, pkg, wrapper="%s", lang="ada->ada", mode="in", value=None):
+        self, name, pkg, wrapper="%s", lang="ada", mode="in", value=None):
         """'name' represents a parameter of type 'self'.
            'pkg' is the Package instance in which the call occurs.
            'wrapper' is used in the call itself, and %s is replaced by the
@@ -189,9 +197,9 @@ class CType(object):
            Returns an instance of VariableCall.
            See comments at the beginning of this package for valid LANG values
         """
-        assert(lang in ("ada->ada", "c->ada", "ada->c"))
+        assert(lang in ("ada", "c->ada", "ada->c"))
 
-        if lang == "ada->ada":
+        if lang == "ada":
             return VariableCall(
                 call=wrapper % name, precall='', postcall='', tmpvars=[])
 
@@ -203,7 +211,7 @@ class CType(object):
 
             if ret and ret != "%(var)s" and mode != "in":
                 # An "out" parameter for an enumeration requires a temporary
-                # variable: Internal(Enum'Pos (Param)) is invalid
+                # variable: Internal(Enum'Pos(Param)) is invalid
                 tmp = "Tmp_%s" % name
                 tmpvars = [Local_Var(name=tmp, type=self.cparam, aliased=True)]
 
@@ -452,6 +460,12 @@ class UTF8_List(CType):
         self.cleanup = "GtkAda.Types.Free (%s);"
 
     def convert_from_c(self):
+        # Use a temporary variable to store the result of To_String_List,
+        # because in some cases the result will need to be freed. For instance,
+        # when a callback from C receives a list of strings as
+        # chars_ptr_array_access, we create a temporary String_List to call the
+        # Ada callback, and then need to free the temporary String_List.
+
         if self.transfer_ownership:
             return (self.param, "chars_ptr_array_access",
                     "To_String_List_And_Free (%(var)s)", [])
@@ -1078,13 +1092,15 @@ class Local_Var(object):
             self.type = type
 
     def _type(self, lang, pkg):
-        """`pkg` is the package in which we insert the variable"""
-        if isinstance(self.type, CType):
-            if lang == "ada":
-                return self.type.as_ada_param(pkg)
-            elif lang == "c":
-                return self.type.as_c_param(pkg)
-        return self.type
+        """`pkg` is the package in which we insert the variable, and is used
+           to add necessary with statements, if any.
+        """
+        if lang == "ada":
+            return self.type.as_ada_param(pkg)
+        elif lang == "ada->c":
+            return self.type.as_c_param(pkg)
+        elif lang == "c->ada":
+            return self.type.convert_from_c()[1]
 
     def spec(self, pkg, length=0, lang="ada"):
         """Format the declaration for the variable or parameter.
@@ -1102,14 +1118,14 @@ class Local_Var(object):
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
-    def as_call(self, pkg, lang="ada->ada", mode="in", value=None):
+    def as_call(self, pkg, lang="ada", mode="in", value=None):
         """Pass self (or the value) as a parameter to an Ada subprogram call,
            implemented in the given language. See comments at the beginning
            of this package for valid values of LANG.
            'pkg' is the instance of Package in which the call occurs.
            :return: an instance of VariableCall
         """
-        assert(lang in ("ada->ada", "c->ada", "ada->c"))
+        assert(lang in ("ada", "c->ada", "ada->c"))
 
         wrapper = "%s"
         n = value or self.name
@@ -1158,7 +1174,7 @@ class Parameter(Local_Var):
             return "%s %s" % (mode, t)
         return t
 
-    def as_call(self, pkg, lang="ada->ada", value=None):
+    def as_call(self, pkg, lang="ada", value=None):
         """'pkg' is the package instance in which the call occurs."""
 
         if not self.ada_binding:
@@ -1221,11 +1237,14 @@ class Subprogram(object):
            'local_vars' is a list of Local_Var.
            'doc' is a string or a list of paragraphs.
            'code' can be the empty string, in which case no body is output.
-           'lang' is the language for the types of parameters.
+           'lang' is the language for the types of parameters (see comment at
+               the top of this file).
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
         """
         assert(returns is None or isinstance(returns, CType))
+        assert(lang in ("ada", "c->ada", "ada->c"))
+
         self.name = name
         self.plist = plist
         self.returns = returns
@@ -1257,12 +1276,6 @@ class Subprogram(object):
         self._import = 'pragma Import (C, %s, "%s");' % (self.name, cname)
         return self
 
-    def set_param_lang(self, lang):
-        """Set the language to use when printing the types of parameters.
-           If "c", prints the C type corresponding to the "ada" types.
-        """
-        self.lang = lang
-
     def mark_deprecated(self, msg):
         """Mark the subprogram as deprecated"""
 
@@ -1278,8 +1291,7 @@ class Subprogram(object):
         """Overrides the body of the subprogram (including profile,...)"""
         self._manual_body = body
 
-    def _profile(self, pkg, indent="   ", lang="ada",
-                 maxlen=max_profile_length):
+    def _profile(self, pkg, indent="   ", maxlen=max_profile_length):
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(pkg=pkg)
@@ -1287,7 +1299,9 @@ class Subprogram(object):
         if returns:
             prefix = "function"
 
-            if self.lang == "c":
+            if self.lang == "ada->c":
+                suffix = " return %s" % returns[1]
+            elif self.lang == "c->ada":
                 suffix = " return %s" % returns[1]
             else:
                 suffix = " return %s" % returns[0]
@@ -1302,13 +1316,13 @@ class Subprogram(object):
 
         if self.plist:
             # First test: all parameters on same line
-            plist = [p.spec(pkg=pkg, lang=lang) for p in self.plist]
+            plist = [p.spec(pkg=pkg, lang=self.lang) for p in self.plist]
             p = " (" + "; ".join(plist) + ")"
 
             # If too long, split on several lines
             if len(p) + len(prefix) + len(suffix) > maxlen:
                 max = max_length([p.name for p in self.plist])
-                plist = [p.spec(pkg=pkg, length=max, lang=lang)
+                plist = [p.spec(pkg=pkg, length=max, lang=self.lang)
                          for p in self.plist]
                 p = "\n   " + indent + "(" \
                     + (";\n    " + indent).join(plist) + ")"
@@ -1334,8 +1348,7 @@ class Subprogram(object):
         else:
             doc = []
 
-        result = self._profile(
-            pkg=pkg, indent=indent, lang=self.lang, maxlen=maxlen) + ";"
+        result = self._profile(pkg=pkg, indent=indent, maxlen=maxlen) + ";"
 
         if self._import:
             result += "\n" + indent + self._import
@@ -1382,7 +1395,7 @@ class Subprogram(object):
             return ""
 
         result = box(base_name(self.name), indent=indent) + "\n\n"
-        profile = self._profile(pkg=pkg, lang=self.lang, indent=indent)
+        profile = self._profile(pkg=pkg, indent=indent)
         result += profile
 
         if profile.find("\n") != -1:
@@ -1435,9 +1448,9 @@ class Subprogram(object):
         elif self._import:
             lang = "ada->c"
         else:
-            lang = "ada->ada"
+            lang = "ada"
 
-        assert(lang in ("ada->ada", "c->ada", "ada->c"))
+        assert(lang in ("ada", "c->ada", "ada->c"))
 
         tmpvars  = []
         precall  = ""
@@ -1487,7 +1500,7 @@ class Subprogram(object):
                     # No need for a temporary variable
                     result = (precall, returns[2] % {"var":call}, tmpvars)
 
-            else:
+            else:  # "ada" or "c->ada"
                 if postcall:
                     # We need to use a temporary variable, since there are
                     # cleanups to perform. This will not work if the function
@@ -1507,7 +1520,7 @@ class Subprogram(object):
 
         return result
 
-    def call_to_string(self, call, lang="ada->ada"):
+    def call_to_string(self, call, lang="ada"):
         """CALL is the result of call() above.
            This function returns a string that contains the code for the
            subprogram.
@@ -1747,6 +1760,9 @@ class Package(object):
         self.language_version = "" # a pragma to be put just after the headers
         self.formal_params = ""  # generic formal parameters
         self.isnested = isnested
+
+    def __repr__(self):
+        return "<Package %s>" % self.name
 
     def section(self, name):
         """Return an existing section (or create a new one) with the given
