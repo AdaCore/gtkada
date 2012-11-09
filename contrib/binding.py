@@ -5,7 +5,6 @@
 """
 
 # Issues:
-#   - Missing access to gtk+ enum types
 #   - Missing handling of <field> nodes (see GtkArrow for instance)
 #   - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
@@ -2033,7 +2032,8 @@ if missing_files:
 gtkada = GtkAda(options.xml_file)
 gir = GIR(options.gir_file)
 
-Package.copyright_header="""------------------------------------------------------------------------------
+Package.copyright_header = \
+"""------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
 --                     Copyright (C) 2000-2012, AdaCore                     --

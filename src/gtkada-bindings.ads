@@ -75,6 +75,11 @@ package Gtkada.Bindings is
    --  Converts C into a String_List. Returned value must be freed by caller,
    --  as well as C. C is NULL terminated.
 
+   function To_String_List_And_Free
+     (C : chars_ptr_array_access) return GNAT.Strings.String_List;
+   --  Converts C into a String_List, and frees C.
+   --  Returned value must be freed by caller.
+
    function To_String_List
      (C : ICS.chars_ptr_array; N : Glib.Gint)
       return GNAT.Strings.String_List;
@@ -101,83 +106,15 @@ package Gtkada.Bindings is
 
    package Gint_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.Gint, 0, Natural, Glib.Gint_Array);
---     package Points_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
---     package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
---        Natural, Gdk.Types.Gdk_Atom_Array);
    package Pspec_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.Param_Spec, null, Natural, Glib.Param_Spec_Array);
---     package Signal_Id_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Glib.Signal_Id, Glib.Null_Signal_Id, Glib.Guint,
---        Glib.Object.Signal_Id_Array);
    package GType_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.GType, Glib.GType_None, Glib.Guint, Glib.GType_Array);
---     package Color_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
---        Gdk.Color.Gdk_Color_Array);
 
---     type Unbounded_Gint_Array is array (Natural) of Glib.Gint;
---     pragma Convention (C, Unbounded_Gint_Array);
---     type Unbounded_Gint_Array_Access is access Unbounded_Gint_Array;
---     procedure G_Free (Arr : in out Unbounded_Gint_Array_Access);
---     function To_Gint_Array
---       (Arr : Unbounded_Gint_Array_Access; N : Glib.Gint)
---        return Glib.Gint_Array;
    function To_Gint_Array_Zero_Terminated
      (Arr : Gint_Arrays.Unbounded_Array_Access)
       return Glib.Gint_Array;
    --  Converts Arr, stopping at the first 0 encountered
-
---     type Unbounded_Points_Array is array (Natural) of Gdk.Types.Gdk_Point;
---     pragma Convention (C, Unbounded_Points_Array);
---     type Unbounded_Points_Array_Access is access Unbounded_Points_Array;
---     procedure G_Free (Arr : in out Unbounded_Points_Array_Access);
---     function To_Point_Array
---       (Arr : Unbounded_Points_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Points_Array;
-
---     type Unbounded_Atom_Array is array (Natural) of Gdk.Types.Gdk_Atom;
---     pragma Convention (C, Unbounded_Atom_Array);
---     type Unbounded_Atom_Array_Access is access Unbounded_Atom_Array;
---     procedure G_Free (Arr : in out Unbounded_Atom_Array_Access);
---     function To_Atom_Array
---       (Arr : Unbounded_Atom_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Atom_Array;
-
---     type Unbounded_Pspec_Array is array (Natural) of Glib.Param_Spec;
---     pragma Convention (C, Unbounded_Pspec_Array);
---     type Unbounded_Pspec_Array_Access is access Unbounded_Pspec_Array;
---     procedure G_Free (Arr : in out Unbounded_Pspec_Array_Access);
---     function To_Pspec_Array
---       (Arr : Unbounded_Pspec_Array_Access; N : Glib.Gint)
---        return Glib.Param_Spec_Array;
-
---     type Unbounded_Signal_Id_Array is array (Natural) of Glib.Signal_Id;
---     pragma Convention (C, Unbounded_Signal_Id_Array);
---   type Unbounded_Signal_Id_Array_Access is access Unbounded_Signal_Id_Array;
---     procedure G_Free (Arr : in out Unbounded_Signal_Id_Array_Access);
---     function To_Signal_Id_Array
---       (Arr : Unbounded_Signal_Id_Array_Access; N : Glib.Guint)
---        return Glib.Object.Signal_Id_Array;
-
---     type Unbounded_GType_Array is array (Natural) of Glib.GType;
---     pragma Convention (C, Unbounded_GType_Array);
---     type Unbounded_GType_Array_Access is access Unbounded_GType_Array;
---     procedure G_Free (Arr : in out Unbounded_GType_Array_Access);
---     function To_GType_Array
---       (Arr : Unbounded_GType_Array_Access; N : Glib.Guint)
---        return Glib.GType_Array;
-
---     type Unbounded_Color_Array is array (Natural) of Gdk.Color.Gdk_Color;
---     pragma Convention (C, Unbounded_Color_Array);
---     type Unbounded_Color_Array_Access is access Unbounded_Color_Array;
---     procedure G_Free (Arr : in out Unbounded_Color_Array_Access);
---     function To_Color_Array
---       (Arr : Unbounded_Color_Array_Access; N : Glib.Gint)
---        return Gdk.Color.Gdk_Color_Array;
---     function Convert is new Ada.Unchecked_Conversion
---       (System.Address, Unbounded_Color_Array_Access);
 
 private
    pragma Import (C, g_strfreev, "g_strfreev");

@@ -275,7 +275,7 @@ package body Gtk.Selection_Data is
          (Selection : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_selection_data_get_uris");
    begin
-      return To_String_List (Internal (Get_Object (Selection)).all);
+      return To_String_List_And_Free (Internal (Get_Object (Selection)));
    end Get_Uris;
 
    ----------------

@@ -115,7 +115,7 @@ class CType(object):
         """
         pass
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         """How to convert from Ada parameter to C parameter. If it uses %(tmp)s,
            we assume the converter sets the value of the temporary variable
            itself.
@@ -134,7 +134,7 @@ class CType(object):
 
     def direct_cmap(self):
         """Whether the parameter can be passed as is to C"""
-        return self.convert_to_c() == "%(var)s"
+        return self.convert_to_c(pkg=None) == "%(var)s"
 
     def as_property(self):
         """The type to use for the property"""
@@ -225,19 +225,20 @@ class CType(object):
                     postcall=postcall,
                     tmpvars=tmpvars + additional_tmp_vars)
 
-            elif "%(tmp)" in self.convert_to_c():
+            elif "%(tmp)" in self.convert_to_c(pkg=pkg):
                 # The conversion sets the temporary variable itself
                 tmp = "Tmp_%s" % name
                 call = VariableCall(
                     call=wrapper % tmp,
-                    precall=self.convert_to_c() % {"var":name, "tmp":tmp},
+                    precall=self.convert_to_c(pkg=pkg) % {
+                        "var":name, "tmp":tmp},
                     postcall=self.cleanup % tmp,
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)]
                        + []) # additional_tmp_vars
 
             elif self.cleanup:
                 tmp = "Tmp_%s" % name
-                conv = self.convert_to_c() % {"var":name}
+                conv = self.convert_to_c(pkg=pkg) % {"var":name}
 
                 # Initialize the temporary variable with a default value, in case
                 # it is an unconstrained type (a chars_ptr_array for instance)
@@ -249,7 +250,7 @@ class CType(object):
                         name=tmp, type=AdaType(self.cparam), default=conv)])
 
             else:
-                conv = self.convert_to_c() % {"var":name}
+                conv = self.convert_to_c(pkg=pkg) % {"var":name}
                 call = VariableCall(
                     call=wrapper % conv, precall='', postcall="", tmpvars=[])
 
@@ -278,7 +279,7 @@ class CType(object):
                 else:
                     postcall = "%s := %s;" % (
                         name,
-                        self.convert_to_c() % {"var": tmp})
+                        self.convert_to_c(pkg=pkg) % {"var": tmp})
 
                 return VariableCall(
                     call=wrapper % tmp,
@@ -327,11 +328,11 @@ class Enum(CType):
         else:
             return super(Enum, self).convert_from_c()
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         if self.ada.lower() == "boolean":
             return "%s'Pos (%%(var)s)" % self.ada
         else:
-            return super(Enum, self).convert_to_c()
+            return super(Enum, self).convert_to_c(pkg=pkg)
 
     def record_field_type(self, pkg=None):
         if pkg:
@@ -381,7 +382,7 @@ class GObject(CType):
                 [Local_Var(
                     stub, AdaType("%s_Record" % self.ada, in_spec=False))])
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         if self.allow_none:
             return "Get_Object_Or_Null (GObject (%(var)s))"
         else:
@@ -430,7 +431,7 @@ class UTF8(CType):
         if self.transfer_ownership and pkg:
             pkg.add_with("Gtkada.Bindings", specs=False)
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         if self.allow_none:
             return 'if %(var)s = "" then %(tmp)s :=' \
                 + ' Interfaces.C.Strings.Null_Ptr; else'\
@@ -451,20 +452,25 @@ class UTF8_List(CType):
         self.cleanup = "GtkAda.Types.Free (%s);"
 
     def convert_from_c(self):
-        return (self.param, "chars_ptr_array_access",
-                "To_String_List (%(var)s.all)", [])
+        if self.transfer_ownership:
+            return (self.param, "chars_ptr_array_access",
+                    "To_String_List_And_Free (%(var)s)", [])
+        else:
+            return (self.param, "chars_ptr_array_access",
+                    "To_String_List (%(var)s.all)", [])
 
     def record_field_type(self, pkg=None):
         return "Interfaces.C.Strings.char_array_access"
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
+        if pkg:
+            pkg.add_with("GtkAda.Types", specs=False)
         return "From_String_List (%(var)s)"
 
     def add_with(self, pkg=None):
         super(UTF8_List, self).add_with(pkg=pkg)
         if pkg:
             pkg.add_with("GNAT.Strings", specs=True)
-            pkg.add_with("GtkAda.Types", specs=False)
             pkg.add_with("Interfaces.C.Strings", specs=False)
             pkg.add_with("Gtkada.Bindings", specs=False)
 
@@ -508,7 +514,7 @@ class Callback(CType):
         # callback.
         return None
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         return "%(var)s'Address"
 
 
@@ -547,7 +553,7 @@ class List(CType):
         t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
     def add_with(self, pkg=None):
@@ -580,7 +586,7 @@ class AdaType(CType):
         if pkg:
             self.add_with(pkg)
 
-    def convert_to_c(self):
+    def convert_to_c(self, pkg=None):
         return self.__convert
 
 
@@ -1512,7 +1518,7 @@ class Subprogram(object):
                 # The return value (Ada) needs to be converted back to C (this
                 # is the returned value from a callback, for instance)
                 result += "return %s" % (
-                    self.returns.convert_to_c() % {"var": call[1]}, )
+                    self.returns.convert_to_c(pkg=None) % {"var": call[1]}, )
             else:
                 result += "return %s" % call[1]
         return result

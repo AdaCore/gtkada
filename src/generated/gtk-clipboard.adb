@@ -26,7 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with GtkAda.C;                   use GtkAda.C;
-with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
@@ -859,7 +858,7 @@ package body Gtk.Clipboard is
          (Clipboard : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_clipboard_wait_for_uris");
    begin
-      return To_String_List (Internal (Get_Object (Clipboard)).all);
+      return To_String_List_And_Free (Internal (Get_Object (Clipboard)));
    end Wait_For_Uris;
 
    -----------------------------
