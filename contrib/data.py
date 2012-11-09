@@ -111,6 +111,7 @@ binding = ("GdkCursor",
            "GtkMenuToolButton",
            "GtkNotebook",
            "GtkPaned",
+           "GtkPageSetup",
            "GtkPaperSize",
            # "GtkPlug",   X11-specific, no binding
            "GtkProgressBar",
