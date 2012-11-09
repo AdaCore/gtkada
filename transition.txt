@@ -608,6 +608,12 @@ Gtk.Preview
 
 This widget has been removed without replacement.
 
+Gtk.Print_Operation
+===================
+
+Get_Status was renames to Get_Status_String when it returns a string, to
+match the gtk+ API.
+
 Gtk.Progress
 ============
 

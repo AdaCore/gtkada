@@ -367,6 +367,7 @@ package body Gtkada.Printing is
       Error     : Glib.Error.GError := null)
       return Gtk_Print_Operation_Result
    is
+      pragma Unreferenced (Error);
    begin
       --  Connect all handlers
 
@@ -397,7 +398,7 @@ package body Gtkada.Printing is
         (Op, "status-changed", Status_Changed_Handler_Wrapper'Access);
 
       return Gtk.Print_Operation.Run
-        (Gtk_Print_Operation (Op), Action, Parent, Error);
+        (Gtk_Print_Operation (Op), Action, Parent);
    end Connect_And_Run;
 
 end Gtkada.Printing;

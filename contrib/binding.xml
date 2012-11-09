@@ -4309,6 +4309,13 @@ creating a tag.
      <method id="pango_layout_iter_get_run_readonly" bind="false"/> <!--  what is a pango_run -->
    </package>
 
+   <package id="GtkPrintOperation">
+     <enum ctype="GtkPrintStatus" prefix="GTK_PRINT_"/>
+     <enum ctype="GtkPrintOperationResult" prefix="GTK_PRINT_OPERATION_"/>
+     <enum ctype="GtkPrintOperationAction" prefix="GTK_PRINT_OPERATION_"/>
+     <enum ctype="GtkPrintError" prefix="GTK_PRINT_"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
