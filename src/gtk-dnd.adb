@@ -25,7 +25,6 @@ with Gdk.Event;  use Gdk.Event;
 with Gdk.Types;  use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Target_List; use Gtk.Target_List;
 
 package body Gtk.Dnd is
 
@@ -499,7 +498,7 @@ package body Gtk.Dnd is
    is
       function Internal
         (Widget  : System.Address;
-         Targets : Gtk_Target_List;
+         Targets : System.Address;
          Actions : Drag_Action;
          Button  : Gint;
          Event   : System.Address) return System.Address;
@@ -510,7 +509,8 @@ package body Gtk.Dnd is
         (Get_User_Data
            (Internal
               (Get_Object (Widget),
-               Targets, Actions, Button, To_Address (Event)),
+               Get_Object (Targets),
+               Actions, Button, To_Address (Event)),
             Stub));
    end Drag_Begin;
 
