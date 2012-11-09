@@ -24,8 +24,8 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-with Gtkada.Types;               use Gtkada.Types;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.About_Dialog is

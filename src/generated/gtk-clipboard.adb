@@ -26,8 +26,8 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with GtkAda.C;                   use GtkAda.C;
+with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-with Gtkada.Types;               use Gtkada.Types;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Clipboard is
@@ -141,7 +141,7 @@ package body Gtk.Clipboard is
 
    procedure C_Gtk_Clipboard_Request_Rich_Text
       (Clipboard : System.Address;
-       Buffer    : Glib.Object.GObject;
+       Buffer    : System.Address;
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Rich_Text, "gtk_clipboard_request_rich_text");
@@ -519,14 +519,14 @@ package body Gtk.Clipboard is
 
    procedure Request_Rich_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
-       Buffer    : Glib.Object.GObject;
+       Buffer    : not null access Glib.Object.GObject_Record'Class;
        Callback  : Gtk_Clipboard_Rich_Text_Received_Func)
    is
    begin
       if Callback = null then
-         C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Buffer, System.Null_Address, System.Null_Address);
+         C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Get_Object (Buffer), System.Null_Address, System.Null_Address);
       else
-         C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Buffer, Internal_Gtk_Clipboard_Rich_Text_Received_Func'Address, To_Address (Callback));
+         C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Get_Object (Buffer), Internal_Gtk_Clipboard_Rich_Text_Received_Func'Address, To_Address (Callback));
       end if;
    end Request_Rich_Text;
 
@@ -572,15 +572,15 @@ package body Gtk.Clipboard is
 
       procedure Request_Rich_Text
          (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Buffer    : Glib.Object.GObject;
+          Buffer    : not null access Glib.Object.GObject_Record'Class;
           Callback  : Gtk_Clipboard_Rich_Text_Received_Func;
           User_Data : User_Data_Type)
       is
       begin
          if Callback = null then
-            C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Buffer, System.Null_Address, System.Null_Address);
+            C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Get_Object (Buffer), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Buffer, Internal_Cb'Address, Users.Build (To_Address (Callback), User_Data));
+            C_Gtk_Clipboard_Request_Rich_Text (Get_Object (Clipboard), Get_Object (Buffer), Internal_Cb'Address, Users.Build (To_Address (Callback), User_Data));
          end if;
       end Request_Rich_Text;
 
@@ -881,14 +881,15 @@ package body Gtk.Clipboard is
 
    function Wait_Is_Rich_Text_Available
       (Clipboard : not null access Gtk_Clipboard_Record;
-       Buffer    : Glib.Object.GObject) return Boolean
+       Buffer    : not null access Glib.Object.GObject_Record'Class)
+       return Boolean
    is
       function Internal
          (Clipboard : System.Address;
-          Buffer    : Glib.Object.GObject) return Integer;
+          Buffer    : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_rich_text_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard), Buffer));
+      return Boolean'Val (Internal (Get_Object (Clipboard), Get_Object (Buffer)));
    end Wait_Is_Rich_Text_Available;
 
    ------------------------------

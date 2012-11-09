@@ -749,11 +749,11 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry   : System.Address;
           Icon_Pos    : Gtk_Entry_Icon_Position;
-          Target_List : Gtk.Target_List.Gtk_Target_List;
+          Target_List : System.Address;
           Actions     : Gdk.Drag_Contexts.Gdk_Drag_Action);
       pragma Import (C, Internal, "gtk_entry_set_icon_drag_source");
    begin
-      Internal (Get_Object (The_Entry), Icon_Pos, Target_List, Actions);
+      Internal (Get_Object (The_Entry), Icon_Pos, Get_Object (Target_List), Actions);
    end Set_Icon_Drag_Source;
 
    -------------------------

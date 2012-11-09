@@ -464,7 +464,7 @@ class UTF8_List(CType):
         super(UTF8_List, self).add_with(pkg=pkg)
         if pkg:
             pkg.add_with("GNAT.Strings", specs=True)
-            pkg.add_with("Gtkada.Types", specs=False)
+            pkg.add_with("GtkAda.Types", specs=False)
             pkg.add_with("Interfaces.C.Strings", specs=False)
             pkg.add_with("Gtkada.Bindings", specs=False)
 

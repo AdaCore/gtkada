@@ -160,10 +160,10 @@ package body Gtk.Target_List is
    ---------
 
    function Ref (List : Gtk_Target_List) return Gtk_Target_List is
-      function Internal (List : System.Address) return Gtk_Target_List;
+      function Internal (List : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_target_list_ref");
    begin
-      return Internal (Get_Object (List));
+      return From_Object (Internal (Get_Object (List)));
    end Ref;
 
    ------------

@@ -319,7 +319,6 @@ naming.type_exceptions = {
     "GClosure":      Proxy("GClosure"),
 
     "GtkIconSet*":     Proxy("Gtk.Icon_Factory.Gtk_Icon_Set"),
-    "GtkTargetList*":  Proxy ("Gtk.Target_List.Gtk_Target_List"),
     "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 

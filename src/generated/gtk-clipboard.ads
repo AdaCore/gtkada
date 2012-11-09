@@ -268,7 +268,7 @@ package Gtk.Clipboard is
 
    procedure Request_Rich_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
-       Buffer    : Glib.Object.GObject;
+       Buffer    : not null access Glib.Object.GObject_Record'Class;
        Callback  : Gtk_Clipboard_Rich_Text_Received_Func);
    --  Requests the contents of the clipboard as rich text. When the rich text
    --  is later received, Callback will be called.
@@ -296,7 +296,7 @@ package Gtk.Clipboard is
 
       procedure Request_Rich_Text
          (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Buffer    : Glib.Object.GObject;
+          Buffer    : not null access Glib.Object.GObject_Record'Class;
           Callback  : Gtk_Clipboard_Rich_Text_Received_Func;
           User_Data : User_Data_Type);
       --  Requests the contents of the clipboard as rich text. When the rich
@@ -504,7 +504,8 @@ package Gtk.Clipboard is
 
    function Wait_Is_Rich_Text_Available
       (Clipboard : not null access Gtk_Clipboard_Record;
-       Buffer    : Glib.Object.GObject) return Boolean;
+       Buffer    : not null access Glib.Object.GObject_Record'Class)
+       return Boolean;
    --  Test to see if there is rich text available to be pasted This is done
    --  by requesting the TARGETS atom and checking if it contains any of the
    --  supported rich text targets. This function waits for the data to be
