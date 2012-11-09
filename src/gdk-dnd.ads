@@ -28,7 +28,6 @@ with Gdk.Types; use Gdk.Types;
 with Gdk.Screen;
 with Gtk;
 with Gtk.Target_List;
-with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package Gdk.Dnd is
 
