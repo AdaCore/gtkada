@@ -433,10 +433,10 @@ class UTF8(CType):
                     "Gtkada.Bindings.Value_And_Free (%(var)s)", [])
         else:
             return (self.param, self.cparam,
-                    "Interfaces.C.Strings.Value (%(var)s)", [])
+                    "Gtkada.Bindings.Value_Allowing_Null (%(var)s)", [])
 
     def convert_from_c_add_with(self, pkg):
-        if self.transfer_ownership and pkg:
+        if pkg:
             pkg.add_with("Gtkada.Bindings", specs=False)
 
     def convert_to_c(self, pkg=None):
