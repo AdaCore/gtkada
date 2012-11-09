@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Gtk.Tree_Model;  use Gtk.Tree_Model;
+with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package body Gtk.Tree_Dnd is
 
@@ -38,11 +39,12 @@ package body Gtk.Tree_Dnd is
       function Internal
         (Drag_Dest      : Gtk_Tree_Drag_Dest;
          Dest           : Gtk_Tree_Path;
-         Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
+         Selection_Data : System.Address)
          return Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_dest_drag_data_received");
    begin
-      return Boolean'Val (Internal (Drag_Dest, Dest, Selection_Data));
+      return Boolean'Val
+        (Internal (Drag_Dest, Dest, Get_Object (Selection_Data)));
    end Drag_Dest_Drag_Data_Received;
 
    ---------------------------------
@@ -58,11 +60,12 @@ package body Gtk.Tree_Dnd is
       function Internal
         (Drag_Dest      : Gtk_Tree_Drag_Dest;
          Dest_Path      : Gtk_Tree_Path;
-         Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
+         Selection_Data : System.Address)
          return Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_dest_row_drop_possible");
    begin
-      return Boolean'Val (Internal (Drag_Dest, Dest_Path, Selection_Data));
+      return Boolean'Val
+        (Internal (Drag_Dest, Dest_Path, Get_Object (Selection_Data)));
    end Drag_Dest_Row_Drop_Possible;
 
    ----------------------------------
@@ -96,11 +99,12 @@ package body Gtk.Tree_Dnd is
       function Internal
         (Drag_Source    : Gtk_Tree_Drag_Source;
          Path           : Gtk_Tree_Path;
-         Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
+         Selection_Data : System.Address)
          return Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
    begin
-      return Boolean'Val (Internal (Drag_Source, Path, Selection_Data));
+      return Boolean'Val
+        (Internal (Drag_Source, Path, Get_Object (Selection_Data)));
    end Drag_Source_Drag_Data_Get;
 
    -------------------------------
@@ -132,7 +136,7 @@ package body Gtk.Tree_Dnd is
       Success        : out Boolean)
    is
       function Internal
-        (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
+        (Selection_Data : System.Address;
          Model          : access System.Address;
          Path           : access Gtk_Tree_Path) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_get_row_drag_data");
@@ -141,7 +145,8 @@ package body Gtk.Tree_Dnd is
       Stub : Gtk_Tree_Model_Record;
    begin
       Success := Boolean'Val
-        (Internal (Selection_Data, M'Unchecked_Access, P'Unchecked_Access));
+        (Internal (Get_Object (Selection_Data),
+         M'Unchecked_Access, P'Unchecked_Access));
       Path := P;
       Tree_Model := Gtk_Tree_Model (Get_User_Data (M, Stub));
    end Get_Row_Drag_Data;
@@ -157,14 +162,15 @@ package body Gtk.Tree_Dnd is
       return Boolean
    is
       function Internal
-        (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
+        (Selection_Data : System.Address;
          Tree_Model     : System.Address;
          Path           : Gtk_Tree_Path)
          return Gboolean;
       pragma Import (C, Internal, "gtk_tree_set_row_drag_data");
    begin
       return Boolean'Val
-        (Internal (Selection_Data, Get_Object (Tree_Model), Path));
+        (Internal
+           (Get_Object (Selection_Data), Get_Object (Tree_Model), Path));
    end Set_Row_Drag_Data;
 
 end Gtk.Tree_Dnd;
