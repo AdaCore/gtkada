@@ -52,6 +52,10 @@ package Gtkada.Bindings is
      (Str : Interfaces.C.Strings.chars_ptr) return String;
    --  Returns the value stored in Str, and free the memory occupied by Str.
 
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return String;
+   --  Return the value stored in Str, and an empty string if Str is null.
+
    -------------
    -- Strings --
    -------------

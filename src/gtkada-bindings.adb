@@ -190,4 +190,19 @@ package body Gtkada.Bindings is
       end;
    end Value_And_Free;
 
+   -------------------------
+   -- Value_Allowing_Null --
+   -------------------------
+
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return String
+   is
+   begin
+      if Str = Null_Ptr then
+         return "";
+      end if;
+
+      return Interfaces.C.Strings.Value (Str);
+   end Value_Allowing_Null;
+
 end Gtkada.Bindings;
