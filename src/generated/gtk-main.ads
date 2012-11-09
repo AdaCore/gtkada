@@ -23,11 +23,11 @@
 
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Device; use Gdk.Device;
-with Gdk.Event;  use Gdk.Event;
-with Gdk.Types;  use Gdk.Types;
-with Gtk.Widget; use Gtk.Widget;
-with Pango.Font; use Pango.Font;
+with Gdk.Device;     use Gdk.Device;
+with Gdk.Event;      use Gdk.Event;
+with Gdk.Types;      use Gdk.Types;
+with Gtk.Widget;     use Gtk.Widget;
+with Pango.Language; use Pango.Language;
 
 package Gtk.Main is
 
@@ -168,13 +168,13 @@ package Gtk.Main is
    --  set different values for different locale categories.
    --  Most programs should not need to call this function.
 
-   function Get_Default_Language return Pango.Font.Pango_Language;
-   --  Returns the Pango.Font.Pango_Language for the default language
+   function Get_Default_Language return Pango.Language.Pango_Language;
+   --  Returns the Pango.Language.Pango_Language for the default language
    --  currently in effect. (Note that this can change over the life of an
    --  application.) The default language is derived from the current locale.
    --  It determines, for example, whether GTK+ uses the right-to-left or
    --  left-to-right text direction.
-   --  This function is equivalent to pango_language_get_default. See that
+   --  This function is equivalent to Pango.Language.Get_Default. See that
    --  function for details.
    --  must not be freed
 

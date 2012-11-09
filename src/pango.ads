@@ -26,6 +26,10 @@
 --  </description>
 --  <group>Pango, font handling</group>
 
+pragma Warnings (Off);
+with System;  --   Needed for child packages
+pragma Warnings (On);
+
 package Pango is
 
    pragma Pure;

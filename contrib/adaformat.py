@@ -607,6 +607,19 @@ class AdaType(CType):
         return self.__convert
 
 
+class AdaTypeArray(CType):
+    """An array of scalar types"""
+
+    def __init__(self, adatype):
+        CType.__init__(self, adatype, "")
+        self.param  = "%s_Array" % naming.case(adatype)
+        self.cparam = "System.Address"
+        self.isArray = True
+
+    def convert_to_c(self, pkg=None):
+        return "%(var)s (%(var)s'First)'Address"
+
+
 class AdaNaming(object):
     def __init__(self):
         self.cname_to_adaname = {}  # c methods to Ada subprograms
@@ -723,6 +736,9 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8":
             t = UTF8_List()
+        elif cname in ("gint**", "int**") or name == "array_of_gint":
+            t = AdaTypeArray("gint")
+            isArray = True
         elif cname == "void":
             return None
         elif name == "utf8" or cname == "gchar*" or cname == "char*":

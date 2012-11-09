@@ -30,15 +30,17 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;             use Glib;
-with Glib.Properties;  use Glib.Properties;
-with Glib.Types;       use Glib.Types;
-with Gtk.Action;       use Gtk.Action;
-with Gtk.Activatable;  use Gtk.Activatable;
-with Gtk.Buildable;    use Gtk.Buildable;
-with Gtk.Button;       use Gtk.Button;
-with Gtk.Font_Chooser; use Gtk.Font_Chooser;
-with Pango.Font;       use Pango.Font;
+with Glib;              use Glib;
+with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Gtk.Action;        use Gtk.Action;
+with Gtk.Activatable;   use Gtk.Activatable;
+with Gtk.Buildable;     use Gtk.Buildable;
+with Gtk.Button;        use Gtk.Button;
+with Gtk.Font_Chooser;  use Gtk.Font_Chooser;
+with Pango.Font;        use Pango.Font;
+with Pango.Font_Face;   use Pango.Font_Face;
+with Pango.Font_Family; use Pango.Font_Family;
 
 package Gtk.Font_Button is
 
@@ -46,8 +48,8 @@ package Gtk.Font_Button is
    type Gtk_Font_Button is access all Gtk_Font_Button_Record'Class;
 
    type Gtk_Font_Filter_Func is access function
-     (Family : not null access Pango.Font.Pango_Font_Family_Record'Class;
-      Face   : not null access Pango.Font.Pango_Font_Face_Record'Class)
+     (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
+      Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class)
    return Boolean;
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -179,8 +181,8 @@ package Gtk.Font_Button is
    package Set_Filter_Func_User_Data is
 
       type Gtk_Font_Filter_Func is access function
-        (Family : not null access Pango.Font.Pango_Font_Family_Record'Class;
-         Face   : not null access Pango.Font.Pango_Font_Face_Record'Class;
+        (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
+         Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class;
          Data   : User_Data_Type) return Boolean;
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -248,11 +250,11 @@ package Gtk.Font_Button is
 
    function Get_Font_Face
       (Self : not null access Gtk_Font_Button_Record)
-       return Pango.Font.Pango_Font_Face;
+       return Pango.Font_Face.Pango_Font_Face;
 
    function Get_Font_Family
       (Self : not null access Gtk_Font_Button_Record)
-       return Pango.Font.Pango_Font_Family;
+       return Pango.Font_Family.Pango_Font_Family;
 
    function Get_Font_Size
       (Self : not null access Gtk_Font_Button_Record) return Gint;

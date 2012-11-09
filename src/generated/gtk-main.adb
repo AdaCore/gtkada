@@ -311,11 +311,11 @@ package body Gtk.Main is
    -- Get_Default_Language --
    --------------------------
 
-   function Get_Default_Language return Pango.Font.Pango_Language is
-      function Internal return Pango.Font.Pango_Language;
+   function Get_Default_Language return Pango.Language.Pango_Language is
+      function Internal return System.Address;
       pragma Import (C, Internal, "gtk_get_default_language");
    begin
-      return Internal;
+      return From_Object (Internal);
    end Get_Default_Language;
 
    ----------------------

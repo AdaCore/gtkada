@@ -4042,6 +4042,197 @@ creating a tag.
      </extra>
    </package>
 
+   <package id="GtkPrintContext">
+     <parameter name="self" ada="Context"/>
+   </package>
+
+   <package id="PangoFontMetrics">
+   </package>
+
+   <package id="PangoFontset">
+     <doc>an object containing a set of pango.Font objects</doc>
+   </package>
+
+   <package id="PangoLanguage">
+     <enum ctype="PangoScript"/>
+     <extra>
+       <type ctype="Pango_Script_Array" ada="Pango_Script_Array">
+         type Pango_Script_Array is array (Natural range &lt;&gt;) of Pango_Script;
+       </type>
+     </extra>
+
+     <method id="pango_language_get_scripts" return="Pango_Script_Array">
+       <parameter name="num_scripts" ada=""/>
+       <body>
+  function Get_Scripts (Self : Pango_Language) return Pango_Script_Array is
+      type script_array_bounded is array (Natural) of Pango_Script;
+      type script_array_access is access script_array_bounded;
+
+      function Internal
+         (Self     : System.Address;
+          Size     : access Gint) return script_array_access;
+      pragma Import (C, Internal, "pango_language_get_scripts");
+
+      Scripts : script_array_access;
+      Size : aliased Gint;
+   begin
+      Scripts := Internal (Self.Get_Object, Size'Access);
+
+      declare
+         Result : Pango_Script_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Scripts (R);
+         end loop;
+         return Result;
+      end;
+   end Get_Scripts;
+       </body>
+     </method>
+   </package>
+
+   <package id="PangoFontMap">
+     <doc>An object that represents the set of fonts available for a particular
+     rendering system</doc>
+
+     <extra>
+       <with_spec pkg="Pango.Font_Family"/>
+     </extra>
+
+     <method id="pango_font_map_list_families" return="Pango_Font_Family_Array">
+       <parameter name="families" ada=""/>
+       <parameter name="n_families" ada=""/>
+       <body>
+   function List_Families
+      (Self : not null access Pango_Font_Map_Record) return Pango_Font_Family_Array
+   is
+      type font_family_array_bounded is array (Natural) of System.Address;
+
+      procedure Internal
+         (Self     : System.Address;
+          Families : System.Address;
+          Size     : access Gint);
+      pragma Import (C, Internal, "pango_font_map_list_families");
+
+      procedure g_free (s : access font_family_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Families : aliased access font_family_array_bounded;
+      Size : aliased Gint;
+      Tmplt : Pango_Font_Family_Record;
+   begin
+      Internal (Self.Get_Object, Families'Address, Size'Access);
+
+      declare
+         Result : Pango_Font_Family_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Pango_Font_Family
+                (Get_User_Data (Families (R), Tmplt));
+         end loop;
+         g_free (Families);
+
+         return Result;
+      end;
+   end List_Families;
+       </body>
+     </method>
+   </package>
+
+   <package id="PangoFontFamily">
+     <extra>
+       <with_spec pkg="Pango.Font_Face"/>
+
+       <!--  Needed for PangoFontMap -->
+       <type ctype="Pango_Font_Family_Array" ada="Pango_Font_Family_Array">
+         type Pango_Font_Family_Array is array (Natural range &lt;&gt;) of Pango_Font_Family;
+       </type>
+     </extra>
+     <method id="pango_font_family_list_faces" return="Pango_Font_Face_Array">
+       <parameter name="faces" ada=""/>
+       <parameter name="n_faces" ada=""/>
+       <body>
+   function List_Faces
+      (Self : not null access Pango_Font_Family_Record) return Pango_Font_Face_Array
+   is
+      type font_face_array_bounded is array (Natural) of System.Address;
+
+      procedure Internal
+         (Self        : System.Address;
+          Faces       : System.Address;
+          Acc_N_Faces : access Gint);
+      pragma Import (C, Internal, "pango_font_family_list_faces");
+
+      procedure g_free (s : access font_face_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Faces : aliased access font_face_array_bounded;
+      Size : aliased Gint;
+      Tmplt : Pango_Font_Face_Record;
+   begin
+      Internal (Self.Get_Object, Faces'Address, Size'Access);
+
+      declare
+         Result : Pango_Font_Face_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Pango_Font_Face
+                (Get_User_Data (Faces (R), Tmplt));
+         end loop;
+         g_free (Faces);
+
+         return Result;
+      end;
+   end List_Faces;
+       </body>
+     </method>
+   </package>
+
+   <package id="PangoFontFace">
+     <extra>
+       <!--  Needed for PangoFontFamily -->
+       <type ctype="Pango_Font_Face_Array" ada="Pango_Font_Face_Array">
+         type Pango_Font_Face_Array is array (Natural range &lt;&gt;) of Pango_Font_Face;
+       </type>
+     </extra>
+     <method id="pango_font_face_list_sizes" return="gint**">
+       <parameter name="sizes" ada=""/>
+       <parameter name="n_sizes" ada=""/>
+       <body>
+   function List_Sizes
+      (Self : not null access Pango_Font_Face_Record) return Gint_Array
+   is
+      type gint_array_bounded is array (Natural) of Gint;
+
+      procedure Internal
+         (Self        : System.Address;
+          Sizes       : System.Address;
+          Acc_N_Sizes : access Gint);
+      pragma Import (C, Internal, "pango_font_face_list_sizes");
+
+      procedure g_free (s : access gint_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Sizes : aliased access gint_array_bounded;
+      Size : aliased Gint;
+   begin
+      Internal (Self.Get_Object, Sizes'Address, Size'Access);
+
+      declare
+         Result : Gint_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Sizes (R);
+         end loop;
+         g_free (Sizes);
+
+         return Result;
+      end;
+   end List_Sizes;
+       </body>
+     </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

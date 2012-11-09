@@ -19,6 +19,14 @@ The GtkAda 3 toolkit makes use of Ada 2005 and requires GtkAda applications
 to be compiled in Ada 2005 or Ada 2012 mode (e.g. using the -gnat05 or
 -gnat2012 switch).
 
+Pango.Font
+==========
+
+The type Pango_Font_Metrics is now declared in its own package Pango.Font_Metrics.
+The type Pango_Font_Face is now declared in its own package Pango.Font_Face.
+The type Pango_Font_Family is now declared in its own package Pango.Font_Family.
+The type Pango_Language is now declared in its own package Pango.Language.
+
 Gdk.Bitmap
 ==========
 

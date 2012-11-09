@@ -44,19 +44,12 @@ with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Pango.Enums;
+with Pango.Font_Metrics;  use Pango.Font_Metrics;
 with System;
 
 package Pango.Font is
 
    type Pango_Font_Description is new Glib.C_Proxy;
-
-   type Pango_Font_Family_Record is new Glib.Object.GObject_Record
-      with null record;
-   type Pango_Font_Family is access all Pango_Font_Family_Record'Class;
-
-   type Pango_Font_Face_Record is new Glib.Object.GObject_Record
-      with null record;
-   type Pango_Font_Face is access all Pango_Font_Face_Record'Class;
 
    function Get_Type return Glib.GType;
    --  Return the internal gtk+ type associated with font descriptions.
@@ -190,8 +183,6 @@ package Pango.Font is
    --  with the font. Note that such metrics might depend on the specific
    --  script/language in use.
 
-   type Pango_Font_Metrics is new Glib.C_Proxy;
-
    type Pango_Font_Record is new Glib.Object.GObject_Record with null record;
    type Pango_Font is access all Pango_Font_Record'Class;
    --  Created through Pango.Context.Load_Font
@@ -208,54 +199,6 @@ package Pango.Font is
    --
    --  Language determines which script to get the metrics for, or null to
    --  indicate the metrics for the entire font.
-
-   procedure Ref (Metrics : Pango_Font_Metrics);
-   procedure Unref (Metrics : Pango_Font_Metrics);
-   --  Ref or unref Metrics When the reference counter reaches 0, the memory is
-   --  deallocated.
-
-   function Get_Ascent (Metrics : Pango_Font_Metrics) return Gint;
-   --  Gets the ascent from a font metrics structure. The ascent is the
-   --  distance from the baseline to the logical top of a line of text. (The
-   --  logical top may be above or below the top of the actual drawn ink. It is
-   --  necessary to lay out the text to figure where the ink will be).
-   --
-   --  The returned value is expressed in pango units, and must be divided by
-   --  Pango_Scale to get the value in pixels.
-
-   function Get_Descent (Metrics : Pango_Font_Metrics) return Gint;
-   --  Gets the descent from a font metrics structure. The descent is the
-   --  distance from the baseline to the logical bottom of a line of text. (The
-   --  logical bottom may be above or below the bottom of the actual drawn
-   --  ink. It is necessary to lay out the text to figure where the ink will
-   --  be.)
-   --
-   --  The returned value is expressed in pango units, and must be divided by
-   --  Pango_Scale to get the value in pixels.
-
-   function Get_Approximate_Char_Width (Metrics : Pango_Font_Metrics)
-      return Gint;
-   --  Gets the approximate character width for a font metrics structure.  This
-   --  is merely a representative value useful, for example, for determining
-   --  the initial size for a window. Actual characters in text will be wider
-   --  and narrower than this.
-   --
-   --  The returned value is expressed in pango units, and must be divided by
-   --  Pango_Scale to get the value in pixels.
-
-   function Get_Approximate_Digit_Width (Metrics : Pango_Font_Metrics)
-      return Gint;
-   --  Gets the approximate digit width for a font metrics structure.  This is
-   --  merely a representative value useful, for example, for determining the
-   --  initial size for a window. Actual digits in text can be wider and
-   --  narrower than this, though this value is generally somewhat more
-   --  accurate than the result of Get_Approximate_Char_Width.
-   --
-   --  The returned value is expressed in pango units, and must be divided by
-   --  Pango_Scale to get the value in pixels.
-
-   function Font_Metrics_Get_Type return Glib.GType;
-   --  Return the internal value associated with a Pango_Font_Metrics
 
    ----------------
    -- Properties --
@@ -278,16 +221,6 @@ private
    pragma Import (C, Get_Size, "pango_font_description_get_size");
    pragma Import (C, Set_Size, "pango_font_description_set_size");
    pragma Import (C, Pango_Language_Get_Type, "pango_language_get_type");
-   pragma Import
-     (C, Font_Metrics_Get_Type, "pango_font_metrics_get_type");
-   pragma Import (C, Ref, "pango_font_metrics_ref");
-   pragma Import (C, Unref, "pango_font_metrics_unref");
-   pragma Import (C, Get_Ascent, "pango_font_metrics_get_ascent");
-   pragma Import (C, Get_Descent, "pango_font_metrics_get_descent");
-   pragma Import (C, Get_Approximate_Char_Width,
-                  "pango_font_metrics_get_approximate_char_width");
-   pragma Import (C, Get_Approximate_Digit_Width,
-                  "pango_font_metrics_get_approximate_digit_width");
 
    pragma Import (C, Get_Style, "pango_font_description_get_style");
    pragma Import (C, Set_Style, "pango_font_description_set_style");

@@ -216,10 +216,10 @@ package body Pango.Font is
       Language : Pango_Language := null) return Pango_Font_Metrics
    is
       function Internal (Font : System.Address; Lang : Pango_Language)
-         return Pango_Font_Metrics;
+         return System.Address;
       pragma Import (C, Internal, "pango_font_get_metrics");
    begin
-      return Internal (Get_Object (Font), Language);
+      return From_Object (Internal (Get_Object (Font), Language));
    end Get_Metrics;
 
    ----------------

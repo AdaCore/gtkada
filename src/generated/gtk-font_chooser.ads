@@ -39,18 +39,20 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Pango.Font;      use Pango.Font;
+with Glib;              use Glib;
+with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Pango.Font;        use Pango.Font;
+with Pango.Font_Face;   use Pango.Font_Face;
+with Pango.Font_Family; use Pango.Font_Family;
 
 package Gtk.Font_Chooser is
 
    type Gtk_Font_Chooser is new Glib.Types.GType_Interface;
 
    type Gtk_Font_Filter_Func is access function
-     (Family : not null access Pango.Font.Pango_Font_Family_Record'Class;
-      Face   : not null access Pango.Font.Pango_Font_Face_Record'Class)
+     (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
+      Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class)
    return Boolean;
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -110,7 +112,7 @@ package Gtk.Font_Chooser is
    --  "font_desc": a Pango.Font_Description.Pango_Font_Description
 
    function Get_Font_Face
-      (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Face;
+      (Self : Gtk_Font_Chooser) return Pango.Font_Face.Pango_Font_Face;
    --  Gets the Pango.Font_Face.Pango_Font_Face representing the selected font
    --  group details (i.e. family, slant, weight, width, etc).
    --  If the selected font is not installed, returns null.
@@ -119,7 +121,7 @@ package Gtk.Font_Chooser is
    --  Since: gtk+ 3.2
 
    function Get_Font_Family
-      (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Family;
+      (Self : Gtk_Font_Chooser) return Pango.Font_Family.Pango_Font_Family;
    --  Gets the Pango.Font_Family.Pango_Font_Family representing the selected
    --  font family. Font families are a collection of font faces.
    --  If the selected font is not installed, returns null.
@@ -170,8 +172,8 @@ package Gtk.Font_Chooser is
    package Set_Filter_Func_User_Data is
 
       type Gtk_Font_Filter_Func is access function
-        (Family : not null access Pango.Font.Pango_Font_Family_Record'Class;
-         Face   : not null access Pango.Font.Pango_Font_Face_Record'Class;
+        (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
+         Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class;
          Data   : User_Data_Type) return Boolean;
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
