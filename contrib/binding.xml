@@ -4233,6 +4233,82 @@ creating a tag.
      </method>
    </package>
 
+   <package id="PangoLayout">
+     <parameter name="self" ada="Layout"/>
+     <enum ctype="PangoEllipsizeMode" prefix="PANGO_"/>
+     <method id="pango_layout_xy_to_index" return_as_param="Exact">
+       <parameter name="index" ada="Byte_Index" direction="out"/>
+       <parameter name="trailing" direction="out"/>
+     </method>
+
+     <!-- Do not bind these, since they require a list of Pango_Layout_Line,
+     which is incorrectly bound (error in From_Object) -->
+     <method id="pango_layout_get_lines" return="PangoLayoutLineSList" bind="false"/>
+     <method id="pango_layout_get_lines_readonly" bind="false"
+             return="PangoLayoutLineSList"/>
+
+     <method id="pango_layout_get_log_attrs" bind="false"/> <!--  what is a pango_log -->
+     <method id="pango_layout_get_log_attrs_readonly" bind="false"/> <!--  what
+     is a pango_log -->
+
+     <method id="pango_layout_get_iter" bind="false"/>  <!--  dispatching on multiple types -->
+
+     <method id="pango_layout_set_attributes">
+       <parameter name="attrs" direction="in" ctype="PangoAttrList"/>
+     </method>
+
+     <method id="pango_layout_set_text">
+       <parameter name="length" default="-1" ada=""/>
+     </method>
+     <method id="pango_layout_set_markup">
+       <parameter name="length" default="-1" ada=""/>
+     </method>
+     <extra>
+       <with_spec pkg="GtkAda.Types" />
+       <spec>
+   function Get_Text (Layout : access Pango_Layout_Record)
+      return GtkAda.Types.Chars_Ptr;
+   --  Same a Get_Text, but return directly the C string, which is more
+   --  efficient. The returned value should not be freed or modified.
+       </spec>
+       <body>
+   function Get_Text (Layout : access Pango_Layout_Record)
+      return Gtkada.Types.Chars_Ptr
+   is
+      function Internal (Layout : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "pango_layout_get_text");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Text;
+       </body>
+     </extra>
+   </package>
+
+   <package id="PangoLayoutLine" into="PangoLayout">
+     <record ctype="PangoLayoutLine" private="true"/>
+<!--     <slist ada="Pango_Layout_Line_List" ctype="PangoLayoutLine"/> -->
+     <method id="pango_layout_line_get_type" ada="Get_Type_Layout_Line" />
+
+     <method id="pango_layout_line_get_extents" bind="false"/> <!--  forces bad pragma import on pango_layout_get_extents -->
+     <method id="pango_layout_line_get_pixel_extents" bind="false"/>
+
+     <!--  Do not bind these for now, there is an error in the generator that
+     tries to use Get_Object on a PangoLayoutLine because it doesn't know
+     private records are implemented as C_Proxy -->
+     <method id="pango_layout_line_get_x_ranges" bind="false"/>
+     <method id="pango_layout_line_index_to_x" bind="false"/>
+     <method id="pango_layout_line_x_to_index" bind="false"/>
+
+   </package>
+
+   <package id="PangoLayoutIter" into="PangoLayout">
+     <method id="pango_layout_iter_get_type" ada="Get_Type_Layout_Iter" />
+
+     <method id="pango_layout_iter_get_run" bind="false"/> <!--  what is a pango_run -->
+     <method id="pango_layout_iter_get_run_readonly" bind="false"/> <!--  what is a pango_run -->
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

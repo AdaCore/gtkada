@@ -30,8 +30,12 @@ pragma Warnings (Off);
 with System;  --   Needed for child packages
 pragma Warnings (On);
 
+with Glib;
+
 package Pango is
 
-   pragma Pure;
+   type Pango_Rectangle is record
+      X, Y, Width, Height : Glib.Gint;
+   end record;
 
 end Pango;

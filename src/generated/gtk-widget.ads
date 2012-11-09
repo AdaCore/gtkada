@@ -484,7 +484,7 @@ package Gtk.Widget is
    --  font description, and base direction for drawing text for this widget.
    --  If you keep a Pango.Layout.Pango_Layout created in this way around, in
    --  order to notify the layout of changes to the base direction or font of
-   --  this widget, you must call pango_layout_context_changed in response to
+   --  this widget, you must call Pango.Layout.Context_Changed in response to
    --  the Gtk.Widget.Gtk_Widget::style-updated and
    --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
    --  "text": text to set on the layout (can be null)
@@ -1252,7 +1252,7 @@ package Gtk.Widget is
    --  any changes to the widget's attributes.
    --  If you create and keep a Pango.Layout.Pango_Layout using this context,
    --  you must deal with changes to the context by calling
-   --  pango_layout_context_changed on the layout in response to the
+   --  Pango.Layout.Context_Changed on the layout in response to the
    --  Gtk.Widget.Gtk_Widget::style-updated and
    --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
 

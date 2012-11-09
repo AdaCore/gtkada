@@ -609,20 +609,24 @@ class GIRClass(object):
 
         self.conversions = dict() # List of Convert(...) functions that were implemented
 
-        # Is this a binding for an opaque C record (not a GObject). In this
-        # case, we bind it as an Ada tagged type so that we can use the
-        # convenient dot notation for primitive operations. Public records are
-        # handled differently.
-
-        self.is_record_with_ptr = self.node.tag == nrecord \
-            and not self.node.findall(nfield)
-
         # Search for the GtkAda binding information
 
         self.gtkpkg = gtkada.get_pkg(self.ctype)
         if not self.gtkpkg.bindtype:
             self.has_toplevel_type = False
             self.is_gobject = False
+
+        # Is this a binding for an opaque C record (not a GObject). In this
+        # case, we bind it as an Ada tagged type so that we can use the
+        # convenient dot notation for primitive operations. Public records are
+        # handled differently.
+        # If binding.xml forces the record to be private, we also implement it
+        # as a tagged private record.
+
+        self.is_record_with_ptr = self.node.tag == nrecord \
+            and (not self.node.findall(nfield)
+                 or (self.gtkpkg.node
+                     and self.gtkpkg.node.get("private", "false").lower() == "true"))
 
         # Register naming exceptions for this class
 
@@ -1157,7 +1161,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         adaname = gtkmethod.ada_name()
         if not adaname:
-            if cname.startswith("gdk_"):
+            if cname.startswith("gdk_") or cname.startswith("pango_"):
                 gtk_new_prefix = "Gdk_New"
                 adaname = "Gdk_%s" % name    # e.g.  Gdk_New
             elif cname.startswith("g_"):
@@ -1627,7 +1631,7 @@ See Glib.Properties for more information on properties)""")
         section.add_code(body, specs=False)
 
     def record_binding(
-        self, section, ctype, adaname, type, override_fields, unions):
+        self, section, ctype, adaname, type, override_fields, unions, private):
         """Create the binding for a <record> or <union> type.
            override_fields has the same format as returned by
            GtkAdaPackage.records()
@@ -1645,43 +1649,45 @@ See Glib.Properties for more information on properties)""")
         first_field_ctype = None
 
         fields = []
-        for field in node.findall(nfield):
-            name = field.get("name")
 
-            ftype = None
-            type = field.findall(ntype)
-            cb   = field.findall(ncallback)
+        if not private:
+            for field in node.findall(nfield):
+                name = field.get("name")
 
-            if type:
-                ftype = override_fields.get(name, None)
-                if ftype is None:
-                    ctype = type[0].get(ctype_qname)
-                    if not ctype:
-                       # <type name="..."> has no c:type attribute, so we try
-                       # to map the name to a Girname
-                       ctype = naming.girname_to_ctype[type[0].get("name")]
+                ftype = None
+                type = field.findall(ntype)
+                cb   = field.findall(ncallback)
 
-                    if not first_field_ctype:
-                        first_field_ctype = ctype
-                    ftype = naming.type(name="", cname=ctype)
+                if type:
+                    ftype = override_fields.get(name, None)
+                    if ftype is None:
+                        ctype = type[0].get(ctype_qname)
+                        if not ctype:
+                           # <type name="..."> has no c:type attribute, so we try
+                           # to map the name to a Girname
+                           ctype = naming.girname_to_ctype[type[0].get("name")]
 
-            elif cb:
-                # ??? JL: Should properly bind the callback here.
-                # For now, we just use a System.Address to maintain the record
-                # integrity
-                ftype = override_fields.get(name, None)
-                if ftype is None:
-                    ftype = AdaType(
-                        "System.Address", pkg=self.pkg)
-            else:
-                print "WARNING: Field has no type: %s.%s" % (ctype, name)
-                print " generation of the record is most certainly incorrect"
+                        if not first_field_ctype:
+                            first_field_ctype = ctype
+                        ftype = naming.type(name="", cname=ctype)
 
-            if ftype != None:
-                ftype = ftype.record_field_type(pkg=self.pkg)
-                self.pkg.add_with(package_name(ftype))
+                elif cb:
+                    # ??? JL: Should properly bind the callback here.
+                    # For now, we just use a System.Address to maintain the record
+                    # integrity
+                    ftype = override_fields.get(name, None)
+                    if ftype is None:
+                        ftype = AdaType(
+                            "System.Address", pkg=self.pkg)
+                else:
+                    print "WARNING: Field has no type: %s.%s" % (ctype, name)
+                    print " generation of the record is most certainly incorrect"
 
-                fields.append((naming.case(name), ftype))
+                if ftype != None:
+                    ftype = ftype.record_field_type(pkg=self.pkg)
+                    self.pkg.add_with(package_name(ftype))
+
+                    fields.append((naming.case(name), ftype))
 
         if not fields:
             section.add(
@@ -1934,9 +1940,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         for ctype, enum, prefix in self.gtkpkg.enumerations():
             self.enumeration_binding(section, ctype, enum, prefix)
 
-        for ctype, enum, adaname, fields, unions in self.gtkpkg.records():
+        for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
+
             self.record_binding(
-               section, ctype, adaname, enum, fields, unions)
+                section, ctype, adaname, enum, fields, unions, private)
 
         for ada, ctype, single, sect_name in self.gtkpkg.lists():
             sect = self.pkg.section(sect_name)

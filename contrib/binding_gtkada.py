@@ -15,6 +15,10 @@ Where the package node is defined as follows:
              into="..."      <!-- optional, the package to bind types and
                                   methods into -->
              ada="..."       <!-- optional, the packge's ada name -->
+
+             private="false"  <!--  If true, the main type is implemented as a
+                                  tagged record, not a GObject or record with
+                                  fields -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -265,7 +269,7 @@ class GtkAdaPackage(object):
     def records(self):
         """Returns the list of record types, as a list of tuples:
                [ (ctype name,  corresponding CType, ada name, [fields],
-                 [union]) ...]
+                 [union], [private=False]) ...]
            Where fields is a dict for each field whose type is
            overridden:
                { name: CType, ... }
@@ -293,7 +297,8 @@ class GtkAdaPackage(object):
                                naming.type(name="",
                                            cname=rec.get("ctype")),
                                rec.get("ada"),
-                               override_fields, unions))
+                               override_fields, unions,
+                               rec.get("private", "false").lower() == "true"))
 
         return result
 

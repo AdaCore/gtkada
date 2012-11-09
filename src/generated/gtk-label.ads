@@ -631,6 +631,21 @@ package Gtk.Label is
    --  Type: Gint
    --  Flags: read-write
    --
+   --  Name: Ellipsize_Property
+   --  Type: Pango.Layout.Pango_Ellipsize_Mode
+   --  Flags: read-write
+   --  The preferred place to ellipsize the string, if the label does not have
+   --  enough room to display the entire string, specified as a
+   --  Pango_Ellisize_Mode.
+   --
+   --  Note that setting this property to a value other than
+   --  Pango.Layout.Ellipsize_None has the side-effect that the label requests
+   --  only enough space to display the ellipsis "...". In particular, this
+   --  means that ellipsizing labels do not work well in notebook tabs, unless
+   --  the tab's Gtk.Notebook.Gtk_Notebook:tab-expand property is set to True.
+   --  Other ways to set a label's width are gtk_widget_set_size_request and
+   --  Gtk.Label.Set_Width_Chars.
+   --
    --  Name: Justify_Property
    --  Type: Gtk.Enums.Gtk_Justification
    --  Flags: read-write
@@ -718,6 +733,7 @@ package Gtk.Label is
 
    Angle_Property : constant Glib.Properties.Property_Double;
    Cursor_Position_Property : constant Glib.Properties.Property_Int;
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
    Label_Property : constant Glib.Properties.Property_String;
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
@@ -819,6 +835,8 @@ private
      Glib.Properties.Build ("angle");
    Cursor_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("cursor-position");
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
+     Pango.Layout.Build ("ellipsize");
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification :=
      Gtk.Enums.Build ("justify");
    Label_Property : constant Glib.Properties.Property_String :=

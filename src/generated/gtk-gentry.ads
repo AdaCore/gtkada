@@ -637,7 +637,7 @@ package Gtk.GEntry is
    --  Converts from a position in the entry contents (returned by
    --  Gtk.GEntry.Get_Text) to a position in the entry's
    --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
-   --  retrieved via pango_layout_get_text).
+   --  retrieved via Pango.Layout.Get_Text).
    --  "layout_index": byte index into the entry layout text
 
    procedure Progress_Pulse (The_Entry : not null access Gtk_Entry_Record);

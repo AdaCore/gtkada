@@ -50,6 +50,9 @@ binding = ("GdkCursor",
            "PangoFontMetrics",
            "PangoFontset",
            "PangoLanguage",
+           "PangoLayout",
+           "PangoLayoutIter",
+           "PangoLayoutLine",
 
            "GtkAboutDialog",
            "GtkAccelGroup",
@@ -296,9 +299,8 @@ naming.type_exceptions = {
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
     "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
-    "PangoEllipsizeMode":Enum("Pango.Layout.Pango_Ellipsize_Mode", ""),
     "PangoContext":      GObject("Pango.Context.Pango_Context"),
-    "PangoLayout":       GObject("Pango.Layout.Pango_Layout"),
+    "PangoTabArray":     Proxy("Pango.Tabs.Pango_Tab_Array"),
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
                                    "Pango.Font.Property_Font_Description"),
 
