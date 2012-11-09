@@ -1069,13 +1069,15 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer           : System.Address;
-         Clipboard        : Gtk.Clipboard.Gtk_Clipboard;
+         Clipboard        : System.Address;
          Default_Editable : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_cut_clipboard");
 
    begin
       Internal
-        (Get_Object (Buffer), Clipboard, Boolean'Pos (Default_Editable));
+        (Get_Object (Buffer),
+         Get_Object (Clipboard),
+         Boolean'Pos (Default_Editable));
    end Cut_Clipboard;
 
    --------------------
@@ -1087,11 +1089,11 @@ package body Gtk.Text_Buffer is
       Clipboard  : Gtk.Clipboard.Gtk_Clipboard)
    is
       procedure Internal
-        (Buffer : System.Address; Clipboard : Gtk.Clipboard.Gtk_Clipboard);
+        (Buffer : System.Address; Clipboard : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_copy_clipboard");
 
    begin
-      Internal (Get_Object (Buffer), Clipboard);
+      Internal (Get_Object (Buffer), Get_Object (Clipboard));
    end Copy_Clipboard;
 
    ---------------------
@@ -1106,7 +1108,7 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer            : System.Address;
-         Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
+         Clipboard         : System.Address;
          Override_Location : System.Address;
          Default_Editable  : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_paste_clipboard");
@@ -1114,11 +1116,11 @@ package body Gtk.Text_Buffer is
    begin
       if Override_Location = null then
          Internal
-           (Get_Object (Buffer), Clipboard,
+           (Get_Object (Buffer), Get_Object (Clipboard),
             System.Null_Address, Boolean'Pos (Default_Editable));
       else
          Internal
-           (Get_Object (Buffer), Clipboard,
+           (Get_Object (Buffer), Get_Object (Clipboard),
             Override_Location.all'Address, Boolean'Pos (Default_Editable));
       end if;
    end Paste_Clipboard;
@@ -1247,10 +1249,10 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer    : System.Address;
-         Clipboard : Gtk_Clipboard);
+         Clipboard : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_add_selection_clipboard");
    begin
-      Internal (Get_Object (Buffer), Clipboard);
+      Internal (Get_Object (Buffer), Get_Object (Clipboard));
    end Add_Selection_Clipboard;
 
    --------------------------------
@@ -1263,11 +1265,11 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer    : System.Address;
-         Clipboard : Gtk_Clipboard);
+         Clipboard : System.Address);
       pragma Import
         (C, Internal, "gtk_text_buffer_remove_selection_clipboard");
    begin
-      Internal (Get_Object (Buffer), Clipboard);
+      Internal (Get_Object (Buffer), Get_Object (Clipboard));
    end Remove_Selection_Clipboard;
 
    ----------------
