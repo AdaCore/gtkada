@@ -42,12 +42,8 @@ with Glib;     use Glib;
 
 package Gtk.Symbolic_Color is
 
-   type Gtk_Symbolic_Color is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type Gtk_Symbolic_Color is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : Gtk_Symbolic_Color'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Symbolic_Color;
 
    ------------------

@@ -417,7 +417,7 @@ package body Gtk.Page_Setup is
          Size  : System.Address);
       pragma Import (C, Internal, "gtk_page_setup_set_paper_size");
    begin
-      Internal (Get_Object (Setup), Gtk.Paper_Size.Get_Object (Size));
+      Internal (Get_Object (Setup), Size.Get_Object);
    end Set_Paper_Size;
 
    ----------------------------------------
@@ -434,7 +434,7 @@ package body Gtk.Page_Setup is
       pragma Import
         (C, Internal, "gtk_page_setup_set_paper_size_and_default_margins");
    begin
-      Internal (Get_Object (Setup), Gtk.Paper_Size.Get_Object (Size));
+      Internal (Get_Object (Setup), Size.Get_Object);
    end Set_Paper_Size_And_Default_Margins;
 
    ----------------------

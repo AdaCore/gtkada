@@ -1207,7 +1207,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                                      pkg=self.pkg, in_spec=True),
                         mode="out")] + profile.params,
                 local_vars=local_vars + call[2],
-                code="%s%s.Ptr := %s" % (call[0], selfname, call[1]),
+                code="%s%s.Set_Object (%s)" % (call[0], selfname, call[1]),
                 doc=profile.doc)
 
             gtk_new.add_nested(internal)
@@ -1896,12 +1896,8 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
             # generic packages for lists of this type.
 
             section.add_code("""
-   type %(typename)s is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type %(typename)s is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : %(typename)s'Class) return System.Address;
    function From_Object (Object : System.Address) return %(typename)s;
 """ % self._subst)
 
@@ -1910,15 +1906,10 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
    function From_Object (Object : System.Address) return %(typename)s is
       S : %(typename)s;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : %(typename)s'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;""" % self._subst, specs=False)
+""" % self._subst, specs=False)
 
         elif self._subst["parent"] is None:
             # Likely a public record type (ie with visible fields). Automatically

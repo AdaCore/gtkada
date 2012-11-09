@@ -194,7 +194,7 @@ package body Gtk.Dnd is
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.Ptr);
+      Internal (Get_Object (Widget), Target_List.Get_Object);
    end Dest_Set_Target_List;
 
    --------------------------
@@ -210,7 +210,7 @@ package body Gtk.Dnd is
       pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
       T : Gtk_Target_List;
    begin
-      T.Ptr := (Internal (Get_Object (Widget)));
+      T.Set_Object (Internal (Get_Object (Widget)));
       return T;
    end Dest_Get_Target_List;
 
@@ -227,7 +227,7 @@ package body Gtk.Dnd is
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_source_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.Ptr);
+      Internal (Get_Object (Widget), Target_List.Get_Object);
    end Source_Set_Target_List;
 
    ----------------------------
@@ -244,7 +244,7 @@ package body Gtk.Dnd is
 
       T : Gtk_Target_List;
    begin
-      T.Ptr := Internal (Get_Object (Widget));
+      T.Set_Object (Internal (Get_Object (Widget)));
       return T;
    end Source_Get_Target_List;
 
@@ -265,7 +265,7 @@ package body Gtk.Dnd is
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
       return Internal
-        (Get_Object (Widget), Get_Object (Context), Target_List.Ptr);
+        (Get_Object (Widget), Get_Object (Context), Target_List.Get_Object);
    end Dest_Find_Target;
 
    ---------------------------

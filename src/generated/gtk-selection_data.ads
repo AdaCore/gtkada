@@ -31,12 +31,8 @@ with Glib;         use Glib;
 
 package Gtk.Selection_Data is
 
-   type Gtk_Selection_Data is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type Gtk_Selection_Data is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : Gtk_Selection_Data'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Selection_Data;
 
    ------------------

@@ -1038,7 +1038,7 @@ package body Gtk.Print_Settings is
          Paper_Size : System.Address);
       pragma Import (C, Internal, "gtk_print_settings_set_paper_size");
    begin
-      Internal (Get_Object (Settings), Gtk.Paper_Size.Get_Object (Paper_Size));
+      Internal (Get_Object (Settings), Paper_Size.Get_Object);
    end Set_Paper_Size;
 
    ---------------------

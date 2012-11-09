@@ -29,15 +29,9 @@ package body Gtk.Target_List is
    function From_Object (Object : System.Address) return Gtk_Target_List is
       S : Gtk_Target_List;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : Gtk_Target_List'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
 
    -------------
    -- Gtk_New --
@@ -52,7 +46,7 @@ package body Gtk.Target_List is
          Ntargets : Guint) return System.Address;
       pragma Import (C, Internal, "gtk_target_list_new");
    begin
-      List.Ptr := Internal (Targets'Address, Targets'Length);
+      List.Set_Object (Internal (Targets'Address, Targets'Length));
    end Gtk_New;
 
    ---------------

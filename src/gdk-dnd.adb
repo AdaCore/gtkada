@@ -121,7 +121,7 @@ package body Gdk.Dnd is
       Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
       return Drag_Context
-        (Get_User_Data (Internal (Window, Targets.Ptr), Stub));
+        (Get_User_Data (Internal (Window, Targets.Get_Object), Stub));
    end Drag_Begin;
 
    -----------------------

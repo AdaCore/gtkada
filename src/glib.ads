@@ -150,6 +150,7 @@ package Glib is
    --  </doc_ignore>
 
    type C_Proxy is access all C_Dummy;
+   pragma Convention (C, C_Proxy);
    --  General proxy for C structures.
    --  This type is used instead of System.Address so that the variables are
    --  automatically initialized to 'null'.
@@ -158,18 +159,30 @@ package Glib is
    --  C_Proxy is a public type so that one can compare directly the value
    --  of the variables with 'null'.
 
-   type GApp_Info is new C_Proxy;
+   type C_Boxed is tagged private;
+   --  An opaque type that wraps a pointer to a C object. It is used instead of
+   --  a C_Proxy in cases where we want to have a tagged type so that users can
+   --  use the object-dotted notation when calling methods.
 
    --  <doc_ignore>
-   pragma Convention (C, C_Proxy);
-
    function To_Proxy is new Ada.Unchecked_Conversion (System.Address, C_Proxy);
    function To_Address is new
      Ada.Unchecked_Conversion (C_Proxy, System.Address);
    --  Converts from a System.Address returned by a C function to an
    --  internal C_Proxy.
 
+   function Get_Object (Self : C_Boxed'Class) return System.Address;
+   procedure Set_Object (Self : in out C_Boxed'Class; Ptr : System.Address);
+   pragma Inline (Get_Object, Set_Object);
+   --  The internal C object. It should not be used directly by applications.
+
    --  </doc_ignore>
+
+   function Is_Null (Self : C_Boxed'Class) return Boolean;
+   pragma Inline (Is_Null);
+   --  Whether the object has been initialized already.
+
+   type GApp_Info is new C_Proxy;
 
    type G_Destroy_Notify_Address is
      access procedure (Data : System.Address);
@@ -391,6 +404,10 @@ private
    --  reasonable default alignment, compatible with most types.
 
    type GType_Class is new System.Address;
+
+   type C_Boxed is tagged record
+      Ptr : System.Address := System.Null_Address;
+   end record;
 
    type Property is new String;
 

@@ -44,12 +44,8 @@ with Gtk.Enums;     use Gtk.Enums;
 
 package Gtk.Paper_Size is
 
-   type Gtk_Paper_Size is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type Gtk_Paper_Size is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : Gtk_Paper_Size'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Paper_Size;
 
    ------------------

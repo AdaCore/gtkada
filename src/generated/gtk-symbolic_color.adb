@@ -31,15 +31,9 @@ package body Gtk.Symbolic_Color is
    function From_Object (Object : System.Address) return Gtk_Symbolic_Color is
       S : Gtk_Symbolic_Color;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : Gtk_Symbolic_Color'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
 
    ---------------------
    -- Gtk_New_Literal --
@@ -52,7 +46,7 @@ package body Gtk.Symbolic_Color is
       function Internal (Color : Gdk.RGBA.Gdk_RGBA) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_literal");
    begin
-      Self.Ptr := Internal (Color);
+      Self.Set_Object (Internal (Color));
    end Gtk_New_Literal;
 
    ------------------
@@ -71,7 +65,7 @@ package body Gtk.Symbolic_Color is
    begin
       Tmp_Return := Internal (Tmp_Name);
       Free (Tmp_Name);
-      Self.Ptr := Tmp_Return;
+      Self.Set_Object (Tmp_Return);
    end Gtk_New_Name;
 
    ---------------

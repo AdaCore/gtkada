@@ -46,7 +46,6 @@ with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
 with Gtk.Tree_View;          use Gtk.Tree_View;
 with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
 with Gtk.Widget;             use Gtk.Widget;
-with System;                 use System;
 
 package body Create_Clipboard is
 
@@ -169,7 +168,7 @@ package body Create_Clipboard is
       begin
          Data := Wait_For_Contents (Clipboard, Atom_Intern (Format));
 
-         if Data.Ptr /= System.Null_Address then
+         if not Data.Is_Null then
             Insert
               (Contents,
                First,

@@ -23,6 +23,7 @@
 ------------------------------------------------------------------------------
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with System;               use System;
 
 package body Glib is
 
@@ -30,7 +31,7 @@ package body Glib is
    -- To_Boolean_Array --
    ----------------------
 
-   function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array is
+   function To_Boolean_Array (A : Gboolean_Array) return Boolean_Array is
       Result : Boolean_Array (A'Range);
    begin
       for Index in A'Range loop
@@ -44,7 +45,7 @@ package body Glib is
    -- To_Gint --
    -------------
 
-   function To_Gint (Bool : in Boolean) return Gint is
+   function To_Gint (Bool : Boolean) return Gint is
    begin
       if Bool then
          return 1;
@@ -57,7 +58,7 @@ package body Glib is
    -- Quark_From_String --
    -----------------------
 
-   function Quark_From_String (Id : in String) return GQuark is
+   function Quark_From_String (Id : String) return GQuark is
       function Internal (Id : String) return GQuark;
       pragma Import (C, Internal, "g_quark_from_string");
    begin
@@ -68,7 +69,7 @@ package body Glib is
    -- Quark_Try_String --
    ----------------------
 
-   function Quark_Try_String (Id : in String) return GQuark is
+   function Quark_Try_String (Id : String) return GQuark is
       function Internal (Id : String) return GQuark;
       pragma Import (C, Internal, "g_quark_try_string");
    begin
@@ -79,7 +80,7 @@ package body Glib is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Type_Num : in GType) return String is
+   function Type_Name (Type_Num : GType) return String is
       function Internal (Type_Num : GType) return chars_ptr;
       pragma Import (C, Internal, "g_type_name");
       Ret : constant chars_ptr := Internal (Type_Num);
@@ -95,7 +96,7 @@ package body Glib is
    -- Type_From_Name --
    --------------------
 
-   function Type_From_Name (Name : in String) return GType is
+   function Type_From_Name (Name : String) return GType is
       function Internal (Name : String) return GType;
       pragma Import (C, Internal, "g_type_from_name");
    begin
@@ -140,4 +141,30 @@ package body Glib is
       return Internal (Name & ASCII.NUL, Copy, Free);
    end Boxed_Type_Register_Static;
 
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object (Self : C_Boxed'Class) return System.Address is
+   begin
+      return Self.Ptr;
+   end Get_Object;
+
+   ----------------
+   -- Set_Object --
+   ----------------
+
+   procedure Set_Object (Self : in out C_Boxed'Class; Ptr : System.Address) is
+   begin
+      Self.Ptr := Ptr;
+   end Set_Object;
+
+   -------------
+   -- Is_Null --
+   -------------
+
+   function Is_Null (Self : C_Boxed'Class) return Boolean is
+   begin
+      return Self.Ptr = System.Null_Address;
+   end Is_Null;
 end Glib;

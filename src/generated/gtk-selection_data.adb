@@ -33,15 +33,9 @@ package body Gtk.Selection_Data is
    function From_Object (Object : System.Address) return Gtk_Selection_Data is
       S : Gtk_Selection_Data;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : Gtk_Selection_Data'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
 
    package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
      (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,

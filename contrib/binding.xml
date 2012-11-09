@@ -3977,7 +3977,7 @@ creating a tag.
           Ntargets : Guint) return System.Address;
       pragma Import (C, Internal, "gtk_target_list_new");
    begin
-      List.Ptr := Internal (Targets'Address, Targets'Length);
+      List.Set_Object (Internal (Targets'Address, Targets'Length));
    end Gtk_New;
 
    ---------------

@@ -37,12 +37,8 @@ with Gtk.Target_Entry;        use Gtk.Target_Entry;
 
 package Gtk.Target_List is
 
-   type Gtk_Target_List is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type Gtk_Target_List is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : Gtk_Target_List'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Target_List;
 
    type Gtk_Accel_Flags is mod 2 ** Integer'Size;

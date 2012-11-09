@@ -37,12 +37,8 @@ with Glib.G_Icon; use Glib.G_Icon;
 
 package Gtk.Recent_Info is
 
-   type Gtk_Recent_Info is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
+   type Gtk_Recent_Info is new Glib.C_Boxed with null record;
 
-   function Get_Object
-     (Object : Gtk_Recent_Info'Class) return System.Address;
    function From_Object (Object : System.Address) return Gtk_Recent_Info;
 
    subtype time_t is Long_Integer;

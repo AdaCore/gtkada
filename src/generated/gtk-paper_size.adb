@@ -30,15 +30,9 @@ package body Gtk.Paper_Size is
    function From_Object (Object : System.Address) return Gtk_Paper_Size is
       S : Gtk_Paper_Size;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : Gtk_Paper_Size'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
 
    -------------
    -- Gtk_New --
@@ -58,7 +52,7 @@ package body Gtk.Paper_Size is
       end if;
       Tmp_Return := Internal (Tmp_Name);
       Free (Tmp_Name);
-      Widget.Ptr := Tmp_Return;
+      Widget.Set_Object (Tmp_Return);
    end Gtk_New;
 
    --------------------
@@ -87,7 +81,7 @@ package body Gtk.Paper_Size is
       Tmp_Return := Internal (Tmp_Name, Tmp_Display_Name, Width, Height, Unit);
       Free (Tmp_Display_Name);
       Free (Tmp_Name);
-      Widget.Ptr := Tmp_Return;
+      Widget.Set_Object (Tmp_Return);
    end Gtk_New_Custom;
 
    ---------------------------
@@ -108,7 +102,7 @@ package body Gtk.Paper_Size is
    begin
       Tmp_Return := Internal (Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
-      Widget.Ptr := Tmp_Return;
+      Widget.Set_Object (Tmp_Return);
    end Gtk_New_From_Key_File;
 
    ----------------------
@@ -135,7 +129,7 @@ package body Gtk.Paper_Size is
       Tmp_Return := Internal (Tmp_Ppd_Name, Tmp_Ppd_Display_Name, Width, Height);
       Free (Tmp_Ppd_Display_Name);
       Free (Tmp_Ppd_Name);
-      Widget.Ptr := Tmp_Return;
+      Widget.Set_Object (Tmp_Return);
    end Gtk_New_From_Ppd;
 
    ----------

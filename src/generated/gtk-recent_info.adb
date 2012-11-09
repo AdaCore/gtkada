@@ -31,15 +31,9 @@ package body Gtk.Recent_Info is
    function From_Object (Object : System.Address) return Gtk_Recent_Info is
       S : Gtk_Recent_Info;
    begin
-      S.Ptr := Object;
+      S.Set_Object (Object);
       return S;
    end From_Object;
-
-   function Get_Object
-     (Object : Gtk_Recent_Info'Class) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
 
    ---------------------
    -- Create_App_Info --
