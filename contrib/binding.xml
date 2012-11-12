@@ -4254,7 +4254,7 @@ creating a tag.
      <method id="pango_layout_get_log_attrs_readonly" bind="false"/> <!--  what
      is a pango_log -->
 
-     <method id="pango_layout_get_iter" bind="false"/>  <!--  dispatching on multiple types -->
+     <method id="pango_layout_get_iter" classwide="true"/>
 
      <method id="pango_layout_set_attributes">
        <parameter name="attrs" direction="in" ctype="PangoAttrList"/>

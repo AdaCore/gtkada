@@ -369,6 +369,20 @@ package body Pango.Layout is
       return Internal (Get_Object (Self));
    end Get_Index;
 
+   --------------
+   -- Get_Iter --
+   --------------
+
+   function Get_Iter
+      (Layout : not null access Pango_Layout_Record'Class)
+       return Pango_Layout_Iter
+   is
+      function Internal (Layout : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_layout_get_iter");
+   begin
+      return From_Object (Internal (Get_Object (Layout)));
+   end Get_Iter;
+
    -----------------
    -- Get_Justify --
    -----------------

@@ -317,6 +317,12 @@ package Pango.Layout is
    --  Pango.Enums.Pango_Align_Center.
    --  "indent": the amount by which to indent.
 
+   function Get_Iter
+      (Layout : not null access Pango_Layout_Record'Class)
+       return Pango_Layout_Iter;
+   --  Returns an iterator to iterate over the visual extents of the layout.
+   --  Pango.Layout.Free.
+
    function Get_Justify
       (Layout : not null access Pango_Layout_Record) return Boolean;
    --  Gets whether each complete line should be stretched to fill the entire
