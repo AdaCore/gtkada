@@ -210,8 +210,6 @@ naming.cname_to_adaname = {
                                     "Gdk.Pixbuf.Gdk_New_From_File",
     "gdk_pixbuf_new":               "Gdk.Pixbuf.Gdk_New",
     "gdk_pixbuf_new_subpixbuf":     "Gdk.Pixbuf.Gdk_New_Subpixbuf",
-    "gtk_accel_map_add_entry":      "Gtk.Accel_Map.Add_Entry",
-    "gtk_accel_map_change_entry":   "Gtk.Accel_Map.Change_Entry",
 
     "TRUE": "True",
     "FALSE": "False",
@@ -223,13 +221,6 @@ naming.cname_to_adaname = {
 
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
-
-    # Will be bound later
-    "gtk_action_group_add_action_with_accel":
-        "Gtk.Action_Group.Add_Action_With_Accel",
-    "gtk_tool_item_set_expand": "Gtk.Tool_Item.Set_Expand",
-    "gtk_builder_add_from_file": "Gtk.Builder.Add_From_File",
-    "gtk_builder_add_from_string": "Gtk.Builder.Add_From_String",
 }
 
 # Maps GIR's "name" to a "c:type". This isn't needed for the classes
