@@ -5074,6 +5074,47 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
+   <package id="GtkSettings">
+     <method id="gtk_settings_install_property_parser" bind="False"/> <!-- not needed in Ada -->
+     <method id="gtk_settings_set_property_value" bind="False"/> <!-- see below -->
+     <extra>
+       <spec>
+   procedure Set_Property_Value
+     (Settings : not null access Gtk_Settings_Record;
+      Name     : String;
+      Value    : GValue;
+      Origin   : String);
+       </spec>
+       <body>
+   procedure Set_Property_Value
+     (Settings : not null access Gtk_Settings_Record;
+      Name     : String;
+      Value    : GValue;
+      Origin   : String)
+   is
+      type Property_Value is record
+         Origin : Interfaces.C.Strings.chars_ptr;
+         Value  : GValue;
+      end record;
+      pragma Convention (C, Property_Value);
+
+      procedure Internal
+        (Settings : System.Address;
+         Name     : String;
+         Svalue   : System.Address);
+      pragma Import (C, Internal, "gtk_settings_set_property_value");
+
+      Val : aliased Property_Value :=
+        (Origin => New_String (Origin),
+         Value  => Value);
+   begin
+      Internal (Get_Object (Settings), Name &amp; ASCII.NUL, Val'Address);
+      Free (Val.Origin);
+   end Set_Property_Value;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

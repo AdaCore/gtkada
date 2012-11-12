@@ -158,6 +158,7 @@ binding = ("GdkCursor",
            "GtkSizeGroup",
            "GtkScrollbar",
            "GtkScrolledWindow",
+           "GtkSettings",
            # "GtkSocket",  X11-specific, no binding
            "GtkSpinner",
            "GtkSpinButton",

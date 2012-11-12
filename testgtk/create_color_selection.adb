@@ -108,7 +108,8 @@ package body Create_Color_Selection is
       Str : constant String := Palette_To_String (Palette);
    begin
       Put_Line ("Palette has changed, and became " & Str);
-      Glib.Properties.Set_Property (Get_Default, Gtk_Color_Palette, Str);
+      Glib.Properties.Set_Property
+         (Get_Default, Gtk_Color_Palette_Property, Str);
    end On_Palette_Changed;
 
    --------------
