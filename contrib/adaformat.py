@@ -266,6 +266,7 @@ class CType(object):
 
         elif lang == "c->ada":
             ret = self.convert_from_c()
+            self.convert_from_c_add_with(pkg=pkg)
 
             # Do we need a temporary variable ?
             # An "out" parameter for an enumeration requires a temporary
@@ -1539,7 +1540,7 @@ class Subprogram(object):
 
         return result
 
-    def call_to_string(self, call, lang="ada"):
+    def call_to_string(self, call, pkg=None, lang="ada"):
         """CALL is the result of call() above.
            This function returns a string that contains the code for the
            subprogram.
@@ -1550,7 +1551,7 @@ class Subprogram(object):
                 # The return value (Ada) needs to be converted back to C (this
                 # is the returned value from a callback, for instance)
                 result += "return %s" % (
-                    self.returns.convert_to_c(pkg=None) % {"var": call[1]}, )
+                    self.returns.convert_to_c(pkg=pkg) % {"var": call[1]}, )
             else:
                 result += "return %s" % call[1]
         return result
