@@ -84,8 +84,7 @@ package body Gtk.Message_Dialog is
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
           Message  : Interfaces.C.Strings.chars_ptr;
-          Varargs  : System.Address := System.Null_Address)
-          return System.Address;
+          Varargs  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new");
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
@@ -118,8 +117,7 @@ package body Gtk.Message_Dialog is
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
           Message  : Interfaces.C.Strings.chars_ptr;
-          Varargs  : System.Address := System.Null_Address)
-          return System.Address;
+          Varargs  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new_with_markup");
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
@@ -145,7 +143,7 @@ package body Gtk.Message_Dialog is
       procedure Internal
          (Dialog  : System.Address;
           Message : Interfaces.C.Strings.chars_ptr;
-          Varargs : System.Address := System.Null_Address);
+          Varargs : System.Address);
       pragma Import (C, Internal, "gtk_message_dialog_format_secondary_markup");
       Tmp_Message : Interfaces.C.Strings.chars_ptr := New_String (Message);
    begin

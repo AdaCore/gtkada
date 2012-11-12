@@ -952,7 +952,7 @@ package body Pango.Layout is
       procedure Internal
          (Layout : System.Address;
           Markup : Interfaces.C.Strings.chars_ptr;
-          Length : Gint := -1);
+          Length : Gint);
       pragma Import (C, Internal, "pango_layout_set_markup");
       Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
    begin
@@ -1039,7 +1039,7 @@ package body Pango.Layout is
       procedure Internal
          (Layout : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr;
-          Length : Gint := -1);
+          Length : Gint);
       pragma Import (C, Internal, "pango_layout_set_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin

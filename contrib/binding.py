@@ -724,7 +724,7 @@ class GIRClass(object):
         """
 
         t = naming.type(self._subst["cname"], cname=self._subst["cname"],
-                        useclass=False)
+                        useclass=gtkmethod.is_class_wide())
         gtkparam = gtkmethod.get_param("self")
         pname = gtkparam.ada_name() or "Self"
 

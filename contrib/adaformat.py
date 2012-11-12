@@ -735,7 +735,7 @@ class AdaNaming(object):
            'use_record' is only used for GObject types.
         """
 
-        if cname == "gchar**" or name == "array_of_utf8":
+        if cname == "gchar**" or name == "array_of_utf8" or name == "array_of_filename":
             t = UTF8_List()
         elif cname in ("gint**", "int**") or name == "array_of_gint":
             t = AdaTypeArray("gint")
@@ -1122,7 +1122,7 @@ class Local_Var(object):
         elif lang == "c->ada":
             return self.type.convert_from_c()[1]
 
-    def spec(self, pkg, length=0, lang="ada"):
+    def spec(self, pkg, length=0, lang="ada", show_default=True):
         """Format the declaration for the variable or parameter.
            'length' is the minimum length that the name should occupy (for
            proper alignment when there are several variables.
@@ -1132,7 +1132,7 @@ class Local_Var(object):
         if self.aliased:
             aliased = "aliased "
 
-        if self.default:
+        if self.default and show_default:
             return "%-*s : %s%s := %s" % (
                 length, self.name, aliased, t, self.default)
         else:
@@ -1342,7 +1342,8 @@ class Subprogram(object):
             # If too long, split on several lines
             if len(p) + len(prefix) + len(suffix) > maxlen:
                 max = max_length([p.name for p in self.plist])
-                plist = [p.spec(pkg=pkg, length=max, lang=self.lang)
+                plist = [p.spec(pkg=pkg, length=max, lang=self.lang,
+                                show_default=self.lang == "ada")
                          for p in self.plist]
                 p = "\n   " + indent + "(" \
                     + (";\n    " + indent).join(plist) + ")"

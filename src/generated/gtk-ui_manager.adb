@@ -127,7 +127,7 @@ package body Gtk.UI_Manager is
       function Internal
          (Self      : System.Address;
           Buffer    : Interfaces.C.Strings.chars_ptr;
-          Length    : gssize := -1;
+          Length    : gssize;
           Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_ui_manager_add_ui_from_string");
       Acc_Error  : aliased Glib.Error.GError;

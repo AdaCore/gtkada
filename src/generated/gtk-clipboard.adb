@@ -891,7 +891,7 @@ package body Gtk.Clipboard is
       procedure Internal
          (Clipboard : System.Address;
           Text      : Interfaces.C.Strings.chars_ptr;
-          Len       : Gint := -1);
+          Len       : Gint);
       pragma Import (C, Internal, "gtk_clipboard_set_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin

@@ -67,6 +67,7 @@ Where the package node is defined as follows:
                                 functions with out parameters. -->
            return="..."    <!-- Override C type for the returned value, or
                                 "void" to change into procedure. -->
+           classwide="False"  <!-- classwide, not a primitive operation -->
        >
          <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
             ...            <!-- "\n" forces a newline, paragraphs are created
@@ -410,6 +411,10 @@ class GtkAdaMethod(object):
                     return GtkAdaParameter(p, default=default)
 
         return GtkAdaParameter(None, default=default)
+
+    def is_class_wide(self):
+        return self.node is not None \
+            and self.node.get("classwide", "False").lower() != "false"
 
     def bind(self, default="true"):
         """Whether to bind"""

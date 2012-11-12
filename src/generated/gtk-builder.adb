@@ -148,7 +148,7 @@ package body Gtk.Builder is
       function Internal
          (Builder : System.Address;
           Buffer  : Interfaces.C.Strings.chars_ptr;
-          Length  : gsize := -1) return Guint;
+          Length  : gsize) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_string");
       Tmp_Buffer : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
       Tmp_Return : Guint;

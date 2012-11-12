@@ -4964,6 +4964,116 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
+   <package id="GtkIconTheme">
+     <parameter name="self" ada="Icon_Theme" />
+     <enum ctype="GtkIconLookupFlags" prefix="GTK_"/>
+     <method id="gtk_icon_theme_lookup_by_gicon" classwide="true" />
+     <method id="gtk_icon_theme_lookup_icon" classwide="true" />
+     <method id="gtk_icon_theme_choose_icon" classwide="true" />
+     <method id="gtk_icon_theme_set_search_path">
+       <parameter name="n_elements" ada="" default="Path'Length"/>
+     </method>
+     <method id="gtk_icon_theme_get_search_path" return="GNAT.Strings.String_List">
+       <parameter name="path" ada=""/>
+       <parameter name="n_elements" ada=""/>
+       <body>
+   function Get_Search_Path
+     (Icon_Theme : not null access Gtk_Icon_Theme_Record)
+      return GNAT.Strings.String_List
+   is
+      procedure Internal
+        (Icon_Theme : System.Address;
+         Path       : out chars_ptr_array_access;
+         N_Elements : out Gint);
+      pragma Import (C, Internal, "gtk_icon_theme_get_search_path");
+
+      P : chars_ptr_array_access;
+      N : Gint;
+   begin
+      Internal (Get_Object (Icon_Theme), P, N);
+      declare
+         Result : constant GNAT.Strings.String_List :=
+           To_String_List (P.all, N);
+      begin
+         Free (P.all);
+         return Result;
+      end;
+   end Get_Search_Path;
+       </body>
+     </method>
+     <method id="gtk_icon_theme_get_icon_sizes">
+       <body>
+   function Get_Icon_Sizes
+     (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+      Icon_Name  : String)
+      return Gint_Array
+   is
+      use Gint_Arrays;
+      function Internal
+        (Icon_Theme : System.Address;
+         Icon_Name  : String) return Unbounded_Array_Access;
+      pragma Import (C, Internal, "gtk_icon_theme_get_icon_sizes");
+
+      Res    : constant Unbounded_Array_Access := Internal
+        (Get_Object (Icon_Theme), Icon_Name &amp; ASCII.NUL);
+      Result : constant Gint_Array := To_Gint_Array_Zero_Terminated (Res);
+   begin
+      G_Free (Res);
+      return Result;
+   end Get_Icon_Sizes;
+       </body>
+     </method>
+     <method id="gtk_icon_theme_list_icons" return="StringList"/>
+     <method id="gtk_icon_theme_list_contexts" return="StringList"/>
+     <extra>
+       <with_body pkg="Gtkada.Bindings"/>
+     </extra>
+   </package>
+
+   <package id="GtkIconInfo" into="GtkIconTheme">
+     <parameter name="self" ada="Icon_Info" />
+     <method id="gtk_icon_info_get_type" ada="Icon_Info_Get_Type"/>
+     <method id="gtk_icon_info_get_embedded_rect" return_as_param="Has_Embedded_Rectangle"/>
+     <method id="gtk_icon_info_get_attach_points" return="Gdk.Types.Gdk_Points_Array">
+       <parameter name="n_points" ada=""/>
+       <parameter name="points" ada=""/>
+       <body>
+   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
+
+   function Get_Attach_Points
+     (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array
+   is
+      use Points_Arrays;
+      function Internal
+        (Icon_Info : System.Address;
+         Result    : access Unbounded_Array_Access;
+         N_Points  : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_info_get_attach_points");
+
+      R : aliased Unbounded_Array_Access;
+      N : aliased Gint;
+   begin
+      if Internal (Icon_Info.Get_Object, R'Unchecked_Access,
+                   N'Unchecked_Access) = 0
+      then
+         R := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Points_Array := To_Array (R, Integer (N));
+      begin
+         G_Free (R);
+         return Result;
+      end;
+   end Get_Attach_Points;
+       </body>
+     </method>
+     <extra>
+       <with_body pkg="Gtkada.C"/>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
