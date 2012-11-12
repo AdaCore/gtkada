@@ -72,8 +72,8 @@
 --  preview. To implement a custom print preview, an application must connect
 --  to the preview signal. The functions
 --  gtk_print_operation_print_preview_render_page,
---  gtk_print_operation_preview_end_preview and
---  gtk_print_operation_preview_is_selected are useful when implementing a
+--  Gtk.Print_Operation_Preview.End_Preview and
+--  Gtk.Print_Operation_Preview.Is_Selected are useful when implementing a
 --  print preview.
 --
 --  </description>
@@ -486,14 +486,15 @@ package Gtk.Print_Operation is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
-   procedure End_Preview (Self : not null access Gtk_Print_Operation_Record);
+   procedure End_Preview
+      (Preview : not null access Gtk_Print_Operation_Record);
 
    function Is_Selected
-      (Self    : not null access Gtk_Print_Operation_Record;
+      (Preview : not null access Gtk_Print_Operation_Record;
        Page_Nr : Gint) return Boolean;
 
    procedure Render_Page
-      (Self    : not null access Gtk_Print_Operation_Record;
+      (Preview : not null access Gtk_Print_Operation_Record;
        Page_Nr : Gint);
 
    ----------------
@@ -872,10 +873,10 @@ package Gtk.Print_Operation is
    --  context with Gtk.Print_Context.Set_Cairo_Context.
    --
    --  The custom preview implementation can use
-   --  gtk_print_operation_preview_is_selected and
-   --  gtk_print_operation_preview_render_page to find pages which are selected
+   --  Gtk.Print_Operation_Preview.Is_Selected and
+   --  Gtk.Print_Operation_Preview.Render_Page to find pages which are selected
    --  for print and render them. The preview must be finished by calling
-   --  gtk_print_operation_preview_end_preview (typically in response to the
+   --  Gtk.Print_Operation_Preview.End_Preview (typically in response to the
    --  user clicking a close button).
    --
    --  Returns True if the listener wants to take over control of the preview

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,47 +21,25 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  This package contains functionality for composing a custom print preview
---  facility.
---  </description>
---  <c_version>2.16.6</c_version>
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
 
-with Glib.Types;
+package body Gtk.Print_Operation_Preview is
 
-package Gtk.Print_Operation_Preview is
-
-   type Gtk_Print_Operation_Preview is new Glib.Types.GType_Interface;
-
-   function Get_Type return GType;
-
-   procedure End_Preview (Preview : Gtk_Print_Operation_Preview);
-   --  Ends a preview.
-   --  This function must be called to finish a custom print preview.
+   -----------------
+   -- Is_Selected --
+   -----------------
 
    function Is_Selected
-     (Preview : Gtk_Print_Operation_Preview;
-      Page_Nr : Gint)
-      return Boolean;
-   --  Returns whether the given page is included in the set of pages that
-   --  have been selected for printing.
-
-   procedure Render_Page
-     (Preview : Gtk_Print_Operation_Preview;
-      Page_Nr : Gint);
-   --  Renders a page to the preview, using the print context that
-   --  was passed to the "preview" handler together with Preview.
-   --
-   --  A custom iprint preview should use this function in its "expose"
-   --  handler to render the currently selected page.
-   --
-   --  Note that this function requires a suitable cairo context to
-   --  be associated with the print context.
-
-private
-
-   pragma Import (C, Get_Type, "gtk_print_operation_preview_get_type");
-   pragma Import (C, End_Preview, "gtk_print_operation_preview_end_preview");
-   pragma Import (C, Render_Page, "gtk_print_operation_preview_render_page");
+      (Preview : Gtk_Print_Operation_Preview;
+       Page_Nr : Gint) return Boolean
+   is
+      function Internal
+         (Preview : Gtk_Print_Operation_Preview;
+          Page_Nr : Gint) return Integer;
+      pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
+   begin
+      return Boolean'Val (Internal (Preview, Page_Nr));
+   end Is_Selected;
 
 end Gtk.Print_Operation_Preview;

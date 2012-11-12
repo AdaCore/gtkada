@@ -485,11 +485,13 @@ package body Gtk.Print_Operation is
    -- End_Preview --
    -----------------
 
-   procedure End_Preview (Self : not null access Gtk_Print_Operation_Record) is
-      procedure Internal (Self : System.Address);
+   procedure End_Preview
+      (Preview : not null access Gtk_Print_Operation_Record)
+   is
+      procedure Internal (Preview : System.Address);
       pragma Import (C, Internal, "gtk_print_operation_preview_end_preview");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object (Preview));
    end End_Preview;
 
    -----------------
@@ -497,15 +499,15 @@ package body Gtk.Print_Operation is
    -----------------
 
    function Is_Selected
-      (Self    : not null access Gtk_Print_Operation_Record;
+      (Preview : not null access Gtk_Print_Operation_Record;
        Page_Nr : Gint) return Boolean
    is
       function Internal
-         (Self    : System.Address;
+         (Preview : System.Address;
           Page_Nr : Gint) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Page_Nr));
+      return Boolean'Val (Internal (Get_Object (Preview), Page_Nr));
    end Is_Selected;
 
    -----------------
@@ -513,13 +515,13 @@ package body Gtk.Print_Operation is
    -----------------
 
    procedure Render_Page
-      (Self    : not null access Gtk_Print_Operation_Record;
+      (Preview : not null access Gtk_Print_Operation_Record;
        Page_Nr : Gint)
    is
-      procedure Internal (Self : System.Address; Page_Nr : Gint);
+      procedure Internal (Preview : System.Address; Page_Nr : Gint);
       pragma Import (C, Internal, "gtk_print_operation_preview_render_page");
    begin
-      Internal (Get_Object (Self), Page_Nr);
+      Internal (Get_Object (Preview), Page_Nr);
    end Render_Page;
 
 end Gtk.Print_Operation;

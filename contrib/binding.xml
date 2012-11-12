@@ -4316,6 +4316,10 @@ creating a tag.
      <enum ctype="GtkPrintError" prefix="GTK_PRINT_"/>
    </package>
 
+   <package id="GtkPrintOperationPreview">
+     <parameter name="self" ada="Preview"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
