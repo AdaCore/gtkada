@@ -384,10 +384,10 @@ package body Gtk.GEntry is
        return Gtk.Style.Gtk_Border
    is
       function Internal
-         (The_Entry : System.Address) return Gtk.Style.Gtk_Border;
+         (The_Entry : System.Address) return access Gtk.Style.Gtk_Border;
       pragma Import (C, Internal, "gtk_entry_get_inner_border");
    begin
-      return Internal (Get_Object (The_Entry));
+      return Internal (Get_Object (The_Entry)).all;
    end Get_Inner_Border;
 
    ------------------------
@@ -916,11 +916,11 @@ package body Gtk.GEntry is
 
    procedure Set_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record;
-       Border    : in out Gtk.Style.Gtk_Border)
+       Border    : Gtk.Style.Gtk_Border)
    is
       procedure Internal
          (The_Entry : System.Address;
-          Border    : in out Gtk.Style.Gtk_Border);
+          Border    : Gtk.Style.Gtk_Border);
       pragma Import (C, Internal, "gtk_entry_set_inner_border");
    begin
       Internal (Get_Object (The_Entry), Border);

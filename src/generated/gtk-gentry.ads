@@ -407,7 +407,7 @@ package Gtk.GEntry is
 
    procedure Set_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record;
-       Border    : in out Gtk.Style.Gtk_Border);
+       Border    : Gtk.Style.Gtk_Border);
    --  Sets %entry's inner-border property to %border, or clears it if null is
    --  passed. The inner-border is the area around the entry's text, but inside
    --  its frame.
@@ -1137,7 +1137,7 @@ package Gtk.GEntry is
    Editable_Property : constant Glib.Properties.Property_Boolean;
    Has_Frame_Property : constant Glib.Properties.Property_Boolean;
    Im_Module_Property : constant Glib.Properties.Property_String;
-   Inner_Border_Property : constant Glib.Properties.Property_Boxed;
+   Inner_Border_Property : constant Glib.Properties.Property_Object;
    Invisible_Char_Property : constant Glib.Properties.Property_Uint;
    Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean;
    Max_Length_Property : constant Glib.Properties.Property_Int;
@@ -1356,7 +1356,7 @@ private
      Glib.Properties.Build ("has-frame");
    Im_Module_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("im-module");
-   Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
+   Inner_Border_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("inner-border");
    Invisible_Char_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("invisible-char");

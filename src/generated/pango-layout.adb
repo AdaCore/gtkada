@@ -436,10 +436,10 @@ package body Pango.Layout is
    is
       function Internal
          (Layout : System.Address;
-          Line   : Gint) return Pango_Layout_Line;
+          Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line");
    begin
-      return Internal (Get_Object (Layout), Line);
+      return Internal (Get_Object (Layout), Line).all;
    end Get_Line;
 
    --------------
@@ -447,10 +447,11 @@ package body Pango.Layout is
    --------------
 
    function Get_Line (Self : Pango_Layout_Iter) return Pango_Layout_Line is
-      function Internal (Self : System.Address) return Pango_Layout_Line;
+      function Internal
+         (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Self)).all;
    end Get_Line;
 
    --------------------
@@ -494,10 +495,10 @@ package body Pango.Layout is
    is
       function Internal
          (Layout : System.Address;
-          Line   : Gint) return Pango_Layout_Line;
+          Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line_readonly");
    begin
-      return Internal (Get_Object (Layout), Line);
+      return Internal (Get_Object (Layout), Line).all;
    end Get_Line_Readonly;
 
    -----------------------
@@ -507,10 +508,11 @@ package body Pango.Layout is
    function Get_Line_Readonly
       (Self : Pango_Layout_Iter) return Pango_Layout_Line
    is
-      function Internal (Self : System.Address) return Pango_Layout_Line;
+      function Internal
+         (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line_readonly");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Self)).all;
    end Get_Line_Readonly;
 
    ---------------------

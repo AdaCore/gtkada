@@ -257,8 +257,7 @@ package body Gtkada.Style is
       HSV     : HSV_Color;
 
       Ctx : constant Gtk_Style_Context := Get_Style_Context (Widget);
-      Border : Gtk_Border_Record;
-      The_Border : Gtk_Border;
+      Border : Gtk_Border;
 
       X_Thick : Gdouble;
       Radius  : Gdouble;
@@ -270,11 +269,7 @@ package body Gtkada.Style is
          return;
       end if;
 
-      Ctx.Get_Border (Gtk_State_Flag_Normal, The_Border);
-      if The_Border /= null then
-         Border := The_Border.all;
-         --  ??? Who frees The_Border ?
-      end if;
+      Ctx.Get_Border (Gtk_State_Flag_Normal, Border);
 
       X_Thick := Gdouble (Border.Left + Border.Right);
       Ctx.Get_Background_Color (Gtk_State_Flag_Normal, Color);

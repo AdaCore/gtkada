@@ -785,8 +785,10 @@ package body Gtk.Widget is
          (Widget      : System.Address;
           Requisition : out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_get_child_requisition");
+      Tmp_Requisition : aliased Gtk_Requisition;
    begin
-      Internal (Get_Object (Widget), Requisition);
+      Internal (Get_Object (Widget), Tmp_Requisition);
+      Requisition := Tmp_Requisition;
    end Get_Child_Requisition;
 
    -----------------------
@@ -1114,10 +1116,11 @@ package body Gtk.Widget is
    function Get_Path
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget_Path
    is
-      function Internal (Widget : System.Address) return Gtk_Widget_Path;
+      function Internal
+         (Widget : System.Address) return access Gtk_Widget_Path;
       pragma Import (C, Internal, "gtk_widget_get_path");
    begin
-      return Internal (Get_Object (Widget));
+      return Internal (Get_Object (Widget)).all;
    end Get_Path;
 
    -----------------
@@ -1190,8 +1193,12 @@ package body Gtk.Widget is
           Minimum_Size : out Gtk_Requisition;
           Natural_Size : out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_get_preferred_size");
+      Tmp_Minimum_Size : aliased Gtk_Requisition;
+      Tmp_Natural_Size : aliased Gtk_Requisition;
    begin
-      Internal (Get_Object (Widget), Minimum_Size, Natural_Size);
+      Internal (Get_Object (Widget), Tmp_Minimum_Size, Tmp_Natural_Size);
+      Natural_Size := Tmp_Natural_Size;
+      Minimum_Size := Tmp_Minimum_Size;
    end Get_Preferred_Size;
 
    -------------------------
@@ -1285,8 +1292,10 @@ package body Gtk.Widget is
          (Widget      : System.Address;
           Requisition : out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_get_requisition");
+      Tmp_Requisition : aliased Gtk_Requisition;
    begin
-      Internal (Get_Object (Widget), Requisition);
+      Internal (Get_Object (Widget), Tmp_Requisition);
+      Requisition := Tmp_Requisition;
    end Get_Requisition;
 
    ---------------------
@@ -3111,8 +3120,10 @@ package body Gtk.Widget is
          (Widget      : System.Address;
           Requisition : out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_size_request");
+      Tmp_Requisition : aliased Gtk_Requisition;
    begin
-      Internal (Get_Object (Widget), Requisition);
+      Internal (Get_Object (Widget), Tmp_Requisition);
+      Requisition := Tmp_Requisition;
    end Size_Request;
 
    ------------------

@@ -169,8 +169,10 @@ package body Gtk.Style_Context is
           State  : Gtk.Enums.Gtk_State_Flags;
           Border : out Gtk.Style.Gtk_Border);
       pragma Import (C, Internal, "gtk_style_context_get_border");
+      Tmp_Border : aliased Gtk.Style.Gtk_Border;
    begin
-      Internal (Get_Object (Self), State, Border);
+      Internal (Get_Object (Self), State, Tmp_Border);
+      Border := Tmp_Border;
    end Get_Border;
 
    ----------------------
@@ -271,8 +273,10 @@ package body Gtk.Style_Context is
           State  : Gtk.Enums.Gtk_State_Flags;
           Margin : out Gtk.Style.Gtk_Border);
       pragma Import (C, Internal, "gtk_style_context_get_margin");
+      Tmp_Margin : aliased Gtk.Style.Gtk_Border;
    begin
-      Internal (Get_Object (Self), State, Margin);
+      Internal (Get_Object (Self), State, Tmp_Margin);
+      Margin := Tmp_Margin;
    end Get_Margin;
 
    -----------------
@@ -289,8 +293,10 @@ package body Gtk.Style_Context is
           State   : Gtk.Enums.Gtk_State_Flags;
           Padding : out Gtk.Style.Gtk_Border);
       pragma Import (C, Internal, "gtk_style_context_get_padding");
+      Tmp_Padding : aliased Gtk.Style.Gtk_Border;
    begin
-      Internal (Get_Object (Self), State, Padding);
+      Internal (Get_Object (Self), State, Tmp_Padding);
+      Padding := Tmp_Padding;
    end Get_Padding;
 
    --------------
@@ -302,10 +308,10 @@ package body Gtk.Style_Context is
        return Gtk.Widget.Gtk_Widget_Path
    is
       function Internal
-         (Self : System.Address) return Gtk.Widget.Gtk_Widget_Path;
+         (Self : System.Address) return access Gtk.Widget.Gtk_Widget_Path;
       pragma Import (C, Internal, "gtk_style_context_get_path");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Self)).all;
    end Get_Path;
 
    ------------------

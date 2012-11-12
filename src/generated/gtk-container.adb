@@ -404,10 +404,11 @@ package body Gtk.Container is
    is
       function Internal
          (Container : System.Address;
-          Child     : System.Address) return Gtk.Widget.Gtk_Widget_Path;
+          Child     : System.Address)
+          return access Gtk.Widget.Gtk_Widget_Path;
       pragma Import (C, Internal, "gtk_container_get_path_for_child");
    begin
-      return Internal (Get_Object (Container), Get_Object (Child));
+      return Internal (Get_Object (Container), Get_Object (Child)).all;
    end Get_Path_For_Child;
 
    ---------------------

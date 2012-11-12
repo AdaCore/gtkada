@@ -39,7 +39,7 @@ package body Gtk.Accel_Group is
    function C_Gtk_Accel_Group_Find
       (Accel_Group : System.Address;
        Find_Func   : System.Address;
-       Data        : System.Address) return Gtk_Accel_Key;
+       Data        : System.Address) return access Gtk_Accel_Key;
    pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
    --  Finds the first entry in an accelerator group for which Find_Func
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
@@ -48,7 +48,7 @@ package body Gtk.Accel_Group is
    --  "data": data to pass to Find_Func
 
    function Internal_Gtk_Accel_Group_Find_Func
-      (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
+      (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
        Data    : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Accel_Group_Find_Func);
@@ -58,13 +58,13 @@ package body Gtk.Accel_Group is
    ----------------------------------------
 
    function Internal_Gtk_Accel_Group_Find_Func
-      (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
+      (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
        Data    : System.Address) return Integer
    is
       Func : constant Gtk_Accel_Group_Find_Func := To_Gtk_Accel_Group_Find_Func (Data);
    begin
-      return Boolean'Pos (Func (Key, Closure));
+      return Boolean'Pos (Func (Key.all, Closure));
    end Internal_Gtk_Accel_Group_Find_Func;
 
    package Type_Conversion_Gtk_Accel_Group is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -202,9 +202,9 @@ package body Gtk.Accel_Group is
    is
    begin
       if Find_Func = null then
-         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address);
+         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address).all;
       else
-         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Gtk_Accel_Group_Find_Func'Address, To_Address (Find_Func));
+         return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Gtk_Accel_Group_Find_Func'Address, To_Address (Find_Func)).all;
       end if;
    end Find;
 
@@ -220,7 +220,7 @@ package body Gtk.Accel_Group is
         (Gtk_Accel_Group_Find_Func, System.Address);
 
       function Internal_Cb
-         (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
+         (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
           Data    : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
@@ -237,9 +237,9 @@ package body Gtk.Accel_Group is
       is
       begin
          if Find_Func = null then
-            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address);
+            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), System.Null_Address, System.Null_Address).all;
          else
-            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (To_Address (Find_Func), Data));
+            return C_Gtk_Accel_Group_Find (Get_Object (Accel_Group), Internal_Cb'Address, Users.Build (To_Address (Find_Func), Data)).all;
          end if;
       end Find;
 
@@ -248,13 +248,13 @@ package body Gtk.Accel_Group is
       -----------------
 
       function Internal_Cb
-         (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
+         (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
           Data    : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Accel_Group_Find_Func (D.Func) (Key, Closure, D.Data.all));
+         return Boolean'Pos (To_Gtk_Accel_Group_Find_Func (D.Func) (Key.all, Closure, D.Data.all));
       end Internal_Cb;
 
    end Find_User_Data;

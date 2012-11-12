@@ -56,7 +56,7 @@ package body Gtk.File_Filter is
    --  "notify": function to call to free Data when it is no longer needed.
 
    function Internal_Gtk_File_Filter_Func
-      (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
+      (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
        Data        : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_File_Filter_Func);
    --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
@@ -68,12 +68,12 @@ package body Gtk.File_Filter is
    -----------------------------------
 
    function Internal_Gtk_File_Filter_Func
-      (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
+      (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
        Data        : System.Address) return Integer
    is
       Func : constant Gtk_File_Filter_Func := To_Gtk_File_Filter_Func (Data);
    begin
-      return Boolean'Pos (Func (Filter_Info));
+      return Boolean'Pos (Func (Filter_Info.all));
    end Internal_Gtk_File_Filter_Func;
 
    package Type_Conversion_Gtk_File_Filter is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -133,7 +133,7 @@ package body Gtk.File_Filter is
         (Gtk_File_Filter_Func, System.Address);
 
       function Internal_Cb
-         (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
+         (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
           Data        : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
@@ -166,12 +166,12 @@ package body Gtk.File_Filter is
       -----------------
 
       function Internal_Cb
-         (Filter_Info : Gtk.File_Filter.Gtk_File_Filter_Info;
+         (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
           Data        : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_File_Filter_Func (D.Func) (Filter_Info, D.Data.all));
+         return Boolean'Pos (To_Gtk_File_Filter_Func (D.Func) (Filter_Info.all, D.Data.all));
       end Internal_Cb;
 
    end Add_Custom_User_Data;

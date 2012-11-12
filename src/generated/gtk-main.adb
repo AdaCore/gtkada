@@ -70,7 +70,7 @@ package body Gtk.Main is
 
    function Internal_Gtk_Key_Snoop_Func
       (Grab_Widget : System.Address;
-       Event       : Gdk.Event.Gdk_Event_Key;
+       Event       : access Gdk.Event.Gdk_Event_Key;
        Func_Data   : System.Address) return Gint;
    pragma Convention (C, Internal_Gtk_Key_Snoop_Func);
    --  "grab_widget": the widget to which the event will be delivered
@@ -83,13 +83,13 @@ package body Gtk.Main is
 
    function Internal_Gtk_Key_Snoop_Func
       (Grab_Widget : System.Address;
-       Event       : Gdk.Event.Gdk_Event_Key;
+       Event       : access Gdk.Event.Gdk_Event_Key;
        Func_Data   : System.Address) return Gint
    is
       Func            : constant Gtk_Key_Snoop_Func := To_Gtk_Key_Snoop_Func (Func_Data);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event);
+      return Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event.all);
    end Internal_Gtk_Key_Snoop_Func;
 
    -------------------------
@@ -118,7 +118,7 @@ package body Gtk.Main is
 
       function Internal_Cb
          (Grab_Widget : System.Address;
-          Event       : Gdk.Event.Gdk_Event_Key;
+          Event       : access Gdk.Event.Gdk_Event_Key;
           Func_Data   : System.Address) return Gint;
       pragma Convention (C, Internal_Cb);
       --  Key snooper functions are called before normal event delivery. They
@@ -133,13 +133,13 @@ package body Gtk.Main is
 
       function Internal_Cb
          (Grab_Widget : System.Address;
-          Event       : Gdk.Event.Gdk_Event_Key;
+          Event       : access Gdk.Event.Gdk_Event_Key;
           Func_Data   : System.Address) return Gint
       is
          D               : constant Users.Internal_Data_Access := Users.Convert (Func_Data);
          Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       begin
-         return To_Gtk_Key_Snoop_Func (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event, D.Data.all);
+         return To_Gtk_Key_Snoop_Func (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event.all, D.Data.all);
       end Internal_Cb;
 
       -------------------------

@@ -114,8 +114,10 @@ class CType(object):
                     variable is needed.
               [3] = List of needed temporary variables (except for the one
                     corresponding to "%(tmp)s".
+              [4] = Name of the C type, for "out" parameters. Often same as [1]
+              [5] = Convert from [4] to the Ada type. Often same as [4]
         """
-        return (self.param, self.cparam, "%(var)s", [])
+        return (self.param, self.cparam, "%(var)s", [], self.cparam, "%(var)s")
 
     def convert_from_c_add_with(self, pkg):
         """Add the "with" statements needed to do the conversion stated
@@ -158,7 +160,9 @@ class CType(object):
             return (returns[0].replace("%s." % pkg.name, ""),
                     returns[1].replace("%s." % pkg.name, ""),
                     returns[2],
-                    returns[3])
+                    returns[3],
+                    returns[4],
+                    returns[5])
         else:
             return returns
 
@@ -213,19 +217,19 @@ class CType(object):
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos(Param)) is invalid
                 tmp = "Tmp_%s" % name
-                tmpvars = [Local_Var(name=tmp, type=self.cparam, aliased=True)]
+                tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
 
                 if "%(tmp)s" in ret:
                     tmp2 = "Tmp2_%s" % name
-                    tmpvars += [Local_Var(name=tmp2, type=self.cparam)]
+                    tmpvars += [Local_Var(name=tmp2, type=returns[4])]
                     postcall = "%s; %s := %s;" % (
-                        ret % {"var": tmp, "tmp": tmp2},
+                        returns[5] % {"var": tmp, "tmp": tmp2},
                         name,
                         tmp2)
                 else:
                     postcall = "%s := %s;" % (
                         name,
-                        ret % {"var": tmp})
+                        returns[5] % {"var": tmp})
 
                 call = VariableCall(
                     call=wrapper % tmp,
@@ -333,7 +337,11 @@ class Enum(CType):
 
     def convert_from_c(self):
         if self.ada.lower() == "boolean":
-            return (self.param, self.cparam, "%s'Val (%%(var)s)" % self.ada, [])
+            conv = "%s'Val (%%(var)s)" % self.ada
+            return (self.param, self.cparam, conv, [],
+
+                    # for out parameters
+                    self.cparam, conv)
         else:
             return super(Enum, self).convert_from_c()
 
@@ -389,7 +397,10 @@ class GObject(CType):
                 self.cparam,
                 conv,
                 [Local_Var(
-                    stub, AdaType("%s_Record" % self.ada, in_spec=False))])
+                    stub, AdaType("%s_Record" % self.ada, in_spec=False))],
+
+                # for out parameters
+                self.cparam, conv)
 
     def convert_to_c(self, pkg=None):
         if self.allow_none:
@@ -416,7 +427,10 @@ class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
     def convert_from_c(self):
-        return (self.param, self.cparam, "From_Object (%(var)s)", [])
+        return (self.param, self.cparam, "From_Object (%(var)s)", [],
+
+                # for out parameters
+                self.cparam, "From_Object (%(var)s)")
 
     def as_ada_param(self, pkg):
         # Make sure to bind as a CType here, not as a GOBject
@@ -429,12 +443,15 @@ class UTF8(CType):
         self.cleanup = "Free (%s);"
 
     def convert_from_c(self):
+        conv = "Gtkada.Bindings.Value_Allowing_Null (%(var)s)"
+
         if self.transfer_ownership:
-            return (self.param, self.cparam,
-                    "Gtkada.Bindings.Value_And_Free (%(var)s)", [])
-        else:
-            return (self.param, self.cparam,
-                    "Gtkada.Bindings.Value_Allowing_Null (%(var)s)", [])
+            conv = "Gtkada.Bindings.Value_And_Free (%(var)s)"
+
+        return (self.param, self.cparam, conv, [],
+
+                # for out parameters
+                self.cparam, conv)
 
     def convert_from_c_add_with(self, pkg):
         if pkg:
@@ -467,12 +484,15 @@ class UTF8_List(CType):
         # chars_ptr_array_access, we create a temporary String_List to call the
         # Ada callback, and then need to free the temporary String_List.
 
+        conv = "To_String_List (%(var)s.all)"
+
         if self.transfer_ownership:
-            return (self.param, "chars_ptr_array_access",
-                    "To_String_List_And_Free (%(var)s)", [])
-        else:
-            return (self.param, "chars_ptr_array_access",
-                    "To_String_List (%(var)s.all)", [])
+            conv = "To_String_List_And_Free (%(var)s)"
+
+        return (self.param, "chars_ptr_array_access", conv, [],
+
+                # for out parameters
+                "chars_ptr_array_access", conv)
 
     def record_field_type(self, pkg=None):
         return "Interfaces.C.Strings.char_array_access"
@@ -490,6 +510,47 @@ class UTF8_List(CType):
             pkg.add_with("Gtkada.Bindings", specs=False)
 
 
+class Record(CType):
+    def __init__(self, ada, property=None):
+        if property is None:
+            CType.__init__(self, ada, "Glib.Properties.Property_Boxed")
+        else:
+            CType.__init__(self, ada, property)
+
+        self.cparam_for_out = "%s" % self.ada
+
+    def convert_from_c(self):
+        conv = "%(var)s.all"  # convert C -> Ada,
+
+        # ??? Memory leak if we don't do the below
+        #if self.transfer_ownership:
+        #    conv = "Dereference_And_Free (%(var)s)"
+
+        return (self.ada,
+                "access %s" % self.ada,
+                conv,
+                [],
+
+                # for out parameters
+                self.ada, "%(var)s")
+
+    def convert_to_c(sef, pkg=None):
+        return "%(var)s"
+
+    @staticmethod
+    def register_ada_record(pkg, ctype, ada=None):
+        """Register a <record> type.
+        [pkg] is the name of the current package in which the enumeration
+        will be defined.
+        """
+
+        adaname = base_name(ada or naming.type(name="", cname=ctype).ada)
+        full_name = "%s.%s" % (pkg, adaname)
+        t = Record(full_name)
+        naming.add_type_exception(cname="%s*" % ctype, type=t)
+        naming.add_type_exception(cname=ctype, type=t)
+
+
 class Proxy(CType):
     def __init__(self, ada, property=None, val_or_null=None):
         """[null_value] is used when GIR indicates the parameter has
@@ -503,19 +564,6 @@ class Proxy(CType):
             CType.__init__(self, ada, property)
 
         self.val_or_null = val_or_null
-
-    @staticmethod
-    def register_ada_record(pkg, ctype, ada=None):
-        """Register a <record> type.
-        [pkg] is the name of the current package in which the enumeration
-        will be defined.
-        """
-
-        adaname = base_name(ada or naming.type(name="", cname=ctype).ada)
-        full_name = "%s.%s" % (pkg, adaname)
-        t = Proxy(full_name)
-        naming.add_type_exception(cname="%s*" % ctype, type=t)
-        naming.add_type_exception(cname=ctype, type=t)
 
 
 class Callback(CType):
@@ -551,9 +599,12 @@ class List(CType):
         self.is_ptr = False
 
     def convert_from_c(self):
+        conv = "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg
         return (   # Use %(tmp)s so forces the use of temporary var.
-            self.param, self.cparam,
-            "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg, [])
+            self.param, self.cparam, conv, [],
+
+            # for out parameters
+            self.cparam, conv)
 
     @staticmethod
     def register_ada_list(pkg, ada, ctype, single=False):

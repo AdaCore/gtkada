@@ -55,6 +55,16 @@ package Gtk.Style is
    type Gtk_Style_Record is new GObject_Record with null record;
    type Gtk_Style is access all Gtk_Style_Record'Class;
 
+   type Gtk_Border is record
+      Left : gint16;
+      Right : gint16;
+      Top : gint16;
+      Bottom : gint16;
+   end record;
+   pragma Convention (C, Gtk_Border);
+   --  A struct that specifies a border around a rectangular area that can be
+   --  of different width on each side.
+
    ------------------
    -- Constructors --
    ------------------
@@ -65,6 +75,14 @@ package Gtk.Style is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_style_get_type");
+
+   procedure Gtk_New (Self : out Gtk_Border);
+   --  Allocates a new Gtk.Style.Gtk_Border structure and initializes its
+   --  elements to zero.
+   --  Since: gtk+ 2.14
+
+   function Border_Get_Type return Glib.GType;
+   pragma Import (C, Border_Get_Type, "gtk_border_get_type");
 
    -------------
    -- Methods --
@@ -146,27 +164,6 @@ package Gtk.Style is
    --  Deprecated:3.0: Use Gtk.Style_Context.Set_Background instead
    --  "window": a Gdk.Gdk_Window
    --  "state_type": a state
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   type Gtk_Border_Record is record
-      Left   : Gint := 0;
-      Right  : Gint := 0;
-      Top    : Gint := 0;
-      Bottom : Gint := 0;
-   end record;
-   pragma Convention (C, Gtk_Border_Record);
-   type Gtk_Border is access all Gtk_Border_Record;
-
-   --  function Border_Copy (Border : access Gtk_Border_Record) return Gtk_Border;
-   --  Copies a Gtk_Border structure.
-
-   --  procedure Border_Free (Border : access Gtk_Border_Record);
-   --  Frees a Gtk_Border structure.
-
-   --  function Border_Get_Type return GType;
 
    ----------------
    -- Properties --

@@ -161,7 +161,8 @@ Where the package node is defined as follows:
 """
 
 from xml.etree.cElementTree import parse, QName, tostring, SubElement
-from adaformat import AdaType, GObject, CType, Proxy, List, naming, Enum, package_name
+from adaformat import AdaType, GObject, CType, Proxy, List, naming,\
+        Enum, package_name, Record
 
 class GtkAda(object):
 
@@ -204,7 +205,7 @@ class GtkAdaPackage(object):
                                        ctype=enum.get("ctype"),
                                        ada=enum.get("ada", None))
             for rec in self.node.findall("record"):
-                Proxy.register_ada_record(
+                Record.register_ada_record(
                     pkg=adapkg,
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None))

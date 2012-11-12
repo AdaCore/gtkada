@@ -42,6 +42,17 @@ package body Gtk.Style is
       Gtk.Style.Initialize (Style);
    end Gtk_New;
 
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Self : out Gtk_Border) is
+      function Internal return Gtk_Border;
+      pragma Import (C, Internal, "gtk_border_new");
+   begin
+      Self := Internal;
+   end Gtk_New;
+
    ----------------
    -- Initialize --
    ----------------

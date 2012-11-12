@@ -34,7 +34,8 @@ interfaces = ("Activatable",
              )
 
 # List of widgets to bind.
-# Contains C type names
+# Contains C type names.
+# Start the name with -- for objects we do not want to bind
 
 binding = ("GdkCursor",
            "GdkDevice",
@@ -67,6 +68,7 @@ binding = ("GdkCursor",
            "GtkAspectFrame",
            "GtkAssistant",
            "GtkBin",
+           "GtkBorder",
            "GtkBox",
            "GtkBuilder",
            "GtkButton",
@@ -135,7 +137,7 @@ binding = ("GdkCursor",
            "GtkPrintContext",
            "GtkPrintOperation",
            "GtkPrintSettings",
-           # "GtkPlug",   X11-specific, no binding
+           "--GtkPlug",   #  X11-specific, no binding
            "GtkProgressBar",
            "GtkRadioAction",
            "GtkRadioButton",
@@ -159,7 +161,7 @@ binding = ("GdkCursor",
            "GtkScrollbar",
            "GtkScrolledWindow",
            "GtkSettings",
-           # "GtkSocket",  X11-specific, no binding
+           "--GtkSocket",  #  X11-specific, no binding
            "GtkSpinner",
            "GtkSpinButton",
            "GtkStatusbar",
@@ -336,7 +338,7 @@ naming.type_exceptions = {
     "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 
-    "GtkBorder":       Proxy("Gtk.Style.Gtk_Border"),
+    # "GtkBorder":       Proxy("Gtk.Style.Gtk_Border"),
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
     "GtkTreePath*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Path"),

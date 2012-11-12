@@ -206,8 +206,12 @@ package body Gtk.Cell_Renderer is
           Minimum_Size : out Gtk.Widget.Gtk_Requisition;
           Natural_Size : out Gtk.Widget.Gtk_Requisition);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_size");
+      Tmp_Minimum_Size : aliased Gtk.Widget.Gtk_Requisition;
+      Tmp_Natural_Size : aliased Gtk.Widget.Gtk_Requisition;
    begin
-      Internal (Get_Object (Cell), Get_Object (Widget), Minimum_Size, Natural_Size);
+      Internal (Get_Object (Cell), Get_Object (Widget), Tmp_Minimum_Size, Tmp_Natural_Size);
+      Natural_Size := Tmp_Natural_Size;
+      Minimum_Size := Tmp_Minimum_Size;
    end Get_Preferred_Size;
 
    -------------------------

@@ -366,9 +366,11 @@ package body Gtk.Accel_Map is
       pragma Import (C, Internal, "gtk_accel_map_lookup_entry");
       Acc_Key        : aliased Gtk.Accel_Group.Gtk_Accel_Key;
       Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Acc_Key    : aliased Gtk.Accel_Group.Gtk_Accel_Key;
       Tmp_Return     : Integer;
    begin
-      Tmp_Return := Internal (Tmp_Accel_Path, Acc_Key'Access);
+      Tmp_Return := Internal (Tmp_Accel_Path, Tmp_Acc_Key'Access);
+      Acc_Key := Tmp_Acc_Key;
       Free (Tmp_Accel_Path);
       Key := Acc_Key;
       Found := Boolean'Val (Tmp_Return);

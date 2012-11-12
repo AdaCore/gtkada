@@ -67,7 +67,7 @@ package body Gtk.Recent_Filter is
    --  needed.
 
    function Internal_Gtk_Recent_Filter_Func
-      (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
+      (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
        User_Data   : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Recent_Filter_Func);
    --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
@@ -80,12 +80,12 @@ package body Gtk.Recent_Filter is
    -------------------------------------
 
    function Internal_Gtk_Recent_Filter_Func
-      (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
+      (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
        User_Data   : System.Address) return Integer
    is
       Func : constant Gtk_Recent_Filter_Func := To_Gtk_Recent_Filter_Func (User_Data);
    begin
-      return Boolean'Pos (Func (Filter_Info));
+      return Boolean'Pos (Func (Filter_Info.all));
    end Internal_Gtk_Recent_Filter_Func;
 
    package Type_Conversion_Gtk_Recent_Filter is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -177,7 +177,7 @@ package body Gtk.Recent_Filter is
         (Gtk_Recent_Filter_Func, System.Address);
 
       function Internal_Cb
-         (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
+         (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
           User_Data   : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
@@ -211,12 +211,12 @@ package body Gtk.Recent_Filter is
       -----------------
 
       function Internal_Cb
-         (Filter_Info : Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
+         (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
           User_Data   : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return Boolean'Pos (To_Gtk_Recent_Filter_Func (D.Func) (Filter_Info, D.Data.all));
+         return Boolean'Pos (To_Gtk_Recent_Filter_Func (D.Func) (Filter_Info.all, D.Data.all));
       end Internal_Cb;
 
    end Add_Custom_User_Data;
