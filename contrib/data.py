@@ -128,6 +128,7 @@ binding = ("GdkCursor",
            "GtkPaperSize",
            "GtkPrintContext",
            "GtkPrintOperation",
+           "GtkPrintSettings",
            # "GtkPlug",   X11-specific, no binding
            "GtkProgressBar",
            "GtkRadioAction",

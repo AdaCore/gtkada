@@ -4720,6 +4720,80 @@ creating a tag.
      </method>
    </package>
 
+   <package id="GtkPrintSettings">
+     <method id="gtk_print_settings_set_page_ranges">
+       <parameter name="page_ranges" type="Gtk_Page_Range_Array"/>
+       <parameter name="num_ranges" ada="" default="-1" />
+       <body>
+   procedure Set_Page_Ranges
+     (Self        : not null access Gtk_Print_Settings_Record;
+      Page_Ranges : Gtk_Page_Range_Array)
+   is
+      procedure Internal
+        (Settings    : System.Address;
+         Page_Ranges : System.Address;
+         Num_Ranges  : Gint);
+      pragma Import (C, Internal, "gtk_print_settings_set_page_ranges");
+   begin
+      Internal
+        (Get_Object (Self),
+         Page_Ranges (Page_Ranges'First)'Address,
+         Page_Ranges'Length);
+   end Set_Page_Ranges;
+       </body>
+     </method>
+     <method id="gtk_print_settings_get_page_ranges" return="Gtk_Page_Range_Array">
+       <parameter name="num_ranges" ada="" default="-1" />
+       <body>
+   function Get_Page_Ranges
+     (Self   : not null access Gtk_Print_Settings_Record)
+      return Gtk_Page_Range_Array
+   is
+      type Internal_Page_Range_Array is
+        array (Natural) of Gtk_Page_Range_Record;
+      pragma Convention (C, Internal_Page_Range_Array);
+
+      type Internal_Page_Range_Array_Access is
+        access Internal_Page_Range_Array;
+      pragma Convention (C, Internal_Page_Range_Array_Access);
+
+      procedure Free (Item : in out Internal_Page_Range_Array_Access);
+      pragma Import (C, Free, "g_free");
+
+      function Internal
+        (Settings   : System.Address;
+         Num_Ranges : access Gint)
+         return Internal_Page_Range_Array_Access;
+      pragma Import (C, Internal, "gtk_print_settings_get_page_ranges");
+
+      Len    : aliased Gint;
+      Result : Internal_Page_Range_Array_Access;
+   begin
+      Result := Internal (Get_Object (Self), Len'Access);
+      declare
+         Ranges : constant Gtk_Page_Range_Array :=
+           Gtk_Page_Range_Array (Result (0 .. Natural (Len)));
+      begin
+         Free (Result);
+         return Ranges;
+      end;
+   end Get_Page_Ranges;
+       </body>
+     </method>
+     <extra>
+       <type ctype="GtkPageRange" ada="Gtk_Page_Range_Record">
+   type Gtk_Page_Range_Record is record
+      Range_Start : Gint;
+      Range_End   : Gint;
+   end record;
+   pragma Convention (C, Gtk_Page_Range_Record);
+   type Gtk_Page_Range_Array is array (Integer range &lt;&gt;) of Gtk_Page_Range_Record;
+   pragma Convention (C, Gtk_Page_Range_Array);
+   --  Page range specification(s).
+       </type>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
