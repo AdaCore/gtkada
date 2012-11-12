@@ -90,10 +90,12 @@ package Gtk.Accel_Label is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Self : out Gtk_Accel_Label; String : UTF8_String);
+   procedure Gtk_New
+      (Accel_Label : out Gtk_Accel_Label;
+       String      : UTF8_String);
    procedure Initialize
-      (Self   : not null access Gtk_Accel_Label_Record'Class;
-       String : UTF8_String);
+      (Accel_Label : not null access Gtk_Accel_Label_Record'Class;
+       String      : UTF8_String);
    --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
    --  "string": the label string. Must be non-null.
 
@@ -105,31 +107,31 @@ package Gtk.Accel_Label is
    -------------
 
    function Get_Accel_Widget
-      (Self : not null access Gtk_Accel_Label_Record)
+      (Accel_Label : not null access Gtk_Accel_Label_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Fetches the widget monitored by this accelerator label. See
    --  Gtk.Accel_Label.Set_Accel_Widget.
 
    procedure Set_Accel_Widget
-      (Self         : not null access Gtk_Accel_Label_Record;
+      (Accel_Label  : not null access Gtk_Accel_Label_Record;
        Accel_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the widget to be monitored by this accelerator label.
    --  "accel_widget": the widget to be monitored.
 
    function Get_Accel_Width
-      (Self : not null access Gtk_Accel_Label_Record) return Guint;
+      (Accel_Label : not null access Gtk_Accel_Label_Record) return Guint;
    --  Returns the width needed to display the accelerator key(s). This is
    --  used by menus to align all of the Gtk.Menu_Item.Gtk_Menu_Item widgets,
    --  and shouldn't be needed by applications.
 
    function Refetch
-      (Self : not null access Gtk_Accel_Label_Record) return Boolean;
+      (Accel_Label : not null access Gtk_Accel_Label_Record) return Boolean;
    --  Recreates the string representing the accelerator keys. This should not
    --  be needed since the string is automatically updated whenever
    --  accelerators are added or removed from the associated widget.
 
    procedure Set_Accel_Closure
-      (Self          : not null access Gtk_Accel_Label_Record;
+      (Accel_Label   : not null access Gtk_Accel_Label_Record;
        Accel_Closure : System.Address);
    --  Sets the closure to be monitored by this accelerator label. The closure
    --  must be connected to an accelerator group; see Gtk.Accel_Group.Connect.

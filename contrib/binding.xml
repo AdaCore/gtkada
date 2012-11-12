@@ -4324,6 +4324,17 @@ creating a tag.
      <parameter name="self" ada="Accel_Label"/>
    </package>
 
+   <package id="GtkAccelMap">
+     <method id="gtk_accel_map_load_scanner" bind="False"/> <!-- no binding for GScanner -->
+     <method id="gtk_accel_map_add_entry">
+       <parameter name="accel_key" ctype="GdkKeyType"/>
+     </method>
+     <method id="gtk_accel_map_change_entry">
+       <parameter name="accel_key" ctype="GdkKeyType"/>
+     </method>
+     <method id="gtk_accel_map_lookup_entry" return_as_param="Found"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

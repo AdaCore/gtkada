@@ -117,7 +117,7 @@ package Gtk.Menu_Item is
        Accel_Path : UTF8_String := "");
    --  Set the accelerator path on Menu_Item, through which runtime changes of
    --  the menu item's accelerator caused by the user can be identified and
-   --  saved to persistent storage (see gtk_accel_map_save on this). To set up
+   --  saved to persistent storage (see Gtk.Accel_Map.Save on this). To set up
    --  a default accelerator for this menu item, call Gtk.Accel_Map.Add_Entry
    --  with the same Accel_Path. See also Gtk.Accel_Map.Add_Entry on the
    --  specifics of accelerator paths, and Gtk.Menu.Set_Accel_Path for a more

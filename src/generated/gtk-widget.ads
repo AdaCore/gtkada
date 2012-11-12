@@ -2434,7 +2434,7 @@ package Gtk.Widget is
    --  activated. This removes any accelerators (for any accelerator group)
    --  installed by previous calls to Gtk.Widget.Set_Accel_Path. Associating
    --  accelerators with paths allows them to be modified by the user and the
-   --  modifications to be saved for future use. (See gtk_accel_map_save.)
+   --  modifications to be saved for future use. (See Gtk.Accel_Map.Save.)
    --  This function is a low level function that would most likely be used by
    --  a menu creation system like Gtk.Uimanager.Gtk_Uimanager. If you use
    --  Gtk.Uimanager.Gtk_Uimanager, setting up accelerator paths will be done

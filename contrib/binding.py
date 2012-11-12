@@ -272,6 +272,9 @@ class SubprogramProfile(object):
         self.user_data_param = -1 # index of the "user data" parameter
         self.destroy_param = -1   # index of the parameter to destroy data
 
+    def __repr__(self):
+        return "<SubprogramProfile %s>" % self.node
+
     @staticmethod
     def parse(node, gtkmethod, pkg=None, ignore_return=False):
         """Parse the parameter info and return type info from the XML
@@ -326,7 +329,7 @@ class SubprogramProfile(object):
 
         if self.user_data_param == -1:
             return None
-        return self.params[self.user_data_param + 1].name
+        return self.params[self.user_data_param].name
 
     def has_varargs(self):
         return self.params is None
@@ -495,7 +498,7 @@ class SubprogramProfile(object):
 
         result = []
 
-        for p in params.findall(nparam):
+        for p_index, p in enumerate(params.findall(nparam)):
             name = p.get("name")
             gtkparam = gtkmethod.get_param(name=name)
             adan = gtkparam.ada_name()
@@ -536,8 +539,8 @@ class SubprogramProfile(object):
 
                 if p.get("scope") != "async" \
                         or type.ada != "Glib.G_Destroy_Notify_Address":
-                    self.callback_param.append(len(result))
-                    self.user_data_param = int(p.get("closure", "-1")) - 1
+                    self.callback_param.append(p_index)
+                    self.user_data_param = int(p.get("closure", "-1"))
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
             direction = gtkparam.get_direction() or p.get("direction", "in")
@@ -870,7 +873,9 @@ class GIRClass(object):
 
             values_if_null = copy.deepcopy(values)
             values_if_null[cb.name.lower()] = "System.Null_Address"
-            values_if_null[user_data.lower()] = "System.Null_Address"
+
+            if user_data is not None:
+                values_if_null[user_data.lower()] = "System.Null_Address"
 
             exec1 = gtk_func.call(
                 in_pkg=self.pkg,
@@ -901,7 +906,6 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         cb_type_name = naming.type(name=cb.type.ada, cname=cbname).ada
         funcname = base_name(cb_type_name)
 
-        user_data = profile.callback_user_data()
         destroy   = profile.find_param(destroy_data_params)
 
         # Compute the profile of the callback (will all its arguments)
@@ -917,7 +921,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         cb_profile = SubprogramProfile.parse(
             cb_gir_node, gtkmethod=gtkmethod, pkg=self.pkg)
 
+        user_data = profile.callback_user_data()
         cb_user_data = cb_profile.find_param(user_data_params)
+        if user_data is None and cb_user_data is not None:
+            user_data = cb_user_data
 
         # Generate the access-to-subprogram type for the user callback, unless
         # we have already done so. This is the type that doesn't receive
@@ -1014,7 +1021,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         nouser_profile = copy.deepcopy(profile)
 
-        if cb_user_data is None:
+        if user_data is None:
+            values = {destroy: "System.Null_Address",
+                      cb.name.lower(): "%s'Address" % cb.name}
+        elif cb_user_data is None:
             values = {destroy: "System.Null_Address",
                       cb.name.lower(): "Internal_%s'Address" % funcname,
                       user_data.lower(): "%s'Address" % cb.name}
