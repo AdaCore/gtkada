@@ -4335,6 +4335,374 @@ creating a tag.
      <method id="gtk_accel_map_lookup_entry" return_as_param="Found"/>
    </package>
 
+   <package id="GtkActionGroup">
+     <parameter name="self" ada="Action_Group"/>
+
+     <list ada="Action_List" ctype="GtkAction"/>
+
+     <method id="gtk_action_group_list_actions" return="GtkActionList"/>
+     <method id="gtk_action_group_add_radio_actions" bind="False"/> <!-- see below -->
+     <method id="gtk_action_group_add_radio_actions_full" bind="False"/> <!-- see below -->
+     <method id="gtk_action_group_add_actions" bind="False"/> <!-- see below -->
+     <method id="gtk_action_group_add_actions_full" bind="False"/> <!-- see below -->
+     <method id="gtk_action_group_add_toggle_actions" bind="False"/> <!-- see below -->
+     <method id="gtk_action_group_add_toggle_actions_full" bind="False"/> <!-- see below -->
+
+     <extra>
+       <with_spec pkg="Interfaces.C.Strings"/>
+       <spec>
+   type Action_Callback is access procedure
+     (Action : System.Address; User_Data : System.Address);
+   pragma Convention (C, Action_Callback);
+   --  Profile of callbacks when an action is activated. You must convert
+   --  Action to a Gtk_Action through:
+   --      Act : constant Gtk_Action := Convert (Action);
+
+   type Action_Entry is record
+      Name         : Interfaces.C.Strings.chars_ptr;
+      Stock_Id     : Interfaces.C.Strings.chars_ptr;
+      Label        : Interfaces.C.Strings.chars_ptr;
+      Accelerator  : Interfaces.C.Strings.chars_ptr;
+      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Callback     : Action_Callback;
+   end record;
+   pragma Convention (C, Action_Entry);
+
+   type Radio_Action_Entry is record
+      Name         : Interfaces.C.Strings.chars_ptr;
+      Stock_Id     : Interfaces.C.Strings.chars_ptr;
+      Label        : Interfaces.C.Strings.chars_ptr;
+      Accelerator  : Interfaces.C.Strings.chars_ptr;
+      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Value        : Glib.Gint;
+   end record;
+   pragma Convention (C, Radio_Action_Entry);
+
+   type Toggle_Action_Entry is record
+      Name         : Interfaces.C.Strings.chars_ptr;
+      Stock_Id     : Interfaces.C.Strings.chars_ptr;
+      Label        : Interfaces.C.Strings.chars_ptr;
+      Accelerator  : Interfaces.C.Strings.chars_ptr;
+      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Callback     : Action_Callback;
+      Is_Active    : Glib.Gboolean;
+   end record;
+   pragma Convention (C, Toggle_Action_Entry);
+   --  An opaque structure describing an action entry
+
+   type Action_Entry_Array is array (Natural range &lt;&gt;) of Action_Entry;
+   type Radio_Action_Entry_Array
+     is array (Natural range &lt;&gt;) of Radio_Action_Entry;
+   type Toggle_Action_Entry_Array
+     is array (Natural range &lt;&gt;) of Toggle_Action_Entry;
+
+   type Radio_Action_Callback is access procedure
+     (Group     : access Gtk.Action.Gtk_Action_Record'Class;
+      Current   : access Gtk.Action.Gtk_Action_Record'Class;
+      User_Data : System.Address);
+   --   Called when an element of the Gtk_Radio_Action group is selected
+
+   function Create
+     (Name        : String;
+      Label       : String := "";
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Callback    : Action_Callback := null) return Action_Entry;
+   --  Create a new Action_Entry. The returned value must be freed by the
+   --  caller.
+
+   function Create
+     (Name        : String;
+      Label       : String := "";
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Callback    : Action_Callback := null;
+      Is_Active   : Boolean := True) return Toggle_Action_Entry;
+   --  Create a new Action_Entry. The returned value must be freed by the
+   --  caller. Is_Active is the initial state of the button.
+
+   function Create
+     (Name        : String;
+      Label       : String;
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Value       : Glib.Gint) return Radio_Action_Entry;
+   --  Create a new Radio_Action_Entry. Value is the value set on the radio
+   --  action (see Gtk.Radio_Action.Get_Current_Value)
+
+   procedure Free (Action  : in out Action_Entry);
+   procedure Free (Actions : in out Action_Entry_Array);
+   procedure Free (Action  : in out Radio_Action_Entry);
+   procedure Free (Actions : in out Radio_Action_Entry_Array);
+   procedure Free (Action  : in out Toggle_Action_Entry);
+   procedure Free (Actions : in out Toggle_Action_Entry_Array);
+   --  Free Action and Actions
+
+   procedure Add_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Action_Entry_Array;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : Glib.G_Destroy_Notify_Address := null);
+   --  This is a convenience function to create a number of actions and add
+   --  them to the action group.
+   --  Destroy is called when User_Data is no longer needed.
+   --
+   --  The "activate" signals of the actions are connected to the callbacks in
+   --  Entries, and their accel paths are set to
+   --  &lt;Actions&gt;/group-name/action-name.
+
+   procedure Add_Radio_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Radio_Action_Entry_Array;
+      Value        : Glib.Gint;
+      On_Change    : Radio_Action_Callback;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : Glib.G_Destroy_Notify_Address := null);
+   --  This is a convenience routine to create a group of radio actions and
+   --  add them to the action group.
+   --
+   --  The "changed" signal of the first radio action is connected to the
+   --  On_Change callback and the accel paths of the actions are set to
+   --    &lt;Actions&gt;/group-name/action-name
+   --
+   --  Value is the value of the action to activate initially, or -1 if no
+   --  action should be activated.
+   --  Destroy is called when User_Data is no longer necessary.
+
+   procedure Add_Toggle_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Toggle_Action_Entry_Array;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : Glib.G_Destroy_Notify_Address := null);
+   --  This is a convenience function to create a number of toggle actions and
+   --  add them to the action group.
+   --  The "activate" signals of the actions are connected to the callbacks and
+   --  their accel paths are set to &lt;Actions&gt;/group-name/action-name.
+   --  Destroy is called when User_Data is no longer necessary.
+       </spec>
+       <with_body pkg="Ada.Unchecked_Deallocation" use="False" />
+       <body>
+   procedure Local_Radio_Action_Callback
+     (Group, Current, User_Data : System.Address);
+   pragma Convention (C, Local_Radio_Action_Callback);
+   --  Local proxy for Radio_Action_Callback
+
+   procedure Local_Radio_Action_Destroy
+     (Data : in out System.Address);
+   pragma Convention (C, Local_Radio_Action_Destroy);
+   --  Local proxy for the Destroy notify for Radio_Action
+
+   type Local_Radio_Action_User_Data is record
+      Callback  : Radio_Action_Callback;
+      User_Data : System.Address;
+      Destroy   : G_Destroy_Notify_Address;
+   end record;
+   type Local_Radio_Action_User_Data_Access is
+     access Local_Radio_Action_User_Data;
+
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Local_Radio_Action_User_Data_Access);
+   function Convert is new Ada.Unchecked_Conversion
+     (Local_Radio_Action_User_Data_Access, System.Address);
+   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+     (Local_Radio_Action_User_Data, Local_Radio_Action_User_Data_Access);
+
+   procedure Local_Radio_Action_Callback
+     (Group, Current, User_Data : System.Address)
+   is
+      Data : constant Local_Radio_Action_User_Data_Access :=
+        Convert (User_Data);
+      Stub : Gtk_Action_Record;
+      G : constant Gtk_Action := Gtk_Action (Get_User_Data (Group, Stub));
+      C : constant Gtk_Action := Gtk_Action (Get_User_Data (Current, Stub));
+   begin
+      Data.Callback (G, C, Data.User_Data);
+   end Local_Radio_Action_Callback;
+
+   procedure Local_Radio_Action_Destroy
+     (Data : in out System.Address)
+   is
+      D : Local_Radio_Action_User_Data_Access := Convert (Data);
+   begin
+      D.Destroy (D.User_Data);
+      Unchecked_Free (D);
+   end Local_Radio_Action_Destroy;
+
+   function Create
+     (Name        : String;
+      Label       : String := "";
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Callback    : Action_Callback := null) return Action_Entry is
+   begin
+      return (Name        => String_Or_Null (Name),
+              Label       => String_Or_Null (Label),
+              Stock_Id    => String_Or_Null (Stock_Id),
+              Accelerator => String_Or_Null (Accelerator),
+              Tooltip     => String_Or_Null (Tooltip),
+              Callback    => Callback);
+   end Create;
+
+   function Create
+     (Name        : String;
+      Label       : String := "";
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Callback    : Action_Callback := null;
+      Is_Active   : Boolean := True) return Toggle_Action_Entry is
+   begin
+      return (Name        => String_Or_Null (Name),
+              Label       => String_Or_Null (Label),
+              Stock_Id    => String_Or_Null (Stock_Id),
+              Accelerator => String_Or_Null (Accelerator),
+              Tooltip     => String_Or_Null (Tooltip),
+              Callback    => Callback,
+              Is_Active   => Boolean'Pos (Is_Active));
+   end Create;
+
+   function Create
+     (Name        : String;
+      Label       : String;
+      Stock_Id    : String := "";
+      Accelerator : String := "";
+      Tooltip     : String := "";
+      Value       : Glib.Gint) return Radio_Action_Entry is
+   begin
+      return (Name        => String_Or_Null (Name),
+              Label       => String_Or_Null (Label),
+              Stock_Id    => String_Or_Null (Stock_Id),
+              Accelerator => String_Or_Null (Accelerator),
+              Tooltip     => String_Or_Null (Tooltip),
+              Value       => Value);
+   end Create;
+
+   procedure Free (Action  : in out Action_Entry) is
+   begin
+      Free (Action.Name);
+      Free (Action.Label);
+      Free (Action.Stock_Id);
+      Free (Action.Accelerator);
+      Free (Action.Tooltip);
+   end Free;
+
+   procedure Free (Actions : in out Action_Entry_Array) is
+   begin
+      for A in Actions'Range loop
+         Free (Actions (A));
+      end loop;
+   end Free;
+
+   procedure Free (Action  : in out Radio_Action_Entry) is
+   begin
+      Free (Action.Name);
+      Free (Action.Label);
+      Free (Action.Stock_Id);
+      Free (Action.Accelerator);
+      Free (Action.Tooltip);
+   end Free;
+
+   procedure Free (Actions : in out Radio_Action_Entry_Array) is
+   begin
+      for A in Actions'Range loop
+         Free (Actions (A));
+      end loop;
+   end Free;
+
+   procedure Free (Action  : in out Toggle_Action_Entry) is
+   begin
+      Free (Action.Name);
+      Free (Action.Label);
+      Free (Action.Stock_Id);
+      Free (Action.Accelerator);
+      Free (Action.Tooltip);
+   end Free;
+
+   procedure Free (Actions : in out Toggle_Action_Entry_Array) is
+   begin
+      for A in Actions'Range loop
+         Free (Actions (A));
+      end loop;
+   end Free;
+
+   procedure Add_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Action_Entry_Array;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : Glib.G_Destroy_Notify_Address := null)
+   is
+      procedure Internal
+        (Action_Group : System.Address;
+         Entries      : System.Address;
+         N_Entries    : Guint;
+         User_Data    : System.Address;
+         Destroy      : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_action_group_add_actions_full");
+   begin
+      Internal (Get_Object (Action_Group),
+                Entries (Entries'First)'Address,
+                Entries'Length,
+                User_Data, Destroy);
+   end Add_Actions;
+
+   procedure Add_Radio_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Radio_Action_Entry_Array;
+      Value        : Glib.Gint;
+      On_Change    : Radio_Action_Callback;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : Glib.G_Destroy_Notify_Address := null)
+   is
+      procedure Internal
+        (Action_Group : System.Address;
+         Entries      : System.Address;
+         N_Entries    : Guint;
+         Value        : Gint;
+         On_Change    : System.Address;
+         User_Data    : System.Address;
+         Destroy      : System.Address);
+      pragma Import (C, Internal, "gtk_action_group_add_radio_actions_full");
+      Data : constant Local_Radio_Action_User_Data_Access :=
+        new Local_Radio_Action_User_Data'
+          (Callback  => On_Change,
+           User_Data => User_Data,
+           Destroy   => Destroy);
+   begin
+      Internal (Get_Object (Action_Group),
+                Entries (Entries'First)'Address, Entries'Length,
+                Value,
+                Local_Radio_Action_Callback'Address,
+                Convert (Data),
+                Local_Radio_Action_Destroy'Address);
+   end Add_Radio_Actions;
+
+   procedure Add_Toggle_Actions
+     (Action_Group : access Gtk_Action_Group_Record;
+      Entries      : Toggle_Action_Entry_Array;
+      User_Data    : System.Address := System.Null_Address;
+      Destroy      : G_Destroy_Notify_Address := null)
+   is
+      procedure Internal
+        (Action_Group : System.Address;
+         Entries      : System.Address;
+         N_Entries    : Guint;
+         User_Data    : System.Address;
+         Destroy      : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_action_group_add_toggle_actions_full");
+   begin
+      Internal (Get_Object (Action_Group),
+                Entries (Entries'First)'Address, Entries'Length, User_Data,
+                Destroy);
+   end Add_Toggle_Actions;
+       </body>
+     </extra>
+
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
@@ -4342,9 +4710,6 @@ creating a tag.
 
    <package id="GtkTreeModel">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
-   </package>
-   <package id="GtkActionGroup">
-     <parameter name="self" ada="Action_Group"/>
    </package>
 
 </GIR>

@@ -915,8 +915,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         try:
             cb_gir_node = self.gir.callbacks[cb.type.ada]
         except:
-            print "No GIR node for %s in callback %s" % (cb.type.ada, self.name)
-            raise
+            raise Exception("No GIR node for %s in callback %s" % (cb.type.ada, cname))
 
         cb_profile = SubprogramProfile.parse(
             cb_gir_node, gtkmethod=gtkmethod, pkg=self.pkg)
