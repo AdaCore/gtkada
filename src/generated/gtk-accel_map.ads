@@ -24,7 +24,7 @@
 --  <description>
 --  Accelerator maps are used to define runtime configurable accelerators.
 --  Functions for manipulating them are are usually used by higher level
---  convenience mechanisms like Gtk.Uimanager.Gtk_Uimanager and are thus
+--  convenience mechanisms like Gtk.UI_Manager.Gtk_UI_Manager and are thus
 --  considered "low-level". You'll want to use them if you're manually creating
 --  menus that should have user-configurable accelerators.
 --

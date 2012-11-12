@@ -26,7 +26,7 @@
 --  accelerators, typically attached to a toplevel Gtk.Window.Gtk_Window (with
 --  Gtk.Window.Add_Accel_Group). Usually you won't need to create a
 --  Gtk.Accel_Group.Gtk_Accel_Group directly; instead, when using
---  Gtk.Uimanager.Gtk_Uimanager, GTK+ automatically sets up the accelerators
+--  Gtk.UI_Manager.Gtk_UI_Manager, GTK+ automatically sets up the accelerators
 --  for your menus in the ui manager's Gtk.Accel_Group.Gtk_Accel_Group.
 --
 --  Note that 'accelerators' are different from 'mnemonics'. Accelerators are

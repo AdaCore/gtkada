@@ -460,7 +460,7 @@ package Gtk.Action_Group is
    --  class would be too clumsy, e.g. showing tooltips for menuitems in the
    --  statusbar.
    --
-   --  Gtk.Uimanager.Gtk_Uimanager proxies the signal and provides global
+   --  Gtk.UI_Manager.Gtk_UI_Manager proxies the signal and provides global
    --  notification just before any action is connected to a proxy, which is
    --  probably more convenient to use.
    --
@@ -474,7 +474,7 @@ package Gtk.Action_Group is
    --  The ::disconnect-proxy signal is emitted after disconnecting a proxy
    --  from an action in the group.
    --
-   --  Gtk.Uimanager.Gtk_Uimanager proxies the signal and provides global
+   --  Gtk.UI_Manager.Gtk_UI_Manager proxies the signal and provides global
    --  notification just before any action is connected to a proxy, which is
    --  probably more convenient to use.
    --
@@ -486,7 +486,7 @@ package Gtk.Action_Group is
    --  The ::post-activate signal is emitted just after the Action in the
    --  Action_Group is activated
    --
-   --  This is intended for Gtk.Uimanager.Gtk_Uimanager to proxy the signal
+   --  This is intended for Gtk.UI_Manager.Gtk_UI_Manager to proxy the signal
    --  and provide global notification just after any action is activated.
    --
    --  "pre-activate"
@@ -497,7 +497,7 @@ package Gtk.Action_Group is
    --  The ::pre-activate signal is emitted just before the Action in the
    --  Action_Group is activated
    --
-   --  This is intended for Gtk.Uimanager.Gtk_Uimanager to proxy the signal
+   --  This is intended for Gtk.UI_Manager.Gtk_UI_Manager to proxy the signal
    --  and provide global notification just before any action is activated.
 
    Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";

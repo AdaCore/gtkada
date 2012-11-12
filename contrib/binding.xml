@@ -4806,6 +4806,25 @@ creating a tag.
      </method>
    </package>
 
+   <package id="GtkUIManager">
+     <enum ctype="GtkUIManagerItemType" prefix="GTK_UI_"
+           ada="Manager_Item_Type"/>
+     <method id="gtk_ui_manager_add_ui" ada="Add_UI">
+       <parameter name="type" default="Manager_Auto"/>
+       <parameter name="top" default="False"/>
+     </method>
+     <method id="gtk_ui_manager_remove_ui" ada="Remove_UI"/>
+     <method id="gtk_ui_manager_add_ui_from_file" ada="Add_UI_From_File">
+       <parameter name="error" direction="out"/>
+     </method>
+     <method id="gtk_ui_manager_add_ui_from_string" ada="Add_UI_From_String">
+       <parameter name="error" direction="out"/>
+       <parameter name="length" ada="" default="-1"/>
+     </method>
+     <method id="gtk_ui_manager_get_action_groups" return="ObjectList"/>
+     <method id="gtk_ui_manager_get_toplevels" return="WidgetSList"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

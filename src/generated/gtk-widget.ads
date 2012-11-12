@@ -1237,7 +1237,7 @@ package Gtk.Widget is
    --  Sets the Gtk.Widget.Gtk_Widget:no-show-all property, which determines
    --  whether calls to Gtk.Widget.Show_All will affect this widget.
    --  This is mostly for use in constructing widget hierarchies with
-   --  externally controlled visibility, see Gtk.Uimanager.Gtk_Uimanager.
+   --  externally controlled visibility, see Gtk.UI_Manager.Gtk_UI_Manager.
    --  Since: gtk+ 2.4
    --  "no_show_all": the new value for the "no-show-all" property
 
@@ -2436,12 +2436,13 @@ package Gtk.Widget is
    --  accelerators with paths allows them to be modified by the user and the
    --  modifications to be saved for future use. (See Gtk.Accel_Map.Save.)
    --  This function is a low level function that would most likely be used by
-   --  a menu creation system like Gtk.Uimanager.Gtk_Uimanager. If you use
-   --  Gtk.Uimanager.Gtk_Uimanager, setting up accelerator paths will be done
+   --  a menu creation system like Gtk.UI_Manager.Gtk_UI_Manager. If you use
+   --  Gtk.UI_Manager.Gtk_UI_Manager, setting up accelerator paths will be done
    --  automatically.
-   --  Even when you you aren't using Gtk.Uimanager.Gtk_Uimanager, if you only
-   --  want to set up accelerators on menu items Gtk.Menu_Item.Set_Accel_Path
-   --  provides a somewhat more convenient interface.
+   --  Even when you you aren't using Gtk.UI_Manager.Gtk_UI_Manager, if you
+   --  only want to set up accelerators on menu items
+   --  Gtk.Menu_Item.Set_Accel_Path provides a somewhat more convenient
+   --  interface.
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.

@@ -104,8 +104,8 @@
 --  possible to specify the name of the <function>_get_type</function>
 --  explictly with the "type-func" attribute. As a special case, GtkBuilder
 --  allows to use an object that has been constructed by a
---  Gtk.Uimanager.Gtk_Uimanager in another part of the UI definition by
---  specifying the id of the Gtk.Uimanager.Gtk_Uimanager in the "constructor"
+--  Gtk.UI_Manager.Gtk_UI_Manager in another part of the UI definition by
+--  specifying the id of the Gtk.UI_Manager.Gtk_UI_Manager in the "constructor"
 --  attribute and the name of the object in the "id" attribute.
 --
 --  Objects must be given a name with the "id" attribute, which allows the

@@ -175,6 +175,7 @@ binding = ("GdkCursor",
            "GtkToolbar",
            "GtkToolItem",
            "GtkTooltip",
+           "GtkUIManager",
            "GtkVBox",
            "GtkVButtonBox",
            "GtkVPaned",
@@ -265,6 +266,8 @@ naming.exceptions = {
     "Use": "GUse",
     "Uri": "URI",
     "In": "Gtk_In",
+
+    "Gtk_Uimanager": "Gtk_UI_Manager",
 }
 
 # Maps C types to type descriptions.
