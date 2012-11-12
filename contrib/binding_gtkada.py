@@ -77,7 +77,8 @@ Where the package node is defined as follows:
                                 line wrapping is done.-->
          </doc>
          <parameter        <!-- repeated as needed -->
-            name="..."     <!-- mandatory, lower-cased name of param -->
+            name="..."     <!-- mandatory, lower-cased name of param,
+                                use "varargs" to replace the varargs parameter-->
             ada="..."      <!-- optional, name to use in Ada. If empty, the
                                 parameter will be omitted in the Ada profile,
                                 but kept in the C profile.

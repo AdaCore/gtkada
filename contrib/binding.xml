@@ -4700,7 +4700,24 @@ creating a tag.
    end Add_Toggle_Actions;
        </body>
      </extra>
+   </package>
 
+   <package id="GtkMessageDialog">
+     <parameter name="self" ada="Dialog"/>
+     <enum ctype="GtkMessageType" prefix="GTK_"/>
+     <enum ctype="GtkButtonsType" prefix="GTK_"/>
+     <method id="gtk_message_dialog_new">
+       <parameter name="message_format" ada="message" default='""'/>
+       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+     </method>
+     <method id="gtk_message_dialog_new_with_markup">
+       <parameter name="message_format" ada="message" default='""'/>
+       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+     </method>
+     <method id="gtk_message_dialog_format_secondary_markup">
+       <parameter name="message_format" ada="message" default='""'/>
+       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+     </method>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

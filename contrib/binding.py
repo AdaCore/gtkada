@@ -499,7 +499,7 @@ class SubprogramProfile(object):
         result = []
 
         for p_index, p in enumerate(params.findall(nparam)):
-            name = p.get("name")
+            name = p.get("name") or "varargs"
             gtkparam = gtkmethod.get_param(name=name)
             adan = gtkparam.ada_name()
 
@@ -755,7 +755,8 @@ class GIRClass(object):
         """
         assert(profile is None or isinstance(profile, SubprogramProfile))
 
-        if profile.has_varargs():
+        if profile.has_varargs() \
+                and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
             print "No binding for %s: varargs" % cname
             return None
@@ -1124,7 +1125,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             profile = SubprogramProfile.parse(
                 node=c, gtkmethod=gtkmethod, pkg=self.pkg,
                 ignore_return=True)
-            if profile.has_varargs():
+            if profile.has_varargs() \
+                and gtkmethod.get_param("varargs").node is None:
+
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
                 print "No binding for %s: varargs" % cname
                 continue
@@ -1187,10 +1190,13 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             selftype = "%(typename)s" % self._subst
 
         if self.is_gobject:
+
+            filtered_params = [p for p in profile.params if p.ada_binding]
+
             initialize_params = [Parameter(
                     name=selfname,
                     type=AdaType(selftype, pkg=self.pkg, in_spec=True),
-                    mode="not null access")] + profile.params
+                    mode="not null access")] + filtered_params
             initialize = Subprogram(
                 name=adaname.replace(
                     gtk_new_prefix, "%s.Initialize" % self.pkg.name),
@@ -1210,7 +1216,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                         name=selfname,
                         type=AdaType("%(typename)s" % self._subst,
                                      pkg=self.pkg, in_spec=True),
-                        mode="out")] + profile.params,
+                        mode="out")] + filtered_params,
                 local_vars=call[2],
                 code=selfname + " := new %(typename)s_Record;" % self._subst
                 + call[0],
