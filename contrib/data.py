@@ -56,6 +56,7 @@ binding = ("GdkCursor",
 
            "GtkAboutDialog",
            "GtkAccelGroup",
+           "GtkAccelLabel",
            "GtkAction",
            # "GtkActionGroup",
            "GtkAdjustment",
