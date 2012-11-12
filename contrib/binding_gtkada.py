@@ -60,8 +60,6 @@ Where the package node is defined as follows:
            ada="..."       <!-- optional, name of the Ada subprogram -->
            bind="true"     <!-- optional, if false no binding generated -->
            obsolescent=".." <!--  Whether this method is obsolete" -->
-           into="..."      <!-- optional, name of C class in which to
-                                add the bindings -->
            transfer-ownership='none'  <!-- set to 'full' to indicate the return
                                 value must be freed by the caller -->
            return_as_param="..." <!-- optional, replace return parameter with

@@ -121,24 +121,6 @@ package body Gtk.Css_Provider is
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
    end To_String;
 
-   ----------------------
-   -- Get_Icon_Factory --
-   ----------------------
-
-   function Get_Icon_Factory
-      (Self : not null access Gtk_Css_Provider_Record;
-       Path : Gtk.Widget.Gtk_Widget_Path)
-       return Gtk.Icon_Factory.Gtk_Icon_Factory
-   is
-      function Internal
-         (Self : System.Address;
-          Path : Gtk.Widget.Gtk_Widget_Path) return System.Address;
-      pragma Import (C, Internal, "gtk_style_provider_get_icon_factory");
-      Stub_Gtk_Icon_Factory : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
-   begin
-      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Get_Object (Self), Path), Stub_Gtk_Icon_Factory));
-   end Get_Icon_Factory;
-
    ------------------------
    -- Get_Style_Property --
    ------------------------

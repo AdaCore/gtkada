@@ -762,7 +762,6 @@ with Glib.Object;        use Glib.Object;
 with Glib.Types;         use Glib.Types;
 with Glib.Values;        use Glib.Values;
 with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Icon_Factory;   use Gtk.Icon_Factory;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Widget;         use Gtk.Widget;
 
@@ -813,11 +812,6 @@ package Gtk.Css_Provider is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
-
-   function Get_Icon_Factory
-      (Self : not null access Gtk_Css_Provider_Record;
-       Path : Gtk.Widget.Gtk_Widget_Path)
-       return Gtk.Icon_Factory.Gtk_Icon_Factory;
 
    procedure Get_Style_Property
       (Self  : not null access Gtk_Css_Provider_Record;

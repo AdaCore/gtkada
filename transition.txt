@@ -462,6 +462,11 @@ Gtk.HRuler
 
 This widget has been removed without any replacement.
 
+Gtk.Icon_Factory
+================
+
+Gtk_Icon_Set and Gtk_Icon_Source were moved to their own packages.
+
 Gtk.Image
 =========
 

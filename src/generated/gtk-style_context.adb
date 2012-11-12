@@ -494,27 +494,6 @@ package body Gtk.Style_Context is
       Found := Boolean'Val (Tmp_Return);
    end Lookup_Color;
 
-   ---------------------
-   -- Lookup_Icon_Set --
-   ---------------------
-
-   function Lookup_Icon_Set
-      (Self     : not null access Gtk_Style_Context_Record;
-       Stock_Id : UTF8_String) return Gtk.Icon_Factory.Gtk_Icon_Set
-   is
-      function Internal
-         (Self     : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr)
-          return Gtk.Icon_Factory.Gtk_Icon_Set;
-      pragma Import (C, Internal, "gtk_style_context_lookup_icon_set");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-      Tmp_Return   : Gtk.Icon_Factory.Gtk_Icon_Set;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-      return Tmp_Return;
-   end Lookup_Icon_Set;
-
    -------------------------
    -- Notify_State_Change --
    -------------------------

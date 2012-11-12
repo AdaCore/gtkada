@@ -3166,6 +3166,7 @@ __PRE__
      <method id="gtk_style_provider_get_style" bind="False" /> <!-- circular dep with StyleProperties -->
      <method id="gtk_style_provider_get_style_property"
              return_as_param="Found"/>
+     <method id="gtk_style_provider_get_icon_factory" bind="False" /> <!-- in GtkIconFactory -->
      <extra>
        <spec>
          subtype Priority is Glib.Guint;
@@ -3205,7 +3206,9 @@ __PRE__
      <method id="gtk_style_context_get_valist" bind="False"/> <!-- needs valist -->
      <method id="gtk_style_context_get_style_valist" bind="False"/> <!-- needs valist -->
      <method id="gtk_style_context_lookup_color" return_as_param="Found"/>
-     <method id="gtk_style_context_state_is_running" return_as_param="Is_Running"/>
+     <method id="gtk_style_context_state_is_running"
+             return_as_param="Is_Running"/>
+     <method id="gtk_style_context_lookup_icon_set" bind="False"/> <!--  in GtkIconSet-->
      <function id="gtk_render_handle"/>
      <function id="gtk_render_check" />
      <function id="gtk_render_option" />
@@ -4823,6 +4826,142 @@ creating a tag.
      </method>
      <method id="gtk_ui_manager_get_action_groups" return="ObjectList"/>
      <method id="gtk_ui_manager_get_toplevels" return="WidgetSList"/>
+   </package>
+
+   <package id="GtkIconSet">
+     <doc>
+   An icon set represents a single icon in various sizes and widget states.
+   It can provide a Gdk_Pixbuf for a given size and state on request, and
+   automatically caches some of the rendered Gdk_Pixbuf objects.
+
+   Normally you would use Gtk.Widget.Render_Icon instead of using icon sets
+   directly. The one case where you'd use an icon set is to create
+   application-specific icon sets to place in an icon factory.
+     </doc>
+
+     <extra>
+       <spec>
+   function Lookup_Icon_Set
+     (Style  : access Gtk.Style.Gtk_Style_Record'Class; Stock_Id : String)
+      return Gtk_Icon_Set;
+   --  Retrieve an icon set by its name. The icon might exist in various sizes,
+   --  that can be manipulated through the result set
+       </spec>
+       <body>
+   function Lookup_Icon_Set
+     (Style    : access Gtk.Style.Gtk_Style_Record'Class;
+      Stock_Id : String)
+      return Gtk_Icon_Set
+   is
+      function Internal
+        (Style    : System.Address;
+         Stock_Id : String)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_style_lookup_icon_set");
+      --  External binding: gtk_style_lookup_icon_set
+   begin
+      return From_Object (Internal (Get_Object (Style), Stock_Id &amp; ASCII.NUL));
+   end Lookup_Icon_Set;
+       </body>
+     </extra>
+     <method id="gtk_style_context_lookup_icon_set" bind="False"/> <!--  in GtkIconSet-->
+
+     <method id="gtk_icon_set_get_sizes" return="Gint_Array">
+       <parameter name="n_sizes" ada=""/>
+       <parameter name="sizes" ada=""/>
+       <body>
+   function Get_Sizes
+      (Self    : Gtk_Icon_Set) return Gint_Array
+   is
+      type gint_array_bounded is array (Natural) of Gint;
+
+      procedure Internal
+         (Self        : System.Address;
+          Sizes       : System.Address;
+          Acc_N_Sizes : access Gint);
+      pragma Import (C, Internal, "gtk_icon_set_get_sizes");
+
+      procedure g_free (s : access gint_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Sizes : aliased access gint_array_bounded;
+      Size : aliased Gint;
+   begin
+      Internal (Self.Get_Object, Sizes'Address, Size'Access);
+
+      declare
+         Result : Gint_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Sizes (R);
+         end loop;
+         g_free (Sizes);
+
+         return Result;
+      end;
+   end Get_Sizes;
+       </body>
+     </method>
+   </package>
+
+   <package id="GtkIconSource">
+     <doc>
+An icon source contains a Gdk_Pixbuf (or image filename) that serves as
+the base image for one or more of the icons in an icon set, along with a
+specification for which icons in the icon set will be based on that
+pixbuf or image file. An icon set contains a set of icons that represent
+"the same" logical concept in different states, different global text
+directions, and different sizes.
+
+So for example a web browser's "Back to Previous Page" icon might point
+in a different direction in Hebrew and in English; it might look
+different when insensitive; and it might change size depending on
+toolbar mode (small/large icons). So a single icon set would contain all
+those variants of the icon. An icon set contains a list of icon sources
+from which it can derive specific icon variants in the set.
+
+In the simplest case, an icon set contains one source pixbuf from which
+it derives all variants.
+
+If you want to use a different base pixbuf for different icon variants,
+you create multiple icon sources, mark which variants they'll be used to
+create, and add them to the icon set with Add_Source (see below).
+
+By default, the icon source has all parameters wildcarded. That is, the
+icon source will be used as the base icon for any desired text
+direction, widget state, or icon size.
+     </doc>
+   </package>
+
+   <package id="GtkIconFactory">
+     <extra>
+       <with_spec pkg="Gtk.Style_Provider"/>
+       <with_spec pkg="Gtk.Widget"/>
+       <spec>
+   function Get_Icon_Factory
+      (Self : Gtk.Style_Provider.Gtk_Style_Provider;
+       Path : Gtk.Widget.Gtk_Widget_Path)
+       return Gtk_Icon_Factory;
+   --  Returns the Gtk.Icon_Factory.Gtk_Icon_Factory defined to be in use for
+   --  Path, or null if none is defined.
+   --  Since: gtk+ 3.0
+       </spec>
+       <body>
+   function Get_Icon_Factory
+      (Self : Gtk_Style_Provider;
+       Path : Gtk.Widget.Gtk_Widget_Path)
+       return Gtk.Icon_Factory.Gtk_Icon_Factory
+   is
+      function Internal
+         (Self : Gtk_Style_Provider;
+          Path : Gtk.Widget.Gtk_Widget_Path) return System.Address;
+      pragma Import (C, Internal, "gtk_style_provider_get_icon_factory");
+      Stub_Gtk_Icon_Factory : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
+   begin
+      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Self, Path), Stub_Gtk_Icon_Factory));
+   end Get_Icon_Factory;
+       </body>
+     </extra>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

@@ -29,12 +29,11 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;             use Glib;
-with Glib.Types;       use Glib.Types;
-with Glib.Values;      use Glib.Values;
-with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Icon_Factory; use Gtk.Icon_Factory;
-with Gtk.Widget;       use Gtk.Widget;
+with Glib;        use Glib;
+with Glib.Types;  use Glib.Types;
+with Glib.Values; use Glib.Values;
+with Gtk.Enums;   use Gtk.Enums;
+with Gtk.Widget;  use Gtk.Widget;
 
 package Gtk.Style_Provider is
 
@@ -50,15 +49,6 @@ package Gtk.Style_Provider is
    -------------
    -- Methods --
    -------------
-
-   function Get_Icon_Factory
-      (Self : Gtk_Style_Provider;
-       Path : Gtk.Widget.Gtk_Widget_Path)
-       return Gtk.Icon_Factory.Gtk_Icon_Factory;
-   --  Returns the Gtk.Icon_Factory.Gtk_Icon_Factory defined to be in use for
-   --  Path, or null if none is defined.
-   --  Since: gtk+ 3.0
-   --  "path": Gtk.Widget.Gtk_Widget_Path to query
 
    procedure Get_Style_Property
       (Self  : Gtk_Style_Provider;

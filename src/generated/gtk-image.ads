@@ -108,7 +108,7 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Enums;               use Gtk.Enums;
-with Gtk.Icon_Factory;        use Gtk.Icon_Factory;
+with Gtk.Icon_Set;            use Gtk.Icon_Set;
 with Gtk.Misc;                use Gtk.Misc;
 
 package Gtk.Image is
@@ -215,11 +215,11 @@ package Gtk.Image is
 
    procedure Gtk_New
       (Image    : out Gtk_Image;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize
       (Image    : not null access Gtk_Image_Record'Class;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a Gtk.Image.Gtk_Image displaying an icon set. Sample stock
    --  sizes are GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_SMALL_TOOLBAR. Instead of
@@ -300,7 +300,7 @@ package Gtk.Image is
 
    procedure Get
       (Image    : not null access Gtk_Image_Record;
-       Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : out Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
    --  Gets the icon set and size being displayed by the Gtk.Image.Gtk_Image.
    --  The storage type of the image must be Gtk.Image.Image_Empty or
@@ -362,7 +362,7 @@ package Gtk.Image is
 
    procedure Set
       (Image    : not null access Gtk_Image_Record;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
    --  See Gtk.Image.Gtk_New for details.
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
@@ -453,7 +453,7 @@ package Gtk.Image is
    --  the image will be updated automatically.
    --
    --  Name: Icon_Set_Property
-   --  Type: Gtk.Icon_Factory.Gtk_Icon_Set
+   --  Type: Gtk.Icon_Set.Gtk_Icon_Set
    --  Flags: read-write
    --
    --  Name: Icon_Size_Property
@@ -493,7 +493,7 @@ package Gtk.Image is
    File_Property : constant Glib.Properties.Property_String;
    Gicon_Property : constant Glib.Properties.Property_Boxed;
    Icon_Name_Property : constant Glib.Properties.Property_String;
-   Icon_Set_Property : constant Glib.Properties.Property_Boxed;
+   Icon_Set_Property : constant Glib.Properties.Property_Object;
    Icon_Size_Property : constant Glib.Properties.Property_Int;
    Pixbuf_Property : constant Glib.Properties.Property_Object;
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed;
@@ -509,7 +509,7 @@ private
      Glib.Properties.Build ("gicon");
    Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("icon-name");
-   Icon_Set_Property : constant Glib.Properties.Property_Boxed :=
+   Icon_Set_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("icon-set");
    Icon_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("icon-size");

@@ -238,7 +238,6 @@ with Glib.Object;        use Glib.Object;
 with Glib.Properties;    use Glib.Properties;
 with Glib.Values;        use Glib.Values;
 with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Icon_Factory;   use Gtk.Icon_Factory;
 with Gtk.Style;          use Gtk.Style;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Widget;         use Gtk.Widget;
@@ -563,13 +562,6 @@ package Gtk.Style_Context is
    --  Looks up and resolves a color name in the Context color map.
    --  "color_name": color name to lookup
    --  "color": Return location for the looked up color
-
-   function Lookup_Icon_Set
-      (Self     : not null access Gtk_Style_Context_Record;
-       Stock_Id : UTF8_String) return Gtk.Icon_Factory.Gtk_Icon_Set;
-   --  Looks up Stock_Id in the icon factories associated to Context and the
-   --  default icon factory, returning an icon set if found, otherwise null.
-   --  "stock_id": an icon name
 
    procedure Notify_State_Change
       (Self        : not null access Gtk_Style_Context_Record;

@@ -106,7 +106,7 @@ package body Gtk.Image is
 
    procedure Gtk_New
       (Image    : out Gtk_Image;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
    begin
@@ -220,15 +220,15 @@ package body Gtk.Image is
 
    procedure Initialize
       (Image    : not null access Gtk_Image_Record'Class;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
-         (Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+         (Icon_Set : System.Address;
           Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_icon_set");
    begin
-      Set_Object (Image, Internal (Icon_Set, Size));
+      Set_Object (Image, Internal (Get_Object (Icon_Set), Size));
    end Initialize;
 
    ----------------
@@ -354,16 +354,18 @@ package body Gtk.Image is
 
    procedure Get
       (Image    : not null access Gtk_Image_Record;
-       Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : out Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
          (Image    : System.Address;
-          Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
+          Icon_Set : out System.Address;
           Size     : out Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_get_icon_set");
+      Tmp_Icon_Set : aliased System.Address;
    begin
-      Internal (Get_Object (Image), Icon_Set, Size);
+      Internal (Get_Object (Image), Tmp_Icon_Set, Size);
+      Icon_Set := From_Object (Tmp_Icon_Set);
    end Get;
 
    ---------
@@ -470,16 +472,16 @@ package body Gtk.Image is
 
    procedure Set
       (Image    : not null access Gtk_Image_Record;
-       Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+       Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
          (Image    : System.Address;
-          Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
+          Icon_Set : System.Address;
           Size     : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_set_from_icon_set");
    begin
-      Internal (Get_Object (Image), Icon_Set, Size);
+      Internal (Get_Object (Image), Get_Object (Icon_Set), Size);
    end Set;
 
    ---------
