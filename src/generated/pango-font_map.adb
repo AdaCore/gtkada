@@ -41,9 +41,9 @@ package body Pango.Font_Map is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_map_create_context");
-      Stub_126 : Pango.Context.Pango_Context_Record;
+      Stub_Pango_Context : Pango.Context.Pango_Context_Record;
    begin
-      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_126));
+      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Context));
    end Create_Context;
 
    function List_Families
@@ -94,9 +94,9 @@ package body Pango.Font_Map is
           Context : System.Address;
           Desc    : Pango.Font.Pango_Font_Description) return System.Address;
       pragma Import (C, Internal, "pango_font_map_load_font");
-      Stub_129 : Pango.Font.Pango_Font_Record;
+      Stub_Pango_Font : Pango.Font.Pango_Font_Record;
    begin
-      return Pango.Font.Pango_Font (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Desc), Stub_129));
+      return Pango.Font.Pango_Font (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Desc), Stub_Pango_Font));
    end Load_Font;
 
    ------------------
@@ -116,9 +116,9 @@ package body Pango.Font_Map is
           Desc     : Pango.Font.Pango_Font_Description;
           Language : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_map_load_fontset");
-      Stub_132 : Pango.Fontset.Pango_Fontset_Record;
+      Stub_Pango_Fontset : Pango.Fontset.Pango_Fontset_Record;
    begin
-      return Pango.Fontset.Pango_Fontset (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Desc, Get_Object (Language)), Stub_132));
+      return Pango.Fontset.Pango_Fontset (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Desc, Get_Object (Language)), Stub_Pango_Fontset));
    end Load_Fontset;
 
 end Pango.Font_Map;

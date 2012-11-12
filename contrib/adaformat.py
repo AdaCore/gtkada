@@ -370,8 +370,6 @@ class Enum(CType):
 
 
 class GObject(CType):
-    stub_index = 1
-
     def __init__(self, ada, userecord=True):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
@@ -380,8 +378,7 @@ class GObject(CType):
         self.userecord = userecord  # Parameter should be "access .._Record"
 
     def convert_from_c(self):
-        stub = "Stub_%d" % (GObject.stub_index, )
-        GObject.stub_index += 1
+        stub = "Stub_%s" % (base_name(self.ada), )
 
         if self.ada == "Glib.Object.GObject":
             conv = "Get_User_Data (%%(var)s, %s)" % stub
@@ -1405,7 +1402,14 @@ class Subprogram(object):
         """The list of local variable declarations"""
         if self.local:
             max = max_length([p.name for p in self.local])
-            result = [v.spec(pkg=pkg, length=max) for v in self.local]
+            result = []
+            seen = set()
+
+            for v in self.local:
+                if v.name not in seen:
+                    seen.add(v.name)
+                    result.append(v.spec(pkg=pkg, length=max))
+
             return indent + "   " + (";\n   " + indent).join(result) + ";\n"
         else:
             return ""

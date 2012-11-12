@@ -175,9 +175,9 @@ package body Gtk.Print_Settings is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_settings_copy");
-      Stub_2032 : Gtk_Print_Settings_Record;
+      Stub_Gtk_Print_Settings : Gtk_Print_Settings_Record;
    begin
-      return Gtk.Print_Settings.Gtk_Print_Settings (Get_User_Data (Internal (Get_Object (Self)), Stub_2032));
+      return Gtk.Print_Settings.Gtk_Print_Settings (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Print_Settings));
    end Copy;
 
    -------------

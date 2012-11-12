@@ -309,9 +309,9 @@ package body Gtk.Accel_Map is
    function Get return Gtk_Accel_Map is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_accel_map_get");
-      Stub_254 : Gtk_Accel_Map_Record;
+      Stub_Gtk_Accel_Map : Gtk_Accel_Map_Record;
    begin
-      return Gtk.Accel_Map.Gtk_Accel_Map (Get_User_Data (Internal, Stub_254));
+      return Gtk.Accel_Map.Gtk_Accel_Map (Get_User_Data (Internal, Stub_Gtk_Accel_Map));
    end Get;
 
    ----------

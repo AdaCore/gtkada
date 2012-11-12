@@ -295,9 +295,9 @@ package body Gtk.Recent_Chooser_Menu is
    is
       function Internal (Chooser : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_get_filter");
-      Stub_2295 : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
+      Stub_Gtk_Recent_Filter : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
    begin
-      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Get_Object (Chooser)), Stub_2295));
+      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Get_Object (Chooser)), Stub_Gtk_Recent_Filter));
    end Get_Filter;
 
    ---------------
@@ -353,9 +353,9 @@ package body Gtk.Recent_Chooser_Menu is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_2283 : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_2283));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------

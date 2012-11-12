@@ -183,9 +183,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page_Num  : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_nth_page");
-      Stub_350 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Assistant), Page_Num), Stub_350));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Assistant), Page_Num), Stub_Gtk_Widget));
    end Get_Nth_Page;
 
    -----------------------
@@ -218,9 +218,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_header_image");
-      Stub_355 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_355));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_Gdk_Pixbuf));
    end Get_Page_Header_Image;
 
    -------------------------
@@ -236,9 +236,9 @@ package body Gtk.Assistant is
          (Assistant : System.Address;
           Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_side_image");
-      Stub_358 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_358));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Assistant), Get_Object (Page)), Stub_Gdk_Pixbuf));
    end Get_Page_Side_Image;
 
    --------------------

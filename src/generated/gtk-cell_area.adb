@@ -209,11 +209,11 @@ package body Gtk.Cell_Area is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func     : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_610 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_611 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_610)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_611)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
 
    --------------------------------------
@@ -226,10 +226,10 @@ package body Gtk.Cell_Area is
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
        Data            : System.Address) return Integer
    is
-      Func     : constant Gtk_Cell_Alloc_Callback := To_Gtk_Cell_Alloc_Callback (Data);
-      Stub_534 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Func                   : constant Gtk_Cell_Alloc_Callback := To_Gtk_Cell_Alloc_Callback (Data);
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_534)), Cell_Area, Cell_Background));
+      return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), Cell_Area, Cell_Background));
    end Internal_Gtk_Cell_Alloc_Callback;
 
    --------------------------------
@@ -240,10 +240,10 @@ package body Gtk.Cell_Area is
       (Renderer : System.Address;
        Data     : System.Address) return Integer
    is
-      Func     : constant Gtk_Cell_Callback := To_Gtk_Cell_Callback (Data);
-      Stub_528 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Func                   : constant Gtk_Cell_Callback := To_Gtk_Cell_Callback (Data);
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_528))));
+      return Boolean'Pos (Func (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer))));
    end Internal_Gtk_Cell_Callback;
 
    package Type_Conversion_Gtk_Cell_Area is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -454,9 +454,9 @@ package body Gtk.Cell_Area is
          (Self    : System.Address;
           Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_area_copy_context");
-      Stub_521 : Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record;
+      Stub_Gtk_Cell_Area_Context : Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record;
    begin
-      return Gtk.Cell_Area_Context.Gtk_Cell_Area_Context (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context)), Stub_521));
+      return Gtk.Cell_Area_Context.Gtk_Cell_Area_Context (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context)), Stub_Gtk_Cell_Area_Context));
    end Copy_Context;
 
    --------------------
@@ -469,9 +469,9 @@ package body Gtk.Cell_Area is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_area_create_context");
-      Stub_523 : Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record;
+      Stub_Gtk_Cell_Area_Context : Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record;
    begin
-      return Gtk.Cell_Area_Context.Gtk_Cell_Area_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_523));
+      return Gtk.Cell_Area_Context.Gtk_Cell_Area_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Cell_Area_Context));
    end Create_Context;
 
    -----------
@@ -608,10 +608,10 @@ package body Gtk.Cell_Area is
           Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
           Data            : System.Address) return Integer
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_541 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         return Boolean'Pos (To_Gtk_Cell_Alloc_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_541)), Cell_Area, Cell_Background, D.Data.all));
+         return Boolean'Pos (To_Gtk_Cell_Alloc_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), Cell_Area, Cell_Background, D.Data.all));
       end Internal_Cb;
 
    end Foreach_Alloc_User_Data;
@@ -662,10 +662,10 @@ package body Gtk.Cell_Area is
          (Renderer : System.Address;
           Data     : System.Address) return Integer
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_531 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         return Boolean'Pos (To_Gtk_Cell_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_531)), D.Data.all));
+         return Boolean'Pos (To_Gtk_Cell_Callback (D.Func) (Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Renderer, Stub_Gtk_Cell_Renderer)), D.Data.all));
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -733,9 +733,9 @@ package body Gtk.Cell_Area is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_area_get_edited_cell");
-      Stub_555 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self)), Stub_555));
+      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Cell_Renderer));
    end Get_Edited_Cell;
 
    --------------------
@@ -748,9 +748,9 @@ package body Gtk.Cell_Area is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_area_get_focus_cell");
-      Stub_557 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self)), Stub_557));
+      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Cell_Renderer));
    end Get_Focus_Cell;
 
    ----------------------------
@@ -766,9 +766,9 @@ package body Gtk.Cell_Area is
          (Self     : System.Address;
           Renderer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_area_get_focus_from_sibling");
-      Stub_560 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self), Get_Object (Renderer)), Stub_560));
+      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self), Get_Object (Renderer)), Stub_Gtk_Cell_Renderer));
    end Get_Focus_From_Sibling;
 
    ------------------------
@@ -1109,11 +1109,11 @@ package body Gtk.Cell_Area is
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_616 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_617 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_616)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_617)), Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------

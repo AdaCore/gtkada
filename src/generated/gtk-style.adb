@@ -93,9 +93,9 @@ package body Gtk.Style is
          (Style  : System.Address;
           Window : Gdk.Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gtk_style_attach");
-      Stub_2564 : Gtk_Style_Record;
+      Stub_Gtk_Style : Gtk_Style_Record;
    begin
-      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Style), Window), Stub_2564));
+      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Style), Window), Stub_Gtk_Style));
    end Attach;
 
    ----------
@@ -105,9 +105,9 @@ package body Gtk.Style is
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style is
       function Internal (Style : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_copy");
-      Stub_2566 : Gtk_Style_Record;
+      Stub_Gtk_Style : Gtk_Style_Record;
    begin
-      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Style)), Stub_2566));
+      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Style)), Stub_Gtk_Style));
    end Copy;
 
    ------------

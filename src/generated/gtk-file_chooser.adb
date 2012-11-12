@@ -146,9 +146,9 @@ package body Gtk.File_Chooser is
    is
       function Internal (Chooser : Gtk_File_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_get_extra_widget");
-      Stub_31 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Chooser), Stub_31));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Chooser), Stub_Gtk_Widget));
    end Get_Extra_Widget;
 
    ------------------
@@ -187,9 +187,9 @@ package body Gtk.File_Chooser is
    is
       function Internal (Chooser : Gtk_File_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_get_filter");
-      Stub_32 : Gtk.File_Filter.Gtk_File_Filter_Record;
+      Stub_Gtk_File_Filter : Gtk.File_Filter.Gtk_File_Filter_Record;
    begin
-      return Gtk.File_Filter.Gtk_File_Filter (Get_User_Data (Internal (Chooser), Stub_32));
+      return Gtk.File_Filter.Gtk_File_Filter (Get_User_Data (Internal (Chooser), Stub_Gtk_File_Filter));
    end Get_Filter;
 
    --------------------
@@ -238,9 +238,9 @@ package body Gtk.File_Chooser is
    is
       function Internal (Chooser : Gtk_File_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_widget");
-      Stub_33 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Chooser), Stub_33));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Chooser), Stub_Gtk_Widget));
    end Get_Preview_Widget;
 
    -------------------------------

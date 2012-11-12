@@ -190,9 +190,9 @@ package body Gtk.Label is
    is
       function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_layout");
-      Stub_1644 : Pango.Layout.Pango_Layout_Record;
+      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Label)), Stub_1644));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Label)), Stub_Pango_Layout));
    end Get_Layout;
 
    ------------------------
@@ -277,9 +277,9 @@ package body Gtk.Label is
    is
       function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_widget");
-      Stub_1651 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub_1651));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub_Gtk_Widget));
    end Get_Mnemonic_Widget;
 
    --------------------

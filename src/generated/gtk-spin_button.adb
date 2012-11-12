@@ -131,9 +131,9 @@ package body Gtk.Spin_Button is
    is
       function Internal (Spin_Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_spin_button_get_adjustment");
-      Stub_2482 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Spin_Button)), Stub_2482));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Spin_Button)), Stub_Gtk_Adjustment));
    end Get_Adjustment;
 
    ----------------

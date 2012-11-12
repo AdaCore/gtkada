@@ -75,9 +75,9 @@ package body Gtk.Color_Selection_Dialog is
       function Internal
          (Color_Selection_Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_get_color_selection");
-      Stub_799 : Gtk.Color_Selection.Gtk_Color_Selection_Record;
+      Stub_Gtk_Color_Selection : Gtk.Color_Selection.Gtk_Color_Selection_Record;
    begin
-      return Gtk.Color_Selection.Gtk_Color_Selection (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub_799));
+      return Gtk.Color_Selection.Gtk_Color_Selection (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub_Gtk_Color_Selection));
    end Get_Color_Selection;
 
 end Gtk.Color_Selection_Dialog;

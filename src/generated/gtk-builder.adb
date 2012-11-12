@@ -81,12 +81,11 @@ package body Gtk.Builder is
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address)
    is
-      Func     : constant Gtk_Builder_Connect_Func := To_Gtk_Builder_Connect_Func (User_Data);
-      Stub_415 : Gtk_Builder_Record;
-      Stub_416 : Glib.Object.GObject_Record;
-      Stub_417 : Glib.Object.GObject_Record;
+      Func             : constant Gtk_Builder_Connect_Func := To_Gtk_Builder_Connect_Func (User_Data);
+      Stub_Gtk_Builder : Gtk_Builder_Record;
+      Stub_GObject     : Glib.Object.GObject_Record;
    begin
-      Func (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_415)), Get_User_Data (Object, Stub_416), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_417), Flags);
+      Func (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_Gtk_Builder)), Get_User_Data (Object, Stub_GObject), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_GObject), Flags);
    end Internal_Gtk_Builder_Connect_Func;
 
    package Type_Conversion_Gtk_Builder is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -308,12 +307,11 @@ package body Gtk.Builder is
           Flags          : Glib.G_Connect_Flags;
           User_Data      : System.Address)
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_420 : Gtk.Builder.Gtk_Builder_Record;
-         Stub_421 : Glib.Object.GObject_Record;
-         Stub_422 : Glib.Object.GObject_Record;
+         D                : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Builder : Gtk.Builder.Gtk_Builder_Record;
+         Stub_GObject     : Glib.Object.GObject_Record;
       begin
-         To_Gtk_Builder_Connect_Func (D.Func) (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_420)), Get_User_Data (Object, Stub_421), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_422), Flags, D.Data.all);
+         To_Gtk_Builder_Connect_Func (D.Func) (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_Gtk_Builder)), Get_User_Data (Object, Stub_GObject), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_GObject), Flags, D.Data.all);
       end Internal_Cb;
 
    end Connect_Signals_Full_User_Data;
@@ -330,13 +328,13 @@ package body Gtk.Builder is
          (Builder : System.Address;
           Name    : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_builder_get_object");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Stub_426   : Glib.Object.GObject_Record;
-      Tmp_Return : System.Address;
+      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Stub_GObject : Glib.Object.GObject_Record;
+      Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Name);
       Free (Tmp_Name);
-      return Get_User_Data (Tmp_Return, Stub_426);
+      return Get_User_Data (Tmp_Return, Stub_GObject);
    end Get_Object;
 
    -----------------

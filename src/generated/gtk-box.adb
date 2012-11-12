@@ -136,9 +136,9 @@ package body Gtk.Box is
          (Box : System.Address;
           Num : Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
-      Stub_407 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box), Num), Stub_407));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box), Num), Stub_Gtk_Widget));
    end Get_Child;
 
    ---------------------

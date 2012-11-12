@@ -35,9 +35,9 @@ package body Gtk.Tool_Shell is
    is
       function Internal (Self : Gtk_Tool_Shell) return System.Address;
       pragma Import (C, Internal, "gtk_tool_shell_get_text_size_group");
-      Stub_53 : Gtk.Size_Group.Gtk_Size_Group_Record;
+      Stub_Gtk_Size_Group : Gtk.Size_Group.Gtk_Size_Group_Record;
    begin
-      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Self), Stub_53));
+      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Self), Stub_Gtk_Size_Group));
    end Get_Text_Size_Group;
 
 end Gtk.Tool_Shell;

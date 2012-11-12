@@ -89,9 +89,9 @@ package body Gtk.Scrolled_Window is
       function Internal
          (Scrolled_Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_hadjustment");
-      Stub_2454 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_2454));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    --------------------
@@ -105,9 +105,9 @@ package body Gtk.Scrolled_Window is
       function Internal
          (Scrolled_Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_hscrollbar");
-      Stub_2456 : Gtk.Scrollbar.Gtk_Scrollbar_Record;
+      Stub_Gtk_Scrollbar : Gtk.Scrollbar.Gtk_Scrollbar_Record;
    begin
-      return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_2456));
+      return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Scrollbar));
    end Get_Hscrollbar;
 
    ----------------------------
@@ -197,9 +197,9 @@ package body Gtk.Scrolled_Window is
       function Internal
          (Scrolled_Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_vadjustment");
-      Stub_2463 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_2463));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    --------------------
@@ -213,9 +213,9 @@ package body Gtk.Scrolled_Window is
       function Internal
          (Scrolled_Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_vscrollbar");
-      Stub_2465 : Gtk.Scrollbar.Gtk_Scrollbar_Record;
+      Stub_Gtk_Scrollbar : Gtk.Scrollbar.Gtk_Scrollbar_Record;
    begin
-      return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_2465));
+      return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Scrollbar));
    end Get_Vscrollbar;
 
    ---------------------

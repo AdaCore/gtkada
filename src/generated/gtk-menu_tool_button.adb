@@ -115,9 +115,9 @@ package body Gtk.Menu_Tool_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_get_menu");
-      Stub_1850 : Gtk.Menu.Gtk_Menu_Record;
+      Stub_Gtk_Menu : Gtk.Menu.Gtk_Menu_Record;
    begin
-      return Gtk.Menu.Gtk_Menu (Get_User_Data (Internal (Get_Object (Button)), Stub_1850));
+      return Gtk.Menu.Gtk_Menu (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Menu));
    end Get_Menu;
 
    ------------------------------
@@ -194,9 +194,9 @@ package body Gtk.Menu_Tool_Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_1858 : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_1858));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------------

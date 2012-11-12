@@ -149,9 +149,9 @@ package body Gtk.Expander is
    is
       function Internal (Expander : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_expander_get_label_widget");
-      Stub_1143 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Expander)), Stub_1143));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Expander)), Stub_Gtk_Widget));
    end Get_Label_Widget;
 
    -------------------------

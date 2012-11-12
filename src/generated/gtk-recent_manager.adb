@@ -287,9 +287,9 @@ package body Gtk.Recent_Manager is
    function Get_Default return Gtk_Recent_Manager is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_manager_get_default");
-      Stub_2389 : Gtk_Recent_Manager_Record;
+      Stub_Gtk_Recent_Manager : Gtk_Recent_Manager_Record;
    begin
-      return Gtk.Recent_Manager.Gtk_Recent_Manager (Get_User_Data (Internal, Stub_2389));
+      return Gtk.Recent_Manager.Gtk_Recent_Manager (Get_User_Data (Internal, Stub_Gtk_Recent_Manager));
    end Get_Default;
 
 end Gtk.Recent_Manager;

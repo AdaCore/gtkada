@@ -81,10 +81,10 @@ package body Gtk.Calendar is
        Day       : Guint;
        User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
    is
-      Func     : constant Gtk_Calendar_Detail_Func := To_Gtk_Calendar_Detail_Func (User_Data);
-      Stub_488 : Gtk_Calendar_Record;
+      Func              : constant Gtk_Calendar_Detail_Func := To_Gtk_Calendar_Detail_Func (User_Data);
+      Stub_Gtk_Calendar : Gtk_Calendar_Record;
    begin
-      return New_String (Func (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_488)), Year, Month, Day));
+      return New_String (Func (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_Gtk_Calendar)), Year, Month, Day));
    end Internal_Gtk_Calendar_Detail_Func;
 
    package Type_Conversion_Gtk_Calendar is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -305,10 +305,10 @@ package body Gtk.Calendar is
           Day       : Guint;
           User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_491 : Gtk.Calendar.Gtk_Calendar_Record;
+         D                 : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Calendar : Gtk.Calendar.Gtk_Calendar_Record;
       begin
-         return New_String (To_Gtk_Calendar_Detail_Func (D.Func) (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_491)), Year, Month, Day, D.Data.all));
+         return New_String (To_Gtk_Calendar_Detail_Func (D.Func) (Gtk.Calendar.Gtk_Calendar (Get_User_Data (Calendar, Stub_Gtk_Calendar)), Year, Month, Day, D.Data.all));
       end Internal_Cb;
 
       ---------------------

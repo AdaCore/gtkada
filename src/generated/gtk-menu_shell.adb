@@ -108,9 +108,9 @@ package body Gtk.Menu_Shell is
    is
       function Internal (Menu_Shell : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_shell_get_parent_shell");
-      Stub_1836 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu_Shell)), Stub_1836));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu_Shell)), Stub_Gtk_Widget));
    end Get_Parent_Shell;
 
    -----------------------
@@ -123,9 +123,9 @@ package body Gtk.Menu_Shell is
    is
       function Internal (Menu_Shell : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_shell_get_selected_item");
-      Stub_1838 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu_Shell)), Stub_1838));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu_Shell)), Stub_Gtk_Widget));
    end Get_Selected_Item;
 
    --------------------

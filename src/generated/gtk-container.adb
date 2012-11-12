@@ -77,10 +77,10 @@ package body Gtk.Container is
       (Widget : System.Address;
        Data   : System.Address)
    is
-      Func     : constant Gtk_Callback := To_Gtk_Callback (Data);
-      Stub_916 : Gtk.Widget.Gtk_Widget_Record;
+      Func            : constant Gtk_Callback := To_Gtk_Callback (Data);
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_916)));
+      Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)));
    end Internal_Gtk_Callback;
 
    package Type_Conversion_Gtk_Container is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -247,10 +247,10 @@ package body Gtk.Container is
       -----------------
 
       procedure Internal_Cb (Widget : System.Address; Data : System.Address) is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_919 : Gtk.Widget.Gtk_Widget_Record;
+         D               : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       begin
-         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_919)), D.Data.all);
+         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), D.Data.all);
       end Internal_Cb;
 
    end Forall_User_Data;
@@ -311,10 +311,10 @@ package body Gtk.Container is
       -----------------
 
       procedure Internal_Cb (Widget : System.Address; Data : System.Address) is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_924 : Gtk.Widget.Gtk_Widget_Record;
+         D               : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       begin
-         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_924)), D.Data.all);
+         To_Gtk_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), D.Data.all);
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -358,9 +358,9 @@ package body Gtk.Container is
    is
       function Internal (Container : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_container_get_focus_child");
-      Stub_930 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Container)), Stub_930));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Container)), Stub_Gtk_Widget));
    end Get_Focus_Child;
 
    ---------------------------
@@ -373,9 +373,9 @@ package body Gtk.Container is
    is
       function Internal (Container : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_container_get_focus_hadjustment");
-      Stub_932 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Container)), Stub_932));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Container)), Stub_Gtk_Adjustment));
    end Get_Focus_Hadjustment;
 
    ---------------------------
@@ -388,9 +388,9 @@ package body Gtk.Container is
    is
       function Internal (Container : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_container_get_focus_vadjustment");
-      Stub_934 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Container)), Stub_934));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Container)), Stub_Gtk_Adjustment));
    end Get_Focus_Vadjustment;
 
    ------------------------

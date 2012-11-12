@@ -127,9 +127,9 @@ package body Gdk.Screen is
    is
       function Internal (Screen : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_screen_get_display");
-      Stub_88 : Gdk.Display.Gdk_Display_Record;
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Screen)), Stub_88));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Screen)), Stub_Gdk_Display));
    end Get_Display;
 
    ----------------------
@@ -458,9 +458,9 @@ package body Gdk.Screen is
    function Get_Default return Gdk_Screen is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_screen_get_default");
-      Stub_111 : Gdk_Screen_Record;
+      Stub_Gdk_Screen : Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal, Stub_111));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal, Stub_Gdk_Screen));
    end Get_Default;
 
    ------------

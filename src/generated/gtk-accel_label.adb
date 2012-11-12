@@ -74,9 +74,9 @@ package body Gtk.Accel_Label is
    is
       function Internal (Accel_Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_accel_label_get_accel_widget");
-      Stub_248 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Accel_Label)), Stub_248));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Accel_Label)), Stub_Gtk_Widget));
    end Get_Accel_Widget;
 
    ---------------------

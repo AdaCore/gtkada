@@ -63,11 +63,11 @@ package body Pango.Fontset is
        Font    : System.Address;
        Data    : System.Address) return Integer
    is
-      Func     : constant Pango_Fontset_Foreach_Func := To_Pango_Fontset_Foreach_Func (Data);
-      Stub_133 : Pango_Fontset_Record;
-      Stub_134 : Pango.Font.Pango_Font_Record;
+      Func               : constant Pango_Fontset_Foreach_Func := To_Pango_Fontset_Foreach_Func (Data);
+      Stub_Pango_Fontset : Pango_Fontset_Record;
+      Stub_Pango_Font    : Pango.Font.Pango_Font_Record;
    begin
-      return Boolean'Pos (Func (Pango.Fontset.Pango_Fontset (Get_User_Data (Fontset, Stub_133)), Pango.Font.Pango_Font (Get_User_Data (Font, Stub_134))));
+      return Boolean'Pos (Func (Pango.Fontset.Pango_Fontset (Get_User_Data (Fontset, Stub_Pango_Fontset)), Pango.Font.Pango_Font (Get_User_Data (Font, Stub_Pango_Font))));
    end Internal_Pango_Fontset_Foreach_Func;
 
    package Type_Conversion_Pango_Fontset is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -139,11 +139,11 @@ package body Pango.Fontset is
           Font    : System.Address;
           Data    : System.Address) return Integer
       is
-         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_137 : Pango.Fontset.Pango_Fontset_Record;
-         Stub_138 : Pango.Font.Pango_Font_Record;
+         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Pango_Fontset : Pango.Fontset.Pango_Fontset_Record;
+         Stub_Pango_Font    : Pango.Font.Pango_Font_Record;
       begin
-         return Boolean'Pos (To_Pango_Fontset_Foreach_Func (D.Func) (Pango.Fontset.Pango_Fontset (Get_User_Data (Fontset, Stub_137)), Pango.Font.Pango_Font (Get_User_Data (Font, Stub_138)), D.Data.all));
+         return Boolean'Pos (To_Pango_Fontset_Foreach_Func (D.Func) (Pango.Fontset.Pango_Fontset (Get_User_Data (Fontset, Stub_Pango_Fontset)), Pango.Font.Pango_Font (Get_User_Data (Font, Stub_Pango_Font)), D.Data.all));
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -160,9 +160,9 @@ package body Pango.Fontset is
          (Self : System.Address;
           Wc   : Guint) return System.Address;
       pragma Import (C, Internal, "pango_fontset_get_font");
-      Stub_142 : Pango.Font.Pango_Font_Record;
+      Stub_Pango_Font : Pango.Font.Pango_Font_Record;
    begin
-      return Pango.Font.Pango_Font (Get_User_Data (Internal (Get_Object (Self), Wc), Stub_142));
+      return Pango.Font.Pango_Font (Get_User_Data (Internal (Get_Object (Self), Wc), Stub_Pango_Font));
    end Get_Font;
 
    -----------------

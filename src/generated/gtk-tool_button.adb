@@ -130,9 +130,9 @@ package body Gtk.Tool_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tool_button_get_icon_widget");
-      Stub_2711 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_2711));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
    end Get_Icon_Widget;
 
    ---------------
@@ -159,9 +159,9 @@ package body Gtk.Tool_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tool_button_get_label_widget");
-      Stub_2714 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_2714));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
    end Get_Label_Widget;
 
    ------------------
@@ -330,9 +330,9 @@ package body Gtk.Tool_Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_2728 : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_2728));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------------

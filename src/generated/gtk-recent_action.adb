@@ -358,9 +358,9 @@ package body Gtk.Recent_Action is
    is
       function Internal (Chooser : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_get_filter");
-      Stub_2205 : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
+      Stub_Gtk_Recent_Filter : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
    begin
-      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Get_Object (Chooser)), Stub_2205));
+      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Get_Object (Chooser)), Stub_Gtk_Recent_Filter));
    end Get_Filter;
 
    ---------------

@@ -143,9 +143,9 @@ package body Gtk.Paned is
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
-      Stub_1452 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_1452));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
    end Get_Child1;
 
    ----------------
@@ -158,9 +158,9 @@ package body Gtk.Paned is
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
-      Stub_1454 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_1454));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
    end Get_Child2;
 
    -----------------------

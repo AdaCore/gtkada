@@ -147,13 +147,13 @@ package body Gtk.Dialog is
           Text        : Interfaces.C.Strings.chars_ptr;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
-      Stub_966   : Gtk.Widget.Gtk_Widget_Record;
-      Tmp_Return : System.Address;
+      Tmp_Text        : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Dialog), Tmp_Text, Response_Id);
       Free (Tmp_Text);
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub_966));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub_Gtk_Widget));
    end Add_Button;
 
    ---------------------
@@ -165,9 +165,9 @@ package body Gtk.Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_action_area");
-      Stub_968 : Gtk.Box.Gtk_Box_Record;
+      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_968));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Action_Area;
 
    ----------------------
@@ -179,9 +179,9 @@ package body Gtk.Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_content_area");
-      Stub_970 : Gtk.Box.Gtk_Box_Record;
+      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_970));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Content_Area;
 
    -----------------------------
@@ -213,9 +213,9 @@ package body Gtk.Dialog is
          (Dialog      : System.Address;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_widget_for_response");
-      Stub_974 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub_974));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub_Gtk_Widget));
    end Get_Widget_For_Response;
 
    --------------

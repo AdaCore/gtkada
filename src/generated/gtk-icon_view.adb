@@ -140,11 +140,11 @@ package body Gtk.Icon_View is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func      : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_1569 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_1570 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_1569)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_1570)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
 
    -----------------------------------------
@@ -156,10 +156,10 @@ package body Gtk.Icon_View is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Data      : System.Address)
    is
-      Func      : constant Gtk_Icon_View_Foreach_Func := To_Gtk_Icon_View_Foreach_Func (Data);
-      Stub_1523 : Gtk_Icon_View_Record;
+      Func               : constant Gtk_Icon_View_Foreach_Func := To_Gtk_Icon_View_Foreach_Func (Data);
+      Stub_Gtk_Icon_View : Gtk_Icon_View_Record;
    begin
-      Func (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_1523)), Path);
+      Func (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), Path);
    end Internal_Gtk_Icon_View_Foreach_Func;
 
    package Type_Conversion_Gtk_Icon_View is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -325,14 +325,14 @@ package body Gtk.Icon_View is
           Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
           Acc_Cell  : access System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_cursor");
-      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Cell     : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
-      Tmp_Acc_Cell : aliased System.Address;
-      Stub_1492    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Tmp_Return   : Integer;
+      Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+      Tmp_Acc_Cell           : aliased System.Address;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Tmp_Return             : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Acc_Path'Access, Tmp_Acc_Cell'Access);
-      Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_1492));
+      Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
       Path := Acc_Path;
       Cell := Acc_Cell;
       Cursor_Is_Set := Boolean'Val (Tmp_Return);
@@ -404,14 +404,14 @@ package body Gtk.Icon_View is
           Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
           Acc_Cell  : access System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_item_at_pos");
-      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Cell     : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
-      Tmp_Acc_Cell : aliased System.Address;
-      Stub_1496    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Tmp_Return   : Integer;
+      Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+      Tmp_Acc_Cell           : aliased System.Address;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Tmp_Return             : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), X, Y, Acc_Path'Access, Tmp_Acc_Cell'Access);
-      Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_1496));
+      Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
       Path := Acc_Path;
       Cell := Acc_Cell;
       Has_Item := Boolean'Val (Tmp_Return);
@@ -526,9 +526,9 @@ package body Gtk.Icon_View is
    is
       function Internal (Icon_View : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_get_model");
-      Stub_1505 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Icon_View)), Stub_1505));
+      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Icon_View)), Stub_Gtk_Tree_Model));
    end Get_Model;
 
    ---------------------
@@ -681,17 +681,17 @@ package body Gtk.Icon_View is
           Acc_Path     : access Gtk.Tree_Model.Gtk_Tree_Path;
           Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_tooltip_context");
-      Acc_X         : aliased Gint := X;
-      Acc_Y         : aliased Gint := Y;
-      Acc_Model     : aliased Gtk.Tree_Model.Gtk_Tree_Model;
-      Acc_Path      : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Iter      : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
-      Tmp_Acc_Model : aliased System.Address;
-      Stub_1516     : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-      Tmp_Return    : Integer;
+      Acc_X               : aliased Gint := X;
+      Acc_Y               : aliased Gint := Y;
+      Acc_Model           : aliased Gtk.Tree_Model.Gtk_Tree_Model;
+      Acc_Path            : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Iter            : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
+      Tmp_Acc_Model       : aliased System.Address;
+      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Tmp_Return          : Integer;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Tmp_Acc_Model'Access, Acc_Path'Access, Acc_Iter'Access);
-      Acc_Model := Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tmp_Acc_Model, Stub_1516));
+      Acc_Model := Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tmp_Acc_Model, Stub_Gtk_Tree_Model));
       X := Acc_X;
       Y := Acc_Y;
       Model := Acc_Model;
@@ -846,10 +846,10 @@ package body Gtk.Icon_View is
           Path      : Gtk.Tree_Model.Gtk_Tree_Path;
           Data      : System.Address)
       is
-         D         : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_1526 : Gtk.Icon_View.Gtk_Icon_View_Record;
+         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Icon_View : Gtk.Icon_View.Gtk_Icon_View_Record;
       begin
-         To_Gtk_Icon_View_Foreach_Func (D.Func) (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_1526)), Path, D.Data.all);
+         To_Gtk_Icon_View_Foreach_Func (D.Func) (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), Path, D.Data.all);
       end Internal_Cb;
 
       ----------------------
@@ -926,11 +926,11 @@ package body Gtk.Icon_View is
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D         : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_1575 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_1576 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_1575)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_1576)), Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -1374,9 +1374,9 @@ package body Gtk.Icon_View is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
-      Stub_1582 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_1582));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    ------------------------
@@ -1404,9 +1404,9 @@ package body Gtk.Icon_View is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
-      Stub_1585 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_1585));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    ------------------------

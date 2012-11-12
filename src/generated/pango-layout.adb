@@ -108,9 +108,9 @@ package body Pango.Layout is
    is
       function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_copy");
-      Stub_147 : Pango_Layout_Record;
+      Stub_Pango_Layout : Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Layout)), Stub_147));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Layout)), Stub_Pango_Layout));
    end Copy;
 
    ----------
@@ -259,9 +259,9 @@ package body Pango.Layout is
    is
       function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_get_context");
-      Stub_154 : Pango.Context.Pango_Context_Record;
+      Stub_Pango_Context : Pango.Context.Pango_Context_Record;
    begin
-      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Layout)), Stub_154));
+      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Layout)), Stub_Pango_Context));
    end Get_Context;
 
    --------------------
@@ -389,9 +389,9 @@ package body Pango.Layout is
    function Get_Layout (Self : Pango_Layout_Iter) return Pango_Layout is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_iter_get_layout");
-      Stub_197 : Pango_Layout_Record;
+      Stub_Pango_Layout : Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Self)), Stub_197));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Layout));
    end Get_Layout;
 
    ------------------------

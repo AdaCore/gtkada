@@ -41,9 +41,9 @@ package body Gtk.GRange is
    is
       function Internal (The_Range : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_range_get_adjustment");
-      Stub_2166 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Range)), Stub_2166));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Range)), Stub_Gtk_Adjustment));
    end Get_Adjustment;
 
    --------------------

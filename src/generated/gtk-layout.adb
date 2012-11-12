@@ -161,9 +161,9 @@ package body Gtk.Layout is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
-      Stub_1692 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_1692));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    ------------------------
@@ -191,9 +191,9 @@ package body Gtk.Layout is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
-      Stub_1695 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_1695));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    ------------------------

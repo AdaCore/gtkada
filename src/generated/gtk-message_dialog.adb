@@ -163,9 +163,9 @@ package body Gtk.Message_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_get_image");
-      Stub_1869 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_1869));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
    end Get_Image;
 
    ----------------------
@@ -178,9 +178,9 @@ package body Gtk.Message_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_get_message_area");
-      Stub_1871 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_1871));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
    end Get_Message_Area;
 
    ---------------

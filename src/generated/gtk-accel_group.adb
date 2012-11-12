@@ -407,9 +407,9 @@ package body Gtk.Accel_Group is
       function Internal
          (Closure : C_Gtk_Accel_Group_Activate) return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_from_accel_closure");
-      Stub_244 : Gtk_Accel_Group_Record;
+      Stub_Gtk_Accel_Group : Gtk_Accel_Group_Record;
    begin
-      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Closure), Stub_244));
+      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Closure), Stub_Gtk_Accel_Group));
    end From_Accel_Closure;
 
    -----------------

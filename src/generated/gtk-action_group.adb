@@ -386,12 +386,12 @@ package body Gtk.Action_Group is
           return System.Address;
       pragma Import (C, Internal, "gtk_action_group_get_action");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Stub_305        : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
       Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Action_Group), Tmp_Action_Name);
       Free (Tmp_Action_Name);
-      return Gtk.Action.Gtk_Action (Get_User_Data (Tmp_Return, Stub_305));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Tmp_Return, Stub_Gtk_Action));
    end Get_Action;
 
    --------------

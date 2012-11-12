@@ -129,9 +129,9 @@ package body Gtk.Viewport is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
-      Stub_2825 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_2825));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Hadjustment;
 
    ------------------------
@@ -159,9 +159,9 @@ package body Gtk.Viewport is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
-      Stub_2828 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_2828));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
    end Get_Vadjustment;
 
    ------------------------

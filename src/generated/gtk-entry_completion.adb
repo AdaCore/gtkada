@@ -110,11 +110,11 @@ package body Gtk.Entry_Completion is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func      : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_1123 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_1124 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_1123)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_1124)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
    end Internal_Cell_Data_Func;
 
    ----------------------------------------------
@@ -127,10 +127,10 @@ package body Gtk.Entry_Completion is
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data  : System.Address) return Integer
    is
-      Func      : constant Gtk_Entry_Completion_Match_Func := To_Gtk_Entry_Completion_Match_Func (User_Data);
-      Stub_1098 : Gtk_Entry_Completion_Record;
+      Func                      : constant Gtk_Entry_Completion_Match_Func := To_Gtk_Entry_Completion_Match_Func (User_Data);
+      Stub_Gtk_Entry_Completion : Gtk_Entry_Completion_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_1098)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
+      return Boolean'Pos (Func (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
    end Internal_Gtk_Entry_Completion_Match_Func;
 
    package Type_Conversion_Gtk_Entry_Completion is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -241,9 +241,9 @@ package body Gtk.Entry_Completion is
    is
       function Internal (Completion : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_get_entry");
-      Stub_1083 : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Completion)), Stub_1083));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Completion)), Stub_Gtk_Widget));
    end Get_Entry;
 
    ---------------------------
@@ -297,9 +297,9 @@ package body Gtk.Entry_Completion is
    is
       function Internal (Completion : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_get_model");
-      Stub_1088 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Completion)), Stub_1088));
+      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Completion)), Stub_Gtk_Tree_Model));
    end Get_Model;
 
    --------------------------
@@ -465,11 +465,11 @@ package body Gtk.Entry_Completion is
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D         : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_1129 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_1130 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_1129)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_1130)), Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -579,10 +579,10 @@ package body Gtk.Entry_Completion is
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Integer
       is
-         D         : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_1101 : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+         D                         : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Entry_Completion : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
       begin
-         return Boolean'Pos (To_Gtk_Entry_Completion_Match_Func (D.Func) (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_1101)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Entry_Completion_Match_Func (D.Func) (Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Completion, Stub_Gtk_Entry_Completion)), Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
       end Internal_Cb;
 
       --------------------

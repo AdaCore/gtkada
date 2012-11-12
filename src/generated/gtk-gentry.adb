@@ -128,9 +128,9 @@ package body Gtk.GEntry is
    is
       function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_buffer");
-      Stub_983 : Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record;
+      Stub_Gtk_Entry_Buffer : Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record;
    begin
-      return Gtk.Entry_Buffer.Gtk_Entry_Buffer (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_983));
+      return Gtk.Entry_Buffer.Gtk_Entry_Buffer (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_Gtk_Entry_Buffer));
    end Get_Buffer;
 
    --------------------
@@ -143,9 +143,9 @@ package body Gtk.GEntry is
    is
       function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_completion");
-      Stub_985 : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
+      Stub_Gtk_Entry_Completion : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
    begin
-      return Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_985));
+      return Gtk.Entry_Completion.Gtk_Entry_Completion (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_Gtk_Entry_Completion));
    end Get_Completion;
 
    ----------------------------------
@@ -171,9 +171,9 @@ package body Gtk.GEntry is
    is
       function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_cursor_hadjustment");
-      Stub_988 : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_988));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_Gtk_Adjustment));
    end Get_Cursor_Hadjustment;
 
    -------------------
@@ -286,9 +286,9 @@ package body Gtk.GEntry is
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_icon_pixbuf");
-      Stub_996 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (The_Entry), Icon_Pos), Stub_996));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (The_Entry), Icon_Pos), Stub_Gdk_Pixbuf));
    end Get_Icon_Pixbuf;
 
    ------------------------
@@ -413,9 +413,9 @@ package body Gtk.GEntry is
    is
       function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_layout");
-      Stub_1005 : Pango.Layout.Pango_Layout_Record;
+      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_1005));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (The_Entry)), Stub_Pango_Layout));
    end Get_Layout;
 
    ------------------------

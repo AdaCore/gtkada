@@ -254,9 +254,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_create_pango_context");
-      Stub_2861 : Pango.Context.Pango_Context_Record;
+      Stub_Pango_Context : Pango.Context.Pango_Context_Record;
    begin
-      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_2861));
+      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_Pango_Context));
    end Create_Pango_Context;
 
    -------------------------
@@ -271,9 +271,9 @@ package body Gtk.Widget is
          (Widget : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_create_pango_layout");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr;
-      Stub_2863  : Pango.Layout.Pango_Layout_Record;
-      Tmp_Return : System.Address;
+      Tmp_Text          : Interfaces.C.Strings.chars_ptr;
+      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
+      Tmp_Return        : System.Address;
    begin
       if Text = "" then
          Tmp_Text := Interfaces.C.Strings.Null_Ptr;
@@ -282,7 +282,7 @@ package body Gtk.Widget is
       end if;
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Text);
       Free (Tmp_Text);
-      return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_2863));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_Pango_Layout));
    end Create_Pango_Layout;
 
    procedure Destroy (Widget : not null access Gtk_Widget_Record) is
@@ -729,9 +729,9 @@ package body Gtk.Widget is
          (Widget      : System.Address;
           Widget_Type : GType) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_ancestor");
-      Stub_2897 : Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget), Widget_Type), Stub_2897));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget), Widget_Type), Stub_Gtk_Widget));
    end Get_Ancestor;
 
    -----------------------
@@ -875,9 +875,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_display");
-      Stub_2910 : Gdk.Display.Gdk_Display_Record;
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Widget)), Stub_2910));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gdk_Display));
    end Get_Display;
 
    -------------------------
@@ -1075,9 +1075,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_pango_context");
-      Stub_2926 : Pango.Context.Pango_Context_Record;
+      Stub_Pango_Context : Pango.Context.Pango_Context_Record;
    begin
-      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_2926));
+      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Widget)), Stub_Pango_Context));
    end Get_Pango_Context;
 
    ----------------
@@ -1089,9 +1089,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_parent");
-      Stub_2928 : Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_2928));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Widget));
    end Get_Parent;
 
    -----------------------
@@ -1312,9 +1312,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_screen");
-      Stub_2943 : Gdk.Screen.Gdk_Screen_Record;
+      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Widget)), Stub_2943));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gdk_Screen));
    end Get_Screen;
 
    -------------------
@@ -1388,9 +1388,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_style");
-      Stub_2949 : Gtk.Style.Gtk_Style_Record;
+      Stub_Gtk_Style : Gtk.Style.Gtk_Style_Record;
    begin
-      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_2949));
+      return Gtk.Style.Gtk_Style (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Style));
    end Get_Style;
 
    -----------------------------
@@ -1443,9 +1443,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_window");
-      Stub_2954 : Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_2954));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Widget));
    end Get_Tooltip_Window;
 
    ------------------
@@ -1457,9 +1457,9 @@ package body Gtk.Widget is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_toplevel");
-      Stub_2956 : Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_2956));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Widget));
    end Get_Toplevel;
 
    ----------------
@@ -2239,10 +2239,10 @@ package body Gtk.Widget is
           Size     : Gtk.Enums.Gtk_Icon_Size;
           Detail   : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-      Tmp_Detail   : Interfaces.C.Strings.chars_ptr;
-      Stub_3013    : Gdk.Pixbuf.Gdk_Pixbuf_Record;
-      Tmp_Return   : System.Address;
+      Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Detail      : Interfaces.C.Strings.chars_ptr;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Tmp_Return      : System.Address;
    begin
       if Detail = "" then
          Tmp_Detail := Interfaces.C.Strings.Null_Ptr;
@@ -2252,7 +2252,7 @@ package body Gtk.Widget is
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Size, Tmp_Detail);
       Free (Tmp_Detail);
       Free (Tmp_Stock_Id);
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_3013));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Render_Icon;
 
    ------------------------
@@ -2269,13 +2269,13 @@ package body Gtk.Widget is
           Stock_Id : Interfaces.C.Strings.chars_ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon_pixbuf");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-      Stub_3015    : Gdk.Pixbuf.Gdk_Pixbuf_Record;
-      Tmp_Return   : System.Address;
+      Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Stock_Id, Size);
       Free (Tmp_Stock_Id);
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_3015));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Render_Icon_Pixbuf;
 
    --------------
@@ -3268,9 +3268,9 @@ package body Gtk.Widget is
    function Get_Default_Style return Gtk.Style.Gtk_Style is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_default_style");
-      Stub_3088 : Gtk.Style.Gtk_Style_Record;
+      Stub_Gtk_Style : Gtk.Style.Gtk_Style_Record;
    begin
-      return Gtk.Style.Gtk_Style (Get_User_Data (Internal, Stub_3088));
+      return Gtk.Style.Gtk_Style (Get_User_Data (Internal, Stub_Gtk_Style));
    end Get_Default_Style;
 
    -------------------------
