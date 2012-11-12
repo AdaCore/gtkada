@@ -226,9 +226,9 @@ package body Gtk.Toggle_Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub_2689 : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_2689));
    end Get_Related_Action;
 
    -------------------------------

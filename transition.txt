@@ -224,6 +224,14 @@ removing their Gtk_ prefix.
 The package Generic_Assistant_Functions has been renamed to
 Set_Forward_Page_Func_User_Data.
 
+Gtk.Builder
+===========
+
+Add_From_File now returns a Guint and the error as a parameter.
+
+Get_Widget has been removed (use Get_Object instead, and cast to the appropriate
+type)
+
 Gtk.Button_Box
 ==============
 

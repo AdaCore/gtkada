@@ -370,6 +370,8 @@ class Enum(CType):
 
 
 class GObject(CType):
+    stub_index = 1
+
     def __init__(self, ada, userecord=True):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
@@ -378,7 +380,8 @@ class GObject(CType):
         self.userecord = userecord  # Parameter should be "access .._Record"
 
     def convert_from_c(self):
-        stub = "Stub_%s" % base_name(self.ada)
+        stub = "Stub_%d" % (GObject.stub_index, )
+        GObject.stub_index += 1
 
         if self.ada == "Glib.Object.GObject":
             conv = "Get_User_Data (%%(var)s, %s)" % stub

@@ -35,9 +35,9 @@ package body Gtk.Scrollable is
    is
       function Internal (Self : Gtk_Scrollable) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_48 : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_Gtk_Adjustment));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_48));
    end Get_Hadjustment;
 
    ---------------------
@@ -49,9 +49,9 @@ package body Gtk.Scrollable is
    is
       function Internal (Self : Gtk_Scrollable) return System.Address;
       pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_49 : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_Gtk_Adjustment));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Self), Stub_49));
    end Get_Vadjustment;
 
    ---------------------

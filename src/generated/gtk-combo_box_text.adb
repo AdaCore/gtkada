@@ -79,11 +79,11 @@ package body Gtk.Combo_Box_Text is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func     : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Stub_894 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_895 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_894)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_895)), Iter);
    end Internal_Cell_Data_Func;
 
    package Type_Conversion_Gtk_Combo_Box_Text is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -369,11 +369,11 @@ package body Gtk.Combo_Box_Text is
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_900 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_901 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_900)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_901)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------

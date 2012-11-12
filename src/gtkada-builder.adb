@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
 with System.Assertions;    use System.Assertions;
 
@@ -31,6 +30,7 @@ with Ada.Unchecked_Deallocation;
 
 with Glib;        use Glib;
 
+with Gtk.Builder;     use Gtk.Builder;
 with Gtk.Handlers;    use Gtk.Handlers;
 with Gtkada.Handlers; use Gtkada.Handlers;
 
@@ -44,14 +44,12 @@ package body Gtkada.Builder is
      (Gtkada_Builder_Record, Boolean);
 
    procedure Wrapper_Callback
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address);
-   pragma Convention (C, Wrapper_Callback);
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : UTF8_String;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags);
    --  Low-level subprogram to perform signal connections.
 
    procedure Connect
@@ -143,7 +141,6 @@ package body Gtkada.Builder is
                     (Handler.The_Builder_Return_Handler)),
                Slot_Object => The_Builder,
                After       => After);
-
       end case;
    end Connect;
 
@@ -152,31 +149,24 @@ package body Gtkada.Builder is
    ----------------------
 
    procedure Wrapper_Callback
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address)
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : UTF8_String;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags)
    is
-      pragma Unreferenced (User_Data);
-      Object      : constant GObject := Convert (C_Object);
-      Signal_Name : constant String := Value (C_Signal_Name);
       After       : constant Boolean := (Flags and G_Connect_After) /= 0;
-      Builder     : constant Gtkada_Builder :=
-        Gtkada_Builder (Convert (C_Builder));
+      GBuilder    : constant Gtkada_Builder := Gtkada_Builder (Builder);
 
       The_Marshaller : Universal_Marshaller_Access;
       --  The universal marshaller
-
-      Handler_Name  : constant String := Value (C_Handler_Name);
 
       C : Cursor;
    begin
       --  Find the marshaller corresponding to the handler name.
 
-      C := Find (Builder.Handlers, To_Unbounded_String (Handler_Name));
+      C := Find (GBuilder.Handlers, To_Unbounded_String (Handler_Name));
 
       if C = No_Element then
          Raise_Assert_Failure
@@ -189,14 +179,13 @@ package body Gtkada.Builder is
 
       --  Now do the actual connect
 
-         Connect (Handler_Name => Handler_Name,
-                  Handler     => The_Marshaller.all,
-                  Base_Object => Object,
-                  Signal      => Glib.Signal_Name (Signal_Name),
-                  After       => After,
-                  The_Builder => Builder,
-                  Slot_Object => Convert (C_Connect_Object));
-
+      Connect (Handler_Name => Handler_Name,
+               Handler     => The_Marshaller.all,
+               Base_Object => GObject (Object),
+               Signal      => Glib.Signal_Name (Signal_Name),
+               After       => After,
+               The_Builder => GBuilder,
+               Slot_Object => GObject (Connect_Object));
    end Wrapper_Callback;
 
    ----------------------
@@ -281,10 +270,7 @@ package body Gtkada.Builder is
 
    procedure Do_Connect (Builder : access Gtkada_Builder_Record'Class) is
    begin
-      Connect_Signals_Full
-        (Builder,
-         Wrapper_Callback'Access,
-         User_Data => Glib.Object.Get_Object (Builder));
+      Connect_Signals_Full (Builder, Wrapper_Callback'Access);
    end Do_Connect;
 
    ----------------

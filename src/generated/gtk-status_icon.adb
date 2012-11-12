@@ -260,9 +260,9 @@ package body Gtk.Status_Icon is
    is
       function Internal (Status_Icon : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_get_pixbuf");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_2534 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Status_Icon)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Status_Icon)), Stub_2534));
    end Get_Pixbuf;
 
    ----------------
@@ -275,9 +275,9 @@ package body Gtk.Status_Icon is
    is
       function Internal (Status_Icon : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_get_screen");
-      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
+      Stub_2536 : Gdk.Screen.Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Status_Icon)), Stub_Gdk_Screen));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Status_Icon)), Stub_2536));
    end Get_Screen;
 
    --------------

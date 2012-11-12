@@ -275,9 +275,9 @@ package body Gtk.Window is
          (Window_Group : System.Address;
           Device       : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_group_get_current_device_grab");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_3209 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window_Group), Get_Object (Device)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window_Group), Get_Object (Device)), Stub_3209));
    end Get_Current_Device_Grab;
 
    ----------------------
@@ -291,9 +291,9 @@ package body Gtk.Window is
       function Internal
          (Window_Group : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_group_get_current_grab");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_3211 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window_Group)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window_Group)), Stub_3211));
    end Get_Current_Grab;
 
    -------------------
@@ -337,9 +337,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_default_widget");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_3105 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_3105));
    end Get_Default_Widget;
 
    -------------------
@@ -378,9 +378,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_focus");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_3109 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_3109));
    end Get_Focus;
 
    ----------------------
@@ -433,9 +433,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_group");
-      Stub_Gtk_Window_Group : Gtk_Window_Group_Record;
+      Stub_3114 : Gtk_Window_Group_Record;
    begin
-      return Gtk.Window.Gtk_Window_Group (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Window_Group));
+      return Gtk.Window.Gtk_Window_Group (Get_User_Data (Internal (Get_Object (Window)), Stub_3114));
    end Get_Group;
 
    -------------------------
@@ -461,9 +461,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_icon");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_3117 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Window)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Window)), Stub_3117));
    end Get_Icon;
 
    -------------------
@@ -626,9 +626,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_screen");
-      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
+      Stub_3129 : Gdk.Screen.Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Window)), Stub_Gdk_Screen));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Window)), Stub_3129));
    end Get_Screen;
 
    --------------
@@ -698,9 +698,9 @@ package body Gtk.Window is
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_transient_for");
-      Stub_Gtk_Window : Gtk_Window_Record;
+      Stub_3135 : Gtk_Window_Record;
    begin
-      return Gtk.Window.Gtk_Window (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Window));
+      return Gtk.Window.Gtk_Window (Get_User_Data (Internal (Get_Object (Window)), Stub_3135));
    end Get_Transient_For;
 
    -------------------

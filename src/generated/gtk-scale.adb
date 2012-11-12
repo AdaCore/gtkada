@@ -296,9 +296,9 @@ package body Gtk.Scale is
    is
       function Internal (Scale : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_get_layout");
-      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
+      Stub_1470 : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub_Pango_Layout));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Scale)), Stub_1470));
    end Get_Layout;
 
    ------------------------

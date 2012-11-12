@@ -142,9 +142,9 @@ package body Gtk.Action is
          (Action    : System.Address;
           Icon_Size : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_action_create_icon");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_259 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action), Icon_Size), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action), Icon_Size), Stub_259));
    end Create_Icon;
 
    -----------------
@@ -157,9 +157,9 @@ package body Gtk.Action is
    is
       function Internal (Action : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_action_create_menu");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_261 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_261));
    end Create_Menu;
 
    ----------------------
@@ -172,9 +172,9 @@ package body Gtk.Action is
    is
       function Internal (Action : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_action_create_menu_item");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_263 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_263));
    end Create_Menu_Item;
 
    ----------------------
@@ -187,9 +187,9 @@ package body Gtk.Action is
    is
       function Internal (Action : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_action_create_tool_item");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_265 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Action)), Stub_265));
    end Create_Tool_Item;
 
    ----------------------------

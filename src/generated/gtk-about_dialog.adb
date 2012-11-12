@@ -167,9 +167,9 @@ package body Gtk.About_Dialog is
    is
       function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_206 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub_206));
    end Get_Logo;
 
    ------------------------

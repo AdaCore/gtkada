@@ -67,11 +67,11 @@ package body Gtk.Font_Chooser is
        Face   : System.Address;
        Data   : System.Address) return Integer
    is
-      Func                   : constant Gtk_Font_Filter_Func := To_Gtk_Font_Filter_Func (Data);
-      Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
-      Stub_Pango_Font_Face   : Pango.Font_Face.Pango_Font_Face_Record;
+      Func    : constant Gtk_Font_Filter_Func := To_Gtk_Font_Filter_Func (Data);
+      Stub_40 : Pango.Font_Family.Pango_Font_Family_Record;
+      Stub_41 : Pango.Font_Face.Pango_Font_Face_Record;
    begin
-      return Boolean'Pos (Func (Pango.Font_Family.Pango_Font_Family (Get_User_Data (Family, Stub_Pango_Font_Family)), Pango.Font_Face.Pango_Font_Face (Get_User_Data (Face, Stub_Pango_Font_Face))));
+      return Boolean'Pos (Func (Pango.Font_Family.Pango_Font_Family (Get_User_Data (Family, Stub_40)), Pango.Font_Face.Pango_Font_Face (Get_User_Data (Face, Stub_41))));
    end Internal_Gtk_Font_Filter_Func;
 
    --------------
@@ -95,9 +95,9 @@ package body Gtk.Font_Chooser is
    is
       function Internal (Self : Gtk_Font_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_font_chooser_get_font_face");
-      Stub_Pango_Font_Face : Pango.Font_Face.Pango_Font_Face_Record;
+      Stub_38 : Pango.Font_Face.Pango_Font_Face_Record;
    begin
-      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Internal (Self), Stub_Pango_Font_Face));
+      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Internal (Self), Stub_38));
    end Get_Font_Face;
 
    ---------------------
@@ -109,9 +109,9 @@ package body Gtk.Font_Chooser is
    is
       function Internal (Self : Gtk_Font_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_font_chooser_get_font_family");
-      Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
+      Stub_39 : Pango.Font_Family.Pango_Font_Family_Record;
    begin
-      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Internal (Self), Stub_Pango_Font_Family));
+      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Internal (Self), Stub_39));
    end Get_Font_Family;
 
    ----------------------
@@ -185,11 +185,11 @@ package body Gtk.Font_Chooser is
           Face   : System.Address;
           Data   : System.Address) return Integer
       is
-         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
-         Stub_Pango_Font_Face   : Pango.Font_Face.Pango_Font_Face_Record;
+         D       : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_42 : Pango.Font_Family.Pango_Font_Family_Record;
+         Stub_43 : Pango.Font_Face.Pango_Font_Face_Record;
       begin
-         return Boolean'Pos (To_Gtk_Font_Filter_Func (D.Func) (Pango.Font_Family.Pango_Font_Family (Get_User_Data (Family, Stub_Pango_Font_Family)), Pango.Font_Face.Pango_Font_Face (Get_User_Data (Face, Stub_Pango_Font_Face)), D.Data.all));
+         return Boolean'Pos (To_Gtk_Font_Filter_Func (D.Func) (Pango.Font_Family.Pango_Font_Family (Get_User_Data (Family, Stub_42)), Pango.Font_Face.Pango_Font_Face (Get_User_Data (Face, Stub_43)), D.Data.all));
       end Internal_Cb;
 
       ---------------------

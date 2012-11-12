@@ -77,14 +77,15 @@ package body Create_Gtkada_Builder is
 
    procedure Add_Custom_Widget (Box : Gtk_Hbox) is
       Builder : Gtkada_Builder;
-      Error   : GError;
+      Error   : aliased GError;
    begin
       --  Create a builder
       Gtk_New (Builder);
 
       --  Load the custom widget from the XML description
-      Error := Add_From_File (Builder, "gtkbuilder_custom_widget.xml");
-      if Error /= null then
+      if Builder.Add_From_File
+         ("gtkbuilder_custom_widget.xml", Error'Access) = 0
+      then
          Put_Line ("Error [Create_Builder.Add_Custom_Widget]: "
                    & Get_Message (Error));
          Error_Free (Error);
@@ -94,7 +95,7 @@ package body Create_Gtkada_Builder is
       --  Now get the widget...
       declare
          Custom_Widget : constant Gtk.Widget.Gtk_Widget :=
-           Get_Widget (Builder, "custom");
+           Gtk.Widget.Gtk_Widget (Get_Object (Builder, "custom"));
       begin
          --  ... And add it to our Box
          Pack_Start (Box, Custom_Widget);
@@ -124,15 +125,13 @@ package body Create_Gtkada_Builder is
       pragma Unreferenced (Button);
 
       Builder : Gtkada_Builder;
-      Error   : GError;
+      Error   : aliased GError;
    begin
       --  Create a new Gtkada_Builder object
       Gtk_New (Builder);
 
       --  Read in our XML file
-      Error := Add_From_File (Builder, Default_Filename);
-
-      if Error /= null then
+      if Builder.Add_From_File (Default_Filename, Error'Access) = 0 then
          Put_Line ("Error [Create_Builder.On_Button_Clicked]: "
                    & Get_Message (Error));
          Error_Free (Error);
@@ -168,12 +167,12 @@ package body Create_Gtkada_Builder is
       Do_Connect (Builder);
 
       --  Add a custom widget 3 times to the placeholder hbox
-      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
-      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
-      Add_Custom_Widget (Gtk_Hbox (Get_Widget (Builder, "placeholder_hbox")));
+      Add_Custom_Widget (Gtk_Hbox (Builder.Get_Object ("placeholder_hbox")));
+      Add_Custom_Widget (Gtk_Hbox (Builder.Get_Object ("placeholder_hbox")));
+      Add_Custom_Widget (Gtk_Hbox (Builder.Get_Object ("placeholder_hbox")));
 
       --  Find our main window, then display it and all of its children.
-      Gtk.Widget.Show_All (Get_Widget (Builder, "window1"));
+      Gtk.Widget.Gtk_Widget (Builder.Get_Object ("window1")).Show_All;
    end On_Button_Clicked;
 
    --------------------------------
@@ -184,15 +183,15 @@ package body Create_Gtkada_Builder is
      (Builder : access Gtkada_Builder_Record'Class)
    is
       Buffer  : constant Gtk_Text_Buffer := Get_Buffer
-        (Gtk.Text_View.Gtk_Text_View (Get_Widget (Builder, "textField")));
+        (Gtk.Text_View.Gtk_Text_View (Builder.Get_Object ("textField")));
    begin
       Put_Line ("On_Btn_Concatenate_Clicked");
 
       Insert_At_Cursor
         (Buffer,
          "Concatenated: " &
-         Get_Text (Gtk.GEntry.Gtk_Entry (Get_Widget (Builder, "term1"))) &
-         Get_Text (Gtk.GEntry.Gtk_Entry (Get_Widget (Builder, "term2"))) &
+         Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term1"))) &
+         Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term2"))) &
          ASCII.LF);
    exception
       when Event : others =>

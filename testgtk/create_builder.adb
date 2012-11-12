@@ -25,7 +25,6 @@ with System;               use System;
 with System.Address_Image;
 with Ada.Exceptions;
 with Ada.Text_IO;          use Ada.Text_IO;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Glib;                 use Glib;
 with Glib.Error;           use Glib.Error;
@@ -94,15 +93,17 @@ package body Create_Builder is
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
+   package Connects is new Connect_Signals_Full_User_Data
+      (User_Data_Type => Widget_Collection);
+
    procedure Connect_Signals
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address);
-   pragma Convention (C, Connect_Signals);
+      (Builder        : not null access Gtk_Builder_Record'Class;
+       Object         : not null access Glib.Object.GObject_Record'Class;
+       Signal_Name    : UTF8_String;
+       Handler_Name   : UTF8_String;
+       Connect_Object : access Glib.Object.GObject_Record'Class;
+       Flags          : Glib.G_Connect_Flags;
+       Widgets        : Widget_Collection);
    --  Subprogram to perform signal connections.
 
    ---------------------
@@ -110,35 +111,28 @@ package body Create_Builder is
    ---------------------
 
    procedure Connect_Signals
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address)
+      (Builder        : not null access Gtk_Builder_Record'Class;
+       Object         : not null access Glib.Object.GObject_Record'Class;
+       Signal_Name    : UTF8_String;
+       Handler_Name   : UTF8_String;
+       Connect_Object : access Glib.Object.GObject_Record'Class;
+       Flags          : Glib.G_Connect_Flags;
+       Widgets        : Widget_Collection)
    is
-      pragma Unreferenced (C_Builder);
-
-      Stub : Widget_Collection_Record;
-      Widgets : constant Widget_Collection :=
-        Widget_Collection (Get_User_Data (User_Data, Stub));
-
-      Widget        : constant GObject := Convert (C_Object);
+      pragma Unreferenced (Builder);
+      Widget        : constant GObject := GObject (Object);
       After         : constant Boolean := (Flags and G_Connect_After) /= 0;
-      Signal_Name   : constant String := Value (C_Signal_Name);
-      Handler_Name  : constant String := Value (C_Handler_Name);
       Function_Name : constant Callback_Function_Name :=
                         Callback_Function_Name'Value (Handler_Name);
       --  Local translations from our low-level arguments
    begin
       --  Tell the console what we are up to.
       Put_Line ("Connect_Signals callback invoked: ");
-      Put_Line ("   object " & System.Address_Image (C_Object)
+      Put_Line ("   object " & System.Address_Image (Object.Get_Object)
                 & " emitting " & Signal_Name);
       Put_Line ("   to " & Handler_Name & ", with flags:" & Flags'Img);
 
-      if C_Connect_Object /= System.Null_Address then
+      if Connect_Object /= null then
          Put_Line ("   Warning: Connect_Object parameter will be ignored"
                    & "(replaced by Widget_Collection)");
       end if;
@@ -204,7 +198,7 @@ package body Create_Builder is
       pragma Unreferenced (Button);
 
       Builder1 : Gtk_Builder;
-      Error    : GError;
+      Error    : aliased GError;
       Widgets  : Widget_Collection;
    begin
       --  Create a new Gtk_Builder object
@@ -215,8 +209,7 @@ package body Create_Builder is
       Glib.Object.Initialize (Widgets);
 
       --  Read in our XML file
-      Error := Add_From_File (Builder1, Default_Filename);
-      if Error /= null then
+      if Builder1.Add_From_File (Default_Filename, Error'Access) = 0 then
          Put_Line ("Error [Create_Builder.On_Button_Clicked]: "
                    & Get_Message (Error));
          Error_Free (Error);
@@ -224,19 +217,17 @@ package body Create_Builder is
 
       --  Look up widgets for which we have callbacks, and store the
       --  information in Widget_Collection_Record structure.
-      Widgets.Term1 := Gtk.GEntry.Gtk_Entry (Get_Widget (Builder1, "term1"));
-      Widgets.Term2 := Gtk.GEntry.Gtk_Entry (Get_Widget (Builder1, "term2"));
+      Widgets.Term1 := Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term1"));
+      Widgets.Term2 := Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term2"));
       Widgets.Text_Field := Gtk.Text_View.Gtk_Text_View
-        (Get_Widget (Builder1, "textField"));
+        (Builder1.Get_Object ("textField"));
 
       --  Connect signal handlers
-      Connect_Signals_Full
-        (Builder1,
-         Connect_Signals'Access,
-         Glib.Object.Get_Object (Widgets));
+      Connects.Connect_Signals_Full
+        (Builder1, Connect_Signals'Access, Widgets);
 
       --  Find our main window, then display it and all of its children.
-      Gtk.Widget.Show_All (Get_Widget (Builder1, "window1"));
+      Gtk.Widget.Gtk_Widget (Builder1.Get_Object ("window1")).Show_All;
    end On_Button_Clicked;
 
    --------------------------------

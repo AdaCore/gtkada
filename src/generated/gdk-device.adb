@@ -61,9 +61,9 @@ package body Gdk.Device is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_device_get_associated_device");
-      Stub_Gdk_Device : Gdk_Device_Record;
+      Stub_58 : Gdk_Device_Record;
    begin
-      return Gdk.Device.Gdk_Device (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device));
+      return Gdk.Device.Gdk_Device (Get_User_Data (Internal (Get_Object (Self)), Stub_58));
    end Get_Associated_Device;
 
    ------------------
@@ -105,9 +105,9 @@ package body Gdk.Device is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_device_get_display");
-      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+      Stub_62 : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Display));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Self)), Stub_62));
    end Get_Display;
 
    --------------------

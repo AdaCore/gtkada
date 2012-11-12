@@ -90,9 +90,9 @@ package body Gtk.Print_Operation is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_operation_get_default_page_setup");
-      Stub_Gtk_Page_Setup : Gtk.Page_Setup.Gtk_Page_Setup_Record;
+      Stub_1996 : Gtk.Page_Setup.Gtk_Page_Setup_Record;
    begin
-      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Page_Setup));
+      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Self)), Stub_1996));
    end Get_Default_Page_Setup;
 
    --------------------------
@@ -155,9 +155,9 @@ package body Gtk.Print_Operation is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_operation_get_print_settings");
-      Stub_Gtk_Print_Settings : Gtk.Print_Settings.Gtk_Print_Settings_Record;
+      Stub_2002 : Gtk.Print_Settings.Gtk_Print_Settings_Record;
    begin
-      return Gtk.Print_Settings.Gtk_Print_Settings (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Print_Settings));
+      return Gtk.Print_Settings.Gtk_Print_Settings (Get_User_Data (Internal (Get_Object (Self)), Stub_2002));
    end Get_Print_Settings;
 
    ----------------

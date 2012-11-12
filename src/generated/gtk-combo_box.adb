@@ -139,11 +139,11 @@ package body Gtk.Combo_Box is
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
-      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func     : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Stub_858 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Stub_859 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_858)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_859)), Iter);
    end Internal_Cell_Data_Func;
 
    -----------------------------------------------
@@ -155,10 +155,10 @@ package body Gtk.Combo_Box is
        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
-      Func                : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func     : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
+      Stub_834 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter));
+      return Boolean'Pos (Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_834)), Iter));
    end Internal_Gtk_Tree_View_Row_Separator_Func;
 
    package Type_Conversion_Gtk_Combo_Box is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -453,9 +453,9 @@ package body Gtk.Combo_Box is
    is
       function Internal (Combo_Box : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Stub_814 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub_Gtk_Tree_Model));
+      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub_814));
    end Get_Model;
 
    ---------------------------
@@ -688,11 +688,11 @@ package body Gtk.Combo_Box is
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
-         D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_864 : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+         Stub_865 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_864)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_865)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -852,10 +852,10 @@ package body Gtk.Combo_Box is
           Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
-         D                   : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_837 : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_837)), Iter, D.Data.all));
       end Internal_Cb;
 
       ----------------------------

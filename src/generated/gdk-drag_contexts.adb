@@ -67,9 +67,9 @@ package body Gdk.Drag_Contexts is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_drag_context_get_device");
-      Stub_Gdk_Device : Gdk.Device.Gdk_Device_Record;
+      Stub_79 : Gdk.Device.Gdk_Device_Record;
    begin
-      return Gdk.Device.Gdk_Device (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device));
+      return Gdk.Device.Gdk_Device (Get_User_Data (Internal (Get_Object (Self)), Stub_79));
    end Get_Device;
 
    ------------------

@@ -174,9 +174,9 @@ package body Gtk.Image_Menu_Item is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_menu_item_get_image");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1614 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub_1614));
    end Get_Image;
 
    -------------------
@@ -275,9 +275,9 @@ package body Gtk.Image_Menu_Item is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub_1625 : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_1625));
    end Get_Related_Action;
 
    -------------------------------

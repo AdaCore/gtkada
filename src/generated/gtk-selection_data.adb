@@ -177,9 +177,9 @@ package body Gtk.Selection_Data is
    is
       function Internal (Selection : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_selection_data_get_display");
-      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+      Stub_2415 : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Selection)), Stub_Gdk_Display));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Selection)), Stub_2415));
    end Get_Display;
 
    ----------------
@@ -213,9 +213,9 @@ package body Gtk.Selection_Data is
    is
       function Internal (Selection : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_selection_data_get_pixbuf");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_2416 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Selection)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Selection)), Stub_2416));
    end Get_Pixbuf;
 
    -------------------

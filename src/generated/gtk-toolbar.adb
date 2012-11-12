@@ -127,9 +127,9 @@ package body Gtk.Toolbar is
          (Toolbar : System.Address;
           N       : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_get_nth_item");
-      Stub_Gtk_Tool_Item : Gtk.Tool_Item.Gtk_Tool_Item_Record;
+      Stub_2741 : Gtk.Tool_Item.Gtk_Tool_Item_Record;
    begin
-      return Gtk.Tool_Item.Gtk_Tool_Item (Get_User_Data (Internal (Get_Object (Toolbar), N), Stub_Gtk_Tool_Item));
+      return Gtk.Tool_Item.Gtk_Tool_Item (Get_User_Data (Internal (Get_Object (Toolbar), N), Stub_2741));
    end Get_Nth_Item;
 
    ----------------------
@@ -347,9 +347,9 @@ package body Gtk.Toolbar is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tool_shell_get_text_size_group");
-      Stub_Gtk_Size_Group : Gtk.Size_Group.Gtk_Size_Group_Record;
+      Stub_2760 : Gtk.Size_Group.Gtk_Size_Group_Record;
    begin
-      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Size_Group));
+      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Get_Object (Self)), Stub_2760));
    end Get_Text_Size_Group;
 
    ------------------

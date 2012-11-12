@@ -134,9 +134,9 @@ package body Gtk.Page_Setup is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_page_setup_copy");
-      Stub_Gtk_Page_Setup : Gtk_Page_Setup_Record;
+      Stub_1956 : Gtk_Page_Setup_Record;
    begin
-      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Page_Setup));
+      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Self)), Stub_1956));
    end Copy;
 
    -----------------------

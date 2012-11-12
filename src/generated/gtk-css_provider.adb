@@ -134,9 +134,9 @@ package body Gtk.Css_Provider is
          (Self : System.Address;
           Path : Gtk.Widget.Gtk_Widget_Path) return System.Address;
       pragma Import (C, Internal, "gtk_style_provider_get_icon_factory");
-      Stub_Gtk_Icon_Factory : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
+      Stub_960 : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
    begin
-      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Get_Object (Self), Path), Stub_Gtk_Icon_Factory));
+      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Get_Object (Self), Path), Stub_960));
    end Get_Icon_Factory;
 
    ------------------------
@@ -175,9 +175,9 @@ package body Gtk.Css_Provider is
    function Get_Default return Gtk_Css_Provider is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_css_provider_get_default");
-      Stub_Gtk_Css_Provider : Gtk_Css_Provider_Record;
+      Stub_957 : Gtk_Css_Provider_Record;
    begin
-      return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Internal, Stub_Gtk_Css_Provider));
+      return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Internal, Stub_957));
    end Get_Default;
 
    ---------------
@@ -192,10 +192,10 @@ package body Gtk.Css_Provider is
          (Name    : Interfaces.C.Strings.chars_ptr;
           Variant : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_css_provider_get_named");
-      Tmp_Name              : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Variant           : Interfaces.C.Strings.chars_ptr;
-      Stub_Gtk_Css_Provider : Gtk_Css_Provider_Record;
-      Tmp_Return            : System.Address;
+      Tmp_Name    : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Variant : Interfaces.C.Strings.chars_ptr;
+      Stub_958    : Gtk_Css_Provider_Record;
+      Tmp_Return  : System.Address;
    begin
       if Variant = "" then
          Tmp_Variant := Interfaces.C.Strings.Null_Ptr;
@@ -205,7 +205,7 @@ package body Gtk.Css_Provider is
       Tmp_Return := Internal (Tmp_Name, Tmp_Variant);
       Free (Tmp_Variant);
       Free (Tmp_Name);
-      return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Tmp_Return, Stub_Gtk_Css_Provider));
+      return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Tmp_Return, Stub_958));
    end Get_Named;
 
 end Gtk.Css_Provider;

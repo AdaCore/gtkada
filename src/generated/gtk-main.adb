@@ -86,10 +86,10 @@ package body Gtk.Main is
        Event       : Gdk.Event.Gdk_Event_Key;
        Func_Data   : System.Address) return Gint
    is
-      Func            : constant Gtk_Key_Snoop_Func := To_Gtk_Key_Snoop_Func (Func_Data);
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Func      : constant Gtk_Key_Snoop_Func := To_Gtk_Key_Snoop_Func (Func_Data);
+      Stub_1722 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event);
+      return Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_1722)), Event);
    end Internal_Gtk_Key_Snoop_Func;
 
    -------------------------
@@ -136,10 +136,10 @@ package body Gtk.Main is
           Event       : Gdk.Event.Gdk_Event_Key;
           Func_Data   : System.Address) return Gint
       is
-         D               : constant Users.Internal_Data_Access := Users.Convert (Func_Data);
-         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+         D         : constant Users.Internal_Data_Access := Users.Convert (Func_Data);
+         Stub_1723 : Gtk.Widget.Gtk_Widget_Record;
       begin
-         return To_Gtk_Key_Snoop_Func (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event, D.Data.all);
+         return To_Gtk_Key_Snoop_Func (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_1723)), Event, D.Data.all);
       end Internal_Cb;
 
       -------------------------
@@ -272,9 +272,9 @@ package body Gtk.Main is
    function Get_Current_Event_Device return Gdk.Device.Gdk_Device is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_get_current_event_device");
-      Stub_Gdk_Device : Gdk.Device.Gdk_Device_Record;
+      Stub_1724 : Gdk.Device.Gdk_Device_Record;
    begin
-      return Gdk.Device.Gdk_Device (Get_User_Data (Internal, Stub_Gdk_Device));
+      return Gdk.Device.Gdk_Device (Get_User_Data (Internal, Stub_1724));
    end Get_Current_Event_Device;
 
    -----------------------------
@@ -327,9 +327,9 @@ package body Gtk.Main is
    is
       function Internal (Event : Gdk.Event.Gdk_Event) return System.Address;
       pragma Import (C, Internal, "gtk_get_event_widget");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1725 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Event), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Event), Stub_1725));
    end Get_Event_Widget;
 
    -----------------------
@@ -383,9 +383,9 @@ package body Gtk.Main is
    function Grab_Get_Current return Gtk.Widget.Gtk_Widget is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_grab_get_current");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1717 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal, Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal, Stub_1717));
    end Grab_Get_Current;
 
    ------------------------

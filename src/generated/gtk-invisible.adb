@@ -89,9 +89,9 @@ package body Gtk.Invisible is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_invisible_get_screen");
-      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
+      Stub_1634 : Gdk.Screen.Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Screen));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Self)), Stub_1634));
    end Get_Screen;
 
    ----------------

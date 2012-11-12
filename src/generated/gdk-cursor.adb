@@ -85,9 +85,9 @@ package body Gdk.Cursor is
    is
       function Internal (Self : Gdk.Gdk_Cursor) return System.Address;
       pragma Import (C, Internal, "gdk_cursor_get_display");
-      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+      Stub_56 : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_Gdk_Display));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_56));
    end Get_Display;
 
 end Gdk.Cursor;

@@ -271,9 +271,9 @@ package body Gdk.Window is
    is
       function Internal (Self : Gdk.Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gdk_window_get_display");
-      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+      Stub_115 : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_Gdk_Display));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_115));
    end Get_Display;
 
    ----------------------
@@ -335,9 +335,9 @@ package body Gdk.Window is
    function Get_Screen (Self : Gdk.Gdk_Window) return Gdk.Screen.Gdk_Screen is
       function Internal (Self : Gdk.Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gdk_window_get_screen");
-      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
+      Stub_116 : Gdk.Screen.Gdk_Screen_Record;
    begin
-      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Self), Stub_Gdk_Screen));
+      return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Self), Stub_116));
    end Get_Screen;
 
    -----------------------------

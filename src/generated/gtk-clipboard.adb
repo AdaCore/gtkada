@@ -274,11 +274,11 @@ package body Gtk.Clipboard is
        Pixbuf    : System.Address;
        Data      : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Image_Received_Func := To_Gtk_Clipboard_Image_Received_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
-      Stub_Gdk_Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Func     : constant Gtk_Clipboard_Image_Received_Func := To_Gtk_Clipboard_Image_Received_Func (Data);
+      Stub_704 : Gtk_Clipboard_Record;
+      Stub_705 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Pixbuf, Stub_Gdk_Pixbuf)));
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_704)), Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Pixbuf, Stub_705)));
    end Internal_Gtk_Clipboard_Image_Received_Func;
 
    ------------------------------------------
@@ -290,10 +290,10 @@ package body Gtk.Clipboard is
        Selection_Data : System.Address;
        Data           : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Received_Func := To_Gtk_Clipboard_Received_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Func     : constant Gtk_Clipboard_Received_Func := To_Gtk_Clipboard_Received_Func (Data);
+      Stub_698 : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), From_Object (Selection_Data));
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_698)), From_Object (Selection_Data));
    end Internal_Gtk_Clipboard_Received_Func;
 
    ----------------------------------------------------
@@ -307,10 +307,10 @@ package body Gtk.Clipboard is
        Length    : gsize;
        Data      : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Rich_Text_Received_Func := To_Gtk_Clipboard_Rich_Text_Received_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Func     : constant Gtk_Clipboard_Rich_Text_Received_Func := To_Gtk_Clipboard_Rich_Text_Received_Func (Data);
+      Stub_712 : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_712)), Format, Text, Length);
    end Internal_Gtk_Clipboard_Rich_Text_Received_Func;
 
    --------------------------------------------------
@@ -323,10 +323,10 @@ package body Gtk.Clipboard is
        N_Atoms   : Gint;
        Data      : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Targets_Received_Func := To_Gtk_Clipboard_Targets_Received_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Func     : constant Gtk_Clipboard_Targets_Received_Func := To_Gtk_Clipboard_Targets_Received_Func (Data);
+      Stub_722 : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_722)), Atoms, N_Atoms);
    end Internal_Gtk_Clipboard_Targets_Received_Func;
 
    -----------------------------------------------
@@ -338,10 +338,10 @@ package body Gtk.Clipboard is
        Text      : Interfaces.C.Strings.chars_ptr;
        Data      : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Text_Received_Func := To_Gtk_Clipboard_Text_Received_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Func     : constant Gtk_Clipboard_Text_Received_Func := To_Gtk_Clipboard_Text_Received_Func (Data);
+      Stub_728 : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gtkada.Bindings.Value_Allowing_Null (Text));
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_728)), Gtkada.Bindings.Value_Allowing_Null (Text));
    end Internal_Gtk_Clipboard_Text_Received_Func;
 
    ---------------------------------------------
@@ -353,10 +353,10 @@ package body Gtk.Clipboard is
        Uris      : chars_ptr_array_access;
        Data      : System.Address)
    is
-      Func               : constant Gtk_Clipboard_Urireceived_Func := To_Gtk_Clipboard_Urireceived_Func (Data);
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Func     : constant Gtk_Clipboard_Urireceived_Func := To_Gtk_Clipboard_Urireceived_Func (Data);
+      Stub_734 : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), To_String_List (Uris.all));
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_734)), To_String_List (Uris.all));
    end Internal_Gtk_Clipboard_Urireceived_Func;
 
    package Type_Conversion_Gtk_Clipboard is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -384,9 +384,9 @@ package body Gtk.Clipboard is
    is
       function Internal (Clipboard : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_clipboard_get_display");
-      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+      Stub_695 : Gdk.Display.Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Clipboard)), Stub_Gdk_Display));
+      return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Get_Object (Clipboard)), Stub_695));
    end Get_Display;
 
    ---------------
@@ -399,9 +399,9 @@ package body Gtk.Clipboard is
    is
       function Internal (Clipboard : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_clipboard_get_owner");
-      Stub_GObject : Glib.Object.GObject_Record;
+      Stub_697 : Glib.Object.GObject_Record;
    begin
-      return Get_User_Data (Internal (Get_Object (Clipboard)), Stub_GObject);
+      return Get_User_Data (Internal (Get_Object (Clipboard)), Stub_697);
    end Get_Owner;
 
    ----------------------
@@ -455,10 +455,10 @@ package body Gtk.Clipboard is
           Selection_Data : System.Address;
           Data           : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_701 : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), From_Object (Selection_Data), D.Data.all);
+         To_Gtk_Clipboard_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_701)), From_Object (Selection_Data), D.Data.all);
       end Internal_Cb;
 
       ----------------------
@@ -529,11 +529,11 @@ package body Gtk.Clipboard is
           Pixbuf    : System.Address;
           Data      : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
-         Stub_Gdk_Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_708 : Gtk.Clipboard.Gtk_Clipboard_Record;
+         Stub_709 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       begin
-         To_Gtk_Clipboard_Image_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Pixbuf, Stub_Gdk_Pixbuf)), D.Data.all);
+         To_Gtk_Clipboard_Image_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_708)), Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Pixbuf, Stub_709)), D.Data.all);
       end Internal_Cb;
 
       -------------------
@@ -602,10 +602,10 @@ package body Gtk.Clipboard is
           Length    : gsize;
           Data      : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_717 : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length, D.Data.all);
+         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_717)), Format, Text, Length, D.Data.all);
       end Internal_Cb;
 
       -----------------------
@@ -681,10 +681,10 @@ package body Gtk.Clipboard is
           N_Atoms   : Gint;
           Data      : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_725 : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms, D.Data.all);
+         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_725)), Atoms, N_Atoms, D.Data.all);
       end Internal_Cb;
 
       ---------------------
@@ -754,10 +754,10 @@ package body Gtk.Clipboard is
           Text      : Interfaces.C.Strings.chars_ptr;
           Data      : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_731 : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Gtkada.Bindings.Value_Allowing_Null (Text), D.Data.all);
+         To_Gtk_Clipboard_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_731)), Gtkada.Bindings.Value_Allowing_Null (Text), D.Data.all);
       end Internal_Cb;
 
       ------------------
@@ -821,10 +821,10 @@ package body Gtk.Clipboard is
           Uris      : chars_ptr_array_access;
           Data      : System.Address)
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
+         D        : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_737 : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Urireceived_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), To_String_List (Uris.all), D.Data.all);
+         To_Gtk_Clipboard_Urireceived_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_737)), To_String_List (Uris.all), D.Data.all);
       end Internal_Cb;
 
       ------------------
@@ -937,9 +937,9 @@ package body Gtk.Clipboard is
    is
       function Internal (Clipboard : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_clipboard_wait_for_image");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_747 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Clipboard)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Clipboard)), Stub_747));
    end Wait_For_Image;
 
    -------------------
@@ -1054,9 +1054,9 @@ package body Gtk.Clipboard is
       function Internal
          (Selection : Gdk.Types.Gdk_Atom) return System.Address;
       pragma Import (C, Internal, "gtk_clipboard_get");
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Stub_756 : Gtk_Clipboard_Record;
    begin
-      return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Selection), Stub_Gtk_Clipboard));
+      return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Selection), Stub_756));
    end Get;
 
    ---------------------
@@ -1072,9 +1072,9 @@ package body Gtk.Clipboard is
          (Display   : System.Address;
           Selection : Gdk.Types.Gdk_Atom) return System.Address;
       pragma Import (C, Internal, "gtk_clipboard_get_for_display");
-      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+      Stub_758 : Gtk_Clipboard_Record;
    begin
-      return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Get_Object (Display), Selection), Stub_Gtk_Clipboard));
+      return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Get_Object (Display), Selection), Stub_758));
    end Get_For_Display;
 
 end Gtk.Clipboard;

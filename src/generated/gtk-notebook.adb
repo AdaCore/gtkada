@@ -138,9 +138,9 @@ package body Gtk.Notebook is
          (Notebook  : System.Address;
           Pack_Type : Gtk.Enums.Gtk_Pack_Type) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_action_widget");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1883 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Pack_Type), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Pack_Type), Stub_1883));
    end Get_Action_Widget;
 
    ----------------------
@@ -183,9 +183,9 @@ package body Gtk.Notebook is
          (Notebook : System.Address;
           Child    : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_menu_label");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1888 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Get_Object (Child)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Get_Object (Child)), Stub_1888));
    end Get_Menu_Label;
 
    -------------------------
@@ -230,9 +230,9 @@ package body Gtk.Notebook is
          (Notebook : System.Address;
           Page_Num : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_nth_page");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1893 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Page_Num), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Page_Num), Stub_1893));
    end Get_Nth_Page;
 
    --------------------
@@ -317,9 +317,9 @@ package body Gtk.Notebook is
          (Notebook : System.Address;
           Child    : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_tab_label");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1902 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Get_Object (Child)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Get_Object (Child)), Stub_1902));
    end Get_Tab_Label;
 
    ------------------------

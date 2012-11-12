@@ -4794,6 +4794,18 @@ creating a tag.
      </extra>
    </package>
 
+   <package id="GtkBuilder">
+     <parameter name="self" ada="Builder"/>
+     <method id="gtk_builder_add_from_string">
+       <parameter name="length" default="-1" ada=""/>
+     </method>
+     <method id="gtk_builder_get_objects" return="ObjectSList" />
+     <method id="gtk_builder_value_from_string" return_as_param="Success" />
+     <method id="gtk_builder_add_from_file">
+       <parameter name="error" direction="out"/>
+     </method>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

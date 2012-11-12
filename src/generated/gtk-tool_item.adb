@@ -153,13 +153,13 @@ package body Gtk.Tool_Item is
           Menu_Item_Id : Interfaces.C.Strings.chars_ptr)
           return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_get_proxy_menu_item");
-      Tmp_Menu_Item_Id   : Interfaces.C.Strings.chars_ptr := New_String (Menu_Item_Id);
-      Stub_Gtk_Menu_Item : Gtk.Menu_Item.Gtk_Menu_Item_Record;
-      Tmp_Return         : System.Address;
+      Tmp_Menu_Item_Id : Interfaces.C.Strings.chars_ptr := New_String (Menu_Item_Id);
+      Stub_2769        : Gtk.Menu_Item.Gtk_Menu_Item_Record;
+      Tmp_Return       : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Tool_Item), Tmp_Menu_Item_Id);
       Free (Tmp_Menu_Item_Id);
-      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Tmp_Return, Stub_Gtk_Menu_Item));
+      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Tmp_Return, Stub_2769));
    end Get_Proxy_Menu_Item;
 
    ----------------------
@@ -215,9 +215,9 @@ package body Gtk.Tool_Item is
    is
       function Internal (Tool_Item : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_get_text_size_group");
-      Stub_Gtk_Size_Group : Gtk.Size_Group.Gtk_Size_Group_Record;
+      Stub_2774 : Gtk.Size_Group.Gtk_Size_Group_Record;
    begin
-      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Get_Object (Tool_Item)), Stub_Gtk_Size_Group));
+      return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Get_Object (Tool_Item)), Stub_2774));
    end Get_Text_Size_Group;
 
    -----------------------
@@ -295,9 +295,9 @@ package body Gtk.Tool_Item is
    is
       function Internal (Tool_Item : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_retrieve_proxy_menu_item");
-      Stub_Gtk_Menu_Item : Gtk.Menu_Item.Gtk_Menu_Item_Record;
+      Stub_2781 : Gtk.Menu_Item.Gtk_Menu_Item_Record;
    begin
-      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Internal (Get_Object (Tool_Item)), Stub_Gtk_Menu_Item));
+      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Internal (Get_Object (Tool_Item)), Stub_2781));
    end Retrieve_Proxy_Menu_Item;
 
    ----------------
@@ -486,9 +486,9 @@ package body Gtk.Tool_Item is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub_2796 : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_2796));
    end Get_Related_Action;
 
    -------------------------------

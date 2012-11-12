@@ -376,9 +376,9 @@ package body Gtk.Image is
    is
       function Internal (Image : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_get_pixbuf");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_1599 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Image)), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Image)), Stub_1599));
    end Get;
 
    --------------------

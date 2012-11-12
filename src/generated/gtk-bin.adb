@@ -40,9 +40,9 @@ package body Gtk.Bin is
    is
       function Internal (Bin : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_bin_get_child");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_391 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Bin)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Bin)), Stub_391));
    end Get_Child;
 
 end Gtk.Bin;

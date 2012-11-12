@@ -157,11 +157,11 @@ package body Gtk.Menu is
        Push_In   : out Integer;
        User_Data : System.Address)
    is
-      Func          : constant Gtk_Menu_Position_Func := To_Gtk_Menu_Position_Func (User_Data);
-      Stub_Gtk_Menu : Gtk_Menu_Record;
-      Tmp_Push_In   : Boolean;
+      Func        : constant Gtk_Menu_Position_Func := To_Gtk_Menu_Position_Func (User_Data);
+      Stub_1750   : Gtk_Menu_Record;
+      Tmp_Push_In : Boolean;
    begin
-      Func (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_Gtk_Menu)), X, Y, Tmp_Push_In);
+      Func (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_1750)), X, Y, Tmp_Push_In);
       Push_In := Boolean'Pos (Tmp_Push_In);
    end Internal_Gtk_Menu_Position_Func;
 
@@ -252,9 +252,9 @@ package body Gtk.Menu is
    is
       function Internal (Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_accel_group");
-      Stub_Gtk_Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group_Record;
+      Stub_1739 : Gtk.Accel_Group.Gtk_Accel_Group_Record;
    begin
-      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Get_Object (Menu)), Stub_Gtk_Accel_Group));
+      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Get_Object (Menu)), Stub_1739));
    end Get_Accel_Group;
 
    --------------------
@@ -281,9 +281,9 @@ package body Gtk.Menu is
    is
       function Internal (Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_active");
-      Stub_Gtk_Menu_Item : Gtk.Menu_Item.Gtk_Menu_Item_Record;
+      Stub_1742 : Gtk.Menu_Item.Gtk_Menu_Item_Record;
    begin
-      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Internal (Get_Object (Menu)), Stub_Gtk_Menu_Item));
+      return Gtk.Menu_Item.Gtk_Menu_Item (Get_User_Data (Internal (Get_Object (Menu)), Stub_1742));
    end Get_Active;
 
    -----------------------
@@ -295,9 +295,9 @@ package body Gtk.Menu is
    is
       function Internal (Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_attach_widget");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1744 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Menu)), Stub_1744));
    end Get_Attach_Widget;
 
    -----------------
@@ -455,11 +455,11 @@ package body Gtk.Menu is
           Push_In   : out Integer;
           User_Data : System.Address)
       is
-         D             : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_Gtk_Menu : Gtk.Menu.Gtk_Menu_Record;
-         Tmp_Push_In   : Boolean;
+         D           : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_1772   : Gtk.Menu.Gtk_Menu_Record;
+         Tmp_Push_In : Boolean;
       begin
-         To_Gtk_Menu_Position_Func (D.Func) (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_Gtk_Menu)), X, Y, Tmp_Push_In, D.Data.all);
+         To_Gtk_Menu_Position_Func (D.Func) (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_1772)), X, Y, Tmp_Push_In, D.Data.all);
          Push_In := Boolean'Pos (Tmp_Push_In);
       end Internal_Cb;
 
@@ -539,11 +539,11 @@ package body Gtk.Menu is
           Push_In   : out Integer;
           User_Data : System.Address)
       is
-         D             : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_Gtk_Menu : Gtk.Menu.Gtk_Menu_Record;
-         Tmp_Push_In   : Boolean;
+         D           : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_1757   : Gtk.Menu.Gtk_Menu_Record;
+         Tmp_Push_In : Boolean;
       begin
-         To_Gtk_Menu_Position_Func (D.Func) (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_Gtk_Menu)), X, Y, Tmp_Push_In, D.Data.all);
+         To_Gtk_Menu_Position_Func (D.Func) (Gtk.Menu.Gtk_Menu (Get_User_Data (Menu, Stub_1757)), X, Y, Tmp_Push_In, D.Data.all);
          Push_In := Boolean'Pos (Tmp_Push_In);
       end Internal_Cb;
 

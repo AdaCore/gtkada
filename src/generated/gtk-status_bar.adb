@@ -86,9 +86,9 @@ package body Gtk.Status_Bar is
    is
       function Internal (Statusbar : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_get_message_area");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_2522 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub_2522));
    end Get_Message_Area;
 
    ---------

@@ -206,9 +206,9 @@ package body Gtk.Style_Properties is
          (Self : System.Address;
           Path : Gtk.Widget.Gtk_Widget_Path) return System.Address;
       pragma Import (C, Internal, "gtk_style_provider_get_icon_factory");
-      Stub_Gtk_Icon_Factory : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
+      Stub_2644 : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
    begin
-      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Get_Object (Self), Path), Stub_Gtk_Icon_Factory));
+      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Get_Object (Self), Path), Stub_2644));
    end Get_Icon_Factory;
 
    ------------------------

@@ -130,9 +130,9 @@ package body Gtk.Recent_Chooser is
    is
       function Internal (Chooser : Gtk_Recent_Chooser) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_get_filter");
-      Stub_Gtk_Recent_Filter : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
+      Stub_45 : Gtk.Recent_Filter.Gtk_Recent_Filter_Record;
    begin
-      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Chooser), Stub_Gtk_Recent_Filter));
+      return Gtk.Recent_Filter.Gtk_Recent_Filter (Get_User_Data (Internal (Chooser), Stub_45));
    end Get_Filter;
 
    ---------------

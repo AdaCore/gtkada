@@ -140,9 +140,9 @@ package body Gtk.Recent_Info is
          (Self : System.Address;
           Size : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_recent_info_get_icon");
-      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_2381 : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self), Size), Stub_Gdk_Pixbuf));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self), Size), Stub_2381));
    end Get_Icon;
 
    -------------------

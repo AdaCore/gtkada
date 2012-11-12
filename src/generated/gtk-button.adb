@@ -207,9 +207,9 @@ package body Gtk.Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_button_get_image");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_439 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_439));
    end Get_Image;
 
    ------------------------
@@ -463,9 +463,9 @@ package body Gtk.Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub_460 : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_460));
    end Get_Related_Action;
 
    -------------------------------

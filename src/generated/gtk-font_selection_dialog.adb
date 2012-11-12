@@ -75,9 +75,9 @@ package body Gtk.Font_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_cancel_button");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1419 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_1419));
    end Get_Cancel_Button;
 
    -------------------
@@ -105,9 +105,9 @@ package body Gtk.Font_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_selection");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1422 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_1422));
    end Get_Font_Selection;
 
    -------------------
@@ -120,9 +120,9 @@ package body Gtk.Font_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_ok_button");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_1424 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_1424));
    end Get_Ok_Button;
 
    ----------------------

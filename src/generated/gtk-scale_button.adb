@@ -89,9 +89,9 @@ package body Gtk.Scale_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_button_get_adjustment");
-      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+      Stub_2391 : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Adjustment));
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Button)), Stub_2391));
    end Get_Adjustment;
 
    ----------------------
@@ -104,9 +104,9 @@ package body Gtk.Scale_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_button_get_minus_button");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_2393 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_2393));
    end Get_Minus_Button;
 
    ---------------------
@@ -119,9 +119,9 @@ package body Gtk.Scale_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_button_get_plus_button");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_2395 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_2395));
    end Get_Plus_Button;
 
    ---------------
@@ -134,9 +134,9 @@ package body Gtk.Scale_Button is
    is
       function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_button_get_popup");
-      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Stub_2397 : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_Gtk_Widget));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Button)), Stub_2397));
    end Get_Popup;
 
    ---------------
@@ -240,9 +240,9 @@ package body Gtk.Scale_Button is
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
+      Stub_2406 : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_2406));
    end Get_Related_Action;
 
    -------------------------------

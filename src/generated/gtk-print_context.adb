@@ -41,9 +41,9 @@ package body Gtk.Print_Context is
    is
       function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_context_create_pango_context");
-      Stub_Pango_Context : Pango.Context.Pango_Context_Record;
+      Stub_1979 : Pango.Context.Pango_Context_Record;
    begin
-      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Context)), Stub_Pango_Context));
+      return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Context)), Stub_1979));
    end Create_Pango_Context;
 
    -------------------------
@@ -56,9 +56,9 @@ package body Gtk.Print_Context is
    is
       function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_context_create_pango_layout");
-      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
+      Stub_1981 : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Context)), Stub_Pango_Layout));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Context)), Stub_1981));
    end Create_Pango_Layout;
 
    -----------------------
@@ -157,9 +157,9 @@ package body Gtk.Print_Context is
    is
       function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_context_get_page_setup");
-      Stub_Gtk_Page_Setup : Gtk.Page_Setup.Gtk_Page_Setup_Record;
+      Stub_1988 : Gtk.Page_Setup.Gtk_Page_Setup_Record;
    begin
-      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Context)), Stub_Gtk_Page_Setup));
+      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object (Context)), Stub_1988));
    end Get_Page_Setup;
 
    -----------------------
@@ -172,9 +172,9 @@ package body Gtk.Print_Context is
    is
       function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_print_context_get_pango_fontmap");
-      Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
+      Stub_1990 : Pango.Font_Map.Pango_Font_Map_Record;
    begin
-      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object (Context)), Stub_Pango_Font_Map));
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object (Context)), Stub_1990));
    end Get_Pango_Fontmap;
 
    ---------------
