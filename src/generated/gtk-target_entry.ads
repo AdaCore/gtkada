@@ -41,6 +41,8 @@ package Gtk.Target_Entry is
       Info : Guint;
    end record;
    pragma Convention (C, Gtk_Target_Entry);
+
+   function From_Object_Free (B : access Gtk_Target_Entry) return Gtk_Target_Entry; pragma Inline (From_Object_Free);
    --  A Gtk.Target_Entry.Gtk_Target_Entry structure represents a single type
    --  of data than can be supplied for by a widget for a selection or for
    --  supplied or received during drag-and-drop.

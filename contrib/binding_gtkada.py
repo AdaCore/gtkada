@@ -15,10 +15,6 @@ Where the package node is defined as follows:
              into="..."      <!-- optional, the package to bind types and
                                   methods into -->
              ada="..."       <!-- optional, the packge's ada name -->
-
-             private="false"  <!--  If true, the main type is implemented as a
-                                  tagged record, not a GObject or record with
-                                  fields -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->

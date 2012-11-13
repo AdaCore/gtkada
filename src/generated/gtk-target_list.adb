@@ -26,6 +26,15 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gtk.Target_List is
 
+   function From_Object_Free
+     (B : access Gtk_Target_List'Class) return Gtk_Target_List
+   is
+      Result : constant Gtk_Target_List := Gtk_Target_List (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Target_List is
       S : Gtk_Target_List;
    begin

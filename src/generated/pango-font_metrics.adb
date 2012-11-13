@@ -26,6 +26,15 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Pango.Font_Metrics is
 
+   function From_Object_Free
+     (B : access Pango_Font_Metrics'Class) return Pango_Font_Metrics
+   is
+      Result : constant Pango_Font_Metrics := Pango_Font_Metrics (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Pango_Font_Metrics is
       S : Pango_Font_Metrics;
    begin

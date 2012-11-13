@@ -176,6 +176,8 @@ package Glib is
    pragma Inline (Get_Object, Set_Object);
    --  The internal C object. It should not be used directly by applications.
 
+   procedure g_free (A : System.Address);
+   pragma Import (C, g_free, "g_free");
    --  </doc_ignore>
 
    function Is_Null (Self : C_Boxed'Class) return Boolean;

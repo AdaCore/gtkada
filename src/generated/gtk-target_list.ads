@@ -40,6 +40,8 @@ package Gtk.Target_List is
    type Gtk_Target_List is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Target_List;
+   function From_Object_Free (B : access Gtk_Target_List'Class) return Gtk_Target_List;
+   pragma Inline (From_Object_Free, From_Object);
 
    type Gtk_Accel_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Accel_Flags);

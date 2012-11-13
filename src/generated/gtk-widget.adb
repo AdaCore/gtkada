@@ -30,6 +30,20 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Widget is
 
+   function From_Object_Free (B : access Gtk_Requisition) return Gtk_Requisition is
+      Result : constant Gtk_Requisition := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gtk_Widget_Path) return Gtk_Widget_Path is
+      Result : constant Gtk_Widget_Path := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function Convert (R : Gtk.Widget.Gtk_Widget) return System.Address is
    begin
       return Get_Object (R);

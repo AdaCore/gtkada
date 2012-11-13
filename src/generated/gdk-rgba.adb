@@ -29,6 +29,13 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package body Gdk.RGBA is
 
+   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA is
+      Result : constant Gdk_RGBA := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function To_Address
      (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
    package RGBA_Properties is new Generic_Internal_Boxed_Property

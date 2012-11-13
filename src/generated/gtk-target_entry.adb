@@ -26,6 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gtk.Target_Entry is
 
+   function From_Object_Free (B : access Gtk_Target_Entry) return Gtk_Target_Entry is
+      Result : constant Gtk_Target_Entry := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    -------------
    -- Gtk_New --
    -------------

@@ -27,6 +27,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Icon_Set is
 
+   function From_Object_Free
+     (B : access Gtk_Icon_Set'Class) return Gtk_Icon_Set
+   is
+      Result : constant Gtk_Icon_Set := Gtk_Icon_Set (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Icon_Set is
       S : Gtk_Icon_Set;
    begin

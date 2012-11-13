@@ -47,6 +47,8 @@ package Gtk.Paper_Size is
    type Gtk_Paper_Size is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Paper_Size;
+   function From_Object_Free (B : access Gtk_Paper_Size'Class) return Gtk_Paper_Size;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --

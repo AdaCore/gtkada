@@ -29,6 +29,13 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.File_Filter is
 
+   function From_Object_Free (B : access Gtk_File_Filter_Info) return Gtk_File_Filter_Info is
+      Result : constant Gtk_File_Filter_Info := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_File_Filter_Func);
 

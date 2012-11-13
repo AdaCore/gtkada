@@ -518,13 +518,12 @@ class Record(CType):
             CType.__init__(self, ada, property)
 
         self.cparam_for_out = "%s" % self.ada
+        # self.cleanup = "Free (%s);"
 
     def convert_from_c(self):
         conv = "%(var)s.all"  # convert C -> Ada,
-
-        # ??? Memory leak if we don't do the below
-        #if self.transfer_ownership:
-        #    conv = "Dereference_And_Free (%(var)s)"
+        if self.transfer_ownership:
+            conv = "From_Object_Free (%(var)s)"
 
         return (self.ada,
                 "access %s" % self.ada,

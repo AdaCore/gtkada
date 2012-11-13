@@ -66,6 +66,8 @@ package Gtk.Accel_Group is
    end record;
    pragma Convention (C, Gtk_Accel_Key);
 
+   function From_Object_Free (B : access Gtk_Accel_Key) return Gtk_Accel_Key; pragma Inline (From_Object_Free);
+
 
    type Gtk_Accel_Group_Activate is access function
      (Accel_Group   : access Gtk_Accel_Group_Record'Class;

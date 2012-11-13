@@ -46,6 +46,8 @@ package Gtk.Icon_Set is
    type Gtk_Icon_Set is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Set;
+   function From_Object_Free (B : access Gtk_Icon_Set'Class) return Gtk_Icon_Set;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --

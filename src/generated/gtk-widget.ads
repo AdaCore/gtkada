@@ -282,11 +282,14 @@ package Gtk.Widget is
       Height : Gint;
    end record;
    pragma Convention (C, Gtk_Requisition);
+
+   function From_Object_Free (B : access Gtk_Requisition) return Gtk_Requisition; pragma Inline (From_Object_Free);
    --  A <structname>GtkRequisition</structname> represents the desired size
    --  of a widget. See <xref linkend="geometry-management"/> for more
    --  information.
 
    type Gtk_Widget_Path is new Glib.C_Proxy;
+   function From_Object_Free (B : access Gtk_Widget_Path) return Gtk_Widget_Path; pragma Inline (From_Object_Free);
    --  GtkWidgetPath is a boxed type that represents a widget hierarchy from
    --  the topmost widget, typically a toplevel, to any child. This widget path
    --  abstraction is used in Gtk.Style_Context.Gtk_Style_Context on behalf of

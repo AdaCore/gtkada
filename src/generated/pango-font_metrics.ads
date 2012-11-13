@@ -30,6 +30,8 @@ package Pango.Font_Metrics is
    type Pango_Font_Metrics is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Pango_Font_Metrics;
+   function From_Object_Free (B : access Pango_Font_Metrics'Class) return Pango_Font_Metrics;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --

@@ -122,6 +122,8 @@ package Gtk.Icon_Theme is
    type Gtk_Icon_Info is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Info;
+   function From_Object_Free (B : access Gtk_Icon_Info'Class) return Gtk_Icon_Info;
+   pragma Inline (From_Object_Free, From_Object);
 
    ----------------------------
    -- Enumeration Properties --

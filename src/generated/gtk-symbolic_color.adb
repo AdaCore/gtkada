@@ -28,6 +28,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Symbolic_Color is
 
+   function From_Object_Free
+     (B : access Gtk_Symbolic_Color'Class) return Gtk_Symbolic_Color
+   is
+      Result : constant Gtk_Symbolic_Color := Gtk_Symbolic_Color (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Symbolic_Color is
       S : Gtk_Symbolic_Color;
    begin

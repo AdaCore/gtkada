@@ -212,6 +212,8 @@ package Gdk.Window is
       Win_Gravity : Gdk_Gravity;
    end record;
    pragma Convention (C, Gdk_Geometry);
+
+   function From_Object_Free (B : access Gdk_Geometry) return Gdk_Geometry; pragma Inline (From_Object_Free);
    --  The Gdk.Window.Gdk_Geometry struct gives the window manager information
    --  about a window's geometry constraints. Normally you would set these on
    --  the GTK+ level using Gtk.Window.Set_Geometry_Hints.

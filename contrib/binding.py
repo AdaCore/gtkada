@@ -1322,9 +1322,6 @@ pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, specs=Fals
         if fields:
             section = self.pkg.section("Fields")
             for f in fields:
-                if f.get("private", "0") == "1":
-                    continue
-
                 name = f.get("name")
 
                 # Getter
@@ -1665,82 +1662,113 @@ See Glib.Properties for more information on properties)""")
 
         fields = []
 
-        if not private:
-            for field in node.findall(nfield):
-                name = field.get("name")
+        for field in node.findall(nfield):
+            name = field.get("name")
 
-                ftype = None
-                type = field.findall(ntype)
-                cb   = field.findall(ncallback)
+            ftype = None
+            type = field.findall(ntype)
+            cb   = field.findall(ncallback)
 
-                if type:
-                    ftype = override_fields.get(name, None)
-                    if ftype is None:
-                        ctype = type[0].get(ctype_qname)
-                        if not ctype:
-                           # <type name="..."> has no c:type attribute, so we try
-                           # to map the name to a Girname
-                           ctype = naming.girname_to_ctype[type[0].get("name")]
+            if type:
+                ftype = override_fields.get(name, None)
+                if ftype is None:
+                    ctype = type[0].get(ctype_qname)
+                    if not ctype:
+                       # <type name="..."> has no c:type attribute, so we try
+                       # to map the name to a Girname
+                       ctype = naming.girname_to_ctype[type[0].get("name")]
 
-                        if not first_field_ctype:
-                            first_field_ctype = ctype
-                        ftype = naming.type(name="", cname=ctype)
+                    if not first_field_ctype:
+                        first_field_ctype = ctype
+                    ftype = naming.type(name="", cname=ctype)
 
-                elif cb:
-                    # ??? JL: Should properly bind the callback here.
-                    # For now, we just use a System.Address to maintain the record
-                    # integrity
-                    ftype = override_fields.get(name, None)
-                    if ftype is None:
-                        ftype = AdaType(
-                            "System.Address", pkg=self.pkg)
+            elif cb:
+                # ??? JL: Should properly bind the callback here.
+                # For now, we just use a System.Address to maintain the record
+                # integrity
+                ftype = override_fields.get(name, None)
+                if ftype is None:
+                    ftype = AdaType(
+                        "System.Address", pkg=self.pkg)
+            else:
+                print "WARNING: Field has no type: %s.%s" % (ctype, name)
+                print " generation of the record is most certainly incorrect"
+
+            if ftype != None:
+                if ftype.ada in ("GSList", "GList") and private:
+                    ftype = "System.Address"
                 else:
-                    print "WARNING: Field has no type: %s.%s" % (ctype, name)
-                    print " generation of the record is most certainly incorrect"
-
-                if ftype != None:
                     ftype = ftype.record_field_type(pkg=self.pkg)
-                    self.pkg.add_with(package_name(ftype))
 
-                    fields.append((naming.case(name), ftype))
+                self.pkg.add_with(package_name(ftype))
+                fields.append((naming.case(name), ftype))
 
         if not fields:
             section.add(
-                "\ntype %s is new Glib.C_Proxy;\n" % base)
-
-        elif is_union:
-           enums = self.get_enumeration_values(first_field_ctype)
-           enums_dict = {ctype: adatype for ctype, adatype in enums}
-           text = "\ntype %s (%s : %s := %s) is record\n" % (
-                            base, fields[0][0], fields[0][1],
-                            enums[0][1]) + \
-               "    case %s is\n" % fields[0][0]
-           for index, f in enumerate(fields):
-               if index != 0:
-                   when_stmt = []
-                   if unions:
-                       for v, key in unions:
-                           if key.lower() == f[0].lower():   # applies to field
-                               when_stmt.append(enums_dict[v])
-                   else:
-                       when_stmt = [enums[index][1]]
-
-                   if not when_stmt:
-                       print "ERROR: no discrimant value for field %s" % f[0]
-
-                   text += "\n      when %s =>\n %s : %s;\n" % (
-                            "\n          | ".join(when_stmt), f[0], f[1])
-
-           text += "   end case;\nend record;\n"
-           text += "pragma Convention (C, %s);\n" % base
-           text += "pragma Unchecked_Union(%s);\n" % base
-           section.add("\n" + text)
+                "\ntype %s is new Glib.C_Proxy;\n" % base
+                + ("function From_Object_Free (B : access %(typename)s) "
+                + "return %(typename)s; pragma Inline (From_Object_Free);") % {"typename": base})
+            section.add_code("""
+function From_Object_Free (B : access %(typename)s) return %(typename)s is
+   Result : constant %(typename)s := B.all;
+begin
+   Glib.g_free (B.all'Address);
+   return Result;
+end From_Object_Free;""" % {"typename": base}, specs=False)
 
         else:
-           section.add(
-                "\ntype %s is record\n" % base
-                + "\n".join("%s : %s;" % f for f in fields)
-                + "\nend record;\npragma Convention (C, %s);\n" % base)
+           if private:
+              section.add("\ntype %(typename)s is private;\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s; pragma Inline (From_Object_Free);" % {"typename": base})
+              adder = self.pkg.add_private
+           else:
+              adder = section.add
+
+           if is_union:
+               enums = self.get_enumeration_values(first_field_ctype)
+               enums_dict = {ctype: adatype for ctype, adatype in enums}
+               text = "\ntype %s (%s : %s := %s) is record\n" % (
+                                base, fields[0][0], fields[0][1],
+                                enums[0][1]) + \
+                   "    case %s is\n" % fields[0][0]
+               for index, f in enumerate(fields):
+                   if index != 0:
+                       when_stmt = []
+                       if unions:
+                           for v, key in unions:
+                               if key.lower() == f[0].lower():   # applies to field
+                                   when_stmt.append(enums_dict[v])
+                       else:
+                           when_stmt = [enums[index][1]]
+
+                       if not when_stmt:
+                           print "ERROR: no discrimant value for field %s" % f[0]
+
+                       text += "\n      when %s =>\n %s : %s;\n" % (
+                                "\n          | ".join(when_stmt), f[0], f[1])
+
+               text += "   end case;\nend record;\n"
+               text += "pragma Convention (C, %s);\n" % base
+               text += "pragma Unchecked_Union(%s);\n" % base
+               adder("\n" + Code(text).format())
+
+           else:
+               adder(Code(
+                   "\ntype %s is record\n" % base
+                   + "\n".join("%s : %s;" % f for f in fields)
+                   + "\nend record;\npragma Convention (C, %s);\n" % base).format())
+
+           if not private:
+               section.add("\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s;"
+                       % {"typename": base}
+                           + " pragma Inline (From_Object_Free);")
+
+           section.add_code("""
+function From_Object_Free (B : access %(typename)s) return %(typename)s is
+   Result : constant %(typename)s := B.all;
+begin
+   Glib.g_free (B.all'Address);
+   return Result;
+end From_Object_Free;""" % {"typename": base}, specs=False)
 
         section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
@@ -1894,7 +1922,6 @@ See Glib.Properties for more information on properties)""")
         self.pkg = gir.get_package(into or self.ada_package_name,
                                    ctype=self.ctype,
                                    doc=girdoc)
-        # self.pkg.language_version = "pragma Ada_05;"
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)
@@ -1928,9 +1955,19 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
    type %(typename)s is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return %(typename)s;
+   function From_Object_Free (B : access %(typename)s'Class) return %(typename)s;
+   pragma Inline (From_Object_Free, From_Object);
 """ % self._subst)
 
             section.add_code("""
+   function From_Object_Free
+      (B : access %(typename)s'Class) return %(typename)s
+   is
+      Result : constant %(typename)s := %(typename)s (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    function From_Object (Object : System.Address) return %(typename)s is
       S : %(typename)s;

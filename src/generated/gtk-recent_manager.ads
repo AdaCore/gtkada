@@ -133,6 +133,8 @@ package Gtk.Recent_Manager is
       Is_Private : Boolean;
    end record;
    pragma Convention (C, Gtk_Recent_Data);
+
+   function From_Object_Free (B : access Gtk_Recent_Data) return Gtk_Recent_Data; pragma Inline (From_Object_Free);
    --  Meta-data to be passed to gtk_recent_manager_add_full when registering
    --  a recently used resource.
 

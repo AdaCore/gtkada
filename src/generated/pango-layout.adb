@@ -39,12 +39,28 @@ package body Pango.Layout is
       return Internal (Get_Object (Layout));
    end Get_Text;
 
+   function From_Object_Free
+     (B : access Pango_Layout_Iter'Class) return Pango_Layout_Iter
+   is
+      Result : constant Pango_Layout_Iter := Pango_Layout_Iter (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Pango_Layout_Iter is
       S : Pango_Layout_Iter;
    begin
       S.Set_Object (Object);
       return S;
    end From_Object;
+
+   function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line is
+      Result : constant Pango_Layout_Line := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    package Type_Conversion_Pango_Layout is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Pango_Layout_Record);
@@ -439,7 +455,7 @@ package body Pango.Layout is
           Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line");
    begin
-      return Internal (Get_Object (Layout), Line).all;
+      return From_Object_Free (Internal (Get_Object (Layout), Line));
    end Get_Line;
 
    --------------
@@ -451,7 +467,7 @@ package body Pango.Layout is
          (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line");
    begin
-      return Internal (Get_Object (Self)).all;
+      return From_Object_Free (Internal (Get_Object (Self)));
    end Get_Line;
 
    --------------------
@@ -498,7 +514,7 @@ package body Pango.Layout is
           Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line_readonly");
    begin
-      return Internal (Get_Object (Layout), Line).all;
+      return From_Object_Free (Internal (Get_Object (Layout), Line));
    end Get_Line_Readonly;
 
    -----------------------
@@ -512,7 +528,7 @@ package body Pango.Layout is
          (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line_readonly");
    begin
-      return Internal (Get_Object (Self)).all;
+      return From_Object_Free (Internal (Get_Object (Self)));
    end Get_Line_Readonly;
 
    ---------------------

@@ -4269,7 +4269,7 @@ creating a tag.
 
    <package id="PangoLayoutLine" into="PangoLayout">
      <record ctype="PangoLayoutLine" private="true"/>
-<!--     <slist ada="Pango_Layout_Line_List" ctype="PangoLayoutLine"/> -->
+
      <method id="pango_layout_line_get_type" ada="Get_Type_Layout_Line" />
 
      <method id="pango_layout_line_get_extents" bind="false"/> <!--  forces bad pragma import on pango_layout_get_extents -->

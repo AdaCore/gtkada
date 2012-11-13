@@ -28,6 +28,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Pango.Language is
 
+   function From_Object_Free
+     (B : access Pango_Language'Class) return Pango_Language
+   is
+      Result : constant Pango_Language := Pango_Language (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Pango_Language is
       S : Pango_Language;
    begin

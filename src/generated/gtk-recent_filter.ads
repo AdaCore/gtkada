@@ -106,6 +106,8 @@ package Gtk.Recent_Filter is
       Age : Gint;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);
+
+   function From_Object_Free (B : access Gtk_Recent_Filter_Info) return Gtk_Recent_Filter_Info; pragma Inline (From_Object_Free);
    --  A GtkRecentFilterInfo struct is used to pass information about the
    --  tested file to Gtk.Recent_Filter.Filter.
 

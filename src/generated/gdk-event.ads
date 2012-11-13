@@ -268,6 +268,8 @@ package Gdk.Event is
       Send_Event : gint8;
    end record;
    pragma Convention (C, Gdk_Event_Any);
+
+   function From_Object_Free (B : access Gdk_Event_Any) return Gdk_Event_Any; pragma Inline (From_Object_Free);
    --  Contains the fields which are common to all event structs. Any event
    --  pointer can safely be cast to a pointer to a Gdk.Event.Gdk_Event_Any to
    --  access these fields.
@@ -287,6 +289,8 @@ package Gdk.Event is
       Y_Root : Gdouble;
    end record;
    pragma Convention (C, Gdk_Event_Button);
+
+   function From_Object_Free (B : access Gdk_Event_Button) return Gdk_Event_Button; pragma Inline (From_Object_Free);
    --  Used for button press and button release events. The Type field will be
    --  one of Gdk.Event.Button_Press, Gdk.Event.Gdk_2button_Press,
    --  Gdk.Event.Gdk_3button_Press, and Gdk.Event.Button_Release.
@@ -342,6 +346,8 @@ package Gdk.Event is
       Count : Gint;
    end record;
    pragma Convention (C, Gdk_Event_Expose);
+
+   function From_Object_Free (B : access Gdk_Event_Expose) return Gdk_Event_Expose; pragma Inline (From_Object_Free);
    --  Generated when all or part of a window becomes visible and needs to be
    --  redrawn.
 
@@ -352,6 +358,8 @@ package Gdk.Event is
       State : Gdk_Visibility_State;
    end record;
    pragma Convention (C, Gdk_Event_Visibility);
+
+   function From_Object_Free (B : access Gdk_Event_Visibility) return Gdk_Event_Visibility; pragma Inline (From_Object_Free);
    --  Generated when the window visibility status has changed.
 
    type Gdk_Event_Motion is record
@@ -369,6 +377,8 @@ package Gdk.Event is
       Y_Root : Gdouble;
    end record;
    pragma Convention (C, Gdk_Event_Motion);
+
+   function From_Object_Free (B : access Gdk_Event_Motion) return Gdk_Event_Motion; pragma Inline (From_Object_Free);
    --  Generated when the pointer moves.
 
    type Gdk_Event_Scroll is record
@@ -385,6 +395,8 @@ package Gdk.Event is
       Y_Root : Gdouble;
    end record;
    pragma Convention (C, Gdk_Event_Scroll);
+
+   function From_Object_Free (B : access Gdk_Event_Scroll) return Gdk_Event_Scroll; pragma Inline (From_Object_Free);
    --  Generated from button presses for the buttons 4 to 7. Wheel mice are
    --  usually configured to generate button press events for buttons 4 and 5
    --  when the wheel is turned.
@@ -403,6 +415,8 @@ package Gdk.Event is
       Is_Modifier : Guint;
    end record;
    pragma Convention (C, Gdk_Event_Key);
+
+   function From_Object_Free (B : access Gdk_Event_Key) return Gdk_Event_Key; pragma Inline (From_Object_Free);
    --  Describes a key press or key release event.
 
    type Gdk_Event_Crossing is record
@@ -421,6 +435,8 @@ package Gdk.Event is
       State : Gdk.Types.Gdk_Modifier_Type;
    end record;
    pragma Convention (C, Gdk_Event_Crossing);
+
+   function From_Object_Free (B : access Gdk_Event_Crossing) return Gdk_Event_Crossing; pragma Inline (From_Object_Free);
    --  Generated when the pointer enters or leaves a window.
 
    type Gdk_Event_Focus is record
@@ -430,6 +446,8 @@ package Gdk.Event is
       Gtk_In : gint16;
    end record;
    pragma Convention (C, Gdk_Event_Focus);
+
+   function From_Object_Free (B : access Gdk_Event_Focus) return Gdk_Event_Focus; pragma Inline (From_Object_Free);
    --  Describes a change of keyboard focus.
 
    type Gdk_Event_Configure is record
@@ -442,6 +460,8 @@ package Gdk.Event is
       Height : Gint;
    end record;
    pragma Convention (C, Gdk_Event_Configure);
+
+   function From_Object_Free (B : access Gdk_Event_Configure) return Gdk_Event_Configure; pragma Inline (From_Object_Free);
    --  Generated when a window size or position has changed.
 
    type Gdk_Event_Property is record
@@ -453,6 +473,8 @@ package Gdk.Event is
       State : Guint;
    end record;
    pragma Convention (C, Gdk_Event_Property);
+
+   function From_Object_Free (B : access Gdk_Event_Property) return Gdk_Event_Property; pragma Inline (From_Object_Free);
    --  Describes a property change on a window.
 
    type Gdk_Event_Selection is record
@@ -466,6 +488,8 @@ package Gdk.Event is
       Requestor : Gdk.Gdk_Window;
    end record;
    pragma Convention (C, Gdk_Event_Selection);
+
+   function From_Object_Free (B : access Gdk_Event_Selection) return Gdk_Event_Selection; pragma Inline (From_Object_Free);
    --  Generated when a selection is requested or ownership of a selection is
    --  taken over by another client application.
 
@@ -480,6 +504,8 @@ package Gdk.Event is
       Selection_Time : guint32;
    end record;
    pragma Convention (C, Gdk_Event_Owner_Change);
+
+   function From_Object_Free (B : access Gdk_Event_Owner_Change) return Gdk_Event_Owner_Change; pragma Inline (From_Object_Free);
    --  Generated when the owner of a selection changes. On X11, this
    --  information is only available if the X server supports the XFIXES
    --  extension.
@@ -492,6 +518,8 @@ package Gdk.Event is
       Device : System.Address;
    end record;
    pragma Convention (C, Gdk_Event_Proximity);
+
+   function From_Object_Free (B : access Gdk_Event_Proximity) return Gdk_Event_Proximity; pragma Inline (From_Object_Free);
    --  Proximity events are generated when using GDK's wrapper for the XInput
    --  extension. The XInput extension is an add-on for standard X that allows
    --  you to use nonstandard devices such as graphics tablets. A proximity
@@ -512,6 +540,8 @@ package Gdk.Event is
       Y_Root : gshort;
    end record;
    pragma Convention (C, Gdk_Event_DND);
+
+   function From_Object_Free (B : access Gdk_Event_DND) return Gdk_Event_DND; pragma Inline (From_Object_Free);
    --  Generated during DND operations.
 
    type Gdk_Event_Window_State is record
@@ -522,6 +552,8 @@ package Gdk.Event is
       New_Window_State : Gdk_Window_State;
    end record;
    pragma Convention (C, Gdk_Event_Window_State);
+
+   function From_Object_Free (B : access Gdk_Event_Window_State) return Gdk_Event_Window_State; pragma Inline (From_Object_Free);
    --  Generated when the state of a toplevel window changes.
 
    type Gdk_Event_Setting is record
@@ -532,6 +564,8 @@ package Gdk.Event is
       Name : Interfaces.C.Strings.chars_ptr;
    end record;
    pragma Convention (C, Gdk_Event_Setting);
+
+   function From_Object_Free (B : access Gdk_Event_Setting) return Gdk_Event_Setting; pragma Inline (From_Object_Free);
    --  Generated when a setting is modified.
 
    type Gdk_Event_Grab_Broken is record
@@ -543,6 +577,8 @@ package Gdk.Event is
       Grab_Window : Gdk.Gdk_Window;
    end record;
    pragma Convention (C, Gdk_Event_Grab_Broken);
+
+   function From_Object_Free (B : access Gdk_Event_Grab_Broken) return Gdk_Event_Grab_Broken; pragma Inline (From_Object_Free);
    --  Generated when a pointer or keyboard grab is broken. On X11, this
    --  happens when the grab window becomes unviewable (i.e. it or one of its
    --  ancestors is unmapped), or if the same application grabs the pointer or
@@ -628,6 +664,8 @@ package Gdk.Event is
    end record;
    pragma Convention (C, Gdk_Event_Record);
    pragma Unchecked_Union(Gdk_Event_Record);
+
+   function From_Object_Free (B : access Gdk_Event_Record) return Gdk_Event_Record; pragma Inline (From_Object_Free);
    --  The Gdk.Event.Gdk_Event struct contains a union of all of the event
    --  structs, and allows access to the data fields in a number of ways.
    --

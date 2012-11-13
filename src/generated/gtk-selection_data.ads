@@ -34,6 +34,8 @@ package Gtk.Selection_Data is
    type Gtk_Selection_Data is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Selection_Data;
+   function From_Object_Free (B : access Gtk_Selection_Data'Class) return Gtk_Selection_Data;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --

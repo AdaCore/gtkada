@@ -28,6 +28,13 @@ with Interfaces.C.Strings;     use Interfaces.C.Strings;
 
 package body Gdk.Window is
 
+   function From_Object_Free (B : access Gdk_Geometry) return Gdk_Geometry is
+      Result : constant Gdk_Geometry := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function Convert (R : Gdk.Gdk_Window) return System.Address is
    begin
       return Glib.To_Address (Glib.C_Proxy (R));

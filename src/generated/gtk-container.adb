@@ -408,7 +408,7 @@ package body Gtk.Container is
           return access Gtk.Widget.Gtk_Widget_Path;
       pragma Import (C, Internal, "gtk_container_get_path_for_child");
    begin
-      return Internal (Get_Object (Container), Get_Object (Child)).all;
+      return From_Object_Free (Internal (Get_Object (Container), Get_Object (Child)));
    end Get_Path_For_Child;
 
    ---------------------

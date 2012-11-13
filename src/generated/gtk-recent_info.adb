@@ -28,6 +28,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Recent_Info is
 
+   function From_Object_Free
+     (B : access Gtk_Recent_Info'Class) return Gtk_Recent_Info
+   is
+      Result : constant Gtk_Recent_Info := Gtk_Recent_Info (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Recent_Info is
       S : Gtk_Recent_Info;
    begin

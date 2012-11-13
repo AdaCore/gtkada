@@ -40,6 +40,8 @@ package Gtk.Recent_Info is
    type Gtk_Recent_Info is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Recent_Info;
+   function From_Object_Free (B : access Gtk_Recent_Info'Class) return Gtk_Recent_Info;
+   pragma Inline (From_Object_Free, From_Object);
 
    subtype time_t is Long_Integer;
    --  Type to interface with C's time_t type.  To convert this to/from

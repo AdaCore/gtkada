@@ -28,6 +28,13 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Recent_Manager is
 
+   function From_Object_Free (B : access Gtk_Recent_Data) return Gtk_Recent_Data is
+      Result : constant Gtk_Recent_Data := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function Convert (R : Gtk.Recent_Info.Gtk_Recent_Info) return System.Address is
    begin
       return Get_Object (R);

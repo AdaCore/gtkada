@@ -29,6 +29,13 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Recent_Filter is
 
+   function From_Object_Free (B : access Gtk_Recent_Filter_Info) return Gtk_Recent_Filter_Info is
+      Result : constant Gtk_Recent_Filter_Info := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function Convert (R : Gtk.Recent_Filter.Gtk_Recent_Filter) return System.Address is
    begin
       return Get_Object (R);

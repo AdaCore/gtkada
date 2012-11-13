@@ -62,6 +62,8 @@ package Gtk.Style is
       Bottom : gint16;
    end record;
    pragma Convention (C, Gtk_Border);
+
+   function From_Object_Free (B : access Gtk_Border) return Gtk_Border; pragma Inline (From_Object_Free);
    --  A struct that specifies a border around a rectangular area that can be
    --  of different width on each side.
 

@@ -28,6 +28,13 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Style is
 
+   function From_Object_Free (B : access Gtk_Border) return Gtk_Border is
+      Result : constant Gtk_Border := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    package Type_Conversion_Gtk_Style is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Style_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Style);

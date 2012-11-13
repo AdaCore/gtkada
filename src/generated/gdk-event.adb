@@ -28,6 +28,139 @@ with Glib.Object;
 
 package body Gdk.Event is
 
+   function From_Object_Free (B : access Gdk_Event_Any) return Gdk_Event_Any is
+      Result : constant Gdk_Event_Any := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Button) return Gdk_Event_Button is
+      Result : constant Gdk_Event_Button := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Expose) return Gdk_Event_Expose is
+      Result : constant Gdk_Event_Expose := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Visibility) return Gdk_Event_Visibility is
+      Result : constant Gdk_Event_Visibility := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Motion) return Gdk_Event_Motion is
+      Result : constant Gdk_Event_Motion := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Scroll) return Gdk_Event_Scroll is
+      Result : constant Gdk_Event_Scroll := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Key) return Gdk_Event_Key is
+      Result : constant Gdk_Event_Key := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Crossing) return Gdk_Event_Crossing is
+      Result : constant Gdk_Event_Crossing := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Focus) return Gdk_Event_Focus is
+      Result : constant Gdk_Event_Focus := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Configure) return Gdk_Event_Configure is
+      Result : constant Gdk_Event_Configure := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Property) return Gdk_Event_Property is
+      Result : constant Gdk_Event_Property := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Selection) return Gdk_Event_Selection is
+      Result : constant Gdk_Event_Selection := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Owner_Change) return Gdk_Event_Owner_Change is
+      Result : constant Gdk_Event_Owner_Change := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Proximity) return Gdk_Event_Proximity is
+      Result : constant Gdk_Event_Proximity := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_DND) return Gdk_Event_DND is
+      Result : constant Gdk_Event_DND := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Window_State) return Gdk_Event_Window_State is
+      Result : constant Gdk_Event_Window_State := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Setting) return Gdk_Event_Setting is
+      Result : constant Gdk_Event_Setting := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Grab_Broken) return Gdk_Event_Grab_Broken is
+      Result : constant Gdk_Event_Grab_Broken := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Record) return Gdk_Event_Record is
+      Result : constant Gdk_Event_Record := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Address (C : System.Address) return Gdk_Event is
       function Convert is new Ada.Unchecked_Conversion
         (Glib.C_Proxy, Gdk_Event);

@@ -30,6 +30,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Selection_Data is
 
+   function From_Object_Free
+     (B : access Gtk_Selection_Data'Class) return Gtk_Selection_Data
+   is
+      Result : constant Gtk_Selection_Data := Gtk_Selection_Data (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Selection_Data is
       S : Gtk_Selection_Data;
    begin

@@ -31,6 +31,8 @@ package Pango.Language is
    type Pango_Language is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Pango_Language;
+   function From_Object_Free (B : access Pango_Language'Class) return Pango_Language;
+   pragma Inline (From_Object_Free, From_Object);
 
    type Pango_Script is (
       Pango_Script_Invalid_Code,

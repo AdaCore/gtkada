@@ -59,6 +59,8 @@ package Gtk.Icon_Source is
    type Gtk_Icon_Source is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Source;
+   function From_Object_Free (B : access Gtk_Icon_Source'Class) return Gtk_Icon_Source;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --

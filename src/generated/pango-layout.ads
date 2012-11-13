@@ -52,8 +52,11 @@ package Pango.Layout is
    type Pango_Layout_Iter is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Pango_Layout_Iter;
+   function From_Object_Free (B : access Pango_Layout_Iter'Class) return Pango_Layout_Iter;
+   pragma Inline (From_Object_Free, From_Object);
 
-   type Pango_Layout_Line is new Glib.C_Proxy;
+   type Pango_Layout_Line is private;
+   function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line; pragma Inline (From_Object_Free);
 
 
    ----------------------------
@@ -769,5 +772,16 @@ package Pango.Layout is
    return GtkAda.Types.Chars_Ptr;
    --  Same a Get_Text, but return directly the C string, which is more
    --  efficient. The returned value should not be freed or modified.
+
+private
+type Pango_Layout_Line is record
+   Layout : System.Address;
+   Start_Index : Gint;
+   Length : Gint;
+   Runs : System.Address;
+   Is_Paragraph_Start : Guint;
+   Resolved_Dir : Guint;
+end record;
+pragma Convention (C, Pango_Layout_Line);
 
 end Pango.Layout;

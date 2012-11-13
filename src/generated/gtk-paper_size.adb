@@ -28,6 +28,15 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Paper_Size is
 
+   function From_Object_Free
+     (B : access Gtk_Paper_Size'Class) return Gtk_Paper_Size
+   is
+      Result : constant Gtk_Paper_Size := Gtk_Paper_Size (B.all);
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object (Object : System.Address) return Gtk_Paper_Size is
       S : Gtk_Paper_Size;
    begin

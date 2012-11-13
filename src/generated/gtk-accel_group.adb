@@ -30,6 +30,13 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Accel_Group is
 
+   function From_Object_Free (B : access Gtk_Accel_Key) return Gtk_Accel_Key is
+      Result : constant Gtk_Accel_Key := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Accel_Group_Find_Func);
 

@@ -45,6 +45,8 @@ package Gtk.Symbolic_Color is
    type Gtk_Symbolic_Color is new Glib.C_Boxed with null record;
 
    function From_Object (Object : System.Address) return Gtk_Symbolic_Color;
+   function From_Object_Free (B : access Gtk_Symbolic_Color'Class) return Gtk_Symbolic_Color;
+   pragma Inline (From_Object_Free, From_Object);
 
    ------------------
    -- Constructors --
