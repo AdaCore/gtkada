@@ -173,6 +173,7 @@ binding = ("GdkCursor",
            "GtkSpinButton",
            "GtkStatusbar",
            "GtkStatusIcon",
+           "GtkStockItem",
            "GtkStyle",
            "GtkStyleContext",
            "GtkStyleProperties",
@@ -346,7 +347,7 @@ naming.type_exceptions = {
     "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 
-    # "GtkBorder":       Proxy("Gtk.Style.Gtk_Border"),
+    # ??? Shouldn't we use a naming exception instead ?
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
     "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
     "GtkTreePath*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Path"),

@@ -142,7 +142,7 @@ class CType(object):
         else:
             return "%(var)s"
 
-    def direct_cmap(self):
+    def direct_c_map(self):
         """Whether the parameter can be passed as is to C"""
         return self.convert_to_c(pkg=None) == "%(var)s"
 
@@ -1258,9 +1258,9 @@ class Parameter(Local_Var):
             return super(Parameter, self).as_call(
                 pkg=pkg, lang=lang, mode=self.mode, value=value)
 
-    def direct_cmap(self):
+    def direct_c_map(self):
         """Whether the parameter can be passed as is to C"""
-        return self.type.direct_cmap()
+        return self.type.direct_c_map()
 
     def value(self):
         if not self.ada_binding:

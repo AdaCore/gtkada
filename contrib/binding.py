@@ -63,6 +63,7 @@ nreturn = QName(uri, "return-value").text
 ntype = QName(uri, "type").text
 nvalue = QName(uri, "value").text
 nvarargs = QName(uri, "varargs").text
+nconstant = QName(uri, "constant").text
 
 
 class GIR(object):
@@ -77,6 +78,7 @@ class GIR(object):
         self.enums = dict()  # Maps C "name" to a GIR XML node
         self.globals = GlobalsBinder(self) # global vars
         self.records = dict() # Maps C "name" to a GIR XML node
+        self.constants = dict() # Maps C "name" to a GIR XML node for constants
 
         for filename in files:
             _tree = parse(filename)
@@ -99,6 +101,10 @@ class GIR(object):
             for cl in root.findall(k):
                 self.classes[cl.get(ctype_qname)] = self._create_class(
                     root, cl, is_interface=False)
+
+            k = "%s/%s" % (namespace, nconstant)
+            for cl in root.findall(k):
+                self.constants[cl.get(ctype_qname)] = cl
 
             # Some <record> are defined with methods. They are bound the same
             # way in GtkAda, except that they do not derive from GObject
@@ -339,9 +345,10 @@ class SubprogramProfile(object):
            C to Ada.
         """
         for p in self.params:
-            if not p.direct_cmap():
+            # If a parameter is not mapped in Ada, we need an actual body
+            if not p.direct_c_map() or not p.ada_binding:
                 return False
-        return self.returns is None or self.returns.direct_cmap()
+        return self.returns is None or self.returns.direct_c_map()
 
     def c_params(self, localvars, code):
         """Returns the list of parameters for an Ada function that would be
@@ -1707,7 +1714,7 @@ See Glib.Properties for more information on properties)""")
             section.add(
                 "\ntype %s is new Glib.C_Proxy;\n" % base
                 + ("function From_Object_Free (B : access %(typename)s) "
-                + "return %(typename)s; pragma Inline (From_Object_Free);") % {"typename": base})
+                + "return %(typename)s;\npragma Inline (From_Object_Free);") % {"typename": base})
             section.add_code("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
@@ -1718,7 +1725,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
 
         else:
            if private:
-              section.add("\ntype %(typename)s is private;\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s; pragma Inline (From_Object_Free);" % {"typename": base})
+              section.add("\ntype %(typename)s is private;\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s;\npragma Inline (From_Object_Free);" % {"typename": base})
               adder = self.pkg.add_private
            else:
               adder = section.add
@@ -1760,7 +1767,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
            if not private:
                section.add("\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s;"
                        % {"typename": base}
-                           + " pragma Inline (From_Object_Free);")
+                           + "\npragma Inline (From_Object_Free);")
 
            section.add_code("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
@@ -1779,6 +1786,25 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         node = gir.enums[enum_ctype]
         return [(m.get(cidentifier), naming.adamethod_name(m.get(cidentifier)))
                 for m in node.findall(nmember)]
+
+    def constants_binding(self, section, regexp, prefix):
+        constants = []
+        r = re.compile(regexp)
+
+        for name, node in gir.constants.iteritems():
+           if r.match(name):
+               name = name.replace(prefix, "").title()
+
+               type = node.findall(ntype)
+               ctype = type[0].get(ctype_qname)
+               ftype = naming.type(name="", cname=ctype)
+
+               constants.append(
+                   '%s : constant %s := "%s";' %
+                   (name, ftype.ada, node.get("value")))
+
+        constants.sort()
+        section.add("\n".join(constants))
 
     def enumeration_binding(self, section, ctype, type, prefix):
         """Add to the section the Ada type definition for the <enumeration>
@@ -1991,6 +2017,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
 
         for ctype, enum, prefix in self.gtkpkg.enumerations():
             self.enumeration_binding(section, ctype, enum, prefix)
+
+        for regexp, prefix in self.gtkpkg.constants():
+            self.constants_binding(section, regexp, prefix)
 
         for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
 

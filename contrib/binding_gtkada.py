@@ -96,6 +96,13 @@ Where the package node is defined as follows:
                              <!--  content is same as <method> -->
        </function>
 
+       <constant
+             prefix_regexp="..."  <!--  maps all constants whose C type matches
+                                        the regexp -->
+             prefix="..."         <!--  omit this prefix from the C name, to
+                                        generate the Ada name -->
+       />
+
        <!-- The following statement indicates that the binding for the
             enumeration should be added in the current package.
             This automatically generates the naming exceptions for the type
@@ -228,6 +235,15 @@ class GtkAdaPackage(object):
                                naming.type(name="", cname=enum.get("ctype")),
                                enum.get("prefix", "GTK_")))
         return result
+
+    def constants(self):
+        """Return the list of constants that should be bound as part
+           of this package.
+        """
+        if self.node is not None:
+            return [(c.get("prefix_regexp", ""), c.get("prefix", ""))
+                    for c in self.node.findall("constant")]
+        return []
 
     def lists(self):
         """Return the list of list instantiations we need to add to the

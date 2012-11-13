@@ -5101,6 +5101,63 @@ direction, widget state, or icon size.
      <method id="gtk_border_get_type" ada="Border_Get_Type"/>
    </package>
 
+   <package id="GtkStockItem" ada="Gtk.Stock">
+     <record ctype="GtkStockItem" private="True"/>
+     <constant prefix_regexp="GTK_STOCK_.*" prefix="GTK_"/>
+     <function id="gtk_stock_add" ada="Add">
+       <parameter name="items" type="Gtk_Stock_Item_Array"/>
+       <parameter name="n_items" ada="" default="Items'Length"/>
+     </function>
+     <function id="gtk_stock_add_static" ada="Add_Static">
+       <parameter name="items" type="Gtk_Stock_Item_Array"/>
+       <parameter name="n_items" ada="" default="Items'Length"/>
+     </function>
+     <function id="gtk_stock_lookup" ada="Lookup" return_as_param="Success"/>
+     <method id="gtk_stock_item_free" bind="False" /> <!-- see below -->
+     <extra>
+       <type ada="Gtk_Stock_Item_Array" ctype="GtkStockItemArray">
+   type Gtk_Stock_Item_Array is array (Natural range &lt;&gt;) of Gtk_Stock_Item;
+       </type>
+       <spec>
+   procedure Gtk_New
+     (Item               : out Gtk_Stock_Item;
+      Stock_Id           : String;
+      Label              : UTF8_String;
+      Modifier           : Gdk.Types.Gdk_Modifier_Type;
+      Keyval             : Gdk.Types.Gdk_Key_Type;
+      Translation_Domain : String);
+   --  Create a new stock item.
+
+   procedure Free (Item : in out Gtk_Stock_Item);
+   --  Free memory allocated in Item.
+       </spec>
+       <with_body pkg="Interfaces.C.Strings" />
+       <body>
+   procedure Gtk_New
+     (Item               : out Gtk_Stock_Item;
+      Stock_Id           : String;
+      Label              : UTF8_String;
+      Modifier           : Gdk.Types.Gdk_Modifier_Type;
+      Keyval             : Gdk.Types.Gdk_Key_Type;
+      Translation_Domain : String) is
+   begin
+      Item.Stock_Id           := Interfaces.C.Strings.New_String (Stock_Id);
+      Item.Label              := Interfaces.C.Strings.New_String (Label);
+      Item.Modifier           := Modifier;
+      Item.Keyval             := Guint (Keyval);
+      Item.Translation_Domain := Interfaces.C.Strings.New_String (Translation_Domain);
+   end Gtk_New;
+
+   procedure Free (Item : in out Gtk_Stock_Item) is
+   begin
+      Interfaces.C.Strings.Free (Item.Stock_Id);
+      Interfaces.C.Strings.Free (Item.Label);
+      Interfaces.C.Strings.Free (Item.Translation_Domain);
+   end Free;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
