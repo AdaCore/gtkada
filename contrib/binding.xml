@@ -4274,6 +4274,8 @@ creating a tag.
 
      <method id="pango_layout_line_get_extents" bind="false"/> <!--  forces bad pragma import on pango_layout_get_extents -->
      <method id="pango_layout_line_get_pixel_extents" bind="false"/>
+     <method id="pango_layout_line_ref" bind="false"/> <!--  Not needed in Ada -->
+     <method id="pango_layout_line_unref" bind="false"/> <!--  Not needed in Ada -->
 
      <!--  Do not bind these for now, there is an error in the generator that
      tries to use Get_Object on a PangoLayoutLine because it doesn't know
@@ -5156,6 +5158,21 @@ direction, widget state, or icon size.
    end Free;
        </body>
      </extra>
+   </package>
+
+   <package id="GtkTextIter">
+     <parameter name="self" ada="Iter" direction="in"/>
+     <record ctype="GtkTextIter" private="True"/>
+     <enum ctype="GtkTextSearchFlags"/>
+
+     <method id="gtk_text_iter_get_buffer" bind="False"/> <!-- circular dependency -->
+     <method id="gtk_text_iter_get_child_anchor" bind="False"/> <!-- circular dependency -->
+     <method id="gtk_text_iter_get_marks" return="ObjectSList" />
+     <method id="gtk_text_iter_get_tags" return="ObjectSList" />
+     <method id="gtk_text_iter_get_toggled_tags" return="ObjectSList" />
+
+     <method id="gtk_text_iter_forward_char" return_as_param="Result"/>
+
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

@@ -753,18 +753,6 @@ package Pango.Layout is
    --  Moves Iter forward to the next run in visual order. If Iter was already
    --  at the end of the layout, returns False.
 
-   function Ref (Self : Pango_Layout_Line) return Pango_Layout_Line;
-   pragma Import (C, Ref, "pango_layout_line_ref");
-   --  Increase the reference count of a Pango.Layout.Pango_Layout_Line by
-   --  one.
-   --  Since: gtk+ 1.10
-
-   procedure Unref (Self : Pango_Layout_Line);
-   pragma Import (C, Unref, "pango_layout_line_unref");
-   --  Decrease the reference count of a Pango.Layout.Pango_Layout_Line by
-   --  one. If the result is zero, the line and all associated memory will be
-   --  freed.
-
    ----------------------
    -- GtkAda additions --
    ----------------------

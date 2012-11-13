@@ -628,15 +628,12 @@ class GIRClass(object):
 
         # Is this a binding for an opaque C record (not a GObject). In this
         # case, we bind it as an Ada tagged type so that we can use the
-        # convenient dot notation for primitive operations. Public records are
-        # handled differently.
-        # If binding.xml forces the record to be private, we also implement it
-        # as a tagged private record.
+        # convenient dot notation for primitive operations. This is only doable
+        # if there is no public field that should be user visible in the record.
+        # Otherwise, we'll map to a standard Ada record (self.is_record)
 
-        self.is_record_with_ptr = self.node.tag == nrecord \
-            and (not self.node.findall(nfield)
-                 or (self.gtkpkg.node
-                     and self.gtkpkg.node.get("private", "false").lower() == "true"))
+        self.is_boxed = self.node.tag == nrecord and not self.node.findall(nfield)
+        self.is_record = self.node.tag == nrecord and not self.is_boxed
 
         # Register naming exceptions for this class
 
@@ -660,8 +657,10 @@ class GIRClass(object):
                 t = Interface(pkg)
             elif is_gobject:
                 t = GObject(pkg)
-            else:
+            elif self.is_boxed:
                 t = Tagged(pkg)
+            else:
+                t = Record(pkg)
 
             naming.add_type_exception(cname=node.get(ctype_qname), type=t)
             classtype = naming.type(name=self.ctype)
@@ -720,7 +719,7 @@ class GIRClass(object):
            require its own body.
         """
         return not self.is_gobject \
-            and not self.is_record_with_ptr \
+            and not self.is_boxed \
             and profile.direct_c_map()
 
     def _add_self_param(self, adaname, gtkmethod, profile, is_import):
@@ -1157,7 +1156,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             self._subst["params"] = ""
             self._subst["internal_params"] = ""
 
-        if self.is_gobject or self.is_record_with_ptr:
+        if self.is_gobject or self.is_boxed:
             profile.returns = AdaType(
                 "System.Address", pkg=self.pkg, in_spec=False)
         else:
@@ -1232,7 +1231,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section.add(gtk_new)
             section.add(initialize)
 
-        elif self.is_record_with_ptr:
+        elif self.is_boxed:
             gtk_new = Subprogram(
                 name=adaname,
                 plist=[Parameter(
@@ -1605,7 +1604,7 @@ See Glib.Properties for more information on properties)""")
             body += "function Convert (R : %s) return System.Address is\nbegin\n" % (
                 ctype.ada)
 
-            if self.is_gobject or self.is_record_with_ptr:
+            if self.is_gobject or self.is_boxed:
                 body += "return Get_Object (R);"
             else:
                 # a proxy
@@ -1622,7 +1621,7 @@ See Glib.Properties for more information on properties)""")
             body += "function Convert (R : System.Address) return %s is\n" % (
                 ctype.ada)
 
-            if isinstance(ctype, Tagged) or self.is_record_with_ptr:
+            if isinstance(ctype, Tagged) or self.is_boxed:
                 # Not a GObject ?
                 body += "begin\nreturn From_Object(R);"
 
@@ -1973,7 +1972,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
 subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
 
-        elif self.is_record_with_ptr:
+        elif self.is_boxed:
             # The type is not private so that we can directly instantiate
             # generic packages for lists of this type.
 
@@ -2215,6 +2214,7 @@ for the_ctype in binding:
             gir.classes[the_ctype] = gir._create_class(
                 rootNode=root, node=node, is_interface=False)
             gir.classes[the_ctype].generate(gir)
+            bound.add(the_ctype)
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")
