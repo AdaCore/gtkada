@@ -5310,10 +5310,12 @@ direction, widget state, or icon size.
      <method id="gtk_text_iter_backward_search" return_as_param="Result">
        <parameter name="self" ada="Iter" direction="inout"/>
      </method>
-     <method id="gtk_text_iter_forward_find_char" return_as_param="Result" bind="false">
+     <method id="gtk_text_iter_forward_find_char" return_as_param="Result"
+             bind="false"> <!--  Need func with callback and return_as_param -->
        <parameter name="self" ada="Iter" direction="inout"/>
      </method>
-     <method id="gtk_text_iter_backward_find_char" return_as_param="Result" bind="false">
+     <method id="gtk_text_iter_backward_find_char" return_as_param="Result"
+             bind="false"> <!--  Need func with callback and return_as_param -->
        <parameter name="self" ada="Iter" direction="inout"/>
      </method>
    </package>

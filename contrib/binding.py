@@ -353,7 +353,7 @@ class SubprogramProfile(object):
     def c_params(self, localvars, code):
         """Returns the list of parameters for an Ada function that would be
            a direct pragma Import. local variables or additional code will
-           be added as needed to handle conversions.
+           be extended as needed to handle conversions.
         """
         assert(isinstance(localvars, list))
         assert(isinstance(code, list))
@@ -791,33 +791,51 @@ class GIRClass(object):
                 node, gtkmethod=gtkmethod, cname=cname, profile=profile)
             return
 
-        cb = profile.callback_param_info()
-        if cb is not None:
-            return self._callback_support(adaname, cname, profile, cb)
-
         local_vars = []
-        call = []
+        call = ""
 
         body = gtkmethod.get_body()
         if not body and not is_import:
-            internal=Subprogram(
+            # Prepare the Internal C function
+
+            internal_call = []
+            internal = Subprogram(
                 name="Internal",
                 returns=profile.returns,
                 lang="ada->c",
-                plist=profile.c_params(local_vars, call)).import_c(cname)
+                plist=profile.c_params(local_vars, internal_call)
+              ).import_c(cname)
 
-            ret = gtkmethod.return_as_param()
-            execute = internal.call(
-                in_pkg=self.pkg, extra_postcall="".join(call))
+            # Should we transform the return value into a parameter ?
 
-            if ret is not None:
-                # Ada return value goes into an "out" parameter
+            ret_as_param = gtkmethod.return_as_param()
+            if ret_as_param is not None:
                 profile.params.append(
-                    Parameter(name=ret, type=profile.returns, mode="out"))
+                    Parameter(name=ret_as_param,
+                              type=profile.returns, mode="out"))
                 profile.returns = None
 
-                assert(execute[1] is not None)  # We must have a C function
-                call = "%s%s := %s;" % (execute[0], ret, execute[1])
+            # Is this a function that takes a callback parameter ?
+
+            cb = profile.callback_param_info()
+            if cb is not None:
+                if ret_as_param:
+                    # ??? We would need to change _callback_support to
+                    # have additional code to set the return value. One
+                    # issue is that the profile has already been changed
+                    raise Exception("Cannot bind function with callback"
+                                    + " and return value as parameter: %s"
+                                    % cname)
+
+                return self._callback_support(adaname, cname, profile, cb)
+
+            execute = internal.call(
+                in_pkg=self.pkg, extra_postcall="".join(internal_call))
+
+            if ret_as_param is not None:
+                assert execute[1] is not None, \
+                    "Must have a return value in %s => %s" % (cname, execute)
+                call = "%s%s := %s;" % (execute[0], ret_as_param, execute[1])
 
             else:
                 if execute[1]: # A function, with a standard "return"
