@@ -5326,9 +5326,11 @@ direction, widget state, or icon size.
      </method>
    </package>
 
-   <package id="GtkNumerableIcon">
-     <method id="gtk_numerable_icon_new" ada="Gtk_New"/>
-     <method id="gtk_numerable_icon_new_with_style_context" ada="Gtk_New_With_Style_Context"/>
+   <package id="GtkToolPalette">
+     <enum ctype="GtkDestDefaults"/>
+     <enum ctype="GtkToolPaletteDragTargets"/>
+     <method id="gtk_tool_palette_get_hadjustment" bind="False"/> <!-- obsolete, use interface-->
+     <method id="gtk_tool_palette_get_vadjustment" bind="False"/> <!-- obsolete, use interface-->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
@@ -5338,6 +5340,11 @@ direction, widget state, or icon size.
 
    <package id="GtkTreeModel">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
+   </package>
+
+   <package id="GtkNumerableIcon">
+     <method id="gtk_numerable_icon_new" ada="Gtk_New"/>
+     <method id="gtk_numerable_icon_new_with_style_context" ada="Gtk_New_With_Style_Context"/>
    </package>
 
 </GIR>

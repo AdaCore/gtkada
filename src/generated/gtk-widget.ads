@@ -581,7 +581,7 @@ package Gtk.Widget is
        Track_Motion : Boolean);
    --  Tells the widget to emit Gtk.Widget.Gtk_Widget::drag-motion and
    --  Gtk.Widget.Gtk_Widget::drag-leave events regardless of the targets and
-   --  the GTK_DEST_DEFAULT_MOTION flag.
+   --  the Gtk.Tool_Palette.Dest_Default_Motion flag.
    --  This may be used when a widget wants to do generic actions regardless
    --  of the targets that the source offers.
    --  Since: gtk+ 2.10
@@ -613,8 +613,8 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget::drag-data-received signal. Failure of the
    --  retrieval is indicated by the length field of the Selection_Data signal
    --  parameter being negative. However, when Gtk.Widget.Drag_Get_Data is
-   --  called implicitely because the GTK_DEST_DEFAULT_DROP was set, then the
-   --  widget will not receive notification of failed drops.
+   --  called implicitely because the Gtk.Tool_Palette.Dest_Default_Drop was
+   --  set, then the widget will not receive notification of failed drops.
    --  "context": the drag context
    --  "target": the target (form of the data) to retrieve.
    --  "time_": a timestamp for retrieving the data. This will generally be
