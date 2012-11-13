@@ -193,13 +193,18 @@ class CType(object):
             return self.cparam
 
     def as_call(
-        self, name, pkg, wrapper="%s", lang="ada", mode="in", value=None):
+        self, name, pkg, wrapper="%s", lang="ada", mode="in", value=None,
+        is_temporary_variable=True):
         """'name' represents a parameter of type 'self'.
            'pkg' is the Package instance in which the call occurs.
            'wrapper' is used in the call itself, and %s is replaced by the
               name of the variable (or the temporary variable).
            'mode' is the mode for the Ada subprogram, and is automatically
               converted when generating a subprogram as a direct C import.
+           :param is_temporary_variable: should be true if the corresponding
+              variable is a variable local to the subprogram, as opposed to a
+              parameter. In this case, we can sometimes avoid creating a second
+              temporary variable, thus increasing efficiency.
            Returns an instance of VariableCall.
            See comments at the beginning of this package for valid LANG values
         """
@@ -217,14 +222,20 @@ class CType(object):
 
             additional_tmp_vars = [] if not returns else returns[3]
 
-            if ret and ret != "%(var)s" and mode != "in":
-                # An "out" parameter for an enumeration requires a temporary
-                # variable: Internal(Enum'Pos(Param)) is invalid
+            # An "out" parameter for an enumeration requires a temporary
+            # variable: Internal(Enum'Pos(Param)) is invalid
+            # Unless we are already using a temporary variable.
+
+            if (ret
+                and ret != "%(var)s"
+                and mode != "in"
+                and not is_temporary_variable):
+
                 tmp = "Tmp_%s" % name
 
                 if mode in ("out", "access"):
                     tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
-                elif mode in ("in out",):
+                else:
                     tmpvars = [
                         Local_Var(name=tmp, type=returns[4], aliased=True,
                                   default=self.convert_to_c(pkg=pkg) % {"var":name})]
@@ -1209,17 +1220,19 @@ class Local_Var(object):
         n = value or self.name
         if isinstance(self.type, CType):
             return self.type.as_call(
-                name=n, pkg=pkg, lang=lang, wrapper="%s")
+                name=n, pkg=pkg, lang=lang, wrapper="%s",
+                is_temporary_variable=True)
         else:
             return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
 
 class Parameter(Local_Var):
     __slots__ = ["name", "type", "default", "aliased", "mode", "doc",
-                 "ada_binding", "for_function"]
+                 "ada_binding", "for_function", "is_temporary_variable"]
 
     def __init__(self, name, type, default="", doc="", mode="in",
-                 for_function=False, ada_binding=True):
+                 for_function=False, ada_binding=True,
+                 is_temporary_variable=False):
         """
            'mode' is the mode for the Ada subprogram, and is automatically
               converted when generating a subprogram as a direct C import.
@@ -1230,6 +1243,10 @@ class Parameter(Local_Var):
            :param ada_binding: if False, the parameter will not be displayed
               in the profile of Ada subprograms (although, of course, it will
               be passed to the C subprograms)
+
+           :param is_temporary_variable: True if this parameter represents a
+              local variable. In this case, we can sometimes avoid creating
+              other such variables, a minor optimization.
         """
         assert mode in ("in", "out", "in out", "not null access",
                         "access"), "Incorrect mode: %s" % mode
@@ -1239,6 +1256,7 @@ class Parameter(Local_Var):
         self.doc  = doc
         self.ada_binding = ada_binding
         self.for_function = for_function
+        self.is_temporary_variable = is_temporary_variable
 
     def _type(self, lang, pkg):
         mode = self.mode
@@ -1285,7 +1303,8 @@ class Parameter(Local_Var):
 
             if isinstance(self.type, CType):
                 return self.type.as_call(
-                    name=n, pkg=pkg, lang=lang, mode=self.mode, wrapper=wrapper)
+                    name=n, pkg=pkg, lang=lang, mode=self.mode, wrapper=wrapper,
+                    is_temporary_variable=self.is_temporary_variable)
             else:
                 return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 

@@ -361,11 +361,12 @@ class SubprogramProfile(object):
         result = []
         for p in self.params:
             n = p.name
+            is_temporary = False
 
             if self.returns is not None and p.mode != "in":
                 n = "Acc_%s" % p.name
                 var = Local_Var(
-                    name="Acc_%s" % p.name,
+                    name=n,
                     aliased=True,
                     default="" if p.mode != "in out" else p.name,
                     type=p.type)
@@ -375,12 +376,13 @@ class SubprogramProfile(object):
                 if p.mode == "access":
                     if p.type.allow_none:
                         code.append(
-                            "if %s /= null then %s.all := Acc_%s; end if;"
-                            % (p.name, p.name, p.name))
+                            "if %s /= null then %s.all := %s; end if;"
+                            % (p.name, p.name, var.name))
                     else:
-                        code.append("%s.all := Acc_%s;" % (p.name, p.name))
+                        code.append("%s.all := %s;" % (p.name, var.name))
                 else:
-                    code.append("%s := Acc_%s;" % (p.name, p.name))
+                    is_temporary = p.mode != "out"
+                    code.append("%s := %s;" % (p.name, var.name))
 
             # If we do not bind the parameter in the Ada profile, we will need
             # to substitute its default value instead. But we don't want to
@@ -390,6 +392,7 @@ class SubprogramProfile(object):
             result.append(Parameter(name=n, mode=p.mode, type=p.type,
                                     for_function=self.returns is not None,
                                     default=p.default if not p.ada_binding else None,
+                                    is_temporary_variable=is_temporary,
                                     ada_binding=p.ada_binding))
 
         return result

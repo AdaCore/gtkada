@@ -183,6 +183,7 @@ binding = ("GdkCursor",
            "GtkTargetEntry",
            "GtkTargetList",
            "GtkTearoffMenuItem",
+           "GtkTextIter",
            "GtkTextTag",
            # "GtkTreePath",   #  into GtkTreeModel
            "GtkToggleAction",
