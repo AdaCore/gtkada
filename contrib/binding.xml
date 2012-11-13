@@ -5161,7 +5161,7 @@ direction, widget state, or icon size.
    </package>
 
    <package id="GtkTextIter">
-     <parameter name="self" ada="Iter" direction="inout"/>  <!-- most methods modify self -->
+     <parameter name="self" ada="Iter"/>
      <record ctype="GtkTextIter" private="True"/>
      <enum ctype="GtkTextSearchFlags"/>
 
@@ -5171,8 +5171,151 @@ direction, widget state, or icon size.
      <method id="gtk_text_iter_get_tags" return="ObjectSList" />
      <method id="gtk_text_iter_get_toggled_tags" return="ObjectSList" />
 
-     <method id="gtk_text_iter_forward_char" return_as_param="Result"/>
+     <method id="gtk_text_iter_forward_char" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_chars" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_char" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_chars" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_word_end" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_word_ends" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_word_end" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_word_ends" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_word_start" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_word_starts" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_word_start" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_word_starts" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_sentence_end" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_sentence_ends" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_sentence_start" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_sentence_starts" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
 
+     <method id="gtk_text_iter_set_offset">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_set_line">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_set_line_offset">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_set_line_index">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_set_visible_line_offset">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_set_visible_line_index">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_forward_line" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_lines" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_line" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_lines" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_to_line_end" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_backward_line" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_lines" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_line" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_lines" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_forward_to_end">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_forward_to_tag_toggle" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_to_tag_toggle" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_forward_cursor_position" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_cursor_positions" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_cursor_position" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_cursor_positions" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_cursor_position" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_visible_cursor_positions" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_cursor_position" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_visible_cursor_positions" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_iter_forward_search" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_search" return_as_param="Result">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_forward_find_char" return_as_param="Result" bind="false">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
+     <method id="gtk_text_iter_backward_find_char" return_as_param="Result" bind="false">
+       <parameter name="self" ada="Iter" direction="inout"/>
+     </method>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

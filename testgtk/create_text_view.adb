@@ -89,7 +89,7 @@ package body Create_Text_View is
          T := Lookup (Table, Tag);
 
          Insert (Buffer, Iter, Text & ASCII.LF);
-         Copy (Source => Iter, Dest => Start_Iter);
+         Start_Iter := Iter;
          Backward_Chars (Start_Iter, Text'Length + 1, Result);
          Apply_Tag (Buffer, T, Start_Iter, Iter);
       end if;

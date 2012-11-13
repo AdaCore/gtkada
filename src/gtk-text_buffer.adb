@@ -1103,7 +1103,7 @@ package body Gtk.Text_Buffer is
    procedure Paste_Clipboard
      (Buffer            : access Gtk_Text_Buffer_Record;
       Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
-      Override_Location : Gtk.Text_Iter.Gtk_Text_Iter_Access := null;
+      Override_Location : access Gtk.Text_Iter.Gtk_Text_Iter := null;
       Default_Editable  : Boolean := True)
    is
       procedure Internal
