@@ -289,10 +289,10 @@ package Gtk.GEntry is
    function Get_Icon_Gicon
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.G_Icon.G_Icon;
-   --  Retrieves the GIcon used for the icon, or null if there is no icon or
-   --  if the icon was set by some other method (e.g., by stock, pixbuf, or
-   --  icon name).
-   --  or if the icon is not a GIcon
+   --  Retrieves the Glib.G_Icon.G_Icon used for the icon, or null if there is
+   --  no icon or if the icon was set by some other method (e.g., by stock,
+   --  pixbuf, or icon name).
+   --  or if the icon is not a Glib.G_Icon.G_Icon
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
 
@@ -312,7 +312,8 @@ package Gtk.GEntry is
    --  Retrieves the image used for the icon.
    --  Unlike the other methods of setting and getting icon data, this method
    --  will work regardless of whether the icon was set using a
-   --  Gdk.Pixbuf.Gdk_Pixbuf, a GIcon, a stock item, or an icon name.
+   --  Gdk.Pixbuf.Gdk_Pixbuf, a Glib.G_Icon.G_Icon, a stock item, or an icon
+   --  name.
    --  set for this position.
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
@@ -961,7 +962,7 @@ package Gtk.GEntry is
    --  Name: Primary_Icon_Gicon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
-   --  The GIcon to use for the primary icon for the entry.
+   --  The Glib.G_Icon.G_Icon to use for the primary icon for the entry.
    --
    --  Name: Primary_Icon_Name_Property
    --  Type: UTF8_String
@@ -1041,7 +1042,7 @@ package Gtk.GEntry is
    --  Name: Secondary_Icon_Gicon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
-   --  The GIcon to use for the secondary icon for the entry.
+   --  The Glib.G_Icon.G_Icon to use for the secondary icon for the entry.
    --
    --  Name: Secondary_Icon_Name_Property
    --  Type: UTF8_String

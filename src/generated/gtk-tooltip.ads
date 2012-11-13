@@ -111,14 +111,14 @@ package Gtk.Tooltip is
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Set_Icon_From_Gicon
-      (Self  : not null access Gtk_Tooltip_Record;
-       Gicon : Glib.G_Icon.G_Icon;
-       Size  : Gtk.Enums.Gtk_Icon_Size);
+      (Self   : not null access Gtk_Tooltip_Record;
+       G_Icon : Glib.G_Icon.G_Icon;
+       Size   : Gtk.Enums.Gtk_Icon_Size);
    --  Sets the icon of the tooltip (which is in front of the text) to be the
    --  icon indicated by Gicon with the size indicated by Size. If Gicon is
    --  null, the image will be hidden.
    --  Since: gtk+ 2.20
-   --  "gicon": a GIcon representing the icon, or null
+   --  "gicon": a Glib.G_Icon.G_Icon representing the icon, or null
    --  "size": a stock icon size
 
    procedure Set_Icon_From_Icon_Name

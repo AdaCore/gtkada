@@ -5320,6 +5320,17 @@ direction, widget state, or icon size.
      </method>
    </package>
 
+   <package id="GIcon" ada="Glib.G_Icon">
+     <method id="g_icon_hash">
+       <parameter name="icon" type="G_Icon"/>
+     </method>
+   </package>
+
+   <package id="GtkNumerableIcon">
+     <method id="gtk_numerable_icon_new" ada="Gtk_New"/>
+     <method id="gtk_numerable_icon_new_with_style_context" ada="Gtk_New_With_Style_Context"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

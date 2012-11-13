@@ -335,17 +335,17 @@ package body Gtk.Image is
    ---------
 
    procedure Get
-      (Image : not null access Gtk_Image_Record;
-       Gicon : out Glib.G_Icon.G_Icon;
-       Size  : out Gtk.Enums.Gtk_Icon_Size)
+      (Image  : not null access Gtk_Image_Record;
+       G_Icon : out Glib.G_Icon.G_Icon;
+       Size   : out Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
-         (Image : System.Address;
-          Gicon : out Glib.G_Icon.G_Icon;
-          Size  : out Gtk.Enums.Gtk_Icon_Size);
+         (Image  : System.Address;
+          G_Icon : out Glib.G_Icon.G_Icon;
+          Size   : out Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_get_gicon");
    begin
-      Internal (Get_Object (Image), Gicon, Size);
+      Internal (Get_Object (Image), G_Icon, Size);
    end Get;
 
    ---------

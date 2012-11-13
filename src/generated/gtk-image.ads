@@ -287,15 +287,16 @@ package Gtk.Image is
    --  the image is empty
 
    procedure Get
-      (Image : not null access Gtk_Image_Record;
-       Gicon : out Glib.G_Icon.G_Icon;
-       Size  : out Gtk.Enums.Gtk_Icon_Size);
-   --  Gets the GIcon and size being displayed by the Gtk.Image.Gtk_Image. The
-   --  storage type of the image must be Gtk.Image.Image_Empty or
-   --  Gtk.Image.Image_Gicon (see Gtk.Image.Get_Storage_Type). The caller of
-   --  this function does not own a reference to the returned GIcon.
+      (Image  : not null access Gtk_Image_Record;
+       G_Icon : out Glib.G_Icon.G_Icon;
+       Size   : out Gtk.Enums.Gtk_Icon_Size);
+   --  Gets the Glib.G_Icon.G_Icon and size being displayed by the
+   --  Gtk.Image.Gtk_Image. The storage type of the image must be
+   --  Gtk.Image.Image_Empty or Gtk.Image.Image_Gicon (see
+   --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
+   --  reference to the returned Glib.G_Icon.G_Icon.
    --  Since: gtk+ 2.14
-   --  "gicon": place to store a GIcon, or null
+   --  "gicon": place to store a Glib.G_Icon.G_Icon, or null
    --  "size": place to store an icon size, or null
 
    procedure Get
@@ -440,7 +441,7 @@ package Gtk.Image is
    --  Type: UTF8_String
    --  Flags: read-write
    --
-   --  Name: Gicon_Property
+   --  Name: G_Icon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
    --  The GIcon displayed in the GtkImage. For themed icons, If the icon
@@ -491,7 +492,7 @@ package Gtk.Image is
    --  Gtk.Image.Image_Icon_Name and Gtk.Image.Image_Gicon.
 
    File_Property : constant Glib.Properties.Property_String;
-   Gicon_Property : constant Glib.Properties.Property_Boxed;
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    Icon_Name_Property : constant Glib.Properties.Property_String;
    Icon_Set_Property : constant Glib.Properties.Property_Object;
    Icon_Size_Property : constant Glib.Properties.Property_Int;
@@ -505,7 +506,7 @@ package Gtk.Image is
 private
    File_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("file");
-   Gicon_Property : constant Glib.Properties.Property_Boxed :=
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("gicon");
    Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("icon-name");

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,71 +21,49 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Glib.G_Icon is
 
-   ---------------------
-   -- G_Icon_Get_Type --
-   ---------------------
+   -----------
+   -- Equal --
+   -----------
 
-   function G_Icon_Get_Type return GType is
-      function Internal return GType;
-      pragma Import (C, Internal, "g_icon_get_type");
-   begin
-      return Internal;
-   end G_Icon_Get_Type;
-
-   ---------
-   -- "=" --
-   ---------
-
-   function "=" (Icon1, Icon2 : G_Icon) return Boolean is
-      function Internal (Icon1, Icon2 : G_Icon) return Gboolean;
+   function Equal (Self : G_Icon; Icon2 : G_Icon) return Boolean is
+      function Internal (Self : G_Icon; Icon2 : G_Icon) return Integer;
       pragma Import (C, Internal, "g_icon_equal");
    begin
-      return Boolean'Val (Internal (Icon1, Icon2));
-   end "=";
-
-   ----------
-   -- Hash --
-   ----------
-
-   function Hash (Icon : G_Icon) return Guint is
-      function Internal (Icon : G_Icon) return Guint;
-      pragma Import (C, Internal, "g_icon_hash");
-   begin
-      return Internal (Icon);
-   end Hash;
+      return Boolean'Val (Internal (Self, Icon2));
+   end Equal;
 
    ---------------
    -- To_String --
    ---------------
 
-   function To_String (Icon : G_Icon) return UTF8_String is
-      use Interfaces.C.Strings;
-
-      function Internal (Icon : G_Icon) return chars_ptr;
+   function To_String (Self : G_Icon) return UTF8_String is
+      function Internal
+         (Self : G_Icon) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_icon_to_string");
    begin
-      return Value (Internal (Icon));
+      return Gtkada.Bindings.Value_And_Free (Internal (Self));
    end To_String;
 
    --------------------
    -- New_For_String --
    --------------------
 
-   procedure New_For_String
-     (Widget : out G_Icon;
-      Str    : String)
-   is
-      function Internal (Str, Error : System.Address) return G_Icon;
+   function New_For_String (Str : UTF8_String) return G_Icon is
+      function Internal (Str : Interfaces.C.Strings.chars_ptr) return G_Icon;
       pragma Import (C, Internal, "g_icon_new_for_string");
-
-      Tmp : constant String := Str & ASCII.NUL;
+      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Return : G_Icon;
    begin
-      --  We ignore the Error argument.
-      Widget := Internal (Tmp'Address, System.Null_Address);
+      Tmp_Return := Internal (Tmp_Str);
+      Free (Tmp_Str);
+      return Tmp_Return;
    end New_For_String;
 
 end Glib.G_Icon;

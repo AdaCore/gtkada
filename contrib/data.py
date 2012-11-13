@@ -15,12 +15,14 @@ enums = ("GtkEnums",
 
 interfaces = ("Activatable",
               #"AppChooser",
+              "--Atk.ImplementorIface",
               "Buildable",
               "CellEditable",
               "CellLayout",
               "Editable",
               "FileChooser",
               "FontChooser",
+              "Icon",
               "Orientable",
               "PrintOperationPreview",
               "RecentChooser",
@@ -137,6 +139,8 @@ binding = ("GdkCursor",
            "GtkMenuToolButton",
            "GtkMessageDialog",
            "GtkNotebook",
+           # "GtkNumerableIcon",
+           "GtkOffscreenWindow",
            "GtkOverlay",
            "GtkPaned",
            "GtkPageSetup",
@@ -285,6 +289,7 @@ naming.exceptions = {
     "In": "Gtk_In",
 
     "Gtk_Uimanager": "Gtk_UI_Manager",
+    "Gicon": "G_Icon",
 }
 
 # Maps C types to type descriptions.
@@ -325,6 +330,7 @@ naming.type_exceptions = {
     "GObject*":          GObject("Glib.Object.GObject"),
     "GClosure*":         Proxy("System.Address", ""),
     "GInitiallyUnowned": GObject("Glib.Object.GInitiallyUnowned"),
+    "GIcon*":            Proxy("Glib.G_Icon.G_Icon"),
     "GValue":            Proxy("Glib.Values.GValue", ""),
     "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
 
@@ -338,7 +344,6 @@ naming.type_exceptions = {
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
-    "GIcon*":        Proxy("Glib.G_Icon.G_Icon"),
     "GQuark":        Proxy("Glib.GQuark"),
     "GObject":       Proxy("Glib.Object.GObject"),
     "GParamSpec":    Proxy("Glib.Param_Spec"),

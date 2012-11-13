@@ -1561,7 +1561,13 @@ See Glib.Properties for more information on properties)""")
 
         for impl in implements:
             name = impl.get("name")
-            if name in ("Atk.ImplementorIface",):
+
+            # Special case, because the GIR file are inconsistent
+            if name == "Gio.Icon":
+                name = "Icon"
+
+            # If the interface is purposefully not bound
+            if "--%s" % name in interfaces:
                 continue
 
             type = naming.type(self.gir.interfaces[name].ctype)

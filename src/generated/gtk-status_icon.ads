@@ -92,10 +92,10 @@ package Gtk.Status_Icon is
    procedure Initialize_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon        : Glib.G_Icon.G_Icon);
-   --  Creates a status icon displaying a GIcon. If the icon is a themed icon,
-   --  it will be updated when the theme changes.
+   --  Creates a status icon displaying a Glib.G_Icon.G_Icon. If the icon is a
+   --  themed icon, it will be updated when the theme changes.
    --  Since: gtk+ 2.14
-   --  "icon": a GIcon
+   --  "icon": a Glib.G_Icon.G_Icon
 
    procedure Gtk_New_From_Icon_Name
       (Status_Icon : out Gtk_Status_Icon;
@@ -143,18 +143,18 @@ package Gtk.Status_Icon is
    function Get_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Glib.G_Icon.G_Icon;
-   --  Retrieves the GIcon being displayed by the
+   --  Retrieves the Glib.G_Icon.G_Icon being displayed by the
    --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Gicon (see
    --  Gtk.Status_Icon.Get_Storage_Type). The caller of this function does not
-   --  own a reference to the returned GIcon.
+   --  own a reference to the returned Glib.G_Icon.G_Icon.
    --  If this function fails, Icon is left unchanged;
    --  Since: gtk+ 2.14
 
    procedure Set_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Icon        : Glib.G_Icon.G_Icon);
-   --  Makes Status_Icon display the GIcon. See
+   --  Makes Status_Icon display the Glib.G_Icon.G_Icon. See
    --  Gtk.Status_Icon.Gtk_New_From_Gicon for details.
    --  Since: gtk+ 2.14
    --  "icon": a GIcon
@@ -402,11 +402,12 @@ package Gtk.Status_Icon is
    --  Type: UTF8_String
    --  Flags: write
    --
-   --  Name: Gicon_Property
+   --  Name: G_Icon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
-   --  The GIcon displayed in the Gtk.Status_Icon.Gtk_Status_Icon. For themed
-   --  icons, the image will be updated automatically if the theme changes.
+   --  The Glib.G_Icon.G_Icon displayed in the
+   --  Gtk.Status_Icon.Gtk_Status_Icon. For themed icons, the image will be
+   --  updated automatically if the theme changes.
    --
    --  Name: Has_Tooltip_Property
    --  Type: Boolean
@@ -503,7 +504,7 @@ package Gtk.Status_Icon is
 
    Embedded_Property : constant Glib.Properties.Property_Boolean;
    File_Property : constant Glib.Properties.Property_String;
-   Gicon_Property : constant Glib.Properties.Property_Boxed;
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
    Icon_Name_Property : constant Glib.Properties.Property_String;
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
@@ -651,7 +652,7 @@ private
      Glib.Properties.Build ("embedded");
    File_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("file");
-   Gicon_Property : constant Glib.Properties.Property_Boxed :=
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("gicon");
    Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-tooltip");

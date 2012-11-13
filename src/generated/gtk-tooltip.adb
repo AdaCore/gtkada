@@ -67,17 +67,17 @@ package body Gtk.Tooltip is
    -------------------------
 
    procedure Set_Icon_From_Gicon
-      (Self  : not null access Gtk_Tooltip_Record;
-       Gicon : Glib.G_Icon.G_Icon;
-       Size  : Gtk.Enums.Gtk_Icon_Size)
+      (Self   : not null access Gtk_Tooltip_Record;
+       G_Icon : Glib.G_Icon.G_Icon;
+       Size   : Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
-         (Self  : System.Address;
-          Gicon : Glib.G_Icon.G_Icon;
-          Size  : Gtk.Enums.Gtk_Icon_Size);
+         (Self   : System.Address;
+          G_Icon : Glib.G_Icon.G_Icon;
+          Size   : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_tooltip_set_icon_from_gicon");
    begin
-      Internal (Get_Object (Self), Gicon, Size);
+      Internal (Get_Object (Self), G_Icon, Size);
    end Set_Icon_From_Gicon;
 
    -----------------------------

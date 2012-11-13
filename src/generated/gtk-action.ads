@@ -225,7 +225,7 @@ package Gtk.Action is
        Icon   : Glib.G_Icon.G_Icon);
    --  Sets the icon of Action.
    --  Since: gtk+ 2.16
-   --  "icon": the GIcon to set
+   --  "icon": the Glib.G_Icon.G_Icon to set
 
    function Get_Icon_Name
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -439,10 +439,10 @@ package Gtk.Action is
    --  Use this property if the menu item would be useless or hard to use
    --  without their image.
    --
-   --  Name: Gicon_Property
+   --  Name: G_Icon_Property
    --  Type: Glib.G_Icon.G_Icon
    --  Flags: read-write
-   --  The GIcon displayed in the Gtk.Action.Gtk_Action.
+   --  The Glib.G_Icon.G_Icon displayed in the Gtk.Action.Gtk_Action.
    --
    --  Note that the stock icon is preferred, if the
    --  Gtk.Action.Gtk_Action:stock-id property holds the id of an existing
@@ -462,7 +462,7 @@ package Gtk.Action is
    --
    --  Note that the stock icon is preferred, if the
    --  Gtk.Action.Gtk_Action:stock-id property holds the id of an existing
-   --  stock icon, and the GIcon is preferred if the
+   --  stock icon, and the Glib.G_Icon.G_Icon is preferred if the
    --  Gtk.Action.Gtk_Action:gicon property is set.
    --
    --  This is an appearance property and thus only applies if
@@ -530,7 +530,7 @@ package Gtk.Action is
 
    Action_Group_Property : constant Glib.Properties.Property_Object;
    Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
-   Gicon_Property : constant Glib.Properties.Property_Boxed;
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean;
    Icon_Name_Property : constant Glib.Properties.Property_String;
    Is_Important_Property : constant Glib.Properties.Property_Boolean;
@@ -561,7 +561,7 @@ private
      Glib.Properties.Build ("action-group");
    Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("always-show-image");
-   Gicon_Property : constant Glib.Properties.Property_Boxed :=
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("gicon");
    Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("hide-if-empty");

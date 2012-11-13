@@ -319,7 +319,7 @@ package Gtk.Icon_Theme is
    --  information about the icon, or null if the icon wasn't found. Free with
    --  Gtk.Icon_Theme.Free
    --  Since: gtk+ 2.14
-   --  "icon": the GIcon to look up
+   --  "icon": the Glib.G_Icon.G_Icon to look up
    --  "size": desired icon size
    --  "flags": flags modifying the behavior of the icon lookup
 
