@@ -94,7 +94,8 @@ package Gtk.File_Filter is
    end record;
    pragma Convention (C, Gtk_File_Filter_Info);
 
-   function From_Object_Free (B : access Gtk_File_Filter_Info) return Gtk_File_Filter_Info; pragma Inline (From_Object_Free);
+   function From_Object_Free (B : access Gtk_File_Filter_Info) return Gtk_File_Filter_Info;
+   pragma Inline (From_Object_Free);
    --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass
    --  information about the tested file to Gtk.File_Filter.Filter.
 

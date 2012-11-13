@@ -56,7 +56,8 @@ package Pango.Layout is
    pragma Inline (From_Object_Free, From_Object);
 
    type Pango_Layout_Line is private;
-   function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line; pragma Inline (From_Object_Free);
+   function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line;
+   pragma Inline (From_Object_Free);
 
 
    ----------------------------

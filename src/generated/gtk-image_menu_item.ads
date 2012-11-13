@@ -69,8 +69,8 @@ package Gtk.Image_Menu_Item is
    --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  If you want this menu item to have changeable accelerators, then pass
    --  in null for accel_group. Next call Gtk.Menu_Item.Set_Accel_Path with an
-   --  appropriate path for the menu item, use gtk_stock_lookup to look up the
-   --  standard accelerator for the stock item, and if one is found, call
+   --  appropriate path for the menu item, use Gtk.Stock_Item.Lookup to look up
+   --  the standard accelerator for the stock item, and if one is found, call
    --  Gtk.Accel_Map.Add_Entry to register it.
    --  "stock_id": the name of the stock item.
    --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to add the menu

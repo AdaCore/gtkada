@@ -21,58 +21,49 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---  A Gtk.Target_Entry.Gtk_Target_Entry structure represents a single type of
---  data than can be supplied for by a widget for a selection or for supplied
---  or received during drag-and-drop.
---
---  </description>
-
+pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Gtk.Enums;            use Gtk.Enums;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-package Gtk.Target_Entry is
+package body Gtk.Overlay is
 
-   type Gtk_Target_Entry is record
-      Target : Interfaces.C.Strings.chars_ptr;
-      Flags : Gtk.Enums.Gtk_Target_Flags;
-      Info : Guint;
-   end record;
-   pragma Convention (C, Gtk_Target_Entry);
-
-   function From_Object_Free (B : access Gtk_Target_Entry) return Gtk_Target_Entry;
-   pragma Inline (From_Object_Free);
-   --  A Gtk.Target_Entry.Gtk_Target_Entry structure represents a single type
-   --  of data than can be supplied for by a widget for a selection or for
-   --  supplied or received during drag-and-drop.
-
-   ------------------
-   -- Constructors --
-   ------------------
-
-   procedure Gtk_New
-      (Target_Entry : out Gtk_Target_Entry;
-       Target       : UTF8_String;
-       Flags        : Gtk.Enums.Gtk_Target_Flags;
-       Info         : Guint);
-   --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry structure.
-   --  Free with Gtk.Target_Entry.Free
-   --  "target": String identifier for target
-   --  "flags": Set of flags, see Gtk.Enums.Gtk_Target_Flags
-   --  "info": an ID that will be passed back to the application
-
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "gtk_target_entry_get_type");
+   package Type_Conversion_Gtk_Overlay is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Overlay_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Overlay);
 
    -------------
-   -- Methods --
+   -- Gtk_New --
    -------------
 
-   procedure Free (Target_Entry : Gtk_Target_Entry);
-   pragma Import (C, Free, "gtk_target_entry_free");
-   --  Frees a Gtk.Target_Entry.Gtk_Target_Entry structure returned from
-   --  gtk_target_entry_new or gtk_target_entry_copy.
+   procedure Gtk_New (Self : out Gtk_Overlay) is
+   begin
+      Self := new Gtk_Overlay_Record;
+      Gtk.Overlay.Initialize (Self);
+   end Gtk_New;
 
-end Gtk.Target_Entry;
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Self : not null access Gtk_Overlay_Record'Class) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_overlay_new");
+   begin
+      Set_Object (Self, Internal);
+   end Initialize;
+
+   -----------------
+   -- Add_Overlay --
+   -----------------
+
+   procedure Add_Overlay
+      (Self   : not null access Gtk_Overlay_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Widget : System.Address);
+      pragma Import (C, Internal, "gtk_overlay_add_overlay");
+   begin
+      Internal (Get_Object (Self), Get_Object (Widget));
+   end Add_Overlay;
+
+end Gtk.Overlay;

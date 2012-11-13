@@ -42,7 +42,8 @@ package Gdk.RGBA is
    end record;
    pragma Convention (C, Gdk_RGBA);
 
-   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA; pragma Inline (From_Object_Free);
+   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
+   pragma Inline (From_Object_Free);
    --  The GdkRGBA structure is used to represent a (possibly translucent)
    --  color, in a way that is compatible with cairos notion of color.
 
