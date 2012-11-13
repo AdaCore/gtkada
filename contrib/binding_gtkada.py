@@ -35,6 +35,7 @@ Where the package node is defined as follows:
                                 In particular used for "Self" -->
            type="..."      <!-- Override Ada types for all methods -->
            ctype="..."     <!-- Override C type (to better qualify it) -->
+           direction="..." <!-- Override direction (see <parameter> node below) -->
        />
 
        <!-- The following tag can be used to override various properties from
@@ -508,6 +509,8 @@ class GtkAdaParameter(object):
     def get_direction(self):
         if self.node is not None:
             return self.node.get("direction", None)
+        if self.default is not None:
+            return self.default.get("direction", None)
         return None
 
     def ada_name(self):
