@@ -198,10 +198,14 @@ class CType(object):
            'pkg' is the Package instance in which the call occurs.
            'wrapper' is used in the call itself, and %s is replaced by the
               name of the variable (or the temporary variable).
+           'mode' is the mode for the Ada subprogram, and is automatically
+              converted when generating a subprogram as a direct C import.
            Returns an instance of VariableCall.
            See comments at the beginning of this package for valid LANG values
         """
-        assert(lang in ("ada", "c->ada", "ada->c"))
+        assert lang in ("ada", "c->ada", "ada->c")
+        assert mode in ("in", "out", "access", "not null access",
+                        "in out"), "Incorrect mode: %s" % mode
 
         if lang == "ada":
             return VariableCall(
@@ -1195,48 +1199,51 @@ class Local_Var(object):
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
-    def as_call(self, pkg, lang="ada", mode="in", value=None):
+    def as_call(self, pkg, lang="ada", value=None):
         """Pass self (or the value) as a parameter to an Ada subprogram call,
            implemented in the given language. See comments at the beginning
            of this package for valid values of LANG.
            'pkg' is the instance of Package in which the call occurs.
            :return: an instance of VariableCall
         """
-        assert(lang in ("ada", "c->ada", "ada->c"))
-
-        wrapper = "%s"
         n = value or self.name
-        if mode == "access_c":
-            mode = "access"
-            wrapper="%s'Access"
-
         if isinstance(self.type, CType):
             return self.type.as_call(
-                name=n, pkg=pkg, lang=lang, mode=mode, wrapper=wrapper)
+                name=n, pkg=pkg, lang=lang, wrapper="%s")
         else:
             return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
 
 class Parameter(Local_Var):
     __slots__ = ["name", "type", "default", "aliased", "mode", "doc",
-                 "ada_binding"]
+                 "ada_binding", "for_function"]
 
     def __init__(self, name, type, default="", doc="", mode="in",
-                 ada_binding=True):
-        """A mode "access_c" indicates an "access" parameter for which
-           calls will use a 'Access.
+                 for_function=False, ada_binding=True):
+        """
+           'mode' is the mode for the Ada subprogram, and is automatically
+              converted when generating a subprogram as a direct C import.
+
+           :param for_function: whether the parameter belongs to a procedure
+              or a function.
+
            :param ada_binding: if False, the parameter will not be displayed
               in the profile of Ada subprograms (although, of course, it will
               be passed to the C subprograms)
         """
+        assert mode in ("in", "out", "in out", "not null access",
+                        "access"), "Incorrect mode: %s" % mode
+
         super(Parameter, self).__init__(name, type, default)
         self.mode = mode
         self.doc  = doc
         self.ada_binding = ada_binding
+        self.for_function = for_function
 
     def _type(self, lang, pkg):
         mode = self.mode
-        if self.mode == "access_c":
+
+        if lang == "ada->c" and mode != "in" and self.for_function:
             mode = "access"
 
         if mode == "in" or not hasattr(self.type, "userecord"):
@@ -1254,6 +1261,8 @@ class Parameter(Local_Var):
     def as_call(self, pkg, lang="ada", value=None):
         """'pkg' is the package instance in which the call occurs."""
 
+        assert lang in ("ada", "c->ada", "ada->c")
+
         if not self.ada_binding:
             if self.default is not None:
                 return VariableCall(call=self.default,
@@ -1262,8 +1271,23 @@ class Parameter(Local_Var):
                 return VariableCall(call="Parameter not bound in Ada",
                                     precall='', postcall='', tmpvars=[])
         else:
-            return super(Parameter, self).as_call(
-                pkg=pkg, lang=lang, mode=self.mode, value=value)
+            wrapper = "%s"
+            n = value or self.name
+
+            # We know that for a C function, an "in out" parameter is implemented
+            # as an "access parameter", so we'll need to take a 'Access. In the
+            # call to as_call() below, though, we still pass the original mode
+            # ("in out") not "access", so that as_call() knows whether we need to
+            # make a copy of the parameter or not.
+
+            if lang == "ada->c" and self.mode != "in" and self.for_function:
+                wrapper="%s'Access"
+
+            if isinstance(self.type, CType):
+                return self.type.as_call(
+                    name=n, pkg=pkg, lang=lang, mode=self.mode, wrapper=wrapper)
+            else:
+                return VariableCall(call=n, precall='', postcall='', tmpvars=[])
 
     def direct_c_map(self):
         """Whether the parameter can be passed as is to C"""

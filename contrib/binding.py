@@ -361,10 +361,8 @@ class SubprogramProfile(object):
         result = []
         for p in self.params:
             n = p.name
-            m = p.mode
 
-            if self.returns is not None and m != "in":
-                m = "access_c"
+            if self.returns is not None and p.mode != "in":
                 n = "Acc_%s" % p.name
                 var = Local_Var(
                     name="Acc_%s" % p.name,
@@ -389,7 +387,8 @@ class SubprogramProfile(object):
             # systematically put the default value, which is in Ada. We would
             # end up with Interfaces.C.Strings.chars_ptr=""
 
-            result.append(Parameter(name=n, mode=m, type=p.type,
+            result.append(Parameter(name=n, mode=p.mode, type=p.type,
+                                    for_function=self.returns is not None,
                                     default=p.default if not p.ada_binding else None,
                                     ada_binding=p.ada_binding))
 
