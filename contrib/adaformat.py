@@ -217,7 +217,13 @@ class CType(object):
                 # An "out" parameter for an enumeration requires a temporary
                 # variable: Internal(Enum'Pos(Param)) is invalid
                 tmp = "Tmp_%s" % name
-                tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
+
+                if mode in ("out", "access"):
+                    tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
+                elif mode in ("in out",):
+                    tmpvars = [
+                        Local_Var(name=tmp, type=returns[4], aliased=True,
+                                  default=self.convert_to_c(pkg=pkg) % {"var":name})]
 
                 if "%(tmp)s" in ret:
                     tmp2 = "Tmp2_%s" % name
@@ -517,8 +523,9 @@ class Record(CType):
         else:
             CType.__init__(self, ada, property)
 
-        self.cparam_for_out = "%s" % self.ada
-        # self.cleanup = "Free (%s);"
+        # Do not change self.cparam: when passing a read-only parameter to
+        # C, GNAT will automatically pass the address of the record
+        self.cparam = ada
 
     def convert_from_c(self):
         conv = "%(var)s.all"  # convert C -> Ada,

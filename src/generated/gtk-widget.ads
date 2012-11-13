@@ -510,7 +510,7 @@ package Gtk.Widget is
 
    procedure Destroyed
       (Widget         : not null access Gtk_Widget_Record;
-       Widget_Pointer : not null access Gtk_Widget_Record'Class);
+       Widget_Pointer : in out Gtk_Widget);
    --  This function sets *Widget_Pointer to null if Widget_Pointer != null.
    --  It's intended to be used as a callback connected to the "destroy" signal
    --  of a widget. You connect Gtk.Widget.Destroyed as a signal handler, and

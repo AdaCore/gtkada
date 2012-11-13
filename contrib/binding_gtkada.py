@@ -85,7 +85,7 @@ Where the package node is defined as follows:
                                 case the value is processed as a GObject -->
             ctype="..."    <!-- Override C type (to better qualify it) -->
             default="..."  <!-- optional, the default value for the param-->
-            direction=".." <!-- optional, "in", "out" or "inout" -->
+            direction=".." <!-- optional, "in", "out", "access" or "inout" -->
             allow-none="0" <!-- If C accepts a NULL value (an empty string
                                 is mapped to the null pointer -->
          />

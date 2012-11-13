@@ -230,7 +230,7 @@ package Gtk.Editable is
    --       (Self            : access Gtk_Editable;
    --        New_Text        : UTF8_String;
    --        New_Text_Length : Gint;
-   --        Position        : Gint);
+   --        Position        : in out Gint);
    --    --  "new_text": the new text to insert
    --    --  "new_text_length": the length of the new text, in bytes, or -1 if
    --    --  new_text is nul-terminated

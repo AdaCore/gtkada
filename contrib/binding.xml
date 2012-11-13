@@ -5161,7 +5161,7 @@ direction, widget state, or icon size.
    </package>
 
    <package id="GtkTextIter">
-     <parameter name="self" ada="Iter" direction="in"/>
+     <parameter name="self" ada="Iter" direction="inout"/>  <!-- most methods modify self -->
      <record ctype="GtkTextIter" private="True"/>
      <enum ctype="GtkTextSearchFlags"/>
 

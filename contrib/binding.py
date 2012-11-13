@@ -551,8 +551,12 @@ class SubprogramProfile(object):
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
             direction = gtkparam.get_direction() or p.get("direction", "in")
+            assert direction in ("in", "out", "inout", "access"), \
+                   "Invalid value for direction: '%s'" % direction
 
-            if direction in ("out", "access"):
+            if direction == "inout":
+                mode = "in out"
+            elif direction in ("out", "access"):
                 mode = direction
             elif type.is_ptr:
                 mode = "in out"

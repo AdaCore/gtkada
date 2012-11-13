@@ -336,14 +336,17 @@ package body Gtk.Widget is
 
    procedure Destroyed
       (Widget         : not null access Gtk_Widget_Record;
-       Widget_Pointer : not null access Gtk_Widget_Record'Class)
+       Widget_Pointer : in out Gtk_Widget)
    is
       procedure Internal
          (Widget         : System.Address;
-          Widget_Pointer : System.Address);
+          Widget_Pointer : in out System.Address);
       pragma Import (C, Internal, "gtk_widget_destroyed");
+      Tmp_Widget_Pointer : aliased System.Address := Get_Object (Widget_Pointer);
+      Stub_Gtk_Widget    : Gtk_Widget_Record;
    begin
-      Internal (Get_Object (Widget), Get_Object (Widget_Pointer));
+      Internal (Get_Object (Widget), Tmp_Widget_Pointer);
+      Widget_Pointer := Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Widget_Pointer, Stub_Gtk_Widget));
    end Destroyed;
 
    ------------------------
