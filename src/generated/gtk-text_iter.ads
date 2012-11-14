@@ -44,9 +44,9 @@ package Gtk.Text_Iter is
    pragma Convention (C, Gtk_Text_Search_Flags);
 
 
-   Text_Search_Visible_Only : constant Gtk_Text_Search_Flags := 1;
-   Text_Search_Text_Only : constant Gtk_Text_Search_Flags := 2;
-   Text_Search_Case_Insensitive : constant Gtk_Text_Search_Flags := 4;
+   Visible_Only : constant Gtk_Text_Search_Flags := 1;
+   Text_Only : constant Gtk_Text_Search_Flags := 2;
+   Case_Insensitive : constant Gtk_Text_Search_Flags := 4;
 
    type Gtk_Text_Iter is private;
    function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter;

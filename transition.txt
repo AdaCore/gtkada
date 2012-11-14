@@ -789,11 +789,6 @@ For creating simple tooltips on all GtkAda widgets, the easiest is to use
 Gtk.Widget.Set_Tooltip_Text or Gtk.Set_Tooltip_Markup. See the example
 in testgtk/create_tooltip.adb.
 
-Gtk.Text_Iter
-=============
-
-Name of search flag constants are now prefixed with "Text_Search_".
-
 Gtk.Tree_View
 =============
 

@@ -5166,7 +5166,7 @@ direction, widget state, or icon size.
    <package id="GtkTextIter">
      <parameter name="self" ada="Iter"/>
      <record ctype="GtkTextIter" private="True"/>
-     <enum ctype="GtkTextSearchFlags"/>
+     <enum ctype="GtkTextSearchFlags" prefix="GTK_TEXT_SEARCH_"/>
 
      <method id="gtk_text_iter_get_buffer" bind="False"/> <!-- circular dependency -->
      <method id="gtk_text_iter_get_child_anchor" bind="False"/> <!-- circular dependency -->
