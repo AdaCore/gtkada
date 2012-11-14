@@ -3932,72 +3932,72 @@ package Gtk.Widget is
    Signal_Window_State_Event : constant Glib.Signal_Name := "window-state-event";
 
 private
-   App_Paintable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("app-paintable");
-   Can_Default_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("can-default");
-   Can_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("can-focus");
-   Composite_Child_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("composite-child");
-   Double_Buffered_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("double-buffered");
-   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask :=
-     Gdk.Event.Build ("events");
-   Expand_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("expand");
-   Halign_Property : constant Gtk.Widget.Property_Gtk_Align :=
-     Gtk.Widget.Build ("halign");
-   Has_Default_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-default");
-   Has_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-focus");
-   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-tooltip");
-   Height_Request_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("height-request");
-   Hexpand_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("hexpand");
-   Hexpand_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("hexpand-set");
-   Is_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-focus");
-   Margin_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin");
-   Margin_Bottom_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin-bottom");
-   Margin_Left_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin-left");
-   Margin_Right_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin-right");
-   Margin_Top_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin-top");
-   Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("name");
-   No_Show_All_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("no-show-all");
-   Parent_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("parent");
-   Receives_Default_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("receives-default");
-   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("sensitive");
-   Style_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("style");
-   Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tooltip-markup");
-   Tooltip_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tooltip-text");
-   Valign_Property : constant Gtk.Widget.Property_Gtk_Align :=
-     Gtk.Widget.Build ("valign");
-   Vexpand_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("vexpand");
-   Vexpand_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("vexpand-set");
-   Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible");
-   Width_Request_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("width-request");
    Window_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("window");
+   Width_Request_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width-request");
+   Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Vexpand_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("vexpand-set");
+   Vexpand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("vexpand");
+   Valign_Property : constant Gtk.Widget.Property_Gtk_Align :=
+     Gtk.Widget.Build ("valign");
+   Tooltip_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-text");
+   Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-markup");
+   Style_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("style");
+   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   Receives_Default_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("receives-default");
+   Parent_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("parent");
+   No_Show_All_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("no-show-all");
+   Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
+   Margin_Top_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin-top");
+   Margin_Right_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin-right");
+   Margin_Left_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin-left");
+   Margin_Bottom_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin-bottom");
+   Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin");
+   Is_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-focus");
+   Hexpand_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hexpand-set");
+   Hexpand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hexpand");
+   Height_Request_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("height-request");
+   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-tooltip");
+   Has_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-focus");
+   Has_Default_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-default");
+   Halign_Property : constant Gtk.Widget.Property_Gtk_Align :=
+     Gtk.Widget.Build ("halign");
+   Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expand");
+   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask :=
+     Gdk.Event.Build ("events");
+   Double_Buffered_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("double-buffered");
+   Composite_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("composite-child");
+   Can_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("can-focus");
+   Can_Default_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("can-default");
+   App_Paintable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("app-paintable");
 end Gtk.Widget;

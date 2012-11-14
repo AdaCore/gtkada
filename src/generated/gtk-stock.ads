@@ -166,6 +166,13 @@ package Gtk.Stock is
    procedure Free (Item : in out Gtk_Stock_Item);
    --  Free memory allocated in Item.
 
+   procedure Add (Item : Gtk_Stock_Item);
+   --  Register Item.
+   --  If an item already exists with the same stock ID as one of the items,
+   --  the old item gets replaced. The stock item is copied, so GtkAda does
+   --  not hold any pointer into item and item can be freed. Use
+   --  Add_Static if item is persistent and GtkAda need not copy the array.
+
    ---------------
    -- Functions --
    ---------------

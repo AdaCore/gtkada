@@ -225,20 +225,20 @@ package Gtk.Alignment is
    Yscale_Property : constant Glib.Properties.Property_Float;
 
 private
-   Bottom_Padding_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("bottom-padding");
-   Left_Padding_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("left-padding");
-   Right_Padding_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("right-padding");
-   Top_Padding_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("top-padding");
-   Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xalign");
-   Xscale_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xscale");
-   Yalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("yalign");
    Yscale_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yscale");
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
+   Xscale_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xscale");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Top_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("top-padding");
+   Right_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("right-padding");
+   Left_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("left-padding");
+   Bottom_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("bottom-padding");
 end Gtk.Alignment;

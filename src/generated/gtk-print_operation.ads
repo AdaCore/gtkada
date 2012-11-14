@@ -930,40 +930,40 @@ package Gtk.Print_Operation is
    Signal_Update_Custom_Widget : constant Glib.Signal_Name := "update-custom-widget";
 
 private
-   Allow_Async_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("allow-async");
-   Current_Page_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("current-page");
-   Custom_Tab_Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("custom-tab-label");
-   Default_Page_Setup_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("default-page-setup");
-   Embed_Page_Setup_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("embed-page-setup");
-   Export_Filename_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("export-filename");
-   Has_Selection_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-selection");
-   Job_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("job-name");
-   N_Pages_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("n-pages");
-   N_Pages_To_Print_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("n-pages-to-print");
-   Print_Settings_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("print-settings");
-   Show_Progress_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-progress");
-   Status_Property : constant Gtk.Print_Operation.Property_Gtk_Print_Status :=
-     Gtk.Print_Operation.Build ("status");
-   Status_String_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("status-string");
-   Support_Selection_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("support-selection");
-   Track_Print_Status_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("track-print-status");
-   Unit_Property : constant Gtk.Enums.Property_Gtk_Unit :=
-     Gtk.Enums.Build ("unit");
    Use_Full_Page_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-full-page");
+   Unit_Property : constant Gtk.Enums.Property_Gtk_Unit :=
+     Gtk.Enums.Build ("unit");
+   Track_Print_Status_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("track-print-status");
+   Support_Selection_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("support-selection");
+   Status_String_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("status-string");
+   Status_Property : constant Gtk.Print_Operation.Property_Gtk_Print_Status :=
+     Gtk.Print_Operation.Build ("status");
+   Show_Progress_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-progress");
+   Print_Settings_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("print-settings");
+   N_Pages_To_Print_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("n-pages-to-print");
+   N_Pages_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("n-pages");
+   Job_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("job-name");
+   Has_Selection_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-selection");
+   Export_Filename_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("export-filename");
+   Embed_Page_Setup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("embed-page-setup");
+   Default_Page_Setup_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("default-page-setup");
+   Custom_Tab_Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("custom-tab-label");
+   Current_Page_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("current-page");
+   Allow_Async_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("allow-async");
 end Gtk.Print_Operation;

@@ -274,14 +274,14 @@ package Gtk.Color_Button is
    Signal_Color_Set : constant Glib.Signal_Name := "color-set";
 
 private
-   Alpha_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("alpha");
-   Color_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("color");
-   Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("rgba");
-   Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("title");
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-alpha");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("rgba");
+   Color_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("color");
+   Alpha_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("alpha");
 end Gtk.Color_Button;

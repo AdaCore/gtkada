@@ -393,8 +393,8 @@ package Gtk.Accel_Group is
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
 
 private
-   Is_Locked_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-locked");
    Modifier_Mask_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("modifier-mask");
+   Is_Locked_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-locked");
 end Gtk.Accel_Group;

@@ -316,16 +316,16 @@ package Gtk.Adjustment is
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
 
 private
-   Lower_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("lower");
-   Page_Increment_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("page-increment");
-   Page_Size_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("page-size");
-   Step_Increment_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("step-increment");
-   Upper_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("upper");
    Value_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("value");
+   Upper_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("upper");
+   Step_Increment_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("step-increment");
+   Page_Size_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("page-size");
+   Page_Increment_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("page-increment");
+   Lower_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("lower");
 end Gtk.Adjustment;

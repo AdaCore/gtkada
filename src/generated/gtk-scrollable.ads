@@ -175,12 +175,12 @@ package Gtk.Scrollable is
    Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy;
 
 private
-   Hadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("hadjustment");
-   Hscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=
-     Gtk.Enums.Build ("hscroll-policy");
-   Vadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("vadjustment");
    Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=
      Gtk.Enums.Build ("vscroll-policy");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Hscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=
+     Gtk.Enums.Build ("hscroll-policy");
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
 end Gtk.Scrollable;

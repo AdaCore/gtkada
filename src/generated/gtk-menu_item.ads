@@ -382,14 +382,14 @@ package Gtk.Menu_Item is
    Signal_Toggle_Size_Request : constant Glib.Signal_Name := "toggle-size-request";
 
 private
-   Accel_Path_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("accel-path");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Right_Justified_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("right-justified");
-   Submenu_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("submenu");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
+   Submenu_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("submenu");
+   Right_Justified_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("right-justified");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Accel_Path_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("accel-path");
 end Gtk.Menu_Item;

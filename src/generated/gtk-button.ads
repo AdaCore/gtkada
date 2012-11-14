@@ -423,22 +423,22 @@ package Gtk.Button is
    Signal_Released : constant Glib.Signal_Name := "released";
 
 private
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
-   Image_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("image");
-   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
-     Gtk.Enums.Build ("image-position");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
-     Gtk.Enums.Build ("relief");
-   Use_Stock_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-stock");
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-underline");
-   Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xalign");
    Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-underline");
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-stock");
+   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
+     Gtk.Enums.Build ("relief");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("image-position");
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-click");
 end Gtk.Button;

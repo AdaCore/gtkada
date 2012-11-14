@@ -1118,36 +1118,36 @@ package Gtk.Icon_View is
    Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
 
 private
-   Cell_Area_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("cell-area");
-   Column_Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("column-spacing");
-   Columns_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("columns");
-   Item_Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
-     Gtk.Enums.Build ("item-orientation");
-   Item_Padding_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("item-padding");
-   Item_Width_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("item-width");
-   Margin_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("margin");
-   Markup_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("markup-column");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
-   Pixbuf_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("pixbuf-column");
-   Reorderable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("reorderable");
-   Row_Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("row-spacing");
-   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode :=
-     Gtk.Enums.Build ("selection-mode");
-   Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("spacing");
-   Text_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("text-column");
    Tooltip_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("tooltip-column");
+   Text_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("text-column");
+   Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("spacing");
+   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode :=
+     Gtk.Enums.Build ("selection-mode");
+   Row_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("row-spacing");
+   Reorderable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reorderable");
+   Pixbuf_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("pixbuf-column");
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
+   Markup_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("markup-column");
+   Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("margin");
+   Item_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("item-width");
+   Item_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("item-padding");
+   Item_Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
+     Gtk.Enums.Build ("item-orientation");
+   Columns_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("columns");
+   Column_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("column-spacing");
+   Cell_Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("cell-area");
 end Gtk.Icon_View;

@@ -57,6 +57,7 @@ with Gtk.Enums;  use Gtk.Enums;
 package Gtk.Icon_Source is
 
    type Gtk_Icon_Source is new Glib.C_Boxed with null record;
+   Null_Gtk_Icon_Source : constant Gtk_Icon_Source;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Source;
    function From_Object_Free (B : access Gtk_Icon_Source'Class) return Gtk_Icon_Source;
@@ -241,5 +242,9 @@ package Gtk.Icon_Source is
    --  lightening an image on prelight, but will not modify source images that
    --  match exactly.
    --  "setting": True to wildcard the widget state
+
+private
+
+   Null_Gtk_Icon_Source : constant Gtk_Icon_Source := (Glib.C_Boxed with null record);
 
 end Gtk.Icon_Source;

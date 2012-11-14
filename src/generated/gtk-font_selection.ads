@@ -233,8 +233,8 @@ package Gtk.Font_Selection is
    Preview_Text_Property : constant Glib.Properties.Property_String;
 
 private
-   Font_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("font-name");
    Preview_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("preview-text");
+   Font_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font-name");
 end Gtk.Font_Selection;

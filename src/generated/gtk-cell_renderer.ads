@@ -530,36 +530,36 @@ package Gtk.Cell_Renderer is
    Signal_Editing_Started : constant Glib.Signal_Name := "editing-started";
 
 private
-   Cell_Background_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("cell-background");
-   Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("cell-background-gdk");
-   Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("cell-background-rgba");
-   Cell_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("cell-background-set");
-   Editing_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("editing");
-   Height_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("height");
-   Is_Expanded_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-expanded");
-   Is_Expander_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-expander");
-   Mode_Property : constant Gtk.Cell_Renderer.Property_Gtk_Cell_Renderer_Mode :=
-     Gtk.Cell_Renderer.Build ("mode");
-   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("sensitive");
-   Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible");
-   Width_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("width");
-   Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xalign");
-   Xpad_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("xpad");
-   Yalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("yalign");
    Ypad_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("ypad");
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
+   Xpad_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("xpad");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width");
+   Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   Mode_Property : constant Gtk.Cell_Renderer.Property_Gtk_Cell_Renderer_Mode :=
+     Gtk.Cell_Renderer.Build ("mode");
+   Is_Expander_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-expander");
+   Is_Expanded_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-expanded");
+   Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("height");
+   Editing_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editing");
+   Cell_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("cell-background-set");
+   Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("cell-background-rgba");
+   Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("cell-background-gdk");
+   Cell_Background_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("cell-background");
 end Gtk.Cell_Renderer;

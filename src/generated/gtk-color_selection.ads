@@ -315,14 +315,14 @@ package Gtk.Color_Selection is
    Signal_Color_Changed : constant Glib.Signal_Name := "color-changed";
 
 private
-   Current_Alpha_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("current-alpha");
-   Current_Color_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("current-color");
-   Current_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("current-rgba");
-   Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-opacity-control");
    Has_Palette_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-palette");
+   Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-opacity-control");
+   Current_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("current-rgba");
+   Current_Color_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("current-color");
+   Current_Alpha_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("current-alpha");
 end Gtk.Color_Selection;

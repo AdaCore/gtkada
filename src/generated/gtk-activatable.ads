@@ -333,8 +333,8 @@ package Gtk.Activatable is
    Use_Action_Appearance_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Related_Action_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("related-action");
    Use_Action_Appearance_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-action-appearance");
+   Related_Action_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("related-action");
 end Gtk.Activatable;

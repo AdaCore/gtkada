@@ -648,34 +648,34 @@ package Gtk.Status_Icon is
    Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
 
 private
-   Embedded_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("embedded");
-   File_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("file");
-   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gicon");
-   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-tooltip");
-   Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("icon-name");
-   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
-     Gtk.Enums.Build ("orientation");
-   Pixbuf_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("pixbuf");
-   Screen_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("screen");
-   Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("size");
-   Stock_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("stock");
-   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
-     Gtk.Image.Build ("storage-type");
-   Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("title");
-   Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tooltip-markup");
-   Tooltip_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tooltip-text");
    Visible_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible");
+   Tooltip_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-text");
+   Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-markup");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
+     Gtk.Image.Build ("storage-type");
+   Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("stock");
+   Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("size");
+   Screen_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("screen");
+   Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("pixbuf");
+   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
+     Gtk.Enums.Build ("orientation");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
+   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-tooltip");
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("gicon");
+   File_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("file");
+   Embedded_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("embedded");
 end Gtk.Status_Icon;

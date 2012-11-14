@@ -34,6 +34,7 @@ package Pango.Attributes is
 
 
    type Pango_Attr_List is new Glib.C_Boxed with null record;
+   Null_Pango_Attr_List : constant Pango_Attr_List;
 
    function From_Object (Object : System.Address) return Pango_Attr_List;
    function From_Object_Free (B : access Pango_Attr_List'Class) return Pango_Attr_List;
@@ -262,5 +263,8 @@ type Pango_Attribute is record
    End_Index : Guint;
 end record;
 pragma Convention (C, Pango_Attribute);
+
+
+   Null_Pango_Attr_List : constant Pango_Attr_List := (Glib.C_Boxed with null record);
 
 end Pango.Attributes;

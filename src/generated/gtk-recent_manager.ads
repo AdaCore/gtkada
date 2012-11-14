@@ -334,8 +334,8 @@ package Gtk.Recent_Manager is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
-   Filename_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("filename");
    Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("size");
+   Filename_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("filename");
 end Gtk.Recent_Manager;

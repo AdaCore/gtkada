@@ -211,14 +211,14 @@ package Gtk.Frame is
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Label_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("label-widget");
-   Label_Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("label-xalign");
-   Label_Yalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("label-yalign");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
+   Label_Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("label-yalign");
+   Label_Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("label-xalign");
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("label-widget");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
 end Gtk.Frame;

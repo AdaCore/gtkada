@@ -34,8 +34,10 @@ with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
+with Glib.Values;             use Glib.Values;
 with Gtk.Text_Attributes;     use Gtk.Text_Attributes;
 with Gtk.Text_Tag;            use Gtk.Text_Tag;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 with Pango.Language;          use Pango.Language;
 
 package Gtk.Text_Iter is
@@ -176,7 +178,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
-       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+       Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
        Result : out Boolean);
    --  Moves backward to the next toggle (on or off) of the
    --  Gtk.Text_Tag.Gtk_Text_Tag Tag, or to the next toggle of any tag if Tag
@@ -289,13 +291,6 @@ package Gtk.Text_Iter is
    --  in character offset order, i.e. the first character in the buffer is
    --  less than the second character in the buffer.
    --  "rhs": another Gtk.Text_Iter.Gtk_Text_Iter
-
-   function Copy (Iter : Gtk_Text_Iter) return Gtk_Text_Iter;
-   pragma Import (C, Copy, "gtk_text_iter_copy");
-   --  Creates a dynamically-allocated copy of an iterator. This function is
-   --  not useful in applications, because iterators can be copied with a
-   --  simple assignment ('GtkTextIter i = j;'). The function is used by
-   --  language bindings.
 
    function Editable
       (Iter            : Gtk_Text_Iter;
@@ -480,7 +475,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
-       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+       Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
        Result : out Boolean);
    --  Moves forward to the next toggle (on or off) of the
    --  Gtk.Text_Tag.Gtk_Text_Tag Tag, or to the next toggle of any tag if Tag
@@ -693,7 +688,7 @@ package Gtk.Text_Iter is
    --  "end": iterator at end of a range
 
    function Get_Tags
-      (Iter : Gtk_Text_Iter) return Glib.Object.Object_List.GSlist;
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSList;
    --  Returns a list of tags that apply to Iter, in ascending order of
    --  priority (highest-priority tags are last). The Gtk.Text_Tag.Gtk_Text_Tag
    --  in the list don't have a reference added, but you have to free the list
@@ -710,7 +705,7 @@ package Gtk.Text_Iter is
 
    function Get_Toggled_Tags
       (Iter       : Gtk_Text_Iter;
-       Toggled_On : Boolean) return Glib.Object.Object_List.GSlist;
+       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSList;
    --  Returns a list of Gtk.Text_Tag.Gtk_Text_Tag that are toggled on or off
    --  at this point. (If Toggled_On is True, the list contains tags that are
    --  toggled on.) If a tag is toggled on at Iter, then some non-empty range
@@ -840,6 +835,47 @@ package Gtk.Text_Iter is
    --  gtk_text_iter_ends_tag ()), i.e. it tells you whether a range with Tag
    --  applied to it begins *or* ends at Iter.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter);
+   pragma Inline (Copy);
+   --  Create a copy of Source.
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character;
+   --  Return the character immediately following Iter. If Iter is at the
+   --  end of the buffer, then return ASCII.NUL.
+   --  Note that this function assumes that the text is encoded in ASCII
+   --  format. If this is not the case, use the Get_Char function that
+   --  returns a Gunichar instead.
+
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Text_Iter);
+   pragma Import (C, Set_Text_Iter, "g_value_set_pointer");
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+   --  Same as Get_Slice above, but returns the raw C string.
+   --  The caller is responsible for freeing the string returned.
 
 private
 type Gtk_Text_Iter is record

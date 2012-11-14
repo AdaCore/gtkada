@@ -556,20 +556,20 @@ package Gtk.Spin_Button is
    Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
 
 private
-   Adjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("adjustment");
-   Climb_Rate_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("climb-rate");
-   The_Digits_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("digits");
-   Numeric_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("numeric");
-   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("snap-to-ticks");
-   Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy :=
-     Gtk.Spin_Button.Build ("update-policy");
-   Value_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("value");
    Wrap_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap");
+   Value_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("value");
+   Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy :=
+     Gtk.Spin_Button.Build ("update-policy");
+   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("snap-to-ticks");
+   Numeric_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("numeric");
+   The_Digits_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("digits");
+   Climb_Rate_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("climb-rate");
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("adjustment");
 end Gtk.Spin_Button;

@@ -212,10 +212,10 @@ package Gtk.Radio_Action is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
-   Current_Value_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("current-value");
-   Group_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("group");
    Value_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("value");
+   Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("group");
+   Current_Value_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("current-value");
 end Gtk.Radio_Action;

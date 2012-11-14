@@ -634,22 +634,22 @@ package Gtk.Entry_Completion is
    Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
 
 private
-   Cell_Area_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("cell-area");
-   Inline_Completion_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("inline-completion");
-   Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("inline-selection");
-   Minimum_Key_Length_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("minimum-key-length");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
-   Popup_Completion_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("popup-completion");
-   Popup_Set_Width_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("popup-set-width");
-   Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("popup-single-match");
    Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("text-column");
+   Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-single-match");
+   Popup_Set_Width_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-set-width");
+   Popup_Completion_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-completion");
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
+   Minimum_Key_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("minimum-key-length");
+   Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inline-selection");
+   Inline_Completion_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inline-completion");
+   Cell_Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("cell-area");
 end Gtk.Entry_Completion;

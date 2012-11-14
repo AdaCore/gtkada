@@ -325,16 +325,16 @@ package Gtk.Tool_Button is
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
 
 private
-   Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("icon-name");
-   Icon_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("icon-widget");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Label_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("label-widget");
-   Stock_Id_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("stock-id");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
+   Stock_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("stock-id");
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("label-widget");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Icon_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("icon-widget");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
 end Gtk.Tool_Button;

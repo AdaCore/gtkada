@@ -275,16 +275,16 @@ package Gtk.Progress_Bar is
    Text_Property : constant Glib.Properties.Property_String;
 
 private
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
-     Pango.Layout.Build ("ellipsize");
-   Fraction_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("fraction");
-   Inverted_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("inverted");
-   Pulse_Step_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("pulse-step");
-   Show_Text_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-text");
    Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("text");
+   Show_Text_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-text");
+   Pulse_Step_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("pulse-step");
+   Inverted_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inverted");
+   Fraction_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("fraction");
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
+     Pango.Layout.Build ("ellipsize");
 end Gtk.Progress_Bar;

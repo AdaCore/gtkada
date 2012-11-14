@@ -59,6 +59,18 @@ package body Gtk.Stock is
    -- Add --
    ---------
 
+   procedure Add (Item : Gtk_Stock_Item) is
+      procedure Internal (Item : Gtk_Stock_Item; N_Items : Guint := 1);
+      pragma Import (C, Internal, "gtk_stock_add");
+
+   begin
+      Internal (Item);
+   end Add;
+
+   ---------
+   -- Add --
+   ---------
+
    procedure Add (Items : Gtk_Stock_Item_Array) is
       procedure Internal
          (Items   : Gtk_Stock_Item_Array;

@@ -280,10 +280,10 @@ package Gtk.Scale_Button is
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
 
 private
-   Adjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("adjustment");
-   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
-     Gtk.Enums.Build ("size");
    Value_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("value");
+   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
+     Gtk.Enums.Build ("size");
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("adjustment");
 end Gtk.Scale_Button;

@@ -125,8 +125,8 @@ package Gtk.Arrow is
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
-   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
-     Gtk.Enums.Build ("arrow-type");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
+     Gtk.Enums.Build ("arrow-type");
 end Gtk.Arrow;

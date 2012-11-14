@@ -335,20 +335,20 @@ package Gtk.Message_Dialog is
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Buttons_Property : constant Gtk.Message_Dialog.Property_Gtk_Buttons_Type :=
-     Gtk.Message_Dialog.Build ("buttons");
-   Image_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("image");
-   Message_Area_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("message-area");
-   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type :=
-     Gtk.Message_Dialog.Build ("message-type");
-   Secondary_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("secondary-text");
-   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("secondary-use-markup");
-   Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("text");
    Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-markup");
+   Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("text");
+   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-use-markup");
+   Secondary_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-text");
+   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type :=
+     Gtk.Message_Dialog.Build ("message-type");
+   Message_Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("message-area");
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
+   Buttons_Property : constant Gtk.Message_Dialog.Property_Gtk_Buttons_Type :=
+     Gtk.Message_Dialog.Build ("buttons");
 end Gtk.Message_Dialog;

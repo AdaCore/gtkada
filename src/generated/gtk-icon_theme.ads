@@ -43,8 +43,8 @@
 --
 --     * Stock images can only be loaded at the symbolic sizes defined by the
 --  Gtk.Enums.Gtk_Icon_Size enumeration, or by custom sizes defined by
---  gtk_icon_size_register, while named icons are more flexible and any pixel
---  size can be specified.
+--  Gtk.Icon_Factory.Icon_Size_Register, while named icons are more flexible
+--  and any pixel size can be specified.
 --
 --     * Because stock images are closely tied to stock items, and thus to
 --  actions in the user interface, stock images may come in multiple variants
@@ -120,6 +120,7 @@ package Gtk.Icon_Theme is
    Icon_Lookup_Force_Size : constant Gtk_Icon_Lookup_Flags := 16;
 
    type Gtk_Icon_Info is new Glib.C_Boxed with null record;
+   Null_Gtk_Icon_Info : constant Gtk_Icon_Info;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Info;
    function From_Object_Free (B : access Gtk_Icon_Info'Class) return Gtk_Icon_Info;
@@ -587,5 +588,9 @@ package Gtk.Icon_Theme is
    --  change has occurred in the contents of the current icon theme.
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+
+private
+
+   Null_Gtk_Icon_Info : constant Gtk_Icon_Info := (Glib.C_Boxed with null record);
 
 end Gtk.Icon_Theme;

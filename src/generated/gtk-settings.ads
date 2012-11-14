@@ -375,7 +375,8 @@ package Gtk.Settings is
    --  E.g. "gtk-menu=16,16:gtk-button=20,20:gtk-dialog=48,48". GTK+ itself
    --  use the following named icon sizes: gtk-menu, gtk-button,
    --  gtk-small-toolbar, gtk-large-toolbar, gtk-dnd, gtk-dialog. Applications
-   --  can register their own named icon sizes with gtk_icon_size_register.
+   --  can register their own named icon sizes with
+   --  Gtk.Icon_Factory.Icon_Size_Register.
    --
    --  Name: Gtk_Icon_Theme_Name_Property
    --  Type: UTF8_String
@@ -669,144 +670,144 @@ package Gtk.Settings is
    Gtk_Xft_Rgba_Property : constant Glib.Properties.Property_String;
 
 private
-   Color_Hash_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("color-hash");
-   Gtk_Alternative_Button_Order_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-alternative-button-order");
-   Gtk_Alternative_Sort_Arrows_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-alternative-sort-arrows");
-   Gtk_Application_Prefer_Dark_Theme_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-application-prefer-dark-theme");
-   Gtk_Auto_Mnemonics_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-auto-mnemonics");
-   Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-button-images");
-   Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-can-change-accels");
-   Gtk_Color_Palette_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-color-palette");
-   Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-color-scheme");
-   Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-cursor-blink");
-   Gtk_Cursor_Blink_Time_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-cursor-blink-time");
-   Gtk_Cursor_Blink_Timeout_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-cursor-blink-timeout");
-   Gtk_Cursor_Theme_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-cursor-theme-name");
-   Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-cursor-theme-size");
-   Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-dnd-drag-threshold");
-   Gtk_Double_Click_Distance_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-double-click-distance");
-   Gtk_Double_Click_Time_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-double-click-time");
-   Gtk_Enable_Accels_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-accels");
-   Gtk_Enable_Animations_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-animations");
-   Gtk_Enable_Event_Sounds_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-event-sounds");
-   Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-input-feedback-sounds");
-   Gtk_Enable_Mnemonics_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-mnemonics");
-   Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-enable-tooltips");
-   Gtk_Entry_Password_Hint_Timeout_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("gtk-entry-password-hint-timeout");
-   Gtk_Entry_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-entry-select-on-focus");
-   Gtk_Error_Bell_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-error-bell");
-   Gtk_Fallback_Icon_Theme_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-fallback-icon-theme");
-   Gtk_File_Chooser_Backend_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-file-chooser-backend");
-   Gtk_Font_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-font-name");
-   Gtk_Fontconfig_Timestamp_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("gtk-fontconfig-timestamp");
-   Gtk_Icon_Sizes_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-icon-sizes");
-   Gtk_Icon_Theme_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-icon-theme-name");
-   Gtk_Im_Module_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-im-module");
-   Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gtk-im-preedit-style");
-   Gtk_Im_Status_Style_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gtk-im-status-style");
-   Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-key-theme-name");
-   Gtk_Keynav_Cursor_Only_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-keynav-cursor-only");
-   Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-keynav-wrap-around");
-   Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-label-select-on-focus");
-   Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-menu-bar-accel");
-   Gtk_Menu_Bar_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-menu-bar-popup-delay");
-   Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-menu-images");
-   Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-menu-popdown-delay");
-   Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-menu-popup-delay");
-   Gtk_Modules_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-modules");
-   Gtk_Print_Backends_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-print-backends");
-   Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-print-preview-command");
-   Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-recent-files-limit");
-   Gtk_Recent_Files_Max_Age_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-recent-files-max-age");
-   Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
-     Gtk.Enums.Build ("gtk-scrolled-window-placement");
-   Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-show-input-method-menu");
-   Gtk_Show_Unicode_Menu_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-show-unicode-menu");
-   Gtk_Sound_Theme_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-sound-theme-name");
-   Gtk_Split_Cursor_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-split-cursor");
-   Gtk_Theme_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-theme-name");
-   Gtk_Timeout_Expand_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-timeout-expand");
-   Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-timeout-initial");
-   Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-timeout-repeat");
-   Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
-     Gtk.Enums.Build ("gtk-toolbar-icon-size");
-   Gtk_Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=
-     Gtk.Enums.Build ("gtk-toolbar-style");
-   Gtk_Tooltip_Browse_Mode_Timeout_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-tooltip-browse-mode-timeout");
-   Gtk_Tooltip_Browse_Timeout_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-tooltip-browse-timeout");
-   Gtk_Tooltip_Timeout_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-tooltip-timeout");
-   Gtk_Touchscreen_Mode_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("gtk-touchscreen-mode");
-   Gtk_Visible_Focus_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
-     Gtk.Enums.Build ("gtk-visible-focus");
-   Gtk_Xft_Antialias_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-xft-antialias");
-   Gtk_Xft_Dpi_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-xft-dpi");
-   Gtk_Xft_Hinting_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("gtk-xft-hinting");
-   Gtk_Xft_Hintstyle_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("gtk-xft-hintstyle");
    Gtk_Xft_Rgba_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-xft-rgba");
+   Gtk_Xft_Hintstyle_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-xft-hintstyle");
+   Gtk_Xft_Hinting_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-xft-hinting");
+   Gtk_Xft_Dpi_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-xft-dpi");
+   Gtk_Xft_Antialias_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-xft-antialias");
+   Gtk_Visible_Focus_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
+     Gtk.Enums.Build ("gtk-visible-focus");
+   Gtk_Touchscreen_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-touchscreen-mode");
+   Gtk_Tooltip_Timeout_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-tooltip-timeout");
+   Gtk_Tooltip_Browse_Timeout_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-tooltip-browse-timeout");
+   Gtk_Tooltip_Browse_Mode_Timeout_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-tooltip-browse-mode-timeout");
+   Gtk_Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=
+     Gtk.Enums.Build ("gtk-toolbar-style");
+   Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
+     Gtk.Enums.Build ("gtk-toolbar-icon-size");
+   Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-timeout-repeat");
+   Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-timeout-initial");
+   Gtk_Timeout_Expand_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-timeout-expand");
+   Gtk_Theme_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-theme-name");
+   Gtk_Split_Cursor_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-split-cursor");
+   Gtk_Sound_Theme_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-sound-theme-name");
+   Gtk_Show_Unicode_Menu_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-show-unicode-menu");
+   Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-show-input-method-menu");
+   Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
+     Gtk.Enums.Build ("gtk-scrolled-window-placement");
+   Gtk_Recent_Files_Max_Age_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-recent-files-max-age");
+   Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-recent-files-limit");
+   Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-print-preview-command");
+   Gtk_Print_Backends_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-print-backends");
+   Gtk_Modules_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-modules");
+   Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-menu-popup-delay");
+   Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-menu-popdown-delay");
+   Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-menu-images");
+   Gtk_Menu_Bar_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-menu-bar-popup-delay");
+   Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-menu-bar-accel");
+   Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-label-select-on-focus");
+   Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-keynav-wrap-around");
+   Gtk_Keynav_Cursor_Only_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-keynav-cursor-only");
+   Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-key-theme-name");
+   Gtk_Im_Status_Style_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("gtk-im-status-style");
+   Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("gtk-im-preedit-style");
+   Gtk_Im_Module_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-im-module");
+   Gtk_Icon_Theme_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-icon-theme-name");
+   Gtk_Icon_Sizes_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-icon-sizes");
+   Gtk_Fontconfig_Timestamp_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("gtk-fontconfig-timestamp");
+   Gtk_Font_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-font-name");
+   Gtk_File_Chooser_Backend_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-file-chooser-backend");
+   Gtk_Fallback_Icon_Theme_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-fallback-icon-theme");
+   Gtk_Error_Bell_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-error-bell");
+   Gtk_Entry_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-entry-select-on-focus");
+   Gtk_Entry_Password_Hint_Timeout_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("gtk-entry-password-hint-timeout");
+   Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-tooltips");
+   Gtk_Enable_Mnemonics_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-mnemonics");
+   Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-input-feedback-sounds");
+   Gtk_Enable_Event_Sounds_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-event-sounds");
+   Gtk_Enable_Animations_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-animations");
+   Gtk_Enable_Accels_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-accels");
+   Gtk_Double_Click_Time_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-double-click-time");
+   Gtk_Double_Click_Distance_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-double-click-distance");
+   Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-dnd-drag-threshold");
+   Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-cursor-theme-size");
+   Gtk_Cursor_Theme_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-cursor-theme-name");
+   Gtk_Cursor_Blink_Timeout_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-cursor-blink-timeout");
+   Gtk_Cursor_Blink_Time_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("gtk-cursor-blink-time");
+   Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-cursor-blink");
+   Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-color-scheme");
+   Gtk_Color_Palette_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-color-palette");
+   Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-can-change-accels");
+   Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-button-images");
+   Gtk_Auto_Mnemonics_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-auto-mnemonics");
+   Gtk_Application_Prefer_Dark_Theme_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-application-prefer-dark-theme");
+   Gtk_Alternative_Sort_Arrows_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-alternative-sort-arrows");
+   Gtk_Alternative_Button_Order_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-alternative-button-order");
+   Color_Hash_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("color-hash");
 end Gtk.Settings;

@@ -241,8 +241,8 @@ package Gtk.Size_Group is
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode;
 
 private
-   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("ignore-hidden");
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode :=
      Gtk.Size_Group.Build ("mode");
+   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("ignore-hidden");
 end Gtk.Size_Group;

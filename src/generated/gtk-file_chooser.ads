@@ -1128,26 +1128,26 @@ package Gtk.File_Chooser is
    Signal_Update_Preview : constant Glib.Signal_Name := "update-preview";
 
 private
-   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action :=
-     Gtk.File_Chooser.Build ("action");
-   Create_Folders_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("create-folders");
-   Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("do-overwrite-confirmation");
-   Extra_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("extra-widget");
-   Filter_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("filter");
-   Local_Only_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("local-only");
-   Preview_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("preview-widget");
-   Preview_Widget_Active_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("preview-widget-active");
-   Select_Multiple_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("select-multiple");
-   Show_Hidden_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-hidden");
    Use_Preview_Label_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-preview-label");
+   Show_Hidden_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-hidden");
+   Select_Multiple_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("select-multiple");
+   Preview_Widget_Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("preview-widget-active");
+   Preview_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("preview-widget");
+   Local_Only_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("local-only");
+   Filter_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("filter");
+   Extra_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("extra-widget");
+   Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("do-overwrite-confirmation");
+   Create_Folders_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("create-folders");
+   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action :=
+     Gtk.File_Chooser.Build ("action");
 end Gtk.File_Chooser;

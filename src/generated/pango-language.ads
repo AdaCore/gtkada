@@ -29,6 +29,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 package Pango.Language is
 
    type Pango_Language is new Glib.C_Boxed with null record;
+   Null_Pango_Language : constant Pango_Language;
 
    function From_Object (Object : System.Address) return Pango_Language;
    function From_Object_Free (B : access Pango_Language'Class) return Pango_Language;
@@ -328,5 +329,9 @@ package Pango.Language is
    --  details.
    --  freed.
    --  Since: gtk+ 1.16
+
+private
+
+   Null_Pango_Language : constant Pango_Language := (Glib.C_Boxed with null record);
 
 end Pango.Language;

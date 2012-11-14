@@ -226,10 +226,10 @@ package Gtk.Check_Menu_Item is
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
 private
-   Active_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("active");
-   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("draw-as-radio");
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
+   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-as-radio");
+   Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
 end Gtk.Check_Menu_Item;

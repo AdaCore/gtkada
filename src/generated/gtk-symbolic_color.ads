@@ -43,6 +43,7 @@ with Glib;     use Glib;
 package Gtk.Symbolic_Color is
 
    type Gtk_Symbolic_Color is new Glib.C_Boxed with null record;
+   Null_Gtk_Symbolic_Color : constant Gtk_Symbolic_Color;
 
    function From_Object (Object : System.Address) return Gtk_Symbolic_Color;
    function From_Object_Free (B : access Gtk_Symbolic_Color'Class) return Gtk_Symbolic_Color;
@@ -118,5 +119,9 @@ package Gtk.Symbolic_Color is
    --  Decreases the reference count of Color, freeing its memory if the
    --  reference count reaches 0.
    --  Since: gtk+ 3.0
+
+private
+
+   Null_Gtk_Symbolic_Color : constant Gtk_Symbolic_Color := (Glib.C_Boxed with null record);
 
 end Gtk.Symbolic_Color;

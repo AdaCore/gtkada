@@ -28,6 +28,7 @@ with Glib; use Glib;
 package Pango.Font_Metrics is
 
    type Pango_Font_Metrics is new Glib.C_Boxed with null record;
+   Null_Pango_Font_Metrics : constant Pango_Font_Metrics;
 
    function From_Object (Object : System.Address) return Pango_Font_Metrics;
    function From_Object_Free (B : access Pango_Font_Metrics'Class) return Pango_Font_Metrics;
@@ -101,5 +102,9 @@ package Pango.Font_Metrics is
    procedure Unref (Self : Pango_Font_Metrics);
    --  Decrease the reference count of a font metrics structure by one. If the
    --  result is zero, frees the structure and any associated memory.
+
+private
+
+   Null_Pango_Font_Metrics : constant Pango_Font_Metrics := (Glib.C_Boxed with null record);
 
 end Pango.Font_Metrics;

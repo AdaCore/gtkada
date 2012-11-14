@@ -293,14 +293,14 @@ package Gtk.Table is
    Row_Spacing_Property : constant Glib.Properties.Property_Uint;
 
 private
-   Column_Spacing_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("column-spacing");
-   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("homogeneous");
-   N_Columns_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("n-columns");
-   N_Rows_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("n-rows");
    Row_Spacing_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("row-spacing");
+   N_Rows_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n-rows");
+   N_Columns_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n-columns");
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("homogeneous");
+   Column_Spacing_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("column-spacing");
 end Gtk.Table;

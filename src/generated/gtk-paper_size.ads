@@ -45,6 +45,7 @@ with Gtk.Enums;     use Gtk.Enums;
 package Gtk.Paper_Size is
 
    type Gtk_Paper_Size is new Glib.C_Boxed with null record;
+   Null_Gtk_Paper_Size : constant Gtk_Paper_Size;
 
    function From_Object (Object : System.Address) return Gtk_Paper_Size;
    function From_Object_Free (B : access Gtk_Paper_Size'Class) return Gtk_Paper_Size;
@@ -248,5 +249,9 @@ package Gtk.Paper_Size is
    --  Since: gtk+ 2.12
    --  "include_custom": whether to include custom paper sizes as defined in
    --  the page setup dialog
+
+private
+
+   Null_Gtk_Paper_Size : constant Gtk_Paper_Size := (Glib.C_Boxed with null record);
 
 end Gtk.Paper_Size;

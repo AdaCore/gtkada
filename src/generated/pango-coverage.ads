@@ -28,6 +28,7 @@ with Pango.Enums; use Pango.Enums;
 package Pango.Coverage is
 
    type Pango_Coverage is new Glib.C_Boxed with null record;
+   Null_Pango_Coverage : constant Pango_Coverage;
 
    function From_Object (Object : System.Address) return Pango_Coverage;
    function From_Object_Free (B : access Pango_Coverage'Class) return Pango_Coverage;
@@ -80,5 +81,9 @@ package Pango.Coverage is
    --  Create a new Pango.Coverage.Pango_Coverage
    --  initialized to Pango.Enums.Pango_Coverage_None with a reference count
    --  of one, which should be freed with Pango.Coverage.Unref.
+
+private
+
+   Null_Pango_Coverage : constant Pango_Coverage := (Glib.C_Boxed with null record);
 
 end Pango.Coverage;

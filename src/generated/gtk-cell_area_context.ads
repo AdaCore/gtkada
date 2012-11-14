@@ -238,14 +238,14 @@ package Gtk.Cell_Area_Context is
    Natural_Width_Property : constant Glib.Properties.Property_Int;
 
 private
-   Area_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("area");
-   Minimum_Height_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("minimum-height");
-   Minimum_Width_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("minimum-width");
-   Natural_Height_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("natural-height");
    Natural_Width_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("natural-width");
+   Natural_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("natural-height");
+   Minimum_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("minimum-width");
+   Minimum_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("minimum-height");
+   Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("area");
 end Gtk.Cell_Area_Context;

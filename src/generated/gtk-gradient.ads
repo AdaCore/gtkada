@@ -44,6 +44,7 @@ with Gtk.Symbolic_Color;   use Gtk.Symbolic_Color;
 package Gtk.Gradient is
 
    type Gtk_Gradient is new Glib.C_Boxed with null record;
+   Null_Gtk_Gradient : constant Gtk_Gradient;
 
    function From_Object (Object : System.Address) return Gtk_Gradient;
    function From_Object_Free (B : access Gtk_Gradient'Class) return Gtk_Gradient;
@@ -128,5 +129,9 @@ package Gtk.Gradient is
    --  Decreases the reference count of Gradient, freeing its memory if the
    --  reference count reaches 0.
    --  Since: gtk+ 3.0
+
+private
+
+   Null_Gtk_Gradient : constant Gtk_Gradient := (Glib.C_Boxed with null record);
 
 end Gtk.Gradient;

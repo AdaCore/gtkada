@@ -1226,8 +1226,8 @@ package Gtk.Cell_Area is
    Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
 
 private
-   Edited_Cell_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("edited-cell");
    Focus_Cell_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("focus-cell");
+   Edited_Cell_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("edited-cell");
 end Gtk.Cell_Area;

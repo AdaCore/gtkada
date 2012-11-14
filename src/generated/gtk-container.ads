@@ -626,10 +626,10 @@ package Gtk.Container is
    Signal_Set_Focus_Child : constant Glib.Signal_Name := "set-focus-child";
 
 private
-   Border_Width_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("border-width");
-   Child_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("child");
    Resize_Mode_Property : constant Gtk.Enums.Property_Gtk_Resize_Mode :=
      Gtk.Enums.Build ("resize-mode");
+   Child_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("child");
+   Border_Width_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("border-width");
 end Gtk.Container;

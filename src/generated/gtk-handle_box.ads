@@ -210,14 +210,14 @@ package Gtk.Handle_Box is
    Signal_Child_Detached : constant Glib.Signal_Name := "child-detached";
 
 private
-   Child_Detached_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("child-detached");
-   Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
-     Gtk.Enums.Build ("handle-position");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
-     Gtk.Enums.Build ("shadow-type");
-   Snap_Edge_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
-     Gtk.Enums.Build ("snap-edge");
    Snap_Edge_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("snap-edge-set");
+   Snap_Edge_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("snap-edge");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
+   Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("handle-position");
+   Child_Detached_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("child-detached");
 end Gtk.Handle_Box;

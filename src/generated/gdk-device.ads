@@ -304,22 +304,22 @@ package Gdk.Device is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
-   Associated_Device_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("associated-device");
-   Device_Manager_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("device-manager");
-   Display_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("display");
-   Has_Cursor_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-cursor");
-   Input_Mode_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("input-mode");
-   Input_Source_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("input-source");
-   N_Axes_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("n-axes");
-   Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("name");
    The_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("type");
+   Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
+   N_Axes_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n-axes");
+   Input_Source_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("input-source");
+   Input_Mode_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("input-mode");
+   Has_Cursor_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-cursor");
+   Display_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("display");
+   Device_Manager_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("device-manager");
+   Associated_Device_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("associated-device");
 end Gdk.Device;

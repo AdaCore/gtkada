@@ -291,14 +291,14 @@ package Gtk.Tool_Item_Group is
    Label_Widget_Property : constant Glib.Properties.Property_Object;
 
 private
-   Collapsed_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("collapsed");
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
-     Pango.Layout.Build ("ellipsize");
-   Header_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
-     Gtk.Enums.Build ("header-relief");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
    Label_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("label-widget");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Header_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
+     Gtk.Enums.Build ("header-relief");
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
+     Pango.Layout.Build ("ellipsize");
+   Collapsed_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("collapsed");
 end Gtk.Tool_Item_Group;

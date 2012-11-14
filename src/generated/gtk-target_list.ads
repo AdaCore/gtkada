@@ -38,6 +38,7 @@ with Gtk.Target_Entry;        use Gtk.Target_Entry;
 package Gtk.Target_List is
 
    type Gtk_Target_List is new Glib.C_Boxed with null record;
+   Null_Gtk_Target_List : constant Gtk_Target_List;
 
    function From_Object (Object : System.Address) return Gtk_Target_List;
    function From_Object_Free (B : access Gtk_Target_List'Class) return Gtk_Target_List;
@@ -144,5 +145,9 @@ package Gtk.Target_List is
      (List    : Gtk_Target_List;
       Targets : Target_Entry_Array);
    --  Prepends a table of Gtk.Target_Entry.Gtk_Target_Entry to a target list.
+
+private
+
+   Null_Gtk_Target_List : constant Gtk_Target_List := (Glib.C_Boxed with null record);
 
 end Gtk.Target_List;

@@ -446,20 +446,20 @@ package Gtk.GRange is
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
 
 private
-   Adjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("adjustment");
-   Fill_Level_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("fill-level");
-   Inverted_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("inverted");
-   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
-     Gtk.Enums.Build ("lower-stepper-sensitivity");
-   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("restrict-to-fill-level");
-   Round_Digits_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("round-digits");
-   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-fill-level");
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
      Gtk.Enums.Build ("upper-stepper-sensitivity");
+   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-fill-level");
+   Round_Digits_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("round-digits");
+   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("restrict-to-fill-level");
+   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
+     Gtk.Enums.Build ("lower-stepper-sensitivity");
+   Inverted_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inverted");
+   Fill_Level_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("fill-level");
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("adjustment");
 end Gtk.GRange;

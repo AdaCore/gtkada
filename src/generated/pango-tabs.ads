@@ -29,6 +29,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 package Pango.Tabs is
 
    type Pango_Tab_Array is new Glib.C_Boxed with null record;
+   Null_Pango_Tab_Array : constant Pango_Tab_Array;
 
    function From_Object (Object : System.Address) return Pango_Tab_Array;
    function From_Object_Free (B : access Pango_Tab_Array'Class) return Pango_Tab_Array;
@@ -108,5 +109,9 @@ package Pango.Tabs is
    --  Resizes a tab array. You must subsequently initialize any tabs that
    --  were added as a result of growing the array.
    --  "new_size": new size of the array
+
+private
+
+   Null_Pango_Tab_Array : constant Pango_Tab_Array := (Glib.C_Boxed with null record);
 
 end Pango.Tabs;

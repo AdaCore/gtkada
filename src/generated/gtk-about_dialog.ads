@@ -496,28 +496,28 @@ package Gtk.About_Dialog is
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 
 private
-   Comments_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("comments");
-   Copyright_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("copyright");
-   License_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("license");
-   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License :=
-     Gtk.About_Dialog.Build ("license-type");
-   Logo_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("logo");
-   Logo_Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("logo-icon-name");
-   Program_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("program-name");
-   Translator_Credits_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("translator-credits");
-   Version_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("version");
-   Website_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("website");
-   Website_Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("website-label");
    Wrap_License_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap-license");
+   Website_Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("website-label");
+   Website_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("website");
+   Version_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("version");
+   Translator_Credits_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("translator-credits");
+   Program_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("program-name");
+   Logo_Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("logo-icon-name");
+   Logo_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("logo");
+   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License :=
+     Gtk.About_Dialog.Build ("license-type");
+   License_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("license");
+   Copyright_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("copyright");
+   Comments_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("comments");
 end Gtk.About_Dialog;

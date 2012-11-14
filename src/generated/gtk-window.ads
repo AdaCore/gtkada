@@ -1544,66 +1544,66 @@ package Gtk.Window is
    Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
 
 private
-   Accept_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("accept-focus");
-   Application_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("application");
-   Decorated_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("decorated");
-   Default_Height_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("default-height");
-   Default_Width_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("default-width");
-   Deletable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("deletable");
-   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("destroy-with-parent");
-   Focus_On_Map_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-map");
-   Focus_Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-visible");
-   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity :=
-     Gdk.Window.Build ("gravity");
-   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-resize-grip");
-   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-toplevel-focus");
-   Icon_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("icon");
-   Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("icon-name");
-   Is_Active_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-active");
-   Mnemonics_Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("mnemonics-visible");
-   Modal_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("modal");
-   Opacity_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("opacity");
-   Resizable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("resizable");
-   Resize_Grip_Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("resize-grip-visible");
-   Role_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("role");
-   Screen_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("screen");
-   Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("skip-pager-hint");
-   Skip_Taskbar_Hint_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("skip-taskbar-hint");
-   Startup_Id_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("startup-id");
-   Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("title");
-   Transient_For_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("transient-for");
-   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type :=
-     Gtk.Enums.Build ("type");
-   Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint :=
-     Gdk.Window.Build ("type-hint");
-   Urgency_Hint_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("urgency-hint");
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position :=
      Gtk.Enums.Build ("window-position");
+   Urgency_Hint_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("urgency-hint");
+   Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint :=
+     Gdk.Window.Build ("type-hint");
+   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type :=
+     Gtk.Enums.Build ("type");
+   Transient_For_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("transient-for");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Startup_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("startup-id");
+   Skip_Taskbar_Hint_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("skip-taskbar-hint");
+   Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("skip-pager-hint");
+   Screen_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("screen");
+   Role_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("role");
+   Resize_Grip_Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resize-grip-visible");
+   Resizable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resizable");
+   Opacity_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("opacity");
+   Modal_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("modal");
+   Mnemonics_Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("mnemonics-visible");
+   Is_Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-active");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
+   Icon_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("icon");
+   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-toplevel-focus");
+   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-resize-grip");
+   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity :=
+     Gdk.Window.Build ("gravity");
+   Focus_Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-visible");
+   Focus_On_Map_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-map");
+   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("destroy-with-parent");
+   Deletable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("deletable");
+   Default_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("default-width");
+   Default_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("default-height");
+   Decorated_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("decorated");
+   Application_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("application");
+   Accept_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("accept-focus");
 end Gtk.Window;

@@ -661,18 +661,18 @@ package Gtk.Notebook is
    Signal_Switch_Page : constant Glib.Signal_Name := "switch-page";
 
 private
-   Enable_Popup_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("enable-popup");
-   Group_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("group-name");
-   Page_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("page");
-   Scrollable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("scrollable");
-   Show_Border_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-border");
-   Show_Tabs_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-tabs");
    Tab_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("tab-pos");
+   Show_Tabs_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-tabs");
+   Show_Border_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-border");
+   Scrollable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("scrollable");
+   Page_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("page");
+   Group_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("group-name");
+   Enable_Popup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-popup");
 end Gtk.Notebook;

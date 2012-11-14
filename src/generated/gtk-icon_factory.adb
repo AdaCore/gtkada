@@ -131,6 +131,98 @@ package body Gtk.Icon_Factory is
       Internal (Get_Object (Self));
    end Remove_Default;
 
+   ----------------------
+   -- Icon_Size_Lookup --
+   ----------------------
+
+   procedure Icon_Size_Lookup
+      (Size   : Gtk.Enums.Gtk_Icon_Size;
+       Width  : out Gint;
+       Height : out Gint;
+       Result : out Boolean)
+   is
+      function Internal
+         (Size       : Gtk.Enums.Gtk_Icon_Size;
+          Acc_Width  : access Gint;
+          Acc_Height : access Gint) return Integer;
+      pragma Import (C, Internal, "gtk_icon_size_lookup");
+      Acc_Width  : aliased Gint;
+      Acc_Height : aliased Gint;
+      Tmp_Return : Integer;
+   begin
+      Tmp_Return := Internal (Size, Acc_Width'Access, Acc_Height'Access);
+      Width := Acc_Width;
+      Height := Acc_Height;
+      Result := Boolean'Val (Tmp_Return);
+   end Icon_Size_Lookup;
+
+   -----------------------------------
+   -- Icon_Size_Lookup_For_Settings --
+   -----------------------------------
+
+   procedure Icon_Size_Lookup_For_Settings
+      (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
+       Size     : Gtk.Enums.Gtk_Icon_Size;
+       Width    : out Gint;
+       Height   : out Gint;
+       Result   : out Boolean)
+   is
+      function Internal
+         (Settings   : System.Address;
+          Size       : Gtk.Enums.Gtk_Icon_Size;
+          Acc_Width  : access Gint;
+          Acc_Height : access Gint) return Integer;
+      pragma Import (C, Internal, "gtk_icon_size_lookup_for_settings");
+      Acc_Width  : aliased Gint;
+      Acc_Height : aliased Gint;
+      Tmp_Return : Integer;
+   begin
+      Tmp_Return := Internal (Get_Object (Settings), Size, Acc_Width'Access, Acc_Height'Access);
+      Width := Acc_Width;
+      Height := Acc_Height;
+      Result := Boolean'Val (Tmp_Return);
+   end Icon_Size_Lookup_For_Settings;
+
+   ------------------------
+   -- Icon_Size_Register --
+   ------------------------
+
+   function Icon_Size_Register
+      (Name   : UTF8_String;
+       Width  : Gint;
+       Height : Gint) return Gtk.Enums.Gtk_Icon_Size
+   is
+      function Internal
+         (Name   : Interfaces.C.Strings.chars_ptr;
+          Width  : Gint;
+          Height : Gint) return Gtk.Enums.Gtk_Icon_Size;
+      pragma Import (C, Internal, "gtk_icon_size_register");
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Return : Gtk.Enums.Gtk_Icon_Size;
+   begin
+      Tmp_Return := Internal (Tmp_Name, Width, Height);
+      Free (Tmp_Name);
+      return Tmp_Return;
+   end Icon_Size_Register;
+
+   ------------------------------
+   -- Icon_Size_Register_Alias --
+   ------------------------------
+
+   procedure Icon_Size_Register_Alias
+      (Alias  : UTF8_String;
+       Target : Gtk.Enums.Gtk_Icon_Size)
+   is
+      procedure Internal
+         (Alias  : Interfaces.C.Strings.chars_ptr;
+          Target : Gtk.Enums.Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_icon_size_register_alias");
+      Tmp_Alias : Interfaces.C.Strings.chars_ptr := New_String (Alias);
+   begin
+      Internal (Tmp_Alias, Target);
+      Free (Tmp_Alias);
+   end Icon_Size_Register_Alias;
+
    --------------------
    -- Lookup_Default --
    --------------------

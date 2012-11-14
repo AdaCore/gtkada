@@ -557,36 +557,36 @@ package Gtk.Action is
    Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
-   Action_Group_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("action-group");
-   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("always-show-image");
-   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gicon");
-   Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("hide-if-empty");
-   Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("icon-name");
-   Is_Important_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-important");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("name");
-   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("sensitive");
-   Short_Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("short-label");
-   Stock_Id_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("stock-id");
-   Tooltip_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tooltip");
-   Visible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible");
-   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible-horizontal");
-   Visible_Overflown_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible-overflown");
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible-vertical");
+   Visible_Overflown_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible-overflown");
+   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible-horizontal");
+   Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Tooltip_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip");
+   Stock_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("stock-id");
+   Short_Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("short-label");
+   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Is_Important_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-important");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
+   Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hide-if-empty");
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("gicon");
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("always-show-image");
+   Action_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("action-group");
 end Gtk.Action;

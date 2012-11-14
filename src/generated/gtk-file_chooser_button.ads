@@ -459,10 +459,10 @@ package Gtk.File_Chooser_Button is
    Signal_File_Set : constant Glib.Signal_Name := "file-set";
 
 private
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
-   Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("title");
    Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-chars");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-click");
 end Gtk.File_Chooser_Button;

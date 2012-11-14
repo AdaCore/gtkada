@@ -236,12 +236,12 @@ package Gtk.Font_Chooser is
    Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
 
 private
-   Font_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("font");
-   Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
-     Pango.Font.Build ("font-desc");
-   Preview_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("preview-text");
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-preview-entry");
+   Preview_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("preview-text");
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
+     Pango.Font.Build ("font-desc");
+   Font_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font");
 end Gtk.Font_Chooser;

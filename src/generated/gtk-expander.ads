@@ -336,20 +336,20 @@ package Gtk.Expander is
    Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
-   Expanded_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("expanded");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Label_Fill_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("label-fill");
-   Label_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("label-widget");
-   Resize_Toplevel_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("resize-toplevel");
-   Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("spacing");
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-markup");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-markup");
+   Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("spacing");
+   Resize_Toplevel_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resize-toplevel");
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("label-widget");
+   Label_Fill_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("label-fill");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Expanded_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expanded");
 end Gtk.Expander;

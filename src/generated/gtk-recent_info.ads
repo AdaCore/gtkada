@@ -38,6 +38,7 @@ with Glib.G_Icon; use Glib.G_Icon;
 package Gtk.Recent_Info is
 
    type Gtk_Recent_Info is new Glib.C_Boxed with null record;
+   Null_Gtk_Recent_Info : constant Gtk_Recent_Info;
 
    function From_Object (Object : System.Address) return Gtk_Recent_Info;
    function From_Object_Free (B : access Gtk_Recent_Info'Class) return Gtk_Recent_Info;
@@ -198,5 +199,9 @@ package Gtk.Recent_Info is
    --  Decreases the reference count of Info by one. If the reference count
    --  reaches zero, Info is deallocated, and the memory freed.
    --  Since: gtk+ 2.10
+
+private
+
+   Null_Gtk_Recent_Info : constant Gtk_Recent_Info := (Glib.C_Boxed with null record);
 
 end Gtk.Recent_Info;

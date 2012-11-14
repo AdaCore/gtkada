@@ -234,8 +234,8 @@ package Gtk.Layout is
    Width_Property : constant Glib.Properties.Property_Uint;
 
 private
-   Height_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("height");
    Width_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("width");
+   Height_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("height");
 end Gtk.Layout;

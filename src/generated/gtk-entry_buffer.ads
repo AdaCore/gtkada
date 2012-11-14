@@ -226,10 +226,10 @@ package Gtk.Entry_Buffer is
    Signal_Inserted_Text : constant Glib.Signal_Name := "inserted-text";
 
 private
-   Length_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("length");
-   Max_Length_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max-length");
    Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("text");
+   Max_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-length");
+   Length_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("length");
 end Gtk.Entry_Buffer;

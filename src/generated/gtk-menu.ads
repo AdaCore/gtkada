@@ -648,20 +648,20 @@ package Gtk.Menu is
    Signal_Move_Scroll : constant Glib.Signal_Name := "move-scroll";
 
 private
-   Accel_Group_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("accel-group");
-   Accel_Path_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("accel-path");
-   Active_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("active");
-   Attach_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("attach-widget");
-   Monitor_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("monitor");
-   Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("reserve-toggle-size");
-   Tearoff_State_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("tearoff-state");
    Tearoff_Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("tearoff-title");
+   Tearoff_State_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tearoff-state");
+   Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reserve-toggle-size");
+   Monitor_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("monitor");
+   Attach_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attach-widget");
+   Active_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("active");
+   Accel_Path_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("accel-path");
+   Accel_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-group");
 end Gtk.Menu;

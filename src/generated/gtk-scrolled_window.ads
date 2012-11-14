@@ -384,22 +384,22 @@ package Gtk.Scrolled_Window is
    Signal_Scroll_Child : constant Glib.Signal_Name := "scroll-child";
 
 private
-   Hadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("hadjustment");
-   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
-     Gtk.Enums.Build ("hscrollbar-policy");
-   Min_Content_Height_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("min-content-height");
-   Min_Content_Width_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("min-content-width");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
-     Gtk.Enums.Build ("shadow-type");
-   Vadjustment_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("vadjustment");
-   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
-     Gtk.Enums.Build ("vscrollbar-policy");
-   Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
-     Gtk.Enums.Build ("window-placement");
    Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("window-placement-set");
+   Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
+     Gtk.Enums.Build ("window-placement");
+   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
+     Gtk.Enums.Build ("vscrollbar-policy");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
+   Min_Content_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-content-width");
+   Min_Content_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-content-height");
+   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
+     Gtk.Enums.Build ("hscrollbar-policy");
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
 end Gtk.Scrolled_Window;

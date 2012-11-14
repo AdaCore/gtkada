@@ -261,12 +261,12 @@ package Gtk.Grid is
    Row_Spacing_Property : constant Glib.Properties.Property_Int;
 
 private
-   Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("column-homogeneous");
-   Column_Spacing_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("column-spacing");
-   Row_Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("row-homogeneous");
    Row_Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("row-spacing");
+   Row_Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("row-homogeneous");
+   Column_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("column-spacing");
+   Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("column-homogeneous");
 end Gtk.Grid;

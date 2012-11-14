@@ -504,26 +504,26 @@ package Gtk.Image is
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   File_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("file");
-   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("gicon");
-   Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("icon-name");
-   Icon_Set_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("icon-set");
-   Icon_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("icon-size");
-   Pixbuf_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("pixbuf");
-   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("pixbuf-animation");
-   Pixel_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("pixel-size");
-   Stock_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("stock");
-   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
-     Gtk.Image.Build ("storage-type");
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-fallback");
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
+     Gtk.Image.Build ("storage-type");
+   Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("stock");
+   Pixel_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("pixel-size");
+   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("pixbuf-animation");
+   Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("pixbuf");
+   Icon_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("icon-size");
+   Icon_Set_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("icon-set");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
+   G_Icon_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("gicon");
+   File_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("file");
 end Gtk.Image;

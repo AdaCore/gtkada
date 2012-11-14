@@ -98,7 +98,9 @@ with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
 with Glib.Types;         use Glib.Types;
 with Gtk.Buildable;      use Gtk.Buildable;
+with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Icon_Set;       use Gtk.Icon_Set;
+with Gtk.Settings;       use Gtk.Settings;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Widget;         use Gtk.Widget;
 
@@ -224,5 +226,64 @@ package Gtk.Icon_Factory is
    --  Gtk.Style.Gtk_Style for the widget that will display the icon, instead
    --  of using this function directly, so that themes are taken into account.
    --  "stock_id": an icon name
+
+   procedure Icon_Size_Lookup
+      (Size   : Gtk.Enums.Gtk_Icon_Size;
+       Width  : out Gint;
+       Height : out Gint;
+       Result : out Boolean);
+   --  Obtains the pixel size of a semantic icon size, possibly modified by
+   --  user preferences for the default Gtk.Settings.Gtk_Settings. (See
+   --  Gtk.Icon_Factory.Icon_Size_Lookup_For_Settings.) Normally Size would be
+   --  GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_BUTTON, etc. This function isn't
+   --  normally needed, Gtk.Widget.Render_Icon_Pixbuf is the usual way to get
+   --  an icon for rendering, then just look at the size of the rendered
+   --  pixbuf. The rendered pixbuf may not even correspond to the width/height
+   --  returned by Gtk.Icon_Factory.Icon_Size_Lookup, because themes are free
+   --  to render the pixbuf however they like, including changing the usual
+   --  size.
+   --  "size": an icon size
+   --  "width": location to store icon width
+   --  "height": location to store icon height
+
+   procedure Icon_Size_Lookup_For_Settings
+      (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
+       Size     : Gtk.Enums.Gtk_Icon_Size;
+       Width    : out Gint;
+       Height   : out Gint;
+       Result   : out Boolean);
+   --  Obtains the pixel size of a semantic icon size, possibly modified by
+   --  user preferences for a particular Gtk.Settings.Gtk_Settings. Normally
+   --  Size would be GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_BUTTON, etc. This
+   --  function isn't normally needed, Gtk.Widget.Render_Icon_Pixbuf is the
+   --  usual way to get an icon for rendering, then just look at the size of
+   --  the rendered pixbuf. The rendered pixbuf may not even correspond to the
+   --  width/height returned by Gtk.Icon_Factory.Icon_Size_Lookup, because
+   --  themes are free to render the pixbuf however they like, including
+   --  changing the usual size.
+   --  Since: gtk+ 2.2
+   --  "settings": a Gtk.Settings.Gtk_Settings object, used to determine which
+   --  set of user preferences to used.
+   --  "size": an icon size
+   --  "width": location to store icon width
+   --  "height": location to store icon height
+
+   function Icon_Size_Register
+      (Name   : UTF8_String;
+       Width  : Gint;
+       Height : Gint) return Gtk.Enums.Gtk_Icon_Size;
+   --  Registers a new icon size, along the same lines as GTK_ICON_SIZE_MENU,
+   --  etc. Returns the integer value for the size.
+   --  "name": name of the icon size
+   --  "width": the icon width
+   --  "height": the icon height
+
+   procedure Icon_Size_Register_Alias
+      (Alias  : UTF8_String;
+       Target : Gtk.Enums.Gtk_Icon_Size);
+   --  Registers Alias as another name for Target. So calling
+   --  gtk_icon_size_from_name with Alias as argument will return Target.
+   --  "alias": an alias for Target
+   --  "target": an existing icon size
 
 end Gtk.Icon_Factory;

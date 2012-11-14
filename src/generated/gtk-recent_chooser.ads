@@ -432,24 +432,24 @@ package Gtk.Recent_Chooser is
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
 
 private
-   Filter_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("filter");
-   Limit_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("limit");
-   Local_Only_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("local-only");
-   Recent_Manager_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("recent-manager");
-   Select_Multiple_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("select-multiple");
-   Show_Icons_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-icons");
-   Show_Not_Found_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-not-found");
-   Show_Private_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-private");
-   Show_Tips_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-tips");
    Sort_Type_Property : constant Gtk.Recent_Chooser.Property_Gtk_Recent_Sort_Type :=
      Gtk.Recent_Chooser.Build ("sort-type");
+   Show_Tips_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-tips");
+   Show_Private_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-private");
+   Show_Not_Found_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-not-found");
+   Show_Icons_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-icons");
+   Select_Multiple_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("select-multiple");
+   Recent_Manager_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("recent-manager");
+   Local_Only_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("local-only");
+   Limit_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("limit");
+   Filter_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("filter");
 end Gtk.Recent_Chooser;

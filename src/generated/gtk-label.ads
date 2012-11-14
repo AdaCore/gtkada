@@ -836,42 +836,42 @@ package Gtk.Label is
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
 
 private
-   Angle_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("angle");
-   Attributes_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("attributes");
-   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("cursor-position");
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
-     Pango.Layout.Build ("ellipsize");
-   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification :=
-     Gtk.Enums.Build ("justify");
-   Label_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("label");
-   Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max-width-chars");
-   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("mnemonic-keyval");
-   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("mnemonic-widget");
-   Pattern_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("pattern");
-   Selectable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("selectable");
-   Selection_Bound_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("selection-bound");
-   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("single-line-mode");
-   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("track-visited-links");
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-markup");
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-underline");
-   Width_Chars_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("width-chars");
-   Wrap_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("wrap");
    Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode :=
      Pango.Enums.Build ("wrap-mode");
+   Wrap_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("wrap");
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width-chars");
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-underline");
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-markup");
+   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("track-visited-links");
+   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("single-line-mode");
+   Selection_Bound_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("selection-bound");
+   Selectable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("selectable");
+   Pattern_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("pattern");
+   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("mnemonic-widget");
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("mnemonic-keyval");
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-width-chars");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification :=
+     Gtk.Enums.Build ("justify");
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=
+     Pango.Layout.Build ("ellipsize");
+   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("cursor-position");
+   Attributes_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attributes");
+   Angle_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("angle");
 end Gtk.Label;

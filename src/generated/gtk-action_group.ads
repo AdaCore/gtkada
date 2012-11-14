@@ -506,10 +506,10 @@ package Gtk.Action_Group is
    Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
 
 private
-   Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("name");
-   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("sensitive");
    Visible_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible");
+   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
 end Gtk.Action_Group;

@@ -787,38 +787,38 @@ package Gtk.Combo_Box is
    Signal_Popup : constant Glib.Signal_Name := "popup";
 
 private
-   Active_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("active");
-   Active_Id_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("active-id");
-   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("add-tearoffs");
-   Button_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
-     Gtk.Enums.Build ("button-sensitivity");
-   Cell_Area_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("cell-area");
-   Column_Span_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("column-span-column");
-   Entry_Text_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("entry-text-column");
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
-   Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-entry");
-   Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-frame");
-   Id_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("id-column");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
-   Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("popup-fixed-width");
-   Popup_Shown_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("popup-shown");
-   Row_Span_Column_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("row-span-column");
-   Tearoff_Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("tearoff-title");
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("wrap-width");
+   Tearoff_Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tearoff-title");
+   Row_Span_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("row-span-column");
+   Popup_Shown_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-shown");
+   Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-fixed-width");
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
+   Id_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("id-column");
+   Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-frame");
+   Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-entry");
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-click");
+   Entry_Text_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("entry-text-column");
+   Column_Span_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("column-span-column");
+   Cell_Area_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("cell-area");
+   Button_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=
+     Gtk.Enums.Build ("button-sensitivity");
+   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("add-tearoffs");
+   Active_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("active-id");
+   Active_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("active");
 end Gtk.Combo_Box;

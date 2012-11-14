@@ -275,10 +275,10 @@ package Gtk.Toggle_Button is
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
 private
-   Active_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("active");
-   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("draw-indicator");
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-indicator");
+   Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
 end Gtk.Toggle_Button;

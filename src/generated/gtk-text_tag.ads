@@ -475,132 +475,132 @@ package Gtk.Text_Tag is
    Signal_Event : constant Glib.Signal_Name := "event";
 
 private
-   Accumulative_Margin_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("accumulative-margin");
-   Background_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("background");
-   Background_Full_Height_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("background-full-height");
-   Background_Full_Height_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("background-full-height-set");
-   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("background-gdk");
-   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("background-rgba");
-   Background_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("background-set");
-   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
-     Gtk.Enums.Build ("direction");
-   Editable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("editable");
-   Editable_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("editable-set");
-   Family_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("family");
-   Family_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("family-set");
-   Font_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("font");
-   Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
-     Pango.Font.Build ("font-desc");
-   Foreground_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("foreground");
-   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("foreground-gdk");
-   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("foreground-rgba");
-   Foreground_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("foreground-set");
-   Indent_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("indent");
-   Indent_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("indent-set");
-   Invisible_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("invisible");
-   Invisible_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("invisible-set");
-   Justification_Property : constant Gtk.Enums.Property_Gtk_Justification :=
-     Gtk.Enums.Build ("justification");
-   Justification_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("justification-set");
-   Language_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("language");
-   Language_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("language-set");
-   Left_Margin_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("left-margin");
-   Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("left-margin-set");
-   Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("name");
-   Paragraph_Background_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("paragraph-background");
-   Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("paragraph-background-gdk");
-   Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
-     Gdk.RGBA.Build ("paragraph-background-rgba");
-   Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("paragraph-background-set");
-   Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("pixels-above-lines");
-   Pixels_Above_Lines_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("pixels-above-lines-set");
-   Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("pixels-below-lines");
-   Pixels_Below_Lines_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("pixels-below-lines-set");
-   Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("pixels-inside-wrap");
-   Pixels_Inside_Wrap_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("pixels-inside-wrap-set");
-   Right_Margin_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("right-margin");
-   Right_Margin_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("right-margin-set");
-   Rise_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("rise");
-   Rise_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("rise-set");
-   Scale_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("scale");
-   Scale_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("scale-set");
-   Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("size");
-   Size_Points_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("size-points");
-   Size_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("size-set");
-   Stretch_Property : constant Pango.Enums.Property_Stretch :=
-     Pango.Enums.Build ("stretch");
-   Stretch_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("stretch-set");
-   Strikethrough_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("strikethrough");
-   Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("strikethrough-set");
-   Style_Property : constant Pango.Enums.Property_Style :=
-     Pango.Enums.Build ("style");
-   Style_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("style-set");
-   Tabs_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("tabs");
-   Tabs_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("tabs-set");
-   Underline_Property : constant Pango.Enums.Property_Underline :=
-     Pango.Enums.Build ("underline");
-   Underline_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("underline-set");
-   Variant_Property : constant Pango.Enums.Property_Variant :=
-     Pango.Enums.Build ("variant");
-   Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("variant-set");
-   Weight_Property : constant Pango.Enums.Property_Weight :=
-     Pango.Enums.Build ("weight");
-   Weight_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("weight-set");
-   Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=
-     Gtk.Enums.Build ("wrap-mode");
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap-mode-set");
+   Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=
+     Gtk.Enums.Build ("wrap-mode");
+   Weight_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("weight-set");
+   Weight_Property : constant Pango.Enums.Property_Weight :=
+     Pango.Enums.Build ("weight");
+   Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("variant-set");
+   Variant_Property : constant Pango.Enums.Property_Variant :=
+     Pango.Enums.Build ("variant");
+   Underline_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("underline-set");
+   Underline_Property : constant Pango.Enums.Property_Underline :=
+     Pango.Enums.Build ("underline");
+   Tabs_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tabs-set");
+   Tabs_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("tabs");
+   Style_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("style-set");
+   Style_Property : constant Pango.Enums.Property_Style :=
+     Pango.Enums.Build ("style");
+   Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("strikethrough-set");
+   Strikethrough_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("strikethrough");
+   Stretch_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("stretch-set");
+   Stretch_Property : constant Pango.Enums.Property_Stretch :=
+     Pango.Enums.Build ("stretch");
+   Size_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("size-set");
+   Size_Points_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("size-points");
+   Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("size");
+   Scale_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("scale-set");
+   Scale_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("scale");
+   Rise_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("rise-set");
+   Rise_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("rise");
+   Right_Margin_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("right-margin-set");
+   Right_Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("right-margin");
+   Pixels_Inside_Wrap_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("pixels-inside-wrap-set");
+   Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("pixels-inside-wrap");
+   Pixels_Below_Lines_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("pixels-below-lines-set");
+   Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("pixels-below-lines");
+   Pixels_Above_Lines_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("pixels-above-lines-set");
+   Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("pixels-above-lines");
+   Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("paragraph-background-set");
+   Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("paragraph-background-rgba");
+   Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("paragraph-background-gdk");
+   Paragraph_Background_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("paragraph-background");
+   Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
+   Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("left-margin-set");
+   Left_Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("left-margin");
+   Language_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("language-set");
+   Language_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("language");
+   Justification_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("justification-set");
+   Justification_Property : constant Gtk.Enums.Property_Gtk_Justification :=
+     Gtk.Enums.Build ("justification");
+   Invisible_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("invisible-set");
+   Invisible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("invisible");
+   Indent_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("indent-set");
+   Indent_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("indent");
+   Foreground_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("foreground-set");
+   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("foreground-rgba");
+   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("foreground-gdk");
+   Foreground_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("foreground");
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
+     Pango.Font.Build ("font-desc");
+   Font_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font");
+   Family_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("family-set");
+   Family_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("family");
+   Editable_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editable-set");
+   Editable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editable");
+   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
+     Gtk.Enums.Build ("direction");
+   Background_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("background-set");
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("background-rgba");
+   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("background-gdk");
+   Background_Full_Height_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("background-full-height-set");
+   Background_Full_Height_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("background-full-height");
+   Background_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("background");
+   Accumulative_Margin_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("accumulative-margin");
 end Gtk.Text_Tag;

@@ -404,24 +404,24 @@ package Gtk.Calendar is
    Signal_Prev_Year : constant Glib.Signal_Name := "prev-year";
 
 private
-   Day_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("day");
-   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("detail-height-rows");
-   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("detail-width-chars");
-   Month_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("month");
-   No_Month_Change_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("no-month-change");
-   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-day-names");
-   Show_Details_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-details");
-   Show_Heading_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-heading");
-   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-week-numbers");
    Year_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("year");
+   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-week-numbers");
+   Show_Heading_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-heading");
+   Show_Details_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-details");
+   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-day-names");
+   No_Month_Change_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("no-month-change");
+   Month_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("month");
+   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("detail-width-chars");
+   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("detail-height-rows");
+   Day_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("day");
 end Gtk.Calendar;

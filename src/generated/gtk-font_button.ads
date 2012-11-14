@@ -384,16 +384,16 @@ package Gtk.Font_Button is
    Signal_Font_Set : constant Glib.Signal_Name := "font-set";
 
 private
-   Font_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("font-name");
-   Show_Size_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-size");
-   Show_Style_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-style");
-   Title_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("title");
-   Use_Font_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("use-font");
    Use_Size_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-size");
+   Use_Font_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-font");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Show_Style_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-style");
+   Show_Size_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-size");
+   Font_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font-name");
 end Gtk.Font_Button;

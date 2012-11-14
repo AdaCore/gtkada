@@ -362,12 +362,12 @@ package Gtk.Toolbar is
    Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
 
 private
-   Icon_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("icon-size");
-   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("icon-size-set");
-   Show_Arrow_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("show-arrow");
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=
      Gtk.Enums.Build ("toolbar-style");
+   Show_Arrow_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-arrow");
+   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("icon-size-set");
+   Icon_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("icon-size");
 end Gtk.Toolbar;

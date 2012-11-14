@@ -131,14 +131,14 @@ package body Pango.Font is
    --------------
 
    function Describe
-      (Self : not null access Pango_Font_Record'Class)
+      (Font : not null access Pango_Font_Record'Class)
        return Pango_Font_Description
    is
       function Internal
-         (Self : System.Address) return Pango_Font_Description;
+         (Font : System.Address) return Pango_Font_Description;
       pragma Import (C, Internal, "pango_font_describe");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Font));
    end Describe;
 
    ---------------------------------
@@ -146,14 +146,14 @@ package body Pango.Font is
    ---------------------------------
 
    function Describe_With_Absolute_Size
-      (Self : not null access Pango_Font_Record'Class)
+      (Font : not null access Pango_Font_Record'Class)
        return Pango_Font_Description
    is
       function Internal
-         (Self : System.Address) return Pango_Font_Description;
+         (Font : System.Address) return Pango_Font_Description;
       pragma Import (C, Internal, "pango_font_describe_with_absolute_size");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object (Font));
    end Describe_With_Absolute_Size;
 
    -----------
@@ -190,19 +190,19 @@ package body Pango.Font is
    -----------------------
 
    procedure Get_Glyph_Extents
-      (Self         : not null access Pango_Font_Record;
+      (Font         : not null access Pango_Font_Record;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle)
    is
       procedure Internal
-         (Self         : System.Address;
+         (Font         : System.Address;
           Glyph        : Pango_Glyph;
           Ink_Rect     : out Pango_Rectangle;
           Logical_Rect : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_font_get_glyph_extents");
    begin
-      Internal (Get_Object (Self), Glyph, Ink_Rect, Logical_Rect);
+      Internal (Get_Object (Font), Glyph, Ink_Rect, Logical_Rect);
    end Get_Glyph_Extents;
 
    -----------------
@@ -210,16 +210,16 @@ package body Pango.Font is
    -----------------
 
    function Get_Metrics
-      (Self     : not null access Pango_Font_Record;
-       Language : Pango.Language.Pango_Language)
+      (Font     : not null access Pango_Font_Record;
+       Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics
    is
       function Internal
-         (Self     : System.Address;
+         (Font     : System.Address;
           Language : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_get_metrics");
    begin
-      return From_Object (Internal (Get_Object (Self), Get_Object (Language)));
+      return From_Object (Internal (Get_Object (Font), Get_Object (Language)));
    end Get_Metrics;
 
    --------------------------

@@ -461,10 +461,10 @@ package Gtk.Tool_Item is
    Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
 
 private
-   Is_Important_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("is-important");
-   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visible-horizontal");
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible-vertical");
+   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible-horizontal");
+   Is_Important_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-important");
 end Gtk.Tool_Item;

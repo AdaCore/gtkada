@@ -332,8 +332,8 @@ package Gdk.Cursor is
    Display_Property : constant Glib.Properties.Property_Boxed;
 
 private
-   Cursor_Type_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("cursor-type");
    Display_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("display");
+   Cursor_Type_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("cursor-type");
 end Gdk.Cursor;

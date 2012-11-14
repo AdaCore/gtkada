@@ -122,12 +122,12 @@ package Gtk.Color_Selection_Dialog is
    Ok_Button_Property : constant Glib.Properties.Property_Object;
 
 private
-   Cancel_Button_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("cancel-button");
-   Color_Selection_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("color-selection");
-   Help_Button_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("help-button");
    Ok_Button_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("ok-button");
+   Help_Button_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("help-button");
+   Color_Selection_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("color-selection");
+   Cancel_Button_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("cancel-button");
 end Gtk.Color_Selection_Dialog;

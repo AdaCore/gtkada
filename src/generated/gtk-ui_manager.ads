@@ -589,8 +589,8 @@ package Gtk.UI_Manager is
    Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
 
 private
-   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("add-tearoffs");
    Ui_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("ui");
+   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("add-tearoffs");
 end Gtk.UI_Manager;

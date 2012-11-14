@@ -355,10 +355,10 @@ package Gtk.Scale is
    Signal_Format_Value : constant Glib.Signal_Name := "format-value";
 
 private
-   The_Digits_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("digits");
-   Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("draw-value");
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("value-pos");
+   Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-value");
+   The_Digits_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("digits");
 end Gtk.Scale;

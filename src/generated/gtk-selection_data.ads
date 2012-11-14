@@ -32,6 +32,7 @@ with Glib;         use Glib;
 package Gtk.Selection_Data is
 
    type Gtk_Selection_Data is new Glib.C_Boxed with null record;
+   Null_Gtk_Selection_Data : constant Gtk_Selection_Data;
 
    function From_Object (Object : System.Address) return Gtk_Selection_Data;
    function From_Object_Free (B : access Gtk_Selection_Data'Class) return Gtk_Selection_Data;
@@ -223,5 +224,9 @@ package Gtk.Selection_Data is
    --  Return the data as a string.
    --  This is only a convenience function, since it simply creates a string
    --  from the return of Get_Data.
+
+private
+
+   Null_Gtk_Selection_Data : constant Gtk_Selection_Data := (Glib.C_Boxed with null record);
 
 end Gtk.Selection_Data;

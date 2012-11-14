@@ -131,8 +131,8 @@ package Gtk.Menu_Bar is
    Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
 
 private
-   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=
-     Gtk.Enums.Build ("child-pack-direction");
    Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=
      Gtk.Enums.Build ("pack-direction");
+   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=
+     Gtk.Enums.Build ("child-pack-direction");
 end Gtk.Menu_Bar;

@@ -261,12 +261,12 @@ package Gtk.Image_Menu_Item is
    Use_Stock_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Accel_Group_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("accel-group");
-   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("always-show-image");
-   Image_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("image");
    Use_Stock_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-stock");
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("always-show-image");
+   Accel_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-group");
 end Gtk.Image_Menu_Item;

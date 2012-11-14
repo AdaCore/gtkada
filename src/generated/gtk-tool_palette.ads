@@ -441,10 +441,10 @@ package Gtk.Tool_Palette is
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
 
 private
-   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
-     Gtk.Enums.Build ("icon-size");
-   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("icon-size-set");
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=
      Gtk.Enums.Build ("toolbar-style");
+   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("icon-size-set");
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
+     Gtk.Enums.Build ("icon-size");
 end Gtk.Tool_Palette;

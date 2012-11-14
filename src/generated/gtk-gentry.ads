@@ -1341,90 +1341,90 @@ package Gtk.GEntry is
    Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
 
 private
-   Activates_Default_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("activates-default");
-   Buffer_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("buffer");
-   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("caps-lock-warning");
-   Completion_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("completion");
-   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("cursor-position");
-   Editable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("editable");
-   Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-frame");
-   Im_Module_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("im-module");
-   Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("inner-border");
-   Invisible_Char_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("invisible-char");
-   Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("invisible-char-set");
-   Max_Length_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max-length");
-   Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("overwrite-mode");
-   Placeholder_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("placeholder-text");
-   Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("primary-icon-activatable");
-   Primary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("primary-icon-gicon");
-   Primary_Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("primary-icon-name");
-   Primary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("primary-icon-pixbuf");
-   Primary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("primary-icon-sensitive");
-   Primary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("primary-icon-stock");
-   Primary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
-     Gtk.Image.Build ("primary-icon-storage-type");
-   Primary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("primary-icon-tooltip-markup");
-   Primary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("primary-icon-tooltip-text");
-   Progress_Fraction_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("progress-fraction");
-   Progress_Pulse_Step_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("progress-pulse-step");
-   Scroll_Offset_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("scroll-offset");
-   Secondary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("secondary-icon-activatable");
-   Secondary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("secondary-icon-gicon");
-   Secondary_Icon_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("secondary-icon-name");
-   Secondary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("secondary-icon-pixbuf");
-   Secondary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("secondary-icon-sensitive");
-   Secondary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("secondary-icon-stock");
-   Secondary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
-     Gtk.Image.Build ("secondary-icon-storage-type");
-   Secondary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("secondary-icon-tooltip-markup");
-   Secondary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("secondary-icon-tooltip-text");
-   Selection_Bound_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("selection-bound");
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
-     Gtk.Enums.Build ("shadow-type");
-   Text_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("text");
-   Text_Length_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("text-length");
-   Truncate_Multiline_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("truncate-multiline");
-   Visibility_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visibility");
-   Width_Chars_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("width-chars");
    Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("xalign");
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width-chars");
+   Visibility_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visibility");
+   Truncate_Multiline_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("truncate-multiline");
+   Text_Length_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("text-length");
+   Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("text");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
+   Selection_Bound_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("selection-bound");
+   Secondary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-tooltip-text");
+   Secondary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-tooltip-markup");
+   Secondary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
+     Gtk.Image.Build ("secondary-icon-storage-type");
+   Secondary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-stock");
+   Secondary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-icon-sensitive");
+   Secondary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("secondary-icon-pixbuf");
+   Secondary_Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-name");
+   Secondary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("secondary-icon-gicon");
+   Secondary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-icon-activatable");
+   Scroll_Offset_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scroll-offset");
+   Progress_Pulse_Step_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("progress-pulse-step");
+   Progress_Fraction_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("progress-fraction");
+   Primary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-tooltip-text");
+   Primary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-tooltip-markup");
+   Primary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
+     Gtk.Image.Build ("primary-icon-storage-type");
+   Primary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-stock");
+   Primary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("primary-icon-sensitive");
+   Primary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("primary-icon-pixbuf");
+   Primary_Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-name");
+   Primary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("primary-icon-gicon");
+   Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("primary-icon-activatable");
+   Placeholder_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("placeholder-text");
+   Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("overwrite-mode");
+   Max_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-length");
+   Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("invisible-char-set");
+   Invisible_Char_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("invisible-char");
+   Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("inner-border");
+   Im_Module_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("im-module");
+   Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-frame");
+   Editable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editable");
+   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("cursor-position");
+   Completion_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("completion");
+   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("caps-lock-warning");
+   Buffer_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("buffer");
+   Activates_Default_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activates-default");
 end Gtk.GEntry;

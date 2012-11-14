@@ -158,8 +158,8 @@ package Gtk.Event_Box is
    Visible_Window_Property : constant Glib.Properties.Property_Boolean;
 
 private
-   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("above-child");
    Visible_Window_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible-window");
+   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("above-child");
 end Gtk.Event_Box;

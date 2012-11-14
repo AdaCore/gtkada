@@ -50,6 +50,7 @@ package Pango.Layout is
    --  make it fit to a given width and replaced with an ellipsis.
 
    type Pango_Layout_Iter is new Glib.C_Boxed with null record;
+   Null_Pango_Layout_Iter : constant Pango_Layout_Iter;
 
    function From_Object (Object : System.Address) return Pango_Layout_Iter;
    function From_Object_Free (B : access Pango_Layout_Iter'Class) return Pango_Layout_Iter;
@@ -772,5 +773,8 @@ type Pango_Layout_Line is record
    Resolved_Dir : Guint;
 end record;
 pragma Convention (C, Pango_Layout_Line);
+
+
+   Null_Pango_Layout_Iter : constant Pango_Layout_Iter := (Glib.C_Boxed with null record);
 
 end Pango.Layout;

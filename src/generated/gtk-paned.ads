@@ -352,12 +352,12 @@ package Gtk.Paned is
    Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
 
 private
-   Max_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max-position");
-   Min_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("min-position");
-   Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("position");
    Position_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("position-set");
+   Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("position");
+   Min_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-position");
+   Max_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-position");
 end Gtk.Paned;

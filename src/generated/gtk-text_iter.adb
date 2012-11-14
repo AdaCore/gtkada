@@ -23,8 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Bindings;                      use Gtkada.Bindings;
+with System.Address_To_Access_Conversions;
 
 package body Gtk.Text_Iter is
 
@@ -34,6 +34,65 @@ package body Gtk.Text_Iter is
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
+
+   ----------
+   -- Copy --
+   ----------
+
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter) is
+   begin
+      Dest := Source;
+   end Copy;
+
+   --------------
+   -- Get_Char --
+   --------------
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character is
+      Result         : constant Gunichar := Get_Char (Iter);
+      Eight_LSB_Mask : constant := 2#1111_1111#;
+
+   begin
+      --  This function relies on the Get_Char function provided by gtk+,
+      --  which returns a gunichar value. Only the 8 least significant bits
+      --  are then kept to deduce the associated character.
+
+      return Character'Val (Result and Eight_LSB_Mask);
+   end Get_Char;
+
+   -------------------
+   -- Get_Text_Iter --
+   -------------------
+
+   package Iter_Access_Address_Conversions is
+      new System.Address_To_Access_Conversions (Gtk_Text_Iter);
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter) is
+   begin
+      Copy
+        (Source => Iter_Access_Address_Conversions.To_Pointer
+           (Glib.Values.Get_Address (Val)).all,
+         Dest   => Iter);
+   end Get_Text_Iter;
+
+   ---------------
+   -- Get_Slice --
+   ---------------
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr
+   is
+      function Internal
+        (Start   : Gtk_Text_Iter;
+         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_text_iter_get_slice");
+
+   begin
+      return Internal (Start, The_End);
+   end Get_Slice;
 
    -------------------
    -- Backward_Char --
@@ -236,7 +295,7 @@ package body Gtk.Text_Iter is
 
    procedure Backward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
-       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+       Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
        Result : out Boolean)
    is
       function Internal
@@ -736,7 +795,7 @@ package body Gtk.Text_Iter is
 
    procedure Forward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
-       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+       Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
        Result : out Boolean)
    is
       function Internal
@@ -992,13 +1051,13 @@ package body Gtk.Text_Iter is
    --------------
 
    function Get_Tags
-      (Iter : Gtk_Text_Iter) return Glib.Object.Object_List.GSlist
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSList
    is
       function Internal (Iter : Gtk_Text_Iter) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_tags");
-      Tmp_Return : Glib.Object.Object_List.GSlist;
+      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSList;
    begin
-      Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Iter));
+      Gtk.Text_Tag.Text_Tag_List.Set_Object (Tmp_Return, Internal (Iter));
       return Tmp_Return;
    end Get_Tags;
 
@@ -1024,15 +1083,15 @@ package body Gtk.Text_Iter is
 
    function Get_Toggled_Tags
       (Iter       : Gtk_Text_Iter;
-       Toggled_On : Boolean) return Glib.Object.Object_List.GSlist
+       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSList
    is
       function Internal
          (Iter       : Gtk_Text_Iter;
           Toggled_On : Integer) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_toggled_tags");
-      Tmp_Return : Glib.Object.Object_List.GSlist;
+      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSList;
    begin
-      Glib.Object.Object_List.Set_Object (Tmp_Return, Internal (Iter, Boolean'Pos (Toggled_On)));
+      Gtk.Text_Tag.Text_Tag_List.Set_Object (Tmp_Return, Internal (Iter, Boolean'Pos (Toggled_On)));
       return Tmp_Return;
    end Get_Toggled_Tags;
 

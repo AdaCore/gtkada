@@ -44,6 +44,7 @@ with Gtk.Widget;        use Gtk.Widget;
 package Gtk.Icon_Set is
 
    type Gtk_Icon_Set is new Glib.C_Boxed with null record;
+   Null_Gtk_Icon_Set : constant Gtk_Icon_Set;
 
    function From_Object (Object : System.Address) return Gtk_Icon_Set;
    function From_Object_Free (B : access Gtk_Icon_Set'Class) return Gtk_Icon_Set;
@@ -173,5 +174,9 @@ package Gtk.Icon_Set is
    return Gtk_Icon_Set;
    --  Retrieve an icon set by its name. The icon might exist in various sizes,
    --  that can be manipulated through the result set
+
+private
+
+   Null_Gtk_Icon_Set : constant Gtk_Icon_Set := (Glib.C_Boxed with null record);
 
 end Gtk.Icon_Set;

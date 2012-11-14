@@ -221,8 +221,8 @@ package Gtk.Link_Button is
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
 
 private
-   URI_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("uri");
    Visited_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visited");
+   URI_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("uri");
 end Gtk.Link_Button;

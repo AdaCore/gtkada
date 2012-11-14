@@ -1073,8 +1073,8 @@ package Gtk.Style_Context is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
-   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
-     Gtk.Enums.Build ("direction");
    Screen_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("screen");
+   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
+     Gtk.Enums.Build ("direction");
 end Gtk.Style_Context;

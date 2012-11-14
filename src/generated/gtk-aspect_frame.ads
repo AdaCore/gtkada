@@ -152,12 +152,12 @@ package Gtk.Aspect_Frame is
    Yalign_Property : constant Glib.Properties.Property_Float;
 
 private
-   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("obey-child");
-   Ratio_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("ratio");
-   Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xalign");
    Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Ratio_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("ratio");
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("obey-child");
 end Gtk.Aspect_Frame;

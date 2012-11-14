@@ -56,14 +56,14 @@ package Pango.Font is
    -------------
 
    function Describe
-      (Self : not null access Pango_Font_Record'Class)
+      (Font : not null access Pango_Font_Record'Class)
        return Pango_Font_Description;
    --  Returns a description of the font, with font size set in points. Use
    --  Pango.Font.Describe_With_Absolute_Size if you want the font size in
    --  device units.
 
    function Describe_With_Absolute_Size
-      (Self : not null access Pango_Font_Record'Class)
+      (Font : not null access Pango_Font_Record'Class)
        return Pango_Font_Description;
    --  Returns a description of the font, with absolute font size set (in
    --  device units). Use Pango.Font.Describe if you want the font size in
@@ -71,7 +71,7 @@ package Pango.Font is
    --  Since: gtk+ 1.14
 
    procedure Get_Glyph_Extents
-      (Self         : not null access Pango_Font_Record;
+      (Font         : not null access Pango_Font_Record;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle);
@@ -91,8 +91,8 @@ package Pango.Font is
    --  glyph or null to indicate that the result is not needed.
 
    function Get_Metrics
-      (Self     : not null access Pango_Font_Record;
-       Language : Pango.Language.Pango_Language)
+      (Font     : not null access Pango_Font_Record;
+       Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Gets overall metric information for a font. Since the metrics may be
    --  substantially different for different scripts, a language tag can be
