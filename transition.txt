@@ -199,6 +199,12 @@ Parameter "Colormap" has been removed from procedure Gdk_New. This parameter
 Set_Colormap and Get_Colormap should no longer be needed and have been removed
 as well.
 
+Glib.G_Icon
+===========
+
+This type is now a GType_Interface.
+Instead of using Null_G_Icon, use Glib.Types.Null_Interface.
+
 Gtk.Action
 ==========
 
@@ -465,7 +471,8 @@ This widget has been removed without any replacement.
 Gtk.Icon_Factory
 ================
 
-Gtk_Icon_Set and Gtk_Icon_Source were moved to their own packages.
+Gtk_Icon_Set and Gtk_Icon_Source have been moved to their own packages.
+Functions Gtk_New are now procedures.
 
 Gtk.Image
 =========
@@ -658,6 +665,12 @@ Gtk.Ruler
 =========
 
 This widget has been removed without any replacement.
+
+Gtk.Settings
+============
+
+Properties are now named with the suffix "_Property". For instance,
+Gtk_Theme_Name is now Gtk_Theme_Name_Property.
 
 Gtk.Scale_Button
 ================
