@@ -88,6 +88,7 @@ package Glib.Types is
    --        Gtk.Cell_Layout.Pack_Start (+View, Cell, Expand);
 
    type GType_Interface is private;
+   Null_Interface : constant GType_Interface;
 
    --  <doc_ignore>
    generic
@@ -133,6 +134,8 @@ package Glib.Types is
 
 private
    type GType_Interface  is new System.Address;
+   Null_Interface : constant GType_Interface := GType_Interface
+     (System.Null_Address);
 
    pragma Import (C, Depth,                  "g_type_depth");
    pragma Import (C, Class_Peek,             "g_type_class_peek");
