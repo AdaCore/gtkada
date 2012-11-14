@@ -2063,11 +2063,18 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
 
             section.add_code("""
    type %(typename)s is new Glib.C_Boxed with null record;
+   Null_%(typename)s : constant %(typename)s;
 
    function From_Object (Object : System.Address) return %(typename)s;
    function From_Object_Free (B : access %(typename)s'Class) return %(typename)s;
    pragma Inline (From_Object_Free, From_Object);
 """ % self._subst)
+
+            # Insert constant declaration at the end of the package, to avoid
+            # freezing issues
+            self.pkg.add_private("""
+   Null_%(typename)s : constant %(typename)s := (Glib.C_Boxed with null record);
+""" % self._subst, at_end=True)
 
             section.add_code("""
    function From_Object_Free
