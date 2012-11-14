@@ -4918,6 +4918,12 @@ direction, widget state, or icon size.
    </package>
 
    <package id="GtkIconFactory">
+
+     <function id="gtk_icon_size_lookup" return_as_param="Result" />
+     <function id="gtk_icon_size_lookup_for_settings" return_as_param="Result" />
+     <function id="gtk_icon_size_register" />
+     <function id="gtk_icon_size_register_alias" />
+
      <extra>
        <with_spec pkg="Gtk.Style_Provider"/>
        <with_spec pkg="Gtk.Widget"/>
@@ -5135,6 +5141,13 @@ direction, widget state, or icon size.
 
    procedure Free (Item : in out Gtk_Stock_Item);
    --  Free memory allocated in Item.
+
+   procedure Add (Item : Gtk_Stock_Item);
+   --  Register Item.
+   --  If an item already exists with the same stock ID as one of the items,
+   --  the old item gets replaced. The stock item is copied, so GtkAda does
+   --  not hold any pointer into item and item can be freed. Use
+   --  Add_Static if item is persistent and GtkAda need not copy the array.
        </spec>
        <with_body pkg="Interfaces.C.Strings" />
        <body>
@@ -5159,6 +5172,18 @@ direction, widget state, or icon size.
       Interfaces.C.Strings.Free (Item.Label);
       Interfaces.C.Strings.Free (Item.Translation_Domain);
    end Free;
+
+   ---------
+   -- Add --
+   ---------
+
+   procedure Add (Item : Gtk_Stock_Item) is
+      procedure Internal (Item : Gtk_Stock_Item; N_Items : Guint := 1);
+      pragma Import (C, Internal, "gtk_stock_add");
+
+   begin
+      Internal (Item);
+   end Add;
        </body>
      </extra>
    </package>
@@ -5170,9 +5195,10 @@ direction, widget state, or icon size.
 
      <method id="gtk_text_iter_get_buffer" bind="False"/> <!-- circular dependency -->
      <method id="gtk_text_iter_get_child_anchor" bind="False"/> <!-- circular dependency -->
+     <method id="gtk_text_iter_copy" bind="False"/> <!-- manual binding below -->
      <method id="gtk_text_iter_get_marks" return="ObjectSList" />
-     <method id="gtk_text_iter_get_tags" return="ObjectSList" />
-     <method id="gtk_text_iter_get_toggled_tags" return="ObjectSList" />
+     <method id="gtk_text_iter_get_tags" return="TextTagList" />
+     <method id="gtk_text_iter_get_toggled_tags" return="TextTagList" />
 
      <method id="gtk_text_iter_forward_char" return_as_param="Result">
        <parameter name="self" ada="Iter" direction="inout"/>
@@ -5277,9 +5303,11 @@ direction, widget state, or icon size.
 
      <method id="gtk_text_iter_forward_to_tag_toggle" return_as_param="Result">
        <parameter name="self" ada="Iter" direction="inout"/>
+       <parameter name="tag" default="null"/>
      </method>
      <method id="gtk_text_iter_backward_to_tag_toggle" return_as_param="Result">
        <parameter name="self" ada="Iter" direction="inout"/>
+       <parameter name="tag" default="null"/>
      </method>
 
      <method id="gtk_text_iter_forward_cursor_position" return_as_param="Result">
@@ -5321,6 +5349,110 @@ direction, widget state, or icon size.
              bind="false"> <!--  Need func with callback and return_as_param -->
        <parameter name="self" ada="Iter" direction="inout"/>
      </method>
+     <extra>
+        <with_spec pkg="Glib.Values"/>
+        <with_spec pkg="Interfaces.C.Strings"/>
+        <spec>
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter);
+   pragma Inline (Copy);
+   --  Create a copy of Source.
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character;
+   --  Return the character immediately following Iter. If Iter is at the
+   --  end of the buffer, then return ASCII.NUL.
+   --  Note that this function assumes that the text is encoded in ASCII
+   --  format. If this is not the case, use the Get_Char function that
+   --  returns a Gunichar instead.
+
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Text_Iter);
+   pragma Import (C, Set_Text_Iter, "g_value_set_pointer");
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+   --  Same as Get_Slice above, but returns the raw C string.
+   --  The caller is responsible for freeing the string returned.
+
+        </spec>
+        <with_body pkg="System.Address_To_Access_Conversions" use="False"/>
+        <body>
+   ----------
+   -- Copy --
+   ----------
+
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter) is
+   begin
+      Dest := Source;
+   end Copy;
+
+   --------------
+   -- Get_Char --
+   --------------
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character is
+      Result         : constant Gunichar := Get_Char (Iter);
+      Eight_LSB_Mask : constant := 2#1111_1111#;
+
+   begin
+      --  This function relies on the Get_Char function provided by gtk+,
+      --  which returns a gunichar value. Only the 8 least significant bits
+      --  are then kept to deduce the associated character.
+
+      return Character'Val (Result and Eight_LSB_Mask);
+   end Get_Char;
+
+   -------------------
+   -- Get_Text_Iter --
+   -------------------
+
+   package Iter_Access_Address_Conversions is
+     new System.Address_To_Access_Conversions (Gtk_Text_Iter);
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter) is
+   begin
+      Copy
+        (Source => Iter_Access_Address_Conversions.To_Pointer
+                     (Glib.Values.Get_Address (Val)).all,
+         Dest   => Iter);
+   end Get_Text_Iter;
+
+   ---------------
+   -- Get_Slice --
+   ---------------
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr
+   is
+      function Internal
+        (Start   : Gtk_Text_Iter;
+         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_text_iter_get_slice");
+
+   begin
+      return Internal (Start, The_End);
+   end Get_Slice;
+        </body>
+     </extra>
    </package>
 
    <package id="GIcon" ada="Glib.G_Icon">
@@ -5337,6 +5469,8 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoFont">
+     <parameter name="self" ada="Font" />
+
      <method id="pango_font_get_type" ada="Font_Get_Type"/>
      <method id="pango_font_find_shaper" bind="False"/> <!--  internal implementation of gtk -->
      <method id="pango_font_describe" classwide="True"/>
@@ -5344,6 +5478,9 @@ direction, widget state, or icon size.
      <method id="pango_font_descriptions_free" bind="False"/> <!-- in Ada, need iteration -->
      <method id="pango_font_get_coverage" bind="False"/> <!-- circular dependency -->
      <method id="pango_font_get_font_map" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_metrics">
+       <parameter name="language" default="Pango.Language.Null_Pango_Language"/>
+     </method>
    </package>
 
    <package id="PangoMatrix">
