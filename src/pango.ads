@@ -30,12 +30,16 @@ pragma Warnings (Off);
 with System;  --   Needed for child packages
 pragma Warnings (On);
 
-with Glib;
+with Glib;   use Glib;
 
 package Pango is
 
    type Pango_Rectangle is record
       X, Y, Width, Height : Glib.Gint;
    end record;
+
+   type Pango_Glyph is new Glib.Guint32;
+
+   type Pango_Attr_Class is new Glib.C_Proxy;
 
 end Pango;

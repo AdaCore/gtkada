@@ -31,7 +31,7 @@
 --  The GtkLabel implementation of the GtkBuildable interface supports a
 --  custom <attributes> element, which supports any number of <attribute>
 --  elements. the <attribute> element has attributes named name, value, start
---  and end and allows you to specify Pango.Attribute.Pango_Attribute values
+--  and end and allows you to specify Pango.Attributes.Pango_Attribute values
 --  for this label.
 --
 --  == A UI definition fragment specifying Pango attributes ==
@@ -108,7 +108,7 @@
 --  problems, unless you're applying attributes to the entire string (i.e.
 --  unless you set the range of each attribute to [0, G_MAXINT)). The reason is
 --  that specifying the start_index and end_index for a
---  Pango.Attribute.Pango_Attribute requires knowledge of the exact string
+--  Pango.Attributes.Pango_Attribute requires knowledge of the exact string
 --  being displayed, so translations will cause problems.
 --
 --  == Selectable labels ==
@@ -253,7 +253,7 @@ package Gtk.Label is
 
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
-       Attrs : in out Pango.Attributes.Pango_Attr_List);
+       Attrs : Pango.Attributes.Pango_Attr_List);
    --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
    --  applied to the label text.
    --  Note:
@@ -627,6 +627,10 @@ package Gtk.Label is
    --  bottom to top, an angle of 270, from top to bottom. Ignored if the label
    --  is selectable, wrapped, or ellipsized.
    --
+   --  Name: Attributes_Property
+   --  Type: Pango.Attributes.Pango_Attr_List
+   --  Flags: read-write
+   --
    --  Name: Cursor_Position_Property
    --  Type: Gint
    --  Flags: read-write
@@ -732,6 +736,7 @@ package Gtk.Label is
    --  Pango.Enums.Pango_Wrap_Word, which means wrap on word boundaries.
 
    Angle_Property : constant Glib.Properties.Property_Double;
+   Attributes_Property : constant Glib.Properties.Property_Object;
    Cursor_Position_Property : constant Glib.Properties.Property_Int;
    Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
@@ -833,6 +838,8 @@ package Gtk.Label is
 private
    Angle_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("angle");
+   Attributes_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attributes");
    Cursor_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("cursor-position");
    Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode :=

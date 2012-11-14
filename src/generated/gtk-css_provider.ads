@@ -563,7 +563,7 @@
 --
 --  Family [Style] [Size]
 --
---  Pango.Font_Description.Pango_Font_Description
+--  Pango.Font.Pango_Font_Description
 --
 --  font: Sans 15;
 --

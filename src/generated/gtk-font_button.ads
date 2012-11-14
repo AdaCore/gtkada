@@ -89,10 +89,10 @@ package Gtk.Font_Button is
        return UTF8_String;
    --  Retrieves the name of the currently selected font. This name includes
    --  style and size information as well. If you want to render something with
-   --  the font, use this string with pango_font_description_from_string . If
-   --  you're interested in peeking certain values (family name, style, size,
-   --  weight) just query these properties from the
-   --  Pango.Font_Description.Pango_Font_Description object.
+   --  the font, use this string with Pango.Font.From_String . If you're
+   --  interested in peeking certain values (family name, style, size, weight)
+   --  just query these properties from the Pango.Font.Pango_Font_Description
+   --  object.
    --  Since: gtk+ 2.4
 
    function Set_Font_Name

@@ -1138,7 +1138,7 @@ package Gtk.GEntry is
    Editable_Property : constant Glib.Properties.Property_Boolean;
    Has_Frame_Property : constant Glib.Properties.Property_Boolean;
    Im_Module_Property : constant Glib.Properties.Property_String;
-   Inner_Border_Property : constant Glib.Properties.Property_Object;
+   Inner_Border_Property : constant Glib.Properties.Property_Boxed;
    Invisible_Char_Property : constant Glib.Properties.Property_Uint;
    Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean;
    Max_Length_Property : constant Glib.Properties.Property_Int;
@@ -1357,7 +1357,7 @@ private
      Glib.Properties.Build ("has-frame");
    Im_Module_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("im-module");
-   Inner_Border_Property : constant Glib.Properties.Property_Object :=
+   Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("inner-border");
    Invisible_Char_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("invisible-char");

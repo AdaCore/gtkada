@@ -453,6 +453,9 @@ class Tagged(GObject):
                 # for out parameters
                 self.cparam, "From_Object (%(var)s)")
 
+    def convert_to_c(self, pkg=None):
+        return "Get_Object (%(var)s)"
+
     def as_ada_param(self, pkg):
         # Make sure to bind as a CType here, not as a GOBject
         return CType.as_ada_param(self, pkg)

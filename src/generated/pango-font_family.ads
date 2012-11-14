@@ -48,9 +48,8 @@ package Pango.Font_Family is
    function Get_Name
       (Self : not null access Pango_Font_Family_Record) return UTF8_String;
    --  Gets the name of the family. The name is unique among all fonts for the
-   --  font backend and can be used in a
-   --  Pango.Font_Description.Pango_Font_Description to specify that a face
-   --  from this family is desired.
+   --  font backend and can be used in a Pango.Font.Pango_Font_Description to
+   --  specify that a face from this family is desired.
    --  by the family object and must not be modified or freed.
 
    function Is_Monospace

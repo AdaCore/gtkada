@@ -78,8 +78,7 @@ package Gtk.Font_Chooser is
    --  names and thus return a string with a different structure. For example,
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".
-   --  Use pango_font_description_equal if you want to compare two font
-   --  descriptions.
+   --  Use Pango.Font.Equal if you want to compare two font descriptions.
    --  of the current font, or null if no font is selected. You must free this
    --  string with g_free.
    --  Since: gtk+ 3.2
@@ -98,8 +97,7 @@ package Gtk.Font_Chooser is
    --  names and thus return a string with a different structure. For example,
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".
-   --  Use pango_font_description_equal if you want to compare two font
-   --  descriptions.
+   --  Use Pango.Font.Equal if you want to compare two font descriptions.
    --  current font, or null if no font is selected.
    --  Since: gtk+ 3.2
 
@@ -109,7 +107,7 @@ package Gtk.Font_Chooser is
    pragma Import (C, Set_Font_Desc, "gtk_font_chooser_set_font_desc");
    --  Sets the currently-selected font from Font_Desc.
    --  Since: gtk+ 3.2
-   --  "font_desc": a Pango.Font_Description.Pango_Font_Description
+   --  "font_desc": a Pango.Font.Pango_Font_Description
 
    function Get_Font_Face
       (Self : Gtk_Font_Chooser) return Pango.Font_Face.Pango_Font_Face;
@@ -208,8 +206,7 @@ package Gtk.Font_Chooser is
    --  Name: Font_Desc_Property
    --  Type: Pango.Font.Pango_Font_Description
    --  Flags: read-write
-   --  The font description as a
-   --  Pango.Font_Description.Pango_Font_Description.
+   --  The font description as a Pango.Font.Pango_Font_Description.
    --
    --  Name: Preview_Text_Property
    --  Type: UTF8_String

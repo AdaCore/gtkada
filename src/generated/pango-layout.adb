@@ -174,11 +174,10 @@ package body Pango.Layout is
       (Layout : not null access Pango_Layout_Record)
        return Pango.Attributes.Pango_Attr_List
    is
-      function Internal
-         (Layout : System.Address) return Pango.Attributes.Pango_Attr_List;
+      function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_get_attributes");
    begin
-      return Internal (Get_Object (Layout));
+      return From_Object (Internal (Get_Object (Layout)));
    end Get_Attributes;
 
    ------------------
@@ -655,11 +654,10 @@ package body Pango.Layout is
       (Layout : not null access Pango_Layout_Record)
        return Pango.Tabs.Pango_Tab_Array
    is
-      function Internal
-         (Layout : System.Address) return Pango.Tabs.Pango_Tab_Array;
+      function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_get_tabs");
    begin
-      return Internal (Get_Object (Layout));
+      return From_Object (Internal (Get_Object (Layout)));
    end Get_Tabs;
 
    --------------
@@ -877,12 +875,10 @@ package body Pango.Layout is
       (Layout : not null access Pango_Layout_Record;
        Attrs  : Pango.Attributes.Pango_Attr_List)
    is
-      procedure Internal
-         (Layout : System.Address;
-          Attrs  : Pango.Attributes.Pango_Attr_List);
+      procedure Internal (Layout : System.Address; Attrs : System.Address);
       pragma Import (C, Internal, "pango_layout_set_attributes");
    begin
-      Internal (Get_Object (Layout), Attrs);
+      Internal (Get_Object (Layout), Get_Object (Attrs));
    end Set_Attributes;
 
    ------------------
@@ -1050,14 +1046,12 @@ package body Pango.Layout is
 
    procedure Set_Tabs
       (Layout : not null access Pango_Layout_Record;
-       Tabs   : in out Pango.Tabs.Pango_Tab_Array)
+       Tabs   : Pango.Tabs.Pango_Tab_Array)
    is
-      procedure Internal
-         (Layout : System.Address;
-          Tabs   : in out Pango.Tabs.Pango_Tab_Array);
+      procedure Internal (Layout : System.Address; Tabs : System.Address);
       pragma Import (C, Internal, "pango_layout_set_tabs");
    begin
-      Internal (Get_Object (Layout), Tabs);
+      Internal (Get_Object (Layout), Get_Object (Tabs));
    end Set_Tabs;
 
    --------------

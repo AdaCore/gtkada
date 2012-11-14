@@ -92,8 +92,50 @@ package Pango.Enums is
    --  The Pango.Enums.Pango_Direction_Ttb_Ltr,
    --  Pango.Enums.Pango_Direction_Ttb_Rtl values come from an earlier
    --  interpretation of this enumeration as the writing direction of a block
-   --  of text and are no longer used; See Pango_Gravity for how vertical text
-   --  is handled in Pango.
+   --  of text and are no longer used; See Pango.Enums.Gravity for how vertical
+   --  text is handled in Pango.
+
+   type Font_Mask is mod 2 ** Integer'Size;
+   pragma Convention (C, Font_Mask);
+
+
+   Pango_Font_Mask_Family : constant Font_Mask := 1;
+   Pango_Font_Mask_Style : constant Font_Mask := 2;
+   Pango_Font_Mask_Variant : constant Font_Mask := 4;
+   Pango_Font_Mask_Weight : constant Font_Mask := 8;
+   Pango_Font_Mask_Stretch : constant Font_Mask := 16;
+   Pango_Font_Mask_Size : constant Font_Mask := 32;
+   Pango_Font_Mask_Gravity : constant Font_Mask := 64;
+
+   type Gravity is (
+      Pango_Gravity_South,
+      Pango_Gravity_East,
+      Pango_Gravity_North,
+      Pango_Gravity_West,
+      Pango_Gravity_Auto);
+   pragma Convention (C, Gravity);
+   --  The Pango.Enums.Gravity type represents the orientation of glyphs in a
+   --  segment of text. This is useful when rendering vertical text layouts. In
+   --  those situations, the layout is rotated using a non-identity
+   --  PangoMatrix, and then glyph orientation is controlled using
+   --  Pango.Enums.Gravity. Not every value in this enumeration makes sense for
+   --  every usage of Pango.Enums.Gravity; for example,
+   --  Pango.Enums.Pango_Gravity_Auto only can be passed to
+   --  Pango.Context.Set_Base_Gravity and can only be returned by
+   --  Pango.Context.Get_Base_Gravity.
+   --
+   --  See also: Pango.Enums.GravityHint
+
+   type GravityHint is (
+      Pango_Gravity_Hint_Natural,
+      Pango_Gravity_Hint_Strong,
+      Pango_Gravity_Hint_Line);
+   pragma Convention (C, GravityHint);
+   --  The Pango.Enums.GravityHint defines how horizontal scripts should
+   --  behave in a vertical context. That is, English excerpt in a vertical
+   --  paragraph for example.
+   --
+   --  See Pango.Enums.Gravity.
 
    type Stretch is (
       Pango_Stretch_Ultra_Condensed,
@@ -184,6 +226,18 @@ package Pango.Enums is
    package Direction_Properties is
       new Generic_Internal_Discrete_Property (Direction);
    type Property_Direction is new Direction_Properties.Property;
+
+   package Font_Mask_Properties is
+      new Generic_Internal_Discrete_Property (Font_Mask);
+   type Property_Font_Mask is new Font_Mask_Properties.Property;
+
+   package Gravity_Properties is
+      new Generic_Internal_Discrete_Property (Gravity);
+   type Property_Gravity is new Gravity_Properties.Property;
+
+   package GravityHint_Properties is
+      new Generic_Internal_Discrete_Property (GravityHint);
+   type Property_GravityHint is new GravityHint_Properties.Property;
 
    package Stretch_Properties is
       new Generic_Internal_Discrete_Property (Stretch);

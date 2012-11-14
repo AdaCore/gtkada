@@ -663,7 +663,14 @@ class GIRClass(object):
         # if there is no public field that should be user visible in the record.
         # Otherwise, we'll map to a standard Ada record (self.is_record)
 
-        self.is_boxed = self.node.tag == nrecord and not self.node.findall(nfield)
+        self.is_proxy = (
+            self.ctype == "PangoFontDescription")
+            #naming.type_exceptions.get("%s*" % self.ctype, None) is not None
+            #and isinstance(naming.type_exceptions["%s*" % self.ctype], Proxy))
+
+        self.is_boxed = (not self.is_proxy
+                         and self.node.tag == nrecord
+                         and not self.node.findall(nfield))
         self.is_record = self.node.tag == nrecord and not self.is_boxed
 
         # Register naming exceptions for this class
@@ -684,16 +691,19 @@ class GIRClass(object):
         naming.add_girname(girname=n, ctype=self.ctype)
 
         if has_toplevel_type:
+            ctype = node.get(ctype_qname)
             if is_interface:
                 t = Interface(pkg)
             elif is_gobject:
                 t = GObject(pkg)
+            elif self.is_proxy:
+                t = Proxy(pkg)
             elif self.is_boxed:
                 t = Tagged(pkg)
             else:
                 t = Record(pkg)
 
-            naming.add_type_exception(cname=node.get(ctype_qname), type=t)
+            naming.add_type_exception(cname=ctype, type=t)
             classtype = naming.type(name=self.ctype)
             typename = classtype.ada
             self.name = package_name(typename)
@@ -1245,7 +1255,6 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             selftype = "%(typename)s" % self._subst
 
         if self.is_gobject:
-
             filtered_params = [p for p in profile.params if p.ada_binding]
 
             initialize_params = [Parameter(
@@ -1709,7 +1718,6 @@ See Glib.Properties for more information on properties)""")
            override_fields has the same format as returned by
            GtkAdaPackage.records()
         """
-
         base = adaname or base_name(type.ada)
 
         try:
@@ -1725,46 +1733,51 @@ See Glib.Properties for more information on properties)""")
 
         fields = []
 
-        for field in node.findall(nfield):
-            name = field.get("name")
+        # Check if we have forced the mapping as a C proxy ?
 
-            ftype = None
-            type = field.findall(ntype)
-            cb   = field.findall(ncallback)
+        if (naming.type_exceptions.get(ctype, None) is None
+            or not isinstance(naming.type_exceptions[ctype], Proxy)):
 
-            if type:
-                ftype = override_fields.get(name, None)
-                if ftype is None:
-                    ctype = type[0].get(ctype_qname)
-                    if not ctype:
-                       # <type name="..."> has no c:type attribute, so we try
-                       # to map the name to a Girname
-                       ctype = naming.girname_to_ctype[type[0].get("name")]
+            for field in node.findall(nfield):
+                name = field.get("name")
 
-                    if not first_field_ctype:
-                        first_field_ctype = ctype
-                    ftype = naming.type(name="", cname=ctype)
+                ftype = None
+                type = field.findall(ntype)
+                cb   = field.findall(ncallback)
 
-            elif cb:
-                # ??? JL: Should properly bind the callback here.
-                # For now, we just use a System.Address to maintain the record
-                # integrity
-                ftype = override_fields.get(name, None)
-                if ftype is None:
-                    ftype = AdaType(
-                        "System.Address", pkg=self.pkg)
-            else:
-                print "WARNING: Field has no type: %s.%s" % (ctype, name)
-                print " generation of the record is most certainly incorrect"
+                if type:
+                    ftype = override_fields.get(name, None)
+                    if ftype is None:
+                        ctype = type[0].get(ctype_qname)
+                        if not ctype:
+                           # <type name="..."> has no c:type attribute, so we try
+                           # to map the name to a Girname
+                           ctype = naming.girname_to_ctype[type[0].get("name")]
 
-            if ftype != None:
-                if ftype.ada in ("GSList", "GList") and private:
-                    ftype = "System.Address"
+                        if not first_field_ctype:
+                            first_field_ctype = ctype
+                        ftype = naming.type(name="", cname=ctype)
+
+                elif cb:
+                    # ??? JL: Should properly bind the callback here.
+                    # For now, we just use a System.Address to maintain the record
+                    # integrity
+                    ftype = override_fields.get(name, None)
+                    if ftype is None:
+                        ftype = AdaType(
+                            "System.Address", pkg=self.pkg)
                 else:
-                    ftype = ftype.record_field_type(pkg=self.pkg)
+                    print "WARNING: Field has no type: %s.%s" % (ctype, name)
+                    print " generation of the record is most certainly incorrect"
 
-                self.pkg.add_with(package_name(ftype))
-                fields.append((naming.case(name), ftype))
+                if ftype != None:
+                    if ftype.ada in ("GSList", "GList") and private:
+                        ftype = "System.Address"
+                    else:
+                        ftype = ftype.record_field_type(pkg=self.pkg)
+
+                    self.pkg.add_with(package_name(ftype))
+                    fields.append((naming.case(name), ftype))
 
         if not fields:
             section.add(
@@ -1998,8 +2011,15 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
             # and create the new one accordingly
             if isinstance(oldtype, Tagged):
                 newtype = Tagged(typename)
-            else:
+            elif isinstance(oldtype, GObject):
                 newtype = GObject(typename)
+            elif isinstance(oldtype, Proxy):
+                newtype = Proxy(typename)
+            elif isinstance(oldtype, Record):
+                newtype = Record(typename)
+            else:
+                raise Exception("Can't override %s for a package with 'into'"
+                                % oldtype)
             naming.add_type_exception(
                 override=True,
                 cname=self.ctype,
@@ -2032,6 +2052,10 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
             """
 subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
+
+        elif self.is_proxy:
+            section.add_code("""
+   type %(typename)s is new Glib.C_Proxy;""" % self._subst)
 
         elif self.is_boxed:
             # The type is not private so that we can directly instantiate

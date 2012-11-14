@@ -56,7 +56,8 @@ package Pango.Font_Map is
       (Self : not null access Pango_Font_Map_Record)
        return Pango.Context.Pango_Context;
    --  Creates a Pango.Context.Pango_Context connected to Fontmap. This is
-   --  equivalent to pango_context_new followed by pango_context_set_font_map.
+   --  equivalent to Pango.Context.Gdk_New followed by
+   --  pango_context_set_font_map.
    --  If you are using Pango as part of a higher-level system, that system
    --  may have it's own way of create a Pango.Context.Pango_Context. For
    --  instance, the GTK+ toolkit has, among others,
@@ -78,8 +79,7 @@ package Pango.Font_Map is
    --  Load the font in the fontmap that is the closest match for Desc.
    --  or null if no font matched.
    --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font_Description.Pango_Font_Description describing the
-   --  font to load
+   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
 
    function Load_Fontset
       (Self     : not null access Pango_Font_Map_Record;
@@ -91,8 +91,7 @@ package Pango.Font_Map is
    --  matching Desc.
    --  loaded, or null if no font matched.
    --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font_Description.Pango_Font_Description describing the
-   --  font to load
+   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
    --  "language": a Pango.Language.Pango_Language the fonts will be used for
 
 end Pango.Font_Map;

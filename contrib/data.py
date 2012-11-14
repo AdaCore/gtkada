@@ -47,15 +47,31 @@ binding = ("GdkCursor",
            "GdkScreen",
            "GdkWindow",
 
+           "--PangoAttrIterator",
+           "PangoAttrList",
+           "PangoAttribute",
+           "--PangoColor",
+           "PangoContext",
+           "PangoCoverage",
+           "PangoFont",
+           "PangoFontDescription",
            "PangoFontFace",
            "PangoFontFamily",
            "PangoFontMap",
            "PangoFontMetrics",
            "PangoFontset",
+           "--PangoGlyphItem",
+           "--PangoGlyphItemIter",
+           "--PangoGlyphString",
+           "--PangoItem",
+           "--PangoRenderer",
+           "--PangoScriptIter",
            "PangoLanguage",
            "PangoLayout",
            "PangoLayoutIter",
            "PangoLayoutLine",
+           "PangoMatrix",
+           "PangoTabArray",
 
            # "GEmblemedIcon",
 
@@ -142,6 +158,7 @@ binding = ("GdkCursor",
            "GtkMenuShell",
            "GtkMenuToolButton",
            "GtkMessageDialog",
+           "--GtkMountOperation",  # Requires a lot of GIO
            "GtkNotebook",
            # "GtkNumerableIcon",   # Requires a lot of GIO
            "GtkOffscreenWindow",
@@ -314,10 +331,14 @@ naming.type_exceptions = {
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
-    "GdkRGBA":  Proxy("Gdk.RGBA.Gdk_RGBA",  # impose casing
+    # These should not be necessary, but if we don't put them the gnerated
+    # binding is wrong (for instance we end up passing Gdk_Event_Record as
+    # parameters to functions, or Gdk_RGBA directly to C)
+    "GdkRGBA":  Record("Gdk.RGBA.Gdk_RGBA",  # impose casing
                       "Gdk.RGBA.Property_RGBA"),
-    "GdkEvent*":         Proxy("Gdk.Event.Gdk_Event", ""),
-    "GdkEvent":         Proxy("Gdk.Event.Gdk_Event", ""),
+    "GdkRGBA*":  Proxy("Gdk.RGBA.Gdk_RGBA", "Gdk.RGBA.Property_RGBA",
+                                "Gdk.RGBA.Gdk_RGBA_Or_Null"),
+    "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
     "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
@@ -326,9 +347,7 @@ naming.type_exceptions = {
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
-    "PangoAttrList":     Proxy("Pango.Attributes.Pango_Attr_List", ""),
-    "PangoContext":      GObject("Pango.Context.Pango_Context"),
-    "PangoTabArray":     Proxy("Pango.Tabs.Pango_Tab_Array"),
+    # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
                                    "Pango.Font.Property_Font_Description"),
 
@@ -391,8 +410,6 @@ naming.type_exceptions = {
 
     # ??? The above should not be needed, we should infer it from the Gir.
     # we need it to generate the "Stub" object in Gdk.Device.Get_Position
-    "GdkRGBA*":           Proxy("Gdk.RGBA.Gdk_RGBA", None,
-                                "Gdk.RGBA.Gdk_RGBA_Or_Null"),
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),

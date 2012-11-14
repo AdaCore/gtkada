@@ -163,7 +163,7 @@ package Gtk.Text_Tag is
    --  Font description as string, e.g. \"Sans Italic 12\".
    --
    --  Note that the initial value of this property depends on the internals
-   --  of Pango.Font_Description.Pango_Font_Description.
+   --  of Pango.Font.Pango_Font_Description.
    --
    --  Name: Font_Desc_Property
    --  Type: Pango.Font.Pango_Font_Description

@@ -81,8 +81,8 @@ package Gtk.Font_Selection_Dialog is
    --  Gtk.Font_Selection_Dialog.Set_Font_Name, as the font selection widget
    --  may normalize font names and thus return a string with a different
    --  structure. For example, "Helvetica Italic Bold 12" could be normalized
-   --  to "Helvetica Bold Italic 12". Use pango_font_description_equal if you
-   --  want to compare two font descriptions.
+   --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
+   --  compare two font descriptions.
    --  font is selected. You must free this string with g_free.
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog

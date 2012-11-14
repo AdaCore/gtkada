@@ -115,11 +115,10 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record)
        return Pango.Attributes.Pango_Attr_List
    is
-      function Internal
-         (Label : System.Address) return Pango.Attributes.Pango_Attr_List;
+      function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_attributes");
    begin
-      return Internal (Get_Object (Label));
+      return From_Object (Internal (Get_Object (Label)));
    end Get_Attributes;
 
    ---------------------
@@ -437,14 +436,12 @@ package body Gtk.Label is
 
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
-       Attrs : in out Pango.Attributes.Pango_Attr_List)
+       Attrs : Pango.Attributes.Pango_Attr_List)
    is
-      procedure Internal
-         (Label : System.Address;
-          Attrs : in out Pango.Attributes.Pango_Attr_List);
+      procedure Internal (Label : System.Address; Attrs : System.Address);
       pragma Import (C, Internal, "gtk_label_set_attributes");
    begin
-      Internal (Get_Object (Label), Attrs);
+      Internal (Get_Object (Label), Get_Object (Attrs));
    end Set_Attributes;
 
    -------------------

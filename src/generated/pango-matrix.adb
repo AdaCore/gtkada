@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,19 +21,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib; use Glib;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
 
-package body Pango.Attributes is
+package body Pango.Matrix is
 
-   -------------
-   -- Gdk_New --
-   -------------
-
-   procedure Gdk_New (Attr_List : out Pango_Attr_List) is
-      function Internal return Pango_Attr_List;
-      pragma Import (C, Internal, "pango_attr_list_new");
+   function From_Object_Free (B : access Pango_Matrix) return Pango_Matrix is
+      Result : constant Pango_Matrix := B.all;
    begin
-      Attr_List := Internal;
-   end Gdk_New;
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
-end Pango.Attributes;
+end Pango.Matrix;

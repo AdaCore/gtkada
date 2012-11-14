@@ -2630,6 +2630,9 @@ __PRE__
      <enum ctype="PangoAttrType" ada="Attr_Type"/>
      <enum ctype="PangoCoverageLevel" ada="Coverage_Level"/>
      <enum ctype="PangoDirection" ada="Direction"/>
+     <enum ctype="PangoFontMask" ada="Font_Mask"/>
+     <enum ctype="PangoGravity" ada="Gravity"/>
+     <enum ctype="PangoGravityHint" ada="GravityHint"/>
      <enum ctype="PangoStretch" ada="Stretch"/>
      <enum ctype="PangoStyle" ada="Style"/>
      <enum ctype="PangoUnderline" ada="Underline"/>
@@ -5331,6 +5334,194 @@ direction, widget state, or icon size.
      <enum ctype="GtkToolPaletteDragTargets"/>
      <method id="gtk_tool_palette_get_hadjustment" bind="False"/> <!-- obsolete, use interface-->
      <method id="gtk_tool_palette_get_vadjustment" bind="False"/> <!-- obsolete, use interface-->
+   </package>
+
+   <package id="PangoFont">
+     <method id="pango_font_get_type" ada="Font_Get_Type"/>
+     <method id="pango_font_find_shaper" bind="False"/> <!--  internal implementation of gtk -->
+     <method id="pango_font_describe" classwide="True"/>
+     <method id="pango_font_describe_with_absolute_size" classwide="True"/>
+     <method id="pango_font_descriptions_free" bind="False"/> <!-- in Ada, need iteration -->
+     <method id="pango_font_get_coverage" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_font_map" bind="False"/> <!-- circular dependency -->
+   </package>
+
+   <package id="PangoMatrix">
+     <record ctype="PangoMatrix"/>
+     <method id="pango_matrix_rotate">
+       <parameter name="self" direction="inout"/>
+     </method>
+     <method id="pango_matrix_scale">
+       <parameter name="self" direction="inout"/>
+     </method>
+     <method id="pango_matrix_translate">
+       <parameter name="self" direction="inout"/>
+     </method>
+   </package>
+
+   <package id="PangoCoverage">
+     <method id="pango_coverage_new" ada="Pango_New"/>
+     <method id="pango_coverage_from_bytes" bind="False"/>  <!-- not used for Ada -->
+     <method id="pango_coverage_to_bytes" bind="False"/>  <!-- not used for Ada -->
+   </package>
+
+   <package id="PangoTabArray" ada="Pango.Tabs">
+     <enum ctype="PangoTabAlign"/>
+     <method id="pango_tab_array_get_tabs" bind="False"/> <!-- Require manual binding -->
+   </package>
+
+   <package id="PangoAttribute" ada="Pango.Attributes">
+     <record ctype="PangoAttribute" private="True"/>
+     <method id="pango_attribute_init" bind="False"/> <!--  low-level -->
+     <function id="pango_attr_underline_new"/>
+     <function id="pango_attr_background_new"/>
+     <function id="pango_attr_foreground_new"/>
+     <function id="pango_attr_family_new"/>
+     <function id="pango_attr_strikethrough_new"/>
+     <function id="pango_attr_variant_new"/>
+     <function id="pango_attr_weight_new"/>
+     <function id="pango_attr_stretch_new"/>
+     <function id="pango_attr_scale_new"/>
+     <function id="pango_attr_rise_new"/>
+     <function id="pango_attr_gravity_new"/>
+   </package>
+
+   <package id="PangoAttrList" into="PangoAttribute">
+     <method id="pango_attr_list_get_iterator" bind="False"/>  <!-- Not needed ? -->
+   </package>
+
+   <package id="PangoContext">
+     <method id="pango_context_get_font_map" bind="False" /> <!-- circular dep -->
+     <method id="pango_context_set_font_map" bind="False" /> <!-- circular dep -->
+     <extra>
+       <with_spec pkg="Pango.Font_Family"/>
+     </extra>
+     <method id="pango_context_list_families" return="Pango_Font_Family_Array">
+       <parameter name="families" ada=""/>
+       <parameter name="n_families" ada=""/>
+       <body>
+   function List_Families
+      (Self : not null access Pango_Context_Record) return Pango_Font_Family_Array
+   is
+      type font_family_array_bounded is array (Natural) of System.Address;
+
+      procedure Internal
+         (Self     : System.Address;
+          Families : System.Address;
+          Size     : access Gint);
+      pragma Import (C, Internal, "pango_context_list_families");
+
+      procedure g_free (s : access font_family_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Families : aliased access font_family_array_bounded;
+      Size : aliased Gint;
+      Tmplt : Pango_Font_Family_Record;
+   begin
+      Internal (Get_Object (Self), Families'Address, Size'Access);
+
+      declare
+         Result : Pango_Font_Family_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Pango_Font_Family
+                (Get_User_Data (Families (R), Tmplt));
+         end loop;
+         g_free (Families);
+
+         return Result;
+      end;
+   end List_Families;
+       </body>
+     </method>
+   </package>
+
+   <package id="PangoFontDescription" into="PangoFont">
+     <extra>
+       <with_spec pkg="Glib.Generic_Properties"/>
+       <spec>
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Pango.Enums.Style := Pango.Enums.Pango_Style_Normal;
+      Variant     : Pango.Enums.Variant := Pango.Enums.Pango_Variant_Normal;
+      Weight      : Pango.Enums.Weight := Pango.Enums.Pango_Weight_Normal;
+      Stretch     : Pango.Enums.Stretch := Pango.Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description;
+   --  Create a new font decription from the given parameters.
+
+   function To_Address
+     (F : Pango_Font_Description; Add : System.Address) return System.Address;
+   package Desc_Properties is new Generic_Internal_Boxed_Property
+     (Pango_Font_Description, Get_Type, To_Address);
+   type Property_Font_Description is new Desc_Properties.Property;
+
+       </spec>
+       <body>
+   subtype String7 is String (1 .. 7);
+   Style_Map : constant array (Enums.Style) of String7 :=
+     (Enums.Pango_Style_Normal  =&gt; "       ",
+      Enums.Pango_Style_Oblique =&gt; "Oblique",
+      Enums.Pango_Style_Italic  =&gt; "Italic ");
+
+   subtype String10 is String (1 .. 10);
+   Variant_Map : constant array (Enums.Variant) of String10 :=
+     (Enums.Pango_Variant_Normal     =&gt; "          ",
+      Enums.Pango_Variant_Small_Caps =&gt; "Small-Caps");
+
+   subtype String15 is String (1 .. 15);
+   Stretch_Map : constant array (Enums.Stretch) of String15 :=
+     (Enums.Pango_Stretch_Ultra_Condensed =&gt; "Ultra-Condensed",
+      Enums.Pango_Stretch_Extra_Condensed =&gt; "Extra-Condensed",
+      Enums.Pango_Stretch_Condensed       =&gt; "Condensed      ",
+      Enums.Pango_Stretch_Semi_Condensed  =&gt; "Semi-Condensed ",
+      Enums.Pango_Stretch_Normal          =&gt; "               ",
+      Enums.Pango_Stretch_Semi_Expanded   =&gt; "Semi-Expanded  ",
+      Enums.Pango_Stretch_Expanded        =&gt; "Expanded       ",
+      Enums.Pango_Stretch_Extra_Expanded  =&gt; "Extra-Expanded ",
+      Enums.Pango_Stretch_Ultra_Expanded  =&gt; "Ultra-Expanded ");
+
+   --  Some of the values are not directly supported by pango.
+   --  ??? See fonts.c in pango
+
+   Weight_Map : constant array (Enums.Weight) of String10 :=
+     (Enums.Pango_Weight_Ultralight  =&gt; "Light     ",
+      Enums.Pango_Weight_Thin        =&gt; "Thin      ",
+      Enums.Pango_Weight_Light       =&gt; "Light     ",
+      Enums.Pango_Weight_Normal      =&gt; "          ",
+      Enums.Pango_Weight_Book        =&gt; "Book      ",
+      Enums.Pango_Weight_Medium      =&gt; "Medium    ",
+      Enums.Pango_Weight_Semibold    =&gt; "Semi-Bold ",
+      Enums.Pango_Weight_Bold        =&gt; "Bold      ",
+      Enums.Pango_Weight_Ultrabold   =&gt; "Bold      ",
+      Enums.Pango_Weight_Ultraheavy  =&gt; "Ultraheavy",
+      Enums.Pango_Weight_Heavy       =&gt; "Heavy     ");
+
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Enums.Style := Enums.Pango_Style_Normal;
+      Variant     : Enums.Variant := Enums.Pango_Variant_Normal;
+      Weight      : Enums.Weight := Enums.Pango_Weight_Normal;
+      Stretch     : Enums.Stretch := Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description
+   is
+   begin
+      return From_String (Family_Name &amp; " " &amp;
+                     Style_Map (Style) &amp; " " &amp;
+                     Variant_Map (Variant) &amp;
+                     Weight_Map (Weight) &amp; " " &amp;
+                     Stretch_Map (Stretch) &amp; Gint'Image (Size));
+   end To_Font_Description;
+
+   function To_Address
+      (F : Pango_Font_Description; Add : System.Address)
+      return System.Address
+   is
+      pragma Unreferenced (Add);
+   begin
+      return F.all'Address;
+   end To_Address;
+       </body>
+     </extra>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

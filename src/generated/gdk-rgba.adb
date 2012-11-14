@@ -104,12 +104,14 @@ package body Gdk.RGBA is
          (Acc_Self : access Gdk_RGBA;
           Spec     : Interfaces.C.Strings.chars_ptr) return Integer;
       pragma Import (C, Internal, "gdk_rgba_parse");
-      Acc_Self   : aliased Gdk_RGBA;
-      Tmp_Spec   : Interfaces.C.Strings.chars_ptr := New_String (Spec);
-      Tmp_Return : Integer;
+      Acc_Self     : aliased Gdk_RGBA;
+      Tmp_Acc_Self : aliased Gdk_RGBA;
+      Tmp_Spec     : Interfaces.C.Strings.chars_ptr := New_String (Spec);
+      Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Acc_Self'Access, Tmp_Spec);
+      Tmp_Return := Internal (Tmp_Acc_Self'Access, Tmp_Spec);
       Free (Tmp_Spec);
+      Acc_Self := Tmp_Acc_Self;
       Self := Acc_Self;
       Success := Boolean'Val (Tmp_Return);
    end Parse;

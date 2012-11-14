@@ -164,7 +164,7 @@ package Pango.Layout is
    --  get their direction from the surrounding paragraphs.
    --  When False, the choice between left-to-right and right-to-left layout
    --  is done according to the base direction of the layout's
-   --  Pango.Context.Pango_Context. (See pango_context_set_base_dir).
+   --  Pango.Context.Pango_Context. (See Pango.Context.Set_Base_Dir).
    --  When the auto-computed direction of a paragraph differs from the base
    --  direction of the context, the interpretation of
    --  Pango.Enums.Pango_Align_Left and Pango.Enums.Pango_Align_Right are
@@ -267,8 +267,8 @@ package Pango.Layout is
    --  Sets the default font description for the layout. If no font
    --  description is set on the layout, the font description from the layout's
    --  context is used.
-   --  "desc": the new Pango.Font_Description.Pango_Font_Description, or null
-   --  to unset the current font description
+   --  "desc": the new Pango.Font.Pango_Font_Description, or null to unset the
+   --  current font description
 
    function Get_Height
       (Layout : not null access Pango_Layout_Record) return Gint;
@@ -452,11 +452,11 @@ package Pango.Layout is
    --  Gets the current Pango.Tabs.Pango_Tab_Array used by this layout. If no
    --  Pango.Tabs.Pango_Tab_Array has been set, then the default tabs are in
    --  use and null is returned. Default tabs are every 8 spaces. The return
-   --  value should be freed with pango_tab_array_free.
+   --  value should be freed with Pango.Tabs.Free.
 
    procedure Set_Tabs
       (Layout : not null access Pango_Layout_Record;
-       Tabs   : in out Pango.Tabs.Pango_Tab_Array);
+       Tabs   : Pango.Tabs.Pango_Tab_Array);
    --  Sets the tabs to use for Layout, overriding the default tabs (by
    --  default, tabs are every 8 spaces). If Tabs is null, the default tabs are
    --  reinstated. Tabs is copied into the layout; you must free your copy of

@@ -277,8 +277,6 @@ private
    pragma Import (C, Set_Wrap_Mode, "ada_text_attribute_set_wrap_mode");
    pragma Import (C, Get_Wrap_Mode, "ada_text_attribute_get_wrap_mode");
    pragma Import (C, Get_Appearance, "ada_text_attribute_get_appearance");
-   pragma Import (C, Set_Tabs, "ada_text_attribute_set_tabs");
-   pragma Import (C, Get_Tabs, "ada_text_attribute_get_tabs");
 
 end Gtk.Text_Attributes;
 

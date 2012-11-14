@@ -918,10 +918,10 @@ package body Gtk.Text_View is
      (Text_View : access Gtk_Text_View_Record;
       Tabs      : Pango_Tab_Array)
    is
-      procedure Internal (Text_View : System.Address; Tabs : Pango_Tab_Array);
+      procedure Internal (Text_View : System.Address; Tabs : System.Address);
       pragma Import (C, Internal, "gtk_text_view_set_tabs");
    begin
-      Internal (Get_Object (Text_View), Tabs);
+      Internal (Get_Object (Text_View), Tabs.Get_Object);
    end Set_Tabs;
 
    --------------
@@ -931,10 +931,10 @@ package body Gtk.Text_View is
    function Get_Tabs
      (Text_View : access Gtk_Text_View_Record) return Pango_Tab_Array
    is
-      function Internal (Text_View : System.Address) return Pango_Tab_Array;
+      function Internal (Text_View : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_view_get_tabs");
    begin
-      return Internal (Get_Object (Text_View));
+      return From_Object (Internal (Get_Object (Text_View)));
    end Get_Tabs;
 
    -------------------

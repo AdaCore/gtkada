@@ -165,4 +165,27 @@ package body Gtk.Text_Attributes is
       return Boolean'Val (Internal (Text_Attr));
    end Get_Editable;
 
+   --------------
+   -- Set_Tabs --
+   --------------
+
+   procedure Set_Tabs
+      (Text_Attr : Gtk_Text_Attributes;
+       Tabs      : Pango.Tabs.Pango_Tab_Array)
+   is
+      procedure Internal (A : Gtk_Text_Attributes; T : System.Address);
+      pragma Import (C, Internal, "ada_text_attribute_set_tabs");
+   begin
+      Internal (Text_Attr, Tabs.Get_Object);
+   end Set_Tabs;
+
+   function Get_Tabs
+     (Text_Attr : Gtk_Text_Attributes) return Pango.Tabs.Pango_Tab_Array
+   is
+      function Internal (A : Gtk_Text_Attributes) return System.Address;
+      pragma Import (C, Internal, "ada_text_attribute_get_tabs");
+   begin
+      return Pango.Tabs.From_Object (Internal (Text_Attr));
+   end Get_Tabs;
+
 end Gtk.Text_Attributes;
