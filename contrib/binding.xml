@@ -5574,6 +5574,7 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoFontDescription" into="PangoFont">
+     <method id="pango_font_description_free" bind="False" /> <!--  manual binding below -->
      <extra>
        <with_spec pkg="Glib.Generic_Properties"/>
        <spec>
@@ -5592,6 +5593,8 @@ direction, widget state, or icon size.
      (Pango_Font_Description, Get_Type, To_Address);
    type Property_Font_Description is new Desc_Properties.Property;
 
+   procedure Free (Desc : in out Pango_Font_Description);
+   --  Deallocate the given font description.
        </spec>
        <body>
    subtype String7 is String (1 .. 7);
@@ -5657,6 +5660,19 @@ direction, widget state, or icon size.
    begin
       return F.all'Address;
    end To_Address;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Desc : in out Pango_Font_Description) is
+      procedure Internal (Desc : Pango_Font_Description);
+      pragma Import (C, Internal, "pango_font_description_free");
+
+   begin
+      Internal (Desc);
+      Desc := null;
+   end Free;
        </body>
      </extra>
    </package>
