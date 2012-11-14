@@ -93,6 +93,19 @@ package body Pango.Font is
       return F.all'Address;
    end To_Address;
 
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Desc : in out Pango_Font_Description) is
+      procedure Internal (Desc : Pango_Font_Description);
+      pragma Import (C, Internal, "pango_font_description_free");
+
+   begin
+      Internal (Desc);
+      Desc := null;
+   end Free;
+
    package Type_Conversion_Pango_Font is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Font_Get_Type'Access, Pango_Font_Record);
    pragma Unreferenced (Type_Conversion_Pango_Font);

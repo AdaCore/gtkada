@@ -51,8 +51,8 @@ package Pango.Font_Face is
    --  Returns the family, style, variant, weight and stretch of a
    --  Pango.Font_Face.Pango_Font_Face. The size field of the resulting font
    --  description will be unset.
-   --  holding the description of the face. Use Pango.Font.Free to free the
-   --  result.
+   --  holding the description of the face. Use pango_font_description_free to
+   --  free the result.
 
    function Get_Face_Name
       (Self : not null access Pango_Font_Face_Record) return UTF8_String;

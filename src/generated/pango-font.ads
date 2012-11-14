@@ -46,7 +46,7 @@ package Pango.Font is
 
    procedure Gdk_New (Self : out Pango_Font_Description);
    --  Creates a new font description structure with all fields unset.
-   --  should be freed using Pango.Font.Free.
+   --  should be freed using pango_font_description_free.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_font_description_get_type");
@@ -124,7 +124,7 @@ package Pango.Font is
       (Self : Pango_Font_Description) return Pango_Font_Description;
    pragma Import (C, Copy, "pango_font_description_copy");
    --  Make a copy of a Pango.Font.Pango_Font_Description.
-   --  be freed with Pango.Font.Free, or null if Desc was null.
+   --  be freed with pango_font_description_free, or null if Desc was null.
 
    function Copy_Static
       (Self : Pango_Font_Description) return Pango_Font_Description;
@@ -133,7 +133,7 @@ package Pango.Font is
    --  name and other allocated fields. The result can only be used until Desc
    --  is modified or freed. This is meant to be used when the copy is only
    --  needed temporarily.
-   --  be freed with Pango.Font.Free, or null if Desc was null.
+   --  be freed with pango_font_description_free, or null if Desc was null.
 
    function Equal
       (Self  : Pango_Font_Description;
@@ -145,10 +145,6 @@ package Pango.Font is
    --  loaded, but still compare False.)
    --  False otherwise.
    --  "desc2": another Pango.Font.Pango_Font_Description
-
-   procedure Free (Self : Pango_Font_Description);
-   pragma Import (C, Free, "pango_font_description_free");
-   --  Frees a font description.
 
    function Get_Family (Self : Pango_Font_Description) return UTF8_String;
    --  Gets the family name field of a font description. See
@@ -387,6 +383,9 @@ package Pango.Font is
    package Desc_Properties is new Generic_Internal_Boxed_Property
      (Pango_Font_Description, Get_Type, To_Address);
    type Property_Font_Description is new Desc_Properties.Property;
+
+   procedure Free (Desc : in out Pango_Font_Description);
+   --  Deallocate the given font description.
 
    ---------------
    -- Functions --
