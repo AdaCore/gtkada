@@ -366,6 +366,7 @@ naming.type_exceptions = {
     "StringList":  List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
     "TreePathList": List("Gtk.Tree_Model.Gtk_Tree_Path_List.Glist"),
+    "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSList"),
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
