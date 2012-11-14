@@ -1926,8 +1926,11 @@ class Package(object):
             elif p not in self.spec_withs:
                 self.body_withs[p] = do_use or self.body_withs.get(p, False)
 
-    def add_private(self, code):
-        self.private.append(code)
+    def add_private(self, code, at_end=False):
+        if at_end:
+            self.private.append(code)
+        else:
+            self.private.insert(0, code)
 
     def _output_withs(self, withs):
         if withs:
