@@ -208,6 +208,7 @@ binding = ("GdkCursor",
            "GtkTargetEntry",
            "GtkTargetList",
            "GtkTearoffMenuItem",
+           "GtkTextChildAnchor",
            "GtkTextIter",
            "GtkTextTag",
            # "GtkTreePath",   #  into GtkTreeModel

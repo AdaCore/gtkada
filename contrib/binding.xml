@@ -3242,6 +3242,11 @@ __PRE__
      <parameter name="self" ada="Font_Button"/>
    </package>
 
+   <package id="GtkTextChildAnchor">
+     <parameter name="self" ada="Anchor"/>
+     <method id="gtk_text_child_anchor_get_widgets" return="WidgetSList"/>
+   </package>
+
    <package id="GtkTextTag">
      <parameter name="self" ada="Tag"/>
      <method id="gtk_text_tag_new">
