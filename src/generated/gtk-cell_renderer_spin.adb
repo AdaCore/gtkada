@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,16 +21,24 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
 package body Gtk.Cell_Renderer_Spin is
+
+   package Type_Conversion_Gtk_Cell_Renderer_Spin is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Cell_Renderer_Spin_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Spin);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Cell_Renderer_Spin) is
+   procedure Gtk_New (Self : out Gtk_Cell_Renderer_Spin) is
    begin
-      Widget := new Gtk_Cell_Renderer_Spin_Record;
-      Gtk.Cell_Renderer_Spin.Initialize (Widget);
+      Self := new Gtk_Cell_Renderer_Spin_Record;
+      Gtk.Cell_Renderer_Spin.Initialize (Self);
    end Gtk_New;
 
    ----------------
@@ -38,12 +46,12 @@ package body Gtk.Cell_Renderer_Spin is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Cell_Renderer_Spin_Record'Class)
+      (Self : not null access Gtk_Cell_Renderer_Spin_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_cell_renderer_spin_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
 end Gtk.Cell_Renderer_Spin;

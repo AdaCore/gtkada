@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,16 +21,24 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-package body Gtk.Cell_Renderer_Accel is
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
+package body Gtk.Cell_Renderer_Text is
+
+   package Type_Conversion_Gtk_Cell_Renderer_Text is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Cell_Renderer_Text_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Text);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Cell_Renderer_Accel) is
+   procedure Gtk_New (Self : out Gtk_Cell_Renderer_Text) is
    begin
-      Widget := new Gtk_Cell_Renderer_Accel_Record;
-      Gtk.Cell_Renderer_Accel.Initialize (Widget);
+      Self := new Gtk_Cell_Renderer_Text_Record;
+      Gtk.Cell_Renderer_Text.Initialize (Self);
    end Gtk_New;
 
    ----------------
@@ -38,12 +46,26 @@ package body Gtk.Cell_Renderer_Accel is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Cell_Renderer_Accel_Record'Class)
+      (Self : not null access Gtk_Cell_Renderer_Text_Record'Class)
    is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_cell_renderer_accel_new");
+      pragma Import (C, Internal, "gtk_cell_renderer_text_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
-end Gtk.Cell_Renderer_Accel;
+   --------------------------------
+   -- Set_Fixed_Height_From_Font --
+   --------------------------------
+
+   procedure Set_Fixed_Height_From_Font
+      (Self           : not null access Gtk_Cell_Renderer_Text_Record;
+       Number_Of_Rows : Gint)
+   is
+      procedure Internal (Self : System.Address; Number_Of_Rows : Gint);
+      pragma Import (C, Internal, "gtk_cell_renderer_text_set_fixed_height_from_font");
+   begin
+      Internal (Get_Object (Self), Number_Of_Rows);
+   end Set_Fixed_Height_From_Font;
+
+end Gtk.Cell_Renderer_Text;

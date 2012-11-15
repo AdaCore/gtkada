@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2006-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,22 +21,24 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib.Type_Conversion_Hooks;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-package body Gtk.Cell_Renderer_Combo is
+package body Gtk.Cell_Renderer_Spinner is
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Cell_Renderer_Combo_Record);
-   pragma Warnings (Off, Type_Conversion);
+   package Type_Conversion_Gtk_Cell_Renderer_Spinner is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Cell_Renderer_Spinner_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Spinner);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Render : out Gtk_Cell_Renderer_Combo) is
+   procedure Gtk_New (Self : out Gtk_Cell_Renderer_Spinner) is
    begin
-      Render := new Gtk_Cell_Renderer_Combo_Record;
-      Gtk.Cell_Renderer_Combo.Initialize (Render);
+      Self := new Gtk_Cell_Renderer_Spinner_Record;
+      Gtk.Cell_Renderer_Spinner.Initialize (Self);
    end Gtk_New;
 
    ----------------
@@ -44,12 +46,12 @@ package body Gtk.Cell_Renderer_Combo is
    ----------------
 
    procedure Initialize
-     (Render : access Gtk_Cell_Renderer_Combo_Record'Class)
+      (Self : not null access Gtk_Cell_Renderer_Spinner_Record'Class)
    is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_cell_renderer_combo_new");
+      pragma Import (C, Internal, "gtk_cell_renderer_spinner_new");
    begin
-      Set_Object (Render, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
-end Gtk.Cell_Renderer_Combo;
+end Gtk.Cell_Renderer_Spinner;

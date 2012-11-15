@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2012, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2012, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,26 +21,24 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk; use Gtk;
-with System;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-with Glib.Type_Conversion_Hooks;
+package body Gtk.Cell_Renderer_Progress is
 
-package body Gtk.Cell_Renderer_Text is
-
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Cell_Renderer_Text_Record);
-   pragma Warnings (Off, Type_Conversion);
+   package Type_Conversion_Gtk_Cell_Renderer_Progress is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Cell_Renderer_Progress_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Progress);
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Cell_Renderer_Text)
-   is
+   procedure Gtk_New (Self : out Gtk_Cell_Renderer_Progress) is
    begin
-      Widget := new Gtk_Cell_Renderer_Text_Record;
-      Cell_Renderer_Text.Initialize (Widget);
+      Self := new Gtk_Cell_Renderer_Progress_Record;
+      Gtk.Cell_Renderer_Progress.Initialize (Self);
    end Gtk_New;
 
    ----------------
@@ -48,30 +46,43 @@ package body Gtk.Cell_Renderer_Text is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Cell_Renderer_Text_Record'Class)
+      (Self : not null access Gtk_Cell_Renderer_Progress_Record'Class)
    is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_cell_renderer_text_new");
+      pragma Import (C, Internal, "gtk_cell_renderer_progress_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Self, Internal);
    end Initialize;
 
-   --------------------------------
-   -- Set_Fixed_Height_From_Font --
-   --------------------------------
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
 
-   procedure Set_Fixed_Height_From_Font
-     (Renderer       : access Gtk_Cell_Renderer_Text_Record;
-      Number_Of_Rows : Gint)
+   function Get_Orientation
+      (Self : not null access Gtk_Cell_Renderer_Progress_Record)
+       return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Orientation;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Cell_Renderer_Progress_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
    is
       procedure Internal
-        (Renderer       : System.Address;
-         Number_Of_Rows : Gint);
-      pragma Import
-        (C, Internal, "gtk_cell_renderer_text_set_fixed_height_from_font");
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Renderer),
-                Number_Of_Rows);
-   end Set_Fixed_Height_From_Font;
+      Internal (Get_Object (Self), Orientation);
+   end Set_Orientation;
 
-end Gtk.Cell_Renderer_Text;
+end Gtk.Cell_Renderer_Progress;
