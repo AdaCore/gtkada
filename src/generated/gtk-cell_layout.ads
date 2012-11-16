@@ -136,7 +136,7 @@ package Gtk.Cell_Layout is
 
    type Gtk_Cell_Layout is new Glib.Types.GType_Interface;
 
-   type Cell_Data_Func is access procedure
+   type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
@@ -241,22 +241,22 @@ package Gtk.Cell_Layout is
    procedure Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func        : Cell_Data_Func);
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+       Func        : Gtk_Cell_Layout_Data_Func);
+   --  Sets the Gtk_Cell_Layout_Data_Func to use for Cell_Layout.
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
       with procedure Destroy (Data : in out User_Data_Type) is null;
    package Set_Cell_Data_Func_User_Data is
 
-      type Cell_Data_Func is access procedure
+      type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
@@ -274,16 +274,16 @@ package Gtk.Cell_Layout is
       procedure Set_Cell_Data_Func
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Func        : Cell_Data_Func;
+          Func        : Gtk_Cell_Layout_Data_Func;
           Func_Data   : User_Data_Type);
-      --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+      --  Sets the Gtk_Cell_Layout_Data_Func to use for Cell_Layout.
       --  This function is used instead of the standard attributes mapping for
       --  setting the column value, and should set the value of Cell_Layout's
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
       --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
       --  "func_data": user data for Func
 
    end Set_Cell_Data_Func_User_Data;

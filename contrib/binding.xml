@@ -5686,6 +5686,49 @@ direction, widget state, or icon size.
      <parameter name="self" ada="Cell_View"/>
    </package>
 
+   <package id="GtkTreeView">
+     <parameter name="self" ada="Tree_View"/>
+     <enum ctype="GtkTreeViewDropPosition" />
+     <method id="gtk_tree_view_get_columns" return="GtkTreeViewColumnList"/>
+
+     <method id="gtk_tree_view_new_with_model" ada="Gtk_New" />
+     <method id="gtk_tree_view_insert_column">
+       <parameter name="position" default="-1"/>
+     </method>
+     <method id="gtk_tree_view_get_path_at_pos" return_as_param="Row_Found"/>
+     <method id="gtk_tree_view_get_visible_range" return_as_param="Success"/>
+     <method id="gtk_tree_view_get_tooltip_context" return_as_param="Success"/>
+
+     <method id="gtk_tree_view_get_hadjustment" bind="False" /> <!-- from scrollable -->
+     <method id="gtk_tree_view_get_vadjustment" bind="False" /> <!-- from scrollable -->
+     <method id="gtk_tree_view_set_hadjustment" bind="False" /> <!-- from scrollable -->
+     <method id="gtk_tree_view_set_vadjustment" bind="False" /> <!-- from scrollable -->
+
+     <method id="gtk_tree_view_enable_model_drag_source">
+       <parameter name="targets" ctype="Gtk.Target_List.Target_Entry_Array"/>
+       <parameter name="n_targets" ada="" default="Targets'Length" />
+     </method>
+     <method id="gtk_tree_view_enable_model_drag_dest">
+       <parameter name="targets" ctype="Gtk.Target_List.Target_Entry_Array"/>
+       <parameter name="n_targets" ada="" default="Targets'Length" />
+     </method>
+   </package>
+
+   <package id="GtkTreeViewColumn">
+     <parameter name="self" ada="Tree_Column"/>
+     <enum ctype="GtkTreeViewColumnSizing"/>
+     <list ctype="GtkTreeViewColumn" ada="Column_List" />
+     <method id="gtk_tree_view_column_cell_get_position" return_as_param="Success"/>
+
+     <method id="gtk_tree_view_column_add_attribute" bind="False" /> <!-- overridden -->
+     <method id="gtk_tree_view_column_clear" bind="False" /> <!-- from cell_layout -->
+     <method id="gtk_tree_view_column_clear_attributes" bind="False" /> <!-- from cell_layout -->
+     <method id="gtk_tree_view_column_pack_start" bind="False" /> <!-- from cell_layout -->
+     <method id="gtk_tree_view_column_pack_end" bind="False" /> <!-- from cell_layout -->
+     <method id="gtk_tree_view_column_set_cell_data_func" bind="False" /> <!-- from cell_layout -->
+   </package>
+
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

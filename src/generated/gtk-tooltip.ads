@@ -169,8 +169,8 @@ package Gtk.Tooltip is
    --  properly setting tooltips on Gtk.Tree_View.Gtk_Tree_View rows and cells,
    --  Gtk_Icon_Views, etc.
    --  For setting tooltips on Gtk.Tree_View.Gtk_Tree_View, please refer to
-   --  the convenience functions for this: gtk_tree_view_set_tooltip_row and
-   --  gtk_tree_view_set_tooltip_cell.
+   --  the convenience functions for this: Gtk.Tree_View.Set_Tooltip_Row and
+   --  Gtk.Tree_View.Set_Tooltip_Cell.
    --  Since: gtk+ 2.12
    --  "rect": a Gdk.Rectangle.Gdk_Rectangle
 

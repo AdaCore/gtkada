@@ -13,28 +13,59 @@ enums = ("GtkEnums",
 # List of interfaces to bind. These are processed before the widgets themselves.
 # These are GIR names
 
-interfaces = (# "Action",   From Gio
-              "Activatable",
-              #"AppChooser",
-              "--Atk.ImplementorIface",
-              "Buildable",
-              "CellEditable",
-              "CellLayout",
-              "Editable",
-              "FileChooser",
-              "FontChooser",
-              "Icon",
-              "Orientable",
-              "PrintOperationPreview",
-              "RecentChooser",
-              "Scrollable",
-              "StyleProvider",
-              "ToolShell",
-              #"TreeDragDest",
-              #"TreeDragSource",
-              #"TreeSortable"
-              #"TreeModel",
-             )
+interfaces = (
+    "Activatable",
+    #"AppChooser",
+    "--Atk.ImplementorIface",
+    "Buildable",
+    "CellEditable",
+    "CellLayout",
+    "Editable",
+    "FileChooser",
+    "FontChooser",
+    "Icon",
+    "Orientable",
+    "PrintOperationPreview",
+    "RecentChooser",
+    "Scrollable",
+    "StyleProvider",
+    "ToolShell",
+    #"TreeDragDest",
+    #"TreeDragSource",
+    #"TreeSortable"
+    #"TreeModel",
+
+    "--Action", # Not tested yet, from Gio
+    "--ActionGroup", # Not tested yet, from Gio
+    "--ActionMap", # Not tested yet, from Gio
+    "--AppInfo", # Not tested yet, from Gio
+    "--AsyncInitable", # Not tested yet, from Gio
+    "--AsyncResult", # Not tested yet, from Gio
+    "--Converter", # Not tested yet, from Gio
+    "--DBusInterface", # Not tested yet, from Gio
+    "--DBusObject", # Not tested yet, from Gio
+    "--DBusObjectManager", # Not tested yet, from Gio
+    "--DesktopAppInfoLookup", # Not tested yet, from Gio
+    "--Drive", # Not tested yet, from Gio
+    "--File", # Not tested yet, from Gio
+    "--FileDescriptorBased", # Not tested yet, from Gio
+    "--Initable", # Not tested yet, from Gio
+    "--LoadableIcon", # Not tested yet, from Gio
+    "--Mount", # Not tested yet, from Gio
+    "--NetworkMonitor", # Not tested yet, from Gio
+    "--PollableInputStream", # Not tested yet, from Gio
+    "--PollableOutputStream", # Not tested yet, from Gio
+    "--Proxy", # Not tested yet, from Gio
+    "--ProxyResolver", # Not tested yet, from Gio
+    "--RemoteActionGroup", # Not tested yet, from Gio
+    "--Seekable", # Not tested yet, from Gio
+    "--SocketConnectable", # Not tested yet, from Gio
+    "--TlsBackend", # Not tested yet, from Gio
+    "--TlsClientConnection", # Not tested yet, from Gio
+    "--TlsFileDatabase", # Not tested yet, from Gio
+    "--TlsServerConnection", # Not tested yet, from Gio
+    "--Volume", # Not tested yet, from Gio
+    )
 
 # List of widgets to bind.
 # Contains C type names.
@@ -48,6 +79,119 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkRGBA",
            "GdkScreen",
            "GdkWindow",
+
+           "--GApplication", # Not tested yet, from Gio
+           "--GApplicationCommandLine", # Not tested yet, from Gio
+           "--GBufferedInputStream", # Not tested yet, from Gio
+           "--GBufferedOutputStream", # Not tested yet, from Gio
+           "--GCancellable", # Not tested yet, from Gio
+           "--GCharsetConverter", # Not tested yet, from Gio
+           "--GConverterInputStream", # Not tested yet, from Gio
+           "--GConverterOutputStream", # Not tested yet, from Gio
+           "--GCredentials", # Not tested yet, from Gio
+           "--GDBusActionGroup", # Not tested yet, from Gio
+           "--GDBusAnnotationInfo", # Not tested yet, from Gio
+           "--GDBusArgInfo", # Not tested yet, from Gio
+           "--GDBusAuthObserver", # Not tested yet, from Gio
+           "--GDBusConnection", # Not tested yet, from Gio
+           "--GDBusInterfaceInfo", # Not tested yet, from Gio
+           "--GDBusInterfaceSkeleton", # Not tested yet, from Gio
+           "--GDBusMenuModel", # Not tested yet, from Gio
+           "--GDBusMessage", # Not tested yet, from Gio
+           "--GDBusMethodInfo", # Not tested yet, from Gio
+           "--GDBusMethodInvocation", # Not tested yet, from Gio
+           "--GDBusNodeInfo", # Not tested yet, from Gio
+           "--GDBusObjectManagerClient", # Not tested yet, from Gio
+           "--GDBusObjectManagerServer", # Not tested yet, from Gio
+           "--GDBusObjectProxy", # Not tested yet, from Gio
+           "--GDBusObjectSkeleton", # Not tested yet, from Gio
+           "--GDBusPropertyInfo", # Not tested yet, from Gio
+           "--GDBusProxy", # Not tested yet, from Gio
+           "--GDBusServer", # Not tested yet, from Gio
+           "--GDBusSignalInfo", # Not tested yet, from Gio
+           "--GDataInputStream", # Not tested yet, from Gio
+           "--GDataOutputStream", # Not tested yet, from Gio
+           "--GDesktopAppInfo", # Not tested yet, from Gio
+           "--GEmblem", # Not tested yet, from Gio
+           "--GEmblemedIcon", # Not tested yet, from Gio
+           "--GFileAttributeInfoList", # Not tested yet, from Gio
+           "--GFileAttributeMatcher", # Not tested yet, from Gio
+           "--GFileEnumerator", # Not tested yet, from Gio
+           "--GFileIOStream", # Not tested yet, from Gio
+           "--GFileIcon", # Not tested yet, from Gio
+           "--GFileInfo", # Not tested yet, from Gio
+           "--GFileInputStream", # Not tested yet, from Gio
+           "--GFileMonitor", # Not tested yet, from Gio
+           "--GFileOutputStream", # Not tested yet, from Gio
+           "--GFilenameCompleter", # Not tested yet, from Gio
+           "--GFilterInputStream", # Not tested yet, from Gio
+           "--GFilterOutputStream", # Not tested yet, from Gio
+           "--GIOExtension", # Not tested yet, from Gio
+           "--GIOExtensionPoint", # Not tested yet, from Gio
+           "--GIOModule", # Not tested yet, from Gio
+           "--GIOModuleScope", # Not tested yet, from Gio
+           "--GIOSchedulerJob", # Not tested yet, from Gio
+           "--GIOStream", # Not tested yet, from Gio
+           "--GInetAddress", # Not tested yet, from Gio
+           "--GInetAddressMask", # Not tested yet, from Gio
+           "--GInetSocketAddress", # Not tested yet, from Gio
+           "--GInputStream", # Not tested yet, from Gio
+           "--GMemoryInputStream", # Not tested yet, from Gio
+           "--GMemoryOutputStream", # Not tested yet, from Gio
+           "--GMenu", # Not tested yet, from Gio
+           "--GMenuAttributeIter", # Not tested yet, from Gio
+           "--GMenuItem", # Not tested yet, from Gio
+           "--GMenuLinkIter", # Not tested yet, from Gio
+           "--GMenuModel", # Not tested yet, from Gio
+           "--GMountOperation", # Not tested yet, from Gio
+           "--GNativeVolumeMonitor", # Not tested yet, from Gio
+           "--GNetworkAddress", # Not tested yet, from Gio
+           "--GNetworkService", # Not tested yet, from Gio
+           "--GOutputStream", # Not tested yet, from Gio
+           "--GPermission", # Not tested yet, from Gio
+           "--GProxyAddress", # Not tested yet, from Gio
+           "--GProxyAddressEnumerator", # Not tested yet, from Gio
+           "--GResolver", # Not tested yet, from Gio
+           "--GResource", # Not tested yet, from Gio
+           "--GSettings", # Not tested yet, from Gio
+           "--GSettingsSchema", # Not tested yet, from Gio
+           "--GSettingsSchemaSource", # Not tested yet, from Gio
+           "--GSimpleAction", # Not tested yet, from Gio
+           "--GSimpleActionGroup", # Not tested yet, from Gio
+           "--GSimpleAsyncResult", # Not tested yet, from Gio
+           "--GSimplePermission", # Not tested yet, from Gio
+           "--GSocket", # Not tested yet, from Gio
+           "--GSocketAddress", # Not tested yet, from Gio
+           "--GSocketAddressEnumerator", # Not tested yet, from Gio
+           "--GSocketClient", # Not tested yet, from Gio
+           "--GSocketConnection", # Not tested yet, from Gio
+           "--GSocketControlMessage", # Not tested yet, from Gio
+           "--GSocketListener", # Not tested yet, from Gio
+           "--GSocketService", # Not tested yet, from Gio
+           "--GSrvTarget", # Not tested yet, from Gio
+           "--GStaticResource", # Not tested yet, from Gio
+           "--GTcpConnection", # Not tested yet, from Gio
+           "--GTcpWrapperConnection", # Not tested yet, from Gio
+           "--GThemedIcon", # Not tested yet, from Gio
+           "--GThreadedSocketService", # Not tested yet, from Gio
+           "--GTlsCertificate", # Not tested yet, from Gio
+           "--GTlsConnection", # Not tested yet, from Gio
+           "--GTlsDatabase", # Not tested yet, from Gio
+           "--GTlsInteraction", # Not tested yet, from Gio
+           "--GTlsPassword", # Not tested yet, from Gio
+           "--GUnixConnection", # Not tested yet, from Gio
+           "--GUnixCredentialsMessage", # Not tested yet, from Gio
+           "--GUnixFDList", # Not tested yet, from Gio
+           "--GUnixFDMessage", # Not tested yet, from Gio
+           "--GUnixInputStream", # Not tested yet, from Gio
+           "--GUnixMountMonitor", # Not tested yet, from Gio
+           "--GUnixMountPoint", # Not tested yet, from Gio
+           "--GUnixOutputStream", # Not tested yet, from Gio
+           "--GUnixSocketAddress", # Not tested yet, from Gio
+           "--GVfs", # Not tested yet, from Gio
+           "--GVolumeMonitor", # Not tested yet, from Gio
+           "--GZlibCompressor", # Not tested yet, from Gio
+           "--GZlibDecompressor", # Not tested yet, from Gio
 
            "--PangoAttrIterator",
            "PangoAttrList",
@@ -226,6 +370,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTextIter",
            "GtkTextTag",
            # "GtkTreePath",   #  into GtkTreeModel
+           "GtkTreeView",
+           "GtkTreeViewColumn",
            "GtkToggleAction",
            "GtkToggleButton",
            "GtkToggleToolButton",
@@ -254,7 +400,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
 # for callback functions that accept user_data. The GIR file doesn't point to
 # these specific parameters.
 
-user_data_params = ["Data", "Func_Data", "User_Data", "D"]
+user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
 destroy_data_params = ["destroy", "func_notify"]
 
 # Maps c methods to Ada subprograms or enumeration (for docs).
@@ -404,8 +550,8 @@ naming.type_exceptions = {
 
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
-    "GtkCellLayoutDataFunc":
-        Callback("Gtk.Cell_Layout.Cell_Data_Func"),
+    #"GtkCellLayoutDataFunc":
+    #    Callback("Gtk.Cell_Layout.Cell_Data_Func"),
 
     "GKeyFile*":           Proxy("Glib.Key_File.G_Key_File"),
 

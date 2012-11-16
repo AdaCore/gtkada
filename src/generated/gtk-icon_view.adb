@@ -71,11 +71,11 @@ package body Gtk.Icon_View is
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Icon_View_Foreach_Func, System.Address);
 
-   function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Cell_Data_Func);
+   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Layout_Data_Func);
 
    function To_Address is new Ada.Unchecked_Conversion
-     (Gtk.Cell_Layout.Cell_Data_Func, System.Address);
+     (Gtk_Cell_Layout_Data_Func, System.Address);
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
@@ -84,14 +84,14 @@ package body Gtk.Icon_View is
        Func_Data   : System.Address;
        Destroy     : System.Address);
    pragma Import (C, C_Gtk_Cell_Layout_Set_Cell_Data_Func, "gtk_cell_layout_set_cell_data_func");
-   --  Sets the Gtk.Cell_Layout.Cell_Data_Func to use for Cell_Layout.
+   --  Sets the Gtk_Cell_Layout_Data_Func to use for Cell_Layout.
    --  This function is used instead of the standard attributes mapping for
    --  setting the column value, and should set the value of Cell_Layout's cell
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk.Cell_Layout.Cell_Data_Func to use, or null
+   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 
@@ -106,13 +106,13 @@ package body Gtk.Icon_View is
    --  "func": The function to call for each selected icon.
    --  "data": User data to pass to the function.
 
-   procedure Internal_Cell_Data_Func
+   procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : System.Address;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
-   pragma Convention (C, Internal_Cell_Data_Func);
+   pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
@@ -129,23 +129,23 @@ package body Gtk.Icon_View is
    --  "path": The Gtk.Tree_Path.Gtk_Tree_Path of a selected row
    --  "data": user data
 
-   -----------------------------
-   -- Internal_Cell_Data_Func --
-   -----------------------------
+   ----------------------------------------
+   -- Internal_Gtk_Cell_Layout_Data_Func --
+   ----------------------------------------
 
-   procedure Internal_Cell_Data_Func
+   procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : System.Address;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
-      Func                   : constant Cell_Data_Func := To_Cell_Data_Func (Data);
+      Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
       Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
-   end Internal_Cell_Data_Func;
+   end Internal_Gtk_Cell_Layout_Data_Func;
 
    -----------------------------------------
    -- Internal_Gtk_Icon_View_Foreach_Func --
@@ -878,13 +878,13 @@ package body Gtk.Icon_View is
    procedure Set_Cell_Data_Func
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func        : Gtk.Cell_Layout.Cell_Data_Func)
+       Func        : Gtk_Cell_Layout_Data_Func)
    is
    begin
       if Func = null then
          C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
+         C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Gtk_Cell_Layout_Data_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Set_Cell_Data_Func;
 
@@ -893,11 +893,11 @@ package body Gtk.Icon_View is
       package Users is new Glib.Object.User_Data_Closure
         (User_Data_Type, Destroy);
 
-      function To_Cell_Data_Func is new Ada.Unchecked_Conversion
-        (System.Address, Cell_Data_Func);
+      function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Cell_Layout_Data_Func);
 
       function To_Address is new Ada.Unchecked_Conversion
-        (Cell_Data_Func, System.Address);
+        (Gtk_Cell_Layout_Data_Func, System.Address);
 
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -930,7 +930,7 @@ package body Gtk.Icon_View is
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
          Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Cell_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -940,7 +940,7 @@ package body Gtk.Icon_View is
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Icon_View.Gtk_Icon_View_Record'Class;
           Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Func        : Cell_Data_Func;
+          Func        : Gtk_Cell_Layout_Data_Func;
           Func_Data   : User_Data_Type)
       is
       begin

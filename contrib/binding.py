@@ -149,6 +149,7 @@ class GIR(object):
         for name in sorted(gir.classes.iterkeys()):
             if name not in self.bound:
                 sys.stdout.write("%-28s" % name)
+                #print '    "--%s", # Not tested yet, from Gio' % name
                 count += 1
                 if (count % 4) == 0:
                     print
@@ -1001,6 +1002,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section = self.pkg.section("")
 
             if cb_user_data is None:
+                print "callback has no user data: %s" % cbname
                 # If the C function has no user data, we do not know how to
                 # generate a high-level binding, since we cannot go through an
                 # intermediate C function that transforms the parameters into
