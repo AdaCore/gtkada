@@ -3666,6 +3666,24 @@ creating a tag.
      </extra>
    </package>
 
+   <package id="GtkTextAttributes">
+     <parameter name="self" ada="Text_Attr"/>
+     <record ctype="GtkTextAppearance"/>
+
+   </package>
+
+   <package id="GtkTextView">
+     <parameter name="self" ada="View"/>
+
+     <!-- These are now inherited from the Scrollable interface -->
+     <method id="gtk_text_view_get_hadjustment" bind="false"/>
+     <method id="gtk_text_view_get_vadjustment" bind="false"/>
+     <method id="gtk_text_view_set_hadjustment" bind="false"/>
+     <method id="gtk_text_view_set_vadjustment" bind="false"/>
+
+     <method id="gtk_text_view_new_with_buffer" ada="Gtk_New"/>
+   </package>
+
    <package id="GdkWindow" bindtype="False">
      <record ctype="GdkGeometry"/>
      <enum ctype="GdkWindowWindowClass" prefix="GDK_" ada="Gdk_Window_Class"/>
