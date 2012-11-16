@@ -48,9 +48,9 @@ package Gtk.Text_Child_Anchor is
       (Anchor : not null access Gtk_Text_Child_Anchor_Record'Class);
    --  Creates a new Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor. Usually you
    --  would then insert it into a Gtk.Text_Buffer.Gtk_Text_Buffer with
-   --  gtk_text_buffer_insert_child_anchor. To perform the creation and
+   --  Gtk.Text_Buffer.Insert_Child_Anchor. To perform the creation and
    --  insertion in one step, use the convenience function
-   --  gtk_text_buffer_create_child_anchor.
+   --  Gtk.Text_Buffer.Create_Child_Anchor.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_child_anchor_get_type");

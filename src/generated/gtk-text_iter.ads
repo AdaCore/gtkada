@@ -279,7 +279,7 @@ package Gtk.Text_Iter is
    --  Considering the default editability of the buffer, and tags that affect
    --  editability, determines whether text inserted at Iter would be editable.
    --  If text inserted at Iter would be editable then the user should be
-   --  allowed to insert text at Iter. gtk_text_buffer_insert_interactive uses
+   --  allowed to insert text at Iter. Gtk.Text_Buffer.Insert_Interactive uses
    --  this function to decide whether insertions are allowed at a given
    --  position.
    --  "default_editability": True if text is editable by default
