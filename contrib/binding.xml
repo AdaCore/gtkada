@@ -3672,6 +3672,10 @@ creating a tag.
 
    </package>
 
+   <package id="GtkTextTagTable">
+     <parameter name="self" ada="Table"/>
+   </package>
+
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
 
