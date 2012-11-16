@@ -366,9 +366,11 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTargetEntry",
            "GtkTargetList",
            "GtkTearoffMenuItem",
+           "GtkTextBuffer",
            "GtkTextChildAnchor",
            "GtkTextIter",
            "GtkTextTag",
+           "GtkTextMark",
            # "GtkTreePath",   #  into GtkTreeModel
            "GtkTreeView",
            "GtkTreeViewColumn",

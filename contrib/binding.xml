@@ -3242,6 +3242,302 @@ __PRE__
      <parameter name="self" ada="Font_Button"/>
    </package>
 
+   <package id="GtkTextBuffer">
+     <parameter name="self" ada="Buffer"/>
+
+      <!-- the following involve a complex callback type and are not needed -->
+     <method id="gtk_text_buffer_register_serialize_format" bind="False"/>
+     <method id="gtk_text_buffer_register_deserialize_format" bind="False"/>
+     <method id="gtk_text_buffer_serialize" bind="False"/>
+     <method id="gtk_text_buffer_deserialize" bind="False"/>
+     <method id="gtk_text_buffer_get_serialize_formats" bind="False"/>
+     <method id="gtk_text_buffer_get_deserialize_formats" bind="False"/>
+
+     <method id="gtk_text_buffer_new">
+        <parameter name="table" default="null"/>
+     </method>
+
+     <method id="gtk_text_buffer_create_mark">
+        <parameter name="left_gravity" default="True"/>
+     </method>
+
+     <method id="gtk_text_buffer_get_text">
+        <parameter name="include_hidden_chars" default="False"/>
+     </method>
+
+     <method id="gtk_text_buffer_get_slice">
+        <parameter name="include_hidden_chars" default="False"/>
+     </method>
+
+     <method id="gtk_text_buffer_paste_clipboard">
+        <parameter name="override_location" ada="" ctype="gpointer" default="System.Null_Address"/>
+        <parameter name="default_editable" default="True"/>
+     </method>
+
+     <method id="gtk_text_buffer_get_selection_bounds" return_as_param="Result">
+        <parameter name="start" direction="out"/>
+        <parameter name="end" direction="out"/>
+     </method>
+
+     <method id="gtk_text_buffer_delete">
+        <parameter name="start" direction="inout"/>
+        <parameter name="end" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_buffer_delete_interactive" return_as_param="Result">
+        <parameter name="start" direction="inout"/>
+        <parameter name="end" direction="inout"/>
+     </method>
+
+     <method id="gtk_text_buffer_insert">
+        <parameter name="iter" direction="inout"/>
+        <parameter name="len" default="-1" ada=""/>
+     </method>
+
+     <method id="gtk_text_buffer_insert_interactive">
+        <parameter name="iter" direction="inout"/>
+        <parameter name="len" default="-1" ada=""/>
+     </method>
+
+     <method id="gtk_text_buffer_insert_interactive_at_cursor">
+        <parameter name="len" default="-1" ada=""/>
+     </method>
+
+     <method id="gtk_text_buffer_set_text">
+        <parameter name="len" default="-1" ada=""/>
+     </method>
+
+     <method id="gtk_text_buffer_insert_at_cursor">
+        <parameter name="len" default="-1" ada=""/>
+     </method>
+
+     <method id="gtk_text_buffer_create_tag">
+       <parameter name="first_property_name" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+     </method>
+
+     <method id="gtk_text_buffer_insert_with_tags">
+       <parameter name="first_tag" ada="Tag"/>
+       <parameter name="len" default="-1" ada=""/>
+       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
+     </method>
+
+     <extra>
+       <with_spec pkg="GtkAda.Types"/>
+       <spec>
+   procedure Insert
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr);
+   --  More efficient version of Insert, which doesn't require a string copy.
+
+   procedure Insert_At_Cursor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Len    : Gint := -1);
+   --  Call Buffer_Insert, using the current cursor position
+   --  as the insertion point.
+   --  Text: UTF-8 format C string to insert.
+
+   function Get_Text
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr;
+   --  Same as Get_Text above, but return a pointer to a C string, for
+   --  efficiency.
+   --  The caller is responsible for freeing (using Gtkada.Types.g_free) the
+   --  returned pointer.
+
+   function Selection_Exists
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean;
+   --  Return True if some text in the buffer is currently selected.
+
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
+   --  More efficient version, which doesn't require a string copy.
+
+   function Get_Buffer
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Buffer.Gtk_Text_Buffer;
+   --  Returns the Gtk.Text_Buffer.Gtk_Text_Buffer this iterator is associated
+   --  with.
+
+   function Get_Buffer
+      (Mark : Gtk_Text_Mark)
+       return Gtk.Text_Buffer.Gtk_Text_Buffer;
+   --  Gets the buffer this mark is located inside, or null if the mark is
+   --  deleted.
+
+       </spec>
+       <body>
+   ------------
+   -- Insert --
+   ------------
+
+   procedure Insert
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint := -1);
+      pragma Import (C, Internal, "gtk_text_buffer_insert");
+
+   begin
+      Internal (Get_Object (Buffer), Iter, Text);
+   end Insert;
+
+   procedure Insert_At_Cursor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Len    : Gint := -1)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
+
+   begin
+      Internal (Get_Object (Buffer), Text, Len);
+   end Insert_At_Cursor;
+
+   procedure Insert_With_Tags
+     (Buffer    : access Gtk_Text_Buffer_Record;
+      Iter      : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text      : Gtkada.Types.Chars_Ptr;
+      Tag       : Gtk.Text_Tag.Gtk_Text_Tag)
+   is
+      procedure Internal
+         (Buffer    : System.Address;
+          Iter      : Gtk.Text_Iter.Gtk_Text_Iter;
+          Text      : Gtkada.Types.Chars_Ptr;
+          Len       : Gint;
+          Tag       : System.Address;
+          Varargs   : System.Address);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_with_tags");
+   begin
+      Internal (Get_Object (Buffer), Iter, Text, -1, Get_Object (Tag), System.Null_Address);
+   end Insert_With_Tags;
+
+   --------------
+   -- Get_Text --
+   --------------
+
+   function Get_Text
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr
+   is
+      function Internal
+        (Buffer               : System.Address;
+         Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+         The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+         Include_Hidden_Chars : Gboolean)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_text_buffer_get_text");
+
+   begin
+      return Internal
+        (Get_Object (Buffer),
+         Start,
+         The_End,
+         Boolean'Pos (Include_Hidden_Chars));
+   end Get_Text;
+
+   function Selection_Exists
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean
+   is
+      Ignored_A, Ignored_B : Gtk_Text_Iter;
+      Has_Selection : Boolean;
+   begin
+      Get_Selection_Bounds (Buffer, Ignored_A, Ignored_B, Has_Selection);
+      return Has_Selection;
+   end Selection_Exists;
+
+   ----------------
+   -- Get_Buffer --
+   ----------------
+
+   function Get_Buffer
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Buffer.Gtk_Text_Buffer
+   is
+      function Internal (Iter : Gtk_Text_Iter) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_buffer");
+      Stub_Gtk_Text_Buffer : Gtk.Text_Buffer.Gtk_Text_Buffer_Record;
+   begin
+      return Gtk.Text_Buffer.Gtk_Text_Buffer (Get_User_Data (Internal (Iter), Stub_Gtk_Text_Buffer));
+   end Get_Buffer;
+
+   ----------------
+   -- Get_Buffer --
+   ----------------
+
+   function Get_Buffer
+      (Mark : Gtk_Text_Mark)
+       return Gtk.Text_Buffer.Gtk_Text_Buffer
+   is
+      function Internal (Mark : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_text_mark_get_buffer");
+      Stub_Gtk_Text_Buffer : Gtk.Text_Buffer.Gtk_Text_Buffer_Record;
+   begin
+      return Gtk.Text_Buffer.Gtk_Text_Buffer (Get_User_Data (Internal (Get_Object (Mark)), Stub_Gtk_Text_Buffer));
+   end Get_Buffer;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkTextMark">
+     <parameter name="self" ada="Mark"/>
+     <method id="gtk_text_mark_get_buffer" bind="False"/><!-- circular dependency, added manually in Gtk.Text_Buffer -->
+
+     <extra>
+       <with_spec pkg="Glib.Values"/>
+       <spec>
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record);
+   function Get_Text_Mark (Val : Glib.Values.GValue) return Gtk_Text_Mark;
+   --  Set the value of the given GValue to Mark.
+
+       </spec>
+       <body>
+   -------------------
+   -- Set_Text_Mark --
+   -------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record) is
+   begin
+      Glib.Values.Set_Address (Val, Get_Object (Mark));
+   end Set_Text_Mark;
+
+   -------------------
+   -- Get_Text_Mark --
+   -------------------
+
+   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark is
+      Stub : Gtk_Text_Mark_Record;
+   begin
+      return Gtk_Text_Mark
+        (Get_User_Data_Fast (Glib.Values.Get_Address (Val), Stub));
+   end Get_Text_Mark;
+       </body>
+     </extra>
+   </package>
+
    <package id="GtkTextChildAnchor">
      <parameter name="self" ada="Anchor"/>
      <method id="gtk_text_child_anchor_get_widgets" return="WidgetSList"/>
