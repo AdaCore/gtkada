@@ -5682,6 +5682,10 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
+   <package id="GtkCellView">
+     <parameter name="self" ada="Cell_View"/>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
