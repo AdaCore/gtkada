@@ -628,7 +628,7 @@ package Gtk.GEntry is
    --  overriding key event handling. This is needed in the case when you need
    --  to insert your own key handling between the input method and the default
    --  key event handling of the Gtk.GEntry.Gtk_Entry. See
-   --  gtk_text_view_reset_im_context for an example of use.
+   --  Gtk.Text_View.Reset_Im_Context for an example of use.
    --  Since: gtk+ 2.22
    --  "event": the key event
 
