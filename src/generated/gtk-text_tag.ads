@@ -86,7 +86,7 @@ package Gtk.Text_Tag is
       (Tag      : not null access Gtk_Text_Tag_Record;
        Priority : Gint);
    --  Sets the priority of a Gtk.Text_Tag.Gtk_Text_Tag. Valid priorities are
-   --  start at 0 and go to one less than gtk_text_tag_table_get_size. Each tag
+   --  start at 0 and go to one less than Gtk.Text_Tag_Table.Get_Size. Each tag
    --  in a table has a unique priority; setting the priority of one tag shifts
    --  the priorities of all the other tags in the table to maintain a unique
    --  priority for each tag. Higher priority tags "win" if two tags both set
