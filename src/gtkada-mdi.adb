@@ -109,8 +109,6 @@ package body Gtkada.MDI is
    Traces : constant Boolean := False;
    --  True if traces should be activated
 
-   Css_Loaded : Boolean := False;
-
    Traces_Indent : Natural := 0;
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
@@ -858,15 +856,12 @@ package body Gtkada.MDI is
       Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
       Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
 
-      if not Css_Loaded then
-         Css_Loaded := True;
-         Gtk_New (MDI.Css_Provider);
-         Get_Style_Context (MDI).Add_Provider
-           (+MDI.Css_Provider, Priority_Application);
-         Gtk.Style_Context.Add_Provider_For_Screen
-           (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
-            Priority => Gtk.Style_Provider.Priority_Application);
-      end if;
+      Gtk_New (MDI.Css_Provider);
+      Get_Style_Context (MDI).Add_Provider
+        (+MDI.Css_Provider, Priority_Application);
+      Gtk.Style_Context.Add_Provider_For_Screen
+        (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
+         Priority => Gtk.Style_Provider.Priority_Application);
 
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
@@ -1287,17 +1282,28 @@ package body Gtkada.MDI is
 
          declare
             Err  : aliased GError;
+
+            --  This will highlight the whole notebook in blue when not using
+            --  a proper theme. Otherwise, the theme will override some of the
+            --  settings, and only the current focused tab will be hilighted
+            --  with the title color.
+            --  The theme should define
+            --       .mdifocused {background-image: -gtk-gradient{...}}
+            --  or some such, to give a background to the tabs. We can't do it
+            --  here, since the following is loaded with a higher priority
+            --  than the theme, and thus it would override the theme.
+
             Css  : constant String :=
               ".mdifocused tab:active {" & ASCII.LF &
+              " background-image: none;" &
               " background-color: " &
               Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
-              " background-image: none;" & ASCII.LF & "}" & ASCII.LF &
+              "}" & ASCII.LF &
+              ".mdifocused {" & ASCII.LF &
+              " background-color: " & ASCII.LF &
+              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
               "}" & ASCII.LF;
          begin
-            if MDI.Css_Provider = null then
-               Gtk_New (MDI.Css_Provider);
-            end if;
-
             Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
          end;
 
