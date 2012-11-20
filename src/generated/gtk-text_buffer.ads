@@ -191,20 +191,6 @@ package Gtk.Text_Buffer is
    --  "where": location to place mark
    --  "left_gravity": whether the mark has left gravity
 
-   function Create_Tag
-      (Buffer   : not null access Gtk_Text_Buffer_Record;
-       Tag_Name : UTF8_String := "") return Gtk.Text_Tag.Gtk_Text_Tag;
-   --  Creates a tag and adds it to the tag table for Buffer. Equivalent to
-   --  calling Gtk.Text_Tag.Gtk_New and then adding the tag to the buffer's tag
-   --  table. The returned tag is owned by the buffer's tag table, so the ref
-   --  count will be equal to one.
-   --  If Tag_Name is null, the tag is anonymous.
-   --  If Tag_Name is non-null, a tag called Tag_Name must not already exist
-   --  in the tag table for this buffer.
-   --  The First_Property_Name argument and subsequent arguments are a list of
-   --  properties to set on the tag, as with g_object_set.
-   --  "tag_name": name of the new tag, or null
-
    procedure Cut_Clipboard
       (Buffer           : not null access Gtk_Text_Buffer_Record;
        Clipboard        : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
@@ -652,20 +638,6 @@ package Gtk.Text_Buffer is
    --  "end": another position in the same buffer as Start
    --  "default_editable": default editability of the buffer
 
-   procedure Insert_With_Tags
-      (Buffer : not null access Gtk_Text_Buffer_Record;
-       Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-       Text   : UTF8_String;
-       Tag    : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --  Inserts Text into Buffer at Iter, applying the list of tags to the
-   --  newly-inserted text. The last tag specified must be null to terminate
-   --  the list. Equivalent to calling Gtk.Text_Buffer.Insert, then
-   --  Gtk.Text_Buffer.Apply_Tag on the inserted text;
-   --  Gtk.Text_Buffer.Insert_With_Tags is just a convenience function.
-   --  "iter": an iterator in Buffer
-   --  "text": UTF-8 text
-   --  "Tag": first tag to apply to Text
-
    procedure Move_Mark
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Mark   : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class;
@@ -851,9 +823,14 @@ package Gtk.Text_Buffer is
    procedure Insert_With_Tags
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag    : Gtk_Text_Tag);
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
       Text   : Gtkada.Types.Chars_Ptr;
       Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
-   --  More efficient version, which doesn't require a string copy.
+   --  Same as Insert, but specifies the tag to apply to the range.
 
    function Get_Buffer
      (Iter : Gtk_Text_Iter) return Gtk.Text_Buffer.Gtk_Text_Buffer;
@@ -865,6 +842,18 @@ package Gtk.Text_Buffer is
    return Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  Gets the buffer this mark is located inside, or null if the mark is
    --  deleted.
+
+   function Create_Tag
+     (Buffer              : access Gtk_Text_Buffer_Record;
+      Tag_Name            : String := "")
+   return Gtk.Text_Tag.Gtk_Text_Tag;
+   --  Creates a tag and adds it to the tag table for Buffer. Equivalent to
+   --  calling gtk.text_tag.gtk_new and then adding the tag to the buffer's tag
+   --  table. The returned tag is owned by the buffer's tag table, so the ref
+   --  count will be equal to one.
+   --
+   --  If Tag_Name is NULL, the tag is anonymous, otherwise a tag called
+   --  Tag_Name must not already exist in the tag table for this buffer.
 
    ----------------
    -- Properties --
@@ -933,7 +922,7 @@ package Gtk.Text_Buffer is
    --  Note that if your handler runs before the default handler it must not
    --  invalidate the Start and End iters (or has to revalidate them).
    --
-   --  See also: Gtk.Text_Buffer.Apply_Tag, Gtk.Text_Buffer.Insert_With_Tags,
+   --  See also: Gtk.Text_Buffer.Apply_Tag, gtk_text_buffer_insert_with_tags,
    --  Gtk.Text_Buffer.Insert_Range.
    --
    --  "begin-user-action"

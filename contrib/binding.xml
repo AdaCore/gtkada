@@ -3309,16 +3309,8 @@ __PRE__
         <parameter name="len" default="-1" ada=""/>
      </method>
 
-     <method id="gtk_text_buffer_create_tag">
-       <parameter name="first_property_name" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
-       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
-     </method>
-
-     <method id="gtk_text_buffer_insert_with_tags">
-       <parameter name="first_tag" ada="Tag"/>
-       <parameter name="len" default="-1" ada=""/>
-       <parameter name="varargs" ada="" ctype="gpointer" default="System.Null_Address"/>   <!--  remove varargs argument -->
-     </method>
+     <method id="gtk_text_buffer_create_tag" bind="False"/><!-- vararg, bound manually below -->
+     <method id="gtk_text_buffer_insert_with_tags" bind="False"/><!-- vararg, bound manually below -->
 
      <extra>
        <with_spec pkg="GtkAda.Types"/>
@@ -3354,9 +3346,14 @@ __PRE__
    procedure Insert_With_Tags
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag    : Gtk_Text_Tag);
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
       Text   : Gtkada.Types.Chars_Ptr;
       Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
-   --  More efficient version, which doesn't require a string copy.
+   --  Same as Insert, but specifies the tag to apply to the range.
 
    function Get_Buffer
       (Iter : Gtk_Text_Iter) return Gtk.Text_Buffer.Gtk_Text_Buffer;
@@ -3369,6 +3366,17 @@ __PRE__
    --  Gets the buffer this mark is located inside, or null if the mark is
    --  deleted.
 
+   function Create_Tag
+     (Buffer              : access Gtk_Text_Buffer_Record;
+      Tag_Name            : String := "")
+      return Gtk.Text_Tag.Gtk_Text_Tag;
+   --  Creates a tag and adds it to the tag table for Buffer. Equivalent to
+   --  calling gtk.text_tag.gtk_new and then adding the tag to the buffer's tag
+   --  table. The returned tag is owned by the buffer's tag table, so the ref
+   --  count will be equal to one.
+   --
+   --  If Tag_Name is NULL, the tag is anonymous, otherwise a tag called
+   --  Tag_Name must not already exist in the tag table for this buffer.
        </spec>
        <body>
    ------------
@@ -3407,21 +3415,40 @@ __PRE__
    end Insert_At_Cursor;
 
    procedure Insert_With_Tags
-     (Buffer    : access Gtk_Text_Buffer_Record;
-      Iter      : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Text      : Gtkada.Types.Chars_Ptr;
-      Tag       : Gtk.Text_Tag.Gtk_Text_Tag)
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag    : Gtk_Text_Tag)
    is
       procedure Internal
-         (Buffer    : System.Address;
-          Iter      : Gtk.Text_Iter.Gtk_Text_Iter;
-          Text      : Gtkada.Types.Chars_Ptr;
-          Len       : Gint;
-          Tag       : System.Address;
-          Varargs   : System.Address);
-      pragma Import (C, Internal, "gtk_text_buffer_insert_with_tags");
+        (Buffer : System.Address;
+         Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : UTF8_String;
+         Len    : Gint;
+         Tag    : System.Address);
+      pragma Import (C, Internal, "ada_gtk_text_buffer_insert_with_tags");
+
    begin
-      Internal (Get_Object (Buffer), Iter, Text, -1, Get_Object (Tag), System.Null_Address);
+      Internal
+        (Get_Object (Buffer), Iter, Text, Text'Length, Get_Object (Tag));
+   end Insert_With_Tags;
+
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint := -1;
+         Tag    : System.Address);
+      pragma Import (C, Internal, "ada_gtk_text_buffer_insert_with_tags");
+
+   begin
+      Internal (Get_Object (Buffer), Iter, Text, Tag => Get_Object (Tag));
    end Insert_With_Tags;
 
    --------------
@@ -3488,6 +3515,30 @@ __PRE__
    begin
       return Gtk.Text_Buffer.Gtk_Text_Buffer (Get_User_Data (Internal (Get_Object (Mark)), Stub_Gtk_Text_Buffer));
    end Get_Buffer;
+
+   ----------------
+   -- Create_Tag --
+   ----------------
+
+   function Create_Tag
+     (Buffer              : access Gtk_Text_Buffer_Record;
+      Tag_Name            : String := "")
+      return Gtk_Text_Tag
+   is
+      function Internal
+        (Buffer              : System.Address;
+         Tag_Name            : Interfaces.C.Strings.chars_ptr)
+         return System.Address;
+      pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
+      Stub : Gtk_Text_Tag_Record;
+      Str  : Interfaces.C.Strings.chars_ptr := String_Or_Null (Tag_Name);
+      Tag  : Gtk_Text_Tag;
+   begin
+      Tag := Gtk_Text_Tag
+        (Get_User_Data (Internal (Get_Object (Buffer), Str), Stub));
+      Free (Str);
+      return Tag;
+   end Create_Tag;
        </body>
      </extra>
    </package>

@@ -30,7 +30,7 @@
 --  Tags should be in the Gtk.Text_Tag_Table.Gtk_Text_Tag_Table for a given
 --  Gtk.Text_Buffer.Gtk_Text_Buffer before using them with that buffer.
 --
---  Gtk.Text_Buffer.Create_Tag is the best way to create tags. See
+--  gtk_text_buffer_create_tag is the best way to create tags. See
 --  <application>gtk3-demo</application> for numerous examples.
 --
 --  </description>
@@ -93,7 +93,7 @@ package Gtk.Text_Tag is
    --  the same text attribute. When adding a tag to a tag table, it will be
    --  assigned the highest priority in the table by default; so normally the
    --  precedence of a set of tags is the order in which they were added to the
-   --  table, or created with Gtk.Text_Buffer.Create_Tag, which adds the tag to
+   --  table, or created with gtk_text_buffer_create_tag, which adds the tag to
    --  the buffer's table automatically.
    --  "priority": the new priority
 
