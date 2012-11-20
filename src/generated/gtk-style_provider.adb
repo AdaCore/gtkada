@@ -55,4 +55,9 @@ package body Gtk.Style_Provider is
       Found := Boolean'Val (Tmp_Return);
    end Get_Style_Property;
 
+   function "+" (W : Gtk_Style_Provider) return Gtk_Style_Provider is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Style_Provider;

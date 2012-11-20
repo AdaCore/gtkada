@@ -70,4 +70,14 @@ package Gtk.Tree_Drag_Dest is
    --  "dest_path": destination row
    --  "selection_data": the data being dragged
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Drag_Dest"
+
+   function "+" (W : Gtk_Tree_Drag_Dest) return Gtk_Tree_Drag_Dest;
+   pragma Inline ("+");
+
 end Gtk.Tree_Drag_Dest;

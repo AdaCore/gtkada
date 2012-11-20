@@ -292,4 +292,14 @@ package Gtk.Cell_Layout is
 
    end Set_Cell_Data_Func_User_Data;
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Cell_Layout"
+
+   function "+" (W : Gtk_Cell_Layout) return Gtk_Cell_Layout;
+   pragma Inline ("+");
+
 end Gtk.Cell_Layout;

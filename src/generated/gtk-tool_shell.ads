@@ -120,4 +120,14 @@ package Gtk.Tool_Shell is
    --  Gtk.Tool_Item.Rebuild_Menu instead.
    --  Since: gtk+ 2.14
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tool_Shell"
+
+   function "+" (W : Gtk_Tool_Shell) return Gtk_Tool_Shell;
+   pragma Inline ("+");
+
 end Gtk.Tool_Shell;

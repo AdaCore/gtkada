@@ -921,6 +921,16 @@ package Gtk.File_Chooser is
    --  "uri": the URI to unselect
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_File_Chooser"
+
+   function "+" (W : Gtk_File_Chooser) return Gtk_File_Chooser;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

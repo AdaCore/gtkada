@@ -83,6 +83,11 @@ package body Gtk.Tree_Drag_Source is
       return Boolean'Val (Internal (Self, Get_Object (Path)));
    end Row_Draggable;
 
+   function "+" (W : Gtk_Tree_Drag_Source) return Gtk_Tree_Drag_Source is
+   begin
+      return W;
+   end "+";
+
    -----------------------
    -- Get_Row_Drag_Data --
    -----------------------

@@ -486,4 +486,9 @@ package body Gtk.Recent_Chooser is
       Free (Tmp_URI);
    end Unselect_Uri;
 
+   function "+" (W : Gtk_Recent_Chooser) return Gtk_Recent_Chooser is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Recent_Chooser;

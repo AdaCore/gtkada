@@ -40,4 +40,9 @@ package body Gtk.Tool_Shell is
       return Gtk.Size_Group.Gtk_Size_Group (Get_User_Data (Internal (Self), Stub_Gtk_Size_Group));
    end Get_Text_Size_Group;
 
+   function "+" (W : Gtk_Tool_Shell) return Gtk_Tool_Shell is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Tool_Shell;

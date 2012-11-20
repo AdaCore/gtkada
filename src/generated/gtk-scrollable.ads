@@ -138,6 +138,16 @@ package Gtk.Scrollable is
    --  "policy": the vertical Gtk.Enums.Gtk_Scrollable_Policy
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Scrollable"
+
+   function "+" (W : Gtk_Scrollable) return Gtk_Scrollable;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

@@ -744,4 +744,9 @@ package body Gtk.File_Chooser is
       Free (Tmp_URI);
    end Unselect_Uri;
 
+   function "+" (W : Gtk_File_Chooser) return Gtk_File_Chooser is
+   begin
+      return W;
+   end "+";
+
 end Gtk.File_Chooser;

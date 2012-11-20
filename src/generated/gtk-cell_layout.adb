@@ -274,4 +274,9 @@ package body Gtk.Cell_Layout is
 
    end Set_Cell_Data_Func_User_Data;
 
+   function "+" (W : Gtk_Cell_Layout) return Gtk_Cell_Layout is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Cell_Layout;

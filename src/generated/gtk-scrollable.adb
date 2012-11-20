@@ -86,4 +86,9 @@ package body Gtk.Scrollable is
       Internal (Self, Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
 
+   function "+" (W : Gtk_Scrollable) return Gtk_Scrollable is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Scrollable;

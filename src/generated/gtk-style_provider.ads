@@ -85,4 +85,14 @@ package Gtk.Style_Provider is
    Priority_User : constant Priority := 800;
    --  Used for the style information from ~/.gtk-3.0.css
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Style_Provider"
+
+   function "+" (W : Gtk_Style_Provider) return Gtk_Style_Provider;
+   pragma Inline ("+");
+
 end Gtk.Style_Provider;

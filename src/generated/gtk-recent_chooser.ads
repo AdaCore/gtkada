@@ -336,6 +336,16 @@ package Gtk.Recent_Chooser is
    --  "uri": a URI
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Recent_Chooser"
+
+   function "+" (W : Gtk_Recent_Chooser) return Gtk_Recent_Chooser;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

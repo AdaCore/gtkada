@@ -74,6 +74,16 @@ package Gtk.Tree_Drag_Source is
    --  implement this interface, the row is assumed draggable.
    --  "path": row on which user is initiating a drag
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Drag_Source"
+
+   function "+" (W : Gtk_Tree_Drag_Source) return Gtk_Tree_Drag_Source;
+   pragma Inline ("+");
+
    ---------------
    -- Functions --
    ---------------

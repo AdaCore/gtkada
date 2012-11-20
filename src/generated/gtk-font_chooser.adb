@@ -257,4 +257,9 @@ package body Gtk.Font_Chooser is
       Internal (Self, Boolean'Pos (Show_Preview_Entry));
    end Set_Show_Preview_Entry;
 
+   function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Font_Chooser;

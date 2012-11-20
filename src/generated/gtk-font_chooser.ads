@@ -197,6 +197,16 @@ package Gtk.Font_Chooser is
    end Set_Filter_Func_User_Data;
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Font_Chooser"
+
+   function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

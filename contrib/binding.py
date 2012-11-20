@@ -1568,9 +1568,7 @@ See Glib.Properties for more information on properties)""")
     def _implements(self):
         """Bind the interfaces that a class implements"""
 
-        implements = list(self.node.findall(nimplements))
-        if not implements:
-            return
+        implements = list(self.node.findall(nimplements)) or []
 
         for impl in implements:
             name = impl.get("name")
@@ -1593,6 +1591,7 @@ See Glib.Properties for more information on properties)""")
                 adatype=base_name(type.ada),
                 impl=type.ada,
                 interface=self.gir.interfaces[name],
+                body="",
                 pkg="%(typename)s" % self._subst)
             impl["code"] = \
                 """package Implements_%(adatype)s is new Glib.Types.Implements
@@ -1608,6 +1607,24 @@ See Glib.Properties for more information on properties)""")
 """ % impl
 
             self.implements[name] = impl
+
+        # For an interface, we also define "+" to cast to itself. This is used
+        # when writting custom bodies for the methods of the interface, so that
+        # those bodies can be reused for the types that implement the
+        # interface. See GtkTreeModel.
+
+        if self.is_interface:
+            self.implements[""] = {
+"name": self._subst["typename"],
+"interface": self._subst["typename"],
+"code": """function "+" (W : %(typename)s) return %(typename)s;
+    pragma Inline ("+"); """ % self._subst,
+"body": """function "+" (W : %(typename)s) return %(typename)s is
+begin
+   return W;
+end "+";""" % self._subst,
+           }
+
 
         if self.implements:
 
@@ -1656,6 +1673,8 @@ See Glib.Properties for more information on properties)""")
                 section.add_comment("")
                 section.add_comment('- "%(name)s"' % impl)
                 section.add_code(impl["code"])
+                if impl["body"]:
+                    section.add_code(impl["body"], specs=False)
 
     def add_list_binding(self, section, adaname, ctype, singleList):
         """Generate a list instantiation"""

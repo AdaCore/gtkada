@@ -1,4 +1,3 @@
-
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
@@ -688,6 +687,16 @@ package Gtk.Tree_Model is
 
    function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
    --  Extract the path from the given GValue.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Model"
+
+   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model;
+   pragma Inline ("+");
 
    -----------
    -- Lists --

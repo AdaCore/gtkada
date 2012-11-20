@@ -155,4 +155,14 @@ package Gtk.Buildable is
    --  "name": name of property
    --  "value": value of property
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Buildable"
+
+   function "+" (W : Gtk_Buildable) return Gtk_Buildable;
+   pragma Inline ("+");
+
 end Gtk.Buildable;

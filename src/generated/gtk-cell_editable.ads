@@ -68,6 +68,16 @@ package Gtk.Cell_Editable is
    --  "event": A Gdk.Event.Gdk_Event, or null
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Cell_Editable"
+
+   function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

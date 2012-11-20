@@ -212,4 +212,9 @@ package body Gtk.Buildable is
       Free (Tmp_Name);
    end Set_Name;
 
+   function "+" (W : Gtk_Buildable) return Gtk_Buildable is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Buildable;

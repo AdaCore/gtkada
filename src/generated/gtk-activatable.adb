@@ -109,4 +109,9 @@ package body Gtk.Activatable is
       Internal (Self, Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   function "+" (W : Gtk_Activatable) return Gtk_Activatable is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Activatable;

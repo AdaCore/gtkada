@@ -89,7 +89,14 @@ Where the package node is defined as follows:
             allow-none="0" <!-- If C accepts a NULL value (an empty string
                                 is mapped to the null pointer -->
          />
-         <body>...</body>  <!-- optional, body of subprogram (after "is") -->
+         <body>...</body>  <!-- optional, body of subprogram (after "is")
+                                If the subprogram is defined for an interface,
+                                it will automatically be duplicated on each type
+                                that implements that interface. As such, you
+                                should use "+Self" to pass the parameter to
+                                C, where the type of the C parameter should be
+                                the interface type itself. See GtkTreeModel.
+                            -->
        />
 
        <function id="...">   <!--  repeated as needed, for global functions -->

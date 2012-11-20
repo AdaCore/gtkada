@@ -124,4 +124,9 @@ package body Gtk.Editable is
       Internal (Editable, Boolean'Pos (Is_Editable));
    end Set_Editable;
 
+   function "+" (W : Gtk_Editable) return Gtk_Editable is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Editable;

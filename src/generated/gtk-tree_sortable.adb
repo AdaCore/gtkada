@@ -278,4 +278,9 @@ package body Gtk.Tree_Sortable is
 
    end Set_Sort_Func_User_Data;
 
+   function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Tree_Sortable;

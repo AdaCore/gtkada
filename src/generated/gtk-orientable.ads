@@ -69,6 +69,16 @@ package Gtk.Orientable is
    --  "orientation": the orientable's new orientation.
 
    ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Orientable"
+
+   function "+" (W : Gtk_Orientable) return Gtk_Orientable;
+   pragma Inline ("+");
+
+   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See

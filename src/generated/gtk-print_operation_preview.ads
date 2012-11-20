@@ -69,6 +69,16 @@ package Gtk.Print_Operation_Preview is
    --  Since: gtk+ 2.10
    --  "page_nr": the page to render
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Print_Operation_Preview"
+
+   function "+" (W : Gtk_Print_Operation_Preview) return Gtk_Print_Operation_Preview;
+   pragma Inline ("+");
+
    -------------
    -- Signals --
    -------------

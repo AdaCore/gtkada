@@ -42,4 +42,9 @@ package body Gtk.Print_Operation_Preview is
       return Boolean'Val (Internal (Preview, Page_Nr));
    end Is_Selected;
 
+   function "+" (W : Gtk_Print_Operation_Preview) return Gtk_Print_Operation_Preview is
+   begin
+      return W;
+   end "+";
+
 end Gtk.Print_Operation_Preview;

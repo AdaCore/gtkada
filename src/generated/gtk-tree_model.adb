@@ -776,6 +776,11 @@ package body Gtk.Tree_Model is
       return Boolean'Val (Internal (Get_Object (Path)));
    end Up;
 
+   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model is
+   begin
+      return W;
+   end "+";
+
    function Convert (R : Gtk.Tree_Model.Gtk_Tree_Path) return System.Address is
    begin
       return Get_Object (R);

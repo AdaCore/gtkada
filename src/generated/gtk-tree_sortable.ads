@@ -231,6 +231,16 @@ package Gtk.Tree_Sortable is
    Unsorted_Sort_Column_Id : constant Gint := -2;
    --  Two special values for the sort column
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Sortable"
+
+   function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable;
+   pragma Inline ("+");
+
    -------------
    -- Signals --
    -------------

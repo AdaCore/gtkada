@@ -195,6 +195,16 @@ package Gtk.Editable is
    --  Convenience subprogram, identical to Insert_Text above without
    --  the requirement to supply the New_Text_Length argument.
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Editable"
+
+   function "+" (W : Gtk_Editable) return Gtk_Editable;
+   pragma Inline ("+");
+
    -------------
    -- Signals --
    -------------
