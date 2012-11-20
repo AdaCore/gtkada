@@ -1292,8 +1292,6 @@ package body Gtkada.MDI is
               " background-color: " &
               Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
               " background-image: none;" & ASCII.LF & "}" & ASCII.LF &
-              ".mdifocused {" & ASCII.LF & " background-color: " & ASCII.LF &
-              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
               "}" & ASCII.LF;
          begin
             if MDI.Css_Provider = null then
