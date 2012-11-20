@@ -31,12 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Recent_Chooser_Dialog is
 
-   function To_Gtk_Recent_Sort_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Recent_Sort_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Recent_Sort_Func, System.Address);
-
    procedure C_Gtk_Recent_Chooser_Set_Sort_Func
       (Chooser      : System.Address;
        Sort_Func    : System.Address;
@@ -55,6 +49,12 @@ package body Gtk.Recent_Chooser_Dialog is
    --  "sort_func": the comparison function
    --  "sort_data": user data to pass to Sort_Func, or null
    --  "data_destroy": destroy notifier for Sort_Data, or null
+
+   function To_Gtk_Recent_Sort_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Recent_Sort_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Recent_Sort_Func, System.Address);
 
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;

@@ -37,6 +37,10 @@ package Pango.Fontset is
    type Pango_Fontset_Record is new GObject_Record with null record;
    type Pango_Fontset is access all Pango_Fontset_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Pango_Fontset_Foreach_Func is access function
      (Fontset : not null access Pango_Fontset_Record'Class;
       Font    : not null access Pango.Font.Pango_Font_Record'Class)

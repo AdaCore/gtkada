@@ -28,12 +28,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Pango.Fontset is
 
-   function To_Pango_Fontset_Foreach_Func is new Ada.Unchecked_Conversion
-     (System.Address, Pango_Fontset_Foreach_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Pango_Fontset_Foreach_Func, System.Address);
-
    procedure C_Pango_Fontset_Foreach
       (Self : System.Address;
        Func : System.Address;
@@ -44,6 +38,12 @@ package body Pango.Fontset is
    --  Since: gtk+ 1.4
    --  "func": Callback function
    --  "data": data to pass to the callback function
+
+   function To_Pango_Fontset_Foreach_Func is new Ada.Unchecked_Conversion
+     (System.Address, Pango_Fontset_Foreach_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Pango_Fontset_Foreach_Func, System.Address);
 
    function Internal_Pango_Fontset_Foreach_Func
       (Fontset : System.Address;

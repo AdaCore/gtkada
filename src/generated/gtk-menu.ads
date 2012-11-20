@@ -92,6 +92,10 @@ package Gtk.Menu is
    type Gtk_Menu_Record is new Gtk_Menu_Shell_Record with null record;
    type Gtk_Menu is access all Gtk_Menu_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Menu_Detach_Func is access procedure (Attach_Widget : System.Address; Menu : System.Address);
    --  A user function supplied when calling Gtk.Menu.Attach_To_Widget which
    --  will be called when the menu is later detached from the widget.

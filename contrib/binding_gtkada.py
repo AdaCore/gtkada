@@ -14,7 +14,7 @@ Where the package node is defined as follows:
                                   its methods -->
              into="..."      <!-- optional, the package to bind types and
                                   methods into -->
-             ada="..."       <!-- optional, the packge's ada name -->
+             ada="..."       <!-- optional, the package's ada name -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -89,8 +89,7 @@ Where the package node is defined as follows:
             allow-none="0" <!-- If C accepts a NULL value (an empty string
                                 is mapped to the null pointer -->
          />
-         <body>...</body>  <!-- optional, body of subprogram including
-                                profile -->
+         <body>...</body>  <!-- optional, body of subprogram (after "is") -->
        />
 
        <function id="...">   <!--  repeated as needed, for global functions -->

@@ -85,12 +85,6 @@ package Gtk.Cell_Renderer_Combo is
    --  If True, the cell renderer will include an entry and allow to enter
    --  values other than the ones in the popup list.
    --
-   --  Name: Model_Property
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
-   --  Flags: read-write
-   --  Holds a tree model containing the possible values for the combo box.
-   --  Use the text_column property to specify the column holding the values.
-   --
    --  Name: Text_Column_Property
    --  Type: Gint
    --  Flags: read-write
@@ -105,7 +99,6 @@ package Gtk.Cell_Renderer_Combo is
    --  text cell renderer for this column to its combo box.
 
    Has_Entry_Property : constant Glib.Properties.Property_Boolean;
-   Model_Property : constant Glib.Properties.Property_Object;
    Text_Column_Property : constant Glib.Properties.Property_Int;
 
    -------------
@@ -117,7 +110,7 @@ package Gtk.Cell_Renderer_Combo is
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
    --        Path_String : UTF8_String;
-   --        New_Iter    : Gtk.Tree_Iter.Gtk_Tree_Iter);
+   --        New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
    --    --  "path_string": a string of the path identifying the edited cell
    --    --  (relative to the tree view model)
    --    --  "new_iter": the new iter selected in the combo box (relative to the
@@ -139,8 +132,6 @@ package Gtk.Cell_Renderer_Combo is
 private
    Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("text-column");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
    Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-entry");
 end Gtk.Cell_Renderer_Combo;

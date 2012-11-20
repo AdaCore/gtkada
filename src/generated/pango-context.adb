@@ -172,8 +172,13 @@ package body Pango.Context is
       return From_Object (Internal (Get_Object (Self), Desc, Get_Object (Language)));
    end Get_Metrics;
 
+   -------------------
+   -- List_Families --
+   -------------------
+
    function List_Families
-      (Self : not null access Pango_Context_Record) return Pango_Font_Family_Array
+      (Self : not null access Pango_Context_Record)
+       return Pango_Font_Family_Array
    is
       type font_family_array_bounded is array (Natural) of System.Address;
 

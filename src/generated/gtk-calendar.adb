@@ -30,12 +30,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Calendar is
 
-   function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Calendar_Detail_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Calendar_Detail_Func, System.Address);
-
    procedure C_Gtk_Calendar_Set_Detail_Func
       (Calendar : System.Address;
        Func     : System.Address;
@@ -56,6 +50,12 @@ package body Gtk.Calendar is
    --  "func": a function providing details for each day.
    --  "data": data to pass to Func invokations.
    --  "destroy": a function for releasing Data.
+
+   function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Calendar_Detail_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Calendar_Detail_Func, System.Address);
 
    function Internal_Gtk_Calendar_Detail_Func
       (Calendar  : System.Address;

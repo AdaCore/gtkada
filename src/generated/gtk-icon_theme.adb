@@ -47,6 +47,9 @@ package body Gtk.Icon_Theme is
       return S;
    end From_Object;
 
+   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
+
    package Type_Conversion_Gtk_Icon_Theme is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Icon_Theme_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Icon_Theme);
@@ -155,11 +158,12 @@ package body Gtk.Icon_Theme is
       Internal (Get_Object (Icon_Info));
    end Free;
 
-   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
-     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
+   -----------------------
+   -- Get_Attach_Points --
+   -----------------------
 
    function Get_Attach_Points
-     (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array
+      (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array
    is
       use Points_Arrays;
       function Internal
@@ -270,10 +274,13 @@ package body Gtk.Icon_Theme is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Icon_Info)));
    end Get_Filename;
 
+   --------------------
+   -- Get_Icon_Sizes --
+   --------------------
+
    function Get_Icon_Sizes
-     (Icon_Theme : not null access Gtk_Icon_Theme_Record;
-      Icon_Name  : String)
-      return Gint_Array
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String) return Gint_Array
    is
       use Gint_Arrays;
       function Internal
@@ -289,9 +296,13 @@ package body Gtk.Icon_Theme is
       return Result;
    end Get_Icon_Sizes;
 
+   ---------------------
+   -- Get_Search_Path --
+   ---------------------
+
    function Get_Search_Path
-     (Icon_Theme : not null access Gtk_Icon_Theme_Record)
-      return GNAT.Strings.String_List
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record)
+       return GNAT.Strings.String_List
    is
       procedure Internal
         (Icon_Theme : System.Address;

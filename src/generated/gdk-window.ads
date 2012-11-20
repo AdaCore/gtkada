@@ -275,6 +275,10 @@ package Gdk.Window is
    function Convert (R : System.Address) return Gdk.Gdk_Window;
    package Gdk_Window_List is new Generic_List (Gdk.Gdk_Window);
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gdk_Window_Child_Func is access function (Window : Gdk.Gdk_Window) return Boolean;
    --  A function of this type is passed to
    --  Gdk.Window.Invalidate_Maybe_Recurse. It gets called for each child of

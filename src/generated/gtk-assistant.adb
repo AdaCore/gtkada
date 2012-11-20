@@ -31,12 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Assistant is
 
-   function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Assistant_Page_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Assistant_Page_Func, System.Address);
-
    procedure C_Gtk_Assistant_Set_Forward_Page_Func
       (Assistant : System.Address;
        Page_Func : System.Address;
@@ -53,6 +47,12 @@ package body Gtk.Assistant is
    --  one
    --  "data": user data for Page_Func
    --  "destroy": destroy notifier for Data
+
+   function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Assistant_Page_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Assistant_Page_Func, System.Address);
 
    function Internal_Gtk_Assistant_Page_Func
       (Current_Page : Gint;

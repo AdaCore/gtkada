@@ -136,7 +136,7 @@ package Gtk.Cell_Renderer is
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk.Tree_Path.Gtk_Tree_Path
+   --  Gtk.Tree_Model.Gtk_Tree_Path
    --  "background_area": background area as passed to
    --  Gtk.Cell_Renderer.Render
    --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render
@@ -383,7 +383,7 @@ package Gtk.Cell_Renderer is
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
    --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk.Tree_Path.Gtk_Tree_Path
+   --  Gtk.Tree_Model.Gtk_Tree_Path
    --  "background_area": background area as passed to
    --  Gtk.Cell_Renderer.Render
    --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render

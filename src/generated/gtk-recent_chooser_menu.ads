@@ -65,6 +65,10 @@ package Gtk.Recent_Chooser_Menu is
    type Gtk_Recent_Chooser_Menu_Record is new Gtk_Menu_Record with null record;
    type Gtk_Recent_Chooser_Menu is access all Gtk_Recent_Chooser_Menu_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

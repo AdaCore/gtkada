@@ -31,12 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Font_Chooser_Widget is
 
-   function To_Gtk_Font_Filter_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Font_Filter_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Font_Filter_Func, System.Address);
-
    procedure C_Gtk_Font_Chooser_Set_Filter_Func
       (Self      : System.Address;
        Filter    : System.Address;
@@ -49,6 +43,12 @@ package body Gtk.Font_Chooser_Widget is
    --  "filter": a Gtk_Font_Filter_Func, or null
    --  "user_data": data to pass to Filter
    --  "destroy": function to call to free Data when it is no longer needed
+
+   function To_Gtk_Font_Filter_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Font_Filter_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Font_Filter_Func, System.Address);
 
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;

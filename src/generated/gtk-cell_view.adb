@@ -29,12 +29,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Cell_View is
 
-   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Layout_Data_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Layout_Data_Func, System.Address);
-
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
        Cell        : System.Address;
@@ -53,17 +47,23 @@ package body Gtk.Cell_View is
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 
+   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Layout_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Layout_Data_Func, System.Address);
+
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
    --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -74,15 +74,14 @@ package body Gtk.Cell_View is
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
    end Internal_Gtk_Cell_Layout_Data_Func;
 
    package Type_Conversion_Gtk_Cell_View is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -244,11 +243,10 @@ package body Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record)
        return Gtk.Tree_Model.Gtk_Tree_Path
    is
-      function Internal
-         (Cell_View : System.Address) return Gtk.Tree_Model.Gtk_Tree_Path;
+      function Internal (Cell_View : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_get_displayed_row");
    begin
-      return Internal (Get_Object (Cell_View));
+      return From_Object (Internal (Get_Object (Cell_View)));
    end Get_Displayed_Row;
 
    ------------------------
@@ -285,11 +283,11 @@ package body Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model
    is
-      function Internal (Cell_View : System.Address) return System.Address;
+      function Internal
+         (Cell_View : System.Address) return Gtk.Tree_Model.Gtk_Tree_Model;
       pragma Import (C, Internal, "gtk_cell_view_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Cell_View)), Stub_Gtk_Tree_Model));
+      return Internal (Get_Object (Cell_View));
    end Get_Model;
 
    ---------------------
@@ -303,7 +301,7 @@ package body Gtk.Cell_View is
    is
       function Internal
          (Cell_View       : System.Address;
-          Path            : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path            : System.Address;
           Acc_Requisition : access Gtk.Widget.Gtk_Requisition)
           return Integer;
       pragma Import (C, Internal, "gtk_cell_view_get_size_of_row");
@@ -311,7 +309,7 @@ package body Gtk.Cell_View is
       Tmp_Acc_Requisition : aliased Gtk.Widget.Gtk_Requisition;
       Tmp_Return          : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Cell_View), Path, Tmp_Acc_Requisition'Access);
+      Tmp_Return := Internal (Get_Object (Cell_View), Get_Object (Path), Tmp_Acc_Requisition'Access);
       Acc_Requisition := Tmp_Acc_Requisition;
       Requisition.all := Acc_Requisition;
       return Boolean'Val (Tmp_Return);
@@ -380,7 +378,7 @@ package body Gtk.Cell_View is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -389,7 +387,7 @@ package body Gtk.Cell_View is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -400,15 +398,14 @@ package body Gtk.Cell_View is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -439,12 +436,10 @@ package body Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
-      procedure Internal
-         (Cell_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+      procedure Internal (Cell_View : System.Address; Path : System.Address);
       pragma Import (C, Internal, "gtk_cell_view_set_displayed_row");
    begin
-      Internal (Get_Object (Cell_View), Path);
+      Internal (Get_Object (Cell_View), Get_Object (Path));
    end Set_Displayed_Row;
 
    ------------------------
@@ -483,14 +478,14 @@ package body Gtk.Cell_View is
 
    procedure Set_Model
       (Cell_View : not null access Gtk_Cell_View_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
       procedure Internal
          (Cell_View : System.Address;
-          Model     : System.Address);
+          Model     : Gtk.Tree_Model.Gtk_Tree_Model);
       pragma Import (C, Internal, "gtk_cell_view_set_model");
    begin
-      Internal (Get_Object (Cell_View), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Cell_View), Model);
    end Set_Model;
 
    -------------------

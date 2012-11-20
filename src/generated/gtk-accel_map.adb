@@ -30,12 +30,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Accel_Map is
 
-   function To_Gtk_Accel_Map_Foreach is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Accel_Map_Foreach);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Accel_Map_Foreach, System.Address);
-
    procedure C_Gtk_Accel_Map_Foreach
       (Data         : System.Address;
        Foreach_Func : System.Address);
@@ -60,6 +54,12 @@ package body Gtk.Accel_Map is
    --  during runtime (thus, would need saving during an accelerator map dump).
    --  "data": data to be passed into Foreach_Func
    --  "foreach_func": function to be executed for each accel map entry
+
+   function To_Gtk_Accel_Map_Foreach is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Accel_Map_Foreach);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Accel_Map_Foreach, System.Address);
 
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;

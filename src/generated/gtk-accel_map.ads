@@ -92,6 +92,10 @@ package Gtk.Accel_Map is
    type Gtk_Accel_Map_Record is new GObject_Record with null record;
    type Gtk_Accel_Map is access all Gtk_Accel_Map_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Accel_Map_Foreach is access procedure
      (Accel_Path : UTF8_String;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;

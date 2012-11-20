@@ -54,6 +54,10 @@ package Gtk.Recent_Chooser_Widget is
    type Gtk_Recent_Chooser_Widget_Record is new Gtk_Box_Record with null record;
    type Gtk_Recent_Chooser_Widget is access all Gtk_Recent_Chooser_Widget_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

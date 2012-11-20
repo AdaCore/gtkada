@@ -36,12 +36,6 @@ package body Gtk.File_Filter is
       return Result;
    end From_Object_Free;
 
-   function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_File_Filter_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_File_Filter_Func, System.Address);
-
    procedure C_Gtk_File_Filter_Add_Custom
       (Self   : System.Address;
        Needed : Gtk_File_Filter_Flags;
@@ -61,6 +55,12 @@ package body Gtk.File_Filter is
    --  will be displayed.
    --  "data": data to pass to Func
    --  "notify": function to call to free Data when it is no longer needed.
+
+   function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_File_Filter_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_File_Filter_Func, System.Address);
 
    function Internal_Gtk_File_Filter_Func
       (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;

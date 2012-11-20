@@ -38,11 +38,11 @@ package body Gtk.Tree_Drag_Dest is
    is
       function Internal
          (Self           : Gtk_Tree_Drag_Dest;
-          Dest           : Gtk.Tree_Model.Gtk_Tree_Path;
+          Dest           : System.Address;
           Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_dest_drag_data_received");
    begin
-      return Boolean'Val (Internal (Self, Dest, Get_Object (Selection_Data)));
+      return Boolean'Val (Internal (Self, Get_Object (Dest), Get_Object (Selection_Data)));
    end Drag_Data_Received;
 
    -----------------------
@@ -57,11 +57,11 @@ package body Gtk.Tree_Drag_Dest is
    is
       function Internal
          (Self           : Gtk_Tree_Drag_Dest;
-          Dest_Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Dest_Path      : System.Address;
           Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_dest_row_drop_possible");
    begin
-      return Boolean'Val (Internal (Self, Dest_Path, Get_Object (Selection_Data)));
+      return Boolean'Val (Internal (Self, Get_Object (Dest_Path), Get_Object (Selection_Data)));
    end Row_Drop_Possible;
 
 end Gtk.Tree_Drag_Dest;

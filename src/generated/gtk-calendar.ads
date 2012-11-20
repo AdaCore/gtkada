@@ -72,6 +72,10 @@ package Gtk.Calendar is
    Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 8;
    Show_Details : constant Gtk_Calendar_Display_Options := 32;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Calendar_Detail_Func is access function
      (Calendar : not null access Gtk_Calendar_Record'Class;
       Year     : Guint;

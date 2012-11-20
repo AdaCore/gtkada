@@ -348,6 +348,10 @@ package Gtk.Cell_Area is
    type Gtk_Cell_Area_Record is new GObject_Record with null record;
    type Gtk_Cell_Area is access all Gtk_Cell_Area_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Cell_Callback is access function
      (Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
    return Boolean;
@@ -371,14 +375,14 @@ package Gtk.Cell_Area is
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ------------------
@@ -457,7 +461,7 @@ package Gtk.Cell_Area is
 
    procedure Apply_Attributes
       (Self        : not null access Gtk_Cell_Area_Record;
-       Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Is_Expander : Boolean;
        Is_Expanded : Boolean);
@@ -465,7 +469,7 @@ package Gtk.Cell_Area is
    --  the values from Tree_Model.
    --  Since: gtk+ 3.0
    --  "tree_model": the Gtk.Tree_Model.Gtk_Tree_Model to pull values from
-   --  "iter": the Gtk.Tree_Iter.Gtk_Tree_Iter in Tree_Model to apply values
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter in Tree_Model to apply values
    --  for
    --  "is_expander": whether Iter has children
    --  "is_expanded": whether Iter is expanded in the view and children are
@@ -687,8 +691,8 @@ package Gtk.Cell_Area is
 
    function Get_Current_Path_String
       (Self : not null access Gtk_Cell_Area_Record) return UTF8_String;
-   --  Gets the current Gtk.Tree_Path.Gtk_Tree_Path string for the currently
-   --  applied Gtk.Tree_Iter.Gtk_Tree_Iter, this is implicitly updated when
+   --  Gets the current Gtk.Tree_Model.Gtk_Tree_Path string for the currently
+   --  applied Gtk.Tree_Model.Gtk_Tree_Iter, this is implicitly updated when
    --  Gtk.Cell_Area.Apply_Attributes is called and can be used to interact
    --  with renderers from Gtk.Cell_Area.Gtk_Cell_Area subclasses.
    --  attributes applied to Area. This string belongs to the area and should
@@ -991,7 +995,7 @@ package Gtk.Cell_Area is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -999,7 +1003,7 @@ package Gtk.Cell_Area is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -1175,7 +1179,7 @@ package Gtk.Cell_Area is
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
    --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative
    --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
-   --    --  "path": the Gtk.Tree_Path.Gtk_Tree_Path string this edit was initiated
+   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
    --    --  for
    --  Indicates that editing has started on Renderer and that Editable should
    --  be added to the owning cell-layouting widget at Cell_Area.
@@ -1183,12 +1187,12 @@ package Gtk.Cell_Area is
    --  "apply-attributes"
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Area_Record'Class;
-   --        Model       : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-   --        Iter        : Gtk.Tree_Iter.Gtk_Tree_Iter;
+   --        Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
    --        Is_Expander : Boolean;
    --        Is_Expanded : Boolean);
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes from
-   --    --  "iter": the Gtk.Tree_Iter.Gtk_Tree_Iter indicating which row to apply
+   --    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter indicating which row to apply
    --    --  the attributes of
    --    --  "is_expander": whether the view shows children for this row
    --    --  "is_expanded": whether the view is currently showing the children of
@@ -1201,7 +1205,7 @@ package Gtk.Cell_Area is
    --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
    --        Path     : UTF8_String);
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
-   --    --  "path": the current Gtk.Tree_Path.Gtk_Tree_Path string set for Area
+   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
    --  Indicates that focus changed on this Area. This signal is emitted
    --  either as a result of focus handling or event handling.
    --

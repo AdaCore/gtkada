@@ -30,12 +30,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Container is
 
-   function To_Gtk_Callback is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Callback);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Callback, System.Address);
-
    procedure C_Gtk_Container_Forall
       (Container     : System.Address;
        Callback      : System.Address;
@@ -61,6 +55,12 @@ package body Gtk.Container is
    --  Gtk.Container.Forall.
    --  "callback": a callback
    --  "callback_data": callback user data
+
+   function To_Gtk_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Callback);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Callback, System.Address);
 
    procedure Internal_Gtk_Callback
       (Widget : System.Address;

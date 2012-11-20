@@ -136,17 +136,21 @@ package Gtk.Cell_Layout is
 
    type Gtk_Cell_Layout is new Glib.Types.GType_Interface;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ------------------
@@ -259,7 +263,7 @@ package Gtk.Cell_Layout is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -267,7 +271,7 @@ package Gtk.Cell_Layout is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 

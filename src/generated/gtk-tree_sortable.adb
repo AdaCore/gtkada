@@ -28,12 +28,6 @@ with Glib.Object;
 
 package body Gtk.Tree_Sortable is
 
-   function To_Gtk_Tree_Iter_Compare_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_Iter_Compare_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_Iter_Compare_Func, System.Address);
-
    procedure C_Gtk_Tree_Sortable_Set_Default_Sort_Func
       (Sortable  : Gtk_Tree_Sortable;
        Sort_Func : System.Address;
@@ -68,15 +62,21 @@ package body Gtk.Tree_Sortable is
    --  "user_data": User data to pass to Sort_Func, or null
    --  "destroy": Destroy notifier of User_Data, or null
 
+   function To_Gtk_Tree_Iter_Compare_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_Iter_Compare_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_Iter_Compare_Func, System.Address);
+
    function Internal_Gtk_Tree_Iter_Compare_Func
-      (Model     : System.Address;
+      (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data : System.Address) return Gint;
    pragma Convention (C, Internal_Gtk_Tree_Iter_Compare_Func);
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-   --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-   --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+   --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "user_data": Data passed when the compare func is assigned e.g. by
    --  Gtk.Tree_Sortable.Set_Sort_Func
 
@@ -85,15 +85,14 @@ package body Gtk.Tree_Sortable is
    -----------------------------------------
 
    function Internal_Gtk_Tree_Iter_Compare_Func
-      (Model     : System.Address;
+      (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data : System.Address) return Gint
    is
-      Func                : constant Gtk_Tree_Iter_Compare_Func := To_Gtk_Tree_Iter_Compare_Func (User_Data);
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func : constant Gtk_Tree_Iter_Compare_Func := To_Gtk_Tree_Iter_Compare_Func (User_Data);
    begin
-      return Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), A, B);
+      return Func (Model, A, B);
    end Internal_Gtk_Tree_Iter_Compare_Func;
 
    ---------------------------
@@ -137,7 +136,7 @@ package body Gtk.Tree_Sortable is
         (Gtk_Tree_Iter_Compare_Func, System.Address);
 
       function Internal_Cb
-         (Model     : System.Address;
+         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint;
@@ -154,8 +153,8 @@ package body Gtk.Tree_Sortable is
       --  'price_of(A) - price_of(B)'.
       --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "user_data": Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
 
@@ -164,15 +163,14 @@ package body Gtk.Tree_Sortable is
       -----------------
 
       function Internal_Cb
-         (Model     : System.Address;
+         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint
       is
-         D                   : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), A, B, D.Data.all);
+         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A, B, D.Data.all);
       end Internal_Cb;
 
       ---------------------------
@@ -223,7 +221,7 @@ package body Gtk.Tree_Sortable is
         (Gtk_Tree_Iter_Compare_Func, System.Address);
 
       function Internal_Cb
-         (Model     : System.Address;
+         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint;
@@ -240,8 +238,8 @@ package body Gtk.Tree_Sortable is
       --  'price_of(A) - price_of(B)'.
       --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "user_data": Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
 
@@ -250,15 +248,14 @@ package body Gtk.Tree_Sortable is
       -----------------
 
       function Internal_Cb
-         (Model     : System.Address;
+         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint
       is
-         D                   : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), A, B, D.Data.all);
+         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A, B, D.Data.all);
       end Internal_Cb;
 
       -------------------

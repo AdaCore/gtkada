@@ -40,6 +40,10 @@ package Pango.Attributes is
    function From_Object_Free (B : access Pango_Attr_List'Class) return Pango_Attr_List;
    pragma Inline (From_Object_Free, From_Object);
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Pango_Attr_Filter_Func is access function (Attribute : Pango_Attribute) return Boolean;
 
    ------------------

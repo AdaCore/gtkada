@@ -55,6 +55,10 @@ package Gtk.Recent_Chooser is
    --  Used to specify the sorting method to be applyed to the recently used
    --  resource list.
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

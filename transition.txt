@@ -774,6 +774,25 @@ and Gtk.Tree_Drag_Source.
 The Drag_Dest_ and Drag_Source_ prefixes were removed from the subprogram,
 so for instance Drag_Dest_Drag_Data_Received has become Drag_Data_Received.
 
+Gtk.Tree_Model
+==============
+
+A Gtk_Tree_Model is now an interface (implemented by Gtk_List_Store
+and Gtk_Tree_Store), no longer a tagged type. It means that in callbacks
+that receive a Gtk_Tree_Model parameter, you can no longer cast this
+parameter to a Gtk_Tree_Store for instance. Instead, you need to do
+the following:
+
+       --  Model is the parameter, of type Gtk_Tree_Model
+       Tree : constant Gtk_Tree_Store := Gtk_Tree_Store (-Model);
+
+Gtk_New, for a Gtk_Tree_Path, are now procedures instead of functions,
+to follow the usual GtkAda convention.
+
+Gtk_Tree_Row_Reference has been moved to its own package
+Gtk.Tree_Row_Reference.
+
+
 Gtk.Tree_View_Column
 ====================
 

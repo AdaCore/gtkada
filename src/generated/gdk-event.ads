@@ -715,6 +715,10 @@ package Gdk.Event is
 
    type Gdk_Event is access all Gdk_Event_Record;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gdk_Event_Func is access procedure (Event : Gdk_Event);
    --  Specifies the type of function passed to Gdk.Event.Handler_Set to
    --  handle all GDK events.

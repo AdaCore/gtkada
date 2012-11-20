@@ -99,6 +99,10 @@ package Gtk.File_Filter is
    --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass
    --  information about the tested file to Gtk.File_Filter.Filter.
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_File_Filter_Func is access function (Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
    --  Gtk.File_Filter.Add_Custom.

@@ -74,42 +74,6 @@ package body Gtk.Clipboard is
       end;
    end Wait_For_Targets;
 
-   function To_Gtk_Clipboard_Received_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Received_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Received_Func, System.Address);
-
-   function To_Gtk_Clipboard_Image_Received_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Image_Received_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Image_Received_Func, System.Address);
-
-   function To_Gtk_Clipboard_Rich_Text_Received_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Rich_Text_Received_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Rich_Text_Received_Func, System.Address);
-
-   function To_Gtk_Clipboard_Targets_Received_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Targets_Received_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Targets_Received_Func, System.Address);
-
-   function To_Gtk_Clipboard_Text_Received_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Text_Received_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Text_Received_Func, System.Address);
-
-   function To_Gtk_Clipboard_Urireceived_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Clipboard_Urireceived_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Clipboard_Urireceived_Func, System.Address);
-
    procedure C_Gtk_Clipboard_Request_Contents
       (Clipboard : System.Address;
        Target    : Gdk.Types.Gdk_Atom;
@@ -208,6 +172,42 @@ package body Gtk.Clipboard is
    --  "callback": a function to call when the URIs are received, or the
    --  retrieval fails. (It will always be called one way or the other.)
    --  "user_data": user data to pass to Callback.
+
+   function To_Gtk_Clipboard_Received_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Received_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Received_Func, System.Address);
+
+   function To_Gtk_Clipboard_Image_Received_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Image_Received_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Image_Received_Func, System.Address);
+
+   function To_Gtk_Clipboard_Rich_Text_Received_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Rich_Text_Received_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Rich_Text_Received_Func, System.Address);
+
+   function To_Gtk_Clipboard_Targets_Received_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Targets_Received_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Targets_Received_Func, System.Address);
+
+   function To_Gtk_Clipboard_Text_Received_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Text_Received_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Text_Received_Func, System.Address);
+
+   function To_Gtk_Clipboard_Urireceived_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Clipboard_Urireceived_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Clipboard_Urireceived_Func, System.Address);
 
    procedure Internal_Gtk_Clipboard_Image_Received_Func
       (Clipboard : System.Address;

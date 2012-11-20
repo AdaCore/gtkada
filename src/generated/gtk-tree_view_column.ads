@@ -67,17 +67,21 @@ package Gtk.Tree_View_Column is
    function Convert (R : System.Address) return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    package Column_List is new Generic_List (Gtk.Tree_View_Column.Gtk_Tree_View_Column);
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ----------------------------
@@ -158,7 +162,7 @@ package Gtk.Tree_View_Column is
 
    procedure Cell_Set_Cell_Data
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Is_Expander : Boolean;
        Is_Expanded : Boolean);
@@ -168,7 +172,7 @@ package Gtk.Tree_View_Column is
    --  renderer. This is used primarily by the Gtk.Tree_View.Gtk_Tree_View.
    --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model to to get the cell
    --  renderers attributes from.
-   --  "iter": The Gtk.Tree_Iter.Gtk_Tree_Iter to to get the cell renderer's
+   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter to to get the cell renderer's
    --  attributes from.
    --  "is_expander": True, if the row has children
    --  "is_expanded": True, if the row has visible children
@@ -465,7 +469,7 @@ package Gtk.Tree_View_Column is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -473,7 +477,7 @@ package Gtk.Tree_View_Column is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 

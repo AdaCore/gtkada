@@ -60,8 +60,13 @@ package body Pango.Font_Family is
       return Boolean'Val (Internal (Get_Object (Self)));
    end Is_Monospace;
 
+   ----------------
+   -- List_Faces --
+   ----------------
+
    function List_Faces
-      (Self : not null access Pango_Font_Family_Record) return Pango_Font_Face_Array
+      (Self : not null access Pango_Font_Family_Record)
+       return Pango_Font_Face_Array
    is
       type font_face_array_bounded is array (Natural) of System.Address;
 

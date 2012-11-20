@@ -193,6 +193,9 @@ package Gtk.Handlers is
    --  This uniquely identifies a connection widget<->signal.
    --  Closure is an internal data, that you should not use.
 
+   function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
+      return System.Address;
+
    ---------------------------------------------------------
    --  These handlers should return a value
    --  They do not have a User_Data
@@ -960,16 +963,16 @@ package Gtk.Handlers is
 
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address);
+              (To_Address);
 
       procedure Emit_By_Name is
         new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
               (Gtk.Tree_Model.To_Address,
-               Gtk.Tree_Model.To_Address);
+               To_Address);
 
       procedure Emit_By_Name is
         new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address,
+              (To_Address,
                Gtk.Tree_Model.To_Address);
 
    private
@@ -1196,16 +1199,16 @@ package Gtk.Handlers is
 
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address);
+              (To_Address);
 
       procedure Emit_By_Name is
         new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
               (Gtk.Tree_Model.To_Address,
-               Gtk.Tree_Model.To_Address);
+               To_Address);
 
       procedure Emit_By_Name is
         new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address,
+              (To_Address,
                Gtk.Tree_Model.To_Address);
 
    private

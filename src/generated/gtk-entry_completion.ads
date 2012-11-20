@@ -64,8 +64,8 @@
 --  Gtk.Cell_Area.Gtk_Cell_Area::apply-attributes) will generally take the
 --  filter model as argument. As long as you are only calling
 --  gtk_tree_model_get, this will make no difference to you. If for some
---  reason, you need the original model, use gtk_tree_model_filter_get_model.
---  Don't forget to use gtk_tree_model_filter_convert_iter_to_child_iter to
+--  reason, you need the original model, use Gtk.Tree_Model_Filter.Get_Model.
+--  Don't forget to use Gtk.Tree_Model_Filter.Convert_Iter_To_Child_Iter to
 --  obtain a matching iter.
 --
 --  </description>
@@ -88,6 +88,10 @@ package Gtk.Entry_Completion is
    type Gtk_Entry_Completion_Record is new GObject_Record with null record;
    type Gtk_Entry_Completion is access all Gtk_Entry_Completion_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Entry_Completion_Match_Func is access function
      (Completion : not null access Gtk_Entry_Completion_Record'Class;
       Key        : UTF8_String;
@@ -101,19 +105,19 @@ package Gtk.Entry_Completion is
    --  for Key
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ------------------
@@ -228,7 +232,7 @@ package Gtk.Entry_Completion is
 
    procedure Set_Model
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+       Model      : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Sets the model for a Gtk.Entry_Completion.Gtk_Entry_Completion. If
    --  Completion already has a model set, it will remove it before setting the
    --  new model. If model is null, then it will unset the model.
@@ -358,7 +362,7 @@ package Gtk.Entry_Completion is
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
@@ -395,7 +399,7 @@ package Gtk.Entry_Completion is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -403,7 +407,7 @@ package Gtk.Entry_Completion is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -528,10 +532,6 @@ package Gtk.Entry_Completion is
    --  Type: Gint
    --  Flags: read-write
    --
-   --  Name: Model_Property
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
-   --  Flags: read-write
-   --
    --  Name: Popup_Completion_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -562,7 +562,6 @@ package Gtk.Entry_Completion is
    Inline_Completion_Property : constant Glib.Properties.Property_Boolean;
    Inline_Selection_Property : constant Glib.Properties.Property_Boolean;
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
-   Model_Property : constant Glib.Properties.Property_Object;
    Popup_Completion_Property : constant Glib.Properties.Property_Boolean;
    Popup_Set_Width_Property : constant Glib.Properties.Property_Boolean;
    Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean;
@@ -583,10 +582,10 @@ package Gtk.Entry_Completion is
    --  "cursor-on-match"
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-   --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
+   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match
+   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
@@ -615,10 +614,10 @@ package Gtk.Entry_Completion is
    --  "match-selected"
    --     function Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-   --        Iter  : Gtk.Tree_Iter.Gtk_Tree_Iter) return Boolean;
+   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter positioned at the selected match
+   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.
@@ -642,8 +641,6 @@ private
      Glib.Properties.Build ("popup-set-width");
    Popup_Completion_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("popup-completion");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("minimum-key-length");
    Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=

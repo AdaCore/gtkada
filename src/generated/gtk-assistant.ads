@@ -84,6 +84,10 @@ package Gtk.Assistant is
    --  The Cancel button will only be shown if the page isn't "committed". See
    --  Gtk.Assistant.Commit for details.
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
    --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
    --  the next page given a current one. It's called both for computing the

@@ -38,8 +38,12 @@ package Gtk.Tree_Sortable is
 
    type Gtk_Tree_Sortable is new Glib.Types.GType_Interface;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Tree_Iter_Compare_Func is access function
-     (Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+     (Model : Gtk.Tree_Model.Gtk_Tree_Model;
       A     : Gtk.Tree_Model.Gtk_Tree_Iter;
       B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
    --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
@@ -54,8 +58,8 @@ package Gtk.Tree_Sortable is
    --  price_of(B)'.
    --  A sorts before, with or after B
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-   --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-   --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+   --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
 
    ------------------
    -- Constructors --
@@ -124,7 +128,7 @@ package Gtk.Tree_Sortable is
    package Set_Default_Sort_Func_User_Data is
 
       type Gtk_Tree_Iter_Compare_Func is access function
-        (Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+        (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
          User_Data : User_Data_Type) return Gint;
@@ -140,8 +144,8 @@ package Gtk.Tree_Sortable is
       --  price_of(B)'.
       --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "user_data": Data passed when the compare func is assigned e.g. by
       --  gtk_tree_sortable_set_sort_func
 
@@ -179,7 +183,7 @@ package Gtk.Tree_Sortable is
    package Set_Sort_Func_User_Data is
 
       type Gtk_Tree_Iter_Compare_Func is access function
-        (Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+        (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
          User_Data : User_Data_Type) return Gint;
@@ -195,8 +199,8 @@ package Gtk.Tree_Sortable is
       --  price_of(B)'.
       --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Iter.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Iter.Gtk_Tree_Iter in Model
+      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "user_data": Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
 

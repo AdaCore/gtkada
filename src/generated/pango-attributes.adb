@@ -52,12 +52,6 @@ package body Pango.Attributes is
       return S;
    end From_Object;
 
-   function To_Pango_Attr_Filter_Func is new Ada.Unchecked_Conversion
-     (System.Address, Pango_Attr_Filter_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Pango_Attr_Filter_Func, System.Address);
-
    function C_Pango_Attr_List_Filter
       (Self : System.Address;
        Func : System.Address;
@@ -71,6 +65,12 @@ package body Pango.Attributes is
    --  "func": callback function; returns True if an attribute should be
    --  filtered out.
    --  "data": Data to be passed to Func
+
+   function To_Pango_Attr_Filter_Func is new Ada.Unchecked_Conversion
+     (System.Address, Pango_Attr_Filter_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Pango_Attr_Filter_Func, System.Address);
 
    function Internal_Pango_Attr_Filter_Func
       (Attribute : access Pango.Attributes.Pango_Attribute;

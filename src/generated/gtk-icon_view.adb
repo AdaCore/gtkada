@@ -65,18 +65,6 @@ package body Gtk.Icon_View is
          Actions);
    end Enable_Model_Drag_Source;
 
-   function To_Gtk_Icon_View_Foreach_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Icon_View_Foreach_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Icon_View_Foreach_Func, System.Address);
-
-   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Layout_Data_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Layout_Data_Func, System.Address);
-
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
        Cell        : System.Address;
@@ -106,27 +94,39 @@ package body Gtk.Icon_View is
    --  "func": The function to call for each selected icon.
    --  "data": User data to pass to the function.
 
+   function To_Gtk_Icon_View_Foreach_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Icon_View_Foreach_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Icon_View_Foreach_Func, System.Address);
+
+   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Layout_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Layout_Data_Func, System.Address);
+
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
    --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    procedure Internal_Gtk_Icon_View_Foreach_Func
       (Icon_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Icon_View_Foreach_Func);
    --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-   --  "path": The Gtk.Tree_Path.Gtk_Tree_Path of a selected row
+   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
    --  "data": user data
 
    ----------------------------------------
@@ -136,15 +136,14 @@ package body Gtk.Icon_View is
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
    end Internal_Gtk_Cell_Layout_Data_Func;
 
    -----------------------------------------
@@ -153,13 +152,13 @@ package body Gtk.Icon_View is
 
    procedure Internal_Gtk_Icon_View_Foreach_Func
       (Icon_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        Data      : System.Address)
    is
       Func               : constant Gtk_Icon_View_Foreach_Func := To_Gtk_Icon_View_Foreach_Func (Data);
       Stub_Gtk_Icon_View : Gtk_Icon_View_Record;
    begin
-      Func (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), Path);
+      Func (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), From_Object (Path));
    end Internal_Gtk_Icon_View_Foreach_Func;
 
    package Type_Conversion_Gtk_Icon_View is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -195,8 +194,7 @@ package body Gtk.Icon_View is
 
    procedure Gtk_New_With_Model
       (Icon_View : out Gtk_Icon_View;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
    begin
       Icon_View := new Gtk_Icon_View_Record;
@@ -236,13 +234,13 @@ package body Gtk.Icon_View is
 
    procedure Initialize_With_Model
       (Icon_View : not null access Gtk_Icon_View_Record'Class;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
-      function Internal (Model : System.Address) return System.Address;
+      function Internal
+         (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_new_with_model");
    begin
-      Set_Object (Icon_View, Internal (Get_Object (Model)));
+      Set_Object (Icon_View, Internal (Model));
    end Initialize_With_Model;
 
    -----------------------------------------
@@ -277,11 +275,10 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path)
-          return Cairo.Cairo_Surface;
+          Path      : System.Address) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_icon_view_create_drag_icon");
    begin
-      return Internal (Get_Object (Icon_View), Path);
+      return Internal (Get_Object (Icon_View), Get_Object (Path));
    end Create_Drag_Icon;
 
    ------------------------
@@ -322,17 +319,19 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path  : access System.Address;
           Acc_Cell  : access System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_cursor");
       Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+      Tmp_Acc_Path           : aliased System.Address;
       Tmp_Acc_Cell           : aliased System.Address;
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_View), Acc_Path'Access, Tmp_Acc_Cell'Access);
+      Tmp_Return := Internal (Get_Object (Icon_View), Tmp_Acc_Path'Access, Tmp_Acc_Cell'Access);
       Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
+      Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Cell := Acc_Cell;
       Cursor_Is_Set := Boolean'Val (Tmp_Return);
@@ -354,14 +353,16 @@ package body Gtk.Icon_View is
          (Icon_View : System.Address;
           Drag_X    : Gint;
           Drag_Y    : Gint;
-          Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path  : access System.Address;
           Acc_Pos   : access Gtk_Icon_View_Drop_Position) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_dest_item_at_pos");
-      Acc_Path   : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Pos    : aliased Gtk_Icon_View_Drop_Position;
-      Tmp_Return : Integer;
+      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Pos      : aliased Gtk_Icon_View_Drop_Position;
+      Tmp_Acc_Path : aliased System.Address;
+      Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_View), Drag_X, Drag_Y, Acc_Path'Access, Acc_Pos'Access);
+      Tmp_Return := Internal (Get_Object (Icon_View), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
+      Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Pos := Acc_Pos;
       Has_Item := Boolean'Val (Tmp_Return);
@@ -378,11 +379,13 @@ package body Gtk.Icon_View is
    is
       procedure Internal
          (Icon_View : System.Address;
-          Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : out System.Address;
           Pos       : out Gtk_Icon_View_Drop_Position);
       pragma Import (C, Internal, "gtk_icon_view_get_drag_dest_item");
+      Tmp_Path : aliased System.Address;
    begin
-      Internal (Get_Object (Icon_View), Path, Pos);
+      Internal (Get_Object (Icon_View), Tmp_Path, Pos);
+      Path := From_Object (Tmp_Path);
    end Get_Drag_Dest_Item;
 
    ---------------------
@@ -401,17 +404,19 @@ package body Gtk.Icon_View is
          (Icon_View : System.Address;
           X         : Gint;
           Y         : Gint;
-          Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path  : access System.Address;
           Acc_Cell  : access System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_item_at_pos");
       Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+      Tmp_Acc_Path           : aliased System.Address;
       Tmp_Acc_Cell           : aliased System.Address;
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_View), X, Y, Acc_Path'Access, Tmp_Acc_Cell'Access);
+      Tmp_Return := Internal (Get_Object (Icon_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Cell'Access);
       Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
+      Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Cell := Acc_Cell;
       Has_Item := Boolean'Val (Tmp_Return);
@@ -427,10 +432,10 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint;
+          Path      : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_column");
    begin
-      return Internal (Get_Object (Icon_View), Path);
+      return Internal (Get_Object (Icon_View), Get_Object (Path));
    end Get_Item_Column;
 
    --------------------------
@@ -471,10 +476,10 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint;
+          Path      : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_row");
    begin
-      return Internal (Get_Object (Icon_View), Path);
+      return Internal (Get_Object (Icon_View), Get_Object (Path));
    end Get_Item_Row;
 
    --------------------
@@ -524,11 +529,11 @@ package body Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model
    is
-      function Internal (Icon_View : System.Address) return System.Address;
+      function Internal
+         (Icon_View : System.Address) return Gtk.Tree_Model.Gtk_Tree_Model;
       pragma Import (C, Internal, "gtk_icon_view_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Icon_View)), Stub_Gtk_Tree_Model));
+      return Internal (Get_Object (Icon_View));
    end Get_Model;
 
    ---------------------
@@ -543,10 +548,10 @@ package body Gtk.Icon_View is
       function Internal
          (Icon_View : System.Address;
           X         : Gint;
-          Y         : Gint) return Gtk.Tree_Model.Gtk_Tree_Path;
+          Y         : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_get_path_at_pos");
    begin
-      return Internal (Get_Object (Icon_View), X, Y);
+      return From_Object (Internal (Get_Object (Icon_View), X, Y));
    end Get_Path_At_Pos;
 
    -----------------------
@@ -677,21 +682,20 @@ package body Gtk.Icon_View is
           Acc_X        : access Gint;
           Acc_Y        : access Gint;
           Keyboard_Tip : Integer;
-          Acc_Model    : access System.Address;
-          Acc_Path     : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
+          Acc_Path     : access System.Address;
           Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_tooltip_context");
-      Acc_X               : aliased Gint := X;
-      Acc_Y               : aliased Gint := Y;
-      Acc_Model           : aliased Gtk.Tree_Model.Gtk_Tree_Model;
-      Acc_Path            : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Iter            : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
-      Tmp_Acc_Model       : aliased System.Address;
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-      Tmp_Return          : Integer;
+      Acc_X        : aliased Gint := X;
+      Acc_Y        : aliased Gint := Y;
+      Acc_Model    : aliased Gtk.Tree_Model.Gtk_Tree_Model;
+      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
+      Tmp_Acc_Path : aliased System.Address;
+      Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Tmp_Acc_Model'Access, Acc_Path'Access, Acc_Iter'Access);
-      Acc_Model := Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tmp_Acc_Model, Stub_Gtk_Tree_Model));
+      Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Acc_Iter'Access);
+      Acc_Path := From_Object (Tmp_Acc_Path);
       X := Acc_X;
       Y := Acc_Y;
       Model := Acc_Model;
@@ -711,11 +715,15 @@ package body Gtk.Icon_View is
    is
       procedure Internal
          (Icon_View  : System.Address;
-          Start_Path : out Gtk.Tree_Model.Gtk_Tree_Path;
-          End_Path   : out Gtk.Tree_Model.Gtk_Tree_Path);
+          Start_Path : out System.Address;
+          End_Path   : out System.Address);
       pragma Import (C, Internal, "gtk_icon_view_get_visible_range");
+      Tmp_Start_Path : aliased System.Address;
+      Tmp_End_Path   : aliased System.Address;
    begin
-      Internal (Get_Object (Icon_View), Start_Path, End_Path);
+      Internal (Get_Object (Icon_View), Tmp_Start_Path, Tmp_End_Path);
+      End_Path := From_Object (Tmp_End_Path);
+      Start_Path := From_Object (Tmp_Start_Path);
    end Get_Visible_Range;
 
    --------------------
@@ -726,12 +734,10 @@ package body Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
-      procedure Internal
-         (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+      procedure Internal (Icon_View : System.Address; Path : System.Address);
       pragma Import (C, Internal, "gtk_icon_view_item_activated");
    begin
-      Internal (Get_Object (Icon_View), Path);
+      Internal (Get_Object (Icon_View), Get_Object (Path));
    end Item_Activated;
 
    ----------------------
@@ -744,10 +750,10 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Integer;
+          Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_path_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Icon_View), Path));
+      return Boolean'Val (Internal (Get_Object (Icon_View), Get_Object (Path)));
    end Path_Is_Selected;
 
    --------------------
@@ -763,13 +769,13 @@ package body Gtk.Icon_View is
    is
       procedure Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Use_Align : Integer;
           Row_Align : Gfloat;
           Col_Align : Gfloat);
       pragma Import (C, Internal, "gtk_icon_view_scroll_to_path");
    begin
-      Internal (Get_Object (Icon_View), Path, Boolean'Pos (Use_Align), Row_Align, Col_Align);
+      Internal (Get_Object (Icon_View), Get_Object (Path), Boolean'Pos (Use_Align), Row_Align, Col_Align);
    end Scroll_To_Path;
 
    ----------------
@@ -791,12 +797,10 @@ package body Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
-      procedure Internal
-         (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+      procedure Internal (Icon_View : System.Address; Path : System.Address);
       pragma Import (C, Internal, "gtk_icon_view_select_path");
    begin
-      Internal (Get_Object (Icon_View), Path);
+      Internal (Get_Object (Icon_View), Get_Object (Path));
    end Select_Path;
 
    ----------------------
@@ -828,13 +832,13 @@ package body Gtk.Icon_View is
 
       procedure Internal_Cb
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Icon_View.Selected_Foreach to map all
       --  selected rows. It will be called on every selected row in the view.
       --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-      --  "path": The Gtk.Tree_Path.Gtk_Tree_Path of a selected row
+      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
       --  "data": user data
 
       -----------------
@@ -843,13 +847,13 @@ package body Gtk.Icon_View is
 
       procedure Internal_Cb
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Icon_View : Gtk.Icon_View.Gtk_Icon_View_Record;
       begin
-         To_Gtk_Icon_View_Foreach_Func (D.Func) (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), Path, D.Data.all);
+         To_Gtk_Icon_View_Foreach_Func (D.Func) (Gtk.Icon_View.Gtk_Icon_View (Get_User_Data (Icon_View, Stub_Gtk_Icon_View)), From_Object (Path), D.Data.all);
       end Internal_Cb;
 
       ----------------------
@@ -902,7 +906,7 @@ package body Gtk.Icon_View is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -911,7 +915,7 @@ package body Gtk.Icon_View is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -922,15 +926,14 @@ package body Gtk.Icon_View is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -993,12 +996,12 @@ package body Gtk.Icon_View is
    is
       procedure Internal
          (Icon_View     : System.Address;
-          Path          : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path          : System.Address;
           Cell          : System.Address;
           Start_Editing : Integer);
       pragma Import (C, Internal, "gtk_icon_view_set_cursor");
    begin
-      Internal (Get_Object (Icon_View), Path, Get_Object_Or_Null (GObject (Cell)), Boolean'Pos (Start_Editing));
+      Internal (Get_Object (Icon_View), Get_Object (Path), Get_Object_Or_Null (GObject (Cell)), Boolean'Pos (Start_Editing));
    end Set_Cursor;
 
    ------------------------
@@ -1012,11 +1015,11 @@ package body Gtk.Icon_View is
    is
       procedure Internal
          (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Pos       : Gtk_Icon_View_Drop_Position);
       pragma Import (C, Internal, "gtk_icon_view_set_drag_dest_item");
    begin
-      Internal (Get_Object (Icon_View), Path, Pos);
+      Internal (Get_Object (Icon_View), Get_Object (Path), Pos);
    end Set_Drag_Dest_Item;
 
    --------------------------
@@ -1097,14 +1100,14 @@ package body Gtk.Icon_View is
 
    procedure Set_Model
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
       procedure Internal
          (Icon_View : System.Address;
-          Model     : System.Address);
+          Model     : Gtk.Tree_Model.Gtk_Tree_Model);
       pragma Import (C, Internal, "gtk_icon_view_set_model");
    begin
-      Internal (Get_Object (Icon_View), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Icon_View), Model);
    end Set_Model;
 
    -----------------------
@@ -1206,11 +1209,11 @@ package body Gtk.Icon_View is
       procedure Internal
          (Icon_View : System.Address;
           Tooltip   : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Cell      : System.Address);
       pragma Import (C, Internal, "gtk_icon_view_set_tooltip_cell");
    begin
-      Internal (Get_Object (Icon_View), Get_Object (Tooltip), Path, Get_Object_Or_Null (GObject (Cell)));
+      Internal (Get_Object (Icon_View), Get_Object (Tooltip), Get_Object (Path), Get_Object_Or_Null (GObject (Cell)));
    end Set_Tooltip_Cell;
 
    ------------------------
@@ -1239,10 +1242,10 @@ package body Gtk.Icon_View is
       procedure Internal
          (Icon_View : System.Address;
           Tooltip   : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+          Path      : System.Address);
       pragma Import (C, Internal, "gtk_icon_view_set_tooltip_item");
    begin
-      Internal (Get_Object (Icon_View), Get_Object (Tooltip), Path);
+      Internal (Get_Object (Icon_View), Get_Object (Tooltip), Get_Object (Path));
    end Set_Tooltip_Item;
 
    ------------------
@@ -1264,12 +1267,10 @@ package body Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
-      procedure Internal
-         (Icon_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+      procedure Internal (Icon_View : System.Address; Path : System.Address);
       pragma Import (C, Internal, "gtk_icon_view_unselect_path");
    begin
-      Internal (Get_Object (Icon_View), Path);
+      Internal (Get_Object (Icon_View), Get_Object (Path));
    end Unselect_Path;
 
    ---------------------------

@@ -75,6 +75,10 @@ package body Pango.Font_Face is
       return Boolean'Val (Internal (Get_Object (Self)));
    end Is_Synthesized;
 
+   ----------------
+   -- List_Sizes --
+   ----------------
+
    function List_Sizes
       (Self : not null access Pango_Font_Face_Record) return Gint_Array
    is

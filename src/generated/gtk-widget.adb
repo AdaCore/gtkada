@@ -299,6 +299,10 @@ package body Gtk.Widget is
       return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_Pango_Layout));
    end Create_Pango_Layout;
 
+   -------------
+   -- Destroy --
+   -------------
+
    procedure Destroy (Widget : not null access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");

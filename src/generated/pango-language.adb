@@ -56,6 +56,10 @@ package body Pango.Language is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Sample_String;
 
+   -----------------
+   -- Get_Scripts --
+   -----------------
+
    function Get_Scripts (Self : Pango_Language) return Pango_Script_Array is
       type script_array_bounded is array (Natural) of Pango_Script;
       type script_array_access is access script_array_bounded;

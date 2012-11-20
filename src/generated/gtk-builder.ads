@@ -240,6 +240,10 @@ package Gtk.Builder is
    type Gtk_Builder_Record is new GObject_Record with null record;
    type Gtk_Builder is access all Gtk_Builder_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Builder_Connect_Func is access procedure
      (Builder        : not null access Gtk_Builder_Record'Class;
       Object         : not null access Glib.Object.GObject_Record'Class;

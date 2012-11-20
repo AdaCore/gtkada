@@ -47,6 +47,10 @@ package Gtk.Font_Button is
    type Gtk_Font_Button_Record is new Gtk_Button_Record with null record;
    type Gtk_Font_Button is access all Gtk_Font_Button_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Font_Filter_Func is access function
      (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
       Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class)

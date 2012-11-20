@@ -30,12 +30,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Print_Settings is
 
-   function To_Gtk_Print_Settings_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Print_Settings_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Print_Settings_Func, System.Address);
-
    procedure C_Gtk_Print_Settings_Foreach
       (Self      : System.Address;
        Func      : System.Address;
@@ -45,6 +39,12 @@ package body Gtk.Print_Settings is
    --  Since: gtk+ 2.10
    --  "func": the function to call
    --  "user_data": user data for Func
+
+   function To_Gtk_Print_Settings_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Print_Settings_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Print_Settings_Func, System.Address);
 
    procedure Internal_Gtk_Print_Settings_Func
       (Key       : Interfaces.C.Strings.chars_ptr;
@@ -547,9 +547,13 @@ package body Gtk.Print_Settings is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Output_Bin;
 
+   ---------------------
+   -- Get_Page_Ranges --
+   ---------------------
+
    function Get_Page_Ranges
-     (Self   : not null access Gtk_Print_Settings_Record)
-      return Gtk_Page_Range_Array
+      (Self : not null access Gtk_Print_Settings_Record)
+       return Gtk_Page_Range_Array
    is
       type Internal_Page_Range_Array is
         array (Natural) of Gtk_Page_Range_Record;
@@ -1133,9 +1137,13 @@ package body Gtk.Print_Settings is
       Free (Tmp_Output_Bin);
    end Set_Output_Bin;
 
+   ---------------------
+   -- Set_Page_Ranges --
+   ---------------------
+
    procedure Set_Page_Ranges
-     (Self        : not null access Gtk_Print_Settings_Record;
-      Page_Ranges : Gtk_Page_Range_Array)
+      (Self        : not null access Gtk_Print_Settings_Record;
+       Page_Ranges : Gtk_Page_Range_Array)
    is
       procedure Internal
         (Settings    : System.Address;

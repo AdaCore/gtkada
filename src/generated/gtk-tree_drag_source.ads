@@ -80,7 +80,7 @@ package Gtk.Tree_Drag_Source is
 
    function Set_Row_Drag_Data
       (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
-       Tree_Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+       Tree_Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Sets selection data of target type GTK_TREE_MODEL_ROW. Normally used in
    --  a drag_data_get handler.
@@ -102,7 +102,7 @@ package Gtk.Tree_Drag_Source is
    --  Gtk.Tree_Drag_Dest.Gtk_Tree_Drag_Dest drag_data_received handler, you
    --  can assume that selection data of type GTK_TREE_MODEL_ROW is in from the
    --  current process. The returned path must be freed with
-   --  gtk_tree_path_free.
+   --  Gtk.Tree_Model.Path_Free.
    --  is otherwise valid
    --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data
    --  "tree_model": a Gtk.Tree_Model.Gtk_Tree_Model

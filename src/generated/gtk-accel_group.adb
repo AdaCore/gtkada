@@ -37,12 +37,6 @@ package body Gtk.Accel_Group is
       return Result;
    end From_Object_Free;
 
-   function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Accel_Group_Find_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Accel_Group_Find_Func, System.Address);
-
    function C_Gtk_Accel_Group_Find
       (Accel_Group : System.Address;
        Find_Func   : System.Address;
@@ -53,6 +47,12 @@ package body Gtk.Accel_Group is
    --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
    --  "data": data to pass to Find_Func
+
+   function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Accel_Group_Find_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Accel_Group_Find_Func, System.Address);
 
    function Internal_Gtk_Accel_Group_Find_Func
       (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;

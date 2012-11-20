@@ -146,8 +146,8 @@ package Gtk.Cell_Renderer_Toggle is
    --     procedure Handler
    --       (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
    --        Path : UTF8_String);
-   --    --  "path": string representation of Gtk.Tree_Path.Gtk_Tree_Path describing
-   --    --  the event location
+   --    --  "path": string representation of Gtk.Tree_Model.Gtk_Tree_Path
+   --    --  describing the event location
    --  The ::toggled signal is emitted when the cell is toggled.
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";

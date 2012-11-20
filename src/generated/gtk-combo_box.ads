@@ -70,27 +70,31 @@ package Gtk.Combo_Box is
    type Gtk_Combo_Box_Record is new Gtk_Bin_Record with null record;
    type Gtk_Combo_Box is access all Gtk_Combo_Box_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Tree_View_Row_Separator_Func is access function
-     (Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+     (Model : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Function type for determining whether the row pointed to by Iter should
    --  be rendered as a separator. A common way to implement this is to have a
    --  boolean column in the model, whose values the
    --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ------------------
@@ -130,12 +134,10 @@ package Gtk.Combo_Box is
 
    procedure Gtk_New_With_Model
       (Combo_Box : out Gtk_Combo_Box;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    procedure Initialize_With_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
    --  Model.
    --  Since: gtk+ 2.4
@@ -143,12 +145,10 @@ package Gtk.Combo_Box is
 
    procedure Gtk_New_With_Model_And_Entry
       (Combo_Box : out Gtk_Combo_Box;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    procedure Initialize_With_Model_And_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
@@ -166,7 +166,7 @@ package Gtk.Combo_Box is
    --  active item. If the model is a non-flat treemodel, and the active item
    --  is not an immediate child of the root of the tree, this function returns
    --  'gtk_tree_path_get_indices (path)[0]', where 'path' is the
-   --  Gtk.Tree_Path.Gtk_Tree_Path of the active item.
+   --  Gtk.Tree_Model.Gtk_Tree_Path of the active item.
    --  or -1 if there's no active item.
    --  Since: gtk+ 2.4
 
@@ -317,7 +317,7 @@ package Gtk.Combo_Box is
 
    procedure Set_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Sets the model used by Combo_Box to be Model. Will unset a previously
    --  set model (if applicable). If model is null, then it will unset the
    --  model.
@@ -417,7 +417,7 @@ package Gtk.Combo_Box is
    --  Sets the current active item to be the one referenced by Iter, or
    --  unsets the active item if Iter is null.
    --  Since: gtk+ 2.4
-   --  "iter": The Gtk.Tree_Iter.Gtk_Tree_Iter, or null
+   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -425,7 +425,7 @@ package Gtk.Combo_Box is
    package Set_Row_Separator_Func_User_Data is
 
       type Gtk_Tree_View_Row_Separator_Func is access function
-        (Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+        (Model : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data  : User_Data_Type) return Boolean;
       --  Function type for determining whether the row pointed to by Iter should
@@ -433,7 +433,7 @@ package Gtk.Combo_Box is
       --  boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
       --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
       --  "data": user data
 
       procedure Set_Row_Separator_Func
@@ -470,7 +470,7 @@ package Gtk.Combo_Box is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -478,7 +478,7 @@ package Gtk.Combo_Box is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -618,7 +618,7 @@ package Gtk.Combo_Box is
    --  The item which is currently active. If the model is a non-flat
    --  treemodel, and the active item is not an immediate child of the root of
    --  the tree, this property has the value 'gtk_tree_path_get_indices
-   --  (path)[0]', where 'path' is the Gtk.Tree_Path.Gtk_Tree_Path of the
+   --  (path)[0]', where 'path' is the Gtk.Tree_Model.Gtk_Tree_Path of the
    --  active item.
    --
    --  Name: Active_Id_Property
@@ -686,11 +686,6 @@ package Gtk.Combo_Box is
    --  The column in the combo box's model that provides string IDs for the
    --  values in the model, if != -1.
    --
-   --  Name: Model_Property
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
-   --  Flags: read-write
-   --  The model from which the combo box takes the values shown in the list.
-   --
    --  Name: Popup_Fixed_Width_Property
    --  Type: Boolean
    --  Flags: read-write
@@ -738,7 +733,6 @@ package Gtk.Combo_Box is
    Has_Entry_Property : constant Glib.Properties.Property_Boolean;
    Has_Frame_Property : constant Glib.Properties.Property_Boolean;
    Id_Column_Property : constant Glib.Properties.Property_Int;
-   Model_Property : constant Glib.Properties.Property_Object;
    Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean;
    Popup_Shown_Property : constant Glib.Properties.Property_Boolean;
    Row_Span_Column_Property : constant Glib.Properties.Property_Int;
@@ -797,8 +791,6 @@ private
      Glib.Properties.Build ("popup-shown");
    Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("popup-fixed-width");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
    Id_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("id-column");
    Has_Frame_Property : constant Glib.Properties.Property_Boolean :=

@@ -97,24 +97,6 @@ package body Gtk.Cell_Area is
         (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
    end Get_Cell_At_Position;
 
-   function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Callback);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Callback, System.Address);
-
-   function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Alloc_Callback);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Alloc_Callback, System.Address);
-
-   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Layout_Data_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Layout_Data_Func, System.Address);
-
    procedure C_Gtk_Cell_Area_Foreach
       (Self          : System.Address;
        Callback      : System.Address;
@@ -164,6 +146,24 @@ package body Gtk.Cell_Area is
    --  "func_data": user data for Func
    --  "destroy": destroy notify for Func_Data
 
+   function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Callback);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Callback, System.Address);
+
+   function To_Gtk_Cell_Alloc_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Alloc_Callback);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Alloc_Callback, System.Address);
+
+   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Layout_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Layout_Data_Func, System.Address);
+
    function Internal_Gtk_Cell_Alloc_Callback
       (Renderer        : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
@@ -187,14 +187,14 @@ package body Gtk.Cell_Area is
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
    --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -235,15 +235,14 @@ package body Gtk.Cell_Area is
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
    end Internal_Gtk_Cell_Layout_Data_Func;
 
    package Type_Conversion_Gtk_Cell_Area is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -339,20 +338,20 @@ package body Gtk.Cell_Area is
 
    procedure Apply_Attributes
       (Self        : not null access Gtk_Cell_Area_Record;
-       Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Is_Expander : Boolean;
        Is_Expanded : Boolean)
    is
       procedure Internal
          (Self        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Is_Expander : Integer;
           Is_Expanded : Integer);
       pragma Import (C, Internal, "gtk_cell_area_apply_attributes");
    begin
-      Internal (Get_Object (Self), Get_Object (Tree_Model), Iter, Boolean'Pos (Is_Expander), Boolean'Pos (Is_Expanded));
+      Internal (Get_Object (Self), Tree_Model, Iter, Boolean'Pos (Is_Expander), Boolean'Pos (Is_Expanded));
    end Apply_Attributes;
 
    -----------------------
@@ -1085,7 +1084,7 @@ package body Gtk.Cell_Area is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -1094,7 +1093,7 @@ package body Gtk.Cell_Area is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -1105,15 +1104,14 @@ package body Gtk.Cell_Area is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------

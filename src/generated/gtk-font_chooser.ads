@@ -50,6 +50,10 @@ package Gtk.Font_Chooser is
 
    type Gtk_Font_Chooser is new Glib.Types.GType_Interface;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Font_Filter_Func is access function
      (Family : not null access Pango.Font_Family.Pango_Font_Family_Record'Class;
       Face   : not null access Pango.Font_Face.Pango_Font_Face_Record'Class)

@@ -30,18 +30,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Entry_Completion is
 
-   function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Entry_Completion_Match_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Entry_Completion_Match_Func, System.Address);
-
-   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Cell_Layout_Data_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Cell_Layout_Data_Func, System.Address);
-
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
        Cell        : System.Address;
@@ -74,17 +62,29 @@ package body Gtk.Entry_Completion is
    --  "func_data": user data for Func
    --  "func_notify": destroy notify for Func_Data.
 
+   function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Entry_Completion_Match_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Entry_Completion_Match_Func, System.Address);
+
+   function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Cell_Layout_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Cell_Layout_Data_Func, System.Address);
+
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
    --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -96,7 +96,7 @@ package body Gtk.Entry_Completion is
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
    --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
    ----------------------------------------
@@ -106,15 +106,14 @@ package body Gtk.Entry_Completion is
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
    end Internal_Gtk_Cell_Layout_Data_Func;
 
    ----------------------------------------------
@@ -295,11 +294,11 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model
    is
-      function Internal (Completion : System.Address) return System.Address;
+      function Internal
+         (Completion : System.Address) return Gtk.Tree_Model.Gtk_Tree_Model;
       pragma Import (C, Internal, "gtk_entry_completion_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Completion)), Stub_Gtk_Tree_Model));
+      return Internal (Get_Object (Completion));
    end Get_Model;
 
    --------------------------
@@ -441,7 +440,7 @@ package body Gtk.Entry_Completion is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -450,7 +449,7 @@ package body Gtk.Entry_Completion is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -461,15 +460,14 @@ package body Gtk.Entry_Completion is
       procedure Internal_Cb
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
       end Internal_Cb;
 
       ------------------------
@@ -566,7 +564,7 @@ package body Gtk.Entry_Completion is
       --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to match
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
       --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
 
       -----------------
@@ -624,14 +622,14 @@ package body Gtk.Entry_Completion is
 
    procedure Set_Model
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Model      : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
+       Model      : Gtk.Tree_Model.Gtk_Tree_Model)
    is
       procedure Internal
          (Completion : System.Address;
-          Model      : System.Address);
+          Model      : Gtk.Tree_Model.Gtk_Tree_Model);
       pragma Import (C, Internal, "gtk_entry_completion_set_model");
    begin
-      Internal (Get_Object (Completion), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Completion), Model);
    end Set_Model;
 
    --------------------------

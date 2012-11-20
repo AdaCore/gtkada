@@ -1411,7 +1411,7 @@ class Subprogram(object):
         return self
 
     def set_body(self, body):
-        """Overrides the body of the subprogram (including profile,...)"""
+        """Overrides the body of the subprogram (after "is")"""
         self._manual_body = body
 
     def _profile(self, pkg, indent="   ", maxlen=max_profile_length):
@@ -1519,10 +1519,7 @@ class Subprogram(object):
             return ""
 
     def body(self, pkg, indent="   "):
-        if self._manual_body:
-            return self._manual_body
-
-        if not self.code:
+        if not self.code and not self._manual_body:
             return ""
 
         result = box(base_name(self.name), indent=indent) + "\n\n"
@@ -1534,16 +1531,20 @@ class Subprogram(object):
         else:
             result += " is\n"
 
-        local = self._format_local_vars(pkg=pkg, indent=indent)
-        result += self._find_unreferenced(local_vars=local, indent=indent)
+        if self._manual_body:
+            result += indent + self._manual_body
+        else:
+            local = self._format_local_vars(pkg=pkg, indent=indent)
+            result += self._find_unreferenced(local_vars=local, indent=indent)
 
-        for s in self._nested:
-            result += s.spec(pkg=pkg, indent=indent + "   ") + "\n"
-            result += s.body(pkg=pkg, indent=indent + "   ")
+            for s in self._nested:
+                result += s.spec(pkg=pkg, indent=indent + "   ") + "\n"
+                result += s.body(pkg=pkg, indent=indent + "   ")
 
-        result += local
-        result += indent + "begin\n"
-        result += indent_code(self.code, indent=len(indent) + 3)
+            result += local
+            result += indent + "begin\n"
+            result += indent_code(self.code, indent=len(indent) + 3)
+
         return result + indent + "end %s;\n" % base_name(self.name)
 
     def call(self, in_pkg=None, extra_postcall="", values=dict(), lang=None):
@@ -1949,22 +1950,24 @@ class Package(object):
     def section_order(self, name):
         """Return a numerical order for sections"""
         order = {"": 0,
-                 "Enumeration Properties": 1,
+                 "Callbacks": 1,
+                 "Enumeration Properties": 2,
 
                  # Primitive operations first
-                 "Constructors": 2,
-                 "Methods": 3,
-                 "GtkAda additions": 4,
-                 "Inherited subprograms (from interfaces)": 5,
+                 "Constructors": 3,
+                 "Methods": 4,
+                 "GtkAda additions": 5,
+                 "Inherited subprograms (from interfaces)": 6,
 
                  # Then non-primitive (so that we can freeze the type, for
                  # instance by instantiating lists)
-                 "Interfaces": 6,
-                 "Functions": 7,
+                 "Interfaces": 7,
+                 "Functions": 8,
+                 "Lists": 9,
 
                  # General data independent of the type
-                 "Properties": 8,
-                 "Signals": 9}
+                 "Properties": 10,
+                 "Signals": 11}
         return order.get(name, 1000)
 
     def spec(self):

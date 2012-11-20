@@ -31,12 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Menu is
 
-   function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Menu_Position_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Menu_Position_Func, System.Address);
-
    procedure C_Gtk_Menu_Attach_To_Widget
       (Menu          : System.Address;
        Attach_Widget : System.Address;
@@ -121,6 +115,12 @@ package body Gtk.Menu is
    --  "destroy": destroy notify for Data
    --  "button": the mouse button which was pressed to initiate the event
    --  "activate_time": the time at which the activation event occurred
+
+   function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Menu_Position_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Menu_Position_Func, System.Address);
 
    procedure Internal_Gtk_Menu_Position_Func
       (Menu      : System.Address;

@@ -198,12 +198,6 @@ package body Gdk.Event is
       return Convert (Gdk_Event_Key_Access (Event));
    end To_Event;
 
-   function To_Gdk_Event_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gdk_Event_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gdk_Event_Func, System.Address);
-
    procedure C_Gdk_Event_Handler_Set
       (Func   : System.Address;
        Data   : System.Address;
@@ -218,6 +212,12 @@ package body Gdk.Event is
    --  "data": user data to pass to the function.
    --  "notify": the function to call when the handler function is removed,
    --  i.e. when Gdk.Event.Handler_Set is called with another event handler.
+
+   function To_Gdk_Event_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gdk_Event_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gdk_Event_Func, System.Address);
 
    procedure Internal_Gdk_Event_Func
       (Event : Gdk.Event.Gdk_Event;

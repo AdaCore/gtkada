@@ -75,6 +75,10 @@ package Gtk.Recent_Chooser_Dialog is
    type Gtk_Recent_Chooser_Dialog_Record is new Gtk_Dialog_Record with null record;
    type Gtk_Recent_Chooser_Dialog is access all Gtk_Recent_Chooser_Dialog_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

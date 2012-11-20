@@ -347,24 +347,6 @@ ada_gtk_tree_store_set_int_ptr_int (GtkTreeStore *tree_store,
     (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
 }
 
-void
-ada_gtk_tree_model_get_int (GtkTreeModel *tree_model,
-			    GtkTreeIter  *iter,
-			    gint          column,
-			    gint         *value)
-{
-  gtk_tree_model_get (tree_model, iter, column, value, -1);
-}
-
-void
-ada_gtk_tree_model_get_ptr (GtkTreeModel *tree_model,
-			    GtkTreeIter  *iter,
-			    gint          column,
-			    void         *value)
-{
-  gtk_tree_model_get (tree_model, iter, column, value, -1);
-}
-
 GtkWidget*
 ada_gtk_dialog_new_with_buttons (const gchar     *title,
                                  GtkWindow       *parent,
@@ -2030,17 +2012,6 @@ gboolean
 ada_g_type_is_interface (GType type)
 {
   return G_TYPE_IS_INTERFACE (type);
-}
-
-/******************************************
- ** Functions for Tree_Iter
- ******************************************/
-
-void
-ada_tree_iter_copy (const GtkTreeIter *source,
-                    GtkTreeIter *dest)
-{
-  *dest = *source;
 }
 
 /******************************************

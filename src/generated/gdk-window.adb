@@ -65,12 +65,6 @@ package body Gdk.Window is
       Internal (Window, Get_Object (Widget));
    end Set_User_Data;
 
-   function To_Gdk_Window_Child_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gdk_Window_Child_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gdk_Window_Child_Func, System.Address);
-
    procedure C_Gdk_Window_Invalidate_Maybe_Recurse
       (Self       : Gdk.Gdk_Window;
        Region     : Cairo.Region.Cairo_Region;
@@ -94,6 +88,12 @@ package body Gdk.Window is
    --  "child_func": function to use to decide if to recurse to a child, null
    --  means never recurse.
    --  "user_data": data passed to Child_Func
+
+   function To_Gdk_Window_Child_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gdk_Window_Child_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gdk_Window_Child_Func, System.Address);
 
    function Internal_Gdk_Window_Child_Func
       (Window    : Gdk.Gdk_Window;

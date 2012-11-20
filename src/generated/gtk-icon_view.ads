@@ -73,25 +73,29 @@ package Gtk.Icon_View is
    pragma Convention (C, Gtk_Icon_View_Drop_Position);
    --  An enum for determining where a dropped item goes.
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Icon_View_Foreach_Func is access procedure
      (Icon_View : not null access Gtk_Icon_View_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  A function used by Gtk.Icon_View.Selected_Foreach to map all selected
    --  rows. It will be called on every selected row in the view.
    --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-   --  "path": The Gtk.Tree_Path.Gtk_Tree_Path of a selected row
+   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ----------------------------
@@ -125,12 +129,10 @@ package Gtk.Icon_View is
 
    procedure Gtk_New_With_Model
       (Icon_View : out Gtk_Icon_View;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    procedure Initialize_With_Model
       (Icon_View : not null access Gtk_Icon_View_Record'Class;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      ;
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget with the model Model.
    --  Since: gtk+ 2.6
    --  "model": The model.
@@ -162,7 +164,7 @@ package Gtk.Icon_View is
    --  Creates a cairo_surface_t representation of the item at Path. This
    --  image is used for a drag icon.
    --  Since: gtk+ 2.8
-   --  "path": a Gtk.Tree_Path.Gtk_Tree_Path in Icon_View
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path in Icon_View
 
    function Get_Column_Spacing
       (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
@@ -199,8 +201,8 @@ package Gtk.Icon_View is
    --  Fills in Path and Cell with the current cursor path and cell. If the
    --  cursor isn't currently set, then *Path will be null. If no cell
    --  currently has focus, then *Cell will be null.
-   --  The returned Gtk.Tree_Path.Gtk_Tree_Path must be freed with
-   --  gtk_tree_path_free.
+   --  The returned Gtk.Tree_Model.Gtk_Tree_Path must be freed with
+   --  Gtk.Tree_Model.Path_Free.
    --  Since: gtk+ 2.8
    --  "path": Return location for the current cursor path, or null
    --  "cell": Return location the current focus cell, or null
@@ -219,7 +221,7 @@ package Gtk.Icon_View is
    --  in order to give keyboard focus to the widget. Please note that editing
    --  can only happen when the widget is realized.
    --  Since: gtk+ 2.8
-   --  "path": A Gtk.Tree_Path.Gtk_Tree_Path
+   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path
    --  "cell": One of the cell renderers of Icon_View, or null
    --  "start_editing": True if the specified cell should start being edited.
 
@@ -265,7 +267,7 @@ package Gtk.Icon_View is
    --  Finds the path at the point (X, Y), relative to bin_window coordinates.
    --  In contrast to Gtk.Icon_View.Get_Path_At_Pos, this function also obtains
    --  the cell at the specified position. The returned path should be freed
-   --  with gtk_tree_path_free. See
+   --  with Gtk.Tree_Model.Path_Free. See
    --  Gtk.Icon_View.Convert_Widget_To_Bin_Window_Coords for converting widget
    --  coordinates to bin_window coordinates.
    --  Since: gtk+ 2.8
@@ -281,7 +283,7 @@ package Gtk.Icon_View is
    --  Gets the column in which the item Path is currently displayed. Column
    --  numbers start at 0.
    --  Since: gtk+ 2.22
-   --  "path": the Gtk.Tree_Path.Gtk_Tree_Path of the item
+   --  "path": the Gtk.Tree_Model.Gtk_Tree_Path of the item
 
    function Get_Item_Orientation
       (Icon_View : not null access Gtk_Icon_View_Record)
@@ -317,7 +319,7 @@ package Gtk.Icon_View is
    --  Gets the row in which the item Path is currently displayed. Row numbers
    --  start at 0.
    --  Since: gtk+ 2.22
-   --  "path": the Gtk.Tree_Path.Gtk_Tree_Path of the item
+   --  "path": the Gtk.Tree_Model.Gtk_Tree_Path of the item
 
    function Get_Item_Width
       (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
@@ -372,7 +374,7 @@ package Gtk.Icon_View is
 
    procedure Set_Model
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Sets the model for a Gtk.Icon_View.Gtk_Icon_View. If the Icon_View
    --  already has a model set, it will remove it before setting the new model.
    --  If Model is null, then it will unset the old model.
@@ -544,8 +546,8 @@ package Gtk.Icon_View is
    --  "y": the y coordinate (relative to widget coordinates)
    --  "keyboard_tip": whether this is a keyboard tooltip or not
    --  "model": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Model or null
-   --  "path": a pointer to receive a Gtk.Tree_Path.Gtk_Tree_Path or null
-   --  "iter": a pointer to receive a Gtk.Tree_Iter.Gtk_Tree_Iter or null
+   --  "path": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Path or null
+   --  "iter": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Iter or null
 
    procedure Get_Visible_Range
       (Icon_View  : not null access Gtk_Icon_View_Record;
@@ -553,7 +555,7 @@ package Gtk.Icon_View is
        End_Path   : out Gtk.Tree_Model.Gtk_Tree_Path);
    --  Sets Start_Path and End_Path to be the first and last visible path.
    --  Note that there may be invisible paths in between.
-   --  Both paths should be freed with gtk_tree_path_free after use.
+   --  Both paths should be freed with Gtk.Tree_Model.Path_Free after use.
    --  Since: gtk+ 2.8
    --  "start_path": Return location for start of region, or null
    --  "end_path": Return location for end of region, or null
@@ -563,7 +565,7 @@ package Gtk.Icon_View is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Activates the item determined by Path.
    --  Since: gtk+ 2.6
-   --  "path": The Gtk.Tree_Path.Gtk_Tree_Path to be activated
+   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be activated
 
    function Path_Is_Selected
       (Icon_View : not null access Gtk_Icon_View_Record;
@@ -571,7 +573,7 @@ package Gtk.Icon_View is
    --  Returns True if the icon pointed to by Path is currently selected. If
    --  Path does not point to a valid location, False is returned.
    --  Since: gtk+ 2.6
-   --  "path": A Gtk.Tree_Path.Gtk_Tree_Path to check selection on.
+   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path to check selection on.
 
    procedure Scroll_To_Path
       (Icon_View : not null access Gtk_Icon_View_Record;
@@ -608,7 +610,7 @@ package Gtk.Icon_View is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Selects the row at Path.
    --  Since: gtk+ 2.6
-   --  "path": The Gtk.Tree_Path.Gtk_Tree_Path to be selected.
+   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be selected.
 
    procedure Selected_Foreach
       (Icon_View : not null access Gtk_Icon_View_Record;
@@ -630,7 +632,7 @@ package Gtk.Icon_View is
       --  A function used by Gtk.Icon_View.Selected_Foreach to map all selected
       --  rows. It will be called on every selected row in the view.
       --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-      --  "path": The Gtk.Tree_Path.Gtk_Tree_Path of a selected row
+      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
       --  "data": user data
 
       procedure Selected_Foreach
@@ -655,7 +657,7 @@ package Gtk.Icon_View is
    --  See also Gtk.Icon_View.Set_Tooltip_Column for a simpler alternative.
    --  Since: gtk+ 2.12
    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
-   --  "path": a Gtk.Tree_Path.Gtk_Tree_Path
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
    --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer or null
 
    procedure Set_Tooltip_Item
@@ -667,7 +669,7 @@ package Gtk.Icon_View is
    --  alternative. See also Gtk.Tooltip.Set_Tip_Area.
    --  Since: gtk+ 2.12
    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
-   --  "path": a Gtk.Tree_Path.Gtk_Tree_Path
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
 
    procedure Unselect_All (Icon_View : not null access Gtk_Icon_View_Record);
    --  Unselects all the icons.
@@ -678,7 +680,7 @@ package Gtk.Icon_View is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Unselects the row at Path.
    --  Since: gtk+ 2.6
-   --  "path": The Gtk.Tree_Path.Gtk_Tree_Path to be unselected.
+   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be unselected.
 
    procedure Unset_Model_Drag_Dest
       (Icon_View : not null access Gtk_Icon_View_Record);
@@ -713,7 +715,7 @@ package Gtk.Icon_View is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -721,7 +723,7 @@ package Gtk.Icon_View is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -939,10 +941,6 @@ package Gtk.Icon_View is
    --  are both set to column numbers, it overrides the text column. If both
    --  are set to -1, no texts are displayed.
    --
-   --  Name: Model_Property
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
-   --  Flags: read-write
-   --
    --  Name: Pixbuf_Column_Property
    --  Type: Gint
    --  Flags: read-write
@@ -996,7 +994,6 @@ package Gtk.Icon_View is
    Item_Width_Property : constant Glib.Properties.Property_Int;
    Margin_Property : constant Glib.Properties.Property_Int;
    Markup_Column_Property : constant Glib.Properties.Property_Int;
-   Model_Property : constant Glib.Properties.Property_Object;
    Pixbuf_Column_Property : constant Glib.Properties.Property_Int;
    Reorderable_Property : constant Glib.Properties.Property_Boolean;
    Row_Spacing_Property : constant Glib.Properties.Property_Int;
@@ -1025,8 +1022,8 @@ package Gtk.Icon_View is
    --  "item-activated"
    --     procedure Handler
    --       (Self : access Gtk_Icon_View_Record'Class;
-   --        Path : Gtk.Tree_Path.Gtk_Tree_Path);
-   --    --  "path": the Gtk.Tree_Path.Gtk_Tree_Path for the activated item
+   --        Path : Gtk.Tree_Model.Gtk_Tree_Path);
+   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated item
    --  The ::item-activated signal is emitted when the method
    --  Gtk.Icon_View.Item_Activated is called or the user double clicks an
    --  item. It is also emitted when a non-editable item is selected and one of
@@ -1132,8 +1129,6 @@ private
      Glib.Properties.Build ("reorderable");
    Pixbuf_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixbuf-column");
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
    Markup_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("markup-column");
    Margin_Property : constant Glib.Properties.Property_Int :=

@@ -74,6 +74,7 @@ class GIR(object):
         self.ccode = ""
         self.classes = dict()  # Maps C name to a GIRClass instance
         self.interfaces = dict() # Maps GIR's "name" to an interface
+        self.ctype_interfaces = dict() # Maps GIR's c:type to an interface
         self.callbacks = dict()  # Ada name to GIR XML node
         self.enums = dict()  # Maps C "name" to a GIR XML node
         self.globals = GlobalsBinder(self) # global vars
@@ -96,8 +97,10 @@ class GIR(object):
 
             k = "%s/%s" % (namespace, ninterface)
             for cl in root.findall(k):
-                self.interfaces[cl.get("name")] = self._create_class(
-                    root, cl, is_interface=True, is_gobject=False)
+                self.ctype_interfaces[cl.get(ctype_qname)] = \
+                    self.interfaces[cl.get("name")] = \
+                    self._create_class(
+                      root, cl, is_interface=True, is_gobject=False)
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
@@ -999,7 +1002,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         if cbname not in self.callbacks:
             self.callbacks.add(cbname)   # Prevent multiple generations
 
-            section = self.pkg.section("")
+            section = self.pkg.section("Callbacks")
 
             if cb_user_data is None:
                 print "callback has no user data: %s" % cbname
@@ -1072,7 +1075,6 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         if cb_user_data is not None:
             gtk_func_profile.replace_param(destroy, "System.Address")
 
-        gtk_func_profile.unset_default_values()
         gtk_func = gtk_func_profile.subprogram(
             name=naming.case("C_%s" % cname), lang="ada->c").import_c(cname)
 
@@ -1993,7 +1995,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         if into:
             # Make sure we have already generated the other package, so that
             # its types go first.
-            klass = gir.classes[into]
+            klass = gir.classes.get(into, None) or gir.ctype_interfaces[into]
             klass.generate(gir)
             into = klass.name  # from now on, we want the Ada name
 
@@ -2153,8 +2155,11 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             s = None
             for p in extra:
                 if p.tag == "spec":
-                    s = s or self.pkg.section("GtkAda additions")
-                    s.add_code(p.text)
+                    if p.get("private", "False").lower() == "true":
+                        self.pkg.add_private(p.text, at_end=True)
+                    else:
+                        s = s or self.pkg.section("GtkAda additions")
+                        s.add_code(p.text)
                 elif p.tag == "body" \
                         and p.get("before", "true").lower() != "true":
                     s.add_code(p.text, specs=False)

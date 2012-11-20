@@ -108,9 +108,11 @@ package body Gtk.Icon_Set is
       return From_Object (Internal (Get_Object (Self)));
    end Copy;
 
-   function Get_Sizes
-      (Self    : Gtk_Icon_Set) return Gint_Array
-   is
+   ---------------
+   -- Get_Sizes --
+   ---------------
+
+   function Get_Sizes (Self : Gtk_Icon_Set) return Gint_Array is
       type gint_array_bounded is array (Natural) of Gint;
 
       procedure Internal

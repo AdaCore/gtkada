@@ -46,8 +46,13 @@ package body Pango.Font_Map is
       return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Context));
    end Create_Context;
 
+   -------------------
+   -- List_Families --
+   -------------------
+
    function List_Families
-      (Self : not null access Pango_Font_Map_Record) return Pango_Font_Family_Array
+      (Self : not null access Pango_Font_Map_Record)
+       return Pango_Font_Family_Array
    is
       type font_family_array_bounded is array (Natural) of System.Address;
 

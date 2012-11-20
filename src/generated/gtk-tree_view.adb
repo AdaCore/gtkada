@@ -31,48 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Tree_View is
 
-   function To_Gtk_Tree_Cell_Data_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_Cell_Data_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_Cell_Data_Func, System.Address);
-
-   function To_Gtk_Tree_View_Mapping_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_View_Mapping_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_View_Mapping_Func, System.Address);
-
-   function To_Gtk_Tree_View_Column_Drop_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_View_Column_Drop_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_View_Column_Drop_Func, System.Address);
-
-   function To_Gtk_Tree_Destroy_Count_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_Destroy_Count_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_Destroy_Count_Func, System.Address);
-
-   function To_Gtk_Tree_View_Row_Separator_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_View_Row_Separator_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func, System.Address);
-
-   function To_Gtk_Tree_View_Search_Equal_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_View_Search_Equal_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_View_Search_Equal_Func, System.Address);
-
-   function To_Gtk_Tree_View_Search_Position_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Tree_View_Search_Position_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Tree_View_Search_Position_Func, System.Address);
-
    function C_Gtk_Tree_View_Insert_Column_With_Data_Func
       (Tree_View : System.Address;
        Position  : Gint;
@@ -179,10 +137,52 @@ package body Gtk.Tree_View is
    --  "data": user data to pass to Func, or null
    --  "destroy": Destroy notifier for Data, or null
 
+   function To_Gtk_Tree_Cell_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_Cell_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_Cell_Data_Func, System.Address);
+
+   function To_Gtk_Tree_View_Mapping_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_View_Mapping_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_View_Mapping_Func, System.Address);
+
+   function To_Gtk_Tree_View_Column_Drop_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_View_Column_Drop_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_View_Column_Drop_Func, System.Address);
+
+   function To_Gtk_Tree_Destroy_Count_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_Destroy_Count_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_Destroy_Count_Func, System.Address);
+
+   function To_Gtk_Tree_View_Row_Separator_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_View_Row_Separator_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func, System.Address);
+
+   function To_Gtk_Tree_View_Search_Equal_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_View_Search_Equal_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_View_Search_Equal_Func, System.Address);
+
+   function To_Gtk_Tree_View_Search_Position_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_View_Search_Position_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tree_View_Search_Position_Func, System.Address);
+
    procedure Internal_Gtk_Tree_Cell_Data_Func
       (Tree_Column : System.Address;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Cell_Data_Func);
@@ -190,12 +190,12 @@ package body Gtk.Tree_View is
    --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
    --  by Tree_Column
    --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-   --  "iter": A Gtk.Tree_Iter.Gtk_Tree_Iter of the current row rendered
+   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
    --  "data": user data
 
    procedure Internal_Gtk_Tree_Destroy_Count_Func
       (Tree_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        Children  : Gint;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Destroy_Count_Func);
@@ -217,7 +217,7 @@ package body Gtk.Tree_View is
 
    procedure Internal_Gtk_Tree_View_Mapping_Func
       (Tree_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_View_Mapping_Func);
    --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
@@ -225,16 +225,16 @@ package body Gtk.Tree_View is
    --  "user_data": user data
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
-      (Model : System.Address;
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
    --  "data": user data
 
    function Internal_Gtk_Tree_View_Search_Equal_Func
-      (Model       : System.Address;
+      (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -243,7 +243,7 @@ package body Gtk.Tree_View is
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
    --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
    --  "key": the key string to compare with
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing the row of Model that
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model that
    --  should be compared with Key.
    --  "search_data": user data from Gtk.Tree_View.Set_Search_Equal_Func
 
@@ -260,16 +260,15 @@ package body Gtk.Tree_View is
    procedure Internal_Gtk_Tree_Cell_Data_Func
       (Tree_Column : System.Address;
        Cell        : System.Address;
-       Tree_Model  : System.Address;
+       Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                      : constant Gtk_Tree_Cell_Data_Func := To_Gtk_Tree_Cell_Data_Func (Data);
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
       Stub_Gtk_Cell_Renderer    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Stub_Gtk_Tree_Model       : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      Func (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter);
+      Func (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
    end Internal_Gtk_Tree_Cell_Data_Func;
 
    ------------------------------------------
@@ -278,14 +277,14 @@ package body Gtk.Tree_View is
 
    procedure Internal_Gtk_Tree_Destroy_Count_Func
       (Tree_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        Children  : Gint;
        User_Data : System.Address)
    is
       Func               : constant Gtk_Tree_Destroy_Count_Func := To_Gtk_Tree_Destroy_Count_Func (User_Data);
       Stub_Gtk_Tree_View : Gtk_Tree_View_Record;
    begin
-      Func (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), Path, Children);
+      Func (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), From_Object (Path), Children);
    end Internal_Gtk_Tree_Destroy_Count_Func;
 
    ---------------------------------------------
@@ -312,13 +311,13 @@ package body Gtk.Tree_View is
 
    procedure Internal_Gtk_Tree_View_Mapping_Func
       (Tree_View : System.Address;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Path      : System.Address;
        User_Data : System.Address)
    is
       Func               : constant Gtk_Tree_View_Mapping_Func := To_Gtk_Tree_View_Mapping_Func (User_Data);
       Stub_Gtk_Tree_View : Gtk_Tree_View_Record;
    begin
-      Func (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), Path);
+      Func (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), From_Object (Path));
    end Internal_Gtk_Tree_View_Mapping_Func;
 
    -----------------------------------------------
@@ -326,14 +325,13 @@ package body Gtk.Tree_View is
    -----------------------------------------------
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
-      (Model : System.Address;
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
-      Func                : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
    begin
-      return Boolean'Pos (Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter));
+      return Boolean'Pos (Func (Model, Iter));
    end Internal_Gtk_Tree_View_Row_Separator_Func;
 
    ----------------------------------------------
@@ -341,16 +339,15 @@ package body Gtk.Tree_View is
    ----------------------------------------------
 
    function Internal_Gtk_Tree_View_Search_Equal_Func
-      (Model       : System.Address;
+      (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Integer
    is
-      Func                : constant Gtk_Tree_View_Search_Equal_Func := To_Gtk_Tree_View_Search_Equal_Func (Search_Data);
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Func : constant Gtk_Tree_View_Search_Equal_Func := To_Gtk_Tree_View_Search_Equal_Func (Search_Data);
    begin
-      return Boolean'Pos (Func (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
+      return Boolean'Pos (Func (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
    end Internal_Gtk_Tree_View_Search_Equal_Func;
 
    -------------------------------------------------
@@ -389,8 +386,7 @@ package body Gtk.Tree_View is
 
    procedure Gtk_New
       (Tree_View : out Gtk_Tree_View;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
    begin
       Tree_View := new Gtk_Tree_View_Record;
@@ -416,13 +412,13 @@ package body Gtk.Tree_View is
 
    procedure Initialize
       (Tree_View : not null access Gtk_Tree_View_Record'Class;
-       Model     : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-      
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
-      function Internal (Model : System.Address) return System.Address;
+      function Internal
+         (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_new_with_model");
    begin
-      Set_Object (Tree_View, Internal (Get_Object (Model)));
+      Set_Object (Tree_View, Internal (Model));
    end Initialize;
 
    -------------------
@@ -463,10 +459,10 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Integer;
+          Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_collapse_row");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Path));
+      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path)));
    end Collapse_Row;
 
    ----------------------
@@ -624,11 +620,10 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path)
-          return Cairo.Cairo_Surface;
+          Path      : System.Address) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_tree_view_create_row_drag_icon");
    begin
-      return Internal (Get_Object (Tree_View), Path);
+      return Internal (Get_Object (Tree_View), Get_Object (Path));
    end Create_Row_Drag_Icon;
 
    ----------------------------
@@ -693,11 +688,11 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Open_All  : Integer) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_expand_row");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Path, Boolean'Pos (Open_All)));
+      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path), Boolean'Pos (Open_All)));
    end Expand_Row;
 
    --------------------
@@ -708,12 +703,10 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path)
    is
-      procedure Internal
-         (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+      procedure Internal (Tree_View : System.Address; Path : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_expand_to_path");
    begin
-      Internal (Get_Object (Tree_View), Path);
+      Internal (Get_Object (Tree_View), Get_Object (Path));
    end Expand_To_Path;
 
    -------------------------
@@ -728,12 +721,12 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Column    : System.Address;
           Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_background_area");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object_Or_Null (GObject (Column)), Rect);
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Column)), Rect);
    end Get_Background_Area;
 
    --------------------
@@ -762,12 +755,12 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Column    : System.Address;
           Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_cell_area");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object_Or_Null (GObject (Column)), Rect);
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Column)), Rect);
    end Get_Cell_Area;
 
    ----------------
@@ -814,14 +807,16 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View    : System.Address;
-          Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
+          Path         : out System.Address;
           Focus_Column : out System.Address);
       pragma Import (C, Internal, "gtk_tree_view_get_cursor");
+      Tmp_Path                  : aliased System.Address;
       Tmp_Focus_Column          : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
    begin
-      Internal (Get_Object (Tree_View), Path, Tmp_Focus_Column);
+      Internal (Get_Object (Tree_View), Tmp_Path, Tmp_Focus_Column);
       Focus_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Focus_Column, Stub_Gtk_Tree_View_Column));
+      Path := From_Object (Tmp_Path);
    end Get_Cursor;
 
    -------------------------
@@ -839,14 +834,16 @@ package body Gtk.Tree_View is
          (Tree_View : System.Address;
           Drag_X    : Gint;
           Drag_Y    : Gint;
-          Acc_Path  : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path  : access System.Address;
           Acc_Pos   : access Gtk_Tree_View_Drop_Position) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_dest_row_at_pos");
-      Acc_Path   : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Pos    : aliased Gtk_Tree_View_Drop_Position;
-      Tmp_Return : Integer;
+      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Pos      : aliased Gtk_Tree_View_Drop_Position;
+      Tmp_Acc_Path : aliased System.Address;
+      Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), Drag_X, Drag_Y, Acc_Path'Access, Acc_Pos'Access);
+      Tmp_Return := Internal (Get_Object (Tree_View), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
+      Acc_Path := From_Object (Tmp_Acc_Path);
       if Path /= null then
          Path.all := Acc_Path;
       end if;
@@ -867,11 +864,13 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : out System.Address;
           Pos       : out Gtk_Tree_View_Drop_Position);
       pragma Import (C, Internal, "gtk_tree_view_get_drag_dest_row");
+      Tmp_Path : aliased System.Address;
    begin
-      Internal (Get_Object (Tree_View), Path, Pos);
+      Internal (Get_Object (Tree_View), Tmp_Path, Pos);
+      Path := From_Object (Tmp_Path);
    end Get_Drag_Dest_Row;
 
    -----------------------
@@ -1017,11 +1016,11 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model
    is
-      function Internal (Tree_View : System.Address) return System.Address;
+      function Internal
+         (Tree_View : System.Address) return Gtk.Tree_Model.Gtk_Tree_Model;
       pragma Import (C, Internal, "gtk_tree_view_get_model");
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
    begin
-      return Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Internal (Get_Object (Tree_View)), Stub_Gtk_Tree_Model));
+      return Internal (Get_Object (Tree_View));
    end Get_Model;
 
    ---------------------
@@ -1042,7 +1041,7 @@ package body Gtk.Tree_View is
          (Tree_View  : System.Address;
           X          : Gint;
           Y          : Gint;
-          Acc_Path   : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
           Acc_Cell_X : access Gint;
           Acc_Cell_Y : access Gint) return Integer;
@@ -1051,12 +1050,14 @@ package body Gtk.Tree_View is
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
       Acc_Cell_X                : aliased Gint;
       Acc_Cell_Y                : aliased Gint;
+      Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
       Tmp_Return                : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
+      Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
       Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
+      Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Column := Acc_Column;
       Cell_X := Acc_Cell_X;
@@ -1230,21 +1231,20 @@ package body Gtk.Tree_View is
           Acc_X        : access Gint;
           Acc_Y        : access Gint;
           Keyboard_Tip : Integer;
-          Acc_Model    : access System.Address;
-          Acc_Path     : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
+          Acc_Path     : access System.Address;
           Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_tooltip_context");
-      Acc_X               : aliased Gint := X;
-      Acc_Y               : aliased Gint := Y;
-      Acc_Model           : aliased Gtk.Tree_Model.Gtk_Tree_Model;
-      Acc_Path            : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Iter            : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
-      Tmp_Acc_Model       : aliased System.Address;
-      Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-      Tmp_Return          : Integer;
+      Acc_X        : aliased Gint := X;
+      Acc_Y        : aliased Gint := Y;
+      Acc_Model    : aliased Gtk.Tree_Model.Gtk_Tree_Model;
+      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
+      Tmp_Acc_Path : aliased System.Address;
+      Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Tmp_Acc_Model'Access, Acc_Path'Access, Acc_Iter'Access);
-      Acc_Model := Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tmp_Acc_Model, Stub_Gtk_Tree_Model));
+      Tmp_Return := Internal (Get_Object (Tree_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Acc_Iter'Access);
+      Acc_Path := From_Object (Tmp_Acc_Path);
       X := Acc_X;
       Y := Acc_Y;
       Model := Acc_Model;
@@ -1265,15 +1265,18 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View      : System.Address;
-          Acc_Start_Path : access Gtk.Tree_Model.Gtk_Tree_Path;
-          Acc_End_Path   : access Gtk.Tree_Model.Gtk_Tree_Path)
-          return Integer;
+          Acc_Start_Path : access System.Address;
+          Acc_End_Path   : access System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_visible_range");
-      Acc_Start_Path : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_End_Path   : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Tmp_Return     : Integer;
+      Acc_Start_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Acc_End_Path       : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Tmp_Acc_Start_Path : aliased System.Address;
+      Tmp_Acc_End_Path   : aliased System.Address;
+      Tmp_Return         : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), Acc_Start_Path'Access, Acc_End_Path'Access);
+      Tmp_Return := Internal (Get_Object (Tree_View), Tmp_Acc_Start_Path'Access, Tmp_Acc_End_Path'Access);
+      Acc_End_Path := From_Object (Tmp_Acc_End_Path);
+      Acc_Start_Path := From_Object (Tmp_Acc_Start_Path);
       Start_Path := Acc_Start_Path;
       End_Path := Acc_End_Path;
       Success := Boolean'Val (Tmp_Return);
@@ -1353,7 +1356,7 @@ package body Gtk.Tree_View is
       procedure Internal_Cb
          (Tree_Column : System.Address;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -1367,7 +1370,7 @@ package body Gtk.Tree_View is
       --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
       --  rendered by Tree_Column
       --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-      --  "iter": A Gtk.Tree_Iter.Gtk_Tree_Iter of the current row rendered
+      --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
       --  "data": user data
 
       ----------------------------------
@@ -1404,16 +1407,15 @@ package body Gtk.Tree_View is
       procedure Internal_Cb
          (Tree_Column : System.Address;
           Cell        : System.Address;
-          Tree_Model  : System.Address;
+          Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                         : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
          Stub_Gtk_Cell_Renderer    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-         Stub_Gtk_Tree_Model       : Gtk.Tree_Model.Gtk_Tree_Model_Record;
       begin
-         To_Gtk_Tree_Cell_Data_Func (D.Func) (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Tree_Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all);
+         To_Gtk_Tree_Cell_Data_Func (D.Func) (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
       end Internal_Cb;
 
    end Insert_Column_With_Data_Func_User_Data;
@@ -1435,7 +1437,7 @@ package body Gtk.Tree_View is
          (Tree_View  : System.Address;
           X          : Gint;
           Y          : Gint;
-          Acc_Path   : access Gtk.Tree_Model.Gtk_Tree_Path;
+          Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
           Acc_Cell_X : access Gint;
           Acc_Cell_Y : access Gint) return Integer;
@@ -1444,12 +1446,14 @@ package body Gtk.Tree_View is
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
       Acc_Cell_X                : aliased Gint;
       Acc_Cell_Y                : aliased Gint;
+      Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
       Tmp_Return                : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
+      Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
       Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
+      Acc_Path := From_Object (Tmp_Acc_Path);
       if Path /= null then
          Path.all := Acc_Path;
       end if;
@@ -1507,7 +1511,7 @@ package body Gtk.Tree_View is
 
       procedure Internal_Cb
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  Function used for Gtk.Tree_View.Map_Expanded_Rows.
@@ -1521,13 +1525,13 @@ package body Gtk.Tree_View is
 
       procedure Internal_Cb
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           User_Data : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Tree_View : Gtk.Tree_View.Gtk_Tree_View_Record;
       begin
-         To_Gtk_Tree_View_Mapping_Func (D.Func) (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), Path, D.Data.all);
+         To_Gtk_Tree_View_Mapping_Func (D.Func) (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), From_Object (Path), D.Data.all);
       end Internal_Cb;
 
       -----------------------
@@ -1597,11 +1601,11 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Column    : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_row_activated");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object (Column));
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object (Column));
    end Row_Activated;
 
    ------------------
@@ -1614,10 +1618,10 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Integer;
+          Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_row_expanded");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Path));
+      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path)));
    end Row_Expanded;
 
    --------------------
@@ -1634,14 +1638,14 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Column    : System.Address;
           Use_Align : Integer;
           Row_Align : Gfloat;
           Col_Align : Gfloat);
       pragma Import (C, Internal, "gtk_tree_view_scroll_to_cell");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object_Or_Null (GObject (Column)), Boolean'Pos (Use_Align), Row_Align, Col_Align);
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Column)), Boolean'Pos (Use_Align), Row_Align, Col_Align);
    end Scroll_To_Cell;
 
    ---------------------
@@ -1762,12 +1766,12 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View     : System.Address;
-          Path          : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path          : System.Address;
           Focus_Column  : System.Address;
           Start_Editing : Integer);
       pragma Import (C, Internal, "gtk_tree_view_set_cursor");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object_Or_Null (GObject (Focus_Column)), Boolean'Pos (Start_Editing));
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Focus_Column)), Boolean'Pos (Start_Editing));
    end Set_Cursor;
 
    ------------------------
@@ -1783,13 +1787,13 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View     : System.Address;
-          Path          : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path          : System.Address;
           Focus_Column  : System.Address;
           Focus_Cell    : System.Address;
           Start_Editing : Integer);
       pragma Import (C, Internal, "gtk_tree_view_set_cursor_on_cell");
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object_Or_Null (GObject (Focus_Column)), Get_Object_Or_Null (GObject (Focus_Cell)), Boolean'Pos (Start_Editing));
+      Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Focus_Column)), Get_Object_Or_Null (GObject (Focus_Cell)), Boolean'Pos (Start_Editing));
    end Set_Cursor_On_Cell;
 
    ----------------------------
@@ -1821,7 +1825,7 @@ package body Gtk.Tree_View is
 
       procedure Internal_Cb
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Children  : Gint;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -1832,14 +1836,14 @@ package body Gtk.Tree_View is
 
       procedure Internal_Cb
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Children  : Gint;
           User_Data : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Tree_View : Gtk.Tree_View.Gtk_Tree_View_Record;
       begin
-         To_Gtk_Tree_Destroy_Count_Func (D.Func) (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), Path, Children, D.Data.all);
+         To_Gtk_Tree_Destroy_Count_Func (D.Func) (Gtk.Tree_View.Gtk_Tree_View (Get_User_Data (Tree_View, Stub_Gtk_Tree_View)), From_Object (Path), Children, D.Data.all);
       end Internal_Cb;
 
       ----------------------------
@@ -1872,11 +1876,11 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Pos       : Gtk_Tree_View_Drop_Position);
       pragma Import (C, Internal, "gtk_tree_view_set_drag_dest_row");
    begin
-      Internal (Get_Object (Tree_View), Path, Pos);
+      Internal (Get_Object (Tree_View), Get_Object (Path), Pos);
    end Set_Drag_Dest_Row;
 
    -----------------------
@@ -2034,14 +2038,14 @@ package body Gtk.Tree_View is
 
    procedure Set_Model
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Model     : System.Address);
+          Model     : Gtk.Tree_Model.Gtk_Tree_Model);
       pragma Import (C, Internal, "gtk_tree_view_set_model");
    begin
-      Internal (Get_Object (Tree_View), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Tree_View), Model);
    end Set_Model;
 
    ---------------------
@@ -2086,7 +2090,7 @@ package body Gtk.Tree_View is
         (Gtk_Tree_View_Row_Separator_Func, System.Address);
 
       function Internal_Cb
-         (Model : System.Address;
+         (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
@@ -2095,7 +2099,7 @@ package body Gtk.Tree_View is
       --  to have a boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
       --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing at a row in Model
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
       --  "data": user data
 
       -----------------
@@ -2103,14 +2107,13 @@ package body Gtk.Tree_View is
       -----------------
 
       function Internal_Cb
-         (Model : System.Address;
+         (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
-         D                   : constant Users.Internal_Data_Access := Users.Convert (Data);
-         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Model, Iter, D.Data.all));
       end Internal_Cb;
 
       ----------------------------
@@ -2219,7 +2222,7 @@ package body Gtk.Tree_View is
         (Gtk_Tree_View_Search_Equal_Func, System.Address);
 
       function Internal_Cb
-         (Model       : System.Address;
+         (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -2232,8 +2235,8 @@ package body Gtk.Tree_View is
       --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
       --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
       --  "key": the key string to compare with
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter pointing the row of Model that
-      --  should be compared with Key.
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
+      --  that should be compared with Key.
       --  "search_data": user data from Gtk.Tree_View.Set_Search_Equal_Func
 
       -----------------
@@ -2241,16 +2244,15 @@ package body Gtk.Tree_View is
       -----------------
 
       function Internal_Cb
-         (Model       : System.Address;
+         (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Integer
       is
-         D                   : constant Users.Internal_Data_Access := Users.Convert (Search_Data);
-         Stub_Gtk_Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         D : constant Users.Internal_Data_Access := Users.Convert (Search_Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_View_Search_Equal_Func (D.Func) (Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data (Model, Stub_Gtk_Tree_Model)), Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_View_Search_Equal_Func (D.Func) (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
       end Internal_Cb;
 
       ---------------------------
@@ -2369,12 +2371,12 @@ package body Gtk.Tree_View is
       procedure Internal
          (Tree_View : System.Address;
           Tooltip   : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+          Path      : System.Address;
           Column    : System.Address;
           Cell      : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_set_tooltip_cell");
    begin
-      Internal (Get_Object (Tree_View), Get_Object (Tooltip), Path, Get_Object_Or_Null (GObject (Column)), Get_Object_Or_Null (GObject (Cell)));
+      Internal (Get_Object (Tree_View), Get_Object (Tooltip), Get_Object (Path), Get_Object_Or_Null (GObject (Column)), Get_Object_Or_Null (GObject (Cell)));
    end Set_Tooltip_Cell;
 
    ------------------------
@@ -2403,10 +2405,10 @@ package body Gtk.Tree_View is
       procedure Internal
          (Tree_View : System.Address;
           Tooltip   : System.Address;
-          Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+          Path      : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_set_tooltip_row");
    begin
-      Internal (Get_Object (Tree_View), Get_Object (Tooltip), Path);
+      Internal (Get_Object (Tree_View), Get_Object (Tooltip), Get_Object (Path));
    end Set_Tooltip_Row;
 
    --------------------------

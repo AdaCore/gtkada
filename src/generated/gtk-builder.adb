@@ -31,12 +31,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Builder is
 
-   function To_Gtk_Builder_Connect_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Builder_Connect_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Builder_Connect_Func, System.Address);
-
    procedure C_Gtk_Builder_Connect_Signals_Full
       (Builder   : System.Address;
        Func      : System.Address;
@@ -49,6 +43,12 @@ package body Gtk.Builder is
    --  "func": the function used to connect the signals
    --  "user_data": arbitrary data that will be passed to the connection
    --  function
+
+   function To_Gtk_Builder_Connect_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Builder_Connect_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Builder_Connect_Func, System.Address);
 
    procedure Internal_Gtk_Builder_Connect_Func
       (Builder        : System.Address;

@@ -85,6 +85,10 @@ package Gtk.Accel_Group is
    --  Same as Gtk_Accel_Group_Activate, but passing directly the C values.
    --  You must use Get_User_Data to convert to the Ada types.
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Accel_Group_Find_Func is access function
      (Key     : Gtk_Accel_Key;
       Closure : System.Address) return Boolean;

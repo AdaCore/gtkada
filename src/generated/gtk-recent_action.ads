@@ -51,6 +51,10 @@ package Gtk.Recent_Action is
    type Gtk_Recent_Action_Record is new Gtk_Action_Record with null record;
    type Gtk_Recent_Action is access all Gtk_Recent_Action_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
       B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;

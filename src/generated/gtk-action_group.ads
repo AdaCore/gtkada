@@ -88,6 +88,10 @@ package Gtk.Action_Group is
    function Convert (R : System.Address) return Gtk.Action.Gtk_Action;
    package Action_List is new Generic_List (Gtk.Action.Gtk_Action);
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Translate_Func is access function (Path : UTF8_String) return UTF8_String;
 
    ------------------

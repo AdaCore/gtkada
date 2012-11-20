@@ -2008,6 +2008,16 @@ package body Gtk.Handlers is
       Internal (Obj => Get_Object (Obj), Id => Id.Id);
    end Handler_Unblock;
 
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
+      return System.Address
+   is
+   begin
+      return Get_Object (Path);
+   end To_Address;
 end Gtk.Handlers;
 
 --  Design of the package:

@@ -59,6 +59,10 @@ package Gtk.Print_Settings is
    pragma Convention (C, Gtk_Page_Range_Array);
    --  Page range specification(s).
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Print_Settings_Func is access procedure (Key : UTF8_String; Value : UTF8_String);
 
    ------------------

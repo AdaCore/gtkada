@@ -65,17 +65,21 @@ package Gtk.Cell_View is
    type Gtk_Cell_View_Record is new Gtk_Widget_Record with null record;
    type Gtk_Cell_View is access all Gtk_Cell_View_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
    --  "cell": the cell renderer whose value is to be set
    --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
    --  value for
 
    ------------------
@@ -156,7 +160,7 @@ package Gtk.Cell_View is
    function Get_Displayed_Row
       (Cell_View : not null access Gtk_Cell_View_Record)
        return Gtk.Tree_Model.Gtk_Tree_Path;
-   --  Returns a Gtk.Tree_Path.Gtk_Tree_Path referring to the currently
+   --  Returns a Gtk.Tree_Model.Gtk_Tree_Path referring to the currently
    --  displayed row. If no row is currently displayed, null is returned.
    --  Since: gtk+ 2.6
 
@@ -169,7 +173,7 @@ package Gtk.Cell_View is
    --  result, but may be a needed intermediate state if say, the model for the
    --  Gtk.Cell_View.Gtk_Cell_View becomes temporarily empty.
    --  Since: gtk+ 2.6
-   --  "path": a Gtk.Tree_Path.Gtk_Tree_Path or null to unset.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path or null to unset.
 
    function Get_Draw_Sensitive
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean;
@@ -215,7 +219,7 @@ package Gtk.Cell_View is
 
    procedure Set_Model
       (Cell_View : not null access Gtk_Cell_View_Record;
-       Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Sets the model for Cell_View. If Cell_View already has a model set, it
    --  will remove it before setting the new model. If Model is null, then it
    --  will unset the old model.
@@ -235,7 +239,7 @@ package Gtk.Cell_View is
    --  Gtk.Widget.Get_Preferred_Size.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.0, Combo box formerly used this to calculate the
-   --  "path": a Gtk.Tree_Path.Gtk_Tree_Path
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
    --  "requisition": return location for the size
 
    procedure Set_Background_Color
@@ -273,7 +277,7 @@ package Gtk.Cell_View is
       type Gtk_Cell_Layout_Data_Func is access procedure
         (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
          Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-         Tree_Model  : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
@@ -281,7 +285,7 @@ package Gtk.Cell_View is
       --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
       --  "cell": the cell renderer whose value is to be set
       --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Iter.Gtk_Tree_Iter indicating the row to set the
+      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
       --  value for
       --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
@@ -461,13 +465,6 @@ package Gtk.Cell_View is
    --  size doesnt change when different items are selected).
    --
    --  since 3.0
-   --
-   --  Name: Model_Property
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
-   --  Flags: read-write
-   --  The model for cell view
-   --
-   --  since 2.10
 
    Background_Property : constant Glib.Properties.Property_String;
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
@@ -477,11 +474,8 @@ package Gtk.Cell_View is
    Cell_Area_Context_Property : constant Glib.Properties.Property_Object;
    Draw_Sensitive_Property : constant Glib.Properties.Property_Boolean;
    Fit_Model_Property : constant Glib.Properties.Property_Boolean;
-   Model_Property : constant Glib.Properties.Property_Object;
 
 private
-   Model_Property : constant Glib.Properties.Property_Object :=
-     Glib.Properties.Build ("model");
    Fit_Model_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("fit-model");
    Draw_Sensitive_Property : constant Glib.Properties.Property_Boolean :=

@@ -211,6 +211,10 @@ package Gtk.Container is
    type Gtk_Container_Record is new Gtk_Widget_Record with null record;
    type Gtk_Container is access all Gtk_Container_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Callback is access procedure
      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  The type of the callback functions used for e.g. iterating over the

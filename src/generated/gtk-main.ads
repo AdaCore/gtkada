@@ -30,6 +30,9 @@ with Gtk.Widget;     use Gtk.Widget;
 with Pango.Language; use Pango.Language;
 
 package Gtk.Main is
+   ---------------
+   -- Callbacks --
+   ---------------
 
    type Gtk_Key_Snoop_Func is access function
      (Grab_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;

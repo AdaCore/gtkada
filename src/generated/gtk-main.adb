@@ -52,12 +52,6 @@ package body Gtk.Main is
       return Boolean'Val (Internal (gnat_argc'Address, gnat_argv'Address));
    end Init_Check;
 
-   function To_Gtk_Key_Snoop_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Key_Snoop_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Key_Snoop_Func, System.Address);
-
    function C_Gtk_Key_Snooper_Install
       (Snooper   : System.Address;
        Func_Data : System.Address) return Guint;
@@ -67,6 +61,12 @@ package body Gtk.Main is
    --  Gtk.Main.Key_Snooper_Remove.
    --  "snooper": a Gtk_Key_Snoop_Func
    --  "func_data": data to pass to Snooper
+
+   function To_Gtk_Key_Snoop_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Key_Snoop_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Key_Snoop_Func, System.Address);
 
    function Internal_Gtk_Key_Snoop_Func
       (Grab_Widget : System.Address;

@@ -91,6 +91,10 @@ package Gtk.Clipboard is
    type Gtk_Clipboard_Record is new GObject_Record with null record;
    type Gtk_Clipboard is access all Gtk_Clipboard_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Clipboard_Received_Func is access procedure
      (Clipboard      : not null access Gtk_Clipboard_Record'Class;
       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data);

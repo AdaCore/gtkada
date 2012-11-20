@@ -33,7 +33,7 @@ interfaces = (
     "TreeDragDest",
     "TreeDragSource",
     "TreeSortable",
-    #"TreeModel",
+    "TreeModel",
 
     "--Action", # Not tested yet, from Gio
     "--ActionGroup", # Not tested yet, from Gio
@@ -305,6 +305,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkLabel",
            "GtkLayout",
            "GtkLinkButton",
+           "GtkListStore",
            # "GtkLockButton",  # requires GPermission
            "GtkMain",
            "GtkMisc",
@@ -372,7 +373,13 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTextTag",
            "GtkTextTagTable",
            "GtkTextView",
-           # "GtkTreePath",   #  into GtkTreeModel
+           "GtkTreeIter",
+           "GtkTreeModelFilter",
+           "GtkTreeModelSort",
+           "GtkTreePath",
+           "GtkTreeRowReference",
+           "GtkTreeSelection",
+           "GtkTreeStore",
            "GtkTreeView",
            "GtkTreeViewColumn",
            "GtkToggleAction",
@@ -515,6 +522,7 @@ naming.type_exceptions = {
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
                                    "Pango.Font.Property_Font_Description"),
+    "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
 
     "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),
@@ -541,20 +549,15 @@ naming.type_exceptions = {
     "GClosure":      Proxy("GClosure"),
     "GConnectFlags": Proxy("Glib.G_Connect_Flags"),
 
-    "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 
     # ??? Shouldn't we use a naming exception instead ?
     "GtkStatusbar":    GObject("Gtk.Status_Bar.Gtk_Status_Bar"),
-    "GtkTreeModel":    GObject("Gtk.Tree_Model.Gtk_Tree_Model"),
-    "GtkTreePath*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Path"),
 
     "GtkRcStyle":      GObject("Gtk.Rc.Gtk_Rc_Style"),
 
     "GtkTreeViewRowSeparatorFunc":
         Callback("Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"),
-    #"GtkCellLayoutDataFunc":
-    #    Callback("Gtk.Cell_Layout.Cell_Data_Func"),
 
     "GKeyFile*":           Proxy("Glib.Key_File.G_Key_File"),
 

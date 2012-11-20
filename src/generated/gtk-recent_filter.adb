@@ -46,12 +46,6 @@ package body Gtk.Recent_Filter is
          return Gtk.Recent_Filter.Gtk_Recent_Filter (Glib.Object.Get_User_Data (R, Stub));
       end Convert;
 
-   function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Recent_Filter_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Recent_Filter_Func, System.Address);
-
    procedure C_Gtk_Recent_Filter_Add_Custom
       (Filter       : System.Address;
        Needed       : Gtk_Recent_Filter_Flags;
@@ -72,6 +66,12 @@ package body Gtk.Recent_Filter is
    --  "data": data to pass to Func
    --  "data_destroy": function to call to free Data when it is no longer
    --  needed.
+
+   function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Recent_Filter_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Recent_Filter_Func, System.Address);
 
    function Internal_Gtk_Recent_Filter_Func
       (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;

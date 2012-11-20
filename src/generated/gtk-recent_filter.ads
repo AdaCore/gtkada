@@ -116,6 +116,10 @@ package Gtk.Recent_Filter is
    function Convert (R : System.Address) return Gtk.Recent_Filter.Gtk_Recent_Filter;
    package Gtk_Recent_Filter_List is new Generic_SList (Gtk.Recent_Filter.Gtk_Recent_Filter);
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Recent_Filter_Func is access function (Filter_Info : Gtk_Recent_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
    --  Gtk.Recent_Filter.Add_Custom.

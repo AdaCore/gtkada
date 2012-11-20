@@ -2471,7 +2471,6 @@ __PRE__
      <method id="gtk_widget_translate_coordinates" return_as_param="Result"/>
      <method id="gtk_widget_destroy">
        <body>
-   procedure Destroy (Widget : not null access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");
 
@@ -2500,7 +2499,6 @@ __PRE__
       --  object being freed. We can't use directly Unref, since the Ptr
       --  field for Object is Null_Address.
       Unref_Internal (Ptr);
-   end Destroy;
        </body>
      </method>
 
@@ -4372,7 +4370,6 @@ creating a tag.
      <method id="pango_language_get_scripts" return="Pango_Script_Array">
        <parameter name="num_scripts" ada=""/>
        <body>
-  function Get_Scripts (Self : Pango_Language) return Pango_Script_Array is
       type script_array_bounded is array (Natural) of Pango_Script;
       type script_array_access is access script_array_bounded;
 
@@ -4394,7 +4391,6 @@ creating a tag.
          end loop;
          return Result;
       end;
-   end Get_Scripts;
        </body>
      </method>
    </package>
@@ -4411,9 +4407,6 @@ creating a tag.
        <parameter name="families" ada=""/>
        <parameter name="n_families" ada=""/>
        <body>
-   function List_Families
-      (Self : not null access Pango_Font_Map_Record) return Pango_Font_Family_Array
-   is
       type font_family_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -4442,7 +4435,6 @@ creating a tag.
 
          return Result;
       end;
-   end List_Families;
        </body>
      </method>
    </package>
@@ -4460,9 +4452,6 @@ creating a tag.
        <parameter name="faces" ada=""/>
        <parameter name="n_faces" ada=""/>
        <body>
-   function List_Faces
-      (Self : not null access Pango_Font_Family_Record) return Pango_Font_Face_Array
-   is
       type font_face_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -4491,7 +4480,6 @@ creating a tag.
 
          return Result;
       end;
-   end List_Faces;
        </body>
      </method>
    </package>
@@ -4507,9 +4495,6 @@ creating a tag.
        <parameter name="sizes" ada=""/>
        <parameter name="n_sizes" ada=""/>
        <body>
-   function List_Sizes
-      (Self : not null access Pango_Font_Face_Record) return Gint_Array
-   is
       type gint_array_bounded is array (Natural) of Gint;
 
       procedure Internal
@@ -4536,7 +4521,6 @@ creating a tag.
 
          return Result;
       end;
-   end List_Sizes;
        </body>
      </method>
    </package>
@@ -5035,10 +5019,6 @@ creating a tag.
        <parameter name="page_ranges" type="Gtk_Page_Range_Array"/>
        <parameter name="num_ranges" ada="" default="-1" />
        <body>
-   procedure Set_Page_Ranges
-     (Self        : not null access Gtk_Print_Settings_Record;
-      Page_Ranges : Gtk_Page_Range_Array)
-   is
       procedure Internal
         (Settings    : System.Address;
          Page_Ranges : System.Address;
@@ -5049,16 +5029,11 @@ creating a tag.
         (Get_Object (Self),
          Page_Ranges (Page_Ranges'First)'Address,
          Page_Ranges'Length);
-   end Set_Page_Ranges;
        </body>
      </method>
      <method id="gtk_print_settings_get_page_ranges" return="Gtk_Page_Range_Array">
        <parameter name="num_ranges" ada="" default="-1" />
        <body>
-   function Get_Page_Ranges
-     (Self   : not null access Gtk_Print_Settings_Record)
-      return Gtk_Page_Range_Array
-   is
       type Internal_Page_Range_Array is
         array (Natural) of Gtk_Page_Range_Record;
       pragma Convention (C, Internal_Page_Range_Array);
@@ -5087,7 +5062,6 @@ creating a tag.
          Free (Result);
          return Ranges;
       end;
-   end Get_Page_Ranges;
        </body>
      </method>
      <extra>
@@ -5177,9 +5151,6 @@ creating a tag.
        <parameter name="n_sizes" ada=""/>
        <parameter name="sizes" ada=""/>
        <body>
-   function Get_Sizes
-      (Self    : Gtk_Icon_Set) return Gint_Array
-   is
       type gint_array_bounded is array (Natural) of Gint;
 
       procedure Internal
@@ -5206,7 +5177,6 @@ creating a tag.
 
          return Result;
       end;
-   end Get_Sizes;
        </body>
      </method>
    </package>
@@ -5290,10 +5260,6 @@ direction, widget state, or icon size.
        <parameter name="path" ada=""/>
        <parameter name="n_elements" ada=""/>
        <body>
-   function Get_Search_Path
-     (Icon_Theme : not null access Gtk_Icon_Theme_Record)
-      return GNAT.Strings.String_List
-   is
       procedure Internal
         (Icon_Theme : System.Address;
          Path       : out chars_ptr_array_access;
@@ -5311,16 +5277,10 @@ direction, widget state, or icon size.
          Free (P.all);
          return Result;
       end;
-   end Get_Search_Path;
        </body>
      </method>
      <method id="gtk_icon_theme_get_icon_sizes">
        <body>
-   function Get_Icon_Sizes
-     (Icon_Theme : not null access Gtk_Icon_Theme_Record;
-      Icon_Name  : String)
-      return Gint_Array
-   is
       use Gint_Arrays;
       function Internal
         (Icon_Theme : System.Address;
@@ -5333,7 +5293,6 @@ direction, widget state, or icon size.
    begin
       G_Free (Res);
       return Result;
-   end Get_Icon_Sizes;
        </body>
      </method>
      <method id="gtk_icon_theme_list_icons" return="StringList"/>
@@ -5351,12 +5310,6 @@ direction, widget state, or icon size.
        <parameter name="n_points" ada=""/>
        <parameter name="points" ada=""/>
        <body>
-   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
-     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
-
-   function Get_Attach_Points
-     (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array
-   is
       use Points_Arrays;
       function Internal
         (Icon_Info : System.Address;
@@ -5379,11 +5332,14 @@ direction, widget state, or icon size.
          G_Free (R);
          return Result;
       end;
-   end Get_Attach_Points;
        </body>
      </method>
      <extra>
        <with_body pkg="Gtkada.C"/>
+       <body>
+   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
+       </body>
      </extra>
    </package>
 
@@ -5860,9 +5816,6 @@ direction, widget state, or icon size.
        <parameter name="families" ada=""/>
        <parameter name="n_families" ada=""/>
        <body>
-   function List_Families
-      (Self : not null access Pango_Context_Record) return Pango_Font_Family_Array
-   is
       type font_family_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -5891,7 +5844,6 @@ direction, widget state, or icon size.
 
          return Result;
       end;
-   end List_Families;
        </body>
      </method>
    </package>
@@ -6064,8 +6016,482 @@ direction, widget state, or icon size.
    </package>
 
    <package id="GtkTreeModel">
+     <parameter name="self" ada="Tree_Model"/>
+     <enum ctype="GtkTreeModelFlags" ada="Tree_Model_Flags" />
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->
+     <method id="gtk_tree_model_get_valist" bind="False"/> <!-- varargs -->
+     <method id="gtk_tree_model_get_iter" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
+       <body>
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter : System.Address; Path : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_get_iter");
+      Iter : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (+Tree_Model, Iter'Address, Get_Object (Path)) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_get_iter_from_string" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
+       <body>
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter : System.Address; Str : String) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_get_iter_from_string");
+      Iter : aliased Gtk_Tree_Iter;
+   begin
+      if Internal
+        (+Tree_Model, Iter'Address, Path_String &amp; ASCII.NUL) /= 0
+      then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_get_iter_first" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
+       <body>
+      function Internal
+         (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_get_iter_first");
+      Iter : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (+Tree_Model, Iter'Address) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_next" ada="Next" return="void">
+       <parameter name="iter" direction="inout"/>
+       <body>
+      function Internal
+         (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_next");
+      Local_Iter : aliased Gtk_Tree_Iter := Iter;
+   begin
+      if Internal (+Tree_Model, Local_Iter'Address) = 0 then
+         Iter := Null_Iter;
+      else
+         Iter := Local_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_previous" ada="Previous" return="void">
+       <parameter name="iter" direction="inout"/>
+       <body>
+      function Internal
+         (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_previous");
+      Local_Iter : aliased Gtk_Tree_Iter := Iter;
+   begin
+      if Internal (+Tree_Model, Local_Iter'Address) = 0 then
+         Iter := Null_Iter;
+      else
+         Iter := Local_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_children" ada="Children" return="void">
+       <parameter name="iter" direction="inout"/>
+       <body>
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : System.Address;
+         Parent     : Gtk_Tree_Iter) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_children");
+      It : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (+Tree_Model, It'Address, Parent) /= 0 then
+         Iter := It;
+      else
+         Iter := Null_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_has_child" ada="Has_Child"/>
+     <method id="gtk_tree_model_iter_n_children" ada="N_Children">
+       <param name="iter" default="Null_Iter"/>
+       <body>
+      function Internal
+          (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_n_children");
+   begin
+      if Iter = Null_Iter then
+         return Internal (+Tree_Model, System.Null_Address);
+      else
+         return Internal (+Tree_Model, Iter'Address);
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_nth_child" ada="Nth_Child" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
+       <body>
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter, Parent : System.Address; N : Gint) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_nth_child");
+      Iter : aliased Gtk_Tree_Iter;
+      P    : System.Address := System.Null_Address;
+   begin
+      if Parent /= Null_Iter then
+         P := Parent'Address;
+      end if;
+      if Internal (+Tree_Model, Iter'Address, P, N) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+       </body>
+     </method>
+     <method id="gtk_tree_model_iter_parent" ada="Parent" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
+       <body>
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : System.Address;
+         Child      : Gtk_Tree_Iter) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_parent");
+      Iter : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (+Tree_Model, Iter'Address, Child) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+       </body>
+     </method>
+     <extra>
+       <spec>
+   function Get_Int
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gint;
+   function Get_Boolean
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean;
+   function Get_Object
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject;
+   function Get_C_Proxy
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy;
+   function Get_String
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return UTF8_String;
+   function Get_Address
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address;
+   --  Get the value of one cell of the model
+       </spec>
+       <body>
+  function Get_Int
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gint
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Gint;
+         Dummy      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+      A : Gint;
+   begin
+      Internal (Tree_Model, Iter, Column, A);
+      return A;
+   end Get_Int;
+
+  function Get_Boolean
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean is
+   begin
+      return Get_Int (Tree_Model, Iter, Column) /= 0;
+   end Get_Boolean;
+
+   function Get_Object
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject
+   is
+      Stub : Glib.Object.GObject_Record;
+   begin
+      return Get_User_Data
+         (Get_Address (Tree_Model, Iter, Column), Stub);
+   end Get_Object;
+
+   function Get_C_Proxy
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Glib.C_Proxy;
+         Dummy      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+      A : Glib.C_Proxy;
+   begin
+      Internal (Tree_Model, Iter, Column, A);
+      return A;
+   end Get_C_Proxy;
+
+   function Get_String
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return UTF8_String
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Interfaces.C.Strings.chars_ptr;
+         Dummy      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+      A : Interfaces.C.Strings.chars_ptr;
+   begin
+      Internal (Tree_Model, Iter, Column, A);
+      if A = Interfaces.C.Strings.Null_Ptr then
+         return "";
+      else
+         declare
+            S : constant String := Interfaces.C.Strings.Value (A);
+         begin
+            Interfaces.C.Strings.Free (A);
+            return S;
+         end;
+      end if;
+   end Get_String;
+
+   function Get_Address
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out System.Address;
+         Dummy      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+      A : System.Address;
+   begin
+      Internal (Tree_Model, Iter, Column, A);
+      return A;
+   end Get_Address;
+       </body>
+     </extra>
    </package>
+
+   <package id="GtkTreeIter" into="GtkTreeModel">
+     <record ctype="GtkTreeIter" private="True"/>
+     <method id="gtk_tree_iter_get_type" ada="Iter_Get_Type" />
+     <method id="gtk_tree_iter_copy" ada="Iter_Copy" />
+     <extra>
+       <spec>
+   Null_Iter : constant Gtk_Tree_Iter;
+
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
+
+   procedure Set_Tree_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Tree_Iter);
+   pragma Import (C, Set_Tree_Iter, "g_value_set_pointer");
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Tree_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Tree_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter;
+   --  Extract the iterator from the given GValue.
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address;
+   pragma Convention (C, To_Address);
+   --  Return address of the specified iterator.
+   --  Note: To_Address needs a pass-by-reference semantic to work properly
+   --  On some ABIs (e.g. IA64), Gtk_Tree_Iter is passed by copy, since it's
+   --  a "small enough" record.
+       </spec>
+       <spec private="True">
+   Null_Iter : constant Gtk_Tree_Iter :=
+     (0, System.Null_Address, System.Null_Address, System.Null_Address);
+       </spec>
+       <body>
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean is
+      use type System.Address;
+   begin
+      if Left.Stamp = Right.Stamp then
+         if Left.Stamp = 0 then
+            --  Stamp = 0 means the iterator is null iterator, we need not to
+            --  compare other fields in this case.
+            return True;
+         else
+            return Left.User_Data = Right.User_Data
+                     and then Left.User_Data2 = Right.User_Data2
+                     and then Left.User_Data3 = Right.User_Data3;
+         end if;
+      else
+         return False;
+      end if;
+   end "=";
+
+   procedure Get_Tree_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Tree_Iter)
+   is
+      function Internal (Source : System.Address) return Gtk_Tree_Iter;
+      pragma Import (C, Internal, "gtk_tree_iter_copy");
+   begin
+      Iter := Internal (Glib.Values.Get_Address (Val));
+   end Get_Tree_Iter;
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter is
+      Result : Gtk_Tree_Iter;
+   begin
+      Get_Tree_Iter (Val, Result);
+      return Result;
+   end Get_Tree_Iter;
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address is
+   begin
+      return Iter'Address;
+   end To_Address;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkTreeRowReference">
+     <parameter name="self" ada="Reference"/>
+   </package>
+
+   <package id="GtkTreePath" into="GtkTreeModel">
+     <parameter name="self" ada="Path" />
+     <list ctype="GtkTreePath" ada="Gtk_Tree_Path_List" section="Lists"/>
+     <method id="gtk_tree_path_new_from_string" ada="Gtk_New">
+       <parameter name="self" ada="Self" />
+     </method>
+     <method id="gtk_tree_path_get_type" ada="Path_Get_Type" />
+     <method id="gtk_tree_path_free" ada="Path_Free" />
+     <method id="gtk_tree_path_get_indices_with_depth" bind="False"/> <!-- duplicates Get_Indices, in Ada -->
+     <method id="gtk_tree_path_get_indices" return="Glib.Gint_Array">
+       <body>
+      Depth : constant Integer := Integer (Get_Depth (Path));
+
+      subtype Result_Array is Gint_Array (0 .. Depth - 1);
+      type Result_Array_Access is access all Result_Array;
+      pragma Convention (C, Result_Array_Access);
+
+      function Internal (Path : System.Address) return Result_Array_Access;
+      pragma Import (C, Internal, "gtk_tree_path_get_indices");
+
+   begin
+      --  Do not free the result of gtk_tree_path_get_indices since this is
+      --  not a copy, but the currently used data.
+
+      return Internal (Get_Object (Path)).all;
+       </body>
+     </method>
+     <extra>
+       <spec>
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
+   --  Extract the path from the given GValue.
+
+       </spec>
+       <with_body pkg="Glib.Values"/>
+       <body>
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path is
+   begin
+      return From_Object (Glib.Values.Get_Address (Val));
+   end Get_Tree_Path;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkTreeModelSort">
+     <method id="gtk_tree_model_sort_new_with_model" ada="Gtk_New_With_Model"/>
+   </package>
+
+   <package id="GtkTreeModelFilter">
+     <method id="gtk_tree_model_filter_new" ada="Gtk_New"/>
+     <method id="gtk_tree_model_filter_convert_child_iter_to_iter" return="void" />
+     <method id="gtk_tree_model_filter_set_modify_func"> <!-- function with callback and custom parameter -->
+       <parameter name="types" type="Glib.GType_Array"/>
+       <parameter name="n_columns" ada="" default="Types'Length" />
+     </method>
+   </package>
+
+   <package id="GtkTreeSelection">
+     <parameter name="self" ada="Selection" />
+     <method id="gtk_tree_selection_get_selected" return="void"/>
+     <method id="gtk_tree_selection_get_selected_rows" bind="False"/><!-- see below -->
+     <method id="gtk_tree_selection_get_tree_view" return="Gtk_Widget"/> <!-- avoid circular dep -->
+     <extra>
+       <spec>
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
+      Path_List : out Gtk.Tree_Model.Gtk_Tree_Path_List.Glist);
+   --  Creates a list of path of all selected rows. Additionally, if you are
+   --  planning on modifying the model after calling this function, you may
+   --  want to convert the returned list into a list of Gtk_Tree_Row_Reference.
+   --
+   --  You must free the resulting list by calling Path_Free on each item, and
+   --  then freeing the list itself.
+       </spec>
+       <body>
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk_Tree_Model;
+      Path_List : out Gtk_Tree_Path_List.Glist)
+   is
+      use type System.Address;
+      function Internal
+        (Selection : System.Address;
+         Model     : access Gtk_Tree_Model) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_selection_get_selected_rows");
+      M        : aliased Gtk_Tree_Model;
+      Selected : System.Address;  --  list of paths
+   begin
+      Selected := Internal (Get_Object (Selection), M'Access);
+      Model := M;
+      if Selected = System.Null_Address then
+         Path_List := Gtk_Tree_Path_List.Null_List;
+      else
+         Gtk_Tree_Path_List.Set_Object (Path_List, Selected);
+      end if;
+   end Get_Selected_Rows;
+       </body>
+     </extra>
+   </package>
+
+   <!-- Below were added just for the sake of parsing the files to get information
+        on their symbols, and properly substitute them in the docs.
+        No file is generated from them.
+   -->
 
    <package id="GtkNumerableIcon">
      <method id="gtk_numerable_icon_new" ada="Gtk_New"/>

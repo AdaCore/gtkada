@@ -254,12 +254,6 @@ package body Gtk.Action_Group is
          Destroy);
    end Add_Toggle_Actions;
 
-   function To_Gtk_Translate_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Translate_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Translate_Func, System.Address);
-
    procedure C_Gtk_Action_Group_Set_Translate_Func
       (Action_Group : System.Address;
        Func         : System.Address;
@@ -276,6 +270,12 @@ package body Gtk.Action_Group is
    --  "notify": a Glib.G_Destroy_Notify_Address function to be called when
    --  Action_Group is destroyed and when the translation function is changed
    --  again
+
+   function To_Gtk_Translate_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Translate_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Translate_Func, System.Address);
 
    function Internal_Gtk_Translate_Func
       (Path      : Interfaces.C.Strings.chars_ptr;
