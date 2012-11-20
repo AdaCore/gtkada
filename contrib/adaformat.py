@@ -115,7 +115,7 @@ class CType(object):
               [3] = List of needed temporary variables (except for the one
                     corresponding to "%(tmp)s".
               [4] = Name of the C type, for "out" parameters. Often same as [1]
-              [5] = Convert from [4] to the Ada type. Often same as [4]
+              [5] = Convert from [4] to the Ada type. Often same as [2]
         """
         return (self.param, self.cparam, "%(var)s", [], self.cparam, "%(var)s")
 
@@ -535,11 +535,19 @@ class UTF8_List(CType):
 
 
 class Record(CType):
-    def __init__(self, ada, property=None):
+    def __init__(self, ada, property=None, val_or_null=None):
+        """
+           :param val_or_null: if specified, and the null constant is passed
+             as a parameter, then System.Null_Address is passed to C. If
+             unspecified, any value passed by the user is given as is to C.
+        """
+
         if property is None:
             CType.__init__(self, ada, "Glib.Properties.Property_Boxed")
         else:
             CType.__init__(self, ada, property)
+
+        self.val_or_null = val_or_null
 
         # Do not change self.cparam: when passing a read-only parameter to
         # C, GNAT will automatically pass the address of the record
@@ -558,8 +566,12 @@ class Record(CType):
                 # for out parameters
                 self.ada, "%(var)s")
 
-    def convert_to_c(sef, pkg=None):
-        return "%(var)s"
+    def convert_to_c(self, pkg=None):
+        if self.allow_none and self.val_or_null:
+            self.cparam = "System.Address"
+            return "%s (%%(var)s'Address)" % self.val_or_null
+        else:
+            return "%(var)s"
 
     @staticmethod
     def register_ada_record(pkg, ctype, ada=None):
@@ -577,7 +589,7 @@ class Record(CType):
 
 class Proxy(CType):
     def __init__(self, ada, property=None, val_or_null=None):
-        """[null_value] is used when GIR indicates the parameter has
+        """:param val_or_null: is used when GIR indicates the parameter has
            allow-none=1, and is used to test whether we should pass NULL
            to C or a pointer to the Ada data.
         """

@@ -95,7 +95,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Glib.Values;          use Glib.Values;
@@ -105,7 +104,7 @@ with Gtk.Tree_Model;       use Gtk.Tree_Model;
 
 package Gtk.Tree_Model_Filter is
 
-   type Gtk_Tree_Model_Filter_Record is new GObject_Record with null record;
+   type Gtk_Tree_Model_Filter_Record is new Gtk_Root_Tree_Model_Record with null record;
    type Gtk_Tree_Model_Filter is access all Gtk_Tree_Model_Filter_Record'Class;
 
    ---------------
@@ -155,11 +154,11 @@ package Gtk.Tree_Model_Filter is
    procedure Gtk_New
       (Self        : out Gtk_Tree_Model_Filter;
        Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path);
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
    procedure Initialize
       (Self        : not null access Gtk_Tree_Model_Filter_Record'Class;
        Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path);
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
    --  child_model and Root as the virtual root.
    --  Since: gtk+ 2.4
@@ -483,10 +482,10 @@ package Gtk.Tree_Model_Filter is
        Column     : Gint;
        Value      : out Glib.Values.GValue);
 
-   procedure Children
+   function Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter);
+       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
+       return Gtk.Tree_Model.Gtk_Tree_Iter;
 
    function Has_Child
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
@@ -494,7 +493,8 @@ package Gtk.Tree_Model_Filter is
 
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
+       return Gint;
 
    procedure Next
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;

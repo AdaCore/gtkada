@@ -1431,6 +1431,16 @@ package Gtk.Tree_View is
    --  Undoes the effect of Gtk.Tree_View.Enable_Model_Drag_Source. Calling
    --  this method sets Gtk.Tree_View.Gtk_Tree_View:reorderable to False.
 
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   procedure Gtk_New
+     (Tree_View : out Gtk_Tree_View;
+      Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class);
+   --  A convenience function so that one can directly pass a model, without
+   --  converting to a Gtk_Tree_Model via the "+" operator.
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------

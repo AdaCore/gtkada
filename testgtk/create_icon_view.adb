@@ -88,10 +88,13 @@ package body Create_Icon_View is
    is
       M    : constant Gtk_List_Store := Gtk_List_Store (Model);
       Path_String : constant String := To_String (Params, 1);
-      Path        : constant Gtk_Tree_Path := Gtk_New (Path_String);
-      Iter        : constant Gtk_Tree_Iter := Get_Iter (M, Path);
-      Value       : constant Boolean := Get_Boolean (M, Iter, 2);
+      Path        : Gtk_Tree_Path;
+      Iter        : Gtk_Tree_Iter;
+      Value       : Boolean;
    begin
+      Gtk_New (Path, Path_String);
+      Iter := Get_Iter (M, Path);
+      Value := M.Get_Boolean (Iter, 2);
       Set         (M, Iter, 2, not Value);
       Path_Free (Path);
    end Toggled;
@@ -151,9 +154,8 @@ package body Create_Icon_View is
           1 => GType_String,         --  Text for the icon
           2 => GType_Boolean,        --  Toggle activated ?
           3 => GType_String));       --  Tooltip
-      Set_Model (View, Gtk_Tree_Model (List));
-
-      Fill_Model (Gtk_List_Store (Get_Model (View)));
+      Set_Model (View, +List);
+      Fill_Model (List);
 
       --  Position 3 in our model is the column that we use for tooltips.
       Set_Tooltip_Column (View, 3);

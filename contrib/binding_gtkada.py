@@ -15,6 +15,8 @@ Where the package node is defined as follows:
              into="..."      <!-- optional, the package to bind types and
                                   methods into -->
              ada="..."       <!-- optional, the package's ada name -->
+             parent="..."    <!-- Override the parent type for the widget type
+                                  in this package -->
     >
        <doc screenshot="..." <!-- optional -->
             group="..."      <!-- optional -->
@@ -232,6 +234,12 @@ class GtkAdaPackage(object):
                     ctype=rec.get("ctype"),
                     ada=rec.get("ada", None),
                     single=True)
+
+    def parent_type(self):
+        """Override the parent type for the main widget type in this package"""
+        if self.node:
+            return self.node.get("parent", None)
+        return None
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the

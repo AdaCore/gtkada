@@ -1994,9 +1994,10 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         # Class.
 
         parent = gir._get_class_node(
-            self.rootNode, girname=self.node.get("parent"))
+            self.rootNode,
+            girname=self.gtkpkg.parent_type() or self.node.get("parent"))
         parent = naming.type(
-            name=self.node.get("parent"),  # GIRName
+            name=self.gtkpkg.parent_type() or self.node.get("parent"), # GIRName
             cname=parent and parent.get(ctype_qname)).ada
 
         if parent and parent.rfind(".") != -1:

@@ -37,20 +37,15 @@ package body Gtkada.Abstract_List_Model is
    begin
       if Parent = Null_Iter then
          declare
-            Path : constant Gtk.Tree_Model.Gtk_Tree_Path
-              := Gtk.Tree_Model.Gtk_New_First;
+            Path : Gtk.Tree_Model.Gtk_Tree_Path;
             Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-
          begin
-            Iter :=
-              Gtk.Tree_Model.Get_Iter
-                (Gtk.Tree_Model.Gtk_Tree_Model (Self), Path);
+            Gtk_New_First (Path);
+            Iter := Gtk.Tree_Model.Get_Iter (+Self, Path);
             Gtk.Tree_Model.Path_Free (Path);
-
             return Iter;
          end;
       end if;
-
       return Gtk.Tree_Model.Null_Iter;
    end Children;
 
@@ -78,10 +73,7 @@ package body Gtkada.Abstract_List_Model is
    is
    begin
       if Iter = Null_Iter then
-         return
-           Gtk.Tree_Model.Children
-             (Gtk.Tree_Model.Gtk_Tree_Model (Self), (Iter)) /= Null_Iter;
-
+         return Gtk.Tree_Model.Children (+Self, (Iter)) /= Null_Iter;
       else
          return False;
       end if;

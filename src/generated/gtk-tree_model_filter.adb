@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -118,7 +119,7 @@ package body Gtk.Tree_Model_Filter is
 
    procedure Internal_Gtk_Tree_Model_Filter_Modify_Func
       (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Value  : in out Glib.Values.GValue;
        Column : Gint;
        Data   : System.Address);
@@ -133,7 +134,7 @@ package body Gtk.Tree_Model_Filter is
 
    function Internal_Gtk_Tree_Model_Filter_Visible_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_Model_Filter_Visible_Func);
    --  "model": the child model of the
@@ -145,7 +146,7 @@ package body Gtk.Tree_Model_Filter is
    function Internal_Gtk_Tree_Model_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
@@ -159,14 +160,14 @@ package body Gtk.Tree_Model_Filter is
 
    procedure Internal_Gtk_Tree_Model_Filter_Modify_Func
       (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Value  : in out Glib.Values.GValue;
        Column : Gint;
        Data   : System.Address)
    is
       Func : constant Gtk_Tree_Model_Filter_Modify_Func := To_Gtk_Tree_Model_Filter_Modify_Func (Data);
    begin
-      Func (Model, Iter, Value, Column);
+      Func (Model, Iter.all, Value, Column);
    end Internal_Gtk_Tree_Model_Filter_Modify_Func;
 
    -------------------------------------------------
@@ -175,12 +176,12 @@ package body Gtk.Tree_Model_Filter is
 
    function Internal_Gtk_Tree_Model_Filter_Visible_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
       Func : constant Gtk_Tree_Model_Filter_Visible_Func := To_Gtk_Tree_Model_Filter_Visible_Func (Data);
    begin
-      return Boolean'Pos (Func (Model, Iter));
+      return Boolean'Pos (Func (Model, Iter.all));
    end Internal_Gtk_Tree_Model_Filter_Visible_Func;
 
    ------------------------------------------
@@ -190,12 +191,12 @@ package body Gtk.Tree_Model_Filter is
    function Internal_Gtk_Tree_Model_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
       Func : constant Gtk_Tree_Model_Foreach_Func := To_Gtk_Tree_Model_Foreach_Func (Data);
    begin
-      return Boolean'Pos (Func (Model, From_Object (Path), Iter));
+      return Boolean'Pos (Func (Model, From_Object (Path), Iter.all));
    end Internal_Gtk_Tree_Model_Foreach_Func;
 
    package Type_Conversion_Gtk_Tree_Model_Filter is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -209,7 +210,7 @@ package body Gtk.Tree_Model_Filter is
    procedure Gtk_New
       (Self        : out Gtk_Tree_Model_Filter;
        Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path)
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
    is
    begin
       Self := new Gtk_Tree_Model_Filter_Record;
@@ -223,7 +224,7 @@ package body Gtk.Tree_Model_Filter is
    procedure Initialize
       (Self        : not null access Gtk_Tree_Model_Filter_Record'Class;
        Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path)
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
    is
       function Internal
          (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -260,8 +261,10 @@ package body Gtk.Tree_Model_Filter is
           Filter_Iter : out Gtk.Tree_Model.Gtk_Tree_Iter;
           Child_Iter  : Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_model_filter_convert_child_iter_to_iter");
+      Tmp_Filter_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
-      Internal (Get_Object (Self), Filter_Iter, Child_Iter);
+      Internal (Get_Object (Self), Tmp_Filter_Iter, Child_Iter);
+      Filter_Iter := Tmp_Filter_Iter;
    end Convert_Child_Iter_To_Iter;
 
    --------------------------------
@@ -295,8 +298,10 @@ package body Gtk.Tree_Model_Filter is
           Child_Iter  : out Gtk.Tree_Model.Gtk_Tree_Iter;
           Filter_Iter : Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_model_filter_convert_iter_to_child_iter");
+      Tmp_Child_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
-      Internal (Get_Object (Self), Child_Iter, Filter_Iter);
+      Internal (Get_Object (Self), Tmp_Child_Iter, Filter_Iter);
+      Child_Iter := Tmp_Child_Iter;
    end Convert_Iter_To_Child_Iter;
 
    --------------------------------
@@ -346,7 +351,7 @@ package body Gtk.Tree_Model_Filter is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
@@ -380,12 +385,12 @@ package body Gtk.Tree_Model_Filter is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_Model_Foreach_Func (D.Func) (Model, From_Object (Path), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_Model_Foreach_Func (D.Func) (Model, From_Object (Path), Iter.all, D.Data.all));
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -446,7 +451,7 @@ package body Gtk.Tree_Model_Filter is
 
       procedure Internal_Cb
          (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Value  : in out Glib.Values.GValue;
           Column : Gint;
           Data   : System.Address);
@@ -470,14 +475,14 @@ package body Gtk.Tree_Model_Filter is
 
       procedure Internal_Cb
          (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Value  : in out Glib.Values.GValue;
           Column : Gint;
           Data   : System.Address)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         To_Gtk_Tree_Model_Filter_Modify_Func (D.Func) (Model, Iter, Value, Column, D.Data.all);
+         To_Gtk_Tree_Model_Filter_Modify_Func (D.Func) (Model, Iter.all, Value, Column, D.Data.all);
       end Internal_Cb;
 
       ---------------------
@@ -543,7 +548,7 @@ package body Gtk.Tree_Model_Filter is
 
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  A function which decides whether the row indicated by Iter is
@@ -560,12 +565,12 @@ package body Gtk.Tree_Model_Filter is
 
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_Model_Filter_Visible_Func (D.Func) (Model, Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_Model_Filter_Visible_Func (D.Func) (Model, Iter.all, D.Data.all));
       end Internal_Cb;
 
       ----------------------
@@ -591,10 +596,10 @@ package body Gtk.Tree_Model_Filter is
    -- Children --
    --------------
 
-   procedure Children
+   function Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
+       return Gtk.Tree_Model.Gtk_Tree_Iter
    is
       function Internal
         (Tree_Model : Gtk_Tree_Model;
@@ -604,9 +609,9 @@ package body Gtk.Tree_Model_Filter is
       It : aliased Gtk_Tree_Iter;
    begin
       if Internal (+Tree_Model, It'Address, Parent) /= 0 then
-         Iter := It;
+         return It;
       else
-         Iter := Null_Iter;
+         return Null_Iter;
       end if;
    end Children;
 
@@ -838,17 +843,14 @@ package body Gtk.Tree_Model_Filter is
 
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
+       return Gint
    is
       function Internal
           (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_n_children");
    begin
-      if Iter = Null_Iter then
-         return Internal (+Tree_Model, System.Null_Address);
-      else
-         return Internal (+Tree_Model, Iter'Address);
-      end if;
+      return Internal (+Tree_Model, Iter_Or_Null (Iter'Address));
    end N_Children;
 
    ----------

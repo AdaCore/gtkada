@@ -5982,6 +5982,25 @@ direction, widget state, or icon size.
        <parameter name="targets" ctype="Gtk.Target_List.Target_Entry_Array"/>
        <parameter name="n_targets" ada="" default="Targets'Length" />
      </method>
+
+     <extra>
+       <spec>
+   procedure Gtk_New
+      (Tree_View : out Gtk_Tree_View;
+       Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class);
+   --  A convenience function so that one can directly pass a model, without
+   --  converting to a Gtk_Tree_Model via the "+" operator.
+       </spec>
+       <body>
+   procedure Gtk_New
+      (Tree_View : out Gtk_Tree_View;
+       Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class)
+   is
+   begin
+      Gtk_New (Tree_View, To_Interface (Model));
+   end Gtk_New;
+       </body>
+     </extra>
    </package>
 
    <package id="GtkTreeViewColumn">
@@ -6099,8 +6118,8 @@ direction, widget state, or icon size.
       end if;
        </body>
      </method>
-     <method id="gtk_tree_model_iter_children" ada="Children" return="void">
-       <parameter name="iter" direction="inout"/>
+     <method id="gtk_tree_model_iter_children" ada="Children" return="Gtk_Tree_Iter">
+       <parameter name="iter" ada=""/>
        <body>
       function Internal
         (Tree_Model : Gtk_Tree_Model;
@@ -6110,25 +6129,21 @@ direction, widget state, or icon size.
       It : aliased Gtk_Tree_Iter;
    begin
       if Internal (+Tree_Model, It'Address, Parent) /= 0 then
-         Iter := It;
+         return It;
       else
-         Iter := Null_Iter;
+         return Null_Iter;
       end if;
        </body>
      </method>
      <method id="gtk_tree_model_iter_has_child" ada="Has_Child"/>
      <method id="gtk_tree_model_iter_n_children" ada="N_Children">
-       <param name="iter" default="Null_Iter"/>
+       <parameter name="iter" default="Gtk.Tree_Model.Null_Iter"/>
        <body>
       function Internal
           (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_n_children");
    begin
-      if Iter = Null_Iter then
-         return Internal (+Tree_Model, System.Null_Address);
-      else
-         return Internal (+Tree_Model, Iter'Address);
-      end if;
+      return Internal (+Tree_Model, Iter_Or_Null (Iter'Address));
        </body>
      </method>
      <method id="gtk_tree_model_iter_nth_child" ada="Nth_Child" return="Gtk_Tree_Iter">
@@ -6170,6 +6185,39 @@ direction, widget state, or icon size.
      </method>
      <extra>
        <spec>
+   type Gtk_Root_Tree_Model_Record is new Glib.Object.GObject_Record
+      with null record;
+   type Gtk_Root_Tree_Model is
+      access all Gtk_Root_Tree_Model_Record'Class;
+   --  A common base type for all objects that implement GtkTreeModel. This
+   --  is used to conveniently provide a number of primitive operations.
+
+   function Get_Int
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gint;
+   function Get_Boolean
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean;
+   function Get_Object
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject;
+   function Get_C_Proxy
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy;
+   function Get_String
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return UTF8_String;
+   function Get_Address
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address;
+   --  Get the value of one cell of the model
+
    function Get_Int
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
@@ -6194,9 +6242,29 @@ direction, widget state, or icon size.
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return System.Address;
-   --  Get the value of one cell of the model
+
+   package Implements_Gtk_Tree_Model is new Glib.Types.Implements
+     (Gtk_Tree_Model, Gtk_Root_Tree_Model_Record, Gtk_Root_Tree_Model);
+   function To_Interface
+     (Widget : access Gtk_Root_Tree_Model_Record'Class)
+     return Gtk_Tree_Model renames Implements_Gtk_Tree_Model.To_Interface;
+   function "-"
+     (Interf : Gtk_Tree_Model) return Gtk_Root_Tree_Model
+     renames Implements_Gtk_Tree_Model.To_Object;
+   --  Convert from the gtk+ interface to an actual object. The return type
+   --  depends on the exact model, and will likely be an instance of
+   --  Gtk_Tree_Store'Class or Gtk_List_Store'Class depending on how you
+   --  created it.
        </spec>
        <body>
+   function Get_Int
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gint is
+   begin
+     return Get_Int (To_Interface (Tree_Model), Iter, Column);
+   end Get_Int;
+
   function Get_Int
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
@@ -6216,12 +6284,29 @@ direction, widget state, or icon size.
    end Get_Int;
 
   function Get_Boolean
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean is
+   begin
+      return Get_Boolean (To_Interface (Tree_Model), Iter, Column);
+   end Get_Boolean;
+
+  function Get_Boolean
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Boolean is
    begin
       return Get_Int (Tree_Model, Iter, Column) /= 0;
    end Get_Boolean;
+
+   function Get_Object
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject
+   is
+   begin
+      return Get_Object (To_Interface (Tree_Model), Iter, Column);
+   end Get_Object;
 
    function Get_Object
      (Tree_Model : Gtk_Tree_Model;
@@ -6233,6 +6318,14 @@ direction, widget state, or icon size.
       return Get_User_Data
          (Get_Address (Tree_Model, Iter, Column), Stub);
    end Get_Object;
+
+   function Get_C_Proxy
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy is
+   begin
+      return Get_C_Proxy (To_Interface (Tree_Model), Iter, Column);
+   end Get_C_Proxy;
 
    function Get_C_Proxy
      (Tree_Model : Gtk_Tree_Model;
@@ -6251,6 +6344,15 @@ direction, widget state, or icon size.
       Internal (Tree_Model, Iter, Column, A);
       return A;
    end Get_C_Proxy;
+
+   function Get_String
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return UTF8_String
+   is
+   begin
+      return Get_String (To_Interface (Tree_Model), Iter, Column);
+   end Get_String;
 
    function Get_String
      (Tree_Model : Gtk_Tree_Model;
@@ -6280,6 +6382,15 @@ direction, widget state, or icon size.
    end Get_String;
 
    function Get_Address
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address
+   is
+   begin
+      return Get_Address (To_Interface (Tree_Model), Iter, Column);
+   end Get_Address;
+
+   function Get_Address
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return System.Address
@@ -6305,9 +6416,10 @@ direction, widget state, or icon size.
      <method id="gtk_tree_iter_get_type" ada="Iter_Get_Type" />
      <method id="gtk_tree_iter_copy" ada="Iter_Copy" />
      <extra>
-       <spec>
+       <type>
    Null_Iter : constant Gtk_Tree_Iter;
-
+       </type>
+       <spec>
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
 
    procedure Set_Tree_Iter
@@ -6335,6 +6447,9 @@ direction, widget state, or icon size.
    --  Note: To_Address needs a pass-by-reference semantic to work properly
    --  On some ABIs (e.g. IA64), Gtk_Tree_Iter is passed by copy, since it's
    --  a "small enough" record.
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address;
+   --  Internal function for GtkAda
        </spec>
        <spec private="True">
    Null_Iter : constant Gtk_Tree_Iter :=
@@ -6358,6 +6473,19 @@ direction, widget state, or icon size.
          return False;
       end if;
    end "=";
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address is
+      type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gtk_Tree_Iter_Access);
+      use type System.Address;
+   begin
+      if Convert (Iter).Stamp = 0 then   --  null iter
+         return System.Null_Address;
+      else
+         return Iter;
+      end if;
+   end Iter_Or_Null;
 
    procedure Get_Tree_Iter
      (Val  : Glib.Values.GValue;
@@ -6431,12 +6559,14 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
-   <package id="GtkTreeModelSort">
+   <package id="GtkTreeModelSort" parent="Gtk.Tree_Model.Gtk_Root_Tree_Model">
      <method id="gtk_tree_model_sort_new_with_model" ada="Gtk_New_With_Model"/>
    </package>
 
-   <package id="GtkTreeModelFilter">
-     <method id="gtk_tree_model_filter_new" ada="Gtk_New"/>
+   <package id="GtkTreeModelFilter" parent="Gtk.Tree_Model.Gtk_Root_Tree_Model">
+     <method id="gtk_tree_model_filter_new" ada="Gtk_New">
+       <parameter name="root" default="Null_Gtk_Tree_Path" />
+     </method>
      <method id="gtk_tree_model_filter_convert_child_iter_to_iter" return="void" />
      <method id="gtk_tree_model_filter_set_modify_func"> <!-- function with callback and custom parameter -->
        <parameter name="types" type="Glib.GType_Array"/>
@@ -6488,7 +6618,121 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
-   <package id="GtkTreeStore">
+   <package id="GtkListStore" parent="Gtk.Tree_Model.Gtk_Root_Tree_Model">
+     <parameter name="self" ada="List_Store" />
+     <method id="gtk_list_store_newv" ada="Gtk_New">
+       <parameter name="types" type="GType_Array"/>
+       <parameter name="n_columns" ada="" default="Types'Length"/>
+     </method>
+     <method id="gtk_list_store_set_column_types">
+       <parameter name="types" type="GType_Array"/>
+       <parameter name="n_columns" ada="" default="Types'Length"/>
+     </method>
+     <method id="gtk_list_store_insert_with_valuesv" bind="False"/> <!-- valist -->
+     <method id="gtk_list_store_set_value">
+       <parameter name="value" ctype="GValue" />
+     </method>
+     <method id="gtk_list_store_set_valist" bind="False"/> <!-- valist -->
+     <method id="gtk_list_store_set_valuesv" bind="False"/> <!-- valist -->
+     <method id="gtk_list_store_remove" return="void">
+       <parameter name="iter" direction="inout"/>
+       <body>%(auto)s
+Iter := Gtk.Tree_Model.Null_Iter;
+       </body>
+     </method>
+     <extra>
+       <with_spec pkg="Gdk.Pixbuf" />
+       <spec>
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String);
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean);
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint);
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gdk.Pixbuf.Gdk_Pixbuf);
+       </spec>
+       <body>
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : UTF8_String);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_ptr");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value &amp; ASCII.NUL);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gint);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_int");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gboolean);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_int");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_int");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
+   end Set;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkTreeStore" parent="Gtk.Tree_Model.Gtk_Root_Tree_Model">
      <parameter name="self" ada="Tree_Store" />
      <method id="gtk_tree_store_newv" ada="Gtk_New">
        <parameter name="types" type="GType_Array"/>
@@ -6506,6 +6750,9 @@ Iter := Gtk.Tree_Model.Null_Iter;
      </method>
      <method id="gtk_tree_store_reorder">
        <parameter name="new_order" type="Gint_Array"/>
+     </method>
+     <method id="gtk_tree_store_set_value">
+       <parameter name="value" ctype="GValue" />
      </method>
      <method id="gtk_tree_store_insert_with_valuesv" bind="False"/> <!-- valist -->
      <method id="gtk_tree_store_set_valist" bind="False"/> <!-- valist -->

@@ -31,6 +31,14 @@ with Interfaces.C.Strings;     use Interfaces.C.Strings;
 package body Gtk.Tree_Model is
 
    function Get_Int
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gint is
+   begin
+      return Get_Int (To_Interface (Tree_Model), Iter, Column);
+   end Get_Int;
+
+   function Get_Int
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Gint
@@ -49,12 +57,29 @@ package body Gtk.Tree_Model is
    end Get_Int;
 
    function Get_Boolean
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean is
+   begin
+      return Get_Boolean (To_Interface (Tree_Model), Iter, Column);
+   end Get_Boolean;
+
+   function Get_Boolean
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Boolean is
    begin
       return Get_Int (Tree_Model, Iter, Column) /= 0;
    end Get_Boolean;
+
+   function Get_Object
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject
+   is
+   begin
+      return Get_Object (To_Interface (Tree_Model), Iter, Column);
+   end Get_Object;
 
    function Get_Object
      (Tree_Model : Gtk_Tree_Model;
@@ -66,6 +91,14 @@ package body Gtk.Tree_Model is
       return Get_User_Data
         (Get_Address (Tree_Model, Iter, Column), Stub);
    end Get_Object;
+
+   function Get_C_Proxy
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy is
+   begin
+      return Get_C_Proxy (To_Interface (Tree_Model), Iter, Column);
+   end Get_C_Proxy;
 
    function Get_C_Proxy
      (Tree_Model : Gtk_Tree_Model;
@@ -84,6 +117,15 @@ package body Gtk.Tree_Model is
       Internal (Tree_Model, Iter, Column, A);
       return A;
    end Get_C_Proxy;
+
+   function Get_String
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return UTF8_String
+   is
+   begin
+      return Get_String (To_Interface (Tree_Model), Iter, Column);
+   end Get_String;
 
    function Get_String
      (Tree_Model : Gtk_Tree_Model;
@@ -111,6 +153,15 @@ package body Gtk.Tree_Model is
          end;
       end if;
    end Get_String;
+
+   function Get_Address
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address
+   is
+   begin
+      return Get_Address (To_Interface (Tree_Model), Iter, Column);
+   end Get_Address;
 
    function Get_Address
      (Tree_Model : Gtk_Tree_Model;
@@ -154,6 +205,19 @@ package body Gtk.Tree_Model is
          return False;
       end if;
    end "=";
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address is
+      type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Tree_Iter_Access);
+      use type System.Address;
+   begin
+      if Convert (Iter).Stamp = 0 then--  null iter
+         return System.Null_Address;
+      else
+         return Iter;
+      end if;
+   end Iter_Or_Null;
 
    procedure Get_Tree_Iter
      (Val  : Glib.Values.GValue;
@@ -218,7 +282,7 @@ package body Gtk.Tree_Model is
    function Internal_Gtk_Tree_Model_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
@@ -233,12 +297,12 @@ package body Gtk.Tree_Model is
    function Internal_Gtk_Tree_Model_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
       Func : constant Gtk_Tree_Model_Foreach_Func := To_Gtk_Tree_Model_Foreach_Func (Data);
    begin
-      return Boolean'Pos (Func (Model, From_Object (Path), Iter));
+      return Boolean'Pos (Func (Model, From_Object (Path), Iter.all));
    end Internal_Gtk_Tree_Model_Foreach_Func;
 
    -------------
@@ -289,6 +353,28 @@ package body Gtk.Tree_Model is
    begin
       Internal (Get_Object (Path), Index);
    end Append_Index;
+
+   --------------
+   -- Children --
+   --------------
+
+   function Children
+      (Tree_Model : Gtk_Tree_Model;
+       Parent     : Gtk_Tree_Iter) return Gtk_Tree_Iter
+   is
+      function Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : System.Address;
+         Parent     : Gtk_Tree_Iter) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_children");
+      It : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (+Tree_Model, It'Address, Parent) /= 0 then
+         return It;
+      else
+         return Null_Iter;
+      end if;
+   end Children;
 
    -------------
    -- Compare --
@@ -355,7 +441,7 @@ package body Gtk.Tree_Model is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
@@ -389,12 +475,12 @@ package body Gtk.Tree_Model is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_Model_Foreach_Func (D.Func) (Model, From_Object (Path), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_Model_Foreach_Func (D.Func) (Model, From_Object (Path), Iter.all, D.Data.all));
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -573,6 +659,21 @@ package body Gtk.Tree_Model is
    begin
       return Boolean'Val (Internal (Get_Object (Path), Get_Object (Ancestor)));
    end Is_Descendant;
+
+   ----------------
+   -- N_Children --
+   ----------------
+
+   function N_Children
+      (Tree_Model : Gtk_Tree_Model;
+       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter) return Gint
+   is
+      function Internal
+          (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_n_children");
+   begin
+      return Internal (+Tree_Model, Iter_Or_Null (Iter'Address));
+   end N_Children;
 
    ----------
    -- Next --

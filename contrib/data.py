@@ -522,7 +522,8 @@ naming.type_exceptions = {
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
                                    "Pango.Font.Property_Font_Description"),
-    "GtkTreeIter*":    Proxy("Gtk.Tree_Model.Gtk_Tree_Iter"),
+    "GtkTreeIter*":    Record("Gtk.Tree_Model.Gtk_Tree_Iter",
+                              val_or_null="Iter_Or_Null"),
 
     "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),

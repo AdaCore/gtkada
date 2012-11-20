@@ -54,6 +54,10 @@ package Gtk.Text_Tag_Table is
    type Gtk_Text_Tag_Table_Record is new GObject_Record with null record;
    type Gtk_Text_Tag_Table is access all Gtk_Text_Tag_Table_Record'Class;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Gtk_Text_Tag_Table_Foreach is access procedure
      (Tag : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
 

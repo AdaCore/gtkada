@@ -31,6 +31,14 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Tree_View is
 
+   procedure Gtk_New
+     (Tree_View : out Gtk_Tree_View;
+      Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class)
+   is
+   begin
+      Gtk_New (Tree_View, To_Interface (Model));
+   end Gtk_New;
+
    function C_Gtk_Tree_View_Insert_Column_With_Data_Func
       (Tree_View : System.Address;
        Position  : Gint;
@@ -183,7 +191,7 @@ package body Gtk.Tree_View is
       (Tree_Column : System.Address;
        Cell        : System.Address;
        Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Cell_Data_Func);
    --  "tree_column": A Gtk_Tree_Column
@@ -226,7 +234,7 @@ package body Gtk.Tree_View is
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
@@ -237,7 +245,7 @@ package body Gtk.Tree_View is
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Integer;
    pragma Convention (C, Internal_Gtk_Tree_View_Search_Equal_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
@@ -261,14 +269,14 @@ package body Gtk.Tree_View is
       (Tree_Column : System.Address;
        Cell        : System.Address;
        Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                      : constant Gtk_Tree_Cell_Data_Func := To_Gtk_Tree_Cell_Data_Func (Data);
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
       Stub_Gtk_Cell_Renderer    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      Func (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
+      Func (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter.all);
    end Internal_Gtk_Tree_Cell_Data_Func;
 
    ------------------------------------------
@@ -326,12 +334,12 @@ package body Gtk.Tree_View is
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Integer
    is
       Func : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
    begin
-      return Boolean'Pos (Func (Model, Iter));
+      return Boolean'Pos (Func (Model, Iter.all));
    end Internal_Gtk_Tree_View_Row_Separator_Func;
 
    ----------------------------------------------
@@ -342,12 +350,12 @@ package body Gtk.Tree_View is
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Integer
    is
       Func : constant Gtk_Tree_View_Search_Equal_Func := To_Gtk_Tree_View_Search_Equal_Func (Search_Data);
    begin
-      return Boolean'Pos (Func (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter));
+      return Boolean'Pos (Func (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter.all));
    end Internal_Gtk_Tree_View_Search_Equal_Func;
 
    -------------------------------------------------
@@ -1241,9 +1249,11 @@ package body Gtk.Tree_View is
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Acc_Path : aliased System.Address;
+      Tmp_Acc_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Tree_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Acc_Iter'Access);
+      Tmp_Return := Internal (Get_Object (Tree_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Tmp_Acc_Iter'Access);
+      Acc_Iter := Tmp_Acc_Iter;
       Acc_Path := From_Object (Tmp_Acc_Path);
       X := Acc_X;
       Y := Acc_Y;
@@ -1357,7 +1367,7 @@ package body Gtk.Tree_View is
          (Tree_Column : System.Address;
           Cell        : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A function to set the properties of a cell instead of just using the
@@ -1408,14 +1418,14 @@ package body Gtk.Tree_View is
          (Tree_Column : System.Address;
           Cell        : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                         : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
          Stub_Gtk_Cell_Renderer    : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         To_Gtk_Tree_Cell_Data_Func (D.Func) (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
+         To_Gtk_Tree_Cell_Data_Func (D.Func) (Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tree_Column, Stub_Gtk_Tree_View_Column)), Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter.all, D.Data.all);
       end Internal_Cb;
 
    end Insert_Column_With_Data_Func_User_Data;
@@ -2091,7 +2101,7 @@ package body Gtk.Tree_View is
 
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  Function type for determining whether the row pointed to by Iter
@@ -2108,12 +2118,12 @@ package body Gtk.Tree_View is
 
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Model, Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_View_Row_Separator_Func (D.Func) (Model, Iter.all, D.Data.all));
       end Internal_Cb;
 
       ----------------------------
@@ -2225,7 +2235,7 @@ package body Gtk.Tree_View is
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  A function used for checking whether a row in Model matches a search
@@ -2247,12 +2257,12 @@ package body Gtk.Tree_View is
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Search_Data);
       begin
-         return Boolean'Pos (To_Gtk_Tree_View_Search_Equal_Func (D.Func) (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter, D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_View_Search_Equal_Func (D.Func) (Model, Column, Gtkada.Bindings.Value_Allowing_Null (Key), Iter.all, D.Data.all));
       end Internal_Cb;
 
       ---------------------------

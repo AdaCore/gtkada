@@ -91,7 +91,7 @@ package body Gtk.Tree_Selection is
    procedure Internal_Gtk_Tree_Selection_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Selection_Foreach_Func);
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model being viewed
@@ -119,12 +119,12 @@ package body Gtk.Tree_Selection is
    procedure Internal_Gtk_Tree_Selection_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
-       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address)
    is
       Func : constant Gtk_Tree_Selection_Foreach_Func := To_Gtk_Tree_Selection_Foreach_Func (Data);
    begin
-      Func (Model, From_Object (Path), Iter);
+      Func (Model, From_Object (Path), Iter.all);
    end Internal_Gtk_Tree_Selection_Foreach_Func;
 
    --------------------------------------
@@ -203,8 +203,10 @@ package body Gtk.Tree_Selection is
           Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
           Iter      : out Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_selection_get_selected");
+      Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
-      Internal (Get_Object (Selection), Model, Iter);
+      Internal (Get_Object (Selection), Model, Tmp_Iter);
+      Iter := Tmp_Iter;
    end Get_Selected;
 
    -------------------
@@ -359,7 +361,7 @@ package body Gtk.Tree_Selection is
       procedure Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Tree_Selection.Selected_Foreach to map all
@@ -376,12 +378,12 @@ package body Gtk.Tree_Selection is
       procedure Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data  : System.Address)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         To_Gtk_Tree_Selection_Foreach_Func (D.Func) (Model, From_Object (Path), Iter, D.Data.all);
+         To_Gtk_Tree_Selection_Foreach_Func (D.Func) (Model, From_Object (Path), Iter.all, D.Data.all);
       end Internal_Cb;
 
       ----------------------

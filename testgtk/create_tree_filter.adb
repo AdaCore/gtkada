@@ -40,14 +40,14 @@ package body Create_Tree_Filter is
    Column_0 : constant := 0;
 
    function Custom_Filter
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter) return Boolean;
    --  Decide whether a row should be made visible or not
 
    procedure Custom_Appearance
-     (Model  : access Gtk_Tree_Model_Filter_Record'Class;
+     (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : out GValue;
+      Value  : in out GValue;
       Column : Gint);
    --  Change the appearance of the view dynamically
 
@@ -77,7 +77,7 @@ package body Create_Tree_Filter is
    -------------------
 
    function Custom_Filter
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter) return Boolean
    is
       Value : constant Gint := Get_Int (Model, Iter, Column_0);
@@ -90,16 +90,18 @@ package body Create_Tree_Filter is
    -----------------------
 
    procedure Custom_Appearance
-     (Model  : access Gtk_Tree_Model_Filter_Record'Class;
+     (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : out GValue;
+      Value  : in out GValue;
       Column : Gint)
    is
+      Filter : constant Gtk_Tree_Model_Filter :=
+         Gtk_Tree_Model_Filter'(-Model);
       Val        : Gint;
       Child_Iter : Gtk_Tree_Iter;
    begin
-      Convert_Iter_To_Child_Iter (Model, Child_Iter, Iter);
-      Val := Get_Int (Get_Model (Model), Child_Iter, Column);
+      Convert_Iter_To_Child_Iter (Filter, Child_Iter, Iter);
+      Val := Get_Int (Get_Model (Filter), Child_Iter, Column);
       Set_String (Value, "This is line" & Gint'Image (Val));
    end Custom_Appearance;
 
@@ -139,7 +141,7 @@ package body Create_Tree_Filter is
       --  function, but that could be a simple row in the model as well. The
       --  function is slightly more flexible, though.
 
-      Gtk_New (Filter, Model);
+      Gtk_New (Filter, +Model);
       Set_Visible_Func (Filter, Custom_Filter'Access);
       Set_Modify_Func  (Filter, (0 => GType_String), Custom_Appearance'Access);
 

@@ -227,6 +227,8 @@ package Gtk.Tree_Model is
    --  model-specific data in the three <structfield>user_data</structfield>
    --  members.
 
+   Null_Iter : constant Gtk_Tree_Iter;
+
    type Gtk_Tree_Path is new Glib.C_Boxed with null record;
    Null_Gtk_Tree_Path : constant Gtk_Tree_Path;
 
@@ -396,18 +398,15 @@ package Gtk.Tree_Model is
    --  "column": the column to lookup the value at
    --  "value": an empty Glib.Values.GValue to set
 
-   procedure Children
+   function Children
       (Tree_Model : Gtk_Tree_Model;
-       Iter       : in out Gtk_Tree_Iter;
-       Parent     : Gtk_Tree_Iter);
-   pragma Import (C, Children, "gtk_tree_model_iter_children");
+       Parent     : Gtk_Tree_Iter) return Gtk_Tree_Iter;
    --  Sets Iter to point to the first child of Parent.
    --  If Parent has no children, False is returned and Iter is set to be
    --  invalid. Parent will remain a valid node after this function has been
    --  called.
    --  If Parent is null returns the first node, equivalent to
    --  'gtk_tree_model_get_iter_first (tree_model, iter);'
-   --  "iter": the new Gtk.Tree_Model.Gtk_Tree_Iter to be set to the child
    --  "parent": the Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    function Has_Child
@@ -418,8 +417,7 @@ package Gtk.Tree_Model is
 
    function N_Children
       (Tree_Model : Gtk_Tree_Model;
-       Iter       : Gtk_Tree_Iter) return Gint;
-   pragma Import (C, N_Children, "gtk_tree_model_iter_n_children");
+       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter) return Gint;
    --  Returns the number of children that Iter has.
    --  As a special case, if Iter is null, then the number of toplevel nodes
    --  is returned.
@@ -629,33 +627,76 @@ package Gtk.Tree_Model is
    -- GtkAda additions --
    ----------------------
 
-   function Get_Int
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return Gint;
-   function Get_Boolean
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return Boolean;
-   function Get_Object
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return Glib.Object.GObject;
-   function Get_C_Proxy
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return Glib.C_Proxy;
-   function Get_String
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return UTF8_String;
-   function Get_Address
-     (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return System.Address;
-   --  Get the value of one cell of the model
+   type Gtk_Root_Tree_Model_Record is new Glib.Object.GObject_Record
+   with null record;
+   type Gtk_Root_Tree_Model is
+      access all Gtk_Root_Tree_Model_Record'Class;
+      --  A common base type for all objects that implement GtkTreeModel. This
+      --  is used to conveniently provide a number of primitive operations.
 
-   Null_Iter : constant Gtk_Tree_Iter;
+      function Get_Int
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Gint;
+      function Get_Boolean
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Boolean;
+      function Get_Object
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Glib.Object.GObject;
+      function Get_C_Proxy
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Glib.C_Proxy;
+      function Get_String
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return UTF8_String;
+      function Get_Address
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return System.Address;
+      --  Get the value of one cell of the model
+
+      function Get_Int
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Gint;
+      function Get_Boolean
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Boolean;
+      function Get_Object
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Glib.Object.GObject;
+      function Get_C_Proxy
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Glib.C_Proxy;
+      function Get_String
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return UTF8_String;
+      function Get_Address
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return System.Address;
+
+      package Implements_Gtk_Tree_Model is new Glib.Types.Implements
+        (Gtk_Tree_Model, Gtk_Root_Tree_Model_Record, Gtk_Root_Tree_Model);
+      function To_Interface
+        (Widget : access Gtk_Root_Tree_Model_Record'Class)
+      return Gtk_Tree_Model renames Implements_Gtk_Tree_Model.To_Interface;
+      function "-"
+        (Interf : Gtk_Tree_Model) return Gtk_Root_Tree_Model
+      renames Implements_Gtk_Tree_Model.To_Object;
+      --  Convert from the gtk+ interface to an actual object. The return type
+      --  depends on the exact model, and will likely be an instance of
+      --  Gtk_Tree_Store'Class or Gtk_List_Store'Class depending on how you
+      --  created it.
 
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
 
@@ -684,6 +725,9 @@ package Gtk.Tree_Model is
    --  Note: To_Address needs a pass-by-reference semantic to work properly
    --  On some ABIs (e.g. IA64), Gtk_Tree_Iter is passed by copy, since it's
    --  a "small enough" record.
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address;
+   --  Internal function for GtkAda
 
    function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
    --  Extract the path from the given GValue.

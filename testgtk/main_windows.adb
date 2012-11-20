@@ -750,7 +750,7 @@ package body Main_Windows is
       Gtk_New (Model, (1 => GType_String,
                        2 => GType_Int,
                        3 => GType_Int));
-      Gtk_New (Tree, Model);
+      Gtk_New (Tree, +Model);
       Set_Headers_Visible (Tree, False);
 
       Modify_Font (Tree, From_String ("Sans 8"));

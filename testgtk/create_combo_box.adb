@@ -176,7 +176,7 @@ package body Create_Combo_Box is
       --  doesn't come directly from a column (see create_cell_view for
       --  instance)
 
-      Gtk_New_With_Model (Combo, Model);
+      Gtk_New_With_Model (Combo, +Model);
       Pack_Start (Box, Combo, Expand => False);
 
       Gtk_New (Pix);
@@ -203,7 +203,7 @@ package body Create_Combo_Box is
       Append_Color_Pixbuf (Model, "pink");
       Append_Color_Pixbuf (Model, "magenta");
 
-      Gtk_New_With_Model (Combo, Model);
+      Gtk_New_With_Model (Combo, +Model);
       Pack_Start (Box, Combo, Expand => False);
       Set_Wrap_Width (Combo, 3);  --  Make it a matrix
 

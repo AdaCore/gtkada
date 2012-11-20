@@ -29,12 +29,6 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Text_Tag_Table is
 
-   function To_Gtk_Text_Tag_Table_Foreach is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Text_Tag_Table_Foreach);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Text_Tag_Table_Foreach, System.Address);
-
    procedure C_Gtk_Text_Tag_Table_Foreach
       (Table : System.Address;
        Func  : System.Address;
@@ -45,6 +39,12 @@ package body Gtk.Text_Tag_Table is
    --  tags).
    --  "func": a function to call on each tag
    --  "data": user data
+
+   function To_Gtk_Text_Tag_Table_Foreach is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Text_Tag_Table_Foreach);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Text_Tag_Table_Foreach, System.Address);
 
    procedure Internal_Gtk_Text_Tag_Table_Foreach
       (Tag  : System.Address;

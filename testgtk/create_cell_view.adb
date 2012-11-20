@@ -50,7 +50,7 @@ package body Create_Cell_View is
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
       Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Compute dynamically what to display in the third column of the view,
    --  based on the contents of the model. In this example, this is a
@@ -100,7 +100,7 @@ package body Create_Cell_View is
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
       Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model : not null access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
       pragma Unreferenced (Cell_Layout);
@@ -161,7 +161,7 @@ package body Create_Cell_View is
 
       Gtk_New (View);
       Pack_Start (Box, View, Expand => True, Fill => False);
-      Set_Model (View, Gtk_Tree_Model (Model));
+      Set_Model (View, +Model);
 
       Gtk_New (Render);
       Pack_Start    (+View, Render, Expand => True);
@@ -177,7 +177,7 @@ package body Create_Cell_View is
       Pack_Start (+View, Render, Expand => True);
       Set_Cell_Data_Func (+View, Render, Compute_Column_3'Access);
 
-      Path := Gtk_New_First;
+      Gtk_New_First (Path);
       Set_Displayed_Row (View, Path);
 
       Widget_Callback.Object_Connect

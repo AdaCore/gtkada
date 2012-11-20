@@ -792,6 +792,9 @@ to follow the usual GtkAda convention.
 Gtk_Tree_Row_Reference has been moved to its own package
 Gtk.Tree_Row_Reference.
 
+Gtk_New and Gtk_New_First (for a tree path) now take a "out" parameter,
+for consistency with the rest of the API.
+
 
 Gtk.Tree_View_Column
 ====================

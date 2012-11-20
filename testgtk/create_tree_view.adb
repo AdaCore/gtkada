@@ -70,7 +70,7 @@ package body Create_Tree_View is
    --  Same when a text cell is edited
 
    function Custom_Sort
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       A, B  : Gtk_Tree_Iter) return Gint;
    --  Our own customer sort function for the tree
 
@@ -109,7 +109,7 @@ package body Create_Tree_View is
    -----------------
 
    function Custom_Sort
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       A, B  : Gtk_Tree_Iter) return Gint
    is
       Text_A : constant String := Get_String (Model, A, Text_Column);
@@ -240,7 +240,7 @@ package body Create_Tree_View is
       --  use two of the predefined renderers. The list of possible attributes
       --  for these is defined in their respective packages.
 
-      Gtk_New (Tree, Model);
+      Gtk_New (Tree, +Model);
       Set_Grid_Lines (Tree, Grid_Lines_Vertical);
       Set_Enable_Tree_Lines (Tree, True);
       Set_Rubber_Banding (Tree, True);

@@ -110,7 +110,7 @@ package body Gtk.Icon_View is
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
    --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
@@ -137,13 +137,13 @@ package body Gtk.Icon_View is
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
        Cell        : System.Address;
        Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address)
    is
       Func                   : constant Gtk_Cell_Layout_Data_Func := To_Gtk_Cell_Layout_Data_Func (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
    begin
-      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter);
+      Func (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter.all);
    end Internal_Gtk_Cell_Layout_Data_Func;
 
    -----------------------------------------
@@ -692,9 +692,11 @@ package body Gtk.Icon_View is
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Acc_Path : aliased System.Address;
+      Tmp_Acc_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Return   : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Acc_Iter'Access);
+      Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Tmp_Acc_Iter'Access);
+      Acc_Iter := Tmp_Acc_Iter;
       Acc_Path := From_Object (Tmp_Acc_Path);
       X := Acc_X;
       Y := Acc_Y;
@@ -907,7 +909,7 @@ package body Gtk.Icon_View is
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
@@ -927,13 +929,13 @@ package body Gtk.Icon_View is
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
           Cell        : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Data        : System.Address)
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
       begin
-         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter, D.Data.all);
+         To_Gtk_Cell_Layout_Data_Func (D.Func) (Cell_Layout, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Cell, Stub_Gtk_Cell_Renderer)), Tree_Model, Iter.all, D.Data.all);
       end Internal_Cb;
 
       ------------------------

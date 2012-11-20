@@ -242,7 +242,7 @@ begin
 
    --  Create the tree and model
    Gtk_New (Model, (0 => GType_String));
-   Gtk_New (Tree, Model);
+   Gtk_New (Tree, +Model);
    Tree.Set_Headers_Visible (False);
    Tree.Set_Show_Expanders (False);
    Gtk_New (Rend);

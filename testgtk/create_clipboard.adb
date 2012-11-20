@@ -246,7 +246,7 @@ package body Create_Clipboard is
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
       Pack_Start (Box2, Scrolled, Expand => True);
 
-      Gtk_New (View, List);
+      Gtk_New (View, +List);
       Add (Scrolled, View);
       Set_Headers_Visible (View, False);
 

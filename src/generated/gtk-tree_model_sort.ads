@@ -113,7 +113,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
 with Glib.Types;           use Glib.Types;
 with Glib.Values;          use Glib.Values;
 with Gtk.Enums;            use Gtk.Enums;
@@ -124,7 +123,7 @@ with Gtk.Tree_Sortable;    use Gtk.Tree_Sortable;
 
 package Gtk.Tree_Model_Sort is
 
-   type Gtk_Tree_Model_Sort_Record is new GObject_Record with null record;
+   type Gtk_Tree_Model_Sort_Record is new Gtk_Root_Tree_Model_Record with null record;
    type Gtk_Tree_Model_Sort is access all Gtk_Tree_Model_Sort_Record'Class;
 
    ---------------
@@ -458,10 +457,10 @@ package Gtk.Tree_Model_Sort is
        Column     : Gint;
        Value      : out Glib.Values.GValue);
 
-   procedure Children
+   function Children
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;
-       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter);
+       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
+       return Gtk.Tree_Model.Gtk_Tree_Iter;
 
    function Has_Child
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;
@@ -469,7 +468,8 @@ package Gtk.Tree_Model_Sort is
 
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
+       return Gint;
 
    procedure Next
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;

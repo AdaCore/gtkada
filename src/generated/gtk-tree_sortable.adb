@@ -70,8 +70,8 @@ package body Gtk.Tree_Sortable is
 
    function Internal_Gtk_Tree_Iter_Compare_Func
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-       A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-       B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+       A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+       B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data : System.Address) return Gint;
    pragma Convention (C, Internal_Gtk_Tree_Iter_Compare_Func);
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
@@ -86,13 +86,13 @@ package body Gtk.Tree_Sortable is
 
    function Internal_Gtk_Tree_Iter_Compare_Func
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-       A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-       B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+       A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+       B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data : System.Address) return Gint
    is
       Func : constant Gtk_Tree_Iter_Compare_Func := To_Gtk_Tree_Iter_Compare_Func (User_Data);
    begin
-      return Func (Model, A, B);
+      return Func (Model, A.all, B.all);
    end Internal_Gtk_Tree_Iter_Compare_Func;
 
    ---------------------------
@@ -137,8 +137,8 @@ package body Gtk.Tree_Sortable is
 
       function Internal_Cb
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+          A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+          B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
@@ -164,13 +164,13 @@ package body Gtk.Tree_Sortable is
 
       function Internal_Cb
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+          A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+          B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A, B, D.Data.all);
+         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A.all, B.all, D.Data.all);
       end Internal_Cb;
 
       ---------------------------
@@ -222,8 +222,8 @@ package body Gtk.Tree_Sortable is
 
       function Internal_Cb
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+          A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+          B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
@@ -249,13 +249,13 @@ package body Gtk.Tree_Sortable is
 
       function Internal_Cb
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+          A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
+          B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data : System.Address) return Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A, B, D.Data.all);
+         return To_Gtk_Tree_Iter_Compare_Func (D.Func) (Model, A.all, B.all, D.Data.all);
       end Internal_Cb;
 
       -------------------
