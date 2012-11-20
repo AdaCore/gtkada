@@ -90,7 +90,7 @@ package body Gtkada.Abstract_Tree_Model is
    function Dispatch_Get_Iter
      (Tree_Model : Gtk_Tree_Model;
       Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean;
+      Path       : System.Address) return Glib.Gboolean;
    pragma Convention (C, Dispatch_Get_Iter);
 
    function Dispatch_Get_Path
@@ -212,11 +212,12 @@ package body Gtkada.Abstract_Tree_Model is
    function Dispatch_Get_Iter
      (Tree_Model : Gtk_Tree_Model;
       Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean
+      Path       : System.Address) return Glib.Gboolean
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
+      P : constant Gtk_Tree_Path := From_Object (Path);
    begin
-      Iter.all := T.Get_Iter (Path);
+      Iter.all := T.Get_Iter (P);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
       else
