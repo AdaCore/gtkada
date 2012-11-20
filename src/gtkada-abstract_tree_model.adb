@@ -89,38 +89,39 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Get_Iter
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean;
    pragma Convention (C, Dispatch_Get_Iter);
 
    function Dispatch_Get_Path
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Gtk.Tree_Model.Gtk_Tree_Path;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return System.Address;
    pragma Convention (C, Dispatch_Get_Path);
 
    procedure Dispatch_Get_Value
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Glib.Gint;
       Value      : out Glib.Values.GValue);
    pragma Convention (C, Dispatch_Get_Value);
 
    function Dispatch_Iter_Next
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Next);
 
    function Dispatch_Iter_Children
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Children);
 
    function Dispatch_Iter_Has_Child
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Has_Child);
 
@@ -132,26 +133,26 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Nth_Child
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access;
       N          : Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Nth_Child);
 
    function Dispatch_Iter_Parent
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Child      : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child      : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Parent);
 
    procedure Dispatch_Ref_Node
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
+      Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Ref_Node);
 
    procedure Dispatch_Unref_Node
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
+      Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Unref_Node);
 
    Class_Record : Glib.Object.GObject_Class := Glib.Object.Uninitialized_Class;
@@ -210,7 +211,7 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Get_Iter
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
@@ -237,12 +238,12 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Get_Path
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Gtk.Tree_Model.Gtk_Tree_Path
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return System.Address
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      return T.Get_Path (Iter);
+      return T.Get_Path (Iter.all).Get_Object;
    end Dispatch_Get_Path;
 
    function Get_Path
@@ -279,13 +280,16 @@ package body Gtkada.Abstract_Tree_Model is
 
    procedure Dispatch_Get_Value
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Glib.Gint;
       Value      : out Glib.Values.GValue)
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      T.Get_Value (Iter, Column, Value);
+      if Iter.all = Null_Iter then
+         raise Program_Error with "passing a null_iter to Get_Value";
+      end if;
+      T.Get_Value (Iter.all, Column, Value);
    end Dispatch_Get_Value;
 
    procedure Get_Value
@@ -304,7 +308,7 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Children
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean
    is
@@ -343,12 +347,12 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Has_Child
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      if T.Has_Child (Iter) then
+      if T.Has_Child (Iter.all) then
          return 1;
       else
          return 0;
@@ -395,7 +399,8 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Next
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Glib.Gboolean
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
@@ -421,7 +426,7 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Nth_Child
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access;
       N          : Glib.Gint) return Glib.Gboolean
    is
@@ -456,13 +461,13 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_Parent
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Child      : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child      : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Iter.all := T.Parent (Child);
+      Iter.all := T.Parent (Child.all);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
       else
@@ -483,11 +488,13 @@ package body Gtkada.Abstract_Tree_Model is
 
    procedure Dispatch_Ref_Node
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : Gtk_Tree_Iter_Access)
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      T.Ref_Node (Iter);
+      if Iter /= null then
+         T.Ref_Node (Iter.all);
+      end if;
    end Dispatch_Ref_Node;
 
    procedure Ref_Node
@@ -508,11 +515,13 @@ package body Gtkada.Abstract_Tree_Model is
 
    procedure Dispatch_Unref_Node
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter       : Gtk_Tree_Iter_Access)
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      T.Unref_Node (Iter);
+      if Iter /= null then
+         T.Unref_Node (Iter.all);
+      end if;
    end Dispatch_Unref_Node;
 
    procedure Unref_Node

@@ -51,7 +51,11 @@ package body Glib.Types is
       function To_Interface
         (Object : access Object_Type_Record'Class) return Interface_Type is
       begin
-         return Interface_Type (Get_Object (Object));
+         if Object = null then
+            return Interface_Type (Null_Interface);
+         else
+            return Interface_Type (Get_Object (Object));
+         end if;
       end To_Interface;
    end Implements;
 

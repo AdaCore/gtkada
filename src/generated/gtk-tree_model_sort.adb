@@ -562,11 +562,11 @@ package body Gtk.Tree_Model_Sort is
       function Internal
         (Tree_Model : Gtk_Tree_Model;
          Iter       : System.Address;
-         Parent     : Gtk_Tree_Iter) return Gint;
+         Parent     : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_children");
       It : aliased Gtk_Tree_Iter;
    begin
-      if Internal (+Tree_Model, It'Address, Parent) /= 0 then
+      if Internal (+Tree_Model, It'Address, Iter_Or_Null (Parent'Address)) /= 0 then
          return It;
       else
          return Null_Iter;
@@ -875,12 +875,8 @@ package body Gtk.Tree_Model_Sort is
          Iter, Parent : System.Address; N : Gint) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_nth_child");
       Iter : aliased Gtk_Tree_Iter;
-      P    : System.Address := System.Null_Address;
    begin
-      if Parent /= Null_Iter then
-         P := Parent'Address;
-      end if;
-      if Internal (+Tree_Model, Iter'Address, P, N) /= 0 then
+      if Internal (+Tree_Model, Iter'Address, Iter_Or_Null (Parent'Address), N) /= 0 then
          return Iter;
       else
          return Null_Iter;
