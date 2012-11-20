@@ -6046,11 +6046,22 @@ direction, widget state, or icon size.
      <method id="gtk_tree_view_column_set_cell_data_func" bind="False" /> <!-- from cell_layout -->
    </package>
 
+   <package id="GtkTreeSortable">
+     <parameter name="self" ada="Sortable"/>
+     <method id="gtk_tree_sortable_get_sort_column_id" return="void"/>
+     <extra>
+       <spec>
+   Default_Sort_Column_Id  : constant Gint := -1;
+   Unsorted_Sort_Column_Id : constant Gint := -2;
+   --  Two special values for the sort column
+       </spec>
+     </extra>
+   </package>
 
-   <!-- Below were added just for the sake of parsing the files to get information
-        on their symbols, and properly substitute them in the docs.
-        No file is generated from them.
-   -->
+   <package id="GtkTreeDragSource">
+     <function id="gtk_tree_set_row_drag_data" ada="Set_Row_Drag_Data"/>
+     <function id="gtk_tree_get_row_drag_data" ada="Get_Row_Drag_Data" return_as_param="succes"/>
+   </package>
 
    <package id="GtkTreeModel">
      <method id="gtk_tree_model_get" bind="False"/> <!-- varargs -->

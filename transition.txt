@@ -765,6 +765,15 @@ Gtk.Text_View
 The functions Get/Set_Disable_Scroll_On_Focus have no effect in recent
 versions of Gtk+ and have been removed.
 
+Gtk.Tree_Dnd
+============
+
+This package was removed, and its contents split into Gtk.Tree_Drag_Source
+and Gtk.Tree_Drag_Source.
+
+The Drag_Dest_ and Drag_Source_ prefixes were removed from the subprogram,
+so for instance Drag_Dest_Drag_Data_Received has become Drag_Data_Received.
+
 Gtk.Tree_View_Column
 ====================
 

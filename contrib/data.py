@@ -30,9 +30,9 @@ interfaces = (
     "Scrollable",
     "StyleProvider",
     "ToolShell",
-    #"TreeDragDest",
-    #"TreeDragSource",
-    #"TreeSortable"
+    "TreeDragDest",
+    "TreeDragSource",
+    "TreeSortable",
     #"TreeModel",
 
     "--Action", # Not tested yet, from Gio
@@ -218,8 +218,6 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "PangoLayoutLine",
            "PangoMatrix",
            "PangoTabArray",
-
-           # "GEmblemedIcon",
 
            "GtkAboutDialog",
            "GtkAccelGroup",
