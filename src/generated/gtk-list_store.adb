@@ -1257,13 +1257,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
       (Tree_Model : not null access Gtk_List_Store_Record;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order  : in out Gint)
+       New_Order  : Gint_Array)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Path       : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          New_Order  : in out Gint);
+          New_Order  : Gint_Array);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered");
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter, New_Order);

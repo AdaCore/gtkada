@@ -1040,13 +1040,13 @@ package body Gtk.Tree_Model_Sort is
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order  : in out Gint)
+       New_Order  : Gint_Array)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Path       : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          New_Order  : in out Gint);
+          New_Order  : Gint_Array);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered");
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter, New_Order);

@@ -516,7 +516,7 @@ package Gtk.Tree_Model_Sort is
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order  : in out Gint);
+       New_Order  : Gint_Array);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_Tree_Model_Sort_Record;

@@ -6183,6 +6183,9 @@ direction, widget state, or icon size.
       end if;
        </body>
      </method>
+     <method id="gtk_tree_model_rows_reordered">
+       <parameter name="new_order" type="Gint_Array"/>
+     </method>
      <extra>
        <spec>
    type Gtk_Root_Tree_Model_Record is new Glib.Object.GObject_Record
@@ -6871,37 +6874,17 @@ package body Generic_Set is
         (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Data_Type_Access)
-      is
-         procedure Internal
-           (Tree_Store : System.Address;
-            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-            Column     : Gint;
-            Value      : System.Address);
-         pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
-
+         Value      : Data_Type_Access) is
       begin
-         Internal
-           (Get_Object (Tree_Store), Iter, Column, To_Address (Value));
+         Set (Tree_Store, Iter, Column, To_Address (Value));
       end Set;
 
       function Get
         (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Column     : Gint) return Data_Type_Access
-      is
-         procedure Internal
-           (Tree_Store : System.Address;
-            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-            Column     : Gint;
-            Value      : out System.Address);
-         pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
-
-         Value : System.Address;
+         Column     : Gint) return Data_Type_Access is
       begin
-         Internal
-           (Get_Object (Tree_Store), Iter, Column, Value);
-         return To_Access (Value);
+         return To_Access (Get_Address (+Tree_Store, Iter, Column));
       end Get;
    end Generic_Set;
 

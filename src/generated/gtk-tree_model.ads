@@ -529,7 +529,7 @@ package Gtk.Tree_Model is
       (Tree_Model : Gtk_Tree_Model;
        Path       : Gtk_Tree_Path;
        Iter       : Gtk_Tree_Iter;
-       New_Order  : in out Gint);
+       New_Order  : Gint_Array);
    --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal on
    --  Tree_Model.
    --  This should be called by models when their rows have been reordered.

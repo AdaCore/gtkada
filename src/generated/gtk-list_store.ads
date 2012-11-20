@@ -662,7 +662,7 @@ package Gtk.List_Store is
       (Tree_Model : not null access Gtk_List_Store_Record;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order  : in out Gint);
+       New_Order  : Gint_Array);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_List_Store_Record;

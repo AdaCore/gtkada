@@ -197,8 +197,11 @@ package body Gtkada.Abstract_Tree_Model is
    function Get_Flags
       (Self : access Gtk_Abstract_Tree_Model_Record) return Tree_Model_Flags
    is
+      pragma Unreferenced (Self);
    begin
-      return Gtk.Tree_Model.Get_Flags (+Self);
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      return 0;
    end Get_Flags;
 
    -----------------------
@@ -489,9 +492,14 @@ package body Gtkada.Abstract_Tree_Model is
 
    procedure Ref_Node
       (Self : access Gtk_Abstract_Tree_Model_Record;
-       Iter : Gtk_Tree_Iter) is
+       Iter : Gtk_Tree_Iter)
+   is
+      pragma Unreferenced (Self, Iter);
    begin
-      Gtk.Tree_Model.Ref_Node (+Self, Iter);
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      null;
+      --  Gtk.Tree_Model.Ref_Node (+Self, Iter);
    end Ref_Node;
 
    -------------------------
@@ -509,9 +517,14 @@ package body Gtkada.Abstract_Tree_Model is
 
    procedure Unref_Node
       (Self : access Gtk_Abstract_Tree_Model_Record;
-       Iter : Gtk_Tree_Iter) is
+       Iter : Gtk_Tree_Iter)
+   is
+      pragma Unreferenced (Self, Iter);
    begin
-      Gtk.Tree_Model.Unref_Node (+Self, Iter);
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      null;
+      --  Gtk.Tree_Model.Unref_Node (+Self, Iter);
    end Unref_Node;
 
    ----------------

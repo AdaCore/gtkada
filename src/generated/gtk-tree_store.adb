@@ -69,37 +69,17 @@ package body Gtk.Tree_Store is
         (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Data_Type_Access)
-      is
-         procedure Internal
-           (Tree_Store : System.Address;
-            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-            Column     : Gint;
-            Value      : System.Address);
-         pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
-
+         Value      : Data_Type_Access) is
       begin
-         Internal
-           (Get_Object (Tree_Store), Iter, Column, To_Address (Value));
+         Set (Tree_Store, Iter, Column, To_Address (Value));
       end Set;
 
       function Get
         (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Column     : Gint) return Data_Type_Access
-      is
-         procedure Internal
-           (Tree_Store : System.Address;
-            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-            Column     : Gint;
-            Value      : out System.Address);
-         pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
-
-         Value : System.Address;
+         Column     : Gint) return Data_Type_Access is
       begin
-         Internal
-           (Get_Object (Tree_Store), Iter, Column, Value);
-         return To_Access (Value);
+         return To_Access (Get_Address (+Tree_Store, Iter, Column));
       end Get;
    end Generic_Set;
 
@@ -1411,13 +1391,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
       (Tree_Model : not null access Gtk_Tree_Store_Record;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order  : in out Gint)
+       New_Order  : Gint_Array)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Path       : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          New_Order  : in out Gint);
+          New_Order  : Gint_Array);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered");
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter, New_Order);
