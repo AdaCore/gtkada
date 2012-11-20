@@ -1531,19 +1531,21 @@ class Subprogram(object):
         else:
             result += " is\n"
 
+        local = self._format_local_vars(pkg=pkg, indent=indent)
+        auto = self._find_unreferenced(local_vars=local, indent=indent)
+
+        for s in self._nested:
+            auto += s.spec(pkg=pkg, indent=indent + "   ") + "\n"
+            auto += s.body(pkg=pkg, indent=indent + "   ")
+
+        auto += local
+        auto += indent + "begin\n"
+        auto += indent_code(self.code, indent=len(indent) + 3)
+
         if self._manual_body:
-            result += indent + self._manual_body
+            result += indent + self._manual_body % {"auto": auto}
         else:
-            local = self._format_local_vars(pkg=pkg, indent=indent)
-            result += self._find_unreferenced(local_vars=local, indent=indent)
-
-            for s in self._nested:
-                result += s.spec(pkg=pkg, indent=indent + "   ") + "\n"
-                result += s.body(pkg=pkg, indent=indent + "   ")
-
-            result += local
-            result += indent + "begin\n"
-            result += indent_code(self.code, indent=len(indent) + 3)
+            result += auto
 
         return result + indent + "end %s;\n" % base_name(self.name)
 

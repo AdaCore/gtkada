@@ -6488,6 +6488,279 @@ direction, widget state, or icon size.
      </extra>
    </package>
 
+   <package id="GtkTreeStore">
+     <parameter name="self" ada="Tree_Store" />
+     <method id="gtk_tree_store_newv" ada="Gtk_New">
+       <parameter name="types" type="GType_Array"/>
+       <parameter name="n_columns" ada="" default="Types'Length"/>
+     </method>
+     <method id="gtk_tree_store_set_column_types">
+       <parameter name="types" type="GType_Array"/>
+       <parameter name="n_columns" ada="" default="Types'Length"/>
+     </method>
+     <method id="gtk_tree_store_remove" return="void">
+       <parameter name="iter" direction="inout"/>
+       <body>%(auto)s
+Iter := Gtk.Tree_Model.Null_Iter;
+       </body>
+     </method>
+     <method id="gtk_tree_store_reorder">
+       <parameter name="new_order" type="Gint_Array"/>
+     </method>
+     <method id="gtk_tree_store_insert_with_valuesv" bind="False"/> <!-- valist -->
+     <method id="gtk_tree_store_set_valist" bind="False"/> <!-- valist -->
+     <method id="gtk_tree_store_set_valuesv" bind="False"/> <!-- valist -->
+     <extra>
+       <spec>
+   generic
+      type Data_Type is private;
+   package Generic_Set is
+      type Data_Type_Access is access all Data_Type;
+
+      procedure Set
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Data_Type_Access);
+      --  Generic procedure used to store access objects in the model.
+      --  For GObject and all of its descendents (including all widgets),
+      --  you should use the Set procedure below that takes a GObject as
+      --  parameter.
+      --
+      --  Please see the example at the end for more information on how to
+      --  create your own Set procedures adapted to your model. Also consider
+      --  using Set_Value for complex cases
+
+      function Get
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint) return Data_Type_Access;
+      --  Generic procedure used to get access objects back from the model.
+      --  For GObject and all of its descendents (including all widgets),
+      --  you should use the Get_Object function defined in Gtk-Tree_Model
+      --  that returns a GObject.
+
+   end Generic_Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String);
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean);
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint);
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.C_Proxy);
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Address    : System.Address);
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.Object.GObject);
+
+   function Freeze_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
+      return Gint;
+   --  Freeze the sorting in the tree view, and returns the current
+   --  sort_column_id, which should be used when thawing. (See Thaw_Sort)
+
+   procedure Thaw_Sort
+     (Tree      : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+      Column_Id : Gint);
+   --  Thaw a frozen tree_view. Column_Id should be the value returned by
+   --  the corresponding call to Freeze_Sort.
+       </spec>
+       <body>
+   function Freeze_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
+      return Gint
+   is
+      function Internal (Tree : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_tree_view_freeze_sort");
+   begin
+      return Internal (Get_Object (Tree));
+   end Freeze_Sort;
+
+   procedure Thaw_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+      Column_Id : Gint)
+   is
+      procedure Internal (Tree : System.Address; Id : Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_view_thaw_sort");
+   begin
+      Internal (Get_Object (Tree), Column_Id);
+   end Thaw_Sort;
+
+package body Generic_Set is
+
+      pragma Warnings (Off);
+      --  Disable warnings on strict aliasing, since there's no aliasing
+      --  issue here.
+
+      function To_Address is new
+        Ada.Unchecked_Conversion (Data_Type_Access, System.Address);
+
+      function To_Access is new
+        Ada.Unchecked_Conversion (System.Address, Data_Type_Access);
+
+      pragma Warnings (On);
+
+      procedure Set
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Data_Type_Access)
+      is
+         procedure Internal
+           (Tree_Store : System.Address;
+            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+            Column     : Gint;
+            Value      : System.Address);
+         pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+
+      begin
+         Internal
+           (Get_Object (Tree_Store), Iter, Column, To_Address (Value));
+      end Set;
+
+      function Get
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint) return Data_Type_Access
+      is
+         procedure Internal
+           (Tree_Store : System.Address;
+            Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+            Column     : Gint;
+            Value      : out System.Address);
+         pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
+
+         Value : System.Address;
+      begin
+         Internal
+           (Get_Object (Tree_Store), Iter, Column, Value);
+         return To_Access (Value);
+      end Get;
+   end Generic_Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Address    : System.Address)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Address);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : UTF8_String);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value &amp; ASCII.NUL);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_int");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gboolean);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_int");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.C_Proxy)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Glib.C_Proxy);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set;
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.Object.GObject)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+   begin
+      if Value = null then
+         Internal (Get_Object (Tree_Store), Iter, Column, System.Null_Address);
+      else
+         Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
+      end if;
+   end Set;
+       </body>
+     </extra>
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

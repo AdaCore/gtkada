@@ -96,8 +96,10 @@ Where the package node is defined as follows:
                                 should use "+Self" to pass the parameter to
                                 C, where the type of the C parameter should be
                                 the interface type itself. See GtkTreeModel.
-                            -->
-       />
+
+                                You can use "%(auto)s" to use the automatic
+                                body and append to it.  -->
+         />
 
        <function id="...">   <!--  repeated as needed, for global functions -->
                              <!--  content is same as <method> -->

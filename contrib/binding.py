@@ -834,7 +834,7 @@ class GIRClass(object):
         call = ""
 
         body = gtkmethod.get_body()
-        if not body and not is_import:
+        if not is_import:
             # Prepare the Internal C function
 
             internal_call = []
@@ -889,10 +889,10 @@ class GIRClass(object):
 
         if is_import:
             subp.import_c(cname)
-        elif not body:
-            subp.add_nested(internal)
         else:
-            subp.set_body("   " + body.strip() + "\n")
+            subp.add_nested(internal)
+            if body:
+                subp.set_body("   " + body.strip() + "\n")
 
         section.add(subp)
         return subp
@@ -1616,7 +1616,7 @@ See Glib.Properties for more information on properties)""")
         if self.is_interface:
             self.implements[""] = {
 "name": self._subst["typename"],
-"interface": self._subst["typename"],
+"interface": None,
 "code": """function "+" (W : %(typename)s) return %(typename)s;
     pragma Inline ("+"); """ % self._subst,
 "body": """function "+" (W : %(typename)s) return %(typename)s is
@@ -1649,10 +1649,10 @@ end "+";""" % self._subst,
                 interf = impl["interface"]
 
                 # Ignore interfaces that we haven't bound
-                if not hasattr(interf, "gtkpkg"):
+                if interf is not None and not hasattr(interf, "gtkpkg"):
                     print "%s: methods for interface %s were not bound" % (
                         self.name, impl["name"])
-                else:
+                elif interf is not None:
                     all = interf.node.findall(nmethod)
                     for c in all:
                         cname = c.get(cidentifier)
