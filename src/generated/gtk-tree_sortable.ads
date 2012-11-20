@@ -37,6 +37,7 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 package Gtk.Tree_Sortable is
 
    type Gtk_Tree_Sortable is new Glib.Types.GType_Interface;
+   Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable;
 
    ---------------
    -- Callbacks --
@@ -254,4 +255,8 @@ package Gtk.Tree_Sortable is
 
    Signal_Sort_Column_Changed : constant Glib.Signal_Name := "sort-column-changed";
 
+private
+
+Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable :=
+   Gtk_Tree_Sortable (Glib.Types.Null_Interface);
 end Gtk.Tree_Sortable;

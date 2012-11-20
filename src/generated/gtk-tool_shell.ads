@@ -38,6 +38,7 @@ with Pango.Layout;   use Pango.Layout;
 package Gtk.Tool_Shell is
 
    type Gtk_Tool_Shell is new Glib.Types.GType_Interface;
+   Null_Gtk_Tool_Shell : constant Gtk_Tool_Shell;
 
    ------------------
    -- Constructors --
@@ -130,4 +131,8 @@ package Gtk.Tool_Shell is
    function "+" (W : Gtk_Tool_Shell) return Gtk_Tool_Shell;
    pragma Inline ("+");
 
+private
+
+Null_Gtk_Tool_Shell : constant Gtk_Tool_Shell :=
+   Gtk_Tool_Shell (Glib.Types.Null_Interface);
 end Gtk.Tool_Shell;

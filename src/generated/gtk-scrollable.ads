@@ -67,6 +67,7 @@ with Gtk.Enums;       use Gtk.Enums;
 package Gtk.Scrollable is
 
    type Gtk_Scrollable is new Glib.Types.GType_Interface;
+   Null_Gtk_Scrollable : constant Gtk_Scrollable;
 
    ------------------
    -- Constructors --
@@ -193,4 +194,7 @@ private
      Gtk.Enums.Build ("hscroll-policy");
    Hadjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("hadjustment");
+
+Null_Gtk_Scrollable : constant Gtk_Scrollable :=
+   Gtk_Scrollable (Glib.Types.Null_Interface);
 end Gtk.Scrollable;

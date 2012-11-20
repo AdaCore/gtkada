@@ -220,6 +220,7 @@ with Gtk.Action;      use Gtk.Action;
 package Gtk.Activatable is
 
    type Gtk_Activatable is new Glib.Types.GType_Interface;
+   Null_Gtk_Activatable : constant Gtk_Activatable;
 
    ------------------
    -- Constructors --
@@ -347,4 +348,7 @@ private
      Glib.Properties.Build ("use-action-appearance");
    Related_Action_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("related-action");
+
+Null_Gtk_Activatable : constant Gtk_Activatable :=
+   Gtk_Activatable (Glib.Types.Null_Interface);
 end Gtk.Activatable;

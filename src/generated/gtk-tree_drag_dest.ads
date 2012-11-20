@@ -31,6 +31,7 @@ with Gtk.Tree_Model;     use Gtk.Tree_Model;
 package Gtk.Tree_Drag_Dest is
 
    type Gtk_Tree_Drag_Dest is new Glib.Types.GType_Interface;
+   Null_Gtk_Tree_Drag_Dest : constant Gtk_Tree_Drag_Dest;
 
    ------------------
    -- Constructors --
@@ -80,4 +81,8 @@ package Gtk.Tree_Drag_Dest is
    function "+" (W : Gtk_Tree_Drag_Dest) return Gtk_Tree_Drag_Dest;
    pragma Inline ("+");
 
+private
+
+Null_Gtk_Tree_Drag_Dest : constant Gtk_Tree_Drag_Dest :=
+   Gtk_Tree_Drag_Dest (Glib.Types.Null_Interface);
 end Gtk.Tree_Drag_Dest;

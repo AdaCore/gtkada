@@ -63,6 +63,7 @@ with Glib.Types; use Glib.Types;
 package Gtk.Editable is
 
    type Gtk_Editable is new Glib.Types.GType_Interface;
+   Null_Gtk_Editable : constant Gtk_Editable;
 
    ------------------
    -- Constructors --
@@ -257,4 +258,8 @@ package Gtk.Editable is
    Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
    Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
 
+private
+
+Null_Gtk_Editable : constant Gtk_Editable :=
+   Gtk_Editable (Glib.Types.Null_Interface);
 end Gtk.Editable;

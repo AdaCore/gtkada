@@ -50,6 +50,7 @@ with Gtk.Builder; use Gtk.Builder;
 package Gtk.Buildable is
 
    type Gtk_Buildable is new Glib.Types.GType_Interface;
+   Null_Gtk_Buildable : constant Gtk_Buildable;
 
    ------------------
    -- Constructors --
@@ -165,4 +166,8 @@ package Gtk.Buildable is
    function "+" (W : Gtk_Buildable) return Gtk_Buildable;
    pragma Inline ("+");
 
+private
+
+Null_Gtk_Buildable : constant Gtk_Buildable :=
+   Gtk_Buildable (Glib.Types.Null_Interface);
 end Gtk.Buildable;

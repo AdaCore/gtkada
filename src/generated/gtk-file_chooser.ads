@@ -354,6 +354,7 @@ with Gtk.Widget;              use Gtk.Widget;
 package Gtk.File_Chooser is
 
    type Gtk_File_Chooser is new Glib.Types.GType_Interface;
+   Null_Gtk_File_Chooser : constant Gtk_File_Chooser;
 
    type Gtk_File_Chooser_Action is (
       Action_Open,
@@ -1160,4 +1161,7 @@ private
      Glib.Properties.Build ("create-folders");
    Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action :=
      Gtk.File_Chooser.Build ("action");
+
+Null_Gtk_File_Chooser : constant Gtk_File_Chooser :=
+   Gtk_File_Chooser (Glib.Types.Null_Interface);
 end Gtk.File_Chooser;

@@ -49,6 +49,7 @@ with Pango.Font_Family; use Pango.Font_Family;
 package Gtk.Font_Chooser is
 
    type Gtk_Font_Chooser is new Glib.Types.GType_Interface;
+   Null_Gtk_Font_Chooser : constant Gtk_Font_Chooser;
 
    ---------------
    -- Callbacks --
@@ -258,4 +259,7 @@ private
      Pango.Font.Build ("font-desc");
    Font_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("font");
+
+Null_Gtk_Font_Chooser : constant Gtk_Font_Chooser :=
+   Gtk_Font_Chooser (Glib.Types.Null_Interface);
 end Gtk.Font_Chooser;

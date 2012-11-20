@@ -29,6 +29,7 @@ with Glib.Types; use Glib.Types;
 package Gtk.Print_Operation_Preview is
 
    type Gtk_Print_Operation_Preview is new Glib.Types.GType_Interface;
+   Null_Gtk_Print_Operation_Preview : constant Gtk_Print_Operation_Preview;
 
    ------------------
    -- Constructors --
@@ -113,4 +114,8 @@ package Gtk.Print_Operation_Preview is
    Signal_Got_Page_Size : constant Glib.Signal_Name := "got-page-size";
    Signal_Ready : constant Glib.Signal_Name := "ready";
 
+private
+
+Null_Gtk_Print_Operation_Preview : constant Gtk_Print_Operation_Preview :=
+   Gtk_Print_Operation_Preview (Glib.Types.Null_Interface);
 end Gtk.Print_Operation_Preview;

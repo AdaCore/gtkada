@@ -204,6 +204,7 @@ with Glib.Values;             use Glib.Values;
 package Gtk.Tree_Model is
 
    type Gtk_Tree_Model is new Glib.Types.GType_Interface;
+   Null_Gtk_Tree_Model : constant Gtk_Tree_Model;
 
    type Tree_Model_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Tree_Model_Flags);
@@ -835,6 +836,9 @@ type Gtk_Tree_Iter is record
 end record;
 pragma Convention (C, Gtk_Tree_Iter);
 
+
+Null_Gtk_Tree_Model : constant Gtk_Tree_Model :=
+   Gtk_Tree_Model (Glib.Types.Null_Interface);
 
    Null_Iter : constant Gtk_Tree_Iter :=
      (0, System.Null_Address, System.Null_Address, System.Null_Address);

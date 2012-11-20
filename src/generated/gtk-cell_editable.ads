@@ -38,6 +38,7 @@ with Glib.Types;      use Glib.Types;
 package Gtk.Cell_Editable is
 
    type Gtk_Cell_Editable is new Glib.Types.GType_Interface;
+   Null_Gtk_Cell_Editable : constant Gtk_Cell_Editable;
 
    ------------------
    -- Constructors --
@@ -127,4 +128,7 @@ package Gtk.Cell_Editable is
 private
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("editing-canceled");
+
+Null_Gtk_Cell_Editable : constant Gtk_Cell_Editable :=
+   Gtk_Cell_Editable (Glib.Types.Null_Interface);
 end Gtk.Cell_Editable;

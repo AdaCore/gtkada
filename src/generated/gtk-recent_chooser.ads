@@ -45,6 +45,7 @@ with Gtk.Recent_Manager;      use Gtk.Recent_Manager;
 package Gtk.Recent_Chooser is
 
    type Gtk_Recent_Chooser is new Glib.Types.GType_Interface;
+   Null_Gtk_Recent_Chooser : constant Gtk_Recent_Chooser;
 
    type Gtk_Recent_Sort_Type is (
       Recent_Sort_None,
@@ -466,4 +467,7 @@ private
      Glib.Properties.Build ("limit");
    Filter_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("filter");
+
+Null_Gtk_Recent_Chooser : constant Gtk_Recent_Chooser :=
+   Gtk_Recent_Chooser (Glib.Types.Null_Interface);
 end Gtk.Recent_Chooser;

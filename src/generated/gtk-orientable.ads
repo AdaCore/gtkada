@@ -42,6 +42,7 @@ with Gtk.Enums;  use Gtk.Enums;
 package Gtk.Orientable is
 
    type Gtk_Orientable is new Glib.Types.GType_Interface;
+   Null_Gtk_Orientable : constant Gtk_Orientable;
 
    ------------------
    -- Constructors --
@@ -94,4 +95,7 @@ package Gtk.Orientable is
 private
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
      Gtk.Enums.Build ("orientation");
+
+Null_Gtk_Orientable : constant Gtk_Orientable :=
+   Gtk_Orientable (Glib.Types.Null_Interface);
 end Gtk.Orientable;

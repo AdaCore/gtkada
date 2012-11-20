@@ -51,6 +51,7 @@ with Glib.Types; use Glib.Types;
 package Glib.G_Icon is
 
    type G_Icon is new Glib.Types.GType_Interface;
+   Null_G_Icon : constant G_Icon;
 
    ------------------
    -- Constructors --
@@ -114,4 +115,8 @@ package Glib.G_Icon is
    --  Since: gtk+ 2.20
    --  "str": A string obtained via Glib.G_Icon.To_String.
 
+private
+
+Null_G_Icon : constant G_Icon :=
+   G_Icon (Glib.Types.Null_Interface);
 end Glib.G_Icon;

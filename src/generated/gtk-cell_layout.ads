@@ -135,6 +135,7 @@ with Gtk.Tree_Model;    use Gtk.Tree_Model;
 package Gtk.Cell_Layout is
 
    type Gtk_Cell_Layout is new Glib.Types.GType_Interface;
+   Null_Gtk_Cell_Layout : constant Gtk_Cell_Layout;
 
    ---------------
    -- Callbacks --
@@ -302,4 +303,8 @@ package Gtk.Cell_Layout is
    function "+" (W : Gtk_Cell_Layout) return Gtk_Cell_Layout;
    pragma Inline ("+");
 
+private
+
+Null_Gtk_Cell_Layout : constant Gtk_Cell_Layout :=
+   Gtk_Cell_Layout (Glib.Types.Null_Interface);
 end Gtk.Cell_Layout;

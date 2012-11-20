@@ -38,6 +38,7 @@ with Gtk.Widget;  use Gtk.Widget;
 package Gtk.Style_Provider is
 
    type Gtk_Style_Provider is new Glib.Types.GType_Interface;
+   Null_Gtk_Style_Provider : constant Gtk_Style_Provider;
 
    ------------------
    -- Constructors --
@@ -95,4 +96,8 @@ package Gtk.Style_Provider is
    function "+" (W : Gtk_Style_Provider) return Gtk_Style_Provider;
    pragma Inline ("+");
 
+private
+
+Null_Gtk_Style_Provider : constant Gtk_Style_Provider :=
+   Gtk_Style_Provider (Glib.Types.Null_Interface);
 end Gtk.Style_Provider;

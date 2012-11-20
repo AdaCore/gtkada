@@ -31,6 +31,7 @@ with Gtk.Tree_Model;     use Gtk.Tree_Model;
 package Gtk.Tree_Drag_Source is
 
    type Gtk_Tree_Drag_Source is new Glib.Types.GType_Interface;
+   Null_Gtk_Tree_Drag_Source : constant Gtk_Tree_Drag_Source;
 
    ------------------
    -- Constructors --
@@ -118,4 +119,8 @@ package Gtk.Tree_Drag_Source is
    --  "tree_model": a Gtk.Tree_Model.Gtk_Tree_Model
    --  "path": row in Tree_Model
 
+private
+
+Null_Gtk_Tree_Drag_Source : constant Gtk_Tree_Drag_Source :=
+   Gtk_Tree_Drag_Source (Glib.Types.Null_Interface);
 end Gtk.Tree_Drag_Source;

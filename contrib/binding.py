@@ -2069,7 +2069,13 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         elif self.is_interface:
             self.pkg.add_with("Glib.Types")
             section.add_code(
-"type %(typename)s is new Glib.Types.GType_Interface;" % self._subst)
+"""type %(typename)s is new Glib.Types.GType_Interface;
+Null_%(typename)s : constant %(typename)s;""" % self._subst)
+
+            self.pkg.add_private("""
+Null_%(typename)s : constant %(typename)s :=
+   %(typename)s (Glib.Types.Null_Interface);""" %
+self._subst)
 
         elif self.gtktype.is_subtype():
             section.add_code(
