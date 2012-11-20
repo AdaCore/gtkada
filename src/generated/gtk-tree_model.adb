@@ -218,11 +218,12 @@ package body Gtk.Tree_Model is
       end if;
    end "=";
 
+   type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_Iter_Access);
+   use type System.Address;
+
    function Iter_Or_Null (Iter : System.Address) return System.Address is
-      type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Tree_Iter_Access);
-      use type System.Address;
    begin
       if Convert (Iter).Stamp = 0 then--  null iter
          return System.Null_Address;
@@ -233,12 +234,9 @@ package body Gtk.Tree_Model is
 
    procedure Get_Tree_Iter
      (Val  : Glib.Values.GValue;
-      Iter : out Gtk_Tree_Iter)
-   is
-      function Internal (Source : System.Address) return Gtk_Tree_Iter;
-      pragma Import (C, Internal, "gtk_tree_iter_copy");
+      Iter : out Gtk_Tree_Iter) is
    begin
-      Iter := Internal (Glib.Values.Get_Address (Val));
+      Iter := Convert (Glib.Values.Get_Address (Val)).all;
    end Get_Tree_Iter;
 
    function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter is
