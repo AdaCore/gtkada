@@ -696,6 +696,23 @@ package body Gtk.Tree_Model is
    -- Next --
    ----------
 
+   procedure Next (Tree_Model : Gtk_Tree_Model; Iter : in out Gtk_Tree_Iter) is
+      function Internal
+         (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_next");
+      Local_Iter : aliased Gtk_Tree_Iter := Iter;
+   begin
+      if Internal (+Tree_Model, Local_Iter'Address) = 0 then
+         Iter := Null_Iter;
+      else
+         Iter := Local_Iter;
+      end if;
+   end Next;
+
+   ----------
+   -- Next --
+   ----------
+
    procedure Next (Path : Gtk_Tree_Path) is
       procedure Internal (Path : System.Address);
       pragma Import (C, Internal, "gtk_tree_path_next");
@@ -779,6 +796,26 @@ package body Gtk.Tree_Model is
    begin
       return Boolean'Val (Internal (Get_Object (Path)));
    end Prev;
+
+   --------------
+   -- Previous --
+   --------------
+
+   procedure Previous
+      (Tree_Model : Gtk_Tree_Model;
+       Iter       : in out Gtk_Tree_Iter)
+   is
+      function Internal
+         (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_model_iter_previous");
+      Local_Iter : aliased Gtk_Tree_Iter := Iter;
+   begin
+      if Internal (+Tree_Model, Local_Iter'Address) = 0 then
+         Iter := Null_Iter;
+      else
+         Iter := Local_Iter;
+      end if;
+   end Previous;
 
    -----------------
    -- Row_Changed --

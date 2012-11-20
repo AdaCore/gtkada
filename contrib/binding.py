@@ -813,6 +813,7 @@ class GIRClass(object):
             return None
 
         is_import = self._func_is_direct_import(profile) \
+            and not gtkmethod.get_body() \
             and not gtkmethod.return_as_param()
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         adaname = naming.protect_keywords(adaname)

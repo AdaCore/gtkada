@@ -425,7 +425,6 @@ package Gtk.Tree_Model is
    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    procedure Next (Tree_Model : Gtk_Tree_Model; Iter : in out Gtk_Tree_Iter);
-   pragma Import (C, Next, "gtk_tree_model_iter_next");
    --  Sets Iter to point to the node following it at the current level.
    --  If there is no next Iter, False is returned and Iter is set to be
    --  invalid.
@@ -459,7 +458,6 @@ package Gtk.Tree_Model is
    procedure Previous
       (Tree_Model : Gtk_Tree_Model;
        Iter       : in out Gtk_Tree_Iter);
-   pragma Import (C, Previous, "gtk_tree_model_iter_previous");
    --  Sets Iter to point to the previous node at the current level.
    --  If there is no previous Iter, False is returned and Iter is set to be
    --  invalid.
