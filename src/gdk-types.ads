@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2011, AdaCore                   --
+--                Copyright (C) 2000-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -162,6 +162,7 @@ package Gdk.Types is
    Button5_Mask  : constant Gdk_Modifier_Type;
    Release_Mask  : constant Gdk_Modifier_Type;
    Modifier_Mask : constant Gdk_Modifier_Type;
+   Meta_Mask     : constant Gdk_Modifier_Type;
 
    Default_Modifier_Mask : constant Gdk_Modifier_Type;
 
@@ -243,6 +244,7 @@ private
    Button4_Mask : constant Gdk_Modifier_Type := 2 ** 11;
    Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
    Release_Mask  : constant Gdk_Modifier_Type := 2 ** 13;
+   Meta_Mask     : constant Gdk_Modifier_Type := 2 ** 28;
    Modifier_Mask : constant Gdk_Modifier_Type := 16#3FFF#;
 
    function Internal_Defaut_Modifier_Mask return Gdk_Modifier_Type;
