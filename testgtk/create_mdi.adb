@@ -254,7 +254,8 @@ package body Create_MDI is
       Gtk_New (Label, "This is the" & Integer'Image (Index) & " window");
       Pack_Start (Box, Label);
 
-      Set_Title (Child, "Window" & Integer'Image (Index));
+      Set_Title (Child, "Long Title for Window" & Integer'Image (Index),
+                 "Window" & Integer'Image (Index));
 
       Show_All (Child);
       return Child;

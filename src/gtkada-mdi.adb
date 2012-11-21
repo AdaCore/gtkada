@@ -52,7 +52,7 @@ with Glib.Properties;         use Glib.Properties;
 
 with Cairo;                   use Cairo;
 
-with Pango.Cairo;             use Pango.Cairo;
+with Pango.Enums;             use Pango.Enums;
 with Pango.Font;              use Pango.Font;
 with Pango.Layout;            use Pango.Layout;
 
@@ -383,8 +383,8 @@ package body Gtkada.MDI is
    --  Return the list of children of the MDI that match Str
 
    procedure Reset_Title_Bars_And_Colors
-     (MDI : access MDI_Window_Record'Class);
-   --  Reset the color and title bar of the MDI Child
+     (MDI  : access MDI_Window_Record'Class);
+   --  Reset the color and title bar of the MDI Child.
 
    procedure Update_Selection_Dialog
      (MDI : access MDI_Window_Record'Class; Increment : Integer);
@@ -851,8 +851,6 @@ package body Gtkada.MDI is
 
       Set_Dnd_Message (MDI, "");
 
-      MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
-
       Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
       Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
 
@@ -1247,8 +1245,6 @@ package body Gtkada.MDI is
         Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic)
    is
-      Desc         : Pango_Font_Description;
-      W, H         : Gint;
       C            : MDI_Child;
       Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
       Iter         : Child_Iterator;
@@ -1266,16 +1262,18 @@ package body Gtkada.MDI is
 
       Set_Opaque_Resizing (MDI, Opaque_Resize);
 
-      if Title_Font /= null then
-         Set_Font_Description (MDI.Title_Layout, Title_Font);
-      else
-         Desc := From_String (Default_Title_Font);
-         Set_Font_Description (MDI.Title_Layout, Desc);
-         Free (Desc);
+      if MDI.Title_Font /= null then
+         Free (MDI.Title_Font);
       end if;
 
-      Get_Pixel_Size (MDI.Title_Layout, W, H);
-      MDI.Title_Bar_Height := 2 + H;
+      if Title_Font = null then
+         MDI.Title_Font := From_String (Default_Title_Font);
+      else
+         MDI.Title_Font := Copy (Title_Font);
+      end if;
+
+      MDI.Title_Bar_Height :=
+        2 + Get_Size (MDI.Title_Font) / Pango.Enums.Pango_Scale;
 
       if MDI.Focus_Title_Color /= Focus_Title_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
@@ -1373,7 +1371,7 @@ package body Gtkada.MDI is
    ---------------------------------
 
    procedure Reset_Title_Bars_And_Colors
-     (MDI : access MDI_Window_Record'Class)
+     (MDI  : access MDI_Window_Record'Class)
    is
       List : Widget_List.Glist;
       C    : MDI_Child;
@@ -1381,6 +1379,7 @@ package body Gtkada.MDI is
       List := First (MDI.Items);
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
+         C.Title_Label.Override_Font (MDI.Title_Font);
          Set_Child_Title_Bar (C);
          List := Widget_List.Next (List);
       end loop;
@@ -1464,7 +1463,6 @@ package body Gtkada.MDI is
       end loop;
 
       Free (M.Items);
-      Unref (M.Title_Layout);
 
       if M.Cursor_Cross /= null then
          Unref (M.Cursor_Cross);
@@ -1736,9 +1734,9 @@ package body Gtkada.MDI is
       Child            : constant MDI_Child := MDI_Child (Widget);
       Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
       W, H  : Gint;
-      Height : Gdouble;
       Pat : Cairo_Pattern;
       X     : Gint := 2;
+      Alloc : Gtk_Allocation;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1751,17 +1749,16 @@ package body Gtkada.MDI is
 
       Cairo.Save (Cr);
 
-      Height := Gdouble (Get_Allocated_Height (Child.Title_Box));
-      Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Height);
+      Child.Title_Box.Get_Allocation (Alloc);
+
+      Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Gdouble (Alloc.Height));
       Pattern_Add_Color_Stop_Rgba
         (Pat, 0.0, Color.Red, Color.Green, Color.Blue, 1.0);
       Pattern_Add_Color_Stop_Rgba
         (Pat, 1.0, Color.Red, Color.Green, Color.Blue, 0.6);
       Set_Source (Cr, Pat);
       Cairo.Rectangle
-        (Cr, 0.0, 0.0,
-         Gdouble (Get_Allocated_Width (Child.Title_Box)),
-         Height);
+        (Cr, 0.0, 0.0, Gdouble (Alloc.Width), Gdouble (Alloc.Height));
       Cairo.Fill (Cr);
       Pattern_Destroy (Pat);
 
@@ -1769,31 +1766,17 @@ package body Gtkada.MDI is
          W := Get_Width (Child.Icon);
          H := Get_Height (Child.Icon);
 
-         Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
          Save (Cr);
+         Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
          Translate
            (Cr,
             Gdouble (X),
-            Gdouble ((Get_Allocated_Height (Child.Title_Box) - H) / 2));
+            Gdouble ((Alloc.Height - H) / 2));
          Paint (Cr);
          Restore (Cr);
 
          X := X + W + 2;
       end if;
-
-      if Child.MDI.Use_Short_Titles_For_Floats then
-         Set_Text (Child.MDI.Title_Layout, Child.Short_Title.all);
-      else
-         Set_Text (Child.MDI.Title_Layout, Child.Title.all);
-      end if;
-
-      Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
-      Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 1.0));
-      Move_To
-        (Cr, Gdouble (X),
-         Gdouble ((Get_Allocated_Height (Child.Title_Box) - H) / 2));
-      Show_Layout (Cr, Child.MDI.Title_Layout);
-      Cairo.Restore (Cr);
 
       return False;
    end Draw_Child;
@@ -2516,8 +2499,6 @@ package body Gtkada.MDI is
       Child.Group        := Group;
       Child.Focus_Widget := Focus_Widget;
       Child.MDI          := null;
-      Child.Title        := new UTF8_String'(" ");
-      Child.Short_Title  := new UTF8_String'(" ");
 
       Add_Events
         (Child, Button_Press_Mask
@@ -2546,6 +2527,16 @@ package body Gtkada.MDI is
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
 
+      Gtk_New (Child.Title_Label);
+      Child.Title_Box.Pack_Start
+        (Child.Title_Label, Expand => True, Fill => True);
+      Child.Title_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Start);
+      Child.Title_Label.Set_Alignment (0.0, 0.5);
+      Child.Title_Label.Set_Padding (5, 0);
+      Child.Title_Label.Set_Single_Line_Mode (True);
+      Child.Title_Label.Set_Line_Wrap (False);
+      Child.Title_Label.Set_Selectable (True);
+
       Return_Callback.Object_Connect
         (Child.Title_Box, Signal_Draw,
          Return_Callback.To_Marshaller (Draw_Child'Access),
@@ -2563,6 +2554,8 @@ package body Gtkada.MDI is
       Add (Event, Widget);
       Pack_Start
         (Child.Main_Box, Event, Expand => True, Fill => True, Padding => 0);
+
+      Child.Set_Title (" ");
 
       Widget_Callback.Object_Connect
         (Child.Initial, Signal_Destroy,
@@ -2803,15 +2796,8 @@ package body Gtkada.MDI is
       end if;
       Child.Icon := Icon;
 
-      if Child.Get_Realized then
-         --  Force a refresh of the title bar
-         Queue_Draw_Area
-           (Child,
-            0, 0,
-            Get_Allocated_Width (Child),
-            Get_Allocated_Height (Child.Title_Box));
-      end if;
-
+      --  Force a refresh of the title bar
+      Child.Title_Box.Queue_Draw;
       Update_Menu_Item (Child);
       Update_Tab_Label (Child);
 
@@ -2844,24 +2830,28 @@ package body Gtkada.MDI is
                               or else Child.Title.all /= Title;
       Short_Title_Changed : constant Boolean := Child.Short_Title = null
                               or else Child.Short_Title.all /= Short_Title;
-      The_Title           : String_Access;
-      The_Short_Title     : String_Access;
-      --  Those pointers are used to prevent problems when
-      --  the Title parameter is in fact Child.Title
    begin
-      The_Title := new UTF8_String'(Title);
-
-      if Short_Title /= "" then
-         The_Short_Title := new UTF8_String'(Short_Title);
-      else
-         The_Short_Title := new UTF8_String'(Title);
+      if Title_Changed then
+         Free (Child.Title);
+         Child.Title := new UTF8_String'(Title);
       end if;
 
-      Free (Child.Title);
-      Free (Child.Short_Title);
+      if Short_Title_Changed then
+         Free (Child.Short_Title);
+         if Short_Title /= "" then
+            Child.Short_Title := new UTF8_String'(Short_Title);
+         else
+            Child.Short_Title := new UTF8_String'(Title);
+         end if;
+      end if;
 
-      Child.Title := The_Title;
-      Child.Short_Title := The_Short_Title;
+      if Child.MDI /= null
+        and then Child.MDI.Use_Short_Titles_For_Floats
+      then
+         Child.Title_Label.Set_Text (Child.Short_Title.all);
+      else
+         Child.Title_Label.Set_Text (Child.Title.all);
+      end if;
 
       if Title_Changed and then Child.State = Floating then
          Set_Title
@@ -2882,9 +2872,7 @@ package body Gtkada.MDI is
       end if;
 
       if Title_Changed or else Short_Title_Changed then
-         if Get_Window (Child) /= null then
-            Queue_Draw (Child);
-         end if;
+         Child.Queue_Draw;
          if Child.MDI /= null then
             Emit_By_Name_Child
               (Get_Object (Child.MDI),
@@ -3268,17 +3256,11 @@ package body Gtkada.MDI is
       if Old /= null
         and then Old.Get_Realized
       then
-         Queue_Draw_Area
-           (Old.Title_Box, 0, 0,
-            Get_Allocated_Width (Old.Title_Box),
-            Get_Allocated_Width (Old.Title_Box));
+         Old.Title_Box.Queue_Draw;
       end if;
 
       if C.Initial.Get_Realized then
-         Queue_Draw_Area
-           (C.Title_Box, 0, 0,
-            Get_Allocated_Width (C.Title_Box),
-            Get_Allocated_Height (C.Title_Box));
+         C.Title_Box.Queue_Draw;
 
          --  Give the focus to the window containing the child.
          --  Giving the focus to a window has the side effect of moving the

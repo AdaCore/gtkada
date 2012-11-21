@@ -54,7 +54,6 @@ with Gtk.Window;
 with Gtkada.Handlers;
 with Gtkada.Multi_Paned;
 with Pango.Font;
-with Pango.Layout;
 
 package Gtkada.MDI is
 
@@ -976,6 +975,7 @@ private
       Icon          : Gdk.Pixbuf.Gdk_Pixbuf;
 
       Title_Box     : Gtk.Box.Gtk_Box;
+      Title_Label   : Gtk.Label.Gtk_Label;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
 
@@ -1058,11 +1058,11 @@ private
       Tab_Factory         : Tab_Contextual_Menu_Factory;
       --  Build the contextual menu when right-clicking on tabs
 
-      Title_Layout        : Pango.Layout.Pango_Layout;
-      --  Layout used to draw titles in the MDI children
-
       Title_Bar_Height    : Glib.Gint;
       --  Height of the title bar for all the children
+
+      Title_Font : Pango.Font.Pango_Font_Description;
+      --  The font used for the titles of the children
 
       Close_Floating_Is_Unfloat : Boolean;
       --  True if destroying a floating window will put the child back in the
