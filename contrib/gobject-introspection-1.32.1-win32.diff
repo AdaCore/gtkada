@@ -1,3 +1,11 @@
+2012-11-22	Nicolas Setton	<setton@adacore.com>
+
+	* giscanner/sourcescanner.py: Add defines, allowing to include
+	mingw64 headers.
+
+	* giscanner/dumper.py: Use libtool invocation working on the
+	gnu compiler.
+
 2012-05-29	Nicolas Setton  <setton@adacore.com>
 
 	* configure: Fix detection of Python include and libraries.
@@ -122,3 +130,30 @@
          group = get_windows_option_group(parser)
          parser.add_option_group(group)
  
+--- giscanner/dumper.py.orig	2012-11-22 19:00:48.319800000 +0100
++++ giscanner/dumper.py	2012-11-22 19:01:56.413800000 +0100
+@@ -224,10 +224,7 @@
+         args.extend(self._linker_cmd.split())
+         args.extend(['-o', output])
+         if libtool:
+-            if os.name == 'nt':
+-                args.append('-export-all-symbols')
+-            else:
+-                args.append('-export-dynamic')
++            args.append('-export-dynamic')
+ 
+         cflags = os.environ.get('CFLAGS')
+         if (cflags):
+--- giscanner/sourcescanner.py.orig	2012-11-22 18:36:29.407800000 +0100
++++ giscanner/sourcescanner.py	2012-11-22 19:13:03.126600000 +0100
+@@ -282,6 +282,10 @@
+                                 stdin=subprocess.PIPE,
+                                 stdout=subprocess.PIPE)
+ 
++        proc.stdin.write("#define __restrict__\n")
++        proc.stdin.write("#define __MINGW_INTRIN_INLINE\n");
++        proc.stdin.write("#define __volatile__\n")
++
+         for define in defines:
+             proc.stdin.write('#ifndef %s\n' % (define, ))
+             proc.stdin.write('# define %s\n' % (define, ))
