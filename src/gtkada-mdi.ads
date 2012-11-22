@@ -43,6 +43,7 @@ with Gtk.Css_Provider;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
+with Gtk.Image;
 with Gtk.Label;
 with Gtk.Menu;
 with Gtk.Menu_Item;
@@ -305,10 +306,13 @@ package Gtkada.MDI is
    --  Associate an icon with Child. This icon is visible in the title bar, the
    --  notebook tabs, the Window menu and the interactive selection dialog.
    --  The icon is updated dynamically on the screen.
+   --  The Icon can safely be unrefed by the caller (and should, if the pixbuf
+   --  was newly allocated).
 
    function Get_Icon
      (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
-   --  Returns the icon associated with Child
+   --  Returns the icon associated with Child. The returned pixbuf is owned
+   --  by the MDI and must not be freed by the caller.
 
    ---------------------------
    -- Drag and Drop support --
@@ -972,14 +976,14 @@ private
       Focus_Widget  : Gtk.Widget.Gtk_Widget;
       --  The widget which should actually get the keyboard focus
 
-      Icon          : Gdk.Pixbuf.Gdk_Pixbuf;
-
       Title_Box     : Gtk.Box.Gtk_Box;
       Title_Label   : Gtk.Label.Gtk_Label;
+      Title_Icon    : Gtk.Image.Gtk_Image;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
 
       Tab_Label     : Gtk.Label.Gtk_Label;
+      Tab_Icon      : Gtk.Image.Gtk_Image;
       --  label used when child is in a notebook, null if not in a notebook
    end record;
 

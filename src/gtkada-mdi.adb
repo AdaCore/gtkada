@@ -82,7 +82,6 @@ with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Dialog;              use Gtk.Dialog;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
-with Gtk.Fixed;               use Gtk.Fixed;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
 with Gtk.Image;               use Gtk.Image;
@@ -174,6 +173,12 @@ package body Gtkada.MDI is
 
    procedure Free is new
      Ada.Unchecked_Deallocation (UTF8_String, String_Access);
+
+   function Button_Pressed_On_Title_Icon
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
+   --  The title icon of a child window was clicked (and if it was a
+   --  double click, we want to close that child).
 
    function Button_Pressed
      (Child : access Gtk_Widget_Record'Class;
@@ -1005,9 +1010,10 @@ package body Gtkada.MDI is
             C := MDI_Child (Get_Data (D.Current_Child));
             Set_Text (D.Label, Get_Short_Title (C));
 
-            Set_Child_Visible (D.Icon, C.Icon /= null);
-            if C.Icon /= null then
-               Scaled := Scale_Simple (C.Icon, 32, 32);
+            Scaled := C.Title_Icon.Get;   --  still owned by Title_Icon
+            Set_Child_Visible (D.Icon, Scaled /= null);
+            if Scaled /= null then
+               Scaled := Scale_Simple (Scaled, 32, 32);
                Gtk.Image.Set (D.Icon, Scaled);
                Unref (Scaled);
             end if;
@@ -1733,9 +1739,7 @@ package body Gtkada.MDI is
    is
       Child            : constant MDI_Child := MDI_Child (Widget);
       Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
-      W, H  : Gint;
       Pat : Cairo_Pattern;
-      X     : Gint := 2;
       Alloc : Gtk_Allocation;
    begin
       --  Call this function so that for a dock item is highlighted if the
@@ -1761,22 +1765,6 @@ package body Gtkada.MDI is
         (Cr, 0.0, 0.0, Gdouble (Alloc.Width), Gdouble (Alloc.Height));
       Cairo.Fill (Cr);
       Pattern_Destroy (Pat);
-
-      if Child.Icon /= null then
-         W := Get_Width (Child.Icon);
-         H := Get_Height (Child.Icon);
-
-         Save (Cr);
-         Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
-         Translate
-           (Cr,
-            Gdouble (X),
-            Gdouble ((Alloc.Height - H) / 2));
-         Paint (Cr);
-         Restore (Cr);
-
-         X := X + W + 2;
-      end if;
 
       return False;
    end Draw_Child;
@@ -1886,6 +1874,25 @@ package body Gtkada.MDI is
       end if;
    end Destroy_Dnd_Window;
 
+   ----------------------------------
+   -- Button_Pressed_On_Title_Icon --
+   ----------------------------------
+
+   function Button_Pressed_On_Title_Icon
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean
+   is
+   begin
+      Put_Line ("MANU Button_Pressed_On_Title_Icon");
+      if Get_Event_Type (Event) = Gdk_2button_Press
+        and then Event.Button.Button = 1
+      then
+         Close_Child (MDI_Child (Child));
+         return False;
+      end if;
+      return True;
+   end Button_Pressed_On_Title_Icon;
+
    --------------------
    -- Button_Pressed --
    --------------------
@@ -1914,29 +1921,10 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       C    : constant MDI_Child := MDI_Child (Child);
-      W, H : Gint;
-      X, Y : Gdouble;
    begin
       C.MDI.In_Drag := No_Drag;
 
-      --  Double-click on left icon => close child
-      if Get_Event_Type (Event) = Gdk_2button_Press
-        and then Event.Button.Button = 1
-      then
-         if C.Icon /= null then
-            W := Get_Width (C.Icon);
-            H := Get_Height (C.Icon);
-
-            Get_Coords (Event, X, Y);
-
-            if Gint (X) <= W and then Gint (Y) <= H then
-               Close_Child (C);
-               return True;
-            end if;
-         end if;
-         return False;
-
-      elsif Get_Event_Type (Event) /= Button_Press
+      if Get_Event_Type (Event) /= Button_Press
         or else Event.Button.Button /= 1
       then
          return False;
@@ -2527,15 +2515,26 @@ package body Gtkada.MDI is
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
 
+      Gtk_New (Event);
+      Gtk_New (Child.Title_Icon);
+      Event.Add (Child.Title_Icon);
+      Event.Set_Visible_Window (False);   --  to get a transparent background
+      Child.Title_Box.Pack_Start (Event, Expand => False);
+      Return_Callback.Object_Connect
+        (Event, Signal_Button_Press_Event,
+         Return_Callback.To_Marshaller (Button_Pressed_On_Title_Icon'Access),
+         Child);
+
       Gtk_New (Child.Title_Label);
       Child.Title_Box.Pack_Start
         (Child.Title_Label, Expand => True, Fill => True);
       Child.Title_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Start);
       Child.Title_Label.Set_Alignment (0.0, 0.5);
       Child.Title_Label.Set_Padding (5, 0);
-      Child.Title_Label.Set_Single_Line_Mode (True);
-      Child.Title_Label.Set_Line_Wrap (False);
-      Child.Title_Label.Set_Selectable (True);
+
+      --  Do not set the label as selectable, otherwise it has its own window,
+      --  and we can no longer drag from the title
+      Child.Title_Label.Set_Selectable (False);
 
       Return_Callback.Object_Connect
         (Child.Title_Box, Signal_Draw,
@@ -2755,6 +2754,7 @@ package body Gtkada.MDI is
       Label  : Gtk_Accel_Label;
       Pixmap : Gtk_Image;
       Box    : Gtk_Box;
+      Pixbuf : Gdk_Pixbuf;
    begin
       if Child.Menu_Item /= null then
          if Get_Child (Child.Menu_Item) /= null then
@@ -2763,8 +2763,9 @@ package body Gtkada.MDI is
 
          Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
 
-         if Child.Icon /= null then
-            Gtk_New (Pixmap, Child.Icon);
+         Pixbuf := Child.Title_Icon.Get;   --  still owned by the image
+         if Pixbuf /= null then
+            Gtk_New (Pixmap, Pixbuf);
             Pack_Start (Box, Pixmap, Expand => False);
          end if;
 
@@ -2791,16 +2792,18 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf) is
    begin
-      if Child.Icon /= null then
-         Unref (Child.Icon);
+      Child.Title_Icon.Set (Icon);
+      Child.Tab_Icon.Set (Icon);
+
+      if Icon /= null then
+         Child.Title_Icon.Show;
+         Child.Tab_Icon.Show;
+      else
+         Child.Title_Icon.Hide;
+         Child.Tab_Icon.Hide;
       end if;
-      Child.Icon := Icon;
 
-      --  Force a refresh of the title bar
-      Child.Title_Box.Queue_Draw;
       Update_Menu_Item (Child);
-      Update_Tab_Label (Child);
-
       Emit_By_Name_Child
         (Get_Object (Child.MDI),
          String (Signal_Child_Icon_Changed) & ASCII.NUL,
@@ -2812,9 +2815,10 @@ package body Gtkada.MDI is
    --------------
 
    function Get_Icon
-     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf is
+     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+   is
    begin
-      return Child.Icon;
+      return Child.Title_Icon.Get;
    end Get_Icon;
 
    ---------------
@@ -3735,37 +3739,17 @@ package body Gtkada.MDI is
       Note   : constant Gtk_Notebook := Get_Notebook (Child);
       Event  : Gtk_Event_Box;
       Box    : Gtk_Box;
-      Pixmap : Gtk_Image;
       Close  : Close_Button.Gtkada_MDI_Close_Button;
-      Fixed  : Gtk_Fixed;
 
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
-
-         --  This fails with gtk+ 2.2.0,
-         --         Set_Flags (Event, No_Window);
-         --  Instead, for 2.4.0, we use the following proper call,
-         --  even though the corresponding function doesn't exist in
-         --  2.2. This means that 2.2 will have a bug that sometimes
-         --  the background color of tabs, when no title bars are
-         --  displayed, will not be correct, with a grey rectangle
-         --  where the label is.
-
-         Set_Visible_Window (Event, False);
+         Event.Set_Visible_Window (False);
 
          Gtk_New_Hbox (Box, Homogeneous => False);
 
-         if Child.Icon /= null then
-            Gtk_New (Pixmap, Child.Icon);
-            Pack_Start (Box, Pixmap, Expand => False);
-         elsif (Child.Flags and Destroy_Button) /= 0 then
-            --  No pixmap but we will display a close button, let's add an
-            --  empty space to center the label.
-            Gtk.Fixed.Gtk_New (Fixed);
-            Set_Size_Request (Fixed, 12, 1);
-            Pack_Start (Box, Fixed, Expand => False, Padding => 2);
-         end if;
+         Gtk_New (Child.Tab_Icon, Gdk_Pixbuf'(Child.Title_Icon.Get));
+         Box.Pack_Start (Child.Tab_Icon, Expand => False);
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
          Pack_Start (Box, Child.Tab_Label, Expand => True, Fill => True);
