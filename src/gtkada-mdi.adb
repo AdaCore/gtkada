@@ -1737,9 +1737,9 @@ package body Gtkada.MDI is
       Cr     : Cairo_Context)
       return Boolean
    is
-      Child            : constant MDI_Child := MDI_Child (Widget);
+      Child : constant MDI_Child := MDI_Child (Widget);
       Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
-      Pat : Cairo_Pattern;
+      Pat   : Cairo_Pattern;
       Alloc : Gtk_Allocation;
    begin
       --  Call this function so that for a dock item is highlighted if the
@@ -1749,12 +1749,7 @@ package body Gtkada.MDI is
          Color := Child.MDI.Focus_Title_Color;
       end if;
 
-      --  Set the color of the notebook page and label.
-
-      Cairo.Save (Cr);
-
       Child.Title_Box.Get_Allocation (Alloc);
-
       Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Gdouble (Alloc.Height));
       Pattern_Add_Color_Stop_Rgba
         (Pat, 0.0, Color.Red, Color.Green, Color.Blue, 1.0);
