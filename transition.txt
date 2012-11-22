@@ -19,6 +19,12 @@ The GtkAda 3 toolkit makes use of Ada 2005 and requires GtkAda applications
 to be compiled in Ada 2005 or Ada 2012 mode (e.g. using the -gnat05 or
 -gnat2012 switch).
 
+Glib.Object
+===========
+
+Initialize_Class_Record now returns the type Ada_GObject_Class, not
+GObject_Class.
+
 Pango.Font
 ==========
 

@@ -155,7 +155,8 @@ package body Gtkada.Abstract_Tree_Model is
       Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Unref_Node);
 
-   Class_Record : Glib.Object.GObject_Class := Glib.Object.Uninitialized_Class;
+   Class_Record : Glib.Object.Ada_GObject_Class :=
+      Glib.Object.Uninitialized_Class;
    Info         : constant GInterface_Info  :=
      (interface_init => Tree_Model_Interface_Init'Address,
       others         => System.Null_Address);
@@ -564,7 +565,7 @@ package body Gtkada.Abstract_Tree_Model is
 
       if not Initialized then
          Init_Interface
-           (Glib.Object.Type_From_Class (Class_Record),
+           (Glib.Object.Type_From_Class (Class_Record.C_Class),
             Gtk.Tree_Model.Get_Type,
             Info);
       end if;

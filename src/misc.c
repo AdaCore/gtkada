@@ -292,36 +292,34 @@ ada_gsignal_query_return_type (GSignalQuery* query)
  **  };
  *********************************************************************/
 
+typedef struct {
+   GObjectClass* klass;   // The C class structure.
+   GObjectClass* parent_class; // The parent class (used for calling inherited ops).
+                          // This is cached for efficiency.
+   GType type;            // The type. This also acts as a lock while
+                          // initializing the class record.
+} AdaGObjectClass;
+//  Type must be synchronized with Ada.
+
 GType
-ada_type_from_class (gpointer klass)
+ada_type_from_class (GObjectClass* klass)
 {
   return G_TYPE_FROM_CLASS (klass);
 }
 
 void
-ada_gtk_set_draw_handler
-   (GObjectClass* klass,
-    gboolean (*draw) (GtkWidget *, cairo_t*))
-{
-
-  if (draw && GTK_IS_WIDGET_CLASS(klass)) {
-      GTK_WIDGET_CLASS(klass)->draw = draw;
-  }
-}
-
-GObjectClass*
 ada_initialize_class_record
   (GObject*      object,
    gint          nsignals,
    char*         signals[],
    GType         parameters[],
    gint          max_parameters,
-   GObjectClass* old_class_record,
+   AdaGObjectClass* klass,   /* in out AdaGObjectClass*/
    gchar*        type_name)
 {
-   GObjectClass* klass;
-
-   if (!old_class_record) {
+   // Make this function thread-safe and ensure we only initialize the class
+   // once
+   if (g_once_init_enter (&klass->type)) {
        /* Note: The memory allocated in this function is never freed. No need
           to worry, since this is only allocated once per user's widget type,
           and might be used until the end of the application */
@@ -372,8 +370,8 @@ ada_initialize_class_record
         * signals immediately after creating the class.
         *************************/
 
-       klass = g_type_class_ref (new_type);
-       g_assert (klass != NULL);
+       klass->klass = g_type_class_ref (new_type);
+       g_assert (klass->klass != NULL);
 
        for (j = 0; j < nsignals; j++) {
           int count = 0;
@@ -403,28 +401,40 @@ ada_initialize_class_record
         }
 
         /* Initialize the function pointers for the new signals to NULL */
-        memset ((char*)(klass) + query.class_size, 0,
+        memset ((char*)(klass->klass) + query.class_size, 0,
  	      nsignals * sizeof (void*)
  	      + sizeof (GObjectGetPropertyFunc)
- 	      + sizeof (GObjectSetPropertyFunc)
- 	      + sizeof (void*));
+ 	      + sizeof (GObjectSetPropertyFunc));
+
+        klass->parent_class = g_type_class_peek_parent (klass->klass);
+
+        g_once_init_leave (&klass->type, new_type); // sets klass->type
 
    } else {
       // Since the class has already been created, this never calls _class_init
       // but still increases the reference counting on the class.
-      klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
+      (void) g_type_class_ref (klass->type);
    }
 
-   ((GTypeInstance*)object)->g_class = (GTypeClass*) klass;
-   return klass;
+   ((GTypeInstance*)object)->g_class = (GTypeClass*) klass->klass;
 }
 
 void
 ada_gtk_widget_set_default_size_allocate_handler
-   (gpointer klass, void (*handler)(GtkWidget        *widget,
+   (AdaGObjectClass* klass, void (*handler)(GtkWidget        *widget,
 				    GtkAllocation    *allocation))
 {
-  GTK_WIDGET_CLASS (klass)->size_allocate = handler;
+  GTK_WIDGET_CLASS (klass->klass)->size_allocate = handler;
+}
+
+void
+ada_gtk_set_draw_handler
+   (AdaGObjectClass* klass,
+    gboolean (*draw) (GtkWidget *, cairo_t*))
+{
+  if (draw && GTK_IS_WIDGET_CLASS (klass->klass)) {
+      GTK_WIDGET_CLASS (klass->klass)->draw = draw;
+  }
 }
 
 /*****************************************************
@@ -1311,12 +1321,26 @@ ada_gparam_ensure_non_null_string (GParamSpecString* param)
  ******************************************/
 
 void
-ada_set_properties_handlers (gpointer klass,
-			     GObjectSetPropertyFunc set_handler,
-			     GObjectGetPropertyFunc get_handler)
+ada_install_property_handlers
+   (AdaGObjectClass* klass,
+    GObjectSetPropertyFunc c_set_handler,
+    GObjectGetPropertyFunc c_get_handler,
+    GObjectSetPropertyFunc ada_set_handler,
+    GObjectGetPropertyFunc ada_get_handler)
 {
-  G_OBJECT_CLASS (klass)->set_property = set_handler;
-  G_OBJECT_CLASS (klass)->get_property = get_handler;
+  GTypeQuery query;
+
+  G_OBJECT_CLASS (klass->klass)->set_property = c_set_handler;
+  G_OBJECT_CLASS (klass->klass)->get_property = c_get_handler;
+
+  g_type_query (G_TYPE_FROM_CLASS (klass->klass), &query);
+  *(GObjectGetPropertyFunc*)((char*)(klass->klass)
+      + query.class_size
+      - sizeof (GObjectGetPropertyFunc)
+      - sizeof (GObjectSetPropertyFunc)) = ada_get_handler;
+  *(GObjectSetPropertyFunc*)((char*)(klass->klass)
+      + query.class_size
+      - sizeof (GObjectSetPropertyFunc)) = ada_set_handler;
 }
 
 GObjectGetPropertyFunc
@@ -1326,20 +1350,8 @@ ada_real_get_property_handler (GObject* object)
   g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
   return *(GObjectGetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
 				  + query.class_size
-				    - sizeof (GObjectGetPropertyFunc)
+ 			     - sizeof (GObjectGetPropertyFunc)
 				  - sizeof (GObjectSetPropertyFunc));
-}
-
-void
-ada_set_real_get_property_handler (gpointer klass,
-				   GObjectGetPropertyFunc handler)
-{
-  GTypeQuery query;
-  g_type_query (G_TYPE_FROM_CLASS (klass), &query);
-  *(GObjectGetPropertyFunc*)((char*)(klass)
-			     + query.class_size
-			     - sizeof (GObjectGetPropertyFunc)
-			     - sizeof (GObjectSetPropertyFunc)) = handler;
 }
 
 GObjectSetPropertyFunc
@@ -1350,17 +1362,6 @@ ada_real_set_property_handler (GObject* object)
   return *(GObjectSetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
 				  + query.class_size
 				  - sizeof (GObjectSetPropertyFunc));
-}
-
-void
-ada_set_real_set_property_handler (gpointer klass,
-				   GObjectSetPropertyFunc handler)
-{
-  GTypeQuery query;
-  g_type_query (G_TYPE_FROM_CLASS (klass), &query);
-  *(GObjectSetPropertyFunc*)((char*)(klass)
-			    + query.class_size
-			    - sizeof (GObjectSetPropertyFunc)) = handler;
 }
 
 void

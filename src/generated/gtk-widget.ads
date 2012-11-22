@@ -2617,7 +2617,7 @@ package Gtk.Widget is
    --    end;
 
    procedure Set_Default_Size_Allocate_Handler
-     (Klass   : Glib.Object.GObject_Class;
+     (Klass   : Glib.Object.Ada_GObject_Class;
       Handler : Size_Allocate_Handler);
    pragma Import (C, Set_Default_Size_Allocate_Handler,
       "ada_gtk_widget_set_default_size_allocate_handler");
@@ -2649,7 +2649,7 @@ package Gtk.Widget is
    --  See also Gtk.Container.Draw_Windowless_Children.
 
    procedure Set_Default_Draw_Handler
-     (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
+     (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler);
    --  Override the default drawing function. This in general gives more
    --  control than connection to Signal_Draw, however a widget is responsible
    --  for drawing its children.

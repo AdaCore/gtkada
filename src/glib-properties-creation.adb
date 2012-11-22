@@ -964,30 +964,25 @@ package body Glib.Properties.Creation is
    -----------------------------
 
    procedure Set_Properties_Handlers
-     (Class_Record : GObject_Class;
+     (Class_Record : Ada_GObject_Class;
       Set_Property : Set_Property_Handler;
       Get_Property : Get_Property_Handler)
    is
-      procedure Set_Set
-        (Class_Record : GObject_Class; Set_Prop : System.Address);
-      pragma Import (C, Set_Set, "ada_set_real_set_property_handler");
-
-      procedure Set_Get
-        (Class_Record : GObject_Class; Set_Prop : System.Address);
-      pragma Import (C, Set_Get, "ada_set_real_get_property_handler");
-
       procedure Internal
-        (Class_Record : GObject_Class;
-         Set_Property : System.Address;
-         Get_Property : System.Address);
-      pragma Import (C, Internal, "ada_set_properties_handlers");
+         (Class_Record : Ada_GObject_Class;
+          C_Set_Prop   : System.Address;
+          C_Get_Prop   : System.Address;
+          Ada_Set_Prop  : System.Address;
+          Ada_Get_Prop : System.Address);
+      pragma Import (C, Internal, "ada_install_property_handlers");
 
    begin
-      Set_Set (Class_Record, To_Address (Set_Property));
-      Set_Get (Class_Record, To_Address (Get_Property));
-      Internal (Class_Record,
-                Internal_Set_Property_Handler'Address,
-                Internal_Get_Property_Handler'Address);
+      Internal
+         (Class_Record,
+          C_Set_Prop   => Internal_Set_Property_Handler'Address,
+          C_Get_Prop   => Internal_Get_Property_Handler'Address,
+          Ada_Set_Prop => To_Address (Set_Property),
+          Ada_Get_Prop => To_Address (Get_Property));
    end Set_Properties_Handlers;
 
    --------------------------

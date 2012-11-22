@@ -424,7 +424,7 @@ package Glib.Properties.Creation is
    --  of a property. You should set the value in Value
 
    procedure Set_Properties_Handlers
-     (Class_Record : Glib.Object.GObject_Class;
+     (Class_Record : Glib.Object.Ada_GObject_Class;
       Set_Property : Set_Property_Handler;
       Get_Property : Get_Property_Handler);
    --  Set the two functions used to set and retrieve properties. You
@@ -437,7 +437,7 @@ package Glib.Properties.Creation is
    --  be able to install new properties afterwards
 
    procedure Install_Property
-     (Class_Record  : Glib.Object.GObject_Class;
+     (Class_Record  : Glib.Object.Ada_GObject_Class;
       Prop_Id       : Property_Id;
       Property_Spec : Param_Spec);
    --  Adds a new property to Class_Record. You should use this function only

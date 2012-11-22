@@ -286,18 +286,18 @@ package body Glib.Object is
    procedure Initialize_Class_Record
      (Object       : access GObject_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : in out GObject_Class;
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
    is
-      function Internal
+      procedure Internal
         (Object         : System.Address;
          NSignals       : Gint;
          Signals        : System.Address;
          Parameters     : System.Address;
          Max_Parameters : Gint;
-         Class_Record   : GObject_Class;
-         Type_Name      : String) return GObject_Class;
+         Class_Record   : in out Ada_GObject_Class;
+         Type_Name      : String);
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
@@ -312,7 +312,7 @@ package body Glib.Object is
          Num := Parameters'Length (2);
       end if;
 
-      Class_Record := Internal
+      Internal
         (Get_Object (Object),
          Signals'Length,
          Signals'Address,
@@ -795,7 +795,8 @@ package body Glib.Object is
       pragma Import (C, Internal, "g_object_class_list_properties");
 
       N      : aliased Guint;
-      Output : constant Unbounded_Array_Access := Internal (Class, N'Access);
+      Output : constant Unbounded_Array_Access :=
+         Internal (Class, N'Access);
       Result : constant Param_Spec_Array := To_Array (Output, Integer (N));
    begin
       --  Doc says we should free, but that results in double-deallocation...

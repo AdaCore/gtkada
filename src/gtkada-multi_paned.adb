@@ -56,7 +56,7 @@ package body Gtkada.Multi_Paned is
    Minimum_Width : constant := 1;
    --  Minimum width for a child
 
-   Paned_Class_Record : Glib.Object.GObject_Class :=
+   Paned_Class_Record : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
    type Resize_Handle is record

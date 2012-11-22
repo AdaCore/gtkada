@@ -131,9 +131,9 @@ package body Gtkada.MDI is
    --  Windows the later seems to be set to 0, and thus we can't change a
    --  notebook page by clicking on its tab without splitting the notebook
 
-   MDI_Class_Record        : Glib.Object.GObject_Class :=
+   MDI_Class_Record        : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
-   Child_Class_Record      : Glib.Object.GObject_Class :=
+   Child_Class_Record      : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
@@ -908,6 +908,10 @@ package body Gtkada.MDI is
          Widget_Callback.To_Marshaller (Destroy_MDI'Access));
       Widget_Callback.Connect
         (MDI, Signal_Set_Focus_Child, Set_Focus_Child_MDI'Access);
+
+--        Return_Callback.Object_Connect
+--          (MDI, Signal_Draw,
+--           Return_Callback.To_Marshaller (Draw_MDI'Access));
    end Initialize;
 
    -----------------------
@@ -1878,7 +1882,6 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
    begin
-      Put_Line ("MANU Button_Pressed_On_Title_Icon");
       if Get_Event_Type (Event) = Gdk_2button_Press
         and then Event.Button.Button = 1
       then

@@ -78,7 +78,7 @@ package body Gtkada.Canvas is
 
    Traces : constant Boolean := False;
 
-   Class_Record : GObject_Class := Uninitialized_Class;
+   Class_Record : Ada_GObject_Class := Uninitialized_Class;
    --  This pointer will keep a pointer to the C 'class record' for
    --  gtk. To avoid allocating memory for each widget, this may be done
    --  only once, and reused.

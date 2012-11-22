@@ -233,7 +233,15 @@ package Glib.Object is
    --  when doing introspection.
 
    type GObject_Class is new GType_Class;
-   Uninitialized_Class : constant GObject_Class;
+   Null_GObject_Class : constant GObject_Class;
+
+   type Ada_GObject_Class is record
+      C_Class      : GObject_Class := Null_GObject_Class;
+      Parent_Class : System.Address := System.Null_Address;
+      The_Type     : GType := 0;
+   end record;
+   pragma Convention (C, Ada_GObject_Class);
+   Uninitialized_Class : constant Ada_GObject_Class;
    --  This type encloses all the informations related to a specific type of
    --  object or widget. All instances of such an object have a pointer to this
    --  structure, that includes the definition of all the signals that exist
@@ -262,7 +270,7 @@ package Glib.Object is
    procedure Initialize_Class_Record
      (Object       : access GObject_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : in out GObject_Class;
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
    --  Create the class record for a new object type.
@@ -464,8 +472,10 @@ private
 
    type Interface_Vtable is new Glib.C_Proxy;
 
-   Uninitialized_Class : constant GObject_Class :=
-     GObject_Class (System.Null_Address);
+   Null_GObject_Class : constant GObject_Class :=
+      GObject_Class (System.Null_Address);
+   Uninitialized_Class : constant Ada_GObject_Class :=
+      (Null_GObject_Class, System.Null_Address, 0);
 
    type Signal_Query is record
       Signal_Id    : Guint;

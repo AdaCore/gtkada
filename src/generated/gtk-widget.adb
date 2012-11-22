@@ -69,9 +69,9 @@ package body Gtk.Widget is
    end Proxy_Draw;
 
    procedure Set_Default_Draw_Handler
-     (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
+     (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
    is
-      procedure Internal (K : GObject_Class; H : System.Address);
+      procedure Internal (K : Ada_GObject_Class; H : System.Address);
       pragma Import (C, Internal, "ada_gtk_set_draw_handler");
    begin
       Internal (Klass, Convert (Handler));
