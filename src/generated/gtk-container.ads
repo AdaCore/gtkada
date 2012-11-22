@@ -543,17 +543,6 @@ package Gtk.Container is
    --  Removes a focus chain explicitly set with
    --  Gtk.Container.Set_Focus_Chain.
 
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   procedure Draw_Windowless_Children
-     (Self : access Gtk_Container_Record; Cr : Cairo.Cairo_Context);
-   --  For each child of Self that does not have its own GdkWindow, request its
-   --  drawing. Other children will receive their own "draw" events, so do not
-   --  need to be taken into account. This procedure should in general be used
-   --  when you write your own handler in Set_Draw_Handler.
-
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------

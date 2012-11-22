@@ -133,7 +133,7 @@ package body Gtkada.MDI is
 
    MDI_Class_Record        : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
-   Child_Class_Record      : Glib.Object.Ada_GObject_Class :=
+   Child_Class_Record      : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
@@ -267,9 +267,8 @@ package body Gtkada.MDI is
    --  Called when the Menu associated with a MDI is destroyed
 
    function Draw_Child
-     (Widget : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context)
-      return Boolean;
+     (Widget : System.Address; Cr : Cairo_Context) return Gboolean;
+   pragma Convention (C, Draw_Child);
    --  Draw the child (and the title bar)
 
    function Draw_Dnd_Target_Window
@@ -1737,14 +1736,14 @@ package body Gtkada.MDI is
    ----------------
 
    function Draw_Child
-     (Widget : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context)
-      return Boolean
+     (Widget : System.Address; Cr : Cairo_Context) return Gboolean
    is
-      Child : constant MDI_Child := MDI_Child (Widget);
+      Child : constant MDI_Child := MDI_Child (Glib.Object.Convert (Widget));
       Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
       Pat   : Cairo_Pattern;
       Alloc : Gtk_Allocation;
+      Ignored : Boolean;
+      pragma Unreferenced (Ignored);
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1753,6 +1752,7 @@ package body Gtkada.MDI is
          Color := Child.MDI.Focus_Title_Color;
       end if;
 
+      Cairo.Save (Cr);
       Child.Title_Box.Get_Allocation (Alloc);
       Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Gdouble (Alloc.Height));
       Pattern_Add_Color_Stop_Rgba
@@ -1764,8 +1764,10 @@ package body Gtkada.MDI is
         (Cr, 0.0, 0.0, Gdouble (Alloc.Width), Gdouble (Alloc.Height));
       Cairo.Fill (Cr);
       Pattern_Destroy (Pat);
+      Cairo.Restore (Cr);
 
-      return False;
+      Ignored := Inherited_Draw (Child_Class_Record, Child, Cr);
+      return 0;
    end Draw_Child;
 
    -----------------------
@@ -2470,12 +2472,16 @@ package body Gtkada.MDI is
       end if;
 
       Gtk.Event_Box.Initialize (Child);
-      Glib.Object.Initialize_Class_Record
+      Child.Set_Has_Window (False);
+      if Glib.Object.Initialize_Class_Record
         (Child,
          Signals      => Child_Signals,
-         Class_Record => Child_Class_Record,
+         Class_Record => Child_Class_Record'Access,
          Type_Name    => "GtkAdaMDIChild",
-         Parameters   => Signal_Parameters);
+         Parameters   => Signal_Parameters)
+      then
+         Set_Default_Draw_Handler (Child_Class_Record, Draw_Child'Access);
+      end if;
 
       Set_Border_Width (Child, 0);
 
@@ -2533,11 +2539,6 @@ package body Gtkada.MDI is
       --  Do not set the label as selectable, otherwise it has its own window,
       --  and we can no longer drag from the title
       Child.Title_Label.Set_Selectable (False);
-
-      Return_Callback.Object_Connect
-        (Child.Title_Box, Signal_Draw,
-         Return_Callback.To_Marshaller (Draw_Child'Access),
-         Slot_Object => Child);
 
       if (Flags and Destroy_Button) /= 0 then
          Close_Button.Gtk_New (Button, Child, Child, True);

@@ -273,6 +273,13 @@ package Glib.Object is
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
+   function Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : access Ada_GObject_Class;
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+      return Boolean;
    --  Create the class record for a new object type.
    --  It is associated with Signals'Length new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
@@ -292,6 +299,10 @@ package Glib.Object is
    --  Only the signals with no parameter can be connected from C code.
    --  However, any signal can be connected from Ada. This is due to the way
    --  we define default marshallers for the signals.
+   --
+   --  The function returns True if the class record was just created (i.e.
+   --  only the first time). This can be used to do further initialization
+   --  at that point, like calling Gtk.Widget.Set_Default_Draw_Handler.
 
    function Type_From_Class (Class_Record : GObject_Class) return GType;
    --  Return the internal gtk+ type that describes the newly created

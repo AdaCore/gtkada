@@ -407,34 +407,35 @@ ada_initialize_class_record
  	      + sizeof (GObjectSetPropertyFunc));
 
         klass->parent_class = g_type_class_peek_parent (klass->klass);
-
+        ((GTypeInstance*)object)->g_class = (GTypeClass*) klass->klass;
         g_once_init_leave (&klass->type, new_type); // sets klass->type
 
+        return 1;
    } else {
       // Since the class has already been created, this never calls _class_init
       // but still increases the reference counting on the class.
       (void) g_type_class_ref (klass->type);
+      ((GTypeInstance*)object)->g_class = (GTypeClass*) klass->klass;
+      return 0;
+   }
+}
+
+#define ADA_GTK_OVERRIDE_METHOD(TypeName, method) \
+   void \
+   ada_##TypeName##_override_##method ( \
+         AdaGObjectClass* klass, gpointer handler) { \
+      if (handler && GTK_IS_##TypeName (klass->klass)) { \
+          GTK_##TypeName (klass->klass)->method = handler; \
+      } \
    }
 
-   ((GTypeInstance*)object)->g_class = (GTypeClass*) klass->klass;
-}
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, draw)
 
-void
-ada_gtk_widget_set_default_size_allocate_handler
-   (AdaGObjectClass* klass, void (*handler)(GtkWidget        *widget,
-				    GtkAllocation    *allocation))
+gboolean ada_inherited_WIDGET_CLASS_draw (
+      AdaGObjectClass* klass, GtkWidget* widget, cairo_t *cr)
 {
-  GTK_WIDGET_CLASS (klass->klass)->size_allocate = handler;
-}
-
-void
-ada_gtk_set_draw_handler
-   (AdaGObjectClass* klass,
-    gboolean (*draw) (GtkWidget *, cairo_t*))
-{
-  if (draw && GTK_IS_WIDGET_CLASS (klass->klass)) {
-      GTK_WIDGET_CLASS (klass->klass)->draw = draw;
-  }
+   return GTK_WIDGET_CLASS (klass->parent_class)->draw (widget, cr);
 }
 
 /*****************************************************

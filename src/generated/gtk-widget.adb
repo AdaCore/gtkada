@@ -68,11 +68,24 @@ package body Gtk.Widget is
       return Boolean'Pos (Draw (W2, Cr));
    end Proxy_Draw;
 
+   function Inherited_Draw
+     (Klass  : Ada_GObject_Class;
+      Widget : access Gtk_Widget_Record'Class;
+      Cr     : Cairo.Cairo_Context) return Boolean
+   is
+      function Internal (Klass : Ada_Gobject_Class;
+         Widget : System.Address;
+         Cr : Cairo.Cairo_Context) return Gboolean;
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
+   begin
+      return Internal (Klass, Widget.Get_Object, Cr) /= 0;
+   end Inherited_Draw;
+
    procedure Set_Default_Draw_Handler
      (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
    is
       procedure Internal (K : Ada_GObject_Class; H : System.Address);
-      pragma Import (C, Internal, "ada_gtk_set_draw_handler");
+      pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
    begin
       Internal (Klass, Convert (Handler));
    end Set_Default_Draw_Handler;

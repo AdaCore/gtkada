@@ -2620,7 +2620,7 @@ package Gtk.Widget is
      (Klass   : Glib.Object.Ada_GObject_Class;
       Handler : Size_Allocate_Handler);
    pragma Import (C, Set_Default_Size_Allocate_Handler,
-      "ada_gtk_widget_set_default_size_allocate_handler");
+      "ada_WIDGET_CLASS_override_size_allocate");
    --  Override the default size_allocate handler for this class. This handler
    --  is automatically called in several cases (when a widget is dynamically
    --  resized for instance), not through a signal. Thus, if you need to
@@ -2632,6 +2632,10 @@ package Gtk.Widget is
    --  This function is not needed unless you are writting your own
    --  widgets, and should be reserved for advanced customization of the
    --  standard widgets.
+
+   ---------------------------
+   -- Override Draw handler --
+   ---------------------------
 
    generic
    with function Draw
@@ -2646,7 +2650,6 @@ package Gtk.Widget is
       Cr : Cairo.Cairo_Context) return Gboolean;
    pragma Convention (C, Draw_Handler);
    --  A function responsible for drawing a widget.
-   --  See also Gtk.Container.Draw_Windowless_Children.
 
    procedure Set_Default_Draw_Handler
      (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler);
@@ -2654,6 +2657,17 @@ package Gtk.Widget is
    --  control than connection to Signal_Draw, however a widget is responsible
    --  for drawing its children.
    --  Use the generic Proxy_Draw to create a suitable callback.
+
+   function Inherited_Draw
+     (Klass  : Ada_GObject_Class;
+      Widget : access Gtk_Widget_Record'Class;
+      Cr     : Cairo.Cairo_Context) return Boolean;
+   --  Call the inherited draw. This is useful if you have overloaded draw in
+   --  your own class, but still need to draw the child widgets that do not
+   --  have their own window (the others will already get their own "draw"
+   --  event.
+   --  See http://developer.gnome.org/gtk3/3.0/chap-drawing-model.html
+   --  for an explanation of the gtk+ drawing model.
 
    ---------------
    -- Functions --

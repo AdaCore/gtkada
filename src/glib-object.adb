@@ -48,6 +48,15 @@ package body Glib.Object is
    function To_Object is new Ada.Unchecked_Conversion
      (System.Address, GObject);
 
+   function Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean;
+   --  Internal version of Initialize_Class_Record
+
    ----------------
    -- Deallocate --
    ----------------
@@ -290,14 +299,42 @@ package body Glib.Object is
       Type_Name    : String;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
    is
-      procedure Internal
+      Ignored : Boolean;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Initialize_Class_Record
+         (Object, Signals, Class_Record'Address, Type_Name, Parameters);
+   end Initialize_Class_Record;
+
+   function Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : access Ada_GObject_Class;
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean
+   is
+   begin
+      return Initialize_Class_Record
+         (Object, Signals, Class_Record.all'Address, Type_Name, Parameters);
+   end Initialize_Class_Record;
+
+   function Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean
+   is
+      function Internal
         (Object         : System.Address;
          NSignals       : Gint;
          Signals        : System.Address;
          Parameters     : System.Address;
          Max_Parameters : Gint;
-         Class_Record   : in out Ada_GObject_Class;
-         Type_Name      : String);
+         Class_Record   : System.Address;
+         Type_Name      : String) return Integer;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
@@ -312,14 +349,14 @@ package body Glib.Object is
          Num := Parameters'Length (2);
       end if;
 
-      Internal
+      return Internal
         (Get_Object (Object),
          Signals'Length,
          Signals'Address,
          Pa,
          Num,
          Class_Record,
-         Type_Name & ASCII.NUL);
+         Type_Name & ASCII.NUL) /= 0;
    end Initialize_Class_Record;
 
    --------------

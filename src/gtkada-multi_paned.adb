@@ -1187,8 +1187,6 @@ package body Gtkada.Multi_Paned is
       Current : Child_Description_Access;
       Ctx     : constant Gtk_Style_Context := Get_Style_Context (Paned);
    begin
-      Split.Draw_Windowless_Children (Cr);
-
       loop
          Current := Get (Iter);
          exit when Current = null;
@@ -1218,7 +1216,7 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      return False;
+      return Inherited_Draw (Paned_Class_Record, Paned, Cr);
    end On_Draw;
 
    ------------------------

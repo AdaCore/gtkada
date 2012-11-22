@@ -2536,7 +2536,7 @@ __PRE__
      (Klass   : Glib.Object.Ada_GObject_Class;
       Handler : Size_Allocate_Handler);
    pragma Import (C, Set_Default_Size_Allocate_Handler,
-                  "ada_gtk_widget_set_default_size_allocate_handler");
+                  "ada_WIDGET_CLASS_override_size_allocate");
    --  Override the default size_allocate handler for this class. This handler
    --  is automatically called in several cases (when a widget is dynamically
    --  resized for instance), not through a signal. Thus, if you need to
@@ -2548,6 +2548,10 @@ __PRE__
    --  This function is not needed unless you are writting your own
    --  widgets, and should be reserved for advanced customization of the
    --  standard widgets.
+
+   ---------------------------
+   -- Override Draw handler --
+   ---------------------------
 
    generic
        with function Draw
@@ -2562,7 +2566,6 @@ __PRE__
       Cr : Cairo.Cairo_Context) return Gboolean;
    pragma Convention (C, Draw_Handler);
    --  A function responsible for drawing a widget.
-   --  See also Gtk.Container.Draw_Windowless_Children.
 
    procedure Set_Default_Draw_Handler
       (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler);
@@ -2571,6 +2574,16 @@ __PRE__
    --  for drawing its children.
    --  Use the generic Proxy_Draw to create a suitable callback.
 
+   function Inherited_Draw
+      (Klass  : Ada_GObject_Class;
+       Widget : access Gtk_Widget_Record'Class;
+       Cr     : Cairo.Cairo_Context) return Boolean;
+   --  Call the inherited draw. This is useful if you have overloaded draw in
+   --  your own class, but still need to draw the child widgets that do not
+   --  have their own window (the others will already get their own "draw"
+   --  event.
+   --  See http://developer.gnome.org/gtk3/3.0/chap-drawing-model.html
+   --  for an explanation of the gtk+ drawing model.
        </spec>
        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
        <body>
@@ -2587,11 +2600,24 @@ __PRE__
       return Boolean'Pos (Draw (W2, Cr));
    end Proxy_Draw;
 
+   function Inherited_Draw
+      (Klass  : Ada_GObject_Class;
+       Widget : access Gtk_Widget_Record'Class;
+       Cr     : Cairo.Cairo_Context) return Boolean
+   is
+       function Internal (Klass : Ada_Gobject_Class;
+                          Widget : System.Address;
+                          Cr : Cairo.Cairo_Context) return Gboolean;
+       pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
+   begin
+      return Internal (Klass, Widget.Get_Object, Cr) /= 0;
+   end Inherited_Draw;
+
    procedure Set_Default_Draw_Handler
       (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
    is
       procedure Internal (K : Ada_GObject_Class; H : System.Address);
-      pragma Import (C, Internal, "ada_gtk_set_draw_handler");
+      pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
    begin
       Internal (Klass, Convert (Handler));
    end Set_Default_Draw_Handler;
@@ -2808,48 +2834,6 @@ __PRE__
      <method id="gtk_container_get_focus_chain" return_as_param="Success" bind="false">
        <parameter name="focusable_widgets" ctype="WidgetList*" direction="out"/>
      </method>
-
-     <extra>
-       <spec>
-   procedure Draw_Windowless_Children
-      (Self : access Gtk_Container_Record; Cr : Cairo.Cairo_Context);
-   --  For each child of Self that does not have its own GdkWindow, request its
-   --  drawing. Other children will receive their own "draw" events, so do not
-   --  need to be taken into account. This procedure should in general be used
-   --  when you write your own handler in Set_Draw_Handler.
-       </spec>
-       <body before="false">
-   type Draw_User_Data is record
-      Container : Gtk_Container;
-      Cr        : Cairo_Context;
-   end record;
-   procedure Draw_Windowless_Child
-     (Child : not null access Gtk_Widget_Record'Class;
-      Data  : Draw_User_Data);
-   package Forall_Children
-      is new Gtk.Container.Forall_User_Data (Draw_User_Data);
-
-   procedure Draw_Windowless_Child
-     (Child : not null access Gtk_Widget_Record'Class;
-      Data  : Draw_User_Data) is
-   begin
-      Data.Container.Propagate_Draw
-        (Child     => Child,
-         Cr        => Data.Cr);
-   end Draw_Windowless_Child;
-
-   procedure Draw_Windowless_Children
-      (Self : access Gtk_Container_Record; Cr : Cairo.Cairo_Context)
-   is
-      User : constant Draw_User_Data :=
-        (Container => Gtk_Container (Self),
-         Cr        => Cr);
-   begin
-      Forall_Children.Forall (Self, Draw_Windowless_Child'Access, User);
-   end Draw_Windowless_Children;
-
-       </body>
-     </extra>
    </package>
 
    <package id="GtkSpinButton">

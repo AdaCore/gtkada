@@ -598,33 +598,4 @@ package body Gtk.Container is
       Internal (Get_Object (Container));
    end Unset_Focus_Chain;
 
-   type Draw_User_Data is record
-      Container : Gtk_Container;
-      Cr        : Cairo_Context;
-   end record;
-   procedure Draw_Windowless_Child
-     (Child : not null access Gtk_Widget_Record'Class;
-      Data  : Draw_User_Data);
-   package Forall_Children
-   is new Gtk.Container.Forall_User_Data (Draw_User_Data);
-
-   procedure Draw_Windowless_Child
-     (Child : not null access Gtk_Widget_Record'Class;
-      Data  : Draw_User_Data) is
-   begin
-      Data.Container.Propagate_Draw
-        (Child     => Child,
-         Cr        => Data.Cr);
-   end Draw_Windowless_Child;
-
-   procedure Draw_Windowless_Children
-     (Self : access Gtk_Container_Record; Cr : Cairo.Cairo_Context)
-   is
-      User : constant Draw_User_Data :=
-        (Container => Gtk_Container (Self),
-         Cr        => Cr);
-   begin
-      Forall_Children.Forall (Self, Draw_Windowless_Child'Access, User);
-   end Draw_Windowless_Children;
-
 end Gtk.Container;
