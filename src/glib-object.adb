@@ -297,9 +297,7 @@ package body Glib.Object is
          Parameters     : System.Address;
          Max_Parameters : Gint;
          Class_Record   : GObject_Class;
-         Type_Name      : String;
-         Num_Virtual    : Gint;
-         Virtual        : System.Address) return GObject_Class;
+         Type_Name      : String) return GObject_Class;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
@@ -321,8 +319,7 @@ package body Glib.Object is
          Pa,
          Num,
          Class_Record,
-         Type_Name & ASCII.NUL,
-         0, System.Null_Address);
+         Type_Name & ASCII.NUL);
    end Initialize_Class_Record;
 
    --------------

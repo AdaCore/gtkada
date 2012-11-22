@@ -33,38 +33,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
 #include <pango/pango.h>
-
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-
-gint
-convert_a (gpointer a)
-{
-   return GPOINTER_TO_INT (a);
-}
-
-gpointer
-convert_i (gint s)
-{
-   return GINT_TO_POINTER (s);
-}
-
-guint
-convert_ua (gpointer a)
-{
-   return GPOINTER_TO_UINT (a);
-}
-
-gpointer
-convert_ui (guint s)
-{
-   return GUINT_TO_POINTER (s);
-}
 
 /********************************************************************
  *  Returns the major/minor/macro version number of Gtk+. This is
@@ -183,15 +156,6 @@ ada_g_signal_emit_by_name_ptr_ptr (gpointer     instance,
 }
 
 void
-ada_g_signal_emit_by_name_int_int (gpointer     instance,
-			           const gchar *detailed_signal,
-			           gint arg1,
-			           gint arg2)
-{
-  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
-}
-
-void
 ada_g_signal_emit_by_name_int_ptr (gpointer     instance,
 			           const gchar *detailed_signal,
 			           gint arg1,
@@ -220,24 +184,6 @@ ada_gtk_list_store_set_int (GtkListStore *list_store,
 }
 
 void
-ada_gtk_list_store_set_boolean (GtkListStore *list_store,
-                            GtkTreeIter  *iter,
-                            gint          col,
-                            gboolean          val)
-{
-  gtk_list_store_set (list_store, iter, col, val, -1);
-}
-
-void
-ada_gtk_list_store_set_pixbuf (GtkListStore *list_store,
-                            GtkTreeIter  *iter,
-                            gint          col,
-                            GdkPixbuf*    val)
-{
-  gtk_list_store_set (list_store, iter, col, val, -1);
-}
-
-void
 ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
 			    GtkTreeIter  *iter,
 			    gint          col,
@@ -255,98 +201,6 @@ ada_gtk_tree_store_set_int (GtkTreeStore *tree_store,
   gtk_tree_store_set (tree_store, iter, col, val, -1);
 }
 
-void
-ada_gtk_tree_store_set_ptr_ptr (GtkTreeStore *tree_store,
-			        GtkTreeIter  *iter,
-			        gint          col1,
-			        void         *val1,
-			        gint          col2,
-			        void         *val2)
-{
-  gtk_tree_store_set (tree_store, iter, col1, val1, col2, val2, -1);
-}
-
-void
-ada_gtk_tree_store_set_ptr_int (GtkTreeStore *tree_store,
-			        GtkTreeIter  *iter,
-			        gint          col1,
-			        void         *val1,
-			        gint          col2,
-			        gint          val2)
-{
-  gtk_tree_store_set (tree_store, iter, col1, val1, col2, val2, -1);
-}
-
-void
-ada_gtk_tree_store_set_int_int_int (GtkTreeStore *tree_store,
-			            GtkTreeIter  *iter,
-			            gint          col1,
-			            gint          val1,
-			            gint          col2,
-			            gint          val2,
-			            gint          col3,
-			            gint          val3)
-{
-  gtk_tree_store_set
-    (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
-}
-
-void
-ada_gtk_tree_store_set_ptr_int_int (GtkTreeStore *tree_store,
-			            GtkTreeIter  *iter,
-			            gint          col1,
-			            void         *val1,
-			            gint          col2,
-			            gint          val2,
-			            gint          col3,
-			            gint          val3)
-{
-  gtk_tree_store_set
-    (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
-}
-
-void
-ada_gtk_tree_store_set_ptr_int_ptr (GtkTreeStore *tree_store,
-			            GtkTreeIter  *iter,
-			            gint          col1,
-			            void         *val1,
-			            gint          col2,
-			            gint          val2,
-			            gint          col3,
-			            void         *val3)
-{
-  gtk_tree_store_set
-    (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
-}
-
-void
-ada_gtk_tree_store_set_ptr_ptr_int (GtkTreeStore *tree_store,
-			            GtkTreeIter  *iter,
-			            gint          col1,
-			            void         *val1,
-			            gint          col2,
-			            void         *val2,
-			            gint          col3,
-			            gint          val3)
-{
-  gtk_tree_store_set
-    (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
-}
-
-void
-ada_gtk_tree_store_set_int_ptr_int (GtkTreeStore *tree_store,
-			            GtkTreeIter  *iter,
-			            gint          col1,
-			            void         *val1,
-			            void         *col2,
-			            void         *val2,
-			            gint          col3,
-			            gint          val3)
-{
-  gtk_tree_store_set
-    (tree_store, iter, col1, val1, col2, val2, col3, val3, -1);
-}
-
 GtkWidget*
 ada_gtk_dialog_new_with_buttons (const gchar     *title,
                                  GtkWindow       *parent,
@@ -354,20 +208,6 @@ ada_gtk_dialog_new_with_buttons (const gchar     *title,
 {
   return gtk_dialog_new_with_buttons (title, parent, flags,
                                       NULL /* first_button_text*/, NULL);
-}
-
-GtkWidget*
-ada_gtk_widget_new (GType type)
-{
-  return gtk_widget_new (type, NULL);
-}
-
-void
-ada_gtk_widget_style_get_int (GtkWidget   *widget,
-			      const gchar *first_property_name,
-			      gint        *value)
-{
-  gtk_widget_style_get (widget, first_property_name, value, NULL);
 }
 
 gboolean
@@ -402,32 +242,6 @@ c_sprintf (char *s, char *format, int arg1, int arg2, int arg3)
 guint
 ada_gtk_debug_get_ref_count (GObject* object) {
   return G_OBJECT (object)->ref_count;
-}
-
-/********************************************************************
- **  This function parses the command line and returns
- **  true if macro_switch exists. It is also removed from
- **  the command line
- ********************************************************************/
-
-int
-ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
-{
-  int i;
-
-  for (i=1; i<*gnat_argc; i++)
-    {
-      if (! strcmp (gnat_argv[i], macro_switch)) {
-	while (i < * gnat_argc - 1) {
-	  gnat_argv [i] = gnat_argv [i + 1];
-	  i++;
-	}
-	gnat_argv [i] = NULL;
-	(*gnat_argc)--;
-	return 1;
-      }
-    }
-  return 0;
 }
 
 /******************************************
@@ -470,43 +284,18 @@ ada_gsignal_query_return_type (GSignalQuery* query)
  **     void (*handler2) (...);                // handler for second signal
  **     ...
  **     void (*handlern) (...);                // handler for nth signal
- **     VirtualFunctions * virtual;            // pointer to virtual interface
- **                                            // functions
  **     GObjectGetPropertyFunc real_get_property;
  **                                            // pointer to the get_property
  **                                            // in user's code
  **     GObjectSetPropertyFunc real_set_property;
  **                                            // likewise for set_property
  **  };
- **
- ** struct VirtualFunctions {
- **     void (*virtual) (...);                 // first virtual function for
- **                                            // interfaces
- **     ...
- **     void (*virtual) (...);
- ** }
-
  *********************************************************************/
 
 GType
 ada_type_from_class (gpointer klass)
 {
   return G_TYPE_FROM_CLASS (klass);
-}
-
-void *
-ada_get_nth_virtual_function (GObjectClass* class, gint num)
-{
-  GTypeQuery query;
-  gpointer * virtual_functions;
-
-  g_type_query (G_TYPE_FROM_CLASS (class), &query);
-  virtual_functions = (gpointer*)((char*)(class)
-				  + query.class_size
-				  - sizeof (GObjectGetPropertyFunc)
-				  - sizeof (GObjectSetPropertyFunc)
-				  - sizeof (gpointer));
-  return virtual_functions + num * sizeof (gpointer);
 }
 
 void
@@ -528,118 +317,107 @@ ada_initialize_class_record
    GType         parameters[],
    gint          max_parameters,
    GObjectClass* old_class_record,
-   gchar*        type_name,
-   gint          num_virtual_functions,
-   gpointer*     virtual_functions)
+   gchar*        type_name)
 {
-  GObjectClass* klass;
+   GObjectClass* klass;
 
-  if (!old_class_record)
-    {
-      /* Note: The memory allocated in this function is never freed. No need
-         to worry, since this is only allocated once per user's widget type,
-         and might be used until the end of the application */
+   if (!old_class_record) {
+       /* Note: The memory allocated in this function is never freed. No need
+          to worry, since this is only allocated once per user's widget type,
+          and might be used until the end of the application */
 
-      /* Right now, object->klass points to the ancestor's class */
-      GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
-      GTypeInfo * class_info = g_new (GTypeInfo, 1);
-      GTypeQuery query;
-      GType new_type;
-      gpointer* virtual;
-      int j;
+       /************************
+        * When this function is called, object has already been initialized
+        * by a call to parent_type_new(). So the C structure has been allocated
+        * enough space for instances of the parent type (which is good enough
+        * since any additional instance field will be in the Ada structure
+        * anyway.
+        * However, parent_type_new() has called g_object_new(), which does a
+        * number of additional setup for constructors and properties. These all
+        * seem to be C specific though, so we can simply replace the klass
+        * field at the bottom of this function.
+        ************************/
 
-      /* We need to know the ancestor's class/instance sizes */
-      g_type_query (ancestor, &query);
+       /* Right now, object->klass points to the ancestor's class */
+       GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
+       GTypeQuery query;
+       int j;
 
-      class_info->class_size = query.class_size
-          + nsignals * sizeof (void*)
-          + sizeof (GObjectGetPropertyFunc)
-          + sizeof (GObjectSetPropertyFunc)
-          + sizeof (void*); /* Last one is for virtual functions */
-      class_info->base_init = NULL;
-      class_info->base_finalize = NULL;
-      class_info->class_init = NULL;
-      class_info->class_finalize = NULL;
-      class_info->class_data = NULL;
-         /* Would be nice to use this for the set_property???*/
-      class_info->instance_size = query.instance_size;
-         /* ??? should be parameter */
-      class_info->n_preallocs = 0;
-      class_info->instance_init = NULL;
-      class_info->value_table = NULL;
+       /* We need to know the ancestor's class/instance sizes */
+       g_type_query (ancestor, &query);
 
-      /* Need to create a new type, otherwise Gtk+ won't free objects of
-         this type */
-      new_type = g_type_register_static (ancestor, type_name, class_info, 0);
-      klass = g_type_class_ref (new_type);
+       /*************************
+        * This code is the equivalent of type_name@@_get_type in C.  In Ada, the
+        * type will be accessible only once at least one instance of it has been
+        * created (whereas in C the GType is created at elaboration time.
+        *************************/
 
-      g_assert (klass != NULL);
+       GType new_type = g_type_register_static_simple
+          (ancestor /* parent_type */,
+           type_name /* type_name */,
+           query.class_size  /* class_size */
+              + nsignals * sizeof (void*)
+              + sizeof (GObjectGetPropertyFunc)
+              + sizeof (GObjectSetPropertyFunc),
+           NULL /* class_init */,
+           query.instance_size  /* instance_size */,
+           NULL /* instance_init */,
+           0  /* GTypeFlags */);
 
-      /* Initialize signals */
-      for (j = 0; j < nsignals; j++) {
-         int count = 0;
-         GClosure *closure;
+       /*************************
+        * This code is generally called by g_object_new (which itself is called
+        * from type_name_new() in C). Its result is to create and initialized
+        * (via class_init) the class the first time an instance of it is
+        * created. In Ada, we do not us a _class_init, so we initialize the
+        * signals immediately after creating the class.
+        *************************/
 
-         while (count < max_parameters &&
-                 (parameters [j * max_parameters + count] != G_TYPE_NONE)) {
-               count++;
-         }
+       klass = g_type_class_ref (new_type);
+       g_assert (klass != NULL);
 
-         closure = g_signal_type_cclosure_new
-             (new_type, query.class_size + j * sizeof (void*)); /* offset */
+       for (j = 0; j < nsignals; j++) {
+          int count = 0;
+          GClosure *closure;
 
-         /* id = */ g_signal_newv
-           (signals[j],                       /* signal_name */
-            new_type,                         /* itype */
-            G_SIGNAL_RUN_LAST,                /* signal_flags */
-            closure,                          /* class_closure */
-            NULL,                             /* accumulator */
-            NULL,                             /* accu_data */
-            g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
-              Ada level ??? This probably makes the widget unusable from C */
-            G_TYPE_NONE,                      /* return_type */
-            count,                            /* n_params */
-            parameters + j * max_parameters); /* param_types */
-       }
+          while (count < max_parameters &&
+                  (parameters [j * max_parameters + count] != G_TYPE_NONE))
+          {
+                count++;
+          }
 
-      /* Initialize the function pointers for the new signals to NULL */
-      memset ((char*)(klass) + query.class_size, 0,
-	      nsignals * sizeof (void*)
-	      + sizeof (GObjectGetPropertyFunc)
-	      + sizeof (GObjectSetPropertyFunc)
-	      + sizeof (void*));
+          closure = g_signal_type_cclosure_new
+              (new_type, query.class_size + j * sizeof (void*)); /* offset */
 
-      virtual = (gpointer*) malloc (num_virtual_functions * sizeof (gpointer));
-      *((gpointer**)((char*)klass
-		     + query.class_size
-		     + nsignals * sizeof (void*))) = virtual;
+          /* id = */ g_signal_newv
+            (signals[j],                       /* signal_name */
+             new_type,                         /* itype */
+             G_SIGNAL_RUN_LAST,                /* signal_flags */
+             closure,                          /* class_closure */
+             NULL,                             /* accumulator */
+             NULL,                             /* accu_data */
+             g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
+               Ada level ??? This probably makes the widget unusable from C */
+             G_TYPE_NONE,                      /* return_type */
+             count,                            /* n_params */
+             parameters + j * max_parameters); /* param_types */
+        }
 
-      for (j = 0; j < num_virtual_functions; j++) {
-          virtual [j] = virtual_functions [j];
-      }
-    }
+        /* Initialize the function pointers for the new signals to NULL */
+        memset ((char*)(klass) + query.class_size, 0,
+ 	      nsignals * sizeof (void*)
+ 	      + sizeof (GObjectGetPropertyFunc)
+ 	      + sizeof (GObjectSetPropertyFunc)
+ 	      + sizeof (void*));
 
-  else {
+   } else {
+      // Since the class has already been created, this never calls _class_init
+      // but still increases the reference counting on the class.
       klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
-    }
+   }
 
-  ((GTypeInstance*)object)->g_class = (GTypeClass*) klass;
-
-  return klass;
+   ((GTypeInstance*)object)->g_class = (GTypeClass*) klass;
+   return klass;
 }
-
-void
-ada_widget_set_realize (GtkWidget *widget, void (* realize) (GtkWidget *))
-{
-  GTK_WIDGET_GET_CLASS (widget)->realize = realize;
-}
-
-void
-ada_widget_set_draw (GtkWidget *widget, gboolean (*draw) (GtkWidget *, cairo_t*))
-{
-  GTK_WIDGET_GET_CLASS (widget)->draw = draw;
-}
-
 
 void
 ada_gtk_widget_set_default_size_allocate_handler
@@ -705,54 +483,6 @@ ada_gnode_first_child (GNode * node)
 {
   return g_node_first_child (node);
 }
-
-/*
- *
- * radio_menu_item
- *
- */
-
-GtkWidget*
-ada_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
-{
-  GSList *l = NULL;
-  if (group)
-    l = gtk_radio_menu_item_get_group (group);
-  return gtk_radio_menu_item_new (l);
-}
-
-GtkWidget *
-ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
-						const gchar      *label)
-{
-  GSList *l = NULL;
-  if (group)
-    l = gtk_radio_menu_item_get_group (group);
-  return gtk_radio_menu_item_new_with_label (l, label);
-}
-
-/********************
- * GdkPoint
- ********************/
-
-guint
-ada_gdk_point_size ()
-{
-  return sizeof (GdkPoint);
-}
-
-/*
- *
- *  GdkCursor
- *
- */
-
-GdkCursor*
-ada_gdk_cursor_new (gint cursor_type)
-{
-  return gdk_cursor_new (cursor_type);
-}
-
 
 /**********************************************************
  **  Support for events
@@ -830,146 +560,6 @@ ada_gdk_event_get_keycode (GdkEvent * event)
   return keycode;
 }
 
-/*
- *
- * GtkStyle
- *
- */
-
-void
-ada_style_set_font_description (GtkStyle* style, PangoFontDescription* font)
-{
-  style->font_desc = font;
-}
-
-PangoFontDescription*
-ada_style_get_font_description (GtkStyle* style)
-{
-  return style->font_desc;
-}
-
-void
-ada_style_set_fg (GtkStyle* style, gint state, GdkColor* color)
-{
-  if (color != NULL)
-    style->fg[state] = *color;
-}
-
-GdkColor*
-ada_style_get_fg (GtkStyle* style, gint state)
-{
-  return style->fg + state;
-}
-
-void
-ada_style_set_bg (GtkStyle* style, gint state, GdkColor* color)
-{
-  if (color != NULL)
-    style->bg[state] = *color;
-}
-
-GdkColor*
-ada_style_get_bg (GtkStyle* style, gint state)
-{
-  return style->bg + state;
-}
-
-void
-ada_style_set_light (GtkStyle* style, gint state, GdkColor* color)
-{
-  style->light[state] = *color;
-}
-
-GdkColor*
-ada_style_get_light (GtkStyle* style, gint state)
-{
-  return style->light + state;
-}
-
-void
-ada_style_set_dark (GtkStyle* style, gint state, GdkColor* color)
-{
-  style->dark[state] = *color;
-}
-
-GdkColor*
-ada_style_get_dark (GtkStyle* style, gint state)
-{
-  return style->dark + state;
-}
-
-void
-ada_style_set_mid (GtkStyle* style, gint state, GdkColor* color)
-{
-  style->mid[state] = *color;
-}
-
-GdkColor*
-ada_style_get_mid (GtkStyle* style, gint state)
-{
-  return style->mid + state;
-}
-
-void
-ada_style_set_text (GtkStyle* style, gint state, GdkColor* color)
-{
-  style->text[state] = *color;
-}
-
-GdkColor*
-ada_style_get_text (GtkStyle* style, gint state)
-{
-  return style->text + state;
-}
-
-void
-ada_style_set_base (GtkStyle* style, gint state, GdkColor* color)
-{
-  style->base[state] = *color;
-}
-
-GdkColor*
-ada_style_get_base (GtkStyle* style, gint state)
-{
-  return style->base + state;
-}
-
-void
-ada_style_set_black (GtkStyle* style, GdkColor* color)
-{
-  style->black = *color;
-}
-
-GdkColor*
-ada_style_get_black (GtkStyle* style)
-{
-  return &style->black;
-}
-
-void
-ada_style_set_white (GtkStyle* style, GdkColor* color)
-{
-  style->white = *color;
-}
-
-GdkColor*
-ada_style_get_white (GtkStyle* style)
-{
-  return &style->white;
-}
-
-gint
-ada_style_get_x_thickness (GtkStyle* style)
-{
-  return style->xthickness;
-}
-
-gint
-ada_style_get_y_thickness (GtkStyle* style)
-{
-  return style->ythickness;
-}
-
 /***************************************************
  *  Functions for Objects
  ***************************************************/
@@ -1016,7 +606,7 @@ void
 ada_gvalue_set (GValue* value, void *val)
 {
   if G_VALUE_HOLDS_CHAR (value)
-    g_value_set_char (value, *(gchar*)val);
+    g_value_set_schar (value, *(gchar*)val);
   else if G_VALUE_HOLDS_UCHAR (value)
     g_value_set_uchar (value, *(guchar*)val);
   else if G_VALUE_HOLDS_BOOLEAN (value)
@@ -1037,216 +627,6 @@ ada_gvalue_set (GValue* value, void *val)
     g_value_set_pointer (value, *(gpointer*)val);
   else
     fprintf (stderr, "GtkAda: Return value type not supported\n");
-}
-
-/******************************************
- ** Functions for Text_Attributes
- ******************************************/
-
-PangoFontDescription*
-ada_text_attributes_get_font (GtkTextAttributes* text_attr)
-{
-  return text_attr->font;
-}
-
-void
-ada_text_attributes_set_font (GtkTextAttributes* text_attr,
-                              PangoFontDescription* font)
-{
-  g_return_if_fail (font != NULL);
-
-  /* Free the family name pointer if already allocated */
-  pango_font_description_free (text_attr->font);
-
-  /* set the font. Make sure to strdup the font->family_name field
-     to avoid dangling pointers. This memory will be deallocated
-     during the final unref */
-  text_attr->font = pango_font_description_copy (font);
-}
-
-GtkJustification
-ada_text_attribute_get_justification (GtkTextAttributes* text_attr) {
-  return text_attr->justification;
-}
-void ada_text_attribute_set_justification
-  (GtkTextAttributes* attr, GtkJustification justification) {
-  attr->justification = justification;
-}
-
-GtkTextDirection
-ada_text_attribute_get_direction (GtkTextAttributes* text_attr) {
-  return text_attr->direction;
-}
-void ada_text_attribute_set_direction
-  (GtkTextAttributes* attr, GtkTextDirection direction) {
-  attr->direction = direction;
-}
-
-gdouble
-ada_text_attribute_get_font_scale (GtkTextAttributes* text_attr) {
-  return text_attr->font_scale;
-}
-void ada_text_attribute_set_font_scale
-  (GtkTextAttributes* attr, gdouble scale) {
-  attr->font_scale = scale;
-}
-
-gint
-ada_text_attribute_get_left_margin (GtkTextAttributes* text_attr) {
-  return text_attr->left_margin;
-}
-void ada_text_attribute_set_left_margin
-  (GtkTextAttributes* attr, gint margin) {
-  attr->left_margin = margin;
-}
-
-gint
-ada_text_attribute_get_right_margin (GtkTextAttributes* text_attr) {
-  return text_attr->right_margin;
-}
-void ada_text_attribute_set_right_margin
-  (GtkTextAttributes* attr, gint margin) {
-  attr->right_margin = margin;
-}
-
-gint
-ada_text_attribute_get_indent (GtkTextAttributes* text_attr) {
-  return text_attr->indent;
-}
-void ada_text_attribute_set_indent
-  (GtkTextAttributes* attr, gint indent) {
-  attr->indent = indent;
-}
-
-gint
-ada_text_attribute_get_pixels_above_line (GtkTextAttributes* text_attr) {
-  return text_attr->pixels_above_lines;
-}
-void ada_text_attribute_set_pixels_above_line
-  (GtkTextAttributes* attr, gint above) {
-  attr->pixels_above_lines = above;
-}
-
-gint
-ada_text_attribute_get_pixels_below_line (GtkTextAttributes* text_attr) {
-  return text_attr->pixels_below_lines;
-}
-void ada_text_attribute_set_pixels_below_line
-  (GtkTextAttributes* attr, gint below) {
-  attr->pixels_below_lines = below;
-}
-
-gint
-ada_text_attribute_get_pixels_inside_wrap (GtkTextAttributes* text_attr) {
-  return text_attr->pixels_inside_wrap;
-}
-void ada_text_attribute_set_pixels_inside_wrap
-  (GtkTextAttributes* attr, gint inside) {
-  attr->pixels_inside_wrap = inside;
-}
-
-GtkWrapMode
-ada_text_attribute_get_wrap_mode (GtkTextAttributes* text_attr) {
-  return text_attr->wrap_mode;
-}
-void ada_text_attribute_set_wrap_mode
-  (GtkTextAttributes* attr, GtkWrapMode mode) {
-  attr->wrap_mode = mode;
-}
-
-guint
-ada_text_attribute_get_invisible (GtkTextAttributes* text_attr) {
-  return text_attr->invisible;
-}
-void ada_text_attribute_set_invisible
-  (GtkTextAttributes* attr, guint invisible) {
-  attr->invisible = invisible;
-}
-
-guint
-ada_text_attribute_get_bg_full_height (GtkTextAttributes* text_attr) {
-  return text_attr->bg_full_height;
-}
-void ada_text_attribute_set_bg_full_height
-  (GtkTextAttributes* attr, guint full) {
-  attr->bg_full_height = full;
-}
-
-guint
-ada_text_attribute_get_editable (GtkTextAttributes* text_attr) {
-  return text_attr->editable;
-}
-void ada_text_attribute_set_editable
-  (GtkTextAttributes* attr, guint editable) {
-  attr->editable = editable;
-}
-
-PangoTabArray*
-ada_text_attribute_get_tabs (GtkTextAttributes* text_attr) {
-  return text_attr->tabs;
-}
-void ada_text_attribute_set_tabs
-  (GtkTextAttributes* attr, PangoTabArray* tabs) {
-  attr->tabs = tabs;
-}
-
-gint
-ada_text_appearance_get_rise (GtkTextAppearance* app) {
-  return app->rise;
-}
-void ada_text_appearance_set_rise (GtkTextAppearance* app, gint rise) {
-  app->rise = rise;
-}
-
-guint
-ada_text_appearance_get_underline (GtkTextAppearance* app) {
-  return app->underline;
-}
-void ada_text_appearance_set_underline (GtkTextAppearance* app, guint under) {
-  app->underline = under;
-}
-
-guint
-ada_text_appearance_get_strikethrough (GtkTextAppearance* app) {
-  return app->strikethrough;
-}
-void ada_text_appearance_set_strikethrough (GtkTextAppearance* app, guint s) {
-  app->strikethrough = s;
-}
-
-GdkColor
-ada_text_appearance_get_fg_color (GtkTextAppearance* app) {
-  return app->fg_color;
-}
-void ada_text_appearance_set_fg_color
-  (GtkTextAppearance* app, GdkColor color) {
-  app->fg_color = color;
-}
-
-GdkColor
-ada_text_appearance_get_bg_color (GtkTextAppearance* app) {
-  return app->bg_color;
-}
-void ada_text_appearance_set_bg_color
-  (GtkTextAppearance* app, GdkColor color) {
-  app->bg_color = color;
-}
-
-/******************************************
- ** Functions for Text_Iter
- ******************************************/
-
-void
-ada_text_iter_copy (const GtkTextIter *source,
-                    GtkTextIter *dest)
-{
-  *dest = *source;
-}
-
-int
-ada_c_gtk_text_iter_size ()
-{
-  return sizeof (GtkTextIter);
 }
 
 /**********************************************
@@ -1997,12 +1377,6 @@ ada_genum_create_enum_value
  ******************************************/
 
 GType
-ada_g_object_get_type (GObject* object)
-{
-  return G_OBJECT_TYPE (object);
-}
-
-GType
 ada_gtype_fundamental (GType type)
 {
   return G_TYPE_FUNDAMENTAL (type);
@@ -2013,44 +1387,6 @@ ada_g_type_is_interface (GType type)
 {
   return G_TYPE_IS_INTERFACE (type);
 }
-
-/******************************************
- ** Mouse handling                       **
- ******************************************/
-
-#ifdef _WIN32
-
-#include <windows.h>
-#include <gdk/gdkwin32.h>
-
-void *
-ada_gdk_get_window_id (GdkWindow *w)
-{
-  return (void *)GDK_WINDOW_HWND (w);
-}
-
-#elif defined (__APPLE__)
-/*  Disable this function under Apple, since under Tiger the call to
-    XWarpPointer requires explicit linker flags pointing to X11 libs,
-    and when using Quartz, there is no X11 lib at all.
-*/
-
-void *
-ada_gdk_get_window_id (GdkWindow *w)
-{
-  return NULL;
-}
-
-#else
-#include <gdk/gdkx.h>
-
-void *
-ada_gdk_get_window_id (GdkWindow *w)
-{
-  return (void *) GDK_WINDOW_XID (w);
-}
-
-#endif
 
 /******************************************
  ** Handling of tree Freeze/Thaw         **
@@ -2117,28 +1453,6 @@ ada_g_source_get_user_data (GSource* source)
   return ((struct CustomGSource*)source)->user_data;
 }
 
-/********************************************************
- ** Gtk_Selection
-********************************************************/
-
-int
-ada_string_array_length (gchar** uris)
-{
-  int count = 0;
-  gchar** tmp = uris;
-  while (*tmp) {
-    tmp++;
-    count++;
-  }
-  return count;
-}
-
-gchar*
-ada_string_array_get (gchar** uris, int index)
-{
-  return uris[index];
-}
-
 /***********************************************************
  ** Gtk_Text_Buffer
 ***********************************************************/
@@ -2155,66 +1469,10 @@ ada_gtk_text_buffer_insert_with_tags
     (buffer, iter, text, len, tag, NULL);
 }
 
-void
-ada_gtk_text_buffer_insert_with_tags_by_name
- (GtkTextBuffer *buffer,
-  GtkTextIter   *iter,
-  const gchar   *text,
-  gint           len,
-  const gchar   *name)
-{
-  gtk_text_buffer_insert_with_tags_by_name
-    (buffer, iter, text, len, name, NULL);
-}
-
 GtkTextTag*
 ada_gtk_text_buffer_create_tag (GtkTextBuffer* buffer, const gchar* name)
 {
    return gtk_text_buffer_create_tag (buffer, name, NULL);
-}
-
-/***********************************************************
- ** Gtk_File_Filter
-***********************************************************/
-
-const gchar*
-ada_file_filter_info_get_filename (GtkFileFilterInfo* info)
-{
-  if (info->contains & GTK_FILE_FILTER_FILENAME) {
-    return info->filename;
-  } else {
-    return NULL;
-  }
-}
-
-const gchar*
-ada_file_filter_info_get_uri (GtkFileFilterInfo* info)
-{
-  if (info->contains & GTK_FILE_FILTER_URI) {
-    return info->uri;
-  } else {
-    return NULL;
-  }
-}
-
-const gchar*
-ada_file_filter_info_get_display_name (GtkFileFilterInfo* info)
-{
-  if (info->contains & GTK_FILE_FILTER_DISPLAY_NAME) {
-    return info->display_name;
-  } else {
-    return NULL;
-  }
-}
-
-const gchar*
-ada_file_filter_info_get_mime_type (GtkFileFilterInfo* info)
-{
-  if (info->contains & GTK_FILE_FILTER_MIME_TYPE) {
-    return info->mime_type;
-  } else {
-    return NULL;
-  }
 }
 
 /***********************************************************
