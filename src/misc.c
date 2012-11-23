@@ -307,7 +307,7 @@ ada_type_from_class (GObjectClass* klass)
   return G_TYPE_FROM_CLASS (klass);
 }
 
-void
+int
 ada_initialize_class_record
   (GObject*      object,
    gint          nsignals,
@@ -409,7 +409,6 @@ ada_initialize_class_record
         klass->parent_class = g_type_class_peek_parent (klass->klass);
         ((GTypeInstance*)object)->g_class = (GTypeClass*) klass->klass;
         g_once_init_leave (&klass->type, new_type); // sets klass->type
-
         return 1;
    } else {
       // Since the class has already been created, this never calls _class_init

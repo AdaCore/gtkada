@@ -145,9 +145,16 @@ package Gdk.Window_Attr is
    procedure Set_Override_Redirect
      (Window_Attr       : Gdk_Window_Attr;
       Override_Redirect : Boolean);
-
    function Get_Override_Redirect
      (Window_Attr : Gdk_Window_Attr) return Boolean;
+   --  An override redirect window is not under the control of the window
+   --  manager. This means it won't have a titlebar, won't be minimizable, etc.
+   --  It will be entirely under the control of the application. The window
+   --  manager can't see the override redirect window at all.
+   --
+   --  Override redirect should only be used for short-lived temporary windows,
+   --  such as popup menus. #GtkMenu uses an override redirect window in its
+   --  implementation, for example
 
 private
    Null_Window_Attr : constant Gdk_Window_Attr := null;

@@ -4644,7 +4644,8 @@ package body Gtkada.MDI is
       --  If Name is "", the first perspective is loaded.
 
       procedure Compute_Size_From_Attributes
-        (Node                        : Node_Ptr;
+        (MDI                         : access MDI_Window_Record'Class;
+         Node                        : Node_Ptr;
          Parent_Width, Parent_Height : Gint;
          Parent_Orientation          : Gtk_Orientation;
          Width, Height               : out Gint;
@@ -4967,7 +4968,8 @@ package body Gtkada.MDI is
       ----------------------------------
 
       procedure Compute_Size_From_Attributes
-        (Node                        : Node_Ptr;
+        (MDI                         : access MDI_Window_Record'Class;
+         Node                        : Node_Ptr;
          Parent_Width, Parent_Height : Gint;
          Parent_Orientation          : Gtk_Orientation;
          Width, Height               : out Gint;
@@ -4976,6 +4978,7 @@ package body Gtkada.MDI is
          WAttr : constant String := Get_Attribute (Node, "width", "100%");
          HAttr : constant String := Get_Attribute (Node, "height", "100%");
          Tmp   : Gint;
+         Handle_Size : constant Gint := MDI.Handle_Size;
       begin
          --  For backward compatibility, we accept absolute sizes in the XML
          --  nodes, but that might lead to inconsistencies (and incorrect
@@ -4994,7 +4997,7 @@ package body Gtkada.MDI is
 
                if WAttr (WAttr'Last) = '%' then
                   Tmp :=
-                    Parent_Width - Gint (Children_Count - 1) * Handle_Width;
+                    Parent_Width - Gint (Children_Count - 1) * Handle_Size;
                   Width  := Gint
                     (Float'Value (WAttr (WAttr'First .. WAttr'Last - 1))
                      * Float (Tmp) / 100.0);
@@ -5007,7 +5010,7 @@ package body Gtkada.MDI is
 
                if HAttr (HAttr'Last) = '%' then
                   Tmp :=
-                    Parent_Height - Gint (Children_Count - 1) * Handle_Width;
+                    Parent_Height - Gint (Children_Count - 1) * Handle_Size;
                   Height := Gint
                     (Float'Value (HAttr (HAttr'First .. HAttr'Last - 1))
                      * Float (Tmp) / 100.0);
@@ -5058,7 +5061,7 @@ package body Gtkada.MDI is
          Indent_Debug (1);
 
          Compute_Size_From_Attributes
-           (Child_Node, Parent_Width, Parent_Height, Parent_Orientation,
+           (MDI, Child_Node, Parent_Width, Parent_Height, Parent_Orientation,
             Width, Height, Children_Count => 1);
 
          Pos    := Gtk_Position_Type'Value
@@ -5399,7 +5402,7 @@ package body Gtkada.MDI is
 
       begin
          Compute_Size_From_Attributes
-           (Node, Parent_Width, Parent_Height, Parent_Orientation,
+           (MDI, Node, Parent_Width, Parent_Height, Parent_Orientation,
             Width_For_Children, Height_For_Children, Count);
 
          if Traces then
@@ -5438,7 +5441,8 @@ package body Gtkada.MDI is
                  and then Notebook_Node.Tag.all = "Pane"
                loop
                   Compute_Size_From_Attributes
-                    (Notebook_Node,
+                    (MDI,
+                     Notebook_Node,
                      Parent_Width       => Tmp_Width,
                      Parent_Height      => Tmp_Height,
                      Parent_Orientation => Tmp_Orientation,
@@ -5482,7 +5486,8 @@ package body Gtkada.MDI is
                   else
                      W      := Gtk_Widget (MDI.Central);
                      Compute_Size_From_Attributes
-                       (Notebook_Node,
+                       (MDI,
+                        Notebook_Node,
                         Parent_Width       => Tmp_Width,
                         Parent_Height      => Tmp_Height,
                         Parent_Orientation => Tmp_Orientation,

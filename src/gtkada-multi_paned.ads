@@ -29,7 +29,6 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
-with Cairo;         use Cairo;
 with Gdk;
 with Glib;          use Glib;
 with Gtk.Enums;
@@ -40,11 +39,6 @@ package Gtkada.Multi_Paned is
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record
      with private;
    type Gtkada_Multi_Paned is access all Gtkada_Multi_Paned_Record'Class;
-
-   Handle_Width : constant := 6;
-   --  Width, in pixels, of the resizing handles.
-   --  ??? Should be read from theme with
-   --     gtk_widget_style_get (gtk_paned, "handle_size", &handle_size, NULL)
 
    type Pane is private;
    --  An area of the window, which can is splitted either horizontally or
@@ -66,6 +60,10 @@ package Gtkada.Multi_Paned is
    procedure Gtk_New (Win : out Gtkada_Multi_Paned);
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class);
    --  Create a new paned window.
+
+   function Handle_Size
+     (Win : access Gtkada_Multi_Paned_Record'Class) return Gint;
+   --  returns the size of the handle
 
    procedure Set_Opaque_Resizing
      (Win : access Gtkada_Multi_Paned_Record; Opaque : Boolean);
@@ -260,25 +258,30 @@ private
    Root_Pane : constant Pane := null;
 
    type Child_Iterator is record
+      Split   : Gtkada_Multi_Paned;
       Current : Child_Description_Access;
       Depth   : Natural := 0;
    end record;
 
-   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
-      Frozen      : Boolean := False;
-      Children    : Child_Description_Access;
+   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with
+      record
+         Frozen      : Boolean := False;
+         Children    : Child_Description_Access;
 
-      Initial_Pos  : Gint;
-      Selected     : Child_Description_Access;
-      Selected_Pos : Gtk.Widget.Gtk_Allocation;
+         Initial_Pos  : Gint;
+         Selected     : Child_Description_Access;
+         Selected_Pos : Gtk.Widget.Gtk_Allocation;
 
-      Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
-      --  A surface used during a resize operation
+         Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
+         Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
 
-      Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
-      Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
+         Opaque_Resizing        : Boolean := False;
 
-      Opaque_Resizing        : Boolean := False;
-   end record;
+         Handle_Width : Gint := 6;
+         --  Width, in pixels, of the resizing handles.
+         --  ??? Should be read from theme with
+         --     gtk_widget_style_get
+         --        (gtk_paned, "handle_size", &handle_size, NULL)
+      end record;
 
 end Gtkada.Multi_Paned;
