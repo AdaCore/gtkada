@@ -1190,6 +1190,12 @@ package body Gtkada.Multi_Paned is
          if Split.Overlay /= Null_Surface then
             Surface_Destroy (Split.Overlay);
             Split.Overlay := Null_Surface;
+
+            --  Force a redraw
+            Invalidate_Rect
+              (Split.Get_Window,
+               (0, 0, Get_Allocated_Width (Split),
+                Get_Allocated_Height (Split)), True);
          end if;
 
          Split.Selected := null;
@@ -1396,9 +1402,6 @@ package body Gtkada.Multi_Paned is
       if not Split.Get_Realized
         or not Current.Visible
       then
-         if Current.Handle.Win /= null then
-            Gdk.Window.Hide (Current.Handle.Win);
-         end if;
          return;
       end if;
 
@@ -1421,9 +1424,9 @@ package body Gtkada.Multi_Paned is
          Set_User_Data (Current.Handle.Win, Split);
          Destroy (Window_Attr);
          Set_Handle_Cursor (Split, Current);
+         Gdk.Window.Show (Current.Handle.Win);
       end if;
 
-      Gdk.Window.Show (Current.Handle.Win);
       Gdk.Window.Move_Resize
         (Current.Handle.Win,
          X      => Current.Handle.Position.X,
