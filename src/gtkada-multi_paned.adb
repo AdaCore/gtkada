@@ -1249,6 +1249,8 @@ package body Gtkada.Multi_Paned is
                when Orientation_Vertical =>
                   Split.Selected.Handle.Position.Y := New_Y;
             end case;
+            Split.Selected_Pos.X := New_X;
+            Split.Selected_Pos.Y := New_Y;
 
             Resize_Child_And_Siblings
               (Split.Selected.Parent, Split.Selected, Split.Handle_Width);
