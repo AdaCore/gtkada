@@ -29,6 +29,7 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
+with Cairo;
 with Gdk;
 with Glib;          use Glib;
 with Gtk.Enums;
@@ -276,6 +277,8 @@ private
          Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
 
          Opaque_Resizing        : Boolean := False;
+
+         Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
 
          Handle_Width : Gint := 6;
          --  Width, in pixels, of the resizing handles.
