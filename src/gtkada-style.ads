@@ -189,4 +189,35 @@ package Gtkada.Style is
    --      Get_Allocation (Widget, Alloc);
    --      --  and replace 0.0 with Gdouble (Alloc.X)
 
+   procedure Draw_Overlay
+     (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Overlay : in out Cairo.Cairo_Surface;
+      Do_Draw : not null access procedure
+        (Context : Cairo.Cairo_Context;
+         Draw    : Boolean));
+   --  Create an overlay on top of widget on which you can draw.
+   --  This overlay is created if it doesn't exist (so Overlay must be
+   --  initialied to Null_Surface initially). It is displayed on top of the
+   --  toplevel window that contains Widget, and will be fully visible until
+   --  some of the children of that toplevel window get a "draw" event. At that
+   --  point, the children will partially override the overlay. This is not a
+   --  problem in practice if the overlay is displayed while performing
+   --  operations like a drag-and-drop.
+   --  Do_Draw is the callback used to do the actual drawing or erasing of the
+   --  overlay (depending on whether Draw is True or False). The context passed
+   --  in argument has been properly translated and clipped so that (0, 0) are
+   --  the coordinates of the top-left corner of widget.
+   --
+   --  When Draw is False, the procedure should display a filled rectangle. The
+   --  context has already been set up so that filling will in fact redraw what
+   --  was previously hidden. This is more efficient that having Draw_Overlay
+   --  systematically fill the whole area.
+
+
+   procedure Delete_Overlay
+     (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Overlay : in out Cairo.Cairo_Surface);
+   --  Delete the overlay created by Draw_Overlay, and force a refresh of the
+   --  toplevel window.
+
 end Gtkada.Style;

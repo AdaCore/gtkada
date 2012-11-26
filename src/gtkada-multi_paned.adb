@@ -46,6 +46,7 @@ with Gtk.Style_Context;    use Gtk.Style_Context;
 with Gtk.Widget;           use Gtk.Widget;
 
 with Gtkada.Handlers;      use Gtkada.Handlers;
+with Gtkada.Style;
 
 with Cairo;                use Cairo;
 
@@ -98,8 +99,7 @@ package body Gtkada.Multi_Paned is
 
    procedure Draw_Resize_Line
      (Split : access Gtkada_Multi_Paned_Record'Class;
-      New_X, New_Y : Gint;
-      Hide_Previous : Boolean := True);
+      New_X, New_Y : Gint);
    --  Draws the temporary resize line during a non-opaque resize operation.
 
    procedure Size_Allocate_Paned
@@ -810,123 +810,41 @@ package body Gtkada.Multi_Paned is
 
    procedure Draw_Resize_Line
      (Split : access Gtkada_Multi_Paned_Record'Class;
-      New_X, New_Y : Gint;
-      Hide_Previous : Boolean := True)
+      New_X, New_Y : Gint)
    is
-      Toplevel : constant Gtk_Widget := Split.Get_Toplevel;
-      Alloc    : Gtk_Allocation;
-      X, Y     : Gint := 0;  --  location of Split relative to Toplevel
-      Wx, Wy   : Gint;
-      Top_Win  : constant Gdk_Window := Toplevel.Get_Window;
-      Win      : Gdk_Window := Split.Get_Window;
-
-   begin
-      --  This loop is the same as done by Transform_To_Window, but we need
-      --  access to the X and Y coordinates directly.
-
-      while Win /= null and then Win /= Top_Win loop
-         Get_Position (Win, Wx, Wy);
-         X := X + Wx;
-         Y := Y + Wy;
-         Win := Get_Parent (Win);
-      end loop;
-
-      --  Save the display of the toplevel window, so that we can easily
-      --  erase the resize handle later. We cannot capture Split only,
-      --  because that would not include a background color if Split does
-      --  not have a window.
-      --  ??? Apparently, we need to redraw once, we can't simply capture
-      --  the screen. There might be a way using:
-      --     pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 9, w, h)
-      --     shot = pixbuf.get_from_drawable(win.window, win.get_colormap(),
-      --                  0, 0, 0, 0, w, h)
-
-      if Split.Overlay = Null_Surface then
-         declare
-            Cr2 : Cairo_Context;
-         begin
-            Split.Overlay := Gdk.Window.Create_Similar_Surface
-              (Self    => Get_Window (Toplevel),
-               Content => Cairo_Content_Color,
-               Width   => Get_Allocated_Width (Toplevel),
-               Height  => Get_Allocated_Height (Toplevel));
-            Cr2 := Create (Split.Overlay);
-
-            --  ??? Optimization: we could translate and clip Cr2, so that
-            --  only the part of Toplevel corresponding to Split is actually
-            --  stored in Split.Overlay.
---              Cairo.Rectangle
---                (Cr2,
---                 Gdouble (X - 5), Gdouble (Y - 5),
---                 Gdouble (Get_Allocated_Width (Split) + 10),
---                 Gdouble (Get_Allocated_Height (Split) + 10));
---              Cairo.Clip (Cr2);
-
-            Draw (Toplevel, Cr2);
-            Destroy (Cr2);
-         end;
-      end if;
-
-      declare
-         --  The call to Gdk.Cairo.Create returns a new cairo_context which
-         --  is clipped. Drawing on it would in fact show nothing below the
-         --  child windows. One way to create a usable context would be to
-         --  use:
-         --      Surf : constant Cairo_Surface := Cairo.Get_Target (Cr);
-         --      Cr3  : constant Cairo_Context := Create (Surf);
-         --  But in fact it seems we can safely call Reset_Clip instead on
-         --  the context.
-
-         Cr      : constant Cairo_Context :=
-           Gdk.Cairo.Create (Toplevel.Get_Window);
-         HS      : constant Gint := Split.Handle_Width;
+      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean);
+      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean) is
+         HS    : constant Gint := Split.Handle_Width;
       begin
-         Reset_Clip (Cr);  --  draw on top of child windows
-
-         if Hide_Previous then
-            Cairo.Save (Cr);
-
-            --  Position is x_dest - x_src, y_dest - y_src
-            --     Where x_dest is the location at which we are drawing
-            --     within the target cairo_context, i.e. X + Handle_X
-            --     and x_src is the location within the overlay from which
-            --     we are copying, ie X + Handle_X
-            Set_Source_Surface (Cr, Split.Overlay, 0.0, 0.0);
-
-            Get_Allocation (Split, Alloc);
-            Set_Operator (Cr, Cairo_Operator_Source);
-
+         if not Draw then
             --  To compensate for the line width used to draw the handle, we
             --  need to clear a rectangle.
             Cairo.Rectangle
               (Cr,
-               Gdouble (X + Split.Selected_Pos.X - HS / 2),
-               Gdouble (Y + Split.Selected_Pos.Y - HS / 2),
-               Gdouble (Alloc.Width + HS),
-               Gdouble (Alloc.Height + HS));
-
+               Gdouble (Split.Selected_Pos.X - HS / 2),
+               Gdouble (Split.Selected_Pos.Y - HS / 2),
+               Gdouble (Split.Selected_Pos.Width + HS),
+               Gdouble (Split.Selected_Pos.Height + HS));
             Cairo.Fill (Cr);
-            Cairo.Restore (Cr);
+         else
+            Split.Selected_Pos.X := New_X;
+            Split.Selected_Pos.Y := New_Y;
+            Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.5));
+            Set_Line_Width (Cr, Gdouble (HS));
+            Move_To (Cr, Gdouble (New_X), Gdouble (New_Y));
+            Rel_Line_To
+              (Cr,
+               Gdouble (Split.Selected_Pos.Width),
+               Gdouble (Split.Selected_Pos.Height));
+            Stroke (Cr);
          end if;
+      end Do_Draw;
 
-         --  Now draw the handle over the toplevel window
-
-         Split.Selected_Pos.X := New_X;
-         Split.Selected_Pos.Y := New_Y;
-
-         Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.5));
-         Set_Line_Width (Cr, Gdouble (Split.Handle_Width));
-         Move_To
-           (Cr,
-            Gdouble (X + Split.Selected_Pos.X),
-            Gdouble (Y + Split.Selected_Pos.Y));
-         Rel_Line_To
-           (Cr,
-            Gdouble (Split.Selected_Pos.Width),
-            Gdouble (Split.Selected_Pos.Height));
-         Stroke (Cr);
-         Cairo.Destroy (Cr);
-      end;
+   begin
+      Gtkada.Style.Draw_Overlay
+        (Widget  => Split,
+         Overlay => Split.Overlay,
+         Do_Draw => Do_Draw'Access);
    end Draw_Resize_Line;
 
    --------------------
@@ -1016,9 +934,7 @@ package body Gtkada.Multi_Paned is
          Time   => 0);
 
       if not Split.Opaque_Resizing then
-         Draw_Resize_Line
-           (Split, Split.Selected_Pos.X, Split.Selected_Pos.Y,
-            Hide_Previous => False);
+         Draw_Resize_Line (Split, Split.Selected_Pos.X, Split.Selected_Pos.Y);
       end if;
 
       return False;
@@ -1190,17 +1106,7 @@ package body Gtkada.Multi_Paned is
             Dump (Split, Split.Children);
          end if;
 
-         if Split.Overlay /= Null_Surface then
-            Surface_Destroy (Split.Overlay);
-            Split.Overlay := Null_Surface;
-
-            --  Force a redraw
-            Invalidate_Rect
-              (Split.Get_Window,
-               (0, 0, Get_Allocated_Width (Split),
-                Get_Allocated_Height (Split)), True);
-         end if;
-
+         Gtkada.Style.Delete_Overlay (Split, Split.Overlay);
          Split.Selected := null;
       end if;
 

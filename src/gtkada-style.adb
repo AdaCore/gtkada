@@ -32,7 +32,7 @@ with Gdk.Cairo;    use Gdk.Cairo;
 with Gdk.Display;  use Gdk.Display;
 with Gdk.RGBA;     use Gdk.RGBA;
 with Gdk.Screen;   use Gdk.Screen;
-with Gdk.Window;
+with Gdk.Window;   use Gdk;
 
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Style_Context; use Gtk.Style_Context;
@@ -534,5 +534,130 @@ package body Gtkada.Style is
 
       Unref (Css);
    end Load_Css_File;
+
+   ------------------
+   -- Draw_Overlay --
+   ------------------
+
+   procedure Draw_Overlay
+     (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Overlay : in out Cairo.Cairo_Surface;
+      Do_Draw : not null access procedure
+        (Context : Cairo.Cairo_Context;
+         Draw    : Boolean))
+   is
+      Toplevel : constant Gtk_Widget := Widget.Get_Toplevel;
+      X, Y     : Gint := 0;  --  location of Split relative to Toplevel
+      Wx, Wy   : Gint;
+      Top_Win  : constant Gdk_Window := Toplevel.Get_Window;
+      Win      : Gdk_Window := Widget.Get_Window;
+      Hide_Previous : Boolean := True;
+
+   begin
+      --  This loop is the same as done by Transform_To_Window, but we need
+      --  access to the X and Y coordinates directly.
+
+      while Win /= null and then Win /= Top_Win loop
+         Gdk.Window.Get_Position (Win, Wx, Wy);
+         X := X + Wx;
+         Y := Y + Wy;
+         Win := Gdk.Window.Get_Parent (Win);
+      end loop;
+
+      --  Save the display of the toplevel window, so that we can easily
+      --  erase the resize handle later. We cannot capture Split only,
+      --  because that would not include a background color if Split does
+      --  not have a window.
+      --  ??? Apparently, we need to redraw once, we can't simply capture
+      --  the screen. There might be a way using:
+      --     pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 9, w, h)
+      --     shot = pixbuf.get_from_drawable(win.window, win.get_colormap(),
+      --                  0, 0, 0, 0, w, h)
+
+      if Overlay = Null_Surface then
+         declare
+            Cr2 : Cairo_Context;
+         begin
+            Overlay := Gdk.Window.Create_Similar_Surface
+              (Self    => Top_Win,
+               Content => Cairo_Content_Color,
+               Width   => Toplevel.Get_Allocated_Width,
+               Height  => Toplevel.Get_Allocated_Height);
+            Cr2 := Create (Overlay);
+
+            --  ??? Optimization: we could translate and clip Cr2, so that
+            --  only the part of Toplevel corresponding to Split is actually
+            --  stored in Split.Overlay.
+--              Cairo.Rectangle
+--                (Cr2,
+--                 Gdouble (X - 5), Gdouble (Y - 5),
+--                 Gdouble (Get_Allocated_Width (Split) + 10),
+--                 Gdouble (Get_Allocated_Height (Split) + 10));
+--              Cairo.Clip (Cr2);
+
+            Draw (Toplevel, Cr2);
+            Destroy (Cr2);
+
+            Hide_Previous := False;
+         end;
+      end if;
+
+      declare
+         --  The call to Gdk.Cairo.Create returns a new cairo_context which
+         --  is clipped. Drawing on it would in fact show nothing below the
+         --  child windows. One way to create a usable context would be to
+         --  use:
+         --      Surf : constant Cairo_Surface := Cairo.Get_Target (Cr);
+         --      Cr3  : constant Cairo_Context := Create (Surf);
+         --  But in fact it seems we can safely call Reset_Clip instead on
+         --  the context.
+
+         Cr      : constant Cairo_Context := Gdk.Cairo.Create (Top_Win);
+      begin
+         Reset_Clip (Cr);  --  draw on top of child windows
+         Translate (Cr, Gdouble (X), Gdouble (Y));
+
+         if Hide_Previous then
+            Cairo.Save (Cr);
+
+            --  Position is x_dest - x_src, y_dest - y_src
+            --     Where x_dest is the location at which we are drawing
+            --     within the target cairo_context, i.e. X + Handle_X
+            --     and x_src is the location within the overlay from which
+            --     we are copying, ie X + Handle_X
+            --  However, this position does not take into account the
+            --  translation of the context, so we have to compensate.
+            Set_Source_Surface (Cr, Overlay, -Gdouble (X), -Gdouble (Y));
+
+            Set_Operator (Cr, Cairo_Operator_Source);
+            Do_Draw (Cr, Draw => False);
+            Cairo.Restore (Cr);
+         end if;
+
+         Do_Draw (Cr, Draw => True);
+         Cairo.Destroy (Cr);
+      end;
+   end Draw_Overlay;
+
+   --------------------
+   -- Delete_Overlay --
+   --------------------
+
+   procedure Delete_Overlay
+     (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Overlay : in out Cairo.Cairo_Surface)
+   is
+   begin
+      if Overlay /= Null_Surface then
+         Surface_Destroy (Overlay);
+         Overlay := Null_Surface;
+
+         --  Force a redraw
+         Gdk.Window.Invalidate_Rect
+           (Widget.Get_Window,
+            (0, 0, Widget.Get_Allocated_Width,
+             Widget.Get_Allocated_Height), True);
+      end if;
+   end Delete_Overlay;
 
 end Gtkada.Style;
