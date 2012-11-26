@@ -289,13 +289,16 @@ package body Gtkada.MDI is
      (MDI       : access MDI_Window_Record'Class;
       Parent    : out Gtk_Widget;
       Position  : out Child_Position;
+      Parent_Rectangle : out Gdk_Rectangle;
       Rectangle : out Gdk_Rectangle);
    --  Return the widget that is the current target for dnd
    --  Position indicated where in the parent the child would be dropped:
    --    Position_Bottom .. Position_Right: To one of the sides
    --    Position_Automatic:                In the center
    --  Rectangle are the coordinates of the target rectangle, relative to the
-   --  top-left corner of the MDI.
+   --  top-left corner of the MDI. Parent_Rectangle is the area of the
+   --  notebook on top of which the pointer is (so Rectangle is a subrectangle
+   --  of it).
 
    procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class);
    --  Draw the DND rectangle
@@ -1838,6 +1841,7 @@ package body Gtkada.MDI is
       Note                 : Gtk_Notebook;
       Position             : Child_Position;
       Pane                 : Gtkada_Multi_Paned;
+      Parent_Rect          : Gdk_Rectangle;
    begin
       Print_Debug
         ("Button release, drag=" & Drag_Status'Image (C.MDI.In_Drag));
@@ -1861,7 +1865,8 @@ package body Gtkada.MDI is
 
             Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
 
-            Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
+            Get_Dnd_Target (C.MDI, Current, Position,
+                            Parent_Rect, C.MDI.Dnd_Rectangle);
 
             if Current = null then --  outside of the main window ?
                Pane := null;
@@ -5519,13 +5524,13 @@ package body Gtkada.MDI is
 
          Print_Debug ("Restore_Desktop");
          Print_Debug ("Current MDI size is"
-                      & Gint'Image (Get_Allocated_Width (MDI))
-                      & "x" & Gint'Image (Get_Allocated_Height (MDI)));
+                      & Gint'Image (MDI.Get_Allocated_Width)
+                      & "x" & Gint'Image (MDI.Get_Allocated_Height));
          Print_Debug
            ("Current window size is"
-            & Gint'Image (Get_Allocated_Width (Get_Toplevel (MDI)))
+            & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width)
             & "x"
-            & Gint'Image (Get_Allocated_Height (Get_Toplevel (MDI))));
+            & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
 
          --  We must restore the size of the main window first, so that the
          --  rest of the desktop makes sense.
@@ -5582,7 +5587,7 @@ package body Gtkada.MDI is
                   & Gint'Image (MDI_Width) & "x" & Gint'Image (MDI_Height));
 
                Set_Default_Size
-                 (Gtk_Window (Get_Toplevel (MDI)), MDI_Width, MDI_Height);
+                 (Gtk_Window (MDI.Get_Toplevel), MDI_Width, MDI_Height);
             end if;
          exception
             when others =>
@@ -5736,11 +5741,6 @@ package body Gtkada.MDI is
          Perspectives : out Glib.Xml_Int.Node_Ptr;
          Central      : out Glib.Xml_Int.Node_Ptr)
       is
-         MDI_Width  : constant Gint :=
-                        Get_Allocated_Width (Get_Toplevel (MDI));
-         MDI_Height : constant Gint :=
-                        Get_Allocated_Height (Get_Toplevel (MDI));
-
          Item             : Widget_List.Glist;
          Child_Node       : Node_Ptr;
          Child            : MDI_Child;
@@ -6103,26 +6103,26 @@ package body Gtkada.MDI is
                State := Get_State (Get_Window (Win));
                if (State and Window_State_Maximized) = 0 then
                   Set_Attribute
-                    (MDI.Perspectives, "width", Gint'Image (MDI_Width));
+                    (MDI.Perspectives, "width",
+                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width));
                   Set_Attribute
-                    (MDI.Perspectives, "height", Gint'Image (MDI_Height));
+                    (MDI.Perspectives, "height",
+                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
                end if;
 
+               --  We are only interested in whether the window is maximized
                Set_Attribute
                  (MDI.Perspectives, "state",
                   Gdk_Window_State'Image
-                  (State
-                   and (not Window_State_Below)
-                   and (not Window_State_Above)
-                   and (not Window_State_Focused)));
+                  (State and Window_State_Maximized));
                Set_Attribute
                  (Central, "perspective", Current_Perspective (MDI));
             end if;
          end;
 
          Print_Debug ("Save_Desktop: window size reported as"
-                      & Gint'Image (MDI_Width) & "x"
-                      & Gint'Image (MDI_Height));
+                      & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width) & "x"
+                      & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
 
          Print_Debug ("Save_Desktop: saving the perspective");
          Save_Paned (MDI, MDI.Current_Perspective, In_Central => False);
@@ -6765,6 +6765,7 @@ package body Gtkada.MDI is
       Current    : Gtk_Widget;
       Position   : Child_Position;
       New_Pos    : Gdk_Rectangle;
+      Parent_Rect : Gdk_Rectangle;
       Message    : Unbounded_String;
       In_Central : Boolean;
       C3         : MDI_Child;
@@ -6797,6 +6798,17 @@ package body Gtkada.MDI is
             end if;
 
             Color := Base_Color;
+
+            Color.Alpha := 0.2;
+            Set_Source_RGBA (Cr, Color);
+            Cairo.Rectangle
+              (Cr,
+               Gdouble (Parent_Rect.X),
+               Gdouble (Parent_Rect.Y),
+               Gdouble (Parent_Rect.Width),
+               Gdouble (Parent_Rect.Height));
+            Cairo.Fill (Cr);
+
             Color.Alpha := 0.6;
             Set_Source_RGBA (Cr, Color);
 
@@ -6831,6 +6843,19 @@ package body Gtkada.MDI is
             Y := Gdouble (MDI.Dnd_Rectangle.Y) +
               (Gdouble (New_Pos.Height) - H) / 2.0;
 
+            --  Keep the text window within the MDI
+
+            X := Gdouble'Max (X, 0.0);
+            Y := Gdouble'Max (Y, 0.0);
+
+            if X + W > Gdouble (MDI.Get_Allocated_Width) then
+               X := Gdouble (MDI.Get_Allocated_Width) - W;
+            end if;
+
+            if Y + H > Gdouble (MDI.Get_Allocated_Height) then
+               Y := Gdouble (MDI.Get_Allocated_Height) - H;
+            end if;
+
             --  Slightly lighter (and non-transparent) background for the msg.
             Set_Line_Width (Cr, 1.0);
             Set_Source_RGBA
@@ -6842,14 +6867,14 @@ package body Gtkada.MDI is
             Get_Style_Context (MDI).Render_Layout (Cr, X, Y, Layout);
             Unref (Layout);
 
-            MDI.Dnd_Rectangle_Real.X := Gint'Min (New_Pos.X, Gint (X) - 3);
-            MDI.Dnd_Rectangle_Real.Y := Gint'Min (New_Pos.Y, Gint (Y) - 3);
-            MDI.Dnd_Rectangle_Real.Width :=
-              Gint'Max (New_Pos.Width + New_Pos.X - MDI.Dnd_Rectangle_Real.X,
-                        Gint (W + X) + 4 - MDI.Dnd_Rectangle_Real.X);
-            MDI.Dnd_Rectangle_Real.Height :=
-              Gint'Max (New_Pos.Height + New_Pos.Y - MDI.Dnd_Rectangle_Real.Y,
-                        Gint (H + Y) + 4 - MDI.Dnd_Rectangle_Real.Y);
+            MDI.Dnd_Rectangle_Real.X := Gint'Min (Parent_Rect.X, Gint (X) - 3);
+            MDI.Dnd_Rectangle_Real.Y := Gint'Min (Parent_Rect.Y, Gint (Y) - 3);
+            MDI.Dnd_Rectangle_Real.Width := Gint'Max
+              (Parent_Rect.Width + Parent_Rect.X - MDI.Dnd_Rectangle_Real.X,
+               Gint (W + X) + 4 - MDI.Dnd_Rectangle_Real.X);
+            MDI.Dnd_Rectangle_Real.Height := Gint'Max
+              (Parent_Rect.Height + Parent_Rect.Y - MDI.Dnd_Rectangle_Real.Y,
+               Gint (H + Y) + 4 - MDI.Dnd_Rectangle_Real.Y);
 
          elsif MDI.Dnd_Rectangle_Real.Width /= 0 then
             Cairo.Rectangle
@@ -6863,8 +6888,11 @@ package body Gtkada.MDI is
       end Do_Draw;
 
    begin
-      Get_Dnd_Target (MDI, Parent => Current,
-                      Position => Position, Rectangle => New_Pos);
+      Get_Dnd_Target (MDI,
+                      Parent           => Current,
+                      Position         => Position,
+                      Parent_Rectangle => Parent_Rect,
+                      Rectangle        => New_Pos);
 
       if Current = null then
          MDI.Dnd_Target := null;
@@ -7027,6 +7055,7 @@ package body Gtkada.MDI is
      (MDI       : access MDI_Window_Record'Class;
       Parent    : out Gtk_Widget;
       Position  : out Child_Position;
+      Parent_Rectangle : out Gdk_Rectangle;
       Rectangle : out Gdk_Rectangle)
    is
       Border_Width, Border_Height : Gint;
@@ -7088,6 +7117,7 @@ package body Gtkada.MDI is
             Y      => 0,
             Width  => Get_Allocated_Width (MDI),
             Height => Get_Allocated_Height (MDI));
+         Parent_Rectangle := Rectangle;
 
          Get_Pointer (MDI, X, Y);
 
@@ -7138,6 +7168,7 @@ package body Gtkada.MDI is
                           Y      => Rectangle.Y + Alloc.Y,
                           Width  => Alloc.Width,
                           Height => Alloc.Height);
+            Parent_Rectangle := Rectangle;
 
             Get_Pointer (Parent, X, Y);
 
