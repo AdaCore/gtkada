@@ -52,7 +52,6 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 
 with Cairo;                   use Cairo;
-with Cairo.Region;            use Cairo.Region;
 
 with Pango;                   use Pango;
 with Pango.Enums;             use Pango.Enums;
@@ -6866,14 +6865,6 @@ package body Gtkada.MDI is
    begin
       Get_Dnd_Target (MDI, Parent => Current,
                       Position => Position, Rectangle => New_Pos);
-
-      if Current /= null
-        and then New_Pos = MDI.Dnd_Rectangle
-        and then MDI.Dnd_Overlay /= Null_Surface
-      then
-         --  Nothing to do if we still have the same target
-         return;
-      end if;
 
       if Current = null then
          MDI.Dnd_Target := null;
