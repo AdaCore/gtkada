@@ -29,6 +29,7 @@
 --  <group>Layout containers</group>
 
 with Ada.Tags;
+with Cairo;
 with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Main;
@@ -337,14 +338,9 @@ package Gtkada.MDI is
       Message : String);
    --  Override the message that is displayed in the popup window while
    --  performing a drag. By default, this message mentions:
-   --     "... will be (preserved|hidden) when changing perspective"
+   --     "Use control to move the whole notebook"
    --     "Use shift to create a new view for editors"
    --  so might not be suitable for all applications.
-   --  Through this function you can override the message. If you insert the
-   --  special sequence "(#)" in the message, it will be replaced either with
-   --  "preserved" or "hidden" depending on where the drop occurs (the central
-   --  area or the perspectives). It could also be replaced by an empty string
-   --  if the MDI was configured with independent perspectives.
    --  You can use markup like "<b>...</b>" to put keywords in bold.
    --
    --  Passing an empty string for Message will restore the default message.
@@ -1089,11 +1085,6 @@ private
       Selection_Dialog : Gtk.Widget.Gtk_Widget;
       --  The interactive dialog for selecting new children.
 
-      Dnd_Window       : Gtk.Window.Gtk_Window;
-      Dnd_Window_Label : Gtk.Label.Gtk_Label;
-      --  The small window displayed while a drag-and-drop operation is
-      --  taking place.
-
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
 
       All_Floating_Mode : Boolean := False;
@@ -1109,8 +1100,13 @@ private
       Drag_Start_X, Drag_Start_Y : Gint;
       In_Drag           : Drag_Status := No_Drag;
       Dnd_Rectangle     : Gdk.Rectangle.Gdk_Rectangle;  --  Highlighted area
+
+      Dnd_Rectangle_Real : Gdk.Rectangle.Gdk_Rectangle;
+      --  Area to redraw to delete the Dnd overlay window
+
       Dnd_Target        : Gdk.Gdk_Window;     --  The current target for DND
-      Dnd_Target_Window : Gtk.Window.Gtk_Window;  --  The overlay window
+
+      Dnd_Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
 
       --  Loaded perspectives
       Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;

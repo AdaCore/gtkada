@@ -34,6 +34,7 @@
 
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;                use Ada.Tags;
 with Ada.Exceptions;          use Ada.Exceptions;
@@ -51,7 +52,9 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 
 with Cairo;                   use Cairo;
+with Cairo.Region;            use Cairo.Region;
 
+with Pango;                   use Pango;
 with Pango.Enums;             use Pango.Enums;
 with Pango.Font;              use Pango.Font;
 with Pango.Layout;            use Pango.Layout;
@@ -99,6 +102,7 @@ with Gtk.Window;              use Gtk.Window;
 
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
+with Gtkada.Style;
 with Gtkada.Types;
 
 package body Gtkada.MDI is
@@ -271,13 +275,6 @@ package body Gtkada.MDI is
    pragma Convention (C, Draw_Child);
    --  Draw the child (and the title bar)
 
-   function Draw_Dnd_Target_Window
-     (MDI    : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context)
-      return Boolean;
-   --  Draw the target window, which shows where the window being dragged will
-   --  be inserted.
-
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
 
@@ -298,12 +295,10 @@ package body Gtkada.MDI is
    --  Position indicated where in the parent the child would be dropped:
    --    Position_Bottom .. Position_Right: To one of the sides
    --    Position_Automatic:                In the center
+   --  Rectangle are the coordinates of the target rectangle, relative to the
+   --  top-left corner of the MDI.
 
-   type Dnd_Rectangle_Mode is (Show, Hide, Destroy);
-   procedure Draw_Dnd_Rectangle
-     (MDI        : access MDI_Window_Record'Class;
-      Mode       : Dnd_Rectangle_Mode;
-      Ref_Window : Gdk.Gdk_Window := null);
+   procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class);
    --  Draw the DND rectangle
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
@@ -428,18 +423,6 @@ package body Gtkada.MDI is
    procedure Removed_From_Notebook
      (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when a child is removed from one of the notebooks
-
-   procedure Update_Dnd_Window
-     (MDI        : access MDI_Window_Record'Class;
-      Text       : String;
-      In_Central : Boolean);
-   --  Create and update the contents of the small window displayed while a
-   --  drag-and-drop operation is taking place.
-   --  In_Central should be True if the window will be part of the central area
-
-   procedure Destroy_Dnd_Window (MDI : access MDI_Window_Record'Class);
-   --  Destroy the small window displayed while a drag-and-drop operation is
-   --  taking place.
 
    procedure Emit_By_Name_Child
      (Object : System.Address; Name : String; Child : System.Address);
@@ -1711,26 +1694,6 @@ package body Gtkada.MDI is
       end if;
    end Set_Child_Title_Bar;
 
-   ----------------------------
-   -- Draw_Dnd_Target_Window --
-   ----------------------------
-
-   function Draw_Dnd_Target_Window
-     (MDI    : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context)
-      return Boolean
-   is
-      Color : Gdk_RGBA := MDI_Window (MDI).Focus_Title_Color;
-   begin
-      Color.Alpha := 0.3;
-      Set_Source_RGBA (Cr, Color);
-      Paint (Cr);
-      --  Cairo.Rectangle (Cr, 0.0, 0.0, 500.0, 500.0);
-      --  Cairo.Fill (Cr);
-
-      return False;
-   end Draw_Dnd_Target_Window;
-
    ----------------
    -- Draw_Child --
    ----------------
@@ -1766,76 +1729,11 @@ package body Gtkada.MDI is
       Pattern_Destroy (Pat);
       Cairo.Restore (Cr);
 
+      --  gtk_event_box_draw would override the background we just drew, but
+      --  Child is set as App_Paintable.
       Ignored := Inherited_Draw (Child_Class_Record, Child, Cr);
       return 0;
    end Draw_Child;
-
-   -----------------------
-   -- Update_Dnd_Window --
-   -----------------------
-
-   procedure Update_Dnd_Window
-     (MDI        : access MDI_Window_Record'Class;
-      Text       : String;
-      In_Central : Boolean)
-   is
-      In_Perspective_Txt : aliased constant String := "hidden";
-      In_Central_Txt : aliased constant String := "preserved";
-
-      type Cst_String_Access is access constant String;
-      Loc      : Cst_String_Access;
-
-      Frame : Gtk_Frame;
-      Box   : Gtk_Box;
-      Event : Gtk_Event_Box;
-      Pos   : constant Integer := Ada.Strings.Fixed.Index
-        (MDI.Dnd_Message.all, "(#)");
-   begin
-      if MDI.Dnd_Window = null then
-         Gtk_New (MDI.Dnd_Window, Window_Popup);
-         Set_Transient_For (MDI.Dnd_Window, Gtk_Window (Get_Toplevel (MDI)));
-         Set_Position (MDI.Dnd_Window, Win_Pos_Center_On_Parent);
-         Set_Keep_Above (MDI.Dnd_Window, True);
-         MDI.Dnd_Window.Set_App_Paintable (True);
-
-         Gtk_New (Event);
-         Add (MDI.Dnd_Window, Event);
-         Override_Background_Color
-           (Event, Gtk_State_Flag_Normal, MDI.Focus_Title_Color);
-
-         Gtk_New (Frame);
-         Frame.Set_Shadow_Type (Shadow_In);
-         Add (Event, Frame);
-
-         Gtk_New_Vbox (Box, Homogeneous => False);
-         Box.Set_Border_Width (10);
-         Add (Frame, Box);
-
-         Gtk_New (MDI.Dnd_Window_Label, "");
-         Set_Use_Markup (MDI.Dnd_Window_Label, True);
-         Pack_Start (Box, MDI.Dnd_Window_Label, Expand => True);
-         Show_All (MDI.Dnd_Window);
-      end if;
-
-      if In_Central then
-         Loc := In_Central_Txt'Access;
-      else
-         Loc := In_Perspective_Txt'Access;
-      end if;
-
-      if Pos < MDI.Dnd_Message'First then
-         Set_Label
-           (MDI.Dnd_Window_Label,
-            ASCII.HT & Text & ASCII.LF & MDI.Dnd_Message.all);
-      else
-         Set_Label
-           (MDI.Dnd_Window_Label,
-            ASCII.HT & Text & ASCII.LF
-            & MDI.Dnd_Message (MDI.Dnd_Message'First .. Pos - 1)
-            & Loc.all
-            & MDI.Dnd_Message (Pos + 3 .. MDI.Dnd_Message'Last));
-      end if;
-   end Update_Dnd_Window;
 
    ---------------------
    -- Set_Dnd_Message --
@@ -1849,31 +1747,13 @@ package body Gtkada.MDI is
 
       if Message /= "" then
          MDI.Dnd_Message := new String'(Message);
-      elsif MDI.Independent_Perspectives then
-         MDI.Dnd_Message := new String'
-           ("<i>Use <b>control</b> to move the whole notebook"
-            & ASCII.LF
-            & "Use <b>shift</b> to create a new view for editors</i>");
       else
          MDI.Dnd_Message := new String'
-           ("<i>Will be <b>(#)</b> when changing perspective"
-            & ASCII.LF & "Use <b>control</b> to move the whole notebook"
+           ("<i><b>control</b> moves whole notebook"
             & ASCII.LF
-            & "Use <b>shift</b> to create a new view for editors</i>");
+            & "<b>shift</b> creates new view</i>");
       end if;
    end Set_Dnd_Message;
-
-   ------------------------
-   -- Destroy_Dnd_Window --
-   ------------------------
-
-   procedure Destroy_Dnd_Window (MDI : access MDI_Window_Record'Class) is
-   begin
-      if MDI.Dnd_Window /= null then
-         Destroy (MDI.Dnd_Window);
-         MDI.Dnd_Window := null;
-      end if;
-   end Destroy_Dnd_Window;
 
    ----------------------------------
    -- Button_Pressed_On_Title_Icon --
@@ -1972,7 +1852,7 @@ package body Gtkada.MDI is
 
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
-            Destroy_Dnd_Window (C.MDI);
+            Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
             Child_Drag_Finished (C);
 
          when In_Drag =>
@@ -1980,8 +1860,8 @@ package body Gtkada.MDI is
                Set_Border_Width (C.MDI.Central, 0);
             end if;
 
-            Destroy_Dnd_Window (C.MDI);
-            Draw_Dnd_Rectangle (C.MDI, Mode => Destroy);
+            Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
+
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
             if Current = null then --  outside of the main window ?
@@ -2180,16 +2060,11 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       C        : constant MDI_Child := MDI_Child (Child);
-      Current  : Gtk_Widget;
-      C3       : MDI_Child;
       Note     : Gtk_Notebook;
-      Rect2    : Gdk_Rectangle;
       Tmp      : Gdk_Grab_Status;
-      Position : Child_Position;
       Xroot, Yroot : Gdouble;
       Delta_X, Delta_Y : Gint;
       pragma Unreferenced (Tmp);
-      In_Central : Boolean;
 
    begin
       if Get_Window (Child) /= Event.Button.Window then
@@ -2198,114 +2073,7 @@ package body Gtkada.MDI is
 
       case C.MDI.In_Drag is
          when In_Drag =>
-            Get_Dnd_Target (C.MDI, Parent => Current,
-                            Position => Position, Rectangle => Rect2);
-
-            --  Show the user what will happen if he drops at the current
-            --  location
-
-            if Current = null then
-               Update_Dnd_Window (C.MDI, "Float", True);
-               C.MDI.Dnd_Target := null;
-
-            elsif Current = Gtk_Widget (C.MDI) then
-               C.MDI.Dnd_Target := Get_Window (C.MDI);
-               case Position is
-                  when Position_Bottom =>
-                     Update_Dnd_Window
-                       (C.MDI, "Below all other windows", False);
-                  when Position_Top =>
-                     Update_Dnd_Window
-                       (C.MDI, "Above all other windows", False);
-                  when Position_Left =>
-                     Update_Dnd_Window
-                       (C.MDI, "On the left of all other windows", False);
-                  when Position_Right =>
-                     Update_Dnd_Window
-                       (C.MDI, "On the right of all other windows", False);
-                  when others =>
-                     --  Cannot occur
-                     null;
-               end case;
-
-            elsif Current = Gtk_Widget (C.MDI.Central) then
-               C.MDI.Dnd_Target := Get_Window (C.MDI.Central);
-
-               case Position is
-                  when Position_Bottom =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put below central area", False);
-                  when Position_Top =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put above central area", False);
-                  when Position_Left =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put on the left of central area", False);
-                  when Position_Right =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put on the right of central area", False);
-                  when others =>
-                     Update_Dnd_Window (C.MDI, "Put in central area", True);
-               end case;
-
-            elsif Current = Get_Parent (C)
-              and then Position = Position_Automatic
-            then
-               C.MDI.Dnd_Target := Get_Window (C);
-               Update_Dnd_Window
-                 (C.MDI, "Leave at current position",
-                  In_Central_Area (C.MDI, C));
-
-            else
-               Note := Gtk_Notebook (Current);
-               C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
-
-               if C3 = null then
-                  Update_Dnd_Window (C.MDI, "Put in central area", True);
-                  C.MDI.Dnd_Target := Get_Window (C.MDI.Central);
-
-               else
-                  C.MDI.Dnd_Target := Get_Window (C3);
-                  In_Central := In_Central_Area (C.MDI, C3);
-
-                  case Position is
-                     when Position_Bottom =>
-                        Update_Dnd_Window
-                          (C.MDI,
-                           "Put below <b>" & Get_Short_Title (C3) & "</b>",
-                           In_Central);
-                     when Position_Top =>
-                        Update_Dnd_Window
-                          (C.MDI,
-                           "Put above <b>" & Get_Short_Title (C3) & "</b>",
-                           In_Central);
-                     when Position_Left =>
-                        Update_Dnd_Window
-                          (C.MDI,
-                           "Put on the left of <b>"
-                           & Get_Short_Title (C3) & "</b>",
-                           In_Central);
-                     when Position_Right =>
-                        Update_Dnd_Window
-                          (C.MDI,
-                           "Put on the right of <b>"
-                           & Get_Short_Title (C3) & "</b>", In_Central);
-                     when others =>
-                        Update_Dnd_Window
-                          (C.MDI, "Put on top of <b>"
-                           & Get_Short_Title (C3) & "</b>", In_Central);
-                  end case;
-               end if;
-            end if;
-
-            if Current = null then
-               Draw_Dnd_Rectangle (C.MDI, Mode => Hide);
-            else
-               C.MDI.Dnd_Rectangle := Rect2;
-               Draw_Dnd_Rectangle
-                 (C.MDI, Mode => Show, Ref_Window => Get_Window (Current));
-            end if;
-
+            Draw_Dnd_Rectangle (C);
             return True;
 
          when In_Pre_Drag =>
@@ -2472,7 +2240,8 @@ package body Gtkada.MDI is
       end if;
 
       Gtk.Event_Box.Initialize (Child);
-      Child.Set_Has_Window (False);
+      Child.Set_Has_Window (True);
+      Child.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
       if Glib.Object.Initialize_Class_Record
         (Child,
          Signals      => Child_Signals,
@@ -6991,63 +6760,195 @@ package body Gtkada.MDI is
    -- Draw_Dnd_Rectangle --
    ------------------------
 
-   procedure Draw_Dnd_Rectangle
-     (MDI        : access MDI_Window_Record'Class;
-      Mode       : Dnd_Rectangle_Mode;
-      Ref_Window : Gdk.Gdk_Window := null)
-   is
-      Root_X, Root_Y : Gint;
+   procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class) is
+      MDI : constant MDI_Window := Child.MDI;
+
+      Current    : Gtk_Widget;
+      Position   : Child_Position;
+      New_Pos    : Gdk_Rectangle;
+      Message    : Unbounded_String;
+      In_Central : Boolean;
+      C3         : MDI_Child;
+      Note       : Gtk_Notebook;
+
+      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean);
+      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean) is
+         Base_Color : Gdk_RGBA;
+         Color : Gdk_RGBA;
+         Layout : Pango_Layout;
+         Ink_Rect, Logical_Rect : Pango_Rectangle;
+         X, Y : Gdouble;
+         W, H : Gdouble;
+      begin
+         if Draw then
+            if Current = null then
+               --  A future floating child ? Nothing to draw for now, and there
+               --  will be nothing to hide either.
+               MDI.Dnd_Rectangle_Real.Width := 0;
+               return;
+            end if;
+
+            if In_Central then
+               Base_Color := MDI.Focus_Title_Color;
+            else
+               Base_Color := (Red   => 1.0 - MDI.Focus_Title_Color.Red,
+                              Green => 1.0 - MDI.Focus_Title_Color.Green,
+                              Blue  => 1.0 - MDI.Focus_Title_Color.Blue,
+                              Alpha => 1.0);
+            end if;
+
+            Color := Base_Color;
+            Color.Alpha := 0.6;
+            Set_Source_RGBA (Cr, Color);
+
+            MDI.Dnd_Rectangle := New_Pos;
+
+            --  Offset here is to compensate the line width
+            Gtkada.Style.Rounded_Rectangle
+              (Cr,
+               Gdouble (New_Pos.X) + 3.0,
+               Gdouble (New_Pos.Y) + 3.0,
+               Gdouble (New_Pos.Width) - 6.0,
+               Gdouble (New_Pos.Height) - 6.0,
+               Radius => 8.0);
+            Cairo.Fill_Preserve (Cr);
+
+            Color.Alpha := 0.9;
+            Set_Source_RGBA (Cr, Color);
+            Set_Line_Width (Cr, 3.0);
+            Stroke (Cr);
+
+            Layout := MDI.Create_Pango_Layout;
+            Layout.Set_Markup
+              (ASCII.HT & To_String (Message)
+               & ASCII.LF & MDI.Dnd_Message.all);
+
+            Layout.Get_Extents (Ink_Rect, Logical_Rect);
+            W := Gdouble (Logical_Rect.Width / Pango_Scale);
+            H := Gdouble (Logical_Rect.Height / Pango_Scale);
+
+            X := Gdouble (MDI.Dnd_Rectangle.X) +
+              (Gdouble (New_Pos.Width) - W) / 2.0;
+            Y := Gdouble (MDI.Dnd_Rectangle.Y) +
+              (Gdouble (New_Pos.Height) - H) / 2.0;
+
+            --  Slightly lighter (and non-transparent) background for the msg.
+            Set_Line_Width (Cr, 1.0);
+            Set_Source_RGBA
+              (Cr, Gtkada.Style.Lighten (Base_Color, 0.3));
+            Gtkada.Style.Rounded_Rectangle
+              (Cr, X - 2.0, Y - 2.0, W + 4.0, H + 4.0, 4.0);
+            Cairo.Fill (Cr);
+
+            Get_Style_Context (MDI).Render_Layout (Cr, X, Y, Layout);
+            Unref (Layout);
+
+            MDI.Dnd_Rectangle_Real.X := Gint'Min (New_Pos.X, Gint (X) - 3);
+            MDI.Dnd_Rectangle_Real.Y := Gint'Min (New_Pos.Y, Gint (Y) - 3);
+            MDI.Dnd_Rectangle_Real.Width :=
+              Gint'Max (New_Pos.Width + New_Pos.X - MDI.Dnd_Rectangle_Real.X,
+                        Gint (W + X) + 4 - MDI.Dnd_Rectangle_Real.X);
+            MDI.Dnd_Rectangle_Real.Height :=
+              Gint'Max (New_Pos.Height + New_Pos.Y - MDI.Dnd_Rectangle_Real.Y,
+                        Gint (H + Y) + 4 - MDI.Dnd_Rectangle_Real.Y);
+
+         elsif MDI.Dnd_Rectangle_Real.Width /= 0 then
+            Cairo.Rectangle
+              (Cr,
+               Gdouble (MDI.Dnd_Rectangle_Real.X),
+               Gdouble (MDI.Dnd_Rectangle_Real.Y),
+               Gdouble (MDI.Dnd_Rectangle_Real.Width),
+               Gdouble (MDI.Dnd_Rectangle_Real.Height));
+            Cairo.Fill (Cr);
+         end if;
+      end Do_Draw;
+
    begin
-      case Mode is
-         when Destroy =>
-            if MDI.Dnd_Target_Window /= null then
-               Destroy (MDI.Dnd_Target_Window);
-               MDI.Dnd_Target_Window := null;
-            end if;
+      Get_Dnd_Target (MDI, Parent => Current,
+                      Position => Position, Rectangle => New_Pos);
 
-         when Hide =>
-            if MDI.Dnd_Target_Window /= null then
-               Hide (MDI.Dnd_Target_Window);
-            end if;
+      if Current /= null and then New_Pos = MDI.Dnd_Rectangle then
+         --  Nothing to do if we still have the same target
+         return;
+      end if;
 
-         when Show =>
-            if MDI.Dnd_Target_Window = null then
-               Gtk_New (MDI.Dnd_Target_Window, Window_Popup);
-               Set_Transient_For
-                 (MDI.Dnd_Target_Window, Gtk_Window (Get_Toplevel (MDI)));
-               Set_Decorated (MDI.Dnd_Target_Window, False);
-               Set_Accept_Focus (MDI.Dnd_Target_Window, False);
-               Set_Events (MDI.Dnd_Target_Window, Exposure_Mask);
-               MDI.Dnd_Target_Window.Set_App_Paintable (True);
+      if Current = null then
+         MDI.Dnd_Target := null;
 
-               Realize (MDI.Dnd_Target_Window);
+      elsif Current = Gtk_Widget (MDI) then
+         MDI.Dnd_Target := Get_Window (MDI);
+         In_Central := False;
+         case Position is
+            when Position_Bottom =>
+               Message := To_Unbounded_String ("Below all other windows");
+            when Position_Top =>
+               Message := To_Unbounded_String ("Above all other windows");
+            when Position_Left =>
+               Message := To_Unbounded_String ("Left of all other windows");
+            when Position_Right =>
+               Message := To_Unbounded_String ("Right of all other windows");
+            when others =>
+               null;   --  Cannot occur
+         end case;
 
-               Return_Callback.Object_Connect
-                 (MDI.Dnd_Target_Window, Signal_Draw,
-                  Return_Callback.To_Marshaller
-                     (Draw_Dnd_Target_Window'Access),
-                  Slot_Object => MDI,
-                  After => True);
-            end if;
+      elsif Current = Gtk_Widget (MDI.Central) then
+         MDI.Dnd_Target := Get_Window (MDI.Central);
+         In_Central := False;
+         case Position is
+            when Position_Bottom =>
+               Message := To_Unbounded_String ("Below central area");
+            when Position_Top =>
+               Message := To_Unbounded_String ("Above central area");
+            when Position_Left =>
+               Message := To_Unbounded_String ("Left of central area");
+            when Position_Right =>
+               Message := To_Unbounded_String ("Right of central area");
+            when others =>
+               Message := To_Unbounded_String ("In central area");
+               In_Central := True;
+         end case;
 
-            if Ref_Window /= null then
-               MDI.Dnd_Target_Window.Resize
-                  (MDI.Dnd_Rectangle.Width,
-                   MDI.Dnd_Rectangle.Height);
+      elsif Current = Get_Parent (Child)
+        and then Position = Position_Automatic
+      then
+         MDI.Dnd_Target := Get_Window (Child);
+         In_Central := In_Central_Area (MDI, Child);
+         Message := To_Unbounded_String ("Leave at current position");
 
-               Get_Origin (Ref_Window, Root_X, Root_Y);
+      else
+         Note := Gtk_Notebook (Current);
+         C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
 
-               Move (MDI.Dnd_Target_Window,
-                     Root_X + MDI.Dnd_Rectangle.X,
-                     Root_Y + MDI.Dnd_Rectangle.Y);
+         if C3 = null then
+            In_Central := True;
+            Message := To_Unbounded_String ("In central area");
+            MDI.Dnd_Target := Get_Window (MDI.Central);
 
-               --  Keep the text above, for readability, especially when the
-               --  dnd window is not transparent
-               Gdk_Raise (Get_Window (MDI.Dnd_Window));
+         else
+            MDI.Dnd_Target := Get_Window (C3);
+            In_Central := In_Central_Area (MDI, C3);
 
-               Show (MDI.Dnd_Target_Window);
-            end if;
-      end case;
+            case Position is
+               when Position_Bottom =>
+                  Message := To_Unbounded_String
+                    ("Below <b>" & Get_Short_Title (C3) & "</b>");
+               when Position_Top =>
+                  Message := To_Unbounded_String
+                    ("Above <b>" & Get_Short_Title (C3) & "</b>");
+               when Position_Left =>
+                  Message := To_Unbounded_String
+                    ("Left of <b>" & Get_Short_Title (C3) & "</b>");
+               when Position_Right =>
+                  Message := To_Unbounded_String
+                    ("Right of <b>" & Get_Short_Title (C3) & "</b>");
+               when others =>
+                  Message := To_Unbounded_String
+                    ("On top of <b>" & Get_Short_Title (C3) & "</b>");
+            end case;
+         end if;
+      end if;
+
+      Gtkada.Style.Draw_Overlay (MDI, MDI.Dnd_Overlay, Do_Draw'Access);
    end Draw_Dnd_Rectangle;
 
    ----------------------
@@ -7143,15 +7044,6 @@ package body Gtkada.MDI is
       Gdk.Display.Get_Window_At_Pointer
          (Get_Display (Get_Window (MDI)), X, Y, Win);
 
-      if (MDI.Dnd_Target_Window /= null
-          and then Win = Get_Window (MDI.Dnd_Target_Window))
-        or else
-          (MDI.Dnd_Window /= null
-           and then Win = Get_Window (MDI.Dnd_Window))
-      then
-         Win := MDI.Dnd_Target;
-      end if;
-
       if Win = null then
          Position := Position_Automatic;
          Parent := null;
@@ -7243,8 +7135,15 @@ package body Gtkada.MDI is
 
          else
             --  Are we on the sides of the current MDI child ?
+            --  Parent is likey a Gtk_Notebook
 
-            Parent.Get_Allocation (Rectangle);
+            Gtkada.Style.Get_Offset (Parent, MDI, Rectangle.X, Rectangle.Y);
+            Parent.Get_Allocation (Alloc);
+
+            Rectangle := (X      => Rectangle.X + Alloc.X,
+                          Y      => Rectangle.Y + Alloc.Y,
+                          Width  => Alloc.Width,
+                          Height => Alloc.Height);
 
             Get_Pointer (Parent, X, Y);
 
@@ -7255,50 +7154,30 @@ package body Gtkada.MDI is
 
             if Y < Border_Height then
                Position := Position_Top;
-               Rectangle :=
-                 (X      => 0,
-                  Y      => 0,
-                  Width  => Rectangle.Width,
-                  Height => Border_Height);
+               Rectangle.Height := Border_Height;
 
             elsif Y > Rectangle.Height - Border_Height then
                Position := Position_Bottom;
-               Rectangle :=
-                 (X      => 0,
-                  Y      => Rectangle.Height - Border_Height,
-                  Width  => Rectangle.Width,
-                  Height => Border_Height);
+               Rectangle.Y := Rectangle.Y + Rectangle.Height - Border_Height;
+               Rectangle.Height := Border_Height;
 
             elsif X < Border_Width then
                Position := Position_Left;
-               Rectangle :=
-                 (X      => 0,
-                  Y      => 0,
-                  Width  => Border_Width,
-                  Height => Rectangle.Height);
+               Rectangle.Width := Border_Width;
 
             elsif X > Rectangle.Width - Border_Width then
                Position := Position_Right;
-               Rectangle :=
-                 (X      => Rectangle.Width - Border_Width,
-                  Y      => 0,
-                  Width  => Border_Width,
-                  Height => Rectangle.Height);
+               Rectangle.X := Rectangle.X + Rectangle.Width - Border_Width;
+               Rectangle.Width := Border_Width;
 
             else
                Position := Position_Automatic;
                Rectangle :=
-                 (X      => Border_Width,
-                  Y      => Border_Height,
+                 (X      => Rectangle.X + Border_Width,
+                  Y      => Rectangle.Y + Border_Height,
                   Width  => Rectangle.Width - 2 * Border_Width,
                   Height => Rectangle.Height - 2 * Border_Height);
             end if;
-         end if;
-
-         if not Parent.Get_Has_Window then
-            Parent.Get_Allocation (Alloc);
-            Rectangle.X := Rectangle.X + Alloc.X;
-            Rectangle.Y := Rectangle.Y + Alloc.Y;
          end if;
       end if;
    end Get_Dnd_Target;

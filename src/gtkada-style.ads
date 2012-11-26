@@ -75,6 +75,11 @@ package Gtkada.Style is
    procedure Set_Source_Color
      (Cr : Cairo.Cairo_Context; Color : Cairo_Color);
 
+   function Lighten
+     (Color  : Gdk.RGBA.Gdk_RGBA;
+      Amount : Glib.Gdouble) return Gdk.RGBA.Gdk_RGBA;
+   --  Return a lighter version of the color
+
    -----------------------------
    -- Extra path manipulation --
    -----------------------------
@@ -213,11 +218,19 @@ package Gtkada.Style is
    --  was previously hidden. This is more efficient that having Draw_Overlay
    --  systematically fill the whole area.
 
-
    procedure Delete_Overlay
      (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
       Overlay : in out Cairo.Cairo_Surface);
    --  Delete the overlay created by Draw_Overlay, and force a refresh of the
    --  toplevel window.
+
+   procedure Get_Offset
+     (Window : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Parent : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      X, Y   : out Glib.Gint);
+   --  Get the position of Window within parent's window (not that this is not
+   --  necessarily the same as the position within Parent if the latter does
+   --  not have a window).
+
 
 end Gtkada.Style;

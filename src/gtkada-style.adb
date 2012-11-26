@@ -230,15 +230,16 @@ package body Gtkada.Style is
       Radius     : Glib.Gdouble)
    is
    begin
-      Cairo.Move_To (Cr, X + Radius, Y);
+      New_Sub_Path (Cr);
       Cairo.Arc
-        (Cr, X + W - Radius, Y + Radius, Radius, Pi * 1.5, Pi * 2.0);
+        (Cr, X + W - Radius, Y + Radius, Radius, -Pi / 2.0, 0.0);
       Cairo.Arc
-        (Cr, X + W - Radius, Y + H - Radius, Radius, 0.0, Pi * 0.5);
+        (Cr, X + W - Radius, Y + H - Radius, Radius, 0.0, Pi / 2.0);
       Cairo.Arc
-        (Cr, X + Radius, Y + H - Radius, Radius, Pi * 0.5, Pi);
+        (Cr, X + Radius, Y + H - Radius, Radius, Pi / 2.0, Pi);
       Cairo.Arc
-        (Cr, X + Radius, Y + Radius, Radius, Pi, Pi * 1.5);
+        (Cr, X + Radius, Y + Radius, Radius, Pi, 3.0 * Pi / 2.0);
+      Close_Path (Cr);
    end Rounded_Rectangle;
 
    -----------------
@@ -535,6 +536,29 @@ package body Gtkada.Style is
       Unref (Css);
    end Load_Css_File;
 
+   ----------------
+   -- Get_Offset --
+   ----------------
+
+   procedure Get_Offset
+     (Window : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Parent : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      X, Y   : out Gint)
+   is
+      Parent_Win : constant Gdk_Window := Parent.Get_Window;
+      Win      : Gdk_Window := Window.Get_Window;
+      Wx, Wy   : Gint;
+   begin
+      X := 0;
+      Y := 0;
+      while Win /= null and then Win /= Parent_Win loop
+         Gdk.Window.Get_Position (Win, Wx, Wy);
+         X := X + Wx;
+         Y := Y + Wy;
+         Win := Gdk.Window.Get_Parent (Win);
+      end loop;
+   end Get_Offset;
+
    ------------------
    -- Draw_Overlay --
    ------------------
@@ -548,21 +572,11 @@ package body Gtkada.Style is
    is
       Toplevel : constant Gtk_Widget := Widget.Get_Toplevel;
       X, Y     : Gint := 0;  --  location of Split relative to Toplevel
-      Wx, Wy   : Gint;
       Top_Win  : constant Gdk_Window := Toplevel.Get_Window;
-      Win      : Gdk_Window := Widget.Get_Window;
       Hide_Previous : Boolean := True;
 
    begin
-      --  This loop is the same as done by Transform_To_Window, but we need
-      --  access to the X and Y coordinates directly.
-
-      while Win /= null and then Win /= Top_Win loop
-         Gdk.Window.Get_Position (Win, Wx, Wy);
-         X := X + Wx;
-         Y := Y + Wy;
-         Win := Gdk.Window.Get_Parent (Win);
-      end loop;
+      Get_Offset (Widget, Toplevel, X, Y);
 
       --  Save the display of the toplevel window, so that we can easily
       --  erase the resize handle later. We cannot capture Split only,
@@ -659,5 +673,19 @@ package body Gtkada.Style is
              Widget.Get_Allocated_Height), True);
       end if;
    end Delete_Overlay;
+
+   -------------
+   -- Lighten --
+   -------------
+
+   function Lighten
+     (Color : Gdk.RGBA.Gdk_RGBA;
+      Amount : Glib.Gdouble) return Gdk.RGBA.Gdk_RGBA is
+   begin
+      return (Red   => Glib.Gdouble'Min (1.0, Color.Red + Amount),
+              Green => Glib.Gdouble'Min (1.0, Color.Green + Amount),
+              Blue  => Glib.Gdouble'Min (1.0, Color.Blue + Amount),
+              Alpha => Color.Alpha);
+   end Lighten;
 
 end Gtkada.Style;
