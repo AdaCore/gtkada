@@ -836,7 +836,10 @@ package body Gtkada.Multi_Paned is
       --  because that would not include a background color if Split does
       --  not have a window.
       --  ??? Apparently, we need to redraw once, we can't simply capture
-      --  the screen.
+      --  the screen. There might be a way using:
+      --     pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 9, w, h)
+      --     shot = pixbuf.get_from_drawable(win.window, win.get_colormap(),
+      --                  0, 0, 0, 0, w, h)
 
       if Split.Overlay = Null_Surface then
          declare
