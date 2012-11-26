@@ -6867,7 +6867,10 @@ package body Gtkada.MDI is
       Get_Dnd_Target (MDI, Parent => Current,
                       Position => Position, Rectangle => New_Pos);
 
-      if Current /= null and then New_Pos = MDI.Dnd_Rectangle then
+      if Current /= null
+        and then New_Pos = MDI.Dnd_Rectangle
+        and then MDI.Dnd_Overlay /= Null_Surface
+      then
          --  Nothing to do if we still have the same target
          return;
       end if;
