@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --           GtkAda - Ada binding for the Gimp Toolkit               --
 --                                                                   --
---                Copyright (C) 2007-2010, AdaCore                   --
+--                Copyright (C) 2007-2012, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,7 +61,7 @@ project GtkAda_Install_Dynamic is
         "-luser32");
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-O2");
+      for Default_Switches ("Ada") use ("-O2", "-gnat05");
    end Compiler;
 
 end GtkAda_Install_Dynamic;
