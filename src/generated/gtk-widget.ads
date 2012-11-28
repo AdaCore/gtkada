@@ -2594,6 +2594,10 @@ package Gtk.Widget is
    -- GtkAda additions --
    ----------------------
 
+   ------------------------------------
+   -- Override default size handling --
+   ------------------------------------
+
    type Gtk_Requisition_Access is access all Gtk_Requisition;
    type Gtk_Allocation_Access is access all Gtk_Allocation;
    pragma Convention (C, Gtk_Requisition_Access);
@@ -2632,6 +2636,26 @@ package Gtk.Widget is
    --  This function is not needed unless you are writting your own
    --  widgets, and should be reserved for advanced customization of the
    --  standard widgets.
+
+   type Preferred_Size_Handler is access procedure
+     (Widget       : System.Address;
+      Minimum_Size : out Glib.Gint;
+      Natural_Size : out Glib.Gint);
+   pragma Convention (C, Preferred_Size_Handler);
+
+   procedure Set_Default_Get_Preferred_Width_Handler
+     (Klass   : Glib.Object.Ada_GObject_Class;
+      Handler : Preferred_Size_Handler);
+   procedure Set_Default_Get_Preferred_Height_Handler
+     (Klass   : Glib.Object.Ada_GObject_Class;
+      Handler : Preferred_Size_Handler);
+   pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
+      "ada_WIDGET_CLASS_override_get_preferred_width");
+   pragma Import (C, Set_Default_Get_Preferred_Height_Handler,
+      "ada_WIDGET_CLASS_override_get_preferred_height");
+   --  Override the computation of a widget's preferred sizes.
+   --  You will only need to override this computation if you are writting
+   --  your own container widgets.
 
    ---------------------------
    -- Override Draw handler --

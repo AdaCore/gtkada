@@ -430,6 +430,8 @@ ada_initialize_class_record
 
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, draw)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height)
 
 gboolean ada_inherited_WIDGET_CLASS_draw (
       AdaGObjectClass* klass, GtkWidget* widget, cairo_t *cr)
