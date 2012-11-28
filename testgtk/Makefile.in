@@ -52,7 +52,7 @@ install: force
 	$(RM) b~*
 	-$(INSTALL_PROGRAM) testgtk$(EXEEXT) "${DESTDIR}$(examples)"
 	-$(INSTALL_PROGRAM) testcairo$(EXEEXT) "${DESTDIR}$(examples)"
-	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml "${DESTDIR}$(examples)"
+	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml *.css "${DESTDIR}$(examples)"
 	$(CP) opengl/*.ad? opengl/*.[ch] "${DESTDIR}$(examples)/opengl"
 
 clean: module_clean
