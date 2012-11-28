@@ -50,6 +50,7 @@ with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with Glib.Values;             use Glib.Values;
 
 with Cairo;                   use Cairo;
 
@@ -164,7 +165,41 @@ package body Gtkada.MDI is
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
 
-   type MDI_Notebook_Record is new Gtk_Notebook_Record with null record;
+   type MDI_Tab_Record is new Gtk_Event_Box_Record with record
+      Timestamp : Natural := 0;
+   end record;
+   type MDI_Tab is access all MDI_Tab_Record'Class;
+   --  A container that requests a specific size for a Gtk_Label that is
+   --  displayed in a Gtk_Notebook tab. This is a workaround against the naive
+   --  algorithm used in gtk+ to compute the size of tabs. What we want is the
+   --  following:
+   --  * if the sum of natural sizes of all tab labels is less than the
+   --    notebook's size, use the natural size (we need to pass this as the
+   --    minimal size as well, since gtk+ notebook always uses the latter).
+   --  * Otherwise, we want all tabs to have the same size (down to a minimum
+   --    after which we'll let the notebook scroll), and use ellipsization in
+   --    the labels.
+   --  This label will automatically collaborate with all other such labels in
+   --  the same notebook for size negociation.
+
+   MDI_Tab_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
+     Glib.Object.Uninitialized_Class;
+
+   procedure Tab_Get_Preferred_Width
+     (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
+   pragma Convention (C, Tab_Get_Preferred_Width);
+   procedure Tab_Get_Preferred_Height
+     (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
+   pragma Convention (C, Tab_Get_Preferred_Height);
+
+   type MDI_Notebook_Record is new Gtk_Notebook_Record with record
+      Timestamp : Natural := 0;
+      Tab_Size  : Gint;
+      --  Used to handle the sizing of tabs (through MDI_Tab_Record). Tab_Size
+      --  is set to -1 if the tabs should use their natural size.
+
+   end record;
+   type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
 
    package Child_User_Data is new Glib.Object.User_Data (MDI_Child);
@@ -1212,7 +1247,8 @@ package body Gtkada.MDI is
       Draw_Title_Bars           : Title_Bars_Policy   := Always;
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Bottom;
-      Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic)
+      Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic;
+      Homogeneous_Tabs          : Boolean := True)
    is
       C            : MDI_Child;
       Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
@@ -1228,6 +1264,7 @@ package body Gtkada.MDI is
       MDI.Draw_Title_Bars  := Draw_Title_Bars;
       MDI.Tabs_Position    := Tabs_Position;
       MDI.Show_Tabs_Policy := Show_Tabs_Policy;
+      MDI.Homogeneous_Tabs := Homogeneous_Tabs;
 
       Set_Opaque_Resizing (MDI, Opaque_Resize);
 
@@ -3494,6 +3531,134 @@ package body Gtkada.MDI is
       end if;
    end Configure_Notebook_Tabs;
 
+   -----------------------------
+   -- Tab_Get_Preferred_Width --
+   -----------------------------
+
+   procedure Tab_Get_Preferred_Width
+     (Label : System.Address; Minimum_Size, Natural_Size : out Gint)
+   is
+      Tab   : constant MDI_Tab := MDI_Tab (Glib.Object.Convert (Label));
+      Note  : constant MDI_Notebook := MDI_Notebook (Tab.Get_Parent);
+      Pages : Gint;
+      Lab   : MDI_Tab;
+      Min, Nat : Gint;
+      Total    : Gint;
+      Val : GValue;
+      Focus_Width : Gint;
+      Focus_Pad   : Gint;
+
+   begin
+      case Note.Get_Tab_Pos is
+         when Pos_Left | Pos_Right =>
+            --  fallback to gtk behavior
+            Tab.Get_Child.Get_Preferred_Width (Minimum_Size, Natural_Size);
+
+         when Pos_Top | Pos_Bottom =>
+            --  Do we need to recompute, or has another tab already done the
+            --  computation ?
+
+            Tab.Timestamp := Tab.Timestamp + 1;
+            if Note.Timestamp < Tab.Timestamp then
+               Note.Timestamp := Tab.Timestamp;
+
+               Pages := Note.Get_N_Pages;
+               Minimum_Size := 0;
+               Natural_Size := 0;
+
+               --  Find all other MDI_Tab_Labels.
+
+               for N in 0 .. Pages - 1 loop
+                  Lab := MDI_Tab (Note.Get_Tab_Label (Note.Get_Nth_Page (N)));
+                  Lab.Get_Child.Get_Preferred_Width (Min, Nat);
+                  Natural_Size := Natural_Size + Nat;
+                  Minimum_Size := Minimum_Size + Min;
+               end loop;
+
+               --  Compute borders from the theme. This is copied from
+               --  gtknotebook.c. Apparently we do not need to get
+               --     Get_Style_Context (Note).Get_Padding
+               Init (Val, GType_Int);
+               Note.Style_Get_Property ("focus-line-width", Val);
+               Focus_Width := Get_Int (Val);
+               Note.Style_Get_Property ("focus-padding", Val);
+               Focus_Pad := Get_Int (Val);
+               Unset (Val);
+
+               Total := Note.Get_Allocated_Width
+                 - Pages * 2 * (Focus_Width + Focus_Pad);
+
+               Tab.Get_Child.Get_Preferred_Width (Min, Nat);
+
+               if Traces then
+                  Put_Line ("Tabsize: total {Nat=" & Gint'Image (Natural_Size)
+                            & " Min=" & Gint'Image (Minimum_Size)
+                            & "} Child={"
+                            & Gint'Image (Min) & Gint'Image (Nat)
+                            & "} Notebook="
+                            & Gint'Image (Total) & " Pages="
+                            & Gint'Image (Pages));
+               end if;
+
+               if Natural_Size <= Total then
+                  --  All tabs can use their natural size, but we must set the
+                  --  tab's minimum size to its natural size since gtk+ always
+                  --  uses the minimum size.
+
+                  Note.Tab_Size := -1;
+               else
+                  --  All tabs should use the same size (and have a min. size)
+                  --  "100" is random here, seems to be good enough to display
+                  --  enough chars to distinguish editors.
+                  Nat := Gint'Max (100, Total / Pages);
+                  Note.Tab_Size := Nat;
+               end if;
+
+               --  Will need to resize all other tabs (nothing will happen for
+               --  those that have already been refreshed, because of timestamp
+               --  comparison)
+
+               for N in 0 .. Pages - 1 loop
+                  Lab := MDI_Tab (Note.Get_Tab_Label (Note.Get_Nth_Page (N)));
+                  Lab.Queue_Resize;
+               end loop;
+
+               Minimum_Size := Nat;
+               Natural_Size := Nat;
+
+               if Traces then
+                  Put_Line ("tab size => note.timestamp="
+                            & Integer'Image (Note.Timestamp)
+                            & " tab.timestamp="
+                            & Integer'Image (Tab.Timestamp)
+                            & " size=" & Gint'Image (Nat));
+               end if;
+            else
+               Tab.Timestamp := Note.Timestamp;
+               if Note.Tab_Size = -1 then
+                  Tab.Get_Child.Get_Preferred_Width (Min, Natural_Size);
+                  Minimum_Size := Natural_Size;
+               else
+                  Minimum_Size := Note.Tab_Size;
+                  Natural_Size := Note.Tab_Size;
+               end if;
+            end if;
+      end case;
+   end Tab_Get_Preferred_Width;
+
+   ------------------------------
+   -- Tab_Get_Preferred_Height --
+   ------------------------------
+
+   procedure Tab_Get_Preferred_Height
+     (Label : System.Address; Minimum_Size, Natural_Size : out Gint)
+   is
+      Tab : constant MDI_Tab := MDI_Tab (Glib.Object.Convert (Label));
+   begin
+      --  No special handling here, the default seems good enough for us.
+      Tab.Get_Child.Get_Preferred_Height (Minimum_Size, Natural_Size);
+   end Tab_Get_Preferred_Height;
+
    ----------------------
    -- Update_Tab_Label --
    ----------------------
@@ -3506,7 +3671,28 @@ package body Gtkada.MDI is
 
    begin
       if Note /= null and then Child.State = Normal then
-         Gtk_New (Event);
+         if Child.MDI.Homogeneous_Tabs then
+            Event := new MDI_Tab_Record;
+            Gtk.Event_Box.Initialize (Event);
+            MDI_Tab (Event).Timestamp := MDI_Notebook (Note).Timestamp;
+
+            if Glib.Object.Initialize_Class_Record
+              (Event,
+               Signals      => (1 .. 0 => Null_Ptr),
+               Parameters   => (1 .. 0 => (1 => GType_None)),
+               Class_Record => MDI_Tab_Class_Record'Access,
+               Type_Name    => "MDITab")
+            then
+               Set_Default_Get_Preferred_Width_Handler
+                 (MDI_Tab_Class_Record, Tab_Get_Preferred_Width'Access);
+               Set_Default_Get_Preferred_Height_Handler
+                 (MDI_Tab_Class_Record, Tab_Get_Preferred_Height'Access);
+            end if;
+
+         else
+            Gtk_New (Event);
+         end if;
+
          Event.Set_Visible_Window (False);
 
          Gtk_New_Hbox (Box, Homogeneous => False);
@@ -3515,6 +3701,11 @@ package body Gtkada.MDI is
          Box.Pack_Start (Child.Tab_Icon, Expand => False);
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+
+         if Child.MDI.Homogeneous_Tabs then
+            Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Start);
+         end if;
+
          Pack_Start (Box, Child.Tab_Label, Expand => True, Fill => True);
 
          if (Child.Flags and Destroy_Button) /= 0 then
@@ -3546,6 +3737,8 @@ package body Gtkada.MDI is
          --  to another.
 
          Set_Dnd_Source (Event, Child);
+
+         Event.Queue_Resize;
       end if;
    end Update_Tab_Label;
 
@@ -3649,7 +3842,6 @@ package body Gtkada.MDI is
 
       Set_Child_Visible (Note, True);
       Show (Note);
-      Queue_Resize (Note);
 
       Unref (Child);
    end Put_In_Notebook;
@@ -3953,6 +4145,9 @@ package body Gtkada.MDI is
             Print_Debug ("Removed_From_Notebook: desktop is now");
             Dump (Child.MDI);
          end if;
+
+         MDI_Notebook (Note).Timestamp := 0;  --  force computation of tab size
+         Note.Queue_Resize;
       end if;
 
    exception

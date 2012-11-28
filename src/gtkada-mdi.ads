@@ -127,7 +127,8 @@ package Gtkada.MDI is
       Focus_Title_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
-      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic);
+      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic;
+      Homogeneous_Tabs   : Boolean := True);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -141,6 +142,10 @@ package Gtkada.MDI is
    --  Title_Bar_Color in exchange.
    --  Tabs_Position indicates where the notebook tabs should be put.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
+   --  If Homogeneous_Tabs is true, then the notebook tabs will only use their
+   --  natural size when they all fit in the notebook's width. Otherwise, they
+   --  are resized (and ellipsized as needed) so that more of them show.
+   --  Changing this setup requires a restart of the MDI.
 
    function Independent_Perspectives
      (MDI : access MDI_Window_Record) return Boolean;
@@ -1095,6 +1100,8 @@ private
 
       Use_Short_Titles_For_Floats : Boolean := False;
       --  Set to true if all floating children should use their short titles
+
+      Homogeneous_Tabs : Boolean := True;
 
       --  Handling of Dnd
       Drag_Start_X, Drag_Start_Y : Gint;
