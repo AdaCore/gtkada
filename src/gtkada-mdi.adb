@@ -67,7 +67,6 @@ with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
-with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Gdk.Types.Keysyms;
 with Gdk.Window;              use Gdk.Window;
@@ -545,7 +544,9 @@ package body Gtkada.MDI is
 
    procedure Indent_Debug (Amount : Integer) is
    begin
-      Traces_Indent := Traces_Indent + Amount;
+      if Traces then
+         Traces_Indent := Traces_Indent + Amount;
+      end if;
    end Indent_Debug;
 
    ---------------
@@ -5493,7 +5494,7 @@ package body Gtkada.MDI is
          Focus_Child               : MDI_Child;
          Initial_All_Floating_Mode : constant Boolean := MDI.All_Floating_Mode;
          Do_Size_Allocate          : Boolean := True;
-         MDI_Width, MDI_Height     : Gint;
+         MDI_Width, MDI_Height               : Gint;
 
       begin
          if Perspectives = null
@@ -5558,43 +5559,31 @@ package body Gtkada.MDI is
                --  call to Maximize will find the correct size, but it helps
                --  debugging when we use the real sizes).
 
-               if Traces then
-                  declare
-                     Rect : Gdk_Rectangle;
-                  begin
-                     Get_Monitor_Geometry
-                       (Screen      => Gdk.Screen.Get_Default,
-                        Monitor_Num =>
-                          Get_Monitor_At_Window
-                            (Gdk.Screen.Get_Default, Get_Window (MDI)),
-                        Dest        => Rect);
-                     MDI_Width  := Rect.Width;
-                     MDI_Height := Rect.Height;
-                  end;
-
-               else
-                  MDI_Width := 1000;
-                  MDI_Height := 1000;
-               end if;
+               --  A value big enough that when the window is finally
+               --  resized the MDI is able to keep the proportions of its
+               --  children (which would not be the case if we had created
+               --  a 10x10 window for instance).
+               MDI_Width := 1000;
+               MDI_Height := 1000;
 
                Maximize (Gtk_Window (Get_Toplevel (MDI)));
                Do_Size_Allocate := False;
 
-               Print_Debug
-                 ("MDI must be maximized, to size "
-                  & Gint'Image (MDI_Width) & "x" & Gint'Image (MDI_Height));
-
             else
-               MDI_Width  :=
-                 Gint'Value (Get_Attribute (Perspectives, "width",  "640"));
-               MDI_Height :=
-                 Gint'Value (Get_Attribute (Perspectives, "height", "480"));
-               Print_Debug
-                 ("MDI size computed read from desktop "
-                  & Gint'Image (MDI_Width) & "x" & Gint'Image (MDI_Height));
+               MDI_Width  := Gint'Value
+                 (Get_Attribute (Perspectives, "width",  "640"));
+               MDI_Height := Gint'Value
+                 (Get_Attribute (Perspectives, "height", "480"));
 
-               Set_Default_Size
-                 (Gtk_Window (MDI.Get_Toplevel), MDI_Width, MDI_Height);
+               if Traces then
+                  Print_Debug
+                    ("MDI size computed read from desktop "
+                     & Gint'Image (MDI_Width) & "x"
+                     & Gint'Image (MDI_Height));
+               end if;
+
+               --  Cancel any size set by the user prior to restoring desktop
+               Set_Default_Size (Gtk_Window (MDI.Get_Toplevel), -1, -1);
             end if;
          exception
             when others =>
@@ -5884,14 +5873,13 @@ package body Gtkada.MDI is
                   declare
                      Win : constant Gtk_Widget :=
                        Get_Toplevel (Child.Initial);
-                     W, H : Gint;
                   begin
                      --  Note: This size doesn't include the size of the window
                      --  decorations, doesn't seem to be a way to do this.
-                     W := Get_Allocated_Width (Win);
-                     H := Get_Allocated_Height (Win);
-                     Add (Child_Node, "height", Gint'Image (H));
-                     Add (Child_Node, "width", Gint'Image (W));
+                     Add (Child_Node, "height",
+                          Gint'Image (Win.Get_Allocated_Width));
+                     Add (Child_Node, "width",
+                          Gint'Image (Win.Get_Allocated_Height));
                   end;
                end if;
 
@@ -6120,14 +6108,12 @@ package body Gtkada.MDI is
          begin
             if Win /= null then
                State := Get_State (Get_Window (Win));
-               if (State and Window_State_Maximized) = 0 then
-                  Set_Attribute
-                    (MDI.Perspectives, "width",
-                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width));
-                  Set_Attribute
-                    (MDI.Perspectives, "height",
-                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
-               end if;
+               Set_Attribute
+                 (MDI.Perspectives, "width",
+                  Gint'Image (MDI.Get_Allocated_Width));
+               Set_Attribute
+                 (MDI.Perspectives, "height",
+                  Gint'Image (MDI.Get_Allocated_Height));
 
                --  We are only interested in whether the window is maximized
                Set_Attribute
