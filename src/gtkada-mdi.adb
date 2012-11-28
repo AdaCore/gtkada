@@ -4353,6 +4353,7 @@ package body Gtkada.MDI is
          Child_Node            : Node_Ptr;
          User                  : User_Data;
          Parent_Width, Parent_Height : Gint;
+         Children_Count        : Integer;
          Parent_Orientation          : Gtk_Orientation;
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
@@ -4379,6 +4380,7 @@ package body Gtkada.MDI is
          Node                  : Node_Ptr;
          Focus_Child           : in out MDI_Child;
          Parent_Width, Parent_Height : Gint;
+         Parent_Children_Count : Integer;
          Parent_Orientation    : Gtk_Orientation;
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
@@ -4792,9 +4794,13 @@ package body Gtkada.MDI is
                end if;
          end case;
 
-         Print_Debug
-           ("Compute_Size_From_Attributes WAttr=" & WAttr & " HAttr=" & HAttr
-            & " => size " & Gint'Image (Width) & Gint'Image (Height));
+         if Traces then
+            Print_Debug
+              ("Compute_Size_From_Attributes WAttr=" & WAttr
+               & " HAttr=" & HAttr
+               & " children=" & Integer'Image (Children_Count)
+               & " => size " & Gint'Image (Width) & Gint'Image (Height));
+         end if;
       end Compute_Size_From_Attributes;
 
       -------------------------
@@ -4806,6 +4812,7 @@ package body Gtkada.MDI is
          Child_Node                  : Node_Ptr;
          User                        : User_Data;
          Parent_Width, Parent_Height : Gint;
+         Children_Count              : Integer;
          Parent_Orientation          : Gtk_Orientation;
          Focus_Child                 : in out MDI_Child;
          Width, Height               : out Gint;
@@ -4829,21 +4836,16 @@ package body Gtkada.MDI is
                          & Gint'Image (Parent_Width) & " Parent_Height="
                          & Gint'Image (Parent_Height) & " Parent_Orientation="
                          & Gtk_Orientation'Image (Parent_Orientation));
+            Indent_Debug (1);
          end if;
-
-         Indent_Debug (1);
 
          Compute_Size_From_Attributes
            (MDI, Child_Node, Parent_Width, Parent_Height, Parent_Orientation,
-            Width, Height, Children_Count => 1);
+            Width, Height, Children_Count => Children_Count);
 
          Pos    := Gtk_Position_Type'Value
            (Get_Attribute (Child_Node, "Tabs",
             Gtk_Position_Type'Image (MDI.Tabs_Position)));
-
-         Print_Debug
-           ("Parse_Notebook_Node: Width=" & Gint'Image (Width)
-            & " Height=" & Gint'Image (Height));
 
          Notebook := Create_Notebook (MDI);
          Print_Debug
@@ -5155,6 +5157,7 @@ package body Gtkada.MDI is
          Node                        : Node_Ptr;
          Focus_Child                 : in out MDI_Child;
          Parent_Width, Parent_Height : Gint;
+         Parent_Children_Count       : Integer;
          Parent_Orientation          : Gtk_Orientation;
          User                        : User_Data;
          Initial_Ref_Child           : Gtk_Notebook := null;
@@ -5176,7 +5179,7 @@ package body Gtkada.MDI is
       begin
          Compute_Size_From_Attributes
            (MDI, Node, Parent_Width, Parent_Height, Parent_Orientation,
-            Width_For_Children, Height_For_Children, Count);
+            Width_For_Children, Height_For_Children, Parent_Children_Count);
 
          if Traces then
             New_Line;
@@ -5185,9 +5188,8 @@ package body Gtkada.MDI is
                & " children=" & Integer'Image (Count)
                & " child_size=" & Gint'Image (Width_For_Children)
                & "x" & Gint'Image (Height_For_Children));
+            Indent_Debug (1);
          end if;
-
-         Indent_Debug (1);
 
          declare
             Notebooks : array (1 .. Count) of Gtk_Notebook;
@@ -5195,6 +5197,7 @@ package body Gtkada.MDI is
             Tmp_Width, Tmp_Height : Gint;
             Tmp_Orientation : Gtk_Orientation;
             Index     : Natural := Notebooks'First;
+            Child_Count : Integer := Count;
          begin
             --  First insert all direct children of the pane, splitting as
             --  needed. Only then process the Pane children. Otherwise, the
@@ -5213,6 +5216,7 @@ package body Gtkada.MDI is
                while Notebook_Node.Tag /= null
                  and then Notebook_Node.Tag.all = "Pane"
                loop
+                  Child_Count := Children_Count (Notebook_Node);
                   Compute_Size_From_Attributes
                     (MDI,
                      Notebook_Node,
@@ -5221,7 +5225,7 @@ package body Gtkada.MDI is
                      Parent_Orientation => Tmp_Orientation,
                      Width              => Tmp_Width,
                      Height             => Tmp_Height,
-                     Children_Count     => Children_Count (Notebook_Node));
+                     Children_Count     => Child_Count);
                   Tmp_Orientation := Gtk_Orientation'Value
                     (Get_Attribute (Notebook_Node, "Orientation"));
                   Print_Debug
@@ -5245,6 +5249,7 @@ package body Gtkada.MDI is
                         Parent_Width       => Tmp_Width,
                         Parent_Height      => Tmp_Height,
                         Parent_Orientation => Tmp_Orientation,
+                        Children_Count     => Child_Count,
                         User         => User,
                         Focus_Child  => Focus_Child,
                         Width        => Width,
@@ -5266,7 +5271,7 @@ package body Gtkada.MDI is
                         Parent_Orientation => Tmp_Orientation,
                         Width              => Width,
                         Height             => Height,
-                        Children_Count     => 1);
+                        Children_Count     => Child_Count);
 
                      Print_Debug ("Parse_Pane_Node: seen <central> size="
                                   & Gint'Image (Width) & Gint'Image (Height));
@@ -5328,6 +5333,7 @@ package body Gtkada.MDI is
                      User                  => User,
                      Parent_Width          => Width_For_Children,
                      Parent_Height         => Height_For_Children,
+                     Parent_Children_Count => Count,
                      Parent_Orientation    => Orientation,
                      Initial_Ref_Child     => Notebooks (Index),
                      To_Raise              => To_Raise,
@@ -5367,7 +5373,7 @@ package body Gtkada.MDI is
          --  destroyed during a desktop load.
 
       begin
-         Print_Debug ("Restore_Multi_Pane Full size="
+         Print_Debug ("Restore_Multi_Pane full_size="
                       & Gint'Image (Full_Width) & "x"
                       & Gint'Image (Full_Height));
          Indent_Debug (1);
@@ -5387,6 +5393,7 @@ package body Gtkada.MDI is
                   Focus_Child           => Focus_Child,
                   Parent_Width          => Full_Width,
                   Parent_Height         => Full_Height,
+                  Parent_Children_Count => 1,
                   Parent_Orientation    => Orientation_Horizontal,
                   User                  => User,
                   Initial_Ref_Child     => null,
@@ -5648,12 +5655,19 @@ package body Gtkada.MDI is
          --  The central area describes the floating children, so they are not
          --  part of MDI.Central.
 
-         Print_Debug ("+++++++ Loading central area ++++++");
+         if Traces then
+            Print_Debug ("+++++++ Loading central area ++++++");
+            Indent_Debug (3);
+         end if;
 
          To_Raise := Widget_List.Null_List;
          To_Hide  := Widget_List.Null_List;
 
          if not MDI.Independent_Perspectives and then From_Tree /= null then
+            --  ??? Incorrect: the size of the central area is only known once
+            --  we have loaded the perspectives, it isn't MDI_Width. But we
+            --  need the central area to load the rest of the desktop.
+
             Restore_Multi_Pane
               (Pane        => MDI.Central,
                MDI         => MDI,
@@ -5662,11 +5676,16 @@ package body Gtkada.MDI is
                To_Hide     => To_Hide,
                User        => User,
                Node        => From_Tree,
-               Full_Width  => MDI_Width,
-               Full_Height => MDI_Height);
+               Full_Width  => -1, --  MDI_Width,
+               Full_Height => -1); --  MDI_Height);
          end if;
 
          Set_Child_Visible (MDI.Central, True);
+
+         if Traces then
+            Print_Debug ("++++++ Finished loading central area +++++");
+            Indent_Debug (-3);
+         end if;
 
          --  Now restore the appropriate perspective, which gives the global
          --  organization of the desktop apart from the default area (which is
@@ -6296,8 +6315,12 @@ package body Gtkada.MDI is
 
          MDI.Current_Perspective := Tmp_Persp;
 
-         Print_Debug ("+++++++ Loading perspective " & Name
-                      & " ++++++");
+         if Traces then
+            Print_Debug ("");
+            Print_Debug ("+++++++ Loading perspective " & Name
+                         & " ++++++");
+            Indent_Debug (3);
+         end if;
 
          --  Get the size of the MDI
 
@@ -6430,6 +6453,11 @@ package body Gtkada.MDI is
             Realize (MDI);
             MDI.Get_Allocation (Alloc);
             Size_Allocate (MDI, Alloc);
+         end if;
+
+         if Traces then
+            Print_Debug ("++++++ Finished loading perspective ++++++");
+            Indent_Debug (-3);
          end if;
       end Internal_Load_Perspective;
 
