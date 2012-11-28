@@ -5391,6 +5391,10 @@ package body Gtkada.MDI is
                         Float_Child (Child, False);
                   end case;
                end if;
+
+            elsif Child_Node.Tag.all = "central" then
+               Add_Child (MDI, MDI.Central,
+                          Width => Full_Width, Height => Full_Height);
             end if;
 
             Child_Node := Child_Node.Next;
