@@ -52,7 +52,7 @@ with Cairo;                use Cairo;
 
 package body Gtkada.Multi_Paned is
 
-   Traces : constant Boolean := False;
+   Traces : constant Boolean := True;
    --  Whether debug traces should be displayed on stdout
 
    Minimum_Width : constant := 1;
@@ -60,6 +60,8 @@ package body Gtkada.Multi_Paned is
 
    Paned_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
+
+   Traces_Indent : Natural := 0;
 
    type Resize_Handle is record
       Position : Gdk.Rectangle.Gdk_Rectangle;
@@ -255,6 +257,9 @@ package body Gtkada.Multi_Paned is
       function Image (Value : Gint) return String;
       --  Return Value, without the leading space
 
+      function Extra return String;
+      --  Extra info to display for this node
+
       function Image (Value : Gint) return String is
          S : constant String := Gint'Image (Value);
       begin
@@ -282,38 +287,44 @@ package body Gtkada.Multi_Paned is
          end if;
       end Image;
 
+      function Extra return String is
+      begin
+         if Child.Widget.all in Gtk_Notebook_Record'Class then
+            return "pages="
+              & Image (Get_N_Pages (Gtk_Notebook (Child.Widget)))
+              & " ";
+         end if;
+
+         return "";
+      end Extra;
+
    begin
       if Child = null then
-         Put_Line ("<null>");
+         Print_Debug ("<null>");
 
       elsif Child.Is_Widget then
          Get_Allocation (Child.Widget, Alloc);
 
-         Put (Prefix & "<w req=("
-              & Image (Gint (Child.Width))
-              & Gint'Image (Gint (Child.Height))
-              & ") alloc=("
-              & Gint'Image (Alloc.X)
-              & Gint'Image (Alloc.Y)
-              & Gint'Image (Get_Allocated_Width (Child.Widget))
-              & Gint'Image (Get_Allocated_Height (Child.Widget))
-              & ") "
-              & Image ("HIDDEN", not Child.Visible)
-              & Image ("FIXED", Child.Fixed_Size)
-              & Image ("NoHandle", Child.Handle.Win = null));
-
-         if Child.Widget.all in Gtk_Notebook_Record'Class then
-            Put ("pages="
-                 & Image (Get_N_Pages (Gtk_Notebook (Child.Widget)))
-                 & " ");
-         end if;
-
-         Put_Line ("handle=("
-                   & Image (Child.Handle.Position.X)
-                   & Gint'Image (Child.Handle.Position.Y)
-                   & ") w=" & System.Address_Image (Child.Widget.all'Address)
-                   & " C=" & System.Address_Image (Get_Object (Child.Widget))
-                   & ">");
+         Print_Debug
+           (Prefix & "<w req=("
+            & Image (Gint (Child.Width))
+            & Gint'Image (Gint (Child.Height))
+            & ") alloc=("
+            & Gint'Image (Alloc.X)
+            & Gint'Image (Alloc.Y)
+            & Gint'Image (Get_Allocated_Width (Child.Widget))
+            & Gint'Image (Get_Allocated_Height (Child.Widget))
+            & ") "
+            & Image ("HIDDEN", not Child.Visible)
+            & Image ("FIXED", Child.Fixed_Size)
+            & Image ("NoHandle", Child.Handle.Win = null)
+            & Extra
+            & "handle=("
+            & Image (Child.Handle.Position.X)
+            & Gint'Image (Child.Handle.Position.Y)
+            & ") w=" & System.Address_Image (Child.Widget.all'Address)
+            --  & " C=" & System.Address_Image (Get_Object (Child.Widget))
+            & ">");
 
          if Child.Widget.all in Gtkada_Multi_Paned_Record'Class then
             Dump (Gtkada_Multi_Paned (Child.Widget),
@@ -322,14 +333,15 @@ package body Gtkada.Multi_Paned is
          end if;
 
       else
-         Put_Line (Prefix & "<" & Image (Child.Orientation)
-                   & " req=(" & Image (Gint (Child.Width))
-                   & Gint'Image (Gint (Child.Height))
-                   & ") x,y=(" & Image (Child.X) & Gint'Image (Child.Y) & ")"
-                   & " handle=("
-                   & Image (Child.Handle.Position.X)
-                   & Gint'Image (Child.Handle.Position.Y)
-                   & ")>");
+         Print_Debug
+           (Prefix & "<" & Image (Child.Orientation)
+            & " req=(" & Image (Gint (Child.Width))
+            & Gint'Image (Gint (Child.Height))
+            & ") x,y=(" & Image (Child.X) & Gint'Image (Child.Y) & ")"
+            & " handle=("
+            & Image (Child.Handle.Position.X)
+            & Gint'Image (Child.Handle.Position.Y)
+            & ")>");
          Tmp := Child.First_Child;
          while Tmp /= null loop
             Dump (Split, Tmp, Prefix & "  ");
@@ -747,10 +759,11 @@ package body Gtkada.Multi_Paned is
    begin
       if Traces then
          if Pane.Is_Widget then
-            Put_Line ("## Removing widget "
-                      & System.Address_Image (Pane.Widget.all'Address));
+            Print_Debug ("Removing widget "
+                         & System.Address_Image (Pane.Widget.all'Address),
+                         Debug_Increase);
          else
-            Put_Line ("## Removing pane");
+            Print_Debug ("Removing pane", Debug_Increase);
          end if;
       end if;
 
@@ -813,8 +826,8 @@ package body Gtkada.Multi_Paned is
       end if;
 
       if Traces then
-         Put_Line ("After Remove_Child");
          Dump (Split, Split.Children);
+         Print_Debug ("", Debug_Decrease);
       end if;
    end Remove_Child;
 
@@ -895,8 +908,8 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       if Traces then
-         Put_Line ("Button_Pressed in multi_panned has_selected_handle="
-                   & Boolean'Image (Split.Selected /= null));
+         Print_Debug ("Button_Pressed in multi_panned has_selected_handle="
+                      & Boolean'Image (Split.Selected /= null));
       end if;
 
       if Split.Selected = null then
@@ -1114,7 +1127,7 @@ package body Gtkada.Multi_Paned is
          Split.Queue_Resize;
 
          if Traces then
-            Put_Line ("After button_release");
+            Print_Debug ("After button_release");
             Dump (Split, Split.Children);
          end if;
 
@@ -1431,6 +1444,10 @@ package body Gtkada.Multi_Paned is
       Tmp         : Child_Description_Access;
       W, H        : Float := 0.0;
    begin
+      if Current = Split.Children then
+         Print_Debug ("Size_Request_Child", Debug_Increase);
+      end if;
+
       if Current.Is_Widget then
          if Current.Visible then
             if Current.Width < 0.0 or else Current.Height < 0.0 then
@@ -1490,6 +1507,11 @@ package body Gtkada.Multi_Paned is
          if H /= 0.0 then
             Current.Height := H;
          end if;
+      end if;
+
+      if Current = Split.Children then
+         Dump (Split, Current);
+         Print_Debug ("", Debug_Decrease);
       end if;
    end Size_Request_Child;
 
@@ -1609,13 +1631,13 @@ package body Gtkada.Multi_Paned is
       if Current.Orientation = Orientation_Horizontal then
          Compute_Ratios (Width, Req_Width, Fixed_Width);
          if Traces then
-            Put_Line ("Horiz Ratio=" & Float'Image (Ratio)
-                      & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
-                      & " Total=" & Float'Image (Width)
-                      & " Requested=" & Float'Image (Req_Width)
-                      & " Fixed=" & Float'Image (Fixed_Width)
-                      & " Handles=" & Float'Image (Handles_Size)
-                      & " Unrequested=" & Float'Image (Unrequested));
+            Print_Debug ("Horiz Ratio=" & Float'Image (Ratio)
+                         & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
+                         & " Total=" & Float'Image (Width)
+                         & " Requested=" & Float'Image (Req_Width)
+                         & " Fixed=" & Float'Image (Fixed_Width)
+                         & " Handles=" & Float'Image (Handles_Size)
+                         & " Unrequested=" & Float'Image (Unrequested));
          end if;
 
          while Tmp /= null loop
@@ -1661,13 +1683,13 @@ package body Gtkada.Multi_Paned is
       else
          Compute_Ratios (Height, Req_Height, Fixed_Height);
          if Traces then
-            Put_Line ("Vert Ratio=" & Float'Image (Ratio)
-                      & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
-                      & " Total=" & Float'Image (Height)
-                      & " Requested=" & Float'Image (Req_Height)
-                      & " Fixed=" & Float'Image (Fixed_Height)
-                      & " Handles=" & Float'Image (Handles_Size)
-                      & " Unrequested=" & Float'Image (Unrequested));
+            Print_Debug ("Vert Ratio=" & Float'Image (Ratio)
+                         & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
+                         & " Total=" & Float'Image (Height)
+                         & " Requested=" & Float'Image (Req_Height)
+                         & " Fixed=" & Float'Image (Fixed_Height)
+                         & " Handles=" & Float'Image (Handles_Size)
+                         & " Unrequested=" & Float'Image (Unrequested));
          end if;
          while Tmp /= null loop
             if Tmp.Visible then
@@ -1725,6 +1747,15 @@ package body Gtkada.Multi_Paned is
       SAlloc : Gtk_Allocation := Alloc;
 
    begin
+      if Traces then
+         Print_Debug ("Size_Allocate_Paned "
+                      & Gint'Image (Alloc.X)
+                      & Gint'Image (Alloc.Y)
+                      & Gint'Image (Alloc.Width)
+                      & "x" & Gint'Image (Alloc.Height),
+                     Debug_Increase);
+      end if;
+
       --  Apply the new size to the container
 
       Set_Allocation (Split, SAlloc);
@@ -1745,6 +1776,7 @@ package body Gtkada.Multi_Paned is
         or else Alloc.Width <= 1 --  Uninitialized yet
         or else Split.Children = null
       then
+         Print_Debug ("size_allocate: nothing to do", Debug_Decrease);
          return;
       end if;
 
@@ -1752,14 +1784,6 @@ package body Gtkada.Multi_Paned is
       --  children visibility have changed, we still need to propagate the
       --  event, otherwise the children are not properly refreshed, for
       --  instance the notebooks in the MDI.
-
-      if Traces then
-         Put_Line ("SIZE_ALLOCATE_PANED "
-                   & Gint'Image (Alloc.X)
-                   & Gint'Image (Alloc.Y)
-                   & Allocation_Int'Image (Alloc.Width)
-                   & "x" & Allocation_Int'Image (Alloc.Height));
-      end if;
 
       if Get_Has_Window (Split) then
          Split.Children.X := 0;
@@ -1774,14 +1798,14 @@ package body Gtkada.Multi_Paned is
          Float (Alloc.Width), Float (Alloc.Height));
 
       if Traces then
-         Put_Line ("## after Size_Allocate");
          Dump (Split, Split.Children);
+         Print_Debug ("", Debug_Decrease);
       end if;
 
    exception
       when E : others =>
          if Traces then
-            Put_Line ("Unexpected exception " & Exception_Information (E));
+            Print_Debug ("Unexpected exception " & Exception_Information (E));
          end if;
    end Size_Allocate_Paned;
 
@@ -1795,6 +1819,7 @@ package body Gtkada.Multi_Paned is
       Split        : constant Gtkada_Multi_Paned :=
         Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
    begin
+      Print_Debug ("Get_Preferred_Width");
       if Split.Children /= null then
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
 
@@ -1804,11 +1829,6 @@ package body Gtkada.Multi_Paned is
 
          --  ??? Should compute ideal size
          Natural_Size := Gint (Split.Children.Width);
-
-         if Traces then
-            Put_Line ("## after Get_Preferred_Width");
-            Dump (Split, Split.Children);
-         end if;
       else
          Minimum_Size := 0;
          Natural_Size := 100;
@@ -1825,13 +1845,9 @@ package body Gtkada.Multi_Paned is
       Split        : constant Gtkada_Multi_Paned :=
         Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
    begin
+      Print_Debug ("Get_Preferred_Height");
       if Split.Children /= null then
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
-
-         if Traces then
-            Put_Line ("## after Get_Preferred_Height");
-            Dump (Split, Split.Children);
-         end if;
 
          --  ??? Should look at the number of handles and children with a
          --  fixed or minimal size
@@ -1839,7 +1855,6 @@ package body Gtkada.Multi_Paned is
 
          --  ??? Should compute ideal size
          Natural_Size := Gint (Split.Children.Height);
-
       else
          Minimum_Size := 0;
          Natural_Size := 100;
@@ -2049,7 +2064,7 @@ package body Gtkada.Multi_Paned is
          Tmp2     : Child_Description_Access;
       begin
          if Traces then
-            Put_Line ("Add_In_List");
+            Print_Debug ("Add_In_List");
          end if;
 
          Tmp2 := new Child_Description'
@@ -2087,9 +2102,7 @@ package body Gtkada.Multi_Paned is
            and then Win.Children.Width > 0.0
            and then not Win.Frozen
          then
-            if Traces then
-               Put_Line ("Adjusting sizes since window is realized");
-            end if;
+            Print_Debug ("Adjusting sizes since window is realized");
             if Ref_Item.Width > Float (Width) then
                Ref_Item.Width := Ref_Item.Width - Float (Width);
             else
@@ -2112,9 +2125,7 @@ package body Gtkada.Multi_Paned is
 
       procedure Add_As_First_Child (Parent : Child_Description_Access) is
       begin
-         if Traces then
-            Put_Line ("Add_As_First_Child");
-         end if;
+         Print_Debug ("Add_As_First_Child");
          if Parent.First_Child = null then
             Parent.First_Child := new Child_Description'
               (Parent      => Parent,
@@ -2139,9 +2150,7 @@ package body Gtkada.Multi_Paned is
       procedure Add_After_All_Children (Parent : Child_Description_Access) is
          Tmp : Child_Description_Access;
       begin
-         if Traces then
-            Put_Line ("Add_After_All_Children");
-         end if;
+         Print_Debug ("Add_After_All_Children");
          if Parent.First_Child = null then
             Parent.First_Child := new Child_Description'
               (Parent      => Parent,
@@ -2167,14 +2176,15 @@ package body Gtkada.Multi_Paned is
       Alloc : Gtk_Allocation;
    begin
       if Traces then
-         Put_Line ("Split_Internal: Orientation="
-                   & Gtk_Orientation'Image (Orientation)
-                   & " Width=" & Gint'Image (Width)
-                   & " Height=" & Gint'Image (Height)
-                   & " After=" & Boolean'Image (After)
-                   & " Fixed=" & Boolean'Image (Fixed_Size)
-                   & " Ref_Widget=" & Boolean'Image (Ref_Widget /= null)
-                   & " Ref_Pane=" & Boolean'Image (Ref_Pane /= null));
+         Print_Debug ("Split "
+                      & Gtk_Orientation'Image (Orientation)
+                      & " w=" & Gint'Image (Width)
+                      & " h=" & Gint'Image (Height)
+                      & " Aft=" & Boolean'Image (After)
+                      & " Fix=" & Boolean'Image (Fixed_Size)
+                      & " Widget=" & Boolean'Image (Ref_Widget /= null)
+                      & " Pane=" & Boolean'Image (Ref_Pane /= null),
+                      Debug_Increase);
       end if;
 
       if Ref_Pane /= null then
@@ -2182,9 +2192,7 @@ package body Gtkada.Multi_Paned is
          Current := Child_Description_Access (Ref_Pane);
       elsif Ref_Widget = null then
          if Use_Ref_Pane then
-            if Traces then
-               Put_Line ("Split_Internal: Splitting main window");
-            end if;
+            Print_Debug ("Split_Internal: Splitting main window");
 
             --  Split main window
             Current := Win.Children;
@@ -2233,9 +2241,7 @@ package body Gtkada.Multi_Paned is
 
       --   Current = null => Do nothing unless there is no child yet
       elsif Win.Children = null then
-         if Traces then
-            Put_Line ("No children yet");
-         end if;
+         Print_Debug ("No children yet");
          New_Pane := new Child_Description'
            (Parent      => null,
             Next        => null,
@@ -2261,9 +2267,7 @@ package body Gtkada.Multi_Paned is
          New_Pane.Parent := Win.Children;
 
       elsif Win.Children /= null then
-         if Traces then
-            Put_Line ("Added as first child of Win");
-         end if;
+         Print_Debug ("Added as first child of Win");
          Add_As_First_Child (Win.Children);
       end if;
 
@@ -2300,11 +2304,8 @@ package body Gtkada.Multi_Paned is
       end if;
 
       if Traces then
-         Put_Line ("Split_Internal: After inserting "
-                   & System.Address_Image (New_Child.all'Address)
-                   & " Width=" & Gint'Image (Width)
-                   & " Height=" & Gint'Image (Height));
          Dump (Win, Win.Children);
+         Print_Debug ("", Debug_Decrease);
       end if;
    end Split_Internal;
 
@@ -2315,10 +2316,7 @@ package body Gtkada.Multi_Paned is
    procedure Freeze (Win : access Gtkada_Multi_Paned_Record) is
    begin
       Win.Frozen := True;
-
-      if Traces then
-         Put_Line ("Multi_Paned: Freeze");
-      end if;
+      Print_Debug ("Multi_Paned: Freeze", Debug_Increase);
    end Freeze;
 
    ----------
@@ -2335,9 +2333,7 @@ package body Gtkada.Multi_Paned is
          Win.Children.Width   := -1.0;
       end if;
 
-      if Traces then
-         Put_Line ("Multi_Paned: Thaw");
-      end if;
+      Print_Debug ("Multi_Paned: Thaw", Debug_Decrease);
    end Thaw;
 
    -----------
@@ -2476,12 +2472,34 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       if Traces then
-         Put_Line ("After Set_Size on "
-                   & System.Address_Image (Widget.all'Address)
-                   & " to " & Gint'Image (Width)
-                   & Gint'Image (Height));
+         Print_Debug ("After Set_Size on "
+                      & System.Address_Image (Widget.all'Address)
+                      & " to " & Gint'Image (Width)
+                      & Gint'Image (Height));
          Dump (Win, Win.Children);
       end if;
    end Set_Size;
+
+   -----------------
+   -- Print_Debug --
+   -----------------
+
+   procedure Print_Debug
+     (Msg : String; Mode : Debug_Level_Change := Debug_Preserve) is
+   begin
+      if Traces then
+         if Mode = Debug_Decrease then
+            Traces_Indent := Traces_Indent - 3;
+         end if;
+
+         if Msg /= "" then
+            Put_Line ((1 .. Traces_Indent => ' ') & Msg);
+         end if;
+
+         if Mode = Debug_Increase then
+            Traces_Indent := Traces_Indent + 3;
+         end if;
+      end if;
+   end Print_Debug;
 
 end Gtkada.Multi_Paned;

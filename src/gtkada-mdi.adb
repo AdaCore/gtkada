@@ -107,10 +107,8 @@ package body Gtkada.MDI is
 
    use Glib.Xml_Int;
 
-   Traces : constant Boolean := False;
+   Traces : constant Boolean := True;
    --  True if traces should be activated
-
-   Traces_Indent : Natural := 0;
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
    --  Default color to use for the title bar of the child that has
@@ -448,10 +446,6 @@ package body Gtkada.MDI is
    pragma Convention (C, Note_Notify);
    --  Notified if the old notebook that contained Child is destroyed
 
-   procedure Print_Debug (Msg : String);
-   procedure Indent_Debug (Amount : Integer);
-   --  Debug support
-
    function In_Central_Area
      (MDI   : access MDI_Window_Record'Class;
       Child : access Gtk_Widget_Record'Class) return Boolean;
@@ -526,28 +520,6 @@ package body Gtkada.MDI is
 
       return False;
    end In_Central_Area;
-
-   -----------------
-   -- Print_Debug --
-   -----------------
-
-   procedure Print_Debug (Msg : String) is
-   begin
-      if Traces then
-         Put_Line ((1 .. Traces_Indent => ' ') & "MDI: " & Msg);
-      end if;
-   end Print_Debug;
-
-   ------------------
-   -- Indent_Debug --
-   ------------------
-
-   procedure Indent_Debug (Amount : Integer) is
-   begin
-      if Traces then
-         Traces_Indent := Traces_Indent + Amount;
-      end if;
-   end Indent_Debug;
 
    ---------------
    -- Set_State --
@@ -1522,8 +1494,7 @@ package body Gtkada.MDI is
          then
             Prevent_Delete := False;
          else
-            Print_Debug ("Close_Child, emitting delete_event");
-            Indent_Debug (1);
+            Print_Debug ("Close_Child, emitting delete_event", Debug_Increase);
 
             Gdk_New (Event, Delete);
             Event.Any.Window := Get_Window (MDI);
@@ -1538,9 +1509,9 @@ package body Gtkada.MDI is
 
             Free (Event);
 
-            Indent_Debug (-1);
             Print_Debug ("Close_Child, done delete_event, prevent_delete ?"
-                         & Boolean'Image (Prevent_Delete));
+                         & Boolean'Image (Prevent_Delete),
+                         Debug_Decrease);
          end if;
 
          if not Prevent_Delete then
@@ -4414,7 +4385,7 @@ package body Gtkada.MDI is
          Focus_Child      : in out MDI_Child;
          To_Raise         : in out Gtk.Widget.Widget_List.Glist;
          To_Hide          : in out Gtk.Widget.Widget_List.Glist;
-         Width, Height    : Gint := 0;
+         MDI_Width, MDI_Height : Gint;
          Do_Size_Allocate : Boolean);
       --  Internal version of Load_Perspective.
       --  If Name is "", the first perspective is loaded.
@@ -4571,8 +4542,7 @@ package body Gtkada.MDI is
          Persp   : Perspective_Menu_Item;
          Group   : Widget_SList.GSlist := Widget_SList.Null_List;
       begin
-         Print_Debug ("Create_Perspective_Menu");
-         Indent_Debug (1);
+         Print_Debug ("Create_Perspective_Menu", Debug_Increase);
 
          --  Prevent changing perspective when setting "Active" on the buttons
          MDI.Loading_Desktop := True;
@@ -4613,7 +4583,7 @@ package body Gtkada.MDI is
 
          MDI.Loading_Desktop := False;
 
-         Indent_Debug (-1);
+         Print_Debug ("", Debug_Decrease);
       end Create_Perspective_Menu;
 
       -----------------
@@ -4836,8 +4806,8 @@ package body Gtkada.MDI is
             Print_Debug ("Parse_Notebook_Node Parent_Width="
                          & Gint'Image (Parent_Width) & " Parent_Height="
                          & Gint'Image (Parent_Height) & " Parent_Orientation="
-                         & Gtk_Orientation'Image (Parent_Orientation));
-            Indent_Debug (1);
+                         & Gtk_Orientation'Image (Parent_Orientation),
+                         Debug_Increase);
          end if;
 
          Compute_Size_From_Attributes
@@ -4926,7 +4896,7 @@ package body Gtkada.MDI is
             Unref (Raised_Child);
          end if;
 
-         Indent_Debug (-1);
+         Print_Debug ("", Debug_Decrease);
       end Parse_Notebook_Node;
 
       ----------------------
@@ -4953,8 +4923,7 @@ package body Gtkada.MDI is
          Iter     : Child_Iterator;
          Tmp      : MDI_Child;
       begin
-         Print_Debug ("Parse_Child_Node");
-         Indent_Debug (1);
+         Print_Debug ("Parse_Child_Node", Debug_Increase);
 
          Child    := null;
          Raised   := False;
@@ -5102,7 +5071,7 @@ package body Gtkada.MDI is
             Prepend (To_Hide, Gtk_Widget (Child));
          end if;
 
-         Indent_Debug (-1);
+         Print_Debug ("", Debug_Decrease);
       end Parse_Child_Node;
 
       ---------------------
@@ -5188,8 +5157,8 @@ package body Gtkada.MDI is
               ("Parse_Pane_Node " & Gtk_Orientation'Image (Orientation)
                & " children=" & Integer'Image (Count)
                & " child_size=" & Gint'Image (Width_For_Children)
-               & "x" & Gint'Image (Height_For_Children));
-            Indent_Debug (1);
+               & "x" & Gint'Image (Height_For_Children),
+               Debug_Increase);
          end if;
 
          declare
@@ -5262,7 +5231,8 @@ package body Gtkada.MDI is
 
                      W := Gtk_Widget (Notebooks (Index));
 
-                  else
+                  elsif Notebook_Node.Tag.all = "central" then
+                     Print_Debug ("Parse_Pane_Node: seen <central>");
                      W      := Gtk_Widget (MDI.Central);
                      Compute_Size_From_Attributes
                        (MDI,
@@ -5273,9 +5243,6 @@ package body Gtkada.MDI is
                         Width              => Width,
                         Height             => Height,
                         Children_Count     => Child_Count);
-
-                     Print_Debug ("Parse_Pane_Node: seen <central> size="
-                                  & Gint'Image (Width) & Gint'Image (Height));
                   end if;
 
                   if Get_Parent (W) = null then
@@ -5346,7 +5313,7 @@ package body Gtkada.MDI is
             end loop;
          end;
 
-         Indent_Debug (-1);
+         Print_Debug ("", Debug_Decrease);
       end Parse_Pane_Node;
 
       ------------------------
@@ -5376,8 +5343,7 @@ package body Gtkada.MDI is
       begin
          Print_Debug ("Restore_Multi_Pane full_size="
                       & Gint'Image (Full_Width) & "x"
-                      & Gint'Image (Full_Height));
-         Indent_Debug (1);
+                      & Gint'Image (Full_Height), Debug_Increase);
 
          while Child_Node /= null loop
             if Traces then
@@ -5443,7 +5409,7 @@ package body Gtkada.MDI is
             end;
          end if;
 
-         Indent_Debug (-1);
+         Print_Debug ("", Debug_Decrease);
       end Restore_Multi_Pane;
 
       ---------------------------------
@@ -5530,15 +5496,7 @@ package body Gtkada.MDI is
             return False;
          end if;
 
-         Print_Debug ("Restore_Desktop");
-         Print_Debug ("Current MDI size is"
-                      & Gint'Image (MDI.Get_Allocated_Width)
-                      & "x" & Gint'Image (MDI.Get_Allocated_Height));
-         Print_Debug
-           ("Current window size is"
-            & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width)
-            & "x"
-            & Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
+         Print_Debug ("Restore_Desktop", Debug_Increase);
 
          --  We must restore the size of the main window first, so that the
          --  rest of the desktop makes sense.
@@ -5577,7 +5535,7 @@ package body Gtkada.MDI is
 
                if Traces then
                   Print_Debug
-                    ("MDI size computed read from desktop "
+                    ("MDI size from perspective:"
                      & Gint'Image (MDI_Width) & "x"
                      & Gint'Image (MDI_Height));
                end if;
@@ -5632,22 +5590,17 @@ package body Gtkada.MDI is
          --  Prepare the contents of the central area. This will automatically
          --  replace the central area's contents in the perspective
 
-         Print_Debug ("+++++++ Destroying central area ++++++");
-
          if MDI.Central /= null then
+            Print_Debug ("Destroying central area", Debug_Increase);
             --  It could come from a previous desktop
             Destroy (MDI.Central);
+            Print_Debug ("", Debug_Decrease);
          end if;
 
          Gtk_New (MDI.Central);
 
          --  The central area describes the floating children, so they are not
          --  part of MDI.Central.
-
-         if Traces then
-            Print_Debug ("+++++++ Loading central area ++++++");
-            Indent_Debug (3);
-         end if;
 
          To_Raise := Widget_List.Null_List;
          To_Hide  := Widget_List.Null_List;
@@ -5657,6 +5610,10 @@ package body Gtkada.MDI is
             --  we have loaded the perspectives, it isn't MDI_Width. But we
             --  need the central area to load the rest of the desktop.
 
+            if Traces then
+               Print_Debug ("Loading central area", Debug_Increase);
+            end if;
+
             Restore_Multi_Pane
               (Pane        => MDI.Central,
                MDI         => MDI,
@@ -5665,15 +5622,12 @@ package body Gtkada.MDI is
                To_Hide     => To_Hide,
                User        => User,
                Node        => From_Tree,
-               Full_Width  => -1, --  MDI_Width,
-               Full_Height => -1); --  MDI_Height);
-         end if;
+               Full_Width  => MDI_Width,
+               Full_Height => MDI_Height);
 
-         Set_Child_Visible (MDI.Central, True);
+            Print_Debug ("Done loading central area", Debug_Decrease);
 
-         if Traces then
-            Print_Debug ("++++++ Finished loading central area +++++");
-            Indent_Debug (-3);
+            Set_Child_Visible (MDI.Central, True);
          end if;
 
          --  Now restore the appropriate perspective, which gives the global
@@ -5686,8 +5640,8 @@ package body Gtkada.MDI is
             User, Focus_Child => Focus_Child,
             To_Raise          => To_Raise,
             To_Hide           => To_Hide,
-            Width             => MDI_Width,
-            Height            => MDI_Height,
+            MDI_Width         => MDI_Width,
+            MDI_Height        => MDI_Height,
             Do_Size_Allocate  => Do_Size_Allocate);
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
@@ -5703,6 +5657,8 @@ package body Gtkada.MDI is
          Emit_By_Name
            (Get_Object (MDI),
             String (Signal_Children_Reorganized) & ASCII.NUL);
+
+         Print_Debug ("Done Restore_Desktop", Debug_Decrease);
 
          return True;
       end Restore_Desktop;
@@ -6194,7 +6150,7 @@ package body Gtkada.MDI is
          Focus_Child      : in out MDI_Child;
          To_Raise         : in out Gtk.Widget.Widget_List.Glist;
          To_Hide          : in out Gtk.Widget.Widget_List.Glist;
-         Width, Height    : Gint := 0;
+         MDI_Width, MDI_Height : Gint;
          Do_Size_Allocate : Boolean)
       is
          Alloc    : Gtk_Allocation;
@@ -6215,8 +6171,8 @@ package body Gtkada.MDI is
             Parent      : Gtk_Widget;
          begin
             Print_Debug ("Remove_All_Items: remove_empty="
-                         & Boolean'Image (Remove_All_Empty));
-            Indent_Debug (1);
+                         & Boolean'Image (Remove_All_Empty),
+                         Debug_Increase);
 
             --  Remove all children from the MDI. However, we do not close them
             --  in case we switch back to the perspective (or the user opens
@@ -6270,11 +6226,9 @@ package body Gtkada.MDI is
             --  can now only be in the central area, whose contents has not
             --  changed anyway.
 
-            Indent_Debug (-1);
-            Print_Debug ("Remove_All_Items: done");
+            Print_Debug ("", Debug_Decrease);
          end Remove_All_Items;
 
-         MDI_Width, MDI_Height : Gint;
          Tmp_Persp : Node_Ptr;
 
       begin
@@ -6302,32 +6256,13 @@ package body Gtkada.MDI is
          MDI.Current_Perspective := Tmp_Persp;
 
          if Traces then
-            Print_Debug ("");
-            Print_Debug ("+++++++ Loading perspective " & Name
-                         & " ++++++");
-            Indent_Debug (3);
+            Print_Debug ("Loading perspective " & Name,
+                         Debug_Increase);
          end if;
-
-         --  Get the size of the MDI
-
-         if Width = 0 then
-            MDI_Width  := Get_Allocated_Width (MDI);
-         else
-            MDI_Width := Width;
-         end if;
-
-         if Height = 0 then
-            MDI_Height := Get_Allocated_Height (MDI);
-         else
-            MDI_Height := Height;
-         end if;
-
-         Print_Debug ("MDI size reported as "
-                      & Gint'Image (MDI_Width)
-                      & Gint'Image (MDI_Height));
 
          --  Remove central from the MDI, and it will be put in the new
          --  perspective
+
          Ref (MDI.Central);
          if Get_Parent (MDI.Central) /= null then
             Remove (Gtk_Container (Get_Parent (MDI.Central)), MDI.Central);
@@ -6339,11 +6274,6 @@ package body Gtkada.MDI is
          --  Clean up MDI if necessary
 
          Remove_All_Items (Remove_All_Empty => True);
-
-         if Traces then
-            Print_Debug ("Done removing all children, desktop is now:");
-            Dump (MDI);
-         end if;
 
          Restore_Multi_Pane
            (Pane                  => MDI,
@@ -6363,6 +6293,7 @@ package body Gtkada.MDI is
          if not MDI.Independent_Perspectives
            and then Get_Parent (MDI.Central) = null
          then
+            Print_Debug ("central not in desktop, force adding");
             Add_Child (MDI, MDI.Central);
          end if;
 
@@ -6410,10 +6341,6 @@ package body Gtkada.MDI is
 
          Show_All (MDI);
 
-         --  If Central was not part of the perspective (an error...), we let
-         --  gtk+ display an error message. We cannot simply Add_Child the
-         --  central area to the MDI, since that doesn't seem to work correctly
-
          if not MDI.Independent_Perspectives then
             Realize (MDI.Central);
             Show_All (MDI.Central);
@@ -6442,8 +6369,7 @@ package body Gtkada.MDI is
          end if;
 
          if Traces then
-            Print_Debug ("++++++ Finished loading perspective ++++++");
-            Indent_Debug (-3);
+            Print_Debug ("Done loading perspective", Debug_Decrease);
          end if;
       end Internal_Load_Perspective;
 
@@ -6485,6 +6411,8 @@ package body Gtkada.MDI is
             Focus_Child      => Focus_Child,
             To_Raise         => To_Raise,
             To_Hide          => To_Hide,
+            MDI_Width        => MDI.Get_Allocated_Width,
+            MDI_Height       => MDI.Get_Allocated_Height,
             Do_Size_Allocate => True);
       end Load_Perspective;
 

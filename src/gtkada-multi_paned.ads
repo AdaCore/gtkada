@@ -245,11 +245,21 @@ package Gtkada.Multi_Paned is
    --  panes). The parent size is the total size devoted to its children,
    --  omitting the size occupied by resize handles.
 
+   -----------
+   -- Debug --
+   -----------
+   --  The following subprograms are only intended for debugging purposes.
+
    procedure Dump (Split : access Gtkada_Multi_Paned_Record'Class);
    --  Dump the configuration of Split to stdout. This is only intended for
    --  testing purposes. If you want to save and restore this configuration,
    --  you should look at Gtkada.MDI instead, which contains all the
    --  subprograms needed to handle desktops.
+
+   type Debug_Level_Change is (Debug_Preserve, Debug_Increase, Debug_Decrease);
+   procedure Print_Debug
+     (Msg : String; Mode : Debug_Level_Change := Debug_Preserve);
+   --  Debug support
 
 private
    type Child_Description;
