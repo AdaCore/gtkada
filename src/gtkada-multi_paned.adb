@@ -52,7 +52,7 @@ with Cairo;                use Cairo;
 
 package body Gtkada.Multi_Paned is
 
-   Traces : constant Boolean := True;
+   Traces : constant Boolean := False;
    --  Whether debug traces should be displayed on stdout
 
    Minimum_Width : constant := 1;
@@ -1393,10 +1393,9 @@ package body Gtkada.Multi_Paned is
       if Current.Width = Width and then Current.Height = Height then
          null;
       elsif Current.Is_Widget then
-         Set_Size_Request
-           (Current.Widget,
-            Gint (Float'Max (1.0, Width)),
-            Gint (Float'Max (1.0, Height)));
+         --  Do not call Set_Size_Request, we just want to force a size here.
+         Current.Width := Float'Max (1.0, Width);
+         Current.Height := Float'Max (1.0, Height);
       elsif Current.Orientation = Orientation_Horizontal then
          Count := Count_Children (Current) - 1;
          Size  := Current.Width - Float (Count * Handle_Width);

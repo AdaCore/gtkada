@@ -107,7 +107,7 @@ package body Gtkada.MDI is
 
    use Glib.Xml_Int;
 
-   Traces : constant Boolean := True;
+   Traces : constant Boolean := False;
    --  True if traces should be activated
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
@@ -434,10 +434,12 @@ package body Gtkada.MDI is
      (Child             : access MDI_Child_Record'Class;
       Float             : Boolean;
       Position_At_Mouse : Boolean;
-      X, Y              : Gint);
-   --  Internal version of Float_Child, where the user can choose whether the
+      X, Y              : Gint;
+      Width, Height     : Gint := -1);
+   --  internal version of Float_Child, where the user can choose whether the
    --  new floating window should be located where the mouse is, or at
-   --  coordinates specified by (X, Y)
+   --  coordinates specified by (X, Y).
+   --  (Width, Height) can be use to force a specific size.
 
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class);
    --  Hide or display the title bar of the child, depending on its status.
@@ -1534,9 +1536,6 @@ package body Gtkada.MDI is
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
 
          if Traces then
             Print_Debug ("Unexpected exception "
@@ -3120,7 +3119,8 @@ package body Gtkada.MDI is
      (Child             : access MDI_Child_Record'Class;
       Float             : Boolean;
       Position_At_Mouse : Boolean;
-      X, Y              : Gint)
+      X, Y              : Gint;
+      Width, Height     : Gint := -1)
    is
       use Object_List;
       Diag        : Gtk_Dialog;
@@ -3133,19 +3133,36 @@ package body Gtkada.MDI is
       Print_Debug
         ("Float_Child " & Get_Title (Child)
          & " State=" & State_Type'Image (Child.State)
-         & " Float=" & Boolean'Image (Float));
+         & " Float=" & Boolean'Image (Float), Debug_Increase);
 
       --  If the Child already has a window, the resulting floating window
       --  should have the same size.
       --  Otherwise, ask the Child for its requisiton.
 
-      if Child.Get_Mapped then
-         W := Get_Allocated_Width (Child);
-         H := Get_Allocated_Height (Child);
+      if Width /= -1 and then Height /= -1 then
+         W := Width;
+         H := Height;
+         if Traces then
+            Print_Debug ("Forced size:" & Gint'Image (W) & "x"
+                         & Gint'Image (H));
+         end if;
+
+      elsif Child.Get_Mapped then
+         W := Child.Get_Allocated_Width;
+         H := Child.Get_Allocated_Height;
+         if Traces then
+            Print_Debug ("Size from allocated:" & Gint'Image (W) & "x"
+                         & Gint'Image (H));
+         end if;
+
       else
          Child.Get_Preferred_Size (Min, Requisition);
          W := Requisition.Width;
          H := Requisition.Height;
+         if Traces then
+            Print_Debug ("Use preferred size:" & Gint'Image (W) & "x"
+                         & Gint'Image (H));
+         end if;
       end if;
 
       if Child.State /= Floating and then Float then
@@ -3285,6 +3302,8 @@ package body Gtkada.MDI is
          Unref (Child);
          Widget_Callback.Emit_By_Name (Child, Signal_Unfloat_Child);
       end if;
+
+      Print_Debug ("", Debug_Decrease);
    end Internal_Float_Child;
 
    -----------------
@@ -3941,10 +3960,8 @@ package body Gtkada.MDI is
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
-         null;
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
    end Removed_From_Notebook;
 
    -----------
@@ -4064,10 +4081,8 @@ package body Gtkada.MDI is
 
    exception
       when E : others =>
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
-         null;
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
    end Split_H_Cb;
 
    ----------------
@@ -4086,10 +4101,8 @@ package body Gtkada.MDI is
       end if;
    exception
       when E : others =>
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
-         null;
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
    end Split_V_Cb;
 
    --------------
@@ -4116,10 +4129,8 @@ package body Gtkada.MDI is
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
-         null;
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
    end Float_Cb;
 
    --------------
@@ -4148,10 +4159,7 @@ package body Gtkada.MDI is
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
-         pragma Debug
-           (Put_Line
-              ("Unexpected exception: " & Exception_Information (E)));
-         null;
+         Print_Debug ("Unexpected exception: " & Exception_Information (E));
    end Close_Cb;
 
    --------------
@@ -4296,6 +4304,8 @@ package body Gtkada.MDI is
 
    package body Desktop is
 
+      Invalid_Desktop : exception;
+
       procedure Get_XML_For_Widget
         (Child            : MDI_Child;
          User             : User_Data;
@@ -4313,6 +4323,7 @@ package body Gtkada.MDI is
          Focus_Child : in out MDI_Child;
          X           : out Gint;
          Y           : out Gint;
+         W, H        : out Gint;
          Raised      : out Boolean;
          State       : out State_Type;
          Child       : out MDI_Child;
@@ -4726,6 +4737,13 @@ package body Gtkada.MDI is
          Tmp   : Gint;
          Handle_Size : constant Gint := MDI.Handle_Size;
       begin
+         if WAttr (WAttr'Last) /= '%'
+           or else HAttr (HAttr'Last) /= '%'
+         then
+            raise Invalid_Desktop with
+              "Old-format perspectives are no longer supported";
+         end if;
+
          --  For backward compatibility, we accept absolute sizes in the XML
          --  nodes, but that might lead to inconsistencies (and incorrect
          --  reload of desktop) if the user modifies this by hand
@@ -4740,29 +4758,19 @@ package body Gtkada.MDI is
          case Parent_Orientation is
             when Orientation_Horizontal =>
                Height := Parent_Height;
-
-               if WAttr (WAttr'Last) = '%' then
-                  Tmp :=
-                    Parent_Width - Gint (Children_Count - 1) * Handle_Size;
-                  Width  := Gint
-                    (Float'Value (WAttr (WAttr'First .. WAttr'Last - 1))
-                     * Float (Tmp) / 100.0);
-               else
-                  Width := Gint'Value (WAttr);
-               end if;
+               Tmp :=
+                 Parent_Width - Gint (Children_Count - 1) * Handle_Size;
+               Width  := Gint
+                 (Float'Value (WAttr (WAttr'First .. WAttr'Last - 1))
+                  * Float (Tmp) / 100.0);
 
             when Orientation_Vertical =>
                Width := Parent_Width;
-
-               if HAttr (HAttr'Last) = '%' then
-                  Tmp :=
-                    Parent_Height - Gint (Children_Count - 1) * Handle_Size;
-                  Height := Gint
-                    (Float'Value (HAttr (HAttr'First .. HAttr'Last - 1))
-                     * Float (Tmp) / 100.0);
-               else
-                  Height := Gint'Value (HAttr);
-               end if;
+               Tmp :=
+                 Parent_Height - Gint (Children_Count - 1) * Handle_Size;
+               Height := Gint
+                 (Float'Value (HAttr (HAttr'First .. HAttr'Last - 1))
+                  * Float (Tmp) / 100.0);
          end case;
 
          if Traces then
@@ -4797,7 +4805,7 @@ package body Gtkada.MDI is
          Raised       : Boolean;
          Raised_Child : MDI_Child;
          Child        : MDI_Child;
-         X, Y         : Gint;
+         X, Y, W, H   : Gint;
          Dummy        : Gtk_Label;
          Pos          : Gtk_Position_Type;
 
@@ -4838,7 +4846,7 @@ package body Gtkada.MDI is
          while N /= null loop
             if N.Tag.all = "Child" then
                Parse_Child_Node
-                 (MDI, N, User, Focus_Child, X, Y,
+                 (MDI, N, User, Focus_Child, X, Y, W, H,
                   Raised, State, Child, To_Hide => To_Hide);
 
                --  Child cannot be floating while in a notebook
@@ -4910,6 +4918,7 @@ package body Gtkada.MDI is
          Focus_Child : in out MDI_Child;
          X           : out Gint;
          Y           : out Gint;
+         W, H        : out Gint;
          Raised      : out Boolean;
          State       : out State_Type;
          Child       : out MDI_Child;
@@ -4917,7 +4926,6 @@ package body Gtkada.MDI is
       is
          N        : Node_Ptr;
          Register : Register_Node;
-         W, H     : Allocation_Int := -1;
          Visible  : constant Boolean := Boolean'Value
            (Get_Attribute (Child_Node, "visible", "true"));
          Iter     : Child_Iterator;
@@ -4925,6 +4933,8 @@ package body Gtkada.MDI is
       begin
          Print_Debug ("Parse_Child_Node", Debug_Increase);
 
+         W        := -1;
+         H        := -1;
          Child    := null;
          Raised   := False;
          State    := Normal;
@@ -5062,9 +5072,7 @@ package body Gtkada.MDI is
             N := N.Next;
          end loop;
 
-         if W /= -1 or else H /= -1 then
-            Set_Size_Request (Child, W, H);
-         end if;
+         Set_Size (MDI, Widget => Child, Width => W, Height => H);
 
          if not Visible then
             Print_Debug ("Parse_Child_Node: child will be hidden");
@@ -5332,7 +5340,7 @@ package body Gtkada.MDI is
       is
          Child_Node : Node_Ptr := Node.Child;
          Raised     : Boolean;
-         X, Y       : Gint;
+         X, Y, W, H : Gint;
          Child      : MDI_Child;
          State      : State_Type;
 
@@ -5374,7 +5382,7 @@ package body Gtkada.MDI is
 
                Parse_Child_Node
                  (MDI, Child_Node, User,
-                  Focus_Child, X, Y, Raised, State, Child,
+                  Focus_Child, X, Y, W, H, Raised, State, Child,
                   To_Hide => To_Hide);
 
                if Child /= null then
@@ -5382,7 +5390,7 @@ package body Gtkada.MDI is
                      when Floating =>
                         Internal_Float_Child
                           (Child, True, Position_At_Mouse => False,
-                           X => X, Y => Y);
+                           X => X, Y => Y, Width => W, Height => H);
 
                      when Invisible =>
                         null;
@@ -5665,6 +5673,11 @@ package body Gtkada.MDI is
          Print_Debug ("Done Restore_Desktop", Debug_Decrease);
 
          return True;
+
+      exception
+         when E : Invalid_Desktop =>
+            Put_Line ("Invalid_Desktop: " & Exception_Message (E));
+            return False;
       end Restore_Desktop;
 
       ------------------------
@@ -5837,9 +5850,9 @@ package body Gtkada.MDI is
                      --  Note: This size doesn't include the size of the window
                      --  decorations, doesn't seem to be a way to do this.
                      Add (Child_Node, "height",
-                          Gint'Image (Win.Get_Allocated_Width));
-                     Add (Child_Node, "width",
                           Gint'Image (Win.Get_Allocated_Height));
+                     Add (Child_Node, "width",
+                          Gint'Image (Win.Get_Allocated_Width));
                   end;
                end if;
 
