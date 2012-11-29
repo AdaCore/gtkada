@@ -1823,10 +1823,8 @@ package body Gtkada.Multi_Paned is
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
 
          --  ??? Should look at the number of handles and children with a
-         --  fixed or minimal size
-         Minimum_Size := Gint (Split.Children.Width);
-
-         --  ??? Should compute ideal size
+         --  fixed size
+         Minimum_Size := 0;
          Natural_Size := Gint (Split.Children.Width);
       else
          Minimum_Size := 0;
@@ -1849,10 +1847,8 @@ package body Gtkada.Multi_Paned is
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
 
          --  ??? Should look at the number of handles and children with a
-         --  fixed or minimal size
-         Minimum_Size := Gint (Split.Children.Height);
-
-         --  ??? Should compute ideal size
+         --  fixed size
+         Minimum_Size := 0;
          Natural_Size := Gint (Split.Children.Height);
       else
          Minimum_Size := 0;

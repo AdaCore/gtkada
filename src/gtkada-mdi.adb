@@ -5712,6 +5712,7 @@ package body Gtkada.MDI is
 
          declare
             State : Gdk_Window_State;
+            Toplevel_Width, Toplevel_Height : Gint := -1;
          begin
             State := Gdk_Window_State'Value
               (Get_Attribute (Perspectives, "state", "0"));
@@ -5737,20 +5738,34 @@ package body Gtkada.MDI is
                Do_Size_Allocate := False;
 
             else
-               MDI_Width  := Gint'Value
+               Toplevel_Width  := Gint'Value
                  (Get_Attribute (Perspectives, "width",  "640"));
-               MDI_Height := Gint'Value
+               Toplevel_Height := Gint'Value
                  (Get_Attribute (Perspectives, "height", "480"));
 
+               --  More recent versions of the desktop also explicitly store
+               --  the size of the MDI
+               MDI_Width  := Gint'Value
+                 (Get_Attribute (Perspectives, "mdi_width",
+                  Gint'Image (Toplevel_Width)));
+               MDI_Height := Gint'Value
+                 (Get_Attribute (Perspectives, "mdi_height",
+                  Gint'Image (Toplevel_Height)));
+
                if Traces then
+                  Print_Debug
+                    ("Toplevel size from perspective:"
+                     & Gint'Image (Toplevel_Width) & "x"
+                     & Gint'Image (Toplevel_Height));
                   Print_Debug
                     ("MDI size from perspective:"
                      & Gint'Image (MDI_Width) & "x"
                      & Gint'Image (MDI_Height));
                end if;
 
-               --  Cancel any size set by the user prior to restoring desktop
-               Set_Default_Size (Gtk_Window (MDI.Get_Toplevel), -1, -1);
+               Set_Default_Size
+                 (Gtk_Window (MDI.Get_Toplevel),
+                  Toplevel_Width, Toplevel_Height);
             end if;
          exception
             when others =>
@@ -6278,11 +6293,21 @@ package body Gtkada.MDI is
          begin
             if Win /= null then
                State := Get_State (Get_Window (Win));
+
+               if (State and Window_State_Maximized) = 0 then
+                  Set_Attribute
+                    (MDI.Perspectives, "width",
+                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width));
+                  Set_Attribute
+                    (MDI.Perspectives, "height",
+                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
+               end if;
+
                Set_Attribute
-                 (MDI.Perspectives, "width",
+                 (MDI.Perspectives, "mdi_width",
                   Gint'Image (MDI.Get_Allocated_Width));
                Set_Attribute
-                 (MDI.Perspectives, "height",
+                 (MDI.Perspectives, "mdi_height",
                   Gint'Image (MDI.Get_Allocated_Height));
 
                --  We are only interested in whether the window is maximized
