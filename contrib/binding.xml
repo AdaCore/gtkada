@@ -4022,6 +4022,7 @@ creating a tag.
 
        <type ctype="GdkEvent*" ada="Gdk_Event">
          type Gdk_Event is access all Gdk_Event_Record;
+         pragma No_Strict_Aliasing (Gdk_Event);
        </type>
        <with_spec pkg="Glib.Values" />
        <spec>

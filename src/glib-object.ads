@@ -39,6 +39,7 @@ package Glib.Object is
 
    type GObject_Record is tagged private;
    type GObject is access all GObject_Record'Class;
+   pragma No_Strict_Aliasing (GObject);
    --  The base type for Glib/Gdk/Gtk objects. It basically gives access
    --  to an underlying C object. This is not a controlled type for
    --  efficiency reasons and because glib takes care of the memory

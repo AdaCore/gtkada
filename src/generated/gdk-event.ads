@@ -714,6 +714,7 @@ package Gdk.Event is
    --
 
    type Gdk_Event is access all Gdk_Event_Record;
+   pragma No_Strict_Aliasing (Gdk_Event);
 
    ---------------
    -- Callbacks --
