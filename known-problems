@@ -1,4 +1,4 @@
-Known problems fixed in GtkAda 3.2.0
+Known problems fixed in GtkAda 3.4.0
 
 - L615-005 Constraint Error using the GtkAda.Canvas
   Problem:    The GtkAda.Canvas might raise a Constraint_Error when moving
