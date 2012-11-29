@@ -4140,15 +4140,16 @@ package body Gtkada.MDI is
          else
             Configure_Notebook_Tabs
               (Child.MDI, Gtk_Notebook (Note), Hide_If_Empty => True);
+
+            --  force computation of tab size
+            MDI_Notebook (Note).Timestamp := 0;
+            Note.Queue_Resize;
          end if;
 
          if Traces then
             Print_Debug ("Removed_From_Notebook: desktop is now");
             Dump (Child.MDI);
          end if;
-
-         MDI_Notebook (Note).Timestamp := 0;  --  force computation of tab size
-         Note.Queue_Resize;
       end if;
 
    exception
