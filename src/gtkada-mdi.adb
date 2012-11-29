@@ -3701,9 +3701,10 @@ package body Gtkada.MDI is
          Box.Pack_Start (Child.Tab_Icon, Expand => False);
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+         Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
 
          if Child.MDI.Homogeneous_Tabs then
-            Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Start);
+            Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Middle);
          end if;
 
          Pack_Start (Box, Child.Tab_Label, Expand => True, Fill => True);
