@@ -6,6 +6,8 @@
 GtkAda 3 Transition Guide
 =========================
 
+This document describes how to transition from GtkAda 2.x to GtkAda 3.x.
+
 Contents:
 
 .. toctree::
