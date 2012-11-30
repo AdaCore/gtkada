@@ -2437,6 +2437,9 @@ __PRE__
      <method id="gtk_widget_set_sensitive">
        <parameter name="Sensitive" default="True"/>
      </method>
+     <method id="gtk_widget_size_allocate">
+        <parameter name="allocation" ctype="GtkAllocation" />
+     </method>
      <method id="gtk_widget_set_size_request">
        <parameter name="Width" default="-1" />
        <parameter name="Height" default="-1" />

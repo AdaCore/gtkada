@@ -3132,11 +3132,11 @@ package body Gtk.Widget is
 
    procedure Size_Allocate
       (Widget     : not null access Gtk_Widget_Record;
-       Allocation : in out Gtk_Allocation)
+       Allocation : Gtk_Allocation)
    is
       procedure Internal
          (Widget     : System.Address;
-          Allocation : in out Gtk_Allocation);
+          Allocation : Gtk_Allocation);
       pragma Import (C, Internal, "gtk_widget_size_allocate");
    begin
       Internal (Get_Object (Widget), Allocation);

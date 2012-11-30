@@ -2504,7 +2504,7 @@ package Gtk.Widget is
 
    procedure Size_Allocate
       (Widget     : not null access Gtk_Widget_Record;
-       Allocation : in out Gtk_Allocation);
+       Allocation : Gtk_Allocation);
    --  This function is only used by Gtk.Container.Gtk_Container subclasses,
    --  to assign a size and position to their child widgets.
    --  In this function, the allocation may be adjusted. It will be forced to
