@@ -12,6 +12,15 @@ of the feature.
 New features in GtkAda 3.4.1
 ----------------------------
 
+LB30-013 New subprogram Gtk.Handlers.Set_On_Exception (2012-11-30)
+
+  It was always recommended that Ada callbacks should not propagate
+  exceptions to the C gtk+ layer. To enforce this, GtkAda now has its
+  own internal exception handlers. But it is possible for applications
+  to register a subprogram to call when a callback has raised an
+  exception, presumably to log the exception in an application-specific
+  manner (the default is to output the exception on stderr).
+
 L413-025 Binding for Gtk.Recent_Chooser_Menu
 
   A new binding for Gtk.Recent_Chooser_Menu has been added.  This

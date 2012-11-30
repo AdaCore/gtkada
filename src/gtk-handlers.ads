@@ -164,6 +164,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
+with Ada.Exceptions;
 with Cairo;
 with Glib.Values;
 with Gdk.Event;
@@ -195,6 +196,17 @@ package Gtk.Handlers is
 
    function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
       return System.Address;
+
+   type Exception_Handler is not null access procedure
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+
+   procedure Set_On_Exception (Handler : Exception_Handler);
+   --  Set the handler that catch all exceptions occurring in a a callback. An
+   --  exception should never be propagated to C to avoid undefined behavior.
+   --  By default, unhandled exceptions are printed to stderr.
+   --  This function can be used to provide your own global exception handler,
+   --  which presumably will simply log the exception in application-specific
+   --  manner.
 
    ---------------------------------------------------------
    --  These handlers should return a value

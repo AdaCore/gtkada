@@ -27,8 +27,14 @@ with System.Assertions;       use System.Assertions;
 with Unchecked_Deallocation;
 
 with Glib.Values;             use Glib.Values;
+with GNAT.IO;
 
 package body Gtk.Handlers is
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+
+   On_Exception : Exception_Handler := Default_Exception_Handler'Access;
 
    function Count_Arguments
      (Object : access GObject_Record'Class; Signal : Glib.Signal_Name)
@@ -97,6 +103,28 @@ package body Gtk.Handlers is
    procedure Watch_Closure (Object : System.Address; Closure : GClosure);
    pragma Import (C, Watch_Closure, "g_object_watch_closure");
    --  The closure will be destroyed when Object is destroyed.
+
+   -------------------------------
+   -- Default_Exception_Handler --
+   -------------------------------
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence)
+   is
+   begin
+      GNAT.IO.Put_Line
+         (GNAT.IO.Standard_Error,
+          Ada.Exceptions.Exception_Information (Occurrence));
+   end Default_Exception_Handler;
+
+   ----------------------
+   -- Set_On_Exception --
+   ----------------------
+
+   procedure Set_On_Exception (Handler : Exception_Handler) is
+   begin
+      On_Exception := Handler;
+   end Set_On_Exception;
 
    ---------------------
    -- Count_Arguments --
@@ -404,6 +432,15 @@ package body Gtk.Handlers is
          end if;
 
          Set_Value (Return_Value, Value'Address);
+
+      exception
+         when E : others =>
+            begin
+               On_Exception (E);
+            exception when E : others =>
+               Default_Exception_Handler (E);
+            end;
+            --  never propagate the exception to C
       end First_Marshaller;
 
       -------------
@@ -629,6 +666,15 @@ package body Gtk.Handlers is
          end if;
 
          Set_Value (Return_Value, Value'Address);
+
+      exception
+         when E : others =>
+            begin
+               On_Exception (E);
+            exception when E : others =>
+               Default_Exception_Handler (E);
+            end;
+            --  never propagate the exception to C
       end First_Marshaller;
 
       -------------
@@ -964,6 +1010,14 @@ package body Gtk.Handlers is
                Data.Func (Data.Object, Values);
             end if;
          end if;
+      exception
+         when E : others =>
+            begin
+               On_Exception (E);
+            exception when E : others =>
+               Default_Exception_Handler (E);
+            end;
+            --  never propagate the exception to C
       end First_Marshaller;
 
       -------------
@@ -1286,6 +1340,14 @@ package body Gtk.Handlers is
               (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
                Values, Data.User.all);
          end if;
+      exception
+         when E : others =>
+            begin
+               On_Exception (E);
+            exception when E : others =>
+                  Default_Exception_Handler (E);
+            end;
+            --  never propagate the exception to C
       end First_Marshaller;
 
       -------------
