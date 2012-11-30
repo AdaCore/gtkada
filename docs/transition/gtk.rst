@@ -449,10 +449,13 @@ achieve the same functionality as the GtkAda 2.x ``Get_Orientation/``
 ``Set_Orientation`` subprograms, it is now necessary to call
 ``Get_Orientation/Set_Orientation`` along with ``Get_Inverted/Set_Inverted.``
 
-``Procedure`` ``Set_Pulse_Step's`` "``Step"`` parameter has been renamed to "``Formal."``
+Procedure ``Set_Pulse_Step's`` "``Step"`` parameter has been renamed to "``Formal."``
 
 ``Set_Ellipsize`` and ``Get_Ellipsize`` parameter names have been normalized
 from "``Pbar"`` to "``Progress_Bar".``
+
+If you intend to show text over the progress bar, you need to call
+``Set_Text`` as before, but also call ``Set_Show_Text(True)``.
 
 Gtk.Recent_Manager
 ==================
