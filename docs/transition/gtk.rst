@@ -210,6 +210,9 @@ The following types were removed::
   ``GtkSubmenuPlacement``
   ``GtkTreeViewMode``
 
+``Gtk_Icon_Size`` is no longer an enumeration type, but an integer, so that
+new sizes can be defined through ``Gtk.Icon_Factory.Icon_Size_Register``.
+
 Gtk.File_Chooser_Button
 =======================
 

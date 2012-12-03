@@ -107,16 +107,17 @@ package Gtk.Enums is
    --  Used to specify the style of the expanders drawn by a
    --  Gtk.Tree_View.Gtk_Tree_View.
 
-   type Gtk_Icon_Size is (
-      Icon_Size_Invalid,
-      Icon_Size_Menu,
-      Icon_Size_Small_Toolbar,
-      Icon_Size_Large_Toolbar,
-      Icon_Size_Button,
-      Icon_Size_Dnd,
-      Icon_Size_Dialog);
+   type Gtk_Icon_Size is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Icon_Size);
 
+
+   Icon_Size_Invalid : constant Gtk_Icon_Size := 0;
+   Icon_Size_Menu : constant Gtk_Icon_Size := 1;
+   Icon_Size_Small_Toolbar : constant Gtk_Icon_Size := 2;
+   Icon_Size_Large_Toolbar : constant Gtk_Icon_Size := 3;
+   Icon_Size_Button : constant Gtk_Icon_Size := 4;
+   Icon_Size_Dnd : constant Gtk_Icon_Size := 5;
+   Icon_Size_Dialog : constant Gtk_Icon_Size := 6;
 
    type Gtk_Junction_Sides is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Junction_Sides);

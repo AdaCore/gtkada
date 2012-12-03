@@ -126,6 +126,7 @@ Where the package node is defined as follows:
        <enum ctype="..."
              ada="..."     <!-- optional Ada name (no package info needed) -->
              prefix="GTK_" <!-- remove prefix from values to get Ada name -->
+             asbitfield="false" <!--  forces a bitfield -->
        />
 
        <!-- Support for <record> types -->
@@ -250,7 +251,9 @@ class GtkAdaPackage(object):
             for enum in self.node.findall("enum"):
                 result.append((enum.get("ctype"),
                                naming.type(name="", cname=enum.get("ctype")),
-                               enum.get("prefix", "GTK_")))
+                               enum.get("prefix", "GTK_"),
+                               enum.get("asbitfield", "false").lower() == "true"
+                               ))
         return result
 
     def constants(self):

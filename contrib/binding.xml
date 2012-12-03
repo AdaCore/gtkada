@@ -2743,7 +2743,7 @@ __PRE__
      <enum ctype="GtkDeleteType"/>
      <enum ctype="GtkDirectionType"/>
      <enum ctype="GtkExpanderStyle"/>
-     <enum ctype="GtkIconSize"/>
+     <enum ctype="GtkIconSize" asbitfield="True"/>
      <enum ctype="GtkJunctionSides"/>
      <enum ctype="GtkJustification"/>
      <enum ctype="GtkMenuDirectionType"/>

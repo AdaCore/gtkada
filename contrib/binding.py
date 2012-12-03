@@ -1901,7 +1901,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         constants.sort()
         section.add("\n".join(constants))
 
-    def enumeration_binding(self, section, ctype, type, prefix):
+    def enumeration_binding(self, section, ctype, type, prefix, asbitfield=False):
         """Add to the section the Ada type definition for the <enumeration>
            ctype. type is the corresponding instance of CType().
            This function also handles <bitfield> types.
@@ -1946,7 +1946,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
 
         decl = ""
 
-        if node.tag == nenumeration:
+        if node.tag == nenumeration and not asbitfield:
             section.add(
                 "type %s is " % base
                 + "(\n" + ",\n".join(m[0]
@@ -1962,7 +1962,7 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
                         + ");\n")
                 section.add(repr)
 
-        elif node.tag == nbitfield:
+        elif node.tag == nbitfield or asbitfield:
             section.add(
                 "\ntype %s is " % base
                 + "mod 2 ** Integer'Size;\n"
@@ -2137,8 +2137,9 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
-        for ctype, enum, prefix in self.gtkpkg.enumerations():
-            self.enumeration_binding(section, ctype, enum, prefix)
+        for ctype, enum, prefix, asbitfield in self.gtkpkg.enumerations():
+            self.enumeration_binding(
+                section, ctype, enum, prefix, asbitfield=asbitfield)
 
         for regexp, prefix in self.gtkpkg.constants():
             self.constants_binding(section, regexp, prefix)
