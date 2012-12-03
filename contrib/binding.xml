@@ -2400,6 +2400,18 @@ __PRE__
      <method id="gtk_recent_chooser_list_filters" return="RecentFilterSList"/>
    </package>
 
+   <package id="GtkWidgetClass" into="GtkWidget" bindtype="false">
+     <method id="gtk_widget_class_find_style_property"/>
+     <method id="gtk_widget_class_install_style_property" >
+       <parameter name="pspec" ctype="GParamSpec"/>
+     </method>
+     <method id="gtk_widget_class_set_accessible_role" bind="False" /> <!--  needs atk -->
+     <method id="gtk_widget_class_set_accessible_type" bind="False" /> <!--  needs atk -->
+
+     <method id="gtk_widget_class_install_style_property_parser" bind="False" />
+     <method id="gtk_widget_class_list_style_properties" bind="False" />
+   </package>
+
    <package id="GtkWidget" needs_merge="false">
      <parameter name="self" ada="Widget" />
      <enum ctype="GtkAlign"/>

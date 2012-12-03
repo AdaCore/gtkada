@@ -96,8 +96,8 @@
 --  exceedingly large amount of rows. The Gtk.Cell_Layout.Gtk_Cell_Layout
 --  widget in that case would calculate the required width of the rows in an
 --  idle or timeout source (see g_timeout_add) and when the widget is requested
---  its actual width in Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width
---  it can simply consult the width accumulated so far in the
+--  its actual width in Gtk.Widget.GObject_Class.get_preferred_width it can
+--  simply consult the width accumulated so far in the
 --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object.
 --
 --  A simple example where rows are rendered from top to bottom and take up
@@ -165,9 +165,8 @@
 --  rows and return that height synchronously. The reasoning here is that any
 --  layouting widget is at least capable of synchronously calculating enough
 --  height to fill the screen height (or scrolled window height) in response to
---  a single call to
---  Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height_for_width. Returning
---  a perfect height for width that is larger than the screen area is
+--  a single call to Gtk.Widget.GObject_Class.get_preferred_height_for_width.
+--  Returning a perfect height for width that is larger than the screen area is
 --  inconsequential since after the layouting receives an allocation from a
 --  scrolled window it simply continues to drive the the scrollbar values while
 --  more and more height is required for the row heights that are calculated in
@@ -177,7 +176,7 @@
 --
 --  Once area sizes have been aquired at least for the rows in the visible
 --  area of the layouting widget they can be rendered at
---  Gtk.Widget_Class.Gtk_Widget_Class.draw time.
+--  Gtk.Widget.GObject_Class.draw time.
 --
 --  A crude example of how to render all the rows at the root level runs as
 --  follows:
@@ -230,16 +229,15 @@
 --  that has focus and to tell the area to paint the focus at render time.
 --
 --  Layouting widgets that accept focus on cells should implement the
---  Gtk.Widget_Class.Gtk_Widget_Class.focus virtual method. The layouting
---  widget is always responsible for knowing where
---  Gtk.Tree_Model.Gtk_Tree_Model rows are rendered inside the widget, so at
---  Gtk.Widget_Class.Gtk_Widget_Class.focus time the layouting widget should
---  use the Gtk.Cell_Area.Gtk_Cell_Area methods to navigate focus inside the
---  area and then observe the GtkDirectionType to pass the focus to adjacent
---  rows and areas.
+--  Gtk.Widget.GObject_Class.focus virtual method. The layouting widget is
+--  always responsible for knowing where Gtk.Tree_Model.Gtk_Tree_Model rows are
+--  rendered inside the widget, so at Gtk.Widget.GObject_Class.focus time the
+--  layouting widget should use the Gtk.Cell_Area.Gtk_Cell_Area methods to
+--  navigate focus inside the area and then observe the GtkDirectionType to
+--  pass the focus to adjacent rows and areas.
 --
---  A basic example of how the Gtk.Widget_Class.Gtk_Widget_Class.focus virtual
---  method should be implemented:
+--  A basic example of how the Gtk.Widget.GObject_Class.focus virtual method
+--  should be implemented:
 --
 --  == Implementing keyboard focus navigation ==
 --

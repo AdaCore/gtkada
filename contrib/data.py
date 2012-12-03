@@ -401,7 +401,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkViewport",
            "GtkVolumeButton",
            "GtkWidget",
-           "--GtkWidgetClass",
+           "GtkWidgetClass",
            "GtkWindow",
            "GtkWindowGroup",
           )
@@ -518,6 +518,8 @@ naming.type_exceptions = {
     "cairo_surface_t*":      Proxy("Cairo.Cairo_Surface"),
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
+
+    "GtkWidgetClass": Proxy("Glib.Object.GObject_Class"),
 
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",

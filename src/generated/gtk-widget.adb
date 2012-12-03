@@ -697,6 +697,27 @@ package body Gtk.Widget is
    end Event;
 
    -------------------------
+   -- Find_Style_Property --
+   -------------------------
+
+   function Find_Style_Property
+      (Self          : GObject_Class;
+       Property_Name : UTF8_String) return Glib.Param_Spec
+   is
+      function Internal
+         (Self          : GObject_Class;
+          Property_Name : Interfaces.C.Strings.chars_ptr)
+          return Glib.Param_Spec;
+      pragma Import (C, Internal, "gtk_widget_class_find_style_property");
+      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Return        : Glib.Param_Spec;
+   begin
+      Tmp_Return := Internal (Self, Tmp_Property_Name);
+      Free (Tmp_Property_Name);
+      return Tmp_Return;
+   end Find_Style_Property;
+
+   -------------------------
    -- Freeze_Child_Notify --
    -------------------------
 

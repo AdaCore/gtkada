@@ -834,6 +834,7 @@ package body Gtkada.MDI is
 
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
+      Get_Style_Context (MDI).Add_Class ("mdi");
 
       --  Request a null size, so that the window can be resized at will, even
       --  though we have played with Set_Size_Request on the children.
@@ -3464,6 +3465,7 @@ package body Gtkada.MDI is
      (MDI : access MDI_Window_Record'Class) return Gtk_Notebook
    is
       Notebook : Gtk_Notebook;
+      Button : Gtk_Button;
    begin
       Notebook := new MDI_Notebook_Record;
       Gtk.Notebook.Initialize (Notebook);
@@ -3471,6 +3473,10 @@ package body Gtkada.MDI is
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
+
+      Gtk_New (Button, "O");
+      Notebook.Set_Action_Widget (Button, Pack_End);
+      Button.Show;
 
       Widget_Callback.Connect
         (Notebook, Signal_Remove, Removed_From_Notebook'Access);

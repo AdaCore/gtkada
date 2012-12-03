@@ -740,8 +740,8 @@
 --  where <replaceable>namespace</replaceable> is typically the name of the
 --  theming engine, and <replaceable>name</replaceable> is the name of the
 --  property. Style properties that have been registered by widgets using
---  gtk_widget_class_install_style_property can also be set in this way, using
---  the widget class name for <replaceable>namespace</replaceable>.
+--  Gtk.Widget.Install_Style_Property can also be set in this way, using the
+--  widget class name for <replaceable>namespace</replaceable>.
 --
 --  == Using engine-specific style properties ==
 --

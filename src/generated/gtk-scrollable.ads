@@ -44,7 +44,7 @@
 --     * Because its preferred size is the size for a fully expanded widget,
 --  the scrollable widget must be able to cope with underallocations. This
 --  means that it must accept any value passed to its
---  Gtk.Widget_Class.Gtk_Widget_Class.size_allocate function.
+--  Gtk.Widget.GObject_Class.size_allocate function.
 --
 --     * When the parent allocates space to the scrollable child widget, the
 --  widget should update the adjustments' properties with new values.

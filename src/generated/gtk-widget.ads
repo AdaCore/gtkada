@@ -37,15 +37,15 @@
 --  Height-for-width geometry management is implemented in GTK+ by way of five
 --  virtual methods:
 --
---     * Gtk.Widget_Class.Gtk_Widget_Class.get_request_mode
+--     * Gtk.Widget.GObject_Class.get_request_mode
 --
---     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width
+--     * Gtk.Widget.GObject_Class.get_preferred_width
 --
---     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height
+--     * Gtk.Widget.GObject_Class.get_preferred_height
 --
---     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height_for_width
+--     * Gtk.Widget.GObject_Class.get_preferred_height_for_width
 --
---     * Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width_for_height
+--     * Gtk.Widget.GObject_Class.get_preferred_width_for_height
 --
 --  There are some important things to keep in mind when implementing
 --  height-for-width and when using it in container implementations.
@@ -92,16 +92,15 @@
 --
 --  For instance, a Gtk.Label.Gtk_Label that does height-for-width word
 --  wrapping will not expect to have
---  Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height called because that
---  call is specific to a width-for-height request. In this case the label must
---  return the height required for its own minimum possible width. By following
---  this rule any widget that handles height-for-width or width-for-height
---  requests will always be allocated at least enough space to fit its own
---  content.
+--  Gtk.Widget.GObject_Class.get_preferred_height called because that call is
+--  specific to a width-for-height request. In this case the label must return
+--  the height required for its own minimum possible width. By following this
+--  rule any widget that handles height-for-width or width-for-height requests
+--  will always be allocated at least enough space to fit its own content.
 --
 --  Here are some examples of how a Gtk.Enums.Height_For_Width widget
 --  generally deals with width-for-height requests, for
---  Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_height it will do:
+--  Gtk.Widget.GObject_Class.get_preferred_height it will do:
 --
 --    static void
 --    foo_widget_get_preferred_height (GtkWidget *widget, gint *min_height, gint *nat_height)
@@ -120,8 +119,8 @@
 --       }
 --    }
 --
---  And in Gtk.Widget_Class.Gtk_Widget_Class.get_preferred_width_for_height it
---  will simply return the minimum and natural width:
+--  And in Gtk.Widget.GObject_Class.get_preferred_width_for_height it will
+--  simply return the minimum and natural width:
 --
 --    static void
 --    foo_widget_get_preferred_width_for_height (GtkWidget *widget, gint for_height,
@@ -153,10 +152,10 @@
 --  It will not work to use the wrapper functions, such as
 --  Gtk.Widget.Get_Preferred_Width inside your own size request implementation.
 --  These return a request adjusted by Gtk.Size_Group.Gtk_Size_Group and by the
---  Gtk.Widget_Class.Gtk_Widget_Class.adjust_size_request virtual method. If a
---  widget used the wrappers inside its virtual method implementations, then
---  the adjustments (such as widget margins) would be applied twice. GTK+
---  therefore does not allow this and will warn if you try to do it.
+--  Gtk.Widget.GObject_Class.adjust_size_request virtual method. If a widget
+--  used the wrappers inside its virtual method implementations, then the
+--  adjustments (such as widget margins) would be applied twice. GTK+ therefore
+--  does not allow this and will warn if you try to do it.
 --
 --  Of course if you are getting the size request for *another* widget, such
 --  as a child of a container, you *must* use the wrapper APIs. Otherwise, you
@@ -172,8 +171,8 @@
 --  used for configuring such things as the location of the scrollbar arrows
 --  through the theme, giving theme authors more control over the look of
 --  applications without the need to write a theme engine in C.
---  Use gtk_widget_class_install_style_property to install style properties
---  for a widget class, gtk_widget_class_find_style_property or
+--  Use Gtk.Widget.Install_Style_Property to install style properties for a
+--  widget class, Gtk.Widget.Find_Style_Property or
 --  gtk_widget_class_list_style_properties to get information about existing
 --  style properties and Gtk.Widget.Style_Get_Property, gtk_widget_style_get or
 --  gtk_widget_style_get_valist to obtain the value of a style property.
@@ -2589,6 +2588,22 @@ package Gtk.Widget is
    --  Gtk.Widget.Set_State_Flags.
    --  Since: gtk+ 3.0
    --  "flags": State flags to turn off
+
+   function Find_Style_Property
+      (Self          : GObject_Class;
+       Property_Name : UTF8_String) return Glib.Param_Spec;
+   --  Finds a style property of a widget class by name.
+   --  null if Class has no style property with that name.
+   --  Since: gtk+ 2.2
+   --  "property_name": the name of the style property to find
+
+   procedure Install_Style_Property
+      (Self  : GObject_Class;
+       Pspec : Glib.Param_Spec);
+   pragma Import (C, Install_Style_Property, "gtk_widget_class_install_style_property");
+   --  Installs a style property on a widget class. The parser for the style
+   --  property is determined by the value type of Pspec.
+   --  "pspec": the Glib.Param_Spec for the property
 
    ----------------------
    -- GtkAda additions --

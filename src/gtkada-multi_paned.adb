@@ -37,6 +37,8 @@ with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
 with Glib.Object;          use Glib.Object;
+with Glib.Properties.Creation; use Glib.Properties.Creation;
+with Glib.Values;          use Glib.Values;
 
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
@@ -557,6 +559,7 @@ package body Gtkada.Multi_Paned is
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class) is
       Ctx   : Gtk_Style_Context;
       Flags : Gtk_State_Flags;
+      Val   : Glib.Values.GValue;
    begin
       Gtk.Fixed.Initialize (Win);
       if Glib.Object.Initialize_Class_Record
@@ -573,6 +576,16 @@ package body Gtkada.Multi_Paned is
            (Paned_Class_Record, Get_Preferred_Width'Access);
          Set_Default_Get_Preferred_Height_Handler
            (Paned_Class_Record, Get_Preferred_Height'Access);
+
+         Install_Style_Property
+           (Paned_Class_Record.C_Class,
+            Gnew_Int
+              (Name    => "handle-size",
+               Nick    => "Handle Size",
+               Blurb   => "Width of handle",
+               Minimum => 1,
+               Maximum => 10,
+               Default => 4));
       end if;
 
       Win.Set_Has_Window (True);
@@ -582,7 +595,12 @@ package body Gtkada.Multi_Paned is
       --  apparently, because Win.Style_Get_Property("handle-size", Val) does
       --  not work...
 
-      Win.Handle_Width := 6;
+      Get_Style_Context (Win).Add_Class ("multipaned");
+
+      Init (Val, GType_Int);
+      Win.Style_Get_Property ("handle-size", Val);
+      Win.Handle_Width := Get_Int (Val);
+      Unset (Val);
 
       Return_Callback.Connect
         (Win, "button_press_event",
