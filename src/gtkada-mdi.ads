@@ -128,7 +128,8 @@ package Gtkada.MDI is
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs   : Boolean := True);
+      Homogeneous_Tabs   : Boolean := True;
+      Hardcode_Theme            : Boolean := True);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -142,10 +143,17 @@ package Gtkada.MDI is
    --  Title_Bar_Color in exchange.
    --  Tabs_Position indicates where the notebook tabs should be put.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
+   --
    --  If Homogeneous_Tabs is true, then the notebook tabs will only use their
    --  natural size when they all fit in the notebook's width. Otherwise, they
    --  are resized (and ellipsized as needed) so that more of them show.
    --  Changing this setup requires a restart of the MDI.
+   --
+   --  If Hardcode_Theme is true, a custom CSS will be loaded to override some
+   --  colors. Applications might prefer to provide this capability through an
+   --  explicit CSS file that can be modified by users, and in that case should
+   --  set this parameter to False. See the code of this function to see what
+   --  CSS is loaded.
 
    function Independent_Perspectives
      (MDI : access MDI_Window_Record) return Boolean;

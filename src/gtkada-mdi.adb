@@ -1249,7 +1249,8 @@ package body Gtkada.MDI is
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs          : Boolean := True)
+      Homogeneous_Tabs          : Boolean := True;
+      Hardcode_Theme            : Boolean := True)
    is
       C            : MDI_Child;
       Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
@@ -1285,33 +1286,30 @@ package body Gtkada.MDI is
       if MDI.Focus_Title_Color /= Focus_Title_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
 
-         declare
-            Err  : aliased GError;
+         if Hardcode_Theme then
+            declare
+               Err  : aliased GError;
+               C : constant String :=
+                 Gdk.RGBA.To_String (MDI.Focus_Title_Color);
 
-            --  This will highlight the whole notebook in blue when not using
-            --  a proper theme. Otherwise, the theme will override some of the
-            --  settings, and only the current focused tab will be hilighted
-            --  with the title color.
-            --  The theme should define
-            --       .mdifocused {background-image: -gtk-gradient{...}}
-            --  or some such, to give a background to the tabs. We can't do it
-            --  here, since the following is loaded with a higher priority
-            --  than the theme, and thus it would override the theme.
+               --  This will highlight the whole notebook in blue when not
+               --  using a proper theme. Otherwise, the theme will override
+               --  some of the settings, and only the current focused tab
+               --  will be highlighted with the title color.
+               --  The theme should define
+               --       .mdifocused {background-image: -gtk-gradient{...}}
+               --  or some such, to give a background to the tabs. We can't
+               --  do it here, since the following is loaded with a higher
+               --  priority than the theme, and thus it would override the
+               --  theme.
 
-            Css  : constant String :=
-              ".mdifocused tab:active {" & ASCII.LF &
-              " background-image: none;" &
-              " background-color: " &
-              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
-              "}" & ASCII.LF &
-              ".mdifocused {" & ASCII.LF &
-              " background-color: " & ASCII.LF &
-              Gdk.RGBA.To_String (MDI.Focus_Title_Color) & ";" & ASCII.LF &
-              "}" & ASCII.LF;
-         begin
-            Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
-         end;
-
+               Css  : constant String :=
+                 ".mdifocused tab:active {background-image:none;}" &
+                 ".mdifocused {background-color:" & C & "}";
+            begin
+               Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
+            end;
+         end if;
       end if;
 
       --  Ignore changes in colors, unless the MDI is realized
