@@ -536,6 +536,33 @@ package body Gtkada.Style is
       Unref (Css);
    end Load_Css_File;
 
+   ---------------------
+   -- Load_Css_String --
+   ---------------------
+
+   procedure Load_Css_String
+     (Data : String; Error : access procedure (Str : String) := null)
+   is
+      Css     : Gtk_Css_Provider;
+      Display : Gdk_Display;
+      Screen  : Gdk_Screen;
+      Err     : aliased GError;
+   begin
+      Gtk_New (Css);
+      if not Css.Load_From_Data (Data, Err'Access) then
+         if Error /= null then
+            Error (Get_Message (Err));
+         end if;
+      else
+         Display := Get_Default;
+         Screen  := Get_Default_Screen (Display);
+         Gtk.Style_Context.Add_Provider_For_Screen
+           (Screen, +Css, Priority => Priority_Theme + 1);
+      end if;
+
+      Unref (Css);
+   end Load_Css_String;
+
    ----------------
    -- Get_Offset --
    ----------------

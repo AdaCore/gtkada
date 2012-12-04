@@ -170,6 +170,8 @@ package Gtkada.Style is
 
    procedure Load_Css_File
      (Path : String; Error : access procedure (Str : String) := null);
+   procedure Load_Css_String
+     (Data : String; Error : access procedure (Str : String) := null);
    --  Load CSS file and register it as a default CSS provider for the whole
    --  application.
    --  In case of error, the procedure Error is called if defined.
@@ -231,6 +233,5 @@ package Gtkada.Style is
    --  Get the position of Window within parent's window (not that this is not
    --  necessarily the same as the position within Parent if the latter does
    --  not have a window).
-
 
 end Gtkada.Style;
