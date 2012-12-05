@@ -2116,14 +2116,25 @@ package body Gtkada.Multi_Paned is
            and then not Win.Frozen
          then
             Print_Debug ("Adjusting sizes since window is realized");
-            if Ref_Item.Width > Float (Width) then
+
+            if Width = -1 then
+               if Orientation = Orientation_Horizontal then
+                  Tmp2.Width := Ref_Item.Width / 2.0;
+                  Ref_Item.Width := Ref_Item.Width - Tmp2.Width;
+               end if;
+            elsif Ref_Item.Width > Float (Width) then
                Ref_Item.Width := Ref_Item.Width - Float (Width);
             else
                Tmp2.Width := Float (Width - Minimum_Width);
                Ref_Item.Width := Float (Minimum_Width);
             end if;
 
-            if Ref_Item.Height > Float (Height) then
+            if Height = -1 then
+               if Orientation = Orientation_Vertical then
+                  Tmp2.Height := Ref_Item.Height / 2.0;
+                  Ref_Item.Height := Ref_Item.Height - Tmp2.Height;
+               end if;
+            elsif Ref_Item.Height > Float (Height) then
                Ref_Item.Height := Ref_Item.Height - Float (Height);
             else
                Tmp2.Height := Float (Height - Minimum_Width);
