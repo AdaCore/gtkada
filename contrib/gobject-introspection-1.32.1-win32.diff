@@ -1,10 +1,13 @@
+2012-11-26	Nicolas Roche	<roche@adacore.com>
+
+	* giscanner/scannerlexer.l: Add support for __inline__,
+	__asm__ __volatile__, __volatile__, and __restrict__,
+	present in mingw64 headers.
+
 2012-11-22	Nicolas Setton	<setton@adacore.com>
 
-	* giscanner/sourcescanner.py: Add defines, allowing to include
-	mingw64 headers.
-
-	* giscanner/dumper.py: Use libtool invocation working on the
-	gnu compiler.
+	* giscanner/dumper.py: Fix use of "export all symbols" mode
+	under Windows.
 
 2012-05-29	Nicolas Setton  <setton@adacore.com>
 
@@ -130,30 +133,38 @@
          group = get_windows_option_group(parser)
          parser.add_option_group(group)
  
---- giscanner/dumper.py.orig	2012-11-22 19:00:48.319800000 +0100
-+++ giscanner/dumper.py	2012-11-22 19:01:56.413800000 +0100
-@@ -224,10 +224,7 @@
-         args.extend(self._linker_cmd.split())
+--- giscanner/dumper.py.orig	2012-11-23 10:59:23.023800000 +0100
++++ giscanner/dumper.py	2012-11-23 11:30:17.863800000 +0100
+@@ -225,7 +225,7 @@
          args.extend(['-o', output])
          if libtool:
--            if os.name == 'nt':
+             if os.name == 'nt':
 -                args.append('-export-all-symbols')
--            else:
--                args.append('-export-dynamic')
-+            args.append('-export-dynamic')
++                args.append('-Wl,--export-all-symbols')
+             else:
+                 args.append('-export-dynamic')
  
-         cflags = os.environ.get('CFLAGS')
-         if (cflags):
---- giscanner/sourcescanner.py.orig	2012-11-22 18:36:29.407800000 +0100
-+++ giscanner/sourcescanner.py	2012-11-22 19:13:03.126600000 +0100
-@@ -282,6 +282,10 @@
-                                 stdin=subprocess.PIPE,
-                                 stdout=subprocess.PIPE)
+--- giscanner/scannerlexer.l	2012-04-17 20:24:58.000000000 +0200
++++ ../gobject-introspection-1.32.1-good/giscanner/scannerlexer.l	2012-11-23 15:34:48.774600000 +0100
+@@ -135,16 +135,21 @@
+ "->"					{ return ARROW; }
  
-+        proc.stdin.write("#define __restrict__\n")
-+        proc.stdin.write("#define __MINGW_INTRIN_INLINE\n");
-+        proc.stdin.write("#define __volatile__\n")
+ "__asm" 	        	        { if (!parse_ignored_macro()) REJECT; }
++"__asm__ __volatile__" 	        	        { if (!parse_ignored_macro()) REJECT; }
+ "__asm__" 	        	        { if (!parse_ignored_macro()) REJECT; }
+ "__attribute__" 		        { if (!parse_ignored_macro()) REJECT; }
+ "__attribute" 		                { if (!parse_ignored_macro()) REJECT; }
+ "__const"                               { return CONST; }
+ "__extension__"                         { return EXTENSION; }
+ "__inline"				{ return INLINE; }
++"__inline__"                            { return INLINE; }
+ "__nonnull" 			        { if (!parse_ignored_macro()) REJECT; }
+ "__signed__"				{ return SIGNED; }
+ "__restrict"				{ return RESTRICT; }
++"__restrict__"                          { return RESTRICT; }
+ "__typeof"				{ if (!parse_ignored_macro()) REJECT; }
 +
-         for define in defines:
-             proc.stdin.write('#ifndef %s\n' % (define, ))
-             proc.stdin.write('# define %s\n' % (define, ))
++"__volatile__"                          { return VOLATILE; }
+ "_Bool"					{ return BOOL; }
+ 
+ [a-zA-Z_][a-zA-Z_0-9]*			{ if (scanner->macro_scan) return IDENTIFIER; else REJECT; }
