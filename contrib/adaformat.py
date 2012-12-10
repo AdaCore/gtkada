@@ -601,6 +601,12 @@ class Proxy(CType):
 
         self.val_or_null = val_or_null
 
+    def record_field_type(self, pkg=None):
+        if self.is_ptr:
+            return "access %s" % self.as_c_param(pkg=pkg)
+        else:
+            return self.as_c_param(pkg=pkg)
+
 
 class Callback(CType):
     def __init__(self, ada):

@@ -282,7 +282,7 @@ package Gdk.Event is
       Time : guint32;
       X : Gdouble;
       Y : Gdouble;
-      Axes : Gdouble;
+      Axes : access Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
       Button : Guint;
       Device : System.Address;
@@ -373,7 +373,7 @@ package Gdk.Event is
       Time : guint32;
       X : Gdouble;
       Y : Gdouble;
-      Axes : Gdouble;
+      Axes : access Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
       Is_Hint : gint16;
       Device : System.Address;

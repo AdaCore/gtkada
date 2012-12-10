@@ -262,7 +262,7 @@ package Pango.Attributes is
 
 private
 type Pango_Attribute is record
-   Klass : Pango_Attr_Class;
+   Klass : access Pango_Attr_Class;
    Start_Index : Guint;
    End_Index : Guint;
 end record;
