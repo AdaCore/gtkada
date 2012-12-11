@@ -3726,7 +3726,7 @@ $as_echo "$HAVE_GTKEXTRA" >&6; }
 
 
    # checking for OpenGL libraries
-
+with_GL=no
 # Check whether --with-GL was given.
 if test "${with_GL+set}" = set; then :
   withval=$with_GL;
