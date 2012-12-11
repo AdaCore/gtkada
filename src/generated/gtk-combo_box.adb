@@ -32,7 +32,7 @@ with Interfaces.C.Strings;       use Interfaces.C.Strings;
 package body Gtk.Combo_Box is
 
    function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
+     (Combo_Box : not null access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
    is
       function Internal
         (Combo_Box : System.Address;
@@ -51,7 +51,7 @@ package body Gtk.Combo_Box is
    end Get_Active_Iter;
 
    function Get_Active_Text
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
    return UTF8_String is
    begin
       if not Combo_Box.Get_Has_Entry then

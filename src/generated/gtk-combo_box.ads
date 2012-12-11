@@ -504,12 +504,12 @@ package Gtk.Combo_Box is
    ----------------------
 
    function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
    return Gtk.Tree_Model.Gtk_Tree_Iter;
    --  Return the currently active iter
 
    function Get_Active_Text
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
    return UTF8_String;
    --  Return the text present in the entry if it has one, or the empty string
 

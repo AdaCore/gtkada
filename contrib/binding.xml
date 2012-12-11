@@ -515,19 +515,19 @@ dialog for file selection.
          <with_body pkg="Gtk.GEntry" />
         <spec>
    function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
       return Gtk.Tree_Model.Gtk_Tree_Iter;
    --  Return the currently active iter
 
    function Get_Active_Text
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
       return UTF8_String;
    --  Return the text present in the entry if it has one, or the empty string
 
         </spec>
         <body>
    function Get_Active_Iter
-     (Combo_Box : access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
+     (Combo_Box : not null access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
    is
       function Internal
         (Combo_Box : System.Address;
@@ -546,7 +546,7 @@ dialog for file selection.
    end Get_Active_Iter;
 
    function Get_Active_Text
-     (Combo_Box : access Gtk_Combo_Box_Record)
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
       return UTF8_String is
    begin
       if not Combo_Box.Get_Has_Entry then
