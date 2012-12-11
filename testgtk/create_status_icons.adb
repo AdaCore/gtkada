@@ -91,7 +91,7 @@ package body Create_Status_Icons is
       for I in 1 .. Num_Displays loop
          case Current_Image is
             when Info =>
-               Set_From_Icon_Name (Icons (I), Stock_Dialog_Info);
+               Set_From_Icon_Name (Icons (I), Stock_Ok);
                Set_Tooltip_Text (Icons (I), "Some Information ...");
             when Warning =>
                Set_From_Icon_Name (Icons (I), Stock_Dialog_Warning);
@@ -200,7 +200,7 @@ package body Create_Status_Icons is
 
       --  Reset all of our icons' variable settings.
       for I in 1 .. Num_Displays loop
-         Set_From_Icon_Name (Icons (I), Stock_Dialog_Info);
+         Set_From_Icon_Name (Icons (I), Stock_Ok);
          Set_Tooltip_Text (Icons (I), "Some Information ...");
          Set_Visible (Icons (I), True);
       end loop;
