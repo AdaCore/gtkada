@@ -46,13 +46,10 @@ package Gtkada.Style is
    subtype Cairo_Color_Val is Glib.Gdouble range 0.0 .. 1.0;
    --  In cairo, the color components are expressed as percents.
 
-   type Cairo_Color is record
-      R, G, B : Cairo_Color_Val;
-      Alpha   : Cairo_Color_Val := 1.0;
-   end record;
+   subtype Cairo_Color is Gdk.RGBA.Gdk_RGBA;
 
    type HSV_Color is record
-      H, S, V, A : Cairo_Color_Val;
+      H, S, V, A : Glib.Gdouble;
    end record;
    --  Used when manipulating Cairo color. The HSV color space is useful when
    --  wanting to shade a color (change it's value), (de)saturate it, or modify

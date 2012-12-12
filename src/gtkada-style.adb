@@ -52,10 +52,11 @@ package body Gtkada.Style is
       Max, Min, Del       : Gdouble;
       Del_R, Del_G, Del_B : Gdouble;
       Ret                 : HSV_Color;
+      Tmp                 : Gdouble;
 
    begin
-      Max := Gdouble'Max (Gdouble'Max (Color.R, Color.G), Color.B);
-      Min := Gdouble'Min (Gdouble'Min (Color.R, Color.G), Color.B);
+      Max := Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
+      Min := Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
       Del := Max - Min;
 
       Ret.V := Max;
@@ -68,25 +69,27 @@ package body Gtkada.Style is
       else
          Ret.S := Del / Max;
 
-         Del_R := (((Del - Color.R) / 6.0) + (Del / 2.0)) / Del;
-         Del_G := (((Del - Color.G) / 6.0) + (Del / 2.0)) / Del;
-         Del_B := (((Del - Color.B) / 6.0) + (Del / 2.0)) / Del;
+         Del_R := (((Del - Color.Red) / 6.0) + (Del / 2.0)) / Del;
+         Del_G := (((Del - Color.Green) / 6.0) + (Del / 2.0)) / Del;
+         Del_B := (((Del - Color.Blue) / 6.0) + (Del / 2.0)) / Del;
 
-         if Max = Color.R then
-            Ret.H := Del_B - Del_G;
-         elsif Max = Color.G then
-            Ret.H := (1.0 / 3.0) + Del_R - Del_B;
-         elsif Max = Color.B then
-            Ret.H := (2.0 / 3.0) + Del_G - Del_R;
+         if Max = Color.Red then
+            Tmp := Del_B - Del_G;
+         elsif Max = Color.Green then
+            Tmp := (1.0 / 3.0) + Del_R - Del_B;
+         elsif Max = Color.Blue then
+            Tmp := (2.0 / 3.0) + Del_G - Del_R;
          end if;
 
-         if Ret.H < 0.0 then
-            Ret.H := Ret.H + 1.0;
+         if Tmp < 0.0 then
+            Tmp := Tmp + 1.0;
          end if;
 
-         if Ret.H >= 1.0 then
-            Ret.H := Ret.H - 1.0;
+         if Tmp >= 1.0 then
+            Tmp := Tmp - 1.0;
          end if;
+
+         Ret.H := Tmp;
       end if;
 
       return Ret;
@@ -105,9 +108,9 @@ package body Gtkada.Style is
       Ret.Alpha := HSV.A;
 
       if HSV.S = 0.0 then
-         Ret.R := HSV.V;
-         Ret.G := HSV.V;
-         Ret.B := HSV.V;
+         Ret.Red := HSV.V;
+         Ret.Green := HSV.V;
+         Ret.Blue := HSV.V;
 
       else
          if HSV.H = 1.0 then
@@ -122,29 +125,29 @@ package body Gtkada.Style is
          Var_3 := HSV.V * (1.0 - HSV.S * (1.0 - (Var_H - Var_J)));
 
          if Var_J = 0.0 then
-            Ret.R := HSV.V;
-            Ret.G := Var_3;
-            Ret.B := Var_1;
+            Ret.Red := HSV.V;
+            Ret.Green := Var_3;
+            Ret.Blue := Var_1;
          elsif Var_J = 1.0 then
-            Ret.R := Var_2;
-            Ret.G := HSV.V;
-            Ret.B := Var_1;
+            Ret.Red := Var_2;
+            Ret.Green := HSV.V;
+            Ret.Blue := Var_1;
          elsif Var_J = 2.0 then
-            Ret.R := Var_1;
-            Ret.G := HSV.V;
-            Ret.B := Var_3;
+            Ret.Red := Var_1;
+            Ret.Green := HSV.V;
+            Ret.Blue := Var_3;
          elsif Var_J = 3.0 then
-            Ret.R := Var_1;
-            Ret.G := Var_2;
-            Ret.B := HSV.V;
+            Ret.Red := Var_1;
+            Ret.Green := Var_2;
+            Ret.Blue := HSV.V;
          elsif Var_J = 4.0 then
-            Ret.R := Var_3;
-            Ret.G := Var_1;
-            Ret.B := HSV.V;
+            Ret.Red := Var_3;
+            Ret.Green := Var_1;
+            Ret.Blue := HSV.V;
          else
-            Ret.R := HSV.V;
-            Ret.G := Var_1;
-            Ret.B := Var_2;
+            Ret.Red := HSV.V;
+            Ret.Green := Var_1;
+            Ret.Blue := Var_2;
          end if;
       end if;
 
@@ -157,9 +160,9 @@ package body Gtkada.Style is
 
    function To_Cairo (Color : Gdk.Color.Gdk_Color) return Cairo_Color is
    begin
-      return (R     => Gdouble (Gdk.Color.Red (Color)) / 65535.0,
-              G     => Gdouble (Gdk.Color.Green (Color)) / 65535.0,
-              B     => Gdouble (Gdk.Color.Blue (Color)) / 65535.0,
+      return (Red   => Gdouble (Gdk.Color.Red (Color)) / 65535.0,
+              Green => Gdouble (Gdk.Color.Green (Color)) / 65535.0,
+              Blue  => Gdouble (Gdk.Color.Blue (Color)) / 65535.0,
               Alpha => 1.0);
    end To_Cairo;
 
@@ -169,9 +172,9 @@ package body Gtkada.Style is
 
    function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color is
    begin
-      return (R     => Color.Red,
-              G     => Color.Green,
-              B     => Color.Blue,
+      return (Red   => Color.Red,
+              Green => Color.Green,
+              Blue => Color.Blue,
               Alpha => Color.Alpha);
    end To_Cairo;
 
@@ -217,7 +220,8 @@ package body Gtkada.Style is
    procedure Set_Source_Color
      (Cr : Cairo.Cairo_Context; Color : Cairo_Color) is
    begin
-      Cairo.Set_Source_Rgba (Cr, Color.R, Color.G, Color.B, Color.Alpha);
+      Cairo.Set_Source_Rgba
+        (Cr, Color.Red, Color.Green, Color.Blue, Color.Alpha);
    end Set_Source_Color;
 
    -----------------------
