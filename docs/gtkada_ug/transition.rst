@@ -1048,9 +1048,9 @@ using ``Get_Preferred_Size`` and passing the result to ``Size.``
 ``Initialize`` now has the same default value for its ``The_Type`` parameter
 as ``Gtk_New.``
 
-******
+
 GtkAda
-******
+======
 
 Gtkada.MDI
 ----------
@@ -1060,9 +1060,9 @@ Gtkada.MDI
  changing perspectives. Instead, a different color is used to highlight
  the target area (and this highlighting is now done using transparency).
 
-*****
+
 Gnome
-*****
+=====
 
 Gnome.App_Bar
 -------------
