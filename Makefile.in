@@ -61,7 +61,7 @@ mostlyclean-generic: clean-generic
 
 clean: clean-generic
 	-$(MAKE) -C $(testgtk_dir) clean
-	-$(MAKE) -C $(example_dir) clean
+	#-$(MAKE) -C $(example_dir) clean
 	-$(MAKE) -C $(src_dir) clean
 
 distclean: mostlyclean-generic
