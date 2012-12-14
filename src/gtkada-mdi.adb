@@ -1534,18 +1534,22 @@ package body Gtkada.MDI is
          else
             Print_Debug ("Close_Child, emitting delete_event", Debug_Increase);
 
-            Gdk_New (Event, Delete);
-            Event.Any.Window := Get_Window (MDI);
+            if (Child.Flags and Destroy_Button) = 0 then
+               Prevent_Delete := True;
+            else
+               Gdk_New (Event, Delete);
+               Event.Any.Window := Get_Window (Child.Initial);
 
-            Prevent_Delete := Return_Callback.Emit_By_Name
-              (Child.Initial, "delete_event", Event);
+               Prevent_Delete := Return_Callback.Emit_By_Name
+                 (Child.Initial, "delete_event", Event);
 
-            --  Unref'ing the event causes an unref of Event.Any.Window.
-            --  Avoid this by setting this field to null before freeing the
-            --  event.
-            Event.Any.Window := null;
+               --  Unref'ing the event causes an unref of Event.Any.Window.
+               --  Avoid this by setting this field to null before freeing the
+               --  event.
+               Event.Any.Window := null;
 
-            Free (Event);
+               Free (Event);
+            end if;
 
             Print_Debug ("Close_Child, done delete_event, prevent_delete ?"
                          & Boolean'Image (Prevent_Delete),
@@ -5696,7 +5700,7 @@ package body Gtkada.MDI is
          --  ??? We could save some memory by freeing the <pane> nodes, but is
          --  there any point ?
 
-         --  Temporarily disable the user of all floating mode, so that we can
+         --  Temporarily disable the use of all floating mode, so that we can
          --  properly restore the desktop even if notebooks are referenced.
          MDI.All_Floating_Mode := False;
 
@@ -5787,7 +5791,7 @@ package body Gtkada.MDI is
 
                --  Do not force closure, we want to keep desktop-independent
                --  views
-               Close (MDI, MDI_Child (Get_Data (Tmp)));
+               Close_Child (MDI_Child (Get_Data (Tmp)), Force => False);
                Tmp := Tmp2;
             end loop;
 
