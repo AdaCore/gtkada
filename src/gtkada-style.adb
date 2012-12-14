@@ -43,6 +43,11 @@ with Gtk.Style_Provider; use Gtk.Style_Provider;
 
 package body Gtkada.Style is
 
+   Dec_To_Hex : constant array (0 .. 15) of Character :=
+     (0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',
+      6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => 'A', 11 => 'B',
+      12 => 'C', 13 => 'D', 14 => 'E', 15 => 'F');
+
    ------------
    -- To_HSV --
    ------------
@@ -177,6 +182,63 @@ package body Gtkada.Style is
               Blue => Color.Blue,
               Alpha => Color.Alpha);
    end To_Cairo;
+
+   ------------
+   -- To_Hex --
+   ------------
+
+   function To_Hex (Color : Gdk.RGBA.Gdk_RGBA) return String is
+      function To_Hex (Val : Gdouble) return String;
+      function To_Hex (Val : Gdouble) return String is
+         V : constant Integer := Integer (Val * 255.0);
+      begin
+         return Dec_To_Hex (V / 16)
+           & Dec_To_Hex (V mod 16);
+      end To_Hex;
+
+   begin
+      return '#' & To_Hex (Color.Red)
+        & To_Hex (Color.Green) & To_Hex (Color.Blue);
+   end To_Hex;
+
+   ----------------------
+   -- Shade_Or_Lighten --
+   ----------------------
+
+   function Shade_Or_Lighten
+     (Color  : Gdk.RGBA.Gdk_RGBA;
+      Amount : Glib.Gdouble := 0.4) return Gdk.RGBA.Gdk_RGBA
+   is
+      --  See http://www.nbdtech.com/Blog/archive/2008/04/27/
+      --    Calculating-the-Perceived-Brightness-of-a-Color.aspx
+
+      Threshold : constant Gdouble := 130.0 * 130.0 / (255.0 * 255.0);
+
+      --  The square of the brightness
+      Brightness_Square : constant Gdouble :=
+        Color.Red * Color.Red * 0.241
+        + Color.Green * Color.Green * 0.691
+        + Color.Blue * Color.Blue * 0.068;
+
+      A : Gdouble;
+   begin
+      if Brightness_Square < Threshold then
+         --  We cannot lighten pure black just by multiplying, so instead we do
+         --  an addition, so that we still end up with a different color
+
+         return (Red   => Gdouble'Min (Color.Red + Amount, 1.0),
+                 Green => Gdouble'Min (Color.Green + Amount, 1.0),
+                 Blue  => Gdouble'Min (Color.Blue + Amount, 1.0),
+                 Alpha => 1.0);
+
+      else
+         A := 1.0 - Amount;   --  darken the color
+         return (Red   => Gdouble'Min (Color.Red * A, 1.0),
+                 Green => Gdouble'Min (Color.Green * A, 1.0),
+                 Blue  => Gdouble'Min (Color.Blue * A, 1.0),
+                 Alpha => 1.0);
+      end if;
+   end Shade_Or_Lighten;
 
    -----------
    -- Shade --

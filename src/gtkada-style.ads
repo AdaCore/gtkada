@@ -77,6 +77,19 @@ package Gtkada.Style is
       Amount : Glib.Gdouble) return Gdk.RGBA.Gdk_RGBA;
    --  Return a lighter version of the color
 
+   function Shade_Or_Lighten
+     (Color  : Gdk.RGBA.Gdk_RGBA;
+      Amount : Glib.Gdouble := 0.4) return Gdk.RGBA.Gdk_RGBA;
+   --  Return a lighter or darker version of Color, depending on whether color
+   --  is rather dark or rather light.
+   --  Amount is a multiplier, so 0.1 will give a shade 10% lighter or darker.
+
+   function To_Hex (Color : Gdk.RGBA.Gdk_RGBA) return String;
+   --  Return a hexadecimal approximate representation of the color, of the
+   --  form "#rrggbb". This loses the alpha chanel.
+   --  The output is suitable for use in a markup (see Gtk.Label.Set_Markup
+   --  for instance)
+
    -----------------------------
    -- Extra path manipulation --
    -----------------------------
