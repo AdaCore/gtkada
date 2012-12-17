@@ -293,6 +293,10 @@ package Gtk.UI_Manager is
    --  Creates a new ui manager object.
    --  Since: gtk+ 2.4
 
+   function Gtk_UI_Manager_New return Gtk_UI_Manager;
+   --  Creates a new ui manager object.
+   --  Since: gtk+ 2.4
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_ui_manager_get_type");
 

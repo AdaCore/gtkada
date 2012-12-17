@@ -58,6 +58,35 @@ package body Gtk.Icon_Set is
       return From_Object (Internal (Get_Object (Style), Stock_Id & ASCII.NUL));
    end Lookup_Icon_Set;
 
+   ----------------------
+   -- Gtk_Icon_Set_New --
+   ----------------------
+
+   function Gtk_Icon_Set_New return Gtk_Icon_Set is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_icon_set_new");
+      Self : Gtk_Icon_Set;
+   begin
+      Self.Set_Object (Internal);
+      return Self;
+   end Gtk_Icon_Set_New;
+
+   ----------------------------------
+   -- Gtk_Icon_Set_New_From_Pixbuf --
+   ----------------------------------
+
+   function Gtk_Icon_Set_New_From_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Icon_Set
+   is
+      function Internal (Pixbuf : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_set_new_from_pixbuf");
+      Self : Gtk_Icon_Set;
+   begin
+      Self.Set_Object (Internal (Get_Object (Pixbuf)));
+      return Self;
+   end Gtk_Icon_Set_New_From_Pixbuf;
+
    -------------
    -- Gtk_New --
    -------------

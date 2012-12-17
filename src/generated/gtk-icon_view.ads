@@ -116,6 +116,10 @@ package Gtk.Icon_View is
    --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget
    --  Since: gtk+ 2.6
 
+   function Gtk_Icon_View_New return Gtk_Icon_View;
+   --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget
+   --  Since: gtk+ 2.6
+
    procedure Gtk_New_With_Area
       (Icon_View : out Gtk_Icon_View;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
@@ -127,12 +131,26 @@ package Gtk.Icon_View is
    --  Since: gtk+ 3.0
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cells
 
+   function Gtk_Icon_View_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Icon_View;
+   --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget using the specified
+   --  Area to layout cells inside the icons.
+   --  Since: gtk+ 3.0
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cells
+
    procedure Gtk_New_With_Model
       (Icon_View : out Gtk_Icon_View;
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    procedure Initialize_With_Model
       (Icon_View : not null access Gtk_Icon_View_Record'Class;
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
+   --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget with the model Model.
+   --  Since: gtk+ 2.6
+   --  "model": The model.
+
+   function Gtk_Icon_View_New_With_Model
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Icon_View;
    --  Creates a new Gtk.Icon_View.Gtk_Icon_View widget with the model Model.
    --  Since: gtk+ 2.6
    --  "model": The model.

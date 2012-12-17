@@ -108,6 +108,83 @@ package body Gtk.Status_Icon is
       Gtk.Status_Icon.Initialize_From_Stock (Status_Icon, Stock_Id);
    end Gtk_New_From_Stock;
 
+   -------------------------
+   -- Gtk_Status_Icon_New --
+   -------------------------
+
+   function Gtk_Status_Icon_New return Gtk_Status_Icon is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize (Status_Icon);
+      return Status_Icon;
+   end Gtk_Status_Icon_New;
+
+   -----------------------------------
+   -- Gtk_Status_Icon_New_From_File --
+   -----------------------------------
+
+   function Gtk_Status_Icon_New_From_File
+      (Filename : UTF8_String) return Gtk_Status_Icon
+   is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize_From_File (Status_Icon, Filename);
+      return Status_Icon;
+   end Gtk_Status_Icon_New_From_File;
+
+   ------------------------------------
+   -- Gtk_Status_Icon_New_From_Gicon --
+   ------------------------------------
+
+   function Gtk_Status_Icon_New_From_Gicon
+      (Icon : Glib.G_Icon.G_Icon) return Gtk_Status_Icon
+   is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize_From_Gicon (Status_Icon, Icon);
+      return Status_Icon;
+   end Gtk_Status_Icon_New_From_Gicon;
+
+   ----------------------------------------
+   -- Gtk_Status_Icon_New_From_Icon_Name --
+   ----------------------------------------
+
+   function Gtk_Status_Icon_New_From_Icon_Name
+      (Icon_Name : UTF8_String) return Gtk_Status_Icon
+   is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize_From_Icon_Name (Status_Icon, Icon_Name);
+      return Status_Icon;
+   end Gtk_Status_Icon_New_From_Icon_Name;
+
+   -------------------------------------
+   -- Gtk_Status_Icon_New_From_Pixbuf --
+   -------------------------------------
+
+   function Gtk_Status_Icon_New_From_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Status_Icon
+   is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize_From_Pixbuf (Status_Icon, Pixbuf);
+      return Status_Icon;
+   end Gtk_Status_Icon_New_From_Pixbuf;
+
+   ------------------------------------
+   -- Gtk_Status_Icon_New_From_Stock --
+   ------------------------------------
+
+   function Gtk_Status_Icon_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Status_Icon
+   is
+      Status_Icon : constant Gtk_Status_Icon := new Gtk_Status_Icon_Record;
+   begin
+      Gtk.Status_Icon.Initialize_From_Stock (Status_Icon, Stock_Id);
+      return Status_Icon;
+   end Gtk_Status_Icon_New_From_Stock;
+
    ----------------
    -- Initialize --
    ----------------

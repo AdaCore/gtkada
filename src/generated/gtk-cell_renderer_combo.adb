@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Combo is
      (Get_Type'Access, Gtk_Cell_Renderer_Combo_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Combo);
 
+   ---------------------------------
+   -- Gtk_Cell_Renderer_Combo_New --
+   ---------------------------------
+
+   function Gtk_Cell_Renderer_Combo_New return Gtk_Cell_Renderer_Combo is
+      Self : constant Gtk_Cell_Renderer_Combo := new Gtk_Cell_Renderer_Combo_Record;
+   begin
+      Gtk.Cell_Renderer_Combo.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Combo_New;
+
    -------------
    -- Gtk_New --
    -------------

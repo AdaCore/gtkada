@@ -32,6 +32,23 @@ package body Gtk.Aspect_Frame is
      (Get_Type'Access, Gtk_Aspect_Frame_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Aspect_Frame);
 
+   --------------------------
+   -- Gtk_Aspect_Frame_New --
+   --------------------------
+
+   function Gtk_Aspect_Frame_New
+      (Label      : UTF8_String := "";
+       Xalign     : Gfloat;
+       Yalign     : Gfloat;
+       Ratio      : Gfloat;
+       Obey_Child : Boolean) return Gtk_Aspect_Frame
+   is
+      Aspect_Frame : constant Gtk_Aspect_Frame := new Gtk_Aspect_Frame_Record;
+   begin
+      Gtk.Aspect_Frame.Initialize (Aspect_Frame, Label, Xalign, Yalign, Ratio, Obey_Child);
+      return Aspect_Frame;
+   end Gtk_Aspect_Frame_New;
+
    -------------
    -- Gtk_New --
    -------------

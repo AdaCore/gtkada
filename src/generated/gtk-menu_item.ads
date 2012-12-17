@@ -68,6 +68,9 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record'Class);
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item.
 
+   function Gtk_Menu_Item_New return Gtk_Menu_Item;
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item.
+
    procedure Gtk_New_With_Label
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
@@ -78,12 +81,26 @@ package Gtk.Menu_Item is
    --  Gtk.Label.Gtk_Label.
    --  "label": the text for the label
 
+   function Gtk_Menu_Item_New_With_Label
+      (Label : UTF8_String) return Gtk_Menu_Item;
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item whose child is a
+   --  Gtk.Label.Gtk_Label.
+   --  "label": the text for the label
+
    procedure Gtk_New_With_Mnemonic
       (Menu_Item : out Gtk_Menu_Item;
        Label     : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Menu_Item : not null access Gtk_Menu_Item_Record'Class;
        Label     : UTF8_String);
+   --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item containing a label.
+   --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the menu item.
+   --  "label": The text of the button, with an underscore in front of the
+   --  mnemonic character
+
+   function Gtk_Menu_Item_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Menu_Item;
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the menu item.

@@ -54,6 +54,17 @@ package body Gtk.Style_Context is
       Gtk.Style_Context.Initialize (Self);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_Style_Context_New --
+   ---------------------------
+
+   function Gtk_Style_Context_New return Gtk_Style_Context is
+      Self : constant Gtk_Style_Context := new Gtk_Style_Context_Record;
+   begin
+      Gtk.Style_Context.Initialize (Self);
+      return Self;
+   end Gtk_Style_Context_New;
+
    ----------------
    -- Initialize --
    ----------------

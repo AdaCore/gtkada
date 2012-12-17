@@ -69,6 +69,14 @@ package Gtk.Radio_Tool_Button is
    --  "group": An existing radio button group, or null if you are creating a
    --  new group
 
+   function Gtk_Radio_Tool_Button_New
+      (Group : Gtk.Widget.Widget_SList.GSlist) return Gtk_Radio_Tool_Button;
+   --  Creates a new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button, adding it to
+   --  Group.
+   --  Since: gtk+ 2.4
+   --  "group": An existing radio button group, or null if you are creating a
+   --  new group
+
    procedure Gtk_New_From_Stock
       (Self     : out Gtk_Radio_Tool_Button;
        Group    : Gtk.Widget.Widget_SList.GSlist;
@@ -77,6 +85,17 @@ package Gtk.Radio_Tool_Button is
       (Self     : not null access Gtk_Radio_Tool_Button_Record'Class;
        Group    : Gtk.Widget.Widget_SList.GSlist;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button, adding it to
+   --  Group. The new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button will contain
+   --  an icon and label from the stock item indicated by Stock_Id.
+   --  Since: gtk+ 2.4
+   --  "group": an existing radio button group, or null if you are creating a
+   --  new group
+   --  "stock_id": the name of a stock item
+
+   function Gtk_Radio_Tool_Button_New_From_Stock
+      (Group    : Gtk.Widget.Widget_SList.GSlist;
+       Stock_Id : UTF8_String) return Gtk_Radio_Tool_Button;
    --  Creates a new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button, adding it to
    --  Group. The new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button will contain
    --  an icon and label from the stock item indicated by Stock_Id.

@@ -42,6 +42,17 @@ package body Gtk.Status_Bar is
       Gtk.Status_Bar.Initialize (Statusbar);
    end Gtk_New;
 
+   ------------------------
+   -- Gtk_Status_Bar_New --
+   ------------------------
+
+   function Gtk_Status_Bar_New return Gtk_Status_Bar is
+      Statusbar : constant Gtk_Status_Bar := new Gtk_Status_Bar_Record;
+   begin
+      Gtk.Status_Bar.Initialize (Statusbar);
+      return Statusbar;
+   end Gtk_Status_Bar_New;
+
    ----------------
    -- Initialize --
    ----------------

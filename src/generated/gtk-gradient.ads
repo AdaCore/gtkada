@@ -69,6 +69,20 @@ package Gtk.Gradient is
    --  "x1": X coordinate of the end point
    --  "y1": Y coordinate of the end point
 
+   function Gtk_Gradient_New_Linear
+      (X0 : Gdouble;
+       Y0 : Gdouble;
+       X1 : Gdouble;
+       Y1 : Gdouble) return Gtk_Gradient;
+   --  Creates a new linear gradient along the line defined by (x0, y0) and
+   --  (x1, y1). Before using the gradient a number of stop colors must be
+   --  added through Gtk.Gradient.Add_Color_Stop.
+   --  Since: gtk+ 3.0
+   --  "x0": X coordinate of the starting point
+   --  "y0": Y coordinate of the starting point
+   --  "x1": X coordinate of the end point
+   --  "y1": Y coordinate of the end point
+
    procedure Gtk_New_Radial
       (Self    : out Gtk_Gradient;
        X0      : Gdouble;
@@ -77,6 +91,24 @@ package Gtk.Gradient is
        X1      : Gdouble;
        Y1      : Gdouble;
        Radius1 : Gdouble);
+   --  Creates a new radial gradient along the two circles defined by (x0, y0,
+   --  radius0) and (x1, y1, radius1). Before using the gradient a number of
+   --  stop colors must be added through Gtk.Gradient.Add_Color_Stop.
+   --  Since: gtk+ 3.0
+   --  "x0": X coordinate of the start circle
+   --  "y0": Y coordinate of the start circle
+   --  "radius0": radius of the start circle
+   --  "x1": X coordinate of the end circle
+   --  "y1": Y coordinate of the end circle
+   --  "radius1": radius of the end circle
+
+   function Gtk_Gradient_New_Radial
+      (X0      : Gdouble;
+       Y0      : Gdouble;
+       Radius0 : Gdouble;
+       X1      : Gdouble;
+       Y1      : Gdouble;
+       Radius1 : Gdouble) return Gtk_Gradient;
    --  Creates a new radial gradient along the two circles defined by (x0, y0,
    --  radius0) and (x1, y1, radius1). Before using the gradient a number of
    --  stop colors must be added through Gtk.Gradient.Add_Color_Stop.

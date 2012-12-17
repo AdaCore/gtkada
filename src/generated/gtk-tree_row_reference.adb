@@ -78,6 +78,44 @@ package body Gtk.Tree_Row_Reference is
       Reference.Set_Object (Internal (Get_Object (Proxy), Model, Get_Object (Path)));
    end Gtk_New_Proxy;
 
+   --------------------------------
+   -- Gtk_Tree_Row_Reference_New --
+   --------------------------------
+
+   function Gtk_Tree_Row_Reference_New
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Path  : Gtk.Tree_Model.Gtk_Tree_Path) return Gtk_Tree_Row_Reference
+   is
+      function Internal
+         (Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Path  : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_row_reference_new");
+      Reference : Gtk_Tree_Row_Reference;
+   begin
+      Reference.Set_Object (Internal (Model, Get_Object (Path)));
+      return Reference;
+   end Gtk_Tree_Row_Reference_New;
+
+   --------------------------------------
+   -- Gtk_Tree_Row_Reference_New_Proxy --
+   --------------------------------------
+
+   function Gtk_Tree_Row_Reference_New_Proxy
+      (Proxy : not null access Glib.Object.GObject_Record'Class;
+       Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Path  : Gtk.Tree_Model.Gtk_Tree_Path) return Gtk_Tree_Row_Reference
+   is
+      function Internal
+         (Proxy : System.Address;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Path  : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_row_reference_new_proxy");
+      Reference : Gtk_Tree_Row_Reference;
+   begin
+      Reference.Set_Object (Internal (Get_Object (Proxy), Model, Get_Object (Path)));
+      return Reference;
+   end Gtk_Tree_Row_Reference_New_Proxy;
+
    ----------
    -- Copy --
    ----------

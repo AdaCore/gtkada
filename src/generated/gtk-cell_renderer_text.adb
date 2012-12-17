@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Text is
      (Get_Type'Access, Gtk_Cell_Renderer_Text_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Text);
 
+   --------------------------------
+   -- Gtk_Cell_Renderer_Text_New --
+   --------------------------------
+
+   function Gtk_Cell_Renderer_Text_New return Gtk_Cell_Renderer_Text is
+      Self : constant Gtk_Cell_Renderer_Text := new Gtk_Cell_Renderer_Text_Record;
+   begin
+      Gtk.Cell_Renderer_Text.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Text_New;
+
    -------------
    -- Gtk_New --
    -------------

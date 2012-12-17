@@ -73,6 +73,24 @@ package Gtk.Radio_Action is
    --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
    --  return if this action is selected.
 
+   function Gtk_Radio_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Value    : Gint) return Gtk_Radio_Action;
+   --  Creates a new Gtk.Radio_Action.Gtk_Radio_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.4
+   --  "name": A unique name for the action
+   --  "label": The label displayed in menu items and on buttons, or null
+   --  "tooltip": A tooltip for this action, or null
+   --  "stock_id": The stock icon to display in widgets representing this
+   --  action, or null
+   --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
+   --  return if this action is selected.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_radio_action_get_type");
 

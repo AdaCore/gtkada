@@ -81,6 +81,9 @@ package Gtk.Fixed is
    procedure Initialize (Fixed : not null access Gtk_Fixed_Record'Class);
    --  Creates a new Gtk.Fixed.Gtk_Fixed.
 
+   function Gtk_Fixed_New return Gtk_Fixed;
+   --  Creates a new Gtk.Fixed.Gtk_Fixed.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_fixed_get_type");
 

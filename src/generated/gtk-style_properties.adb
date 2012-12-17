@@ -42,6 +42,17 @@ package body Gtk.Style_Properties is
       Gtk.Style_Properties.Initialize (Self);
    end Gtk_New;
 
+   ------------------------------
+   -- Gtk_Style_Properties_New --
+   ------------------------------
+
+   function Gtk_Style_Properties_New return Gtk_Style_Properties is
+      Self : constant Gtk_Style_Properties := new Gtk_Style_Properties_Record;
+   begin
+      Gtk.Style_Properties.Initialize (Self);
+      return Self;
+   end Gtk_Style_Properties_New;
+
    ----------------
    -- Initialize --
    ----------------

@@ -51,6 +51,10 @@ package Gtk.Event_Box is
    --  Create a new box.
    --  The box's child can then be set using the Gtk.Container.Add function.
 
+   function Gtk_Event_Box_New return Gtk_Event_Box;
+   --  Create a new box.
+   --  The box's child can then be set using the Gtk.Container.Add function.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_event_box_get_type");
 

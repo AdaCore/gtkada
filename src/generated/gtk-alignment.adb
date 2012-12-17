@@ -31,6 +31,22 @@ package body Gtk.Alignment is
      (Get_Type'Access, Gtk_Alignment_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Alignment);
 
+   -----------------------
+   -- Gtk_Alignment_New --
+   -----------------------
+
+   function Gtk_Alignment_New
+      (Xalign : Gfloat;
+       Yalign : Gfloat;
+       Xscale : Gfloat;
+       Yscale : Gfloat) return Gtk_Alignment
+   is
+      Alignment : constant Gtk_Alignment := new Gtk_Alignment_Record;
+   begin
+      Gtk.Alignment.Initialize (Alignment, Xalign, Yalign, Xscale, Yscale);
+      return Alignment;
+   end Gtk_Alignment_New;
+
    -------------
    -- Gtk_New --
    -------------

@@ -56,12 +56,25 @@ package Gtk.Toggle_Tool_Button is
    --  Returns a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button
    --  Since: gtk+ 2.4
 
+   function Gtk_Toggle_Tool_Button_New return Gtk_Toggle_Tool_Button;
+   --  Returns a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button
+   --  Since: gtk+ 2.4
+
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Toggle_Tool_Button;
        Stock_Id : UTF8_String);
    procedure Initialize_From_Stock
       (Button   : not null access Gtk_Toggle_Tool_Button_Record'Class;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button containing
+   --  the image and text from a stock item. Some stock ids have preprocessor
+   --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.
+   --  It is an error if Stock_Id is not a name of a stock item.
+   --  Since: gtk+ 2.4
+   --  "stock_id": the name of the stock item
+
+   function Gtk_Toggle_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Toggle_Tool_Button;
    --  Creates a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button containing
    --  the image and text from a stock item. Some stock ids have preprocessor
    --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.

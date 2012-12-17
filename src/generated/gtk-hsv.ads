@@ -50,6 +50,10 @@ package Gtk.Hsv is
    --  Creates a new HSV color selector.
    --  Since: gtk+ 2.14
 
+   function Gtk_Hsv_New return Gtk_Hsv;
+   --  Creates a new HSV color selector.
+   --  Since: gtk+ 2.14
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_hsv_get_type");
 

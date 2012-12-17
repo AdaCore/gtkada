@@ -90,6 +90,22 @@ package Gtk.Text_Mark is
    --  "name": mark name or null
    --  "left_gravity": whether the mark should have left gravity
 
+   function Gtk_Text_Mark_New
+      (Name         : UTF8_String := "";
+       Left_Gravity : Boolean) return Gtk_Text_Mark;
+   --  Creates a text mark. Add it to a buffer using Gtk.Text_Buffer.Add_Mark.
+   --  If Name is null, the mark is anonymous; otherwise, the mark can be
+   --  retrieved by name using Gtk.Text_Buffer.Get_Mark. If a mark has left
+   --  gravity, and text is inserted at the mark's current location, the mark
+   --  will be moved to the left of the newly-inserted text. If the mark has
+   --  right gravity (Left_Gravity = False), the mark will end up on the right
+   --  of newly-inserted text. The standard left-to-right cursor is a mark with
+   --  right gravity (when you type, the cursor stays on the right side of the
+   --  text you're typing).
+   --  Since: gtk+ 2.12
+   --  "name": mark name or null
+   --  "left_gravity": whether the mark should have left gravity
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_mark_get_type");
 

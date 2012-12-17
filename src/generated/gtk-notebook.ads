@@ -87,6 +87,9 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record'Class);
    --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
 
+   function Gtk_Notebook_New return Gtk_Notebook;
+   --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_notebook_get_type");
 

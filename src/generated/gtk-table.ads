@@ -87,6 +87,19 @@ package Gtk.Table is
    --  "homogeneous": If set to True, all table cells are resized to the size
    --  of the cell containing the largest widget.
 
+   function Gtk_Table_New
+      (Rows        : Guint;
+       Columns     : Guint;
+       Homogeneous : Boolean) return Gtk_Table;
+   --  Create a new table. The width allocated to the table is divided into
+   --  Columns columns, which all have the same width if Homogeneous is True.
+   --  If Homogeneous is False, the width will be calculated with the children
+   --  contained in the table. Same behavior for the rows.
+   --  "rows": The number of rows the new table should have.
+   --  "columns": The number of columns the new table should have.
+   --  "homogeneous": If set to True, all table cells are resized to the size
+   --  of the cell containing the largest widget.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_table_get_type");
 

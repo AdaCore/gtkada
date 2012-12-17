@@ -33,6 +33,17 @@ package body Gtk.Css_Provider is
      (Get_Type'Access, Gtk_Css_Provider_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Css_Provider);
 
+   --------------------------
+   -- Gtk_Css_Provider_New --
+   --------------------------
+
+   function Gtk_Css_Provider_New return Gtk_Css_Provider is
+      Self : constant Gtk_Css_Provider := new Gtk_Css_Provider_Record;
+   begin
+      Gtk.Css_Provider.Initialize (Self);
+      return Self;
+   end Gtk_Css_Provider_New;
+
    -------------
    -- Gtk_New --
    -------------

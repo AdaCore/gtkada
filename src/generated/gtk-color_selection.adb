@@ -81,6 +81,17 @@ package body Gtk.Color_Selection is
      (Get_Type'Access, Gtk_Color_Selection_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Color_Selection);
 
+   -----------------------------
+   -- Gtk_Color_Selection_New --
+   -----------------------------
+
+   function Gtk_Color_Selection_New return Gtk_Color_Selection is
+      Colorsel : constant Gtk_Color_Selection := new Gtk_Color_Selection_Record;
+   begin
+      Gtk.Color_Selection.Initialize (Colorsel);
+      return Colorsel;
+   end Gtk_Color_Selection_New;
+
    -------------
    -- Gtk_New --
    -------------

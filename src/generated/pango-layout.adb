@@ -93,6 +93,20 @@ package body Pango.Layout is
       Set_Object (Layout, Internal (Get_Object (Context)));
    end Initialize;
 
+   ----------------------
+   -- Pango_Layout_New --
+   ----------------------
+
+   function Pango_Layout_New
+      (Context : not null access Pango.Context.Pango_Context_Record'Class)
+       return Pango_Layout
+   is
+      Layout : constant Pango_Layout := new Pango_Layout_Record;
+   begin
+      Pango.Layout.Initialize (Layout, Context);
+      return Layout;
+   end Pango_Layout_New;
+
    ------------------
    -- At_Last_Line --
    ------------------

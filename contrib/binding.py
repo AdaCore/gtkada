@@ -1294,6 +1294,20 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section.add(gtk_new)
             section.add(initialize)
 
+            # Gtk_New as a function
+            gtk_new = Subprogram(
+                name="%s_%s" % (self._subst["typename"], name),
+                returns=AdaType("%(typename)s" % self._subst,
+                               pkg=self.pkg, in_spec=True),
+                plist=filtered_params,
+                local_vars=call[2] +
+                   [Local_Var(selfname,
+                   "constant %(typename)s" % self._subst,
+                    "new %(typename)s_Record" % self._subst)],
+                code=call[0] + "return %s;" % selfname,
+                doc=profile.doc)
+            section.add(gtk_new)
+
         elif self.is_boxed:
             gtk_new = Subprogram(
                 name=adaname,
@@ -1309,6 +1323,20 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
+            gtk_new = Subprogram(
+                name="%s_%s" % (self._subst["typename"], name),
+                returns=AdaType("%(typename)s" % self._subst,
+                               pkg=self.pkg, in_spec=True),
+                plist=profile.params,
+                local_vars=local_vars + call[2] +
+                   [Local_Var(selfname,
+                   "%(typename)s" % self._subst)],
+                code="%s%s.Set_Object (%s); return %s" % (
+                   call[0], selfname, call[1], selfname),
+                doc=profile.doc)
+            gtk_new.add_nested(internal)
+            section.add(gtk_new)
+
         else:
             # likely a Proxy
             gtk_new = Subprogram(
@@ -1321,7 +1349,20 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 local_vars=local_vars + call[2],
                 code="%s%s := %s" % (call[0], selfname, call[1]),
                 doc=profile.doc)
+            gtk_new.add_nested(internal)
+            section.add(gtk_new)
 
+            gtk_new = Subprogram(
+                name="%s_%s" % (self._subst["typename"], name),
+                returns=AdaType("%(typename)s" % self._subst,
+                               pkg=self.pkg, in_spec=True),
+                plist=profile.params,
+                local_vars=local_vars + call[2] +
+                   [Local_Var(selfname,
+                   "%(typename)s" % self._subst)],
+                code="%s%s := %s; return %s;" % (
+                    call[0], selfname, call[1], selfname),
+                doc=profile.doc)
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 

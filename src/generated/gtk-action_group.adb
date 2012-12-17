@@ -299,6 +299,19 @@ package body Gtk.Action_Group is
      (Get_Type'Access, Gtk_Action_Group_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Action_Group);
 
+   --------------------------
+   -- Gtk_Action_Group_New --
+   --------------------------
+
+   function Gtk_Action_Group_New
+      (Name : UTF8_String) return Gtk_Action_Group
+   is
+      Action_Group : constant Gtk_Action_Group := new Gtk_Action_Group_Record;
+   begin
+      Gtk.Action_Group.Initialize (Action_Group, Name);
+      return Action_Group;
+   end Gtk_Action_Group_New;
+
    -------------
    -- Gtk_New --
    -------------

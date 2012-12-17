@@ -34,6 +34,17 @@ package body Gtk.About_Dialog is
      (Get_Type'Access, Gtk_About_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_About_Dialog);
 
+   --------------------------
+   -- Gtk_About_Dialog_New --
+   --------------------------
+
+   function Gtk_About_Dialog_New return Gtk_About_Dialog is
+      About : constant Gtk_About_Dialog := new Gtk_About_Dialog_Record;
+   begin
+      Gtk.About_Dialog.Initialize (About);
+      return About;
+   end Gtk_About_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

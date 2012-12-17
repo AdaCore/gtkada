@@ -66,6 +66,13 @@ package Gtk.Text_View is
    --  Gtk.Text_View.Get_Buffer. If you want to specify your own buffer,
    --  consider Gtk.Text_View.Gtk_New.
 
+   function Gtk_Text_View_New return Gtk_Text_View;
+   --  Creates a new Gtk.Text_View.Gtk_Text_View. If you don't call
+   --  Gtk.Text_View.Set_Buffer before using the text view, an empty default
+   --  buffer will be created for you. Get the buffer with
+   --  Gtk.Text_View.Get_Buffer. If you want to specify your own buffer,
+   --  consider Gtk.Text_View.Gtk_New.
+
    procedure Gtk_New
       (View   : out Gtk_Text_View;
        Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
@@ -74,6 +81,16 @@ package Gtk.Text_View is
       (View   : not null access Gtk_Text_View_Record'Class;
        Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
       ;
+   --  Creates a new Gtk.Text_View.Gtk_Text_View widget displaying the buffer
+   --  Buffer. One buffer can be shared among many widgets. Buffer may be null
+   --  to create a default buffer, in which case this function is equivalent to
+   --  Gtk.Text_View.Gtk_New. The text view adds its own reference count to the
+   --  buffer; it does not take over an existing reference.
+   --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
+
+   function Gtk_Text_View_New_With_Buffer
+      (Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
+       return Gtk_Text_View;
    --  Creates a new Gtk.Text_View.Gtk_Text_View widget displaying the buffer
    --  Buffer. One buffer can be shared among many widgets. Buffer may be null
    --  to create a default buffer, in which case this function is equivalent to

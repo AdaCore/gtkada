@@ -41,6 +41,17 @@ package body Gtk.Switch is
       Gtk.Switch.Initialize (Self);
    end Gtk_New;
 
+   --------------------
+   -- Gtk_Switch_New --
+   --------------------
+
+   function Gtk_Switch_New return Gtk_Switch is
+      Self : constant Gtk_Switch := new Gtk_Switch_Record;
+   begin
+      Gtk.Switch.Initialize (Self);
+      return Self;
+   end Gtk_Switch_New;
+
    ----------------
    -- Initialize --
    ----------------

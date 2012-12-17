@@ -31,6 +31,19 @@ package body Gtk.Button_Box is
      (Get_Type'Access, Gtk_Button_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Button_Box);
 
+   ------------------------
+   -- Gtk_Button_Box_New --
+   ------------------------
+
+   function Gtk_Button_Box_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Button_Box
+   is
+      Widget : constant Gtk_Button_Box := new Gtk_Button_Box_Record;
+   begin
+      Gtk.Button_Box.Initialize (Widget, Orientation);
+      return Widget;
+   end Gtk_Button_Box_New;
+
    -------------
    -- Gtk_New --
    -------------

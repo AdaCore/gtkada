@@ -158,6 +158,20 @@ package body Gtk.Tree_Model_Sort is
       Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
    end Gtk_New_With_Model;
 
+   ---------------------------------------------
+   -- Gtk_Tree_Model_Sort_Sort_New_With_Model --
+   ---------------------------------------------
+
+   function Gtk_Tree_Model_Sort_Sort_New_With_Model
+      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
+       return Gtk_Tree_Model_Sort
+   is
+      Self : constant Gtk_Tree_Model_Sort := new Gtk_Tree_Model_Sort_Record;
+   begin
+      Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
+      return Self;
+   end Gtk_Tree_Model_Sort_Sort_New_With_Model;
+
    ---------------------------
    -- Initialize_With_Model --
    ---------------------------

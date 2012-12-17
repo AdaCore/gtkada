@@ -121,6 +121,9 @@ package Gtk.Drawing_Area is
       (Drawing_Area : not null access Gtk_Drawing_Area_Record'Class);
    --  Creates a new drawing area.
 
+   function Gtk_Drawing_Area_New return Gtk_Drawing_Area;
+   --  Creates a new drawing area.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
 

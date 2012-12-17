@@ -33,6 +33,35 @@ package body Gtk.File_Chooser_Button is
      (Get_Type'Access, Gtk_File_Chooser_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_File_Chooser_Button);
 
+   ---------------------------------
+   -- Gtk_File_Chooser_Button_New --
+   ---------------------------------
+
+   function Gtk_File_Chooser_Button_New
+      (Title  : UTF8_String;
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Button
+   is
+      Button : constant Gtk_File_Chooser_Button := new Gtk_File_Chooser_Button_Record;
+   begin
+      Gtk.File_Chooser_Button.Initialize (Button, Title, Action);
+      return Button;
+   end Gtk_File_Chooser_Button_New;
+
+   ---------------------------------------------
+   -- Gtk_File_Chooser_Button_New_With_Dialog --
+   ---------------------------------------------
+
+   function Gtk_File_Chooser_Button_New_With_Dialog
+      (Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk_File_Chooser_Button
+   is
+      Button : constant Gtk_File_Chooser_Button := new Gtk_File_Chooser_Button_Record;
+   begin
+      Gtk.File_Chooser_Button.Initialize_With_Dialog (Button, Dialog);
+      return Button;
+   end Gtk_File_Chooser_Button_New_With_Dialog;
+
    -------------
    -- Gtk_New --
    -------------

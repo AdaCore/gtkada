@@ -88,6 +88,72 @@ package body Gtk.Cell_View is
      (Get_Type'Access, Gtk_Cell_View_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_View);
 
+   -----------------------
+   -- Gtk_Cell_View_New --
+   -----------------------
+
+   function Gtk_Cell_View_New return Gtk_Cell_View is
+      Cell_View : constant Gtk_Cell_View := new Gtk_Cell_View_Record;
+   begin
+      Gtk.Cell_View.Initialize (Cell_View);
+      return Cell_View;
+   end Gtk_Cell_View_New;
+
+   ------------------------------------
+   -- Gtk_Cell_View_New_With_Context --
+   ------------------------------------
+
+   function Gtk_Cell_View_New_With_Context
+      (Area    : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
+       Context : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
+       return Gtk_Cell_View
+   is
+      Cell_View : constant Gtk_Cell_View := new Gtk_Cell_View_Record;
+   begin
+      Gtk.Cell_View.Initialize_With_Context (Cell_View, Area, Context);
+      return Cell_View;
+   end Gtk_Cell_View_New_With_Context;
+
+   -----------------------------------
+   -- Gtk_Cell_View_New_With_Markup --
+   -----------------------------------
+
+   function Gtk_Cell_View_New_With_Markup
+      (Markup : UTF8_String) return Gtk_Cell_View
+   is
+      Cell_View : constant Gtk_Cell_View := new Gtk_Cell_View_Record;
+   begin
+      Gtk.Cell_View.Initialize_With_Markup (Cell_View, Markup);
+      return Cell_View;
+   end Gtk_Cell_View_New_With_Markup;
+
+   -----------------------------------
+   -- Gtk_Cell_View_New_With_Pixbuf --
+   -----------------------------------
+
+   function Gtk_Cell_View_New_With_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Cell_View
+   is
+      Cell_View : constant Gtk_Cell_View := new Gtk_Cell_View_Record;
+   begin
+      Gtk.Cell_View.Initialize_With_Pixbuf (Cell_View, Pixbuf);
+      return Cell_View;
+   end Gtk_Cell_View_New_With_Pixbuf;
+
+   ---------------------------------
+   -- Gtk_Cell_View_New_With_Text --
+   ---------------------------------
+
+   function Gtk_Cell_View_New_With_Text
+      (Text : UTF8_String) return Gtk_Cell_View
+   is
+      Cell_View : constant Gtk_Cell_View := new Gtk_Cell_View_Record;
+   begin
+      Gtk.Cell_View.Initialize_With_Text (Cell_View, Text);
+      return Cell_View;
+   end Gtk_Cell_View_New_With_Text;
+
    -------------
    -- Gtk_New --
    -------------

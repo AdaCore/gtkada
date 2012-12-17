@@ -150,6 +150,23 @@ package Gtk.Message_Dialog is
    --  "buttons": set of buttons to use
    --  "message": printf-style format string, or null
 
+   function Gtk_Message_Dialog_New
+      (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
+       Flags    : Gtk_Dialog_Flags;
+       The_Type : Gtk_Message_Type;
+       Buttons  : Gtk_Buttons_Type;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog;
+   --  Creates a new message dialog, which is a simple dialog with an icon
+   --  indicating the dialog type (error, warning, etc.) and some text the user
+   --  may want to see. When the user clicks a button a "response" signal is
+   --  emitted with response IDs from Gtk_Response_Type. See
+   --  Gtk.Dialog.Gtk_Dialog for more details.
+   --  "parent": transient parent, or null for none
+   --  "flags": flags
+   --  "type": type of message
+   --  "buttons": set of buttons to use
+   --  "message": printf-style format string, or null
+
    procedure Gtk_New_With_Markup
       (Dialog   : out Gtk_Message_Dialog;
        Parent   : access Gtk.Window.Gtk_Window_Record'Class;
@@ -164,6 +181,36 @@ package Gtk.Message_Dialog is
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
        Message  : UTF8_String := "");
+   --  Creates a new message dialog, which is a simple dialog with an icon
+   --  indicating the dialog type (error, warning, etc.) and some text which is
+   --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup
+   --  language</link>. When the user clicks a button a "response" signal is
+   --  emitted with response IDs from Gtk_Response_Type. See
+   --  Gtk.Dialog.Gtk_Dialog for more details.
+   --  Special XML characters in the printf arguments passed to this function
+   --  will automatically be escaped as necessary. (See g_markup_printf_escaped
+   --  for how this is implemented.) Usually this is what you want, but if you
+   --  have an existing Pango markup string that you want to use literally as
+   --  the label, then you need to use Gtk.Message_Dialog.Set_Markup instead,
+   --  since you can't pass the markup string either as the format (it might
+   --  contain '%' characters) or as a string argument. |[ GtkWidget *dialog;
+   --  dialog = gtk_message_dialog_new (main_application_window,
+   --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+   --  NULL); gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+   --  markup); ]|
+   --  Since: gtk+ 2.4
+   --  "parent": transient parent, or null for none
+   --  "flags": flags
+   --  "type": type of message
+   --  "buttons": set of buttons to use
+   --  "message": printf-style format string, or null
+
+   function Gtk_Message_Dialog_New_With_Markup
+      (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
+       Flags    : Gtk_Dialog_Flags;
+       The_Type : Gtk_Message_Type;
+       Buttons  : Gtk_Buttons_Type;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog;
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text which is
    --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup

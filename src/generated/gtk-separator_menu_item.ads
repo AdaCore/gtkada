@@ -51,6 +51,9 @@ package Gtk.Separator_Menu_Item is
       (Widget : not null access Gtk_Separator_Menu_Item_Record'Class);
    --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
 
+   function Gtk_Separator_Menu_Item_New return Gtk_Separator_Menu_Item;
+   --  Creates a new Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_menu_item_get_type");
 

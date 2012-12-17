@@ -52,6 +52,17 @@ package body Pango.Context is
       Set_Object (Self, Internal);
    end Initialize;
 
+   -----------------------
+   -- Pango_Context_New --
+   -----------------------
+
+   function Pango_Context_New return Pango_Context is
+      Self : constant Pango_Context := new Pango_Context_Record;
+   begin
+      Pango.Context.Initialize (Self);
+      return Self;
+   end Pango_Context_New;
+
    ------------------
    -- Get_Base_Dir --
    ------------------

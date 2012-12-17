@@ -147,6 +147,13 @@ package Gtk.Icon_Theme is
    --  than creating a new icon theme object for scratch.
    --  Since: gtk+ 2.4
 
+   function Gtk_Icon_Theme_New return Gtk_Icon_Theme;
+   --  Creates a new icon theme object. Icon theme objects are used to lookup
+   --  up an icon by name in a particular icon theme. Usually, you'll want to
+   --  use Gtk.Icon_Theme.Get_Default or Gtk.Icon_Theme.Get_For_Screen rather
+   --  than creating a new icon theme object for scratch.
+   --  Since: gtk+ 2.4
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_icon_theme_get_type");
 
@@ -154,6 +161,15 @@ package Gtk.Icon_Theme is
       (Icon_Info  : out Gtk_Icon_Info;
        Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a Gtk.Icon_Theme.Gtk_Icon_Info for a Gdk.Pixbuf.Gdk_Pixbuf.
+   --  Since: gtk+ 2.14
+   --  "icon_theme": a Gtk.Icon_Theme.Gtk_Icon_Theme
+   --  "pixbuf": the pixbuf to wrap in a Gtk.Icon_Theme.Gtk_Icon_Info
+
+   function Gtk_Icon_Info_New_For_Pixbuf
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
+       Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Icon_Info;
    --  Creates a Gtk.Icon_Theme.Gtk_Icon_Info for a Gdk.Pixbuf.Gdk_Pixbuf.
    --  Since: gtk+ 2.14
    --  "icon_theme": a Gtk.Icon_Theme.Gtk_Icon_Theme

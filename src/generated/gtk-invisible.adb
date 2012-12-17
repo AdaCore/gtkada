@@ -31,6 +31,31 @@ package body Gtk.Invisible is
      (Get_Type'Access, Gtk_Invisible_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Invisible);
 
+   -----------------------
+   -- Gtk_Invisible_New --
+   -----------------------
+
+   function Gtk_Invisible_New return Gtk_Invisible is
+      Self : constant Gtk_Invisible := new Gtk_Invisible_Record;
+   begin
+      Gtk.Invisible.Initialize (Self);
+      return Self;
+   end Gtk_Invisible_New;
+
+   ----------------------------------
+   -- Gtk_Invisible_New_For_Screen --
+   ----------------------------------
+
+   function Gtk_Invisible_New_For_Screen
+      (Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class)
+       return Gtk_Invisible
+   is
+      Self : constant Gtk_Invisible := new Gtk_Invisible_Record;
+   begin
+      Gtk.Invisible.Initialize_For_Screen (Self, Screen);
+      return Self;
+   end Gtk_Invisible_New_For_Screen;
+
    -------------
    -- Gtk_New --
    -------------

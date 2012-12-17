@@ -31,6 +31,24 @@ package body Gtk.Adjustment is
      (Get_Type'Access, Gtk_Adjustment_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Adjustment);
 
+   ------------------------
+   -- Gtk_Adjustment_New --
+   ------------------------
+
+   function Gtk_Adjustment_New
+      (Value          : Gdouble;
+       Lower          : Gdouble;
+       Upper          : Gdouble;
+       Step_Increment : Gdouble;
+       Page_Increment : Gdouble;
+       Page_Size      : Gdouble := 0.0) return Gtk_Adjustment
+   is
+      Adjustment : constant Gtk_Adjustment := new Gtk_Adjustment_Record;
+   begin
+      Gtk.Adjustment.Initialize (Adjustment, Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size);
+      return Adjustment;
+   end Gtk_Adjustment_New;
+
    -------------
    -- Gtk_New --
    -------------

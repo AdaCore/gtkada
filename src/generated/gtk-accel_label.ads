@@ -99,6 +99,11 @@ package Gtk.Accel_Label is
    --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
    --  "string": the label string. Must be non-null.
 
+   function Gtk_Accel_Label_New
+      (String : UTF8_String) return Gtk_Accel_Label;
+   --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
+   --  "string": the label string. Must be non-null.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_accel_label_get_type");
 

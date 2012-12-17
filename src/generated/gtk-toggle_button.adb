@@ -58,6 +58,32 @@ package body Gtk.Toggle_Button is
       Gtk.Toggle_Button.Initialize_With_Mnemonic (Toggle_Button, Label);
    end Gtk_New_With_Mnemonic;
 
+   --------------------------------------
+   -- Gtk_Toggle_Button_New_With_Label --
+   --------------------------------------
+
+   function Gtk_Toggle_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Toggle_Button
+   is
+      Toggle_Button : constant Gtk_Toggle_Button := new Gtk_Toggle_Button_Record;
+   begin
+      Gtk.Toggle_Button.Initialize (Toggle_Button, Label);
+      return Toggle_Button;
+   end Gtk_Toggle_Button_New_With_Label;
+
+   -----------------------------------------
+   -- Gtk_Toggle_Button_New_With_Mnemonic --
+   -----------------------------------------
+
+   function Gtk_Toggle_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Toggle_Button
+   is
+      Toggle_Button : constant Gtk_Toggle_Button := new Gtk_Toggle_Button_Record;
+   begin
+      Gtk.Toggle_Button.Initialize_With_Mnemonic (Toggle_Button, Label);
+      return Toggle_Button;
+   end Gtk_Toggle_Button_New_With_Mnemonic;
+
    ----------------
    -- Initialize --
    ----------------

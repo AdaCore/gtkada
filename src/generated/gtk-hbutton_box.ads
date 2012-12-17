@@ -52,6 +52,9 @@ package Gtk.Hbutton_Box is
       (Widget : not null access Gtk_Hbutton_Box_Record'Class);
    --  Creates a new horizontal button box.
 
+   function Gtk_Hbutton_Box_New return Gtk_Hbutton_Box;
+   --  Creates a new horizontal button box.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_hbutton_box_get_type");
 

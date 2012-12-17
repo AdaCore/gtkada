@@ -74,6 +74,9 @@ package Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class);
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
 
+   function Gtk_Progress_Bar_New return Gtk_Progress_Bar;
+   --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_progress_bar_get_type");
 

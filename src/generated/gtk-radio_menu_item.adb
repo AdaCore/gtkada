@@ -76,6 +76,34 @@ package body Gtk.Radio_Menu_Item is
       Gtk.Radio_Menu_Item.Initialize_With_Mnemonic (Radio_Menu_Item, Group, Label);
    end Gtk_New_With_Mnemonic;
 
+   ----------------------------------------
+   -- Gtk_Radio_Menu_Item_New_With_Label --
+   ----------------------------------------
+
+   function Gtk_Radio_Menu_Item_New_With_Label
+      (Group : Gtk.Widget.Widget_SList.GSlist;
+       Label : UTF8_String := "") return Gtk_Radio_Menu_Item
+   is
+      Radio_Menu_Item : constant Gtk_Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+   begin
+      Gtk.Radio_Menu_Item.Initialize (Radio_Menu_Item, Group, Label);
+      return Radio_Menu_Item;
+   end Gtk_Radio_Menu_Item_New_With_Label;
+
+   -------------------------------------------
+   -- Gtk_Radio_Menu_Item_New_With_Mnemonic --
+   -------------------------------------------
+
+   function Gtk_Radio_Menu_Item_New_With_Mnemonic
+      (Group : Gtk.Widget.Widget_SList.GSlist;
+       Label : UTF8_String) return Gtk_Radio_Menu_Item
+   is
+      Radio_Menu_Item : constant Gtk_Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+   begin
+      Gtk.Radio_Menu_Item.Initialize_With_Mnemonic (Radio_Menu_Item, Group, Label);
+      return Radio_Menu_Item;
+   end Gtk_Radio_Menu_Item_New_With_Mnemonic;
+
    ----------------
    -- Initialize --
    ----------------

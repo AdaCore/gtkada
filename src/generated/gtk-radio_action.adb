@@ -49,6 +49,23 @@ package body Gtk.Radio_Action is
       Gtk.Radio_Action.Initialize (Action, Name, Label, Tooltip, Stock_Id, Value);
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Radio_Action_New --
+   --------------------------
+
+   function Gtk_Radio_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Value    : Gint) return Gtk_Radio_Action
+   is
+      Action : constant Gtk_Radio_Action := new Gtk_Radio_Action_Record;
+   begin
+      Gtk.Radio_Action.Initialize (Action, Name, Label, Tooltip, Stock_Id, Value);
+      return Action;
+   end Gtk_Radio_Action_New;
+
    ----------------
    -- Initialize --
    ----------------

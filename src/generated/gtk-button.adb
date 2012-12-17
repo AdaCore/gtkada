@@ -33,6 +33,45 @@ package body Gtk.Button is
      (Get_Type'Access, Gtk_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Button);
 
+   -------------------------------
+   -- Gtk_Button_New_From_Stock --
+   -------------------------------
+
+   function Gtk_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Button
+   is
+      Button : constant Gtk_Button := new Gtk_Button_Record;
+   begin
+      Gtk.Button.Initialize_From_Stock (Button, Stock_Id);
+      return Button;
+   end Gtk_Button_New_From_Stock;
+
+   -------------------------------
+   -- Gtk_Button_New_With_Label --
+   -------------------------------
+
+   function Gtk_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Button
+   is
+      Button : constant Gtk_Button := new Gtk_Button_Record;
+   begin
+      Gtk.Button.Initialize (Button, Label);
+      return Button;
+   end Gtk_Button_New_With_Label;
+
+   ----------------------------------
+   -- Gtk_Button_New_With_Mnemonic --
+   ----------------------------------
+
+   function Gtk_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Button
+   is
+      Button : constant Gtk_Button := new Gtk_Button_Record;
+   begin
+      Gtk.Button.Initialize_With_Mnemonic (Button, Label);
+      return Button;
+   end Gtk_Button_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

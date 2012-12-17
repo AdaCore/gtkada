@@ -240,6 +240,19 @@ package body Gdk.Event is
       Func (Event);
    end Internal_Gdk_Event_Func;
 
+   -------------------
+   -- Gdk_Event_New --
+   -------------------
+
+   function Gdk_Event_New (The_Type : Gdk_Event_Type) return Gdk_Event is
+      function Internal (The_Type : Gdk_Event_Type) return Gdk_Event;
+      pragma Import (C, Internal, "gdk_event_new");
+      Event : Gdk_Event;
+   begin
+      Event := Internal (The_Type);
+      return Event;
+   end Gdk_Event_New;
+
    -------------
    -- Gdk_New --
    -------------

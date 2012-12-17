@@ -152,6 +152,17 @@ package Gtk.Recent_Filter is
    --  gtk_recent_filter_add_pattern (filter, "*"); ]|
    --  Since: gtk+ 2.10
 
+   function Gtk_Recent_Filter_New return Gtk_Recent_Filter;
+   --  Creates a new Gtk.Recent_Filter.Gtk_Recent_Filter with no rules added
+   --  to it. Such filter does not accept any recently used resources, so is
+   --  not particularly useful until you add rules with
+   --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
+   --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
+   --  a filter that accepts any recently used resource, use: |[
+   --  GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --  gtk_recent_filter_add_pattern (filter, "*"); ]|
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_recent_filter_get_type");
 

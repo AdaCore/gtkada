@@ -107,6 +107,10 @@ package Gtk.About_Dialog is
    --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.
    --  Since: gtk+ 2.6
 
+   function Gtk_About_Dialog_New return Gtk_About_Dialog;
+   --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.
+   --  Since: gtk+ 2.6
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_about_dialog_get_type");
 

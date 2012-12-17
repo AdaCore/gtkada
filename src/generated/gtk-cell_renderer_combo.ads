@@ -70,6 +70,17 @@ package Gtk.Cell_Renderer_Combo is
    --  Gtk.Tree_View.Gtk_Tree_View.
    --  Since: gtk+ 2.6
 
+   function Gtk_Cell_Renderer_Combo_New return Gtk_Cell_Renderer_Combo;
+   --  Creates a new Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo. Adjust
+   --  how text is drawn using object properties. Object properties can be set
+   --  globally (with g_object_set). Also, with
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column, you can bind a property to a
+   --  value in a Gtk.Tree_Model.Gtk_Tree_Model. For example, you can bind the
+   --  "text" property on the cell renderer to a string value in the model,
+   --  thus rendering a different string in each row of the
+   --  Gtk.Tree_View.Gtk_Tree_View.
+   --  Since: gtk+ 2.6
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_combo_get_type");
 

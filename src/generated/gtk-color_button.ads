@@ -61,6 +61,15 @@ package Gtk.Color_Button is
    --  finishes.
    --  Since: gtk+ 2.4
 
+   function Gtk_Color_Button_New return Gtk_Color_Button;
+   --  Creates a new color button.
+   --  This returns a widget in the form of a small button containing a swatch
+   --  representing the current selected color. When the button is clicked, a
+   --  color-selection dialog will open, allowing the user to select a color.
+   --  The swatch will be updated to reflect the new color when the user
+   --  finishes.
+   --  Since: gtk+ 2.4
+
    procedure Gtk_New_With_Color
       (Button : out Gtk_Color_Button;
        Color  : Gdk.Color.Gdk_Color);
@@ -71,12 +80,24 @@ package Gtk.Color_Button is
    --  Since: gtk+ 2.4
    --  "color": A Gdk.Color.Gdk_Color to set the current color with
 
+   function Gtk_Color_Button_New_With_Color
+      (Color : Gdk.Color.Gdk_Color) return Gtk_Color_Button;
+   --  Creates a new color button.
+   --  Since: gtk+ 2.4
+   --  "color": A Gdk.Color.Gdk_Color to set the current color with
+
    procedure Gtk_New_With_Rgba
       (Button : out Gtk_Color_Button;
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    procedure Initialize_With_Rgba
       (Button : not null access Gtk_Color_Button_Record'Class;
        Rgba   : Gdk.RGBA.Gdk_RGBA);
+   --  Creates a new color button.
+   --  Since: gtk+ 3.0
+   --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with
+
+   function Gtk_Color_Button_New_With_Rgba
+      (Rgba : Gdk.RGBA.Gdk_RGBA) return Gtk_Color_Button;
    --  Creates a new color button.
    --  Since: gtk+ 3.0
    --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with

@@ -92,6 +92,17 @@ package body Gtk.Builder is
      (Get_Type'Access, Gtk_Builder_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Builder);
 
+   ---------------------
+   -- Gtk_Builder_New --
+   ---------------------
+
+   function Gtk_Builder_New return Gtk_Builder is
+      Builder : constant Gtk_Builder := new Gtk_Builder_Record;
+   begin
+      Gtk.Builder.Initialize (Builder);
+      return Builder;
+   end Gtk_Builder_New;
+
    -------------
    -- Gtk_New --
    -------------

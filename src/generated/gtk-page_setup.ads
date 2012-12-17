@@ -80,12 +80,24 @@ package Gtk.Page_Setup is
    --  Creates a new Gtk.Page_Setup.Gtk_Page_Setup.
    --  Since: gtk+ 2.10
 
+   function Gtk_Page_Setup_New return Gtk_Page_Setup;
+   --  Creates a new Gtk.Page_Setup.Gtk_Page_Setup.
+   --  Since: gtk+ 2.10
+
    procedure Gtk_New_From_File
       (Self      : out Gtk_Page_Setup;
        File_Name : UTF8_String);
    procedure Initialize_From_File
       (Self      : not null access Gtk_Page_Setup_Record'Class;
        File_Name : UTF8_String);
+   --  Reads the page setup from the file File_Name. Returns a new
+   --  Gtk.Page_Setup.Gtk_Page_Setup object with the restored page setup, or
+   --  null if an error occurred. See Gtk.Page_Setup.To_File.
+   --  Since: gtk+ 2.12
+   --  "file_name": the filename to read the page setup from
+
+   function Gtk_Page_Setup_New_From_File
+      (File_Name : UTF8_String) return Gtk_Page_Setup;
    --  Reads the page setup from the file File_Name. Returns a new
    --  Gtk.Page_Setup.Gtk_Page_Setup object with the restored page setup, or
    --  null if an error occurred. See Gtk.Page_Setup.To_File.
@@ -100,6 +112,17 @@ package Gtk.Page_Setup is
       (Self       : not null access Gtk_Page_Setup_Record'Class;
        Key_File   : Glib.Key_File.G_Key_File;
        Group_Name : UTF8_String := "");
+   --  Reads the page setup from the group Group_Name in the key file
+   --  Key_File. Returns a new Gtk.Page_Setup.Gtk_Page_Setup object with the
+   --  restored page setup, or null if an error occurred.
+   --  Since: gtk+ 2.12
+   --  "key_file": the GKey_File to retrieve the page_setup from
+   --  "group_name": the name of the group in the key_file to read, or null to
+   --  use the default name "Page Setup"
+
+   function Gtk_Page_Setup_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String := "") return Gtk_Page_Setup;
    --  Reads the page setup from the group Group_Name in the key file
    --  Key_File. Returns a new Gtk.Page_Setup.Gtk_Page_Setup object with the
    --  restored page setup, or null if an error occurred.

@@ -104,6 +104,31 @@ package body Gtk.Recent_Chooser_Menu is
       Gtk.Recent_Chooser_Menu.Initialize_For_Manager (Self, Manager);
    end Gtk_New_For_Manager;
 
+   ---------------------------------
+   -- Gtk_Recent_Chooser_Menu_New --
+   ---------------------------------
+
+   function Gtk_Recent_Chooser_Menu_New return Gtk_Recent_Chooser_Menu is
+      Self : constant Gtk_Recent_Chooser_Menu := new Gtk_Recent_Chooser_Menu_Record;
+   begin
+      Gtk.Recent_Chooser_Menu.Initialize (Self);
+      return Self;
+   end Gtk_Recent_Chooser_Menu_New;
+
+   ---------------------------------------------
+   -- Gtk_Recent_Chooser_Menu_New_For_Manager --
+   ---------------------------------------------
+
+   function Gtk_Recent_Chooser_Menu_New_For_Manager
+      (Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+       return Gtk_Recent_Chooser_Menu
+   is
+      Self : constant Gtk_Recent_Chooser_Menu := new Gtk_Recent_Chooser_Menu_Record;
+   begin
+      Gtk.Recent_Chooser_Menu.Initialize_For_Manager (Self, Manager);
+      return Self;
+   end Gtk_Recent_Chooser_Menu_New_For_Manager;
+
    ----------------
    -- Initialize --
    ----------------

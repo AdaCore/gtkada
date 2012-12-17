@@ -46,6 +46,17 @@ package body Gtk.Icon_Factory is
      (Get_Type'Access, Gtk_Icon_Factory_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Icon_Factory);
 
+   --------------------------
+   -- Gtk_Icon_Factory_New --
+   --------------------------
+
+   function Gtk_Icon_Factory_New return Gtk_Icon_Factory is
+      Self : constant Gtk_Icon_Factory := new Gtk_Icon_Factory_Record;
+   begin
+      Gtk.Icon_Factory.Initialize (Self);
+      return Self;
+   end Gtk_Icon_Factory_New;
+
    -------------
    -- Gtk_New --
    -------------

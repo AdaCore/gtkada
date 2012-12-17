@@ -32,6 +32,40 @@ package body Gtk.Message_Dialog is
      (Get_Type'Access, Gtk_Message_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Message_Dialog);
 
+   ----------------------------
+   -- Gtk_Message_Dialog_New --
+   ----------------------------
+
+   function Gtk_Message_Dialog_New
+      (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
+       Flags    : Gtk_Dialog_Flags;
+       The_Type : Gtk_Message_Type;
+       Buttons  : Gtk_Buttons_Type;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog
+   is
+      Dialog : constant Gtk_Message_Dialog := new Gtk_Message_Dialog_Record;
+   begin
+      Gtk.Message_Dialog.Initialize (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      return Dialog;
+   end Gtk_Message_Dialog_New;
+
+   ----------------------------------------
+   -- Gtk_Message_Dialog_New_With_Markup --
+   ----------------------------------------
+
+   function Gtk_Message_Dialog_New_With_Markup
+      (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
+       Flags    : Gtk_Dialog_Flags;
+       The_Type : Gtk_Message_Type;
+       Buttons  : Gtk_Buttons_Type;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog
+   is
+      Dialog : constant Gtk_Message_Dialog := new Gtk_Message_Dialog_Record;
+   begin
+      Gtk.Message_Dialog.Initialize_With_Markup (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      return Dialog;
+   end Gtk_Message_Dialog_New_With_Markup;
+
    -------------
    -- Gtk_New --
    -------------

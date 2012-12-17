@@ -33,6 +33,22 @@ package body Gtk.Action is
      (Get_Type'Access, Gtk_Action_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Action);
 
+   --------------------
+   -- Gtk_Action_New --
+   --------------------
+
+   function Gtk_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "") return Gtk_Action
+   is
+      Action : constant Gtk_Action := new Gtk_Action_Record;
+   begin
+      Gtk.Action.Initialize (Action, Name, Label, Tooltip, Stock_Id);
+      return Action;
+   end Gtk_Action_New;
+
    -------------
    -- Gtk_New --
    -------------

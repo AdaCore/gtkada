@@ -64,12 +64,27 @@ package Gtk.Check_Button is
    --  Gtk.Container.Add).
    --  "label": the text for the check button.
 
+   function Gtk_Check_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Check_Button;
+   --  Create a check button. if Label is null, then no widget is associated
+   --  with the button, and any widget can be added to the button (with
+   --  Gtk.Container.Add).
+   --  "label": the text for the check button.
+
    procedure Gtk_New_With_Mnemonic
       (Check_Button : out Gtk_Check_Button;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String);
+   --  Creates a new Gtk.Check_Button.Gtk_Check_Button containing a label. The
+   --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the check button.
+   --  "label": The text of the button, with an underscore in front of the
+   --  mnemonic character
+
+   function Gtk_Check_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Check_Button;
    --  Creates a new Gtk.Check_Button.Gtk_Check_Button containing a label. The
    --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the check button.

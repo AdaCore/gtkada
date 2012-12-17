@@ -63,6 +63,9 @@ package Gtk.Grid is
    procedure Initialize (Self : not null access Gtk_Grid_Record'Class);
    --  Creates a new grid widget.
 
+   function Gtk_Grid_New return Gtk_Grid;
+   --  Creates a new grid widget.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_grid_get_type");
 

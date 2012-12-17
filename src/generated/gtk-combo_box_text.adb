@@ -89,6 +89,28 @@ package body Gtk.Combo_Box_Text is
      (Get_Type'Access, Gtk_Combo_Box_Text_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Combo_Box_Text);
 
+   ----------------------------
+   -- Gtk_Combo_Box_Text_New --
+   ----------------------------
+
+   function Gtk_Combo_Box_Text_New return Gtk_Combo_Box_Text is
+      Self : constant Gtk_Combo_Box_Text := new Gtk_Combo_Box_Text_Record;
+   begin
+      Gtk.Combo_Box_Text.Initialize (Self);
+      return Self;
+   end Gtk_Combo_Box_Text_New;
+
+   ---------------------------------------
+   -- Gtk_Combo_Box_Text_New_With_Entry --
+   ---------------------------------------
+
+   function Gtk_Combo_Box_Text_New_With_Entry return Gtk_Combo_Box_Text is
+      Self : constant Gtk_Combo_Box_Text := new Gtk_Combo_Box_Text_Record;
+   begin
+      Gtk.Combo_Box_Text.Initialize_With_Entry (Self);
+      return Self;
+   end Gtk_Combo_Box_Text_New_With_Entry;
+
    -------------
    -- Gtk_New --
    -------------

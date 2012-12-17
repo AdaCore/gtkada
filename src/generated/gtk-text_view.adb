@@ -55,6 +55,31 @@ package body Gtk.Text_View is
       Gtk.Text_View.Initialize (View, Buffer);
    end Gtk_New;
 
+   -----------------------
+   -- Gtk_Text_View_New --
+   -----------------------
+
+   function Gtk_Text_View_New return Gtk_Text_View is
+      View : constant Gtk_Text_View := new Gtk_Text_View_Record;
+   begin
+      Gtk.Text_View.Initialize (View);
+      return View;
+   end Gtk_Text_View_New;
+
+   -----------------------------------
+   -- Gtk_Text_View_New_With_Buffer --
+   -----------------------------------
+
+   function Gtk_Text_View_New_With_Buffer
+      (Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
+       return Gtk_Text_View
+   is
+      View : constant Gtk_Text_View := new Gtk_Text_View_Record;
+   begin
+      Gtk.Text_View.Initialize (View, Buffer);
+      return View;
+   end Gtk_Text_View_New_With_Buffer;
+
    ----------------
    -- Initialize --
    ----------------

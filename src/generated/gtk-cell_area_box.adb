@@ -88,6 +88,17 @@ package body Gtk.Cell_Area_Box is
      (Get_Type'Access, Gtk_Cell_Area_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Area_Box);
 
+   ---------------------------
+   -- Gtk_Cell_Area_Box_New --
+   ---------------------------
+
+   function Gtk_Cell_Area_Box_New return Gtk_Cell_Area_Box is
+      Self : constant Gtk_Cell_Area_Box := new Gtk_Cell_Area_Box_Record;
+   begin
+      Gtk.Cell_Area_Box.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Area_Box_New;
+
    -------------
    -- Gtk_New --
    -------------

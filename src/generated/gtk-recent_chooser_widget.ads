@@ -74,6 +74,12 @@ package Gtk.Recent_Chooser_Widget is
    --  resources list.
    --  Since: gtk+ 2.10
 
+   function Gtk_Recent_Chooser_Widget_New return Gtk_Recent_Chooser_Widget;
+   --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget
+   --  object. This is an embeddable widget used to access the recently used
+   --  resources list.
+   --  Since: gtk+ 2.10
+
    procedure Gtk_New_For_Manager
       (Widget  : out Gtk_Recent_Chooser_Widget;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
@@ -82,6 +88,17 @@ package Gtk.Recent_Chooser_Widget is
       (Widget  : not null access Gtk_Recent_Chooser_Widget_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
       ;
+   --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget with
+   --  a specified recent manager.
+   --  This is useful if you have implemented your own recent manager, or if
+   --  you have a customized instance of a
+   --  Gtk.Recent_Manager.Gtk_Recent_Manager object.
+   --  Since: gtk+ 2.10
+   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
+
+   function Gtk_Recent_Chooser_Widget_New_For_Manager
+      (Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+       return Gtk_Recent_Chooser_Widget;
    --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget with
    --  a specified recent manager.
    --  This is useful if you have implemented your own recent manager, or if

@@ -114,6 +114,40 @@ package body Gtk.Recent_Action is
       Gtk.Recent_Action.Initialize_For_Manager (Widget, Name, Label, Tooltip, Stock_Id, Manager);
    end Gtk_New_For_Manager;
 
+   ---------------------------
+   -- Gtk_Recent_Action_New --
+   ---------------------------
+
+   function Gtk_Recent_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "") return Gtk_Recent_Action
+   is
+      Widget : constant Gtk_Recent_Action := new Gtk_Recent_Action_Record;
+   begin
+      Gtk.Recent_Action.Initialize (Widget, Name, Label, Tooltip, Stock_Id);
+      return Widget;
+   end Gtk_Recent_Action_New;
+
+   ---------------------------------------
+   -- Gtk_Recent_Action_New_For_Manager --
+   ---------------------------------------
+
+   function Gtk_Recent_Action_New_For_Manager
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
+       return Gtk_Recent_Action
+   is
+      Widget : constant Gtk_Recent_Action := new Gtk_Recent_Action_Record;
+   begin
+      Gtk.Recent_Action.Initialize_For_Manager (Widget, Name, Label, Tooltip, Stock_Id, Manager);
+      return Widget;
+   end Gtk_Recent_Action_New_For_Manager;
+
    ----------------
    -- Initialize --
    ----------------

@@ -67,6 +67,112 @@ package body Gtk.Image is
      (Get_Type'Access, Gtk_Image_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Image);
 
+   -------------------
+   -- Gtk_Image_New --
+   -------------------
+
+   function Gtk_Image_New return Gtk_Image is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image);
+      return Image;
+   end Gtk_Image_New;
+
+   ----------------------------------
+   -- Gtk_Image_New_From_Animation --
+   ----------------------------------
+
+   function Gtk_Image_New_From_Animation
+      (Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image, Animation);
+      return Image;
+   end Gtk_Image_New_From_Animation;
+
+   -----------------------------
+   -- Gtk_Image_New_From_File --
+   -----------------------------
+
+   function Gtk_Image_New_From_File
+      (Filename : UTF8_String) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image, Filename);
+      return Image;
+   end Gtk_Image_New_From_File;
+
+   ------------------------------
+   -- Gtk_Image_New_From_Gicon --
+   ------------------------------
+
+   function Gtk_Image_New_From_Gicon
+      (Icon : Glib.G_Icon.G_Icon;
+       Size : Gtk.Enums.Gtk_Icon_Size) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize_From_Gicon (Image, Icon, Size);
+      return Image;
+   end Gtk_Image_New_From_Gicon;
+
+   ----------------------------------
+   -- Gtk_Image_New_From_Icon_Name --
+   ----------------------------------
+
+   function Gtk_Image_New_From_Icon_Name
+      (Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize_From_Icon_Name (Image, Icon_Name, Size);
+      return Image;
+   end Gtk_Image_New_From_Icon_Name;
+
+   ---------------------------------
+   -- Gtk_Image_New_From_Icon_Set --
+   ---------------------------------
+
+   function Gtk_Image_New_From_Icon_Set
+      (Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
+       Size     : Gtk.Enums.Gtk_Icon_Size) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image, Icon_Set, Size);
+      return Image;
+   end Gtk_Image_New_From_Icon_Set;
+
+   -------------------------------
+   -- Gtk_Image_New_From_Pixbuf --
+   -------------------------------
+
+   function Gtk_Image_New_From_Pixbuf
+      (Pixbuf : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image, Pixbuf);
+      return Image;
+   end Gtk_Image_New_From_Pixbuf;
+
+   ------------------------------
+   -- Gtk_Image_New_From_Stock --
+   ------------------------------
+
+   function Gtk_Image_New_From_Stock
+      (Stock_Id : UTF8_String;
+       Size     : Gtk.Enums.Gtk_Icon_Size) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize (Image, Stock_Id, Size);
+      return Image;
+   end Gtk_Image_New_From_Stock;
+
    -------------
    -- Gtk_New --
    -------------

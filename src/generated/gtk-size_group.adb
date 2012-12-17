@@ -44,6 +44,19 @@ package body Gtk.Size_Group is
       Gtk.Size_Group.Initialize (Size_Group, Mode);
    end Gtk_New;
 
+   ------------------------
+   -- Gtk_Size_Group_New --
+   ------------------------
+
+   function Gtk_Size_Group_New
+      (Mode : Size_Group_Mode := Both) return Gtk_Size_Group
+   is
+      Size_Group : constant Gtk_Size_Group := new Gtk_Size_Group_Record;
+   begin
+      Gtk.Size_Group.Initialize (Size_Group, Mode);
+      return Size_Group;
+   end Gtk_Size_Group_New;
+
    ----------------
    -- Initialize --
    ----------------

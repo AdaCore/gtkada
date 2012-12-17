@@ -92,6 +92,10 @@ package Gtk.Cell_View is
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget.
    --  Since: gtk+ 2.6
 
+   function Gtk_Cell_View_New return Gtk_Cell_View;
+   --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget.
+   --  Since: gtk+ 2.6
+
    procedure Gtk_New_With_Context
       (Cell_View : out Gtk_Cell_View;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
@@ -102,6 +106,21 @@ package Gtk.Cell_View is
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
        Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
       ;
+   --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget with a specific
+   --  Gtk.Cell_Area.Gtk_Cell_Area to layout cells and a specific
+   --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
+   --  Specifying the same context for a handfull of cells lets the underlying
+   --  area synchronize the geometry for those cells, in this way alignments
+   --  with cellviews for other rows are possible.
+   --  Since: gtk+ 2.6
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
+   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which to
+   --  calculate cell geometry
+
+   function Gtk_Cell_View_New_With_Context
+      (Area    : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
+       Context : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
+       return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget with a specific
    --  Gtk.Cell_Area.Gtk_Cell_Area to layout cells and a specific
    --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
@@ -126,6 +145,15 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  "markup": the text to display in the cell view
 
+   function Gtk_Cell_View_New_With_Markup
+      (Markup : UTF8_String) return Gtk_Cell_View;
+   --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
+   --  Markup. The text can be marked up with the <link
+   --  linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  Since: gtk+ 2.6
+   --  "markup": the text to display in the cell view
+
    procedure Gtk_New_With_Pixbuf
       (Cell_View : out Gtk_Cell_View;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
@@ -138,12 +166,29 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  "pixbuf": the image to display in the cell view
 
+   function Gtk_Cell_View_New_With_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Cell_View;
+   --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
+   --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes its
+   --  show Pixbuf.
+   --  Since: gtk+ 2.6
+   --  "pixbuf": the image to display in the cell view
+
    procedure Gtk_New_With_Text
       (Cell_View : out Gtk_Cell_View;
        Text      : UTF8_String);
    procedure Initialize_With_Text
       (Cell_View : not null access Gtk_Cell_View_Record'Class;
        Text      : UTF8_String);
+   --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes its show
+   --  Text.
+   --  Since: gtk+ 2.6
+   --  "text": the text to display in the cell view
+
+   function Gtk_Cell_View_New_With_Text
+      (Text : UTF8_String) return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
    --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes its show
    --  Text.

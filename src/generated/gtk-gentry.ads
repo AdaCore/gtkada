@@ -119,6 +119,9 @@ package Gtk.GEntry is
    procedure Initialize (The_Entry : not null access Gtk_Entry_Record'Class);
    --  Creates a new entry.
 
+   function Gtk_Entry_New return Gtk_Entry;
+   --  Creates a new entry.
+
    procedure Gtk_New_With_Buffer
       (The_Entry : out Gtk_Entry;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
@@ -127,6 +130,13 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record'Class;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
       ;
+   --  Creates a new entry with the specified text buffer.
+   --  Since: gtk+ 2.18
+   --  "buffer": The buffer to use for the new Gtk.GEntry.Gtk_Entry.
+
+   function Gtk_Entry_New_With_Buffer
+      (Buffer : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+       return Gtk_Entry;
    --  Creates a new entry with the specified text buffer.
    --  Since: gtk+ 2.18
    --  "buffer": The buffer to use for the new Gtk.GEntry.Gtk_Entry.

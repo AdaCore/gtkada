@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Pixbuf is
      (Get_Type'Access, Gtk_Cell_Renderer_Pixbuf_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Pixbuf);
 
+   ----------------------------------
+   -- Gtk_Cell_Renderer_Pixbuf_New --
+   ----------------------------------
+
+   function Gtk_Cell_Renderer_Pixbuf_New return Gtk_Cell_Renderer_Pixbuf is
+      Self : constant Gtk_Cell_Renderer_Pixbuf := new Gtk_Cell_Renderer_Pixbuf_Record;
+   begin
+      Gtk.Cell_Renderer_Pixbuf.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Pixbuf_New;
+
    -------------
    -- Gtk_New --
    -------------

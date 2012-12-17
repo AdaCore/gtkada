@@ -54,6 +54,10 @@ package Gtk.Cell_Renderer_Progress is
    --  Creates a new Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress.
    --  Since: gtk+ 2.6
 
+   function Gtk_Cell_Renderer_Progress_New return Gtk_Cell_Renderer_Progress;
+   --  Creates a new Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress.
+   --  Since: gtk+ 2.6
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_progress_get_type");
 

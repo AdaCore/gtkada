@@ -79,6 +79,30 @@ package body Gtk.Font_Button is
      (Get_Type'Access, Gtk_Font_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Font_Button);
 
+   -------------------------
+   -- Gtk_Font_Button_New --
+   -------------------------
+
+   function Gtk_Font_Button_New return Gtk_Font_Button is
+      Font_Button : constant Gtk_Font_Button := new Gtk_Font_Button_Record;
+   begin
+      Gtk.Font_Button.Initialize (Font_Button);
+      return Font_Button;
+   end Gtk_Font_Button_New;
+
+   -----------------------------------
+   -- Gtk_Font_Button_New_With_Font --
+   -----------------------------------
+
+   function Gtk_Font_Button_New_With_Font
+      (Fontname : UTF8_String) return Gtk_Font_Button
+   is
+      Font_Button : constant Gtk_Font_Button := new Gtk_Font_Button_Record;
+   begin
+      Gtk.Font_Button.Initialize_With_Font (Font_Button, Fontname);
+      return Font_Button;
+   end Gtk_Font_Button_New_With_Font;
+
    -------------
    -- Gtk_New --
    -------------

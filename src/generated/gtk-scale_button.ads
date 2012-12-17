@@ -78,6 +78,23 @@ package Gtk.Scale_Button is
    --  "icons": a null-terminated array of icon names, or null if you want to
    --  set the list later with Gtk.Scale_Button.Set_Icons
 
+   function Gtk_Scale_Button_New
+      (Size  : Gtk.Enums.Gtk_Icon_Size;
+       Min   : Gdouble;
+       Max   : Gdouble;
+       Step  : Gdouble;
+       Icons : GNAT.Strings.String_List) return Gtk_Scale_Button;
+   --  Creates a Gtk.Scale_Button.Gtk_Scale_Button, with a range between Min
+   --  and Max, with a stepping of Step.
+   --  Since: gtk+ 2.12
+   --  "size": a stock icon size
+   --  "min": the minimum value of the scale (usually 0)
+   --  "max": the maximum value of the scale (usually 100)
+   --  "step": the stepping of value when a scroll-wheel event, or up/down
+   --  arrow event occurs (usually 2)
+   --  "icons": a null-terminated array of icon names, or null if you want to
+   --  set the list later with Gtk.Scale_Button.Set_Icons
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_scale_button_get_type");
 

@@ -45,6 +45,21 @@ package body Gtk.Viewport is
       Gtk.Viewport.Initialize (Viewport, Hadjustment, Vadjustment);
    end Gtk_New;
 
+   ----------------------
+   -- Gtk_Viewport_New --
+   ----------------------
+
+   function Gtk_Viewport_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Viewport
+   is
+      Viewport : constant Gtk_Viewport := new Gtk_Viewport_Record;
+   begin
+      Gtk.Viewport.Initialize (Viewport, Hadjustment, Vadjustment);
+      return Viewport;
+   end Gtk_Viewport_New;
+
    ----------------
    -- Initialize --
    ----------------

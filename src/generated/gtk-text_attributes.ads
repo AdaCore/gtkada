@@ -94,6 +94,11 @@ package Gtk.Text_Attributes is
    --  set of properties on some text.
    --  free with Gtk.Text_Attributes.Unref.
 
+   function Gtk_Text_Attributes_New return Gtk_Text_Attributes;
+   --  Creates a Gtk.Text_Attributes.Gtk_Text_Attributes, which describes a
+   --  set of properties on some text.
+   --  free with Gtk.Text_Attributes.Unref.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_attributes_get_type");
 

@@ -31,6 +31,20 @@ package body Gtk.Arrow is
      (Get_Type'Access, Gtk_Arrow_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Arrow);
 
+   -------------------
+   -- Gtk_Arrow_New --
+   -------------------
+
+   function Gtk_Arrow_New
+      (Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type) return Gtk_Arrow
+   is
+      Arrow : constant Gtk_Arrow := new Gtk_Arrow_Record;
+   begin
+      Gtk.Arrow.Initialize (Arrow, Arrow_Type, Shadow_Type);
+      return Arrow;
+   end Gtk_Arrow_New;
+
    -------------
    -- Gtk_New --
    -------------

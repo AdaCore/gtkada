@@ -65,9 +65,31 @@ package Gtk.Icon_Set is
    --  Gtk.Icon_Set.Gtk_Icon_Set is to create application-specific icon sets to
    --  place in a Gtk.Icon_Factory.Gtk_Icon_Factory.
 
+   function Gtk_Icon_Set_New return Gtk_Icon_Set;
+   --  Creates a new Gtk.Icon_Set.Gtk_Icon_Set. A Gtk.Icon_Set.Gtk_Icon_Set
+   --  represents a single icon in various sizes and widget states. It can
+   --  provide a Gdk.Pixbuf.Gdk_Pixbuf for a given size and state on request,
+   --  and automatically caches some of the rendered Gdk.Pixbuf.Gdk_Pixbuf
+   --  objects.
+   --  Normally you would use Gtk.Widget.Render_Icon_Pixbuf instead of using
+   --  Gtk.Icon_Set.Gtk_Icon_Set directly. The one case where you'd use
+   --  Gtk.Icon_Set.Gtk_Icon_Set is to create application-specific icon sets to
+   --  place in a Gtk.Icon_Factory.Gtk_Icon_Factory.
+
    procedure Gtk_New_From_Pixbuf
       (Self   : out Gtk_Icon_Set;
        Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a new Gtk.Icon_Set.Gtk_Icon_Set with Pixbuf as the
+   --  default/fallback source image. If you don't add any additional
+   --  Gtk.Icon_Source.Gtk_Icon_Source to the icon set, all variants of the
+   --  icon will be created from Pixbuf, using scaling, pixelation, etc. as
+   --  required to adjust the icon size or make the icon look
+   --  insensitive/prelighted.
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+
+   function Gtk_Icon_Set_New_From_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Icon_Set;
    --  Creates a new Gtk.Icon_Set.Gtk_Icon_Set with Pixbuf as the
    --  default/fallback source image. If you don't add any additional
    --  Gtk.Icon_Source.Gtk_Icon_Source to the icon set, all variants of the

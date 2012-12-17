@@ -105,6 +105,12 @@ package Gtk.Paned is
    --  Since: gtk+ 3.0
    --  "orientation": the paned's orientation.
 
+   function Gtk_Paned_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Paned;
+   --  Creates a new Gtk.Paned.Gtk_Paned widget.
+   --  Since: gtk+ 3.0
+   --  "orientation": the paned's orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
@@ -113,12 +119,18 @@ package Gtk.Paned is
       (Paned : not null access Gtk_Hpaned_Record'Class);
    --  The children will be displayed next to each other
 
+   function Gtk_Hpaned_New return Gtk_Hpaned;
+   --  The children will be displayed next to each other
+
    function Get_Type_Hpaned return Glib.GType;
    pragma Import (C, Get_Type_Hpaned, "gtk_hpaned_get_type");
 
    procedure Gtk_New_Vpaned (Paned : out Gtk_Vpaned);
    procedure Initialize_Vpaned
       (Paned : not null access Gtk_Vpaned_Record'Class);
+   --  The children will be displayed one on top of the other
+
+   function Gtk_Vpaned_New return Gtk_Vpaned;
    --  The children will be displayed one on top of the other
 
    function Get_Type_Vpaned return Glib.GType;

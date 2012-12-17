@@ -62,6 +62,9 @@ package Gtk.Color_Selection is
       (Colorsel : not null access Gtk_Color_Selection_Record'Class);
    --  Creates a new GtkColorSelection.
 
+   function Gtk_Color_Selection_New return Gtk_Color_Selection;
+   --  Creates a new GtkColorSelection.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_selection_get_type");
 

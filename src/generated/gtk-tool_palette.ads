@@ -136,6 +136,10 @@ package Gtk.Tool_Palette is
    --  Creates a new tool palette.
    --  Since: gtk+ 2.20
 
+   function Gtk_Tool_Palette_New return Gtk_Tool_Palette;
+   --  Creates a new tool palette.
+   --  Since: gtk+ 2.20
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tool_palette_get_type");
 

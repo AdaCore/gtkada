@@ -63,6 +63,16 @@ package Pango.Tabs is
    --  "initial_size": Initial number of tab stops to allocate, can be 0
    --  "positions_in_pixels": whether positions are in pixel units
 
+   function Pango_Tab_Array_New
+      (Initial_Size        : Gint;
+       Positions_In_Pixels : Boolean) return Pango_Tab_Array;
+   --  Creates an array of Initial_Size tab stops. Tab stops are specified in
+   --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
+   --  All stops are initially at position 0.
+   --  be freed with Pango.Tabs.Free.
+   --  "initial_size": Initial number of tab stops to allocate, can be 0
+   --  "positions_in_pixels": whether positions are in pixel units
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_tab_array_get_type");
 

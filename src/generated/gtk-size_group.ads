@@ -135,6 +135,11 @@ package Gtk.Size_Group is
    --  Create a new Gtk.Size_Group.Gtk_Size_Group.
    --  "mode": the mode for the new size group.
 
+   function Gtk_Size_Group_New
+      (Mode : Size_Group_Mode := Both) return Gtk_Size_Group;
+   --  Create a new Gtk.Size_Group.Gtk_Size_Group.
+   --  "mode": the mode for the new size group.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_size_group_get_type");
 

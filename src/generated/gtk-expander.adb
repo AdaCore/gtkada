@@ -33,6 +33,30 @@ package body Gtk.Expander is
      (Get_Type'Access, Gtk_Expander_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Expander);
 
+   ----------------------
+   -- Gtk_Expander_New --
+   ----------------------
+
+   function Gtk_Expander_New (Label : UTF8_String) return Gtk_Expander is
+      Expander : constant Gtk_Expander := new Gtk_Expander_Record;
+   begin
+      Gtk.Expander.Initialize (Expander, Label);
+      return Expander;
+   end Gtk_Expander_New;
+
+   ------------------------------------
+   -- Gtk_Expander_New_With_Mnemonic --
+   ------------------------------------
+
+   function Gtk_Expander_New_With_Mnemonic
+      (Label : UTF8_String := "") return Gtk_Expander
+   is
+      Expander : constant Gtk_Expander := new Gtk_Expander_Record;
+   begin
+      Gtk.Expander.Initialize_With_Mnemonic (Expander, Label);
+      return Expander;
+   end Gtk_Expander_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

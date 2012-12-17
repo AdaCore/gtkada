@@ -134,6 +134,26 @@ package body Gdk.Window is
       Self := Internal (Parent, Attributes, Attributes_Mask);
    end Gdk_New;
 
+   --------------------
+   -- Gdk_Window_New --
+   --------------------
+
+   function Gdk_Window_New
+      (Parent          : Gdk.Gdk_Window;
+       Attributes      : Gdk.Gdk_Window_Attr;
+       Attributes_Mask : Gint) return Gdk_Window
+   is
+      function Internal
+         (Parent          : Gdk.Gdk_Window;
+          Attributes      : Gdk.Gdk_Window_Attr;
+          Attributes_Mask : Gint) return Gdk_Window;
+      pragma Import (C, Internal, "gdk_window_new");
+      Self : Gdk_Window;
+   begin
+      Self := Internal (Parent, Attributes, Attributes_Mask);
+      return Self;
+   end Gdk_Window_New;
+
    -------------------
    -- Ensure_Native --
    -------------------

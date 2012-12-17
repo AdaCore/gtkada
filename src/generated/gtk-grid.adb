@@ -31,6 +31,17 @@ package body Gtk.Grid is
      (Get_Type'Access, Gtk_Grid_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Grid);
 
+   ------------------
+   -- Gtk_Grid_New --
+   ------------------
+
+   function Gtk_Grid_New return Gtk_Grid is
+      Self : constant Gtk_Grid := new Gtk_Grid_Record;
+   begin
+      Gtk.Grid.Initialize (Self);
+      return Self;
+   end Gtk_Grid_New;
+
    -------------
    -- Gtk_New --
    -------------

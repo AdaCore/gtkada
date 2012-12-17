@@ -105,6 +105,10 @@ package Gtk.Info_Bar is
    --  Creates a new Gtk.Info_Bar.Gtk_Info_Bar object.
    --  Since: gtk+ 2.18
 
+   function Gtk_Info_Bar_New return Gtk_Info_Bar;
+   --  Creates a new Gtk.Info_Bar.Gtk_Info_Bar object.
+   --  Since: gtk+ 2.18
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_info_bar_get_type");
 

@@ -212,6 +212,21 @@ package Gtk.Dialog is
    --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
    --  but into the Vbox and Action_Area, as described above.
 
+   function Gtk_Dialog_New return Gtk_Dialog;
+   --  Creates a new dialog box.
+   --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
+   --  but into the Vbox and Action_Area, as described above.
+
+   function Gtk_Dialog_New
+      (Title  : UTF8_String;
+       Parent : Gtk.Window.Gtk_Window := null;
+       Flags  : Gtk_Dialog_Flags) return Gtk_Dialog;
+   --  Create a new dialog with a specific title, and specific attributes.
+   --  Parent is the transient parent for the dialog (ie the one that is used
+   --  for reference for the flag Destroy_With_Parent, or to compute the
+   --  initial position of the dialog).
+   --  Since: gtk+ GtkAda 1.0
+
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
        Title  : UTF8_String;

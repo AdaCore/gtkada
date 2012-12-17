@@ -51,4 +51,17 @@ package body Gtk.Text_Attributes is
       Text_Attr := Internal;
    end Gtk_New;
 
+   -----------------------------
+   -- Gtk_Text_Attributes_New --
+   -----------------------------
+
+   function Gtk_Text_Attributes_New return Gtk_Text_Attributes is
+      function Internal return Gtk_Text_Attributes;
+      pragma Import (C, Internal, "gtk_text_attributes_new");
+      Text_Attr : Gtk_Text_Attributes;
+   begin
+      Text_Attr := Internal;
+      return Text_Attr;
+   end Gtk_Text_Attributes_New;
+
 end Gtk.Text_Attributes;

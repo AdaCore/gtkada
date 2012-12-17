@@ -71,6 +71,15 @@ package Gtk.Text_Tag is
    --  convenient way of creating a tag.
    --  "name": tag name, or null
 
+   function Gtk_Text_Tag_New (Name : UTF8_String := "") return Gtk_Text_Tag;
+   --  Creates a Gtk.Text_Tag.Gtk_Text_Tag. Configure the tag using object
+   --  arguments, i.e. using g_object_set.
+   --  Newly created tags must be added to the tags table for the buffer you
+   --  intend to use them in, as in: "Gtk.Text_Tag_Table.Add (Get_Tag_Table
+   --  (Buffer), Tag)". See also Gtk.Text_Buffer.Create_Tag which is a more
+   --  convenient way of creating a tag.
+   --  "name": tag name, or null
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_tag_get_type");
 

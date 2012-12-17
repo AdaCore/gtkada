@@ -31,6 +31,17 @@ package body Gtk.Event_Box is
      (Get_Type'Access, Gtk_Event_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Event_Box);
 
+   -----------------------
+   -- Gtk_Event_Box_New --
+   -----------------------
+
+   function Gtk_Event_Box_New return Gtk_Event_Box is
+      Event_Box : constant Gtk_Event_Box := new Gtk_Event_Box_Record;
+   begin
+      Gtk.Event_Box.Initialize (Event_Box);
+      return Event_Box;
+   end Gtk_Event_Box_New;
+
    -------------
    -- Gtk_New --
    -------------

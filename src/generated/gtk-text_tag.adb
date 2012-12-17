@@ -52,6 +52,17 @@ package body Gtk.Text_Tag is
       Gtk.Text_Tag.Initialize (Tag, Name);
    end Gtk_New;
 
+   ----------------------
+   -- Gtk_Text_Tag_New --
+   ----------------------
+
+   function Gtk_Text_Tag_New (Name : UTF8_String := "") return Gtk_Text_Tag is
+      Tag : constant Gtk_Text_Tag := new Gtk_Text_Tag_Record;
+   begin
+      Gtk.Text_Tag.Initialize (Tag, Name);
+      return Tag;
+   end Gtk_Text_Tag_New;
+
    ----------------
    -- Initialize --
    ----------------

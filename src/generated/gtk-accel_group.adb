@@ -78,6 +78,17 @@ package body Gtk.Accel_Group is
      (Get_Type'Access, Gtk_Accel_Group_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Accel_Group);
 
+   -------------------------
+   -- Gtk_Accel_Group_New --
+   -------------------------
+
+   function Gtk_Accel_Group_New return Gtk_Accel_Group is
+      Accel_Group : constant Gtk_Accel_Group := new Gtk_Accel_Group_Record;
+   begin
+      Gtk.Accel_Group.Initialize (Accel_Group);
+      return Accel_Group;
+   end Gtk_Accel_Group_New;
+
    -------------
    -- Gtk_New --
    -------------

@@ -31,6 +31,21 @@ package body Gtk.Layout is
      (Get_Type'Access, Gtk_Layout_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Layout);
 
+   --------------------
+   -- Gtk_Layout_New --
+   --------------------
+
+   function Gtk_Layout_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Layout
+   is
+      Layout : constant Gtk_Layout := new Gtk_Layout_Record;
+   begin
+      Gtk.Layout.Initialize (Layout, Hadjustment, Vadjustment);
+      return Layout;
+   end Gtk_Layout_New;
+
    -------------
    -- Gtk_New --
    -------------

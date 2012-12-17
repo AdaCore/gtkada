@@ -87,12 +87,35 @@ package Gtk.File_Chooser_Button is
    --  "title": the title of the browse dialog.
    --  "action": the open mode for the widget.
 
+   function Gtk_File_Chooser_Button_New
+      (Title  : UTF8_String;
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Button;
+   --  Creates a new file-selecting button widget.
+   --  Since: gtk+ 2.6
+   --  "title": the title of the browse dialog.
+   --  "action": the open mode for the widget.
+
    procedure Gtk_New_With_Dialog
       (Button : out Gtk_File_Chooser_Button;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Initialize_With_Dialog
       (Button : not null access Gtk_File_Chooser_Button_Record'Class;
        Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Creates a Gtk.File_Chooser_Button.Gtk_File_Chooser_Button widget which
+   --  uses Dialog as its file-picking window.
+   --  Note that Dialog must be a Gtk.Dialog.Gtk_Dialog (or subclass) which
+   --  implements the Gtk.File_Chooser.Gtk_File_Chooser interface and must not
+   --  have GTK_DIALOG_DESTROY_WITH_PARENT set.
+   --  Also note that the dialog needs to have its confirmative button added
+   --  with response GTK_RESPONSE_ACCEPT or GTK_RESPONSE_OK in order for the
+   --  button to take over the file selected in the dialog.
+   --  Since: gtk+ 2.6
+   --  "dialog": the widget to use as dialog
+
+   function Gtk_File_Chooser_Button_New_With_Dialog
+      (Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk_File_Chooser_Button;
    --  Creates a Gtk.File_Chooser_Button.Gtk_File_Chooser_Button widget which
    --  uses Dialog as its file-picking window.
    --  Note that Dialog must be a Gtk.Dialog.Gtk_Dialog (or subclass) which

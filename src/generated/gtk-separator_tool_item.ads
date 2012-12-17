@@ -62,6 +62,10 @@ package Gtk.Separator_Tool_Item is
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
    --  Since: gtk+ 2.4
 
+   function Gtk_Separator_Tool_Item_New return Gtk_Separator_Tool_Item;
+   --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+   --  Since: gtk+ 2.4
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_tool_item_get_type");
 

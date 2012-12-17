@@ -44,6 +44,54 @@ package body Gtk.Gradient is
       return S;
    end From_Object;
 
+   -----------------------------
+   -- Gtk_Gradient_New_Linear --
+   -----------------------------
+
+   function Gtk_Gradient_New_Linear
+      (X0 : Gdouble;
+       Y0 : Gdouble;
+       X1 : Gdouble;
+       Y1 : Gdouble) return Gtk_Gradient
+   is
+      function Internal
+         (X0 : Gdouble;
+          Y0 : Gdouble;
+          X1 : Gdouble;
+          Y1 : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_gradient_new_linear");
+      Self : Gtk_Gradient;
+   begin
+      Self.Set_Object (Internal (X0, Y0, X1, Y1));
+      return Self;
+   end Gtk_Gradient_New_Linear;
+
+   -----------------------------
+   -- Gtk_Gradient_New_Radial --
+   -----------------------------
+
+   function Gtk_Gradient_New_Radial
+      (X0      : Gdouble;
+       Y0      : Gdouble;
+       Radius0 : Gdouble;
+       X1      : Gdouble;
+       Y1      : Gdouble;
+       Radius1 : Gdouble) return Gtk_Gradient
+   is
+      function Internal
+         (X0      : Gdouble;
+          Y0      : Gdouble;
+          Radius0 : Gdouble;
+          X1      : Gdouble;
+          Y1      : Gdouble;
+          Radius1 : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_gradient_new_radial");
+      Self : Gtk_Gradient;
+   begin
+      Self.Set_Object (Internal (X0, Y0, Radius0, X1, Y1, Radius1));
+      return Self;
+   end Gtk_Gradient_New_Radial;
+
    --------------------
    -- Gtk_New_Linear --
    --------------------

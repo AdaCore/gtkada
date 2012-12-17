@@ -101,6 +101,9 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record'Class);
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column.
 
+   function Gtk_Tree_View_Column_New return Gtk_Tree_View_Column;
+   --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column.
+
    procedure Gtk_New_With_Area
       (Tree_Column : out Gtk_Tree_View_Column;
        Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
@@ -109,6 +112,15 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record'Class;
        Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       ;
+   --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column using Area to
+   --  render its cells.
+   --  Since: gtk+ 3.0
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area that the newly created column
+   --  should use to layout cells.
+
+   function Gtk_Tree_View_Column_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Tree_View_Column;
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column using Area to
    --  render its cells.
    --  Since: gtk+ 3.0

@@ -65,6 +65,11 @@ package Gtk.Font_Chooser_Dialog is
        Title  : UTF8_String;
        Window : not null access Gtk.Window.Gtk_Window_Record'Class);
 
+   function Gtk_Font_Chooser_Dialog_New
+      (Title  : UTF8_String;
+       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+       return Gtk_Font_Chooser_Dialog;
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_chooser_dialog_get_type");
 

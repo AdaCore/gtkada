@@ -94,6 +94,33 @@ package Gtk.Icon_Source is
    --  icon source will be used as the base icon for any desired text
    --  direction, widget state, or icon size.
 
+   function Gtk_Icon_Source_New return Gtk_Icon_Source;
+   --  Creates a new Gtk.Icon_Source.Gtk_Icon_Source. A
+   --  Gtk.Icon_Source.Gtk_Icon_Source contains a Gdk.Pixbuf.Gdk_Pixbuf (or
+   --  image filename) that serves as the base image for one or more of the
+   --  icons in a Gtk.Icon_Set.Gtk_Icon_Set, along with a specification for
+   --  which icons in the icon set will be based on that pixbuf or image file.
+   --  An icon set contains a set of icons that represent "the same" logical
+   --  concept in different states, different global text directions, and
+   --  different sizes.
+   --  So for example a web browser's "Back to Previous Page" icon might point
+   --  in a different direction in Hebrew and in English; it might look
+   --  different when insensitive; and it might change size depending on
+   --  toolbar mode (small/large icons). So a single icon set would contain all
+   --  those variants of the icon. Gtk.Icon_Set.Gtk_Icon_Set contains a list of
+   --  Gtk.Icon_Source.Gtk_Icon_Source from which it can derive specific icon
+   --  variants in the set.
+   --  In the simplest case, Gtk.Icon_Set.Gtk_Icon_Set contains one source
+   --  pixbuf from which it derives all variants. The convenience function
+   --  gtk_icon_set_new_from_pixbuf handles this case; if you only have one
+   --  source pixbuf, just use that function.
+   --  If you want to use a different base pixbuf for different icon variants,
+   --  you create multiple icon sources, mark which variants they'll be used to
+   --  create, and add them to the icon set with Gtk.Icon_Set.Add_Source.
+   --  By default, the icon source has all parameters wildcarded. That is, the
+   --  icon source will be used as the base icon for any desired text
+   --  direction, widget state, or icon size.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_icon_source_get_type");
 

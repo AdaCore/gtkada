@@ -68,6 +68,16 @@ package Gtk.Cell_Renderer_Pixbuf is
    --  thus rendering a different image in each row of the
    --  Gtk.Tree_View.Gtk_Tree_View.
 
+   function Gtk_Cell_Renderer_Pixbuf_New return Gtk_Cell_Renderer_Pixbuf;
+   --  Creates a new Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf. Adjust
+   --  rendering parameters using object properties. Object properties can be
+   --  set globally (with g_object_set). Also, with
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column, you can bind a property to a
+   --  value in a Gtk.Tree_Model.Gtk_Tree_Model. For example, you can bind the
+   --  "pixbuf" property on the cell renderer to a pixbuf value in the model,
+   --  thus rendering a different image in each row of the
+   --  Gtk.Tree_View.Gtk_Tree_View.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_pixbuf_get_type");
 

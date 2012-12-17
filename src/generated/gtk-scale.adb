@@ -32,6 +32,34 @@ package body Gtk.Scale is
      (Get_Type'Access, Gtk_Scale_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Scale);
 
+   --------------------
+   -- Gtk_Hscale_New --
+   --------------------
+
+   function Gtk_Hscale_New
+      (Adjustment : Gtk.Adjustment.Gtk_Adjustment := null) return Gtk_Hscale
+   is
+      Scale : constant Gtk_Hscale := new Gtk_Hscale_Record;
+   begin
+      Gtk.Scale.Initialize_Hscale (Scale, Adjustment);
+      return Scale;
+   end Gtk_Hscale_New;
+
+   -------------------------------
+   -- Gtk_Hscale_New_With_Range --
+   -------------------------------
+
+   function Gtk_Hscale_New_With_Range
+      (Min  : Gdouble;
+       Max  : Gdouble;
+       Step : Gdouble) return Gtk_Hscale
+   is
+      Scale : constant Gtk_Hscale := new Gtk_Hscale_Record;
+   begin
+      Gtk.Scale.Initialize_Hscale (Scale, Min, Max, Step);
+      return Scale;
+   end Gtk_Hscale_New_With_Range;
+
    -------------
    -- Gtk_New --
    -------------
@@ -117,6 +145,65 @@ package body Gtk.Scale is
       Scale := new Gtk_Scale_Record;
       Gtk.Scale.Initialize_With_Range (Scale, Orientation, Min, Max, Step);
    end Gtk_New_With_Range;
+
+   -------------------
+   -- Gtk_Scale_New --
+   -------------------
+
+   function Gtk_Scale_New
+      (Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       return Gtk_Scale
+   is
+      Scale : constant Gtk_Scale := new Gtk_Scale_Record;
+   begin
+      Gtk.Scale.Initialize (Scale, Orientation, Adjustment);
+      return Scale;
+   end Gtk_Scale_New;
+
+   ------------------------------
+   -- Gtk_Scale_New_With_Range --
+   ------------------------------
+
+   function Gtk_Scale_New_With_Range
+      (Orientation : Gtk.Enums.Gtk_Orientation;
+       Min         : Gdouble;
+       Max         : Gdouble;
+       Step        : Gdouble) return Gtk_Scale
+   is
+      Scale : constant Gtk_Scale := new Gtk_Scale_Record;
+   begin
+      Gtk.Scale.Initialize_With_Range (Scale, Orientation, Min, Max, Step);
+      return Scale;
+   end Gtk_Scale_New_With_Range;
+
+   --------------------
+   -- Gtk_Vscale_New --
+   --------------------
+
+   function Gtk_Vscale_New
+      (Adjustment : Gtk.Adjustment.Gtk_Adjustment := null) return Gtk_Vscale
+   is
+      Scale : constant Gtk_Vscale := new Gtk_Vscale_Record;
+   begin
+      Gtk.Scale.Initialize_Vscale (Scale, Adjustment);
+      return Scale;
+   end Gtk_Vscale_New;
+
+   -------------------------------
+   -- Gtk_Vscale_New_With_Range --
+   -------------------------------
+
+   function Gtk_Vscale_New_With_Range
+      (Min  : Gdouble;
+       Max  : Gdouble;
+       Step : Gdouble) return Gtk_Vscale
+   is
+      Scale : constant Gtk_Vscale := new Gtk_Vscale_Record;
+   begin
+      Gtk.Scale.Initialize_Vscale (Scale, Min, Max, Step);
+      return Scale;
+   end Gtk_Vscale_New_With_Range;
 
    ----------------
    -- Initialize --

@@ -32,6 +32,32 @@ package body Gtk.Check_Menu_Item is
      (Get_Type'Access, Gtk_Check_Menu_Item_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Check_Menu_Item);
 
+   ----------------------------------------
+   -- Gtk_Check_Menu_Item_New_With_Label --
+   ----------------------------------------
+
+   function Gtk_Check_Menu_Item_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Check_Menu_Item
+   is
+      Check_Menu_Item : constant Gtk_Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
+   begin
+      Gtk.Check_Menu_Item.Initialize (Check_Menu_Item, Label);
+      return Check_Menu_Item;
+   end Gtk_Check_Menu_Item_New_With_Label;
+
+   -------------------------------------------
+   -- Gtk_Check_Menu_Item_New_With_Mnemonic --
+   -------------------------------------------
+
+   function Gtk_Check_Menu_Item_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Check_Menu_Item
+   is
+      Check_Menu_Item : constant Gtk_Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
+   begin
+      Gtk.Check_Menu_Item.Initialize_With_Mnemonic (Check_Menu_Item, Label);
+      return Check_Menu_Item;
+   end Gtk_Check_Menu_Item_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

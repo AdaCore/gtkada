@@ -58,6 +58,11 @@ package Gtk.Cell_Renderer_Spinner is
    --  activity.
    --  Since: gtk+ 2.20
 
+   function Gtk_Cell_Renderer_Spinner_New return Gtk_Cell_Renderer_Spinner;
+   --  Returns a new cell renderer which will show a spinner to indicate
+   --  activity.
+   --  Since: gtk+ 2.20
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_spinner_get_type");
 

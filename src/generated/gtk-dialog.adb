@@ -56,6 +56,32 @@ package body Gtk.Dialog is
      (Get_Type'Access, Gtk_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Dialog);
 
+   --------------------
+   -- Gtk_Dialog_New --
+   --------------------
+
+   function Gtk_Dialog_New return Gtk_Dialog is
+      Dialog : constant Gtk_Dialog := new Gtk_Dialog_Record;
+   begin
+      Gtk.Dialog.Initialize (Dialog);
+      return Dialog;
+   end Gtk_Dialog_New;
+
+   --------------------
+   -- Gtk_Dialog_New --
+   --------------------
+
+   function Gtk_Dialog_New
+      (Title  : UTF8_String;
+       Parent : Gtk.Window.Gtk_Window := null;
+       Flags  : Gtk_Dialog_Flags) return Gtk_Dialog
+   is
+      Dialog : constant Gtk_Dialog := new Gtk_Dialog_Record;
+   begin
+      Gtk.Dialog.Initialize (Dialog, Title, Parent, Flags);
+      return Dialog;
+   end Gtk_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

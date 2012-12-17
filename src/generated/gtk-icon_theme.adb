@@ -54,6 +54,36 @@ package body Gtk.Icon_Theme is
      (Get_Type'Access, Gtk_Icon_Theme_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Icon_Theme);
 
+   ----------------------------------
+   -- Gtk_Icon_Info_New_For_Pixbuf --
+   ----------------------------------
+
+   function Gtk_Icon_Info_New_For_Pixbuf
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
+       Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Icon_Info
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Pixbuf     : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_info_new_for_pixbuf");
+      Icon_Info : Gtk_Icon_Info;
+   begin
+      Icon_Info.Set_Object (Internal (Get_Object (Icon_Theme), Get_Object (Pixbuf)));
+      return Icon_Info;
+   end Gtk_Icon_Info_New_For_Pixbuf;
+
+   ------------------------
+   -- Gtk_Icon_Theme_New --
+   ------------------------
+
+   function Gtk_Icon_Theme_New return Gtk_Icon_Theme is
+      Icon_Theme : constant Gtk_Icon_Theme := new Gtk_Icon_Theme_Record;
+   begin
+      Gtk.Icon_Theme.Initialize (Icon_Theme);
+      return Icon_Theme;
+   end Gtk_Icon_Theme_New;
+
    -------------
    -- Gtk_New --
    -------------

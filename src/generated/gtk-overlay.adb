@@ -41,6 +41,17 @@ package body Gtk.Overlay is
       Gtk.Overlay.Initialize (Self);
    end Gtk_New;
 
+   ---------------------
+   -- Gtk_Overlay_New --
+   ---------------------
+
+   function Gtk_Overlay_New return Gtk_Overlay is
+      Self : constant Gtk_Overlay := new Gtk_Overlay_Record;
+   begin
+      Gtk.Overlay.Initialize (Self);
+      return Self;
+   end Gtk_Overlay_New;
+
    ----------------
    -- Initialize --
    ----------------

@@ -31,6 +31,17 @@ package body Gtk.Hsv is
      (Get_Type'Access, Gtk_Hsv_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Hsv);
 
+   -----------------
+   -- Gtk_Hsv_New --
+   -----------------
+
+   function Gtk_Hsv_New return Gtk_Hsv is
+      Self : constant Gtk_Hsv := new Gtk_Hsv_Record;
+   begin
+      Gtk.Hsv.Initialize (Self);
+      return Self;
+   end Gtk_Hsv_New;
+
    -------------
    -- Gtk_New --
    -------------

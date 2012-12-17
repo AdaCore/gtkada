@@ -53,6 +53,10 @@ package Gtk.Spinner is
    --  Returns a new spinner widget. Not yet started.
    --  Since: gtk+ 2.20
 
+   function Gtk_Spinner_New return Gtk_Spinner;
+   --  Returns a new spinner widget. Not yet started.
+   --  Since: gtk+ 2.20
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_spinner_get_type");
 

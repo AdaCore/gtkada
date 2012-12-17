@@ -78,6 +78,17 @@ package body Gtk.Assistant is
      (Get_Type'Access, Gtk_Assistant_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Assistant);
 
+   -----------------------
+   -- Gtk_Assistant_New --
+   -----------------------
+
+   function Gtk_Assistant_New return Gtk_Assistant is
+      Assistant : constant Gtk_Assistant := new Gtk_Assistant_Record;
+   begin
+      Gtk.Assistant.Initialize (Assistant);
+      return Assistant;
+   end Gtk_Assistant_New;
+
    -------------
    -- Gtk_New --
    -------------

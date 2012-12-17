@@ -62,6 +62,12 @@ package Gtk.Text_Buffer is
    --  Creates a new text buffer.
    --  "table": a tag table, or null to create a new one
 
+   function Gtk_Text_Buffer_New
+      (Table : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null)
+       return Gtk_Text_Buffer;
+   --  Creates a new text buffer.
+   --  "table": a tag table, or null to create a new one
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_buffer_get_type");
 

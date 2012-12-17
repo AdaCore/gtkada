@@ -81,12 +81,29 @@ package Gtk.Menu_Tool_Button is
    --  "icon_widget": a widget that will be used as icon widget, or null
    --  "label": a string that will be used as label, or null
 
+   function Gtk_Menu_Tool_Button_New
+      (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
+       Label       : UTF8_String := "") return Gtk_Menu_Tool_Button;
+   --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button using
+   --  Icon_Widget as icon and Label as label.
+   --  Since: gtk+ 2.6
+   --  "icon_widget": a widget that will be used as icon widget, or null
+   --  "label": a string that will be used as label, or null
+
    procedure Gtk_New_From_Stock
       (Menu     : out Gtk_Menu_Tool_Button;
        Stock_Id : UTF8_String);
    procedure Initialize_From_Stock
       (Menu     : not null access Gtk_Menu_Tool_Button_Record'Class;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button. The new
+   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button will contain an icon and label
+   --  from the stock item indicated by Stock_Id.
+   --  Since: gtk+ 2.6
+   --  "stock_id": the name of a stock item
+
+   function Gtk_Menu_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Menu_Tool_Button;
    --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button. The new
    --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button will contain an icon and label
    --  from the stock item indicated by Stock_Id.

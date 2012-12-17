@@ -33,6 +33,17 @@ package body Gtk.Frame is
      (Get_Type'Access, Gtk_Frame_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Frame);
 
+   -------------------
+   -- Gtk_Frame_New --
+   -------------------
+
+   function Gtk_Frame_New (Label : UTF8_String := "") return Gtk_Frame is
+      Frame : constant Gtk_Frame := new Gtk_Frame_Record;
+   begin
+      Gtk.Frame.Initialize (Frame, Label);
+      return Frame;
+   end Gtk_Frame_New;
+
    -------------
    -- Gtk_New --
    -------------

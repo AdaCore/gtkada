@@ -52,6 +52,9 @@ package Gtk.Vbutton_Box is
       (Widget : not null access Gtk_Vbutton_Box_Record'Class);
    --  Creates a new vertical button box.
 
+   function Gtk_Vbutton_Box_New return Gtk_Vbutton_Box;
+   --  Creates a new vertical button box.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_vbutton_box_get_type");
 

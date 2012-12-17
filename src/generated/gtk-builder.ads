@@ -275,6 +275,10 @@ package Gtk.Builder is
    --  Creates a new builder object.
    --  Since: gtk+ 2.12
 
+   function Gtk_Builder_New return Gtk_Builder;
+   --  Creates a new builder object.
+   --  Since: gtk+ 2.12
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_builder_get_type");
 

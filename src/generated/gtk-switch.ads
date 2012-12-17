@@ -51,6 +51,10 @@ package Gtk.Switch is
    --  Creates a new Gtk.Switch.Gtk_Switch widget.
    --  Since: gtk+ 3.0
 
+   function Gtk_Switch_New return Gtk_Switch;
+   --  Creates a new Gtk.Switch.Gtk_Switch widget.
+   --  Since: gtk+ 3.0
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_switch_get_type");
 

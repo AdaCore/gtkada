@@ -113,6 +113,10 @@ package Gtk.Assistant is
    --  Creates a new Gtk.Assistant.Gtk_Assistant.
    --  Since: gtk+ 2.10
 
+   function Gtk_Assistant_New return Gtk_Assistant;
+   --  Creates a new Gtk.Assistant.Gtk_Assistant.
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_assistant_get_type");
 

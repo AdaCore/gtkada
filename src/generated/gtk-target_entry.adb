@@ -56,4 +56,28 @@ package body Gtk.Target_Entry is
       Target_Entry := Tmp_Return;
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Target_Entry_New --
+   --------------------------
+
+   function Gtk_Target_Entry_New
+      (Target : UTF8_String;
+       Flags  : Gtk.Enums.Gtk_Target_Flags;
+       Info   : Guint) return Gtk_Target_Entry
+   is
+      function Internal
+         (Target : Interfaces.C.Strings.chars_ptr;
+          Flags  : Gtk.Enums.Gtk_Target_Flags;
+          Info   : Guint) return Gtk_Target_Entry;
+      pragma Import (C, Internal, "gtk_target_entry_new");
+      Tmp_Target   : Interfaces.C.Strings.chars_ptr := New_String (Target);
+      Tmp_Return   : Gtk_Target_Entry;
+      Target_Entry : Gtk_Target_Entry;
+   begin
+      Tmp_Return := Internal (Tmp_Target, Flags, Info);
+      Free (Tmp_Target);
+      Target_Entry := Tmp_Return;
+      return Target_Entry;
+   end Gtk_Target_Entry_New;
+
 end Gtk.Target_Entry;

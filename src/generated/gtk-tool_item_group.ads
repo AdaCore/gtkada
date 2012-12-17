@@ -59,6 +59,12 @@ package Gtk.Tool_Item_Group is
    --  Since: gtk+ 2.20
    --  "label": the label of the new group
 
+   function Gtk_Tool_Item_Group_New
+      (Label : UTF8_String) return Gtk_Tool_Item_Group;
+   --  Creates a new tool item group with label Label.
+   --  Since: gtk+ 2.20
+   --  "label": the label of the new group
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tool_item_group_get_type");
 

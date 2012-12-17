@@ -123,6 +123,31 @@ package body Gtk.Tree_View_Column is
       Gtk.Tree_View_Column.Initialize_With_Area (Tree_Column, Area);
    end Gtk_New_With_Area;
 
+   ------------------------------
+   -- Gtk_Tree_View_Column_New --
+   ------------------------------
+
+   function Gtk_Tree_View_Column_New return Gtk_Tree_View_Column is
+      Tree_Column : constant Gtk_Tree_View_Column := new Gtk_Tree_View_Column_Record;
+   begin
+      Gtk.Tree_View_Column.Initialize (Tree_Column);
+      return Tree_Column;
+   end Gtk_Tree_View_Column_New;
+
+   ----------------------------------------
+   -- Gtk_Tree_View_Column_New_With_Area --
+   ----------------------------------------
+
+   function Gtk_Tree_View_Column_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Tree_View_Column
+   is
+      Tree_Column : constant Gtk_Tree_View_Column := new Gtk_Tree_View_Column_Record;
+   begin
+      Gtk.Tree_View_Column.Initialize_With_Area (Tree_Column, Area);
+      return Tree_Column;
+   end Gtk_Tree_View_Column_New_With_Area;
+
    ----------------
    -- Initialize --
    ----------------

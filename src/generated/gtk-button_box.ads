@@ -63,6 +63,12 @@ package Gtk.Button_Box is
    --  Since: gtk+ 3.0
    --  "orientation": the box' orientation.
 
+   function Gtk_Button_Box_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Button_Box;
+   --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box' orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
 

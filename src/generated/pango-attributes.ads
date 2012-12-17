@@ -54,6 +54,10 @@ package Pango.Attributes is
    --  Create a new empty attribute list with a reference count of one.
    --  be freed with Pango.Attributes.Unref.
 
+   function Pango_Attr_List_New return Pango_Attr_List;
+   --  Create a new empty attribute list with a reference count of one.
+   --  be freed with Pango.Attributes.Unref.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_attr_list_get_type");
 

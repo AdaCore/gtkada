@@ -31,6 +31,17 @@ package body Gtk.Handle_Box is
      (Get_Type'Access, Gtk_Handle_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Handle_Box);
 
+   ------------------------
+   -- Gtk_Handle_Box_New --
+   ------------------------
+
+   function Gtk_Handle_Box_New return Gtk_Handle_Box is
+      Handle_Box : constant Gtk_Handle_Box := new Gtk_Handle_Box_Record;
+   begin
+      Gtk.Handle_Box.Initialize (Handle_Box);
+      return Handle_Box;
+   end Gtk_Handle_Box_New;
+
    -------------
    -- Gtk_New --
    -------------

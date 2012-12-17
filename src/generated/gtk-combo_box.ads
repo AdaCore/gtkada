@@ -107,12 +107,23 @@ package Gtk.Combo_Box is
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
    --  Since: gtk+ 2.4
 
+   function Gtk_Combo_Box_New return Gtk_Combo_Box;
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
+   --  Since: gtk+ 2.4
+
    procedure Gtk_New_With_Area
       (Combo_Box : out Gtk_Combo_Box;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
+   --  cells.
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+
+   function Gtk_Combo_Box_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
    --  cells.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
@@ -127,9 +138,19 @@ package Gtk.Combo_Box is
    --  The new combo box will use Area to layout cells.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
 
+   function Gtk_Combo_Box_New_With_Area_And_Entry
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Combo_Box;
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+   --  The new combo box will use Area to layout cells.
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+
    procedure Gtk_New_With_Entry (Combo_Box : out Gtk_Combo_Box);
    procedure Initialize_With_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+
+   function Gtk_Combo_Box_New_With_Entry return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
 
    procedure Gtk_New_With_Model
@@ -143,12 +164,25 @@ package Gtk.Combo_Box is
    --  Since: gtk+ 2.4
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
 
+   function Gtk_Combo_Box_New_With_Model
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box;
+   --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
+   --  Model.
+   --  Since: gtk+ 2.4
+   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
+
    procedure Gtk_New_With_Model_And_Entry
       (Combo_Box : out Gtk_Combo_Box;
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    procedure Initialize_With_Model_And_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class;
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
+   --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
+   --  the model initialized to Model.
+   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
+
+   function Gtk_Combo_Box_New_With_Model_And_Entry
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model

@@ -75,12 +75,26 @@ package Gtk.Print_Settings is
    --  Creates a new Gtk.Print_Settings.Gtk_Print_Settings object.
    --  Since: gtk+ 2.10
 
+   function Gtk_Print_Settings_New return Gtk_Print_Settings;
+   --  Creates a new Gtk.Print_Settings.Gtk_Print_Settings object.
+   --  Since: gtk+ 2.10
+
    procedure Gtk_New_From_File
       (Self      : out Gtk_Print_Settings;
        File_Name : UTF8_String);
    procedure Initialize_From_File
       (Self      : not null access Gtk_Print_Settings_Record'Class;
        File_Name : UTF8_String);
+   --  Reads the print settings from File_Name. Returns a new
+   --  Gtk.Print_Settings.Gtk_Print_Settings object with the restored settings,
+   --  or null if an error occurred. If the file could not be loaded then error
+   --  is set to either a GFile_Error or GKey_File_Error. See
+   --  Gtk.Print_Settings.To_File.
+   --  Since: gtk+ 2.12
+   --  "file_name": the filename to read the settings from
+
+   function Gtk_Print_Settings_New_From_File
+      (File_Name : UTF8_String) return Gtk_Print_Settings;
    --  Reads the print settings from File_Name. Returns a new
    --  Gtk.Print_Settings.Gtk_Print_Settings object with the restored settings,
    --  or null if an error occurred. If the file could not be loaded then error
@@ -97,6 +111,18 @@ package Gtk.Print_Settings is
       (Self       : not null access Gtk_Print_Settings_Record'Class;
        Key_File   : Glib.Key_File.G_Key_File;
        Group_Name : UTF8_String := "");
+   --  Reads the print settings from the group Group_Name in Key_File. Returns
+   --  a new Gtk.Print_Settings.Gtk_Print_Settings object with the restored
+   --  settings, or null if an error occurred. If the file could not be loaded
+   --  then error is set to either a GFile_Error or GKey_File_Error.
+   --  Since: gtk+ 2.12
+   --  "key_file": the GKey_File to retrieve the settings from
+   --  "group_name": the name of the group to use, or null to use the default
+   --  "Print Settings"
+
+   function Gtk_Print_Settings_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String := "") return Gtk_Print_Settings;
    --  Reads the print settings from the group Group_Name in Key_File. Returns
    --  a new Gtk.Print_Settings.Gtk_Print_Settings object with the restored
    --  settings, or null if an error occurred. If the file could not be loaded

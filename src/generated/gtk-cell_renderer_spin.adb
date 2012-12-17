@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Spin is
      (Get_Type'Access, Gtk_Cell_Renderer_Spin_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Spin);
 
+   --------------------------------
+   -- Gtk_Cell_Renderer_Spin_New --
+   --------------------------------
+
+   function Gtk_Cell_Renderer_Spin_New return Gtk_Cell_Renderer_Spin is
+      Self : constant Gtk_Cell_Renderer_Spin := new Gtk_Cell_Renderer_Spin_Record;
+   begin
+      Gtk.Cell_Renderer_Spin.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Spin_New;
+
    -------------
    -- Gtk_New --
    -------------

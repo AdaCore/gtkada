@@ -130,6 +130,10 @@ package Gtk.Entry_Completion is
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
    --  Since: gtk+ 2.4
 
+   function Gtk_Entry_Completion_New return Gtk_Entry_Completion;
+   --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object.
+   --  Since: gtk+ 2.4
+
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
@@ -138,6 +142,15 @@ package Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record'Class;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
       ;
+   --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
+   --  the specified Area to layout cells in the underlying
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
+   --  Since: gtk+ 3.0
+   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
+
+   function Gtk_Entry_Completion_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Entry_Completion;
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
    --  the specified Area to layout cells in the underlying
    --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.

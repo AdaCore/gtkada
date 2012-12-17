@@ -32,6 +32,58 @@ package body Gtk.Image_Menu_Item is
      (Get_Type'Access, Gtk_Image_Menu_Item_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Image_Menu_Item);
 
+   -----------------------------
+   -- Gtk_Image_Menu_Item_New --
+   -----------------------------
+
+   function Gtk_Image_Menu_Item_New return Gtk_Image_Menu_Item is
+      Self : constant Gtk_Image_Menu_Item := new Gtk_Image_Menu_Item_Record;
+   begin
+      Gtk.Image_Menu_Item.Initialize (Self);
+      return Self;
+   end Gtk_Image_Menu_Item_New;
+
+   ----------------------------------------
+   -- Gtk_Image_Menu_Item_New_From_Stock --
+   ----------------------------------------
+
+   function Gtk_Image_Menu_Item_New_From_Stock
+      (Stock_Id    : UTF8_String;
+       Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
+       return Gtk_Image_Menu_Item
+   is
+      Self : constant Gtk_Image_Menu_Item := new Gtk_Image_Menu_Item_Record;
+   begin
+      Gtk.Image_Menu_Item.Initialize_From_Stock (Self, Stock_Id, Accel_Group);
+      return Self;
+   end Gtk_Image_Menu_Item_New_From_Stock;
+
+   ----------------------------------------
+   -- Gtk_Image_Menu_Item_New_With_Label --
+   ----------------------------------------
+
+   function Gtk_Image_Menu_Item_New_With_Label
+      (Label : UTF8_String) return Gtk_Image_Menu_Item
+   is
+      Self : constant Gtk_Image_Menu_Item := new Gtk_Image_Menu_Item_Record;
+   begin
+      Gtk.Image_Menu_Item.Initialize (Self, Label);
+      return Self;
+   end Gtk_Image_Menu_Item_New_With_Label;
+
+   -------------------------------------------
+   -- Gtk_Image_Menu_Item_New_With_Mnemonic --
+   -------------------------------------------
+
+   function Gtk_Image_Menu_Item_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Image_Menu_Item
+   is
+      Self : constant Gtk_Image_Menu_Item := new Gtk_Image_Menu_Item_Record;
+   begin
+      Gtk.Image_Menu_Item.Initialize_With_Mnemonic (Self, Label);
+      return Self;
+   end Gtk_Image_Menu_Item_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

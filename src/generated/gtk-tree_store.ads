@@ -109,6 +109,10 @@ package Gtk.Tree_Store is
    --  Non vararg creation function. Used primarily by language bindings.
    --  "types": an array of GType types for the columns, from first to last
 
+   function Gtk_Tree_Store_Newv (Types : GType_Array) return Gtk_Tree_Store;
+   --  Non vararg creation function. Used primarily by language bindings.
+   --  "types": an array of GType types for the columns, from first to last
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_store_get_type");
 

@@ -52,6 +52,10 @@ package Gtk.Cell_Renderer_Accel is
    --  Creates a new Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel.
    --  Since: gtk+ 2.10
 
+   function Gtk_Cell_Renderer_Accel_New return Gtk_Cell_Renderer_Accel;
+   --  Creates a new Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel.
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_accel_get_type");
 

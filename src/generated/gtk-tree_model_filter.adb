@@ -217,6 +217,21 @@ package body Gtk.Tree_Model_Filter is
       Gtk.Tree_Model_Filter.Initialize (Self, Child_Model, Root);
    end Gtk_New;
 
+   --------------------------------------
+   -- Gtk_Tree_Model_Filter_Filter_New --
+   --------------------------------------
+
+   function Gtk_Tree_Model_Filter_Filter_New
+      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
+       return Gtk_Tree_Model_Filter
+   is
+      Self : constant Gtk_Tree_Model_Filter := new Gtk_Tree_Model_Filter_Record;
+   begin
+      Gtk.Tree_Model_Filter.Initialize (Self, Child_Model, Root);
+      return Self;
+   end Gtk_Tree_Model_Filter_Filter_New;
+
    ----------------
    -- Initialize --
    ----------------

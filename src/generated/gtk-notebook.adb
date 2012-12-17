@@ -75,6 +75,17 @@ package body Gtk.Notebook is
       Gtk.Notebook.Initialize (Notebook);
    end Gtk_New;
 
+   ----------------------
+   -- Gtk_Notebook_New --
+   ----------------------
+
+   function Gtk_Notebook_New return Gtk_Notebook is
+      Notebook : constant Gtk_Notebook := new Gtk_Notebook_Record;
+   begin
+      Gtk.Notebook.Initialize (Notebook);
+      return Notebook;
+   end Gtk_Notebook_New;
+
    ----------------
    -- Initialize --
    ----------------

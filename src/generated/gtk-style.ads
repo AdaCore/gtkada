@@ -76,10 +76,18 @@ package Gtk.Style is
    procedure Initialize (Style : not null access Gtk_Style_Record'Class);
    --  Creates a new Gtk.Style.Gtk_Style.
 
+   function Gtk_Style_New return Gtk_Style;
+   --  Creates a new Gtk.Style.Gtk_Style.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_style_get_type");
 
    procedure Gtk_New (Self : out Gtk_Border);
+   --  Allocates a new Gtk.Style.Gtk_Border structure and initializes its
+   --  elements to zero.
+   --  Since: gtk+ 2.14
+
+   function Gtk_Border_New return Gtk_Border;
    --  Allocates a new Gtk.Style.Gtk_Border structure and initializes its
    --  elements to zero.
    --  Since: gtk+ 2.14

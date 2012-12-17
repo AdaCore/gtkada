@@ -27,6 +27,59 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gdk.Cursor is
 
+   --------------------
+   -- Gdk_Cursor_New --
+   --------------------
+
+   function Gdk_Cursor_New (Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor is
+      function Internal (Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new");
+      Self : Gdk_Cursor;
+   begin
+      Self := Internal (Cursor_Type);
+      return Self;
+   end Gdk_Cursor_New;
+
+   --------------------------------
+   -- Gdk_Cursor_New_For_Display --
+   --------------------------------
+
+   function Gdk_Cursor_New_For_Display
+      (Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor
+   is
+      function Internal
+         (Display     : System.Address;
+          Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_for_display");
+      Self : Gdk_Cursor;
+   begin
+      Self := Internal (Get_Object (Display), Cursor_Type);
+      return Self;
+   end Gdk_Cursor_New_For_Display;
+
+   ------------------------------
+   -- Gdk_Cursor_New_From_Name --
+   ------------------------------
+
+   function Gdk_Cursor_New_From_Name
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Name    : UTF8_String) return Gdk_Cursor
+   is
+      function Internal
+         (Display : System.Address;
+          Name    : Interfaces.C.Strings.chars_ptr) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_name");
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Return : Gdk_Cursor;
+      Self       : Gdk_Cursor;
+   begin
+      Tmp_Return := Internal (Get_Object (Display), Tmp_Name);
+      Free (Tmp_Name);
+      Self := Tmp_Return;
+      return Self;
+   end Gdk_Cursor_New_From_Name;
+
    -------------
    -- Gdk_New --
    -------------

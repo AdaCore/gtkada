@@ -67,6 +67,9 @@ package Gtk.Toolbar is
    procedure Initialize (Toolbar : not null access Gtk_Toolbar_Record'Class);
    --  Creates a new toolbar.
 
+   function Gtk_Toolbar_New return Gtk_Toolbar;
+   --  Creates a new toolbar.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_toolbar_get_type");
 

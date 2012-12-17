@@ -60,9 +60,22 @@ package Gtk.Symbolic_Color is
    --  Since: gtk+ 3.0
    --  "color": a Gdk.RGBA.Gdk_RGBA
 
+   function Gtk_Symbolic_Color_New_Literal
+      (Color : Gdk.RGBA.Gdk_RGBA) return Gtk_Symbolic_Color;
+   --  Creates a symbolic color pointing to a literal color.
+   --  Since: gtk+ 3.0
+   --  "color": a Gdk.RGBA.Gdk_RGBA
+
    procedure Gtk_New_Name
       (Self : out Gtk_Symbolic_Color;
        Name : UTF8_String);
+   --  Creates a symbolic color pointing to an unresolved named color. See
+   --  Gtk.Style_Context.Lookup_Color and Gtk.Style_Properties.Lookup_Color.
+   --  Since: gtk+ 3.0
+   --  "name": color name
+
+   function Gtk_Symbolic_Color_New_Name
+      (Name : UTF8_String) return Gtk_Symbolic_Color;
    --  Creates a symbolic color pointing to an unresolved named color. See
    --  Gtk.Style_Context.Lookup_Color and Gtk.Style_Properties.Lookup_Color.
    --  Since: gtk+ 3.0

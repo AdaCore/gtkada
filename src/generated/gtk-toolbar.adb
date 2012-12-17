@@ -41,6 +41,17 @@ package body Gtk.Toolbar is
       Gtk.Toolbar.Initialize (Toolbar);
    end Gtk_New;
 
+   ---------------------
+   -- Gtk_Toolbar_New --
+   ---------------------
+
+   function Gtk_Toolbar_New return Gtk_Toolbar is
+      Toolbar : constant Gtk_Toolbar := new Gtk_Toolbar_Record;
+   begin
+      Gtk.Toolbar.Initialize (Toolbar);
+      return Toolbar;
+   end Gtk_Toolbar_New;
+
    ----------------
    -- Initialize --
    ----------------

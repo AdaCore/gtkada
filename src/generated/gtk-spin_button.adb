@@ -63,6 +63,36 @@ package body Gtk.Spin_Button is
       Gtk.Spin_Button.Initialize (Spin_Button, Min, Max, Step);
    end Gtk_New;
 
+   -------------------------
+   -- Gtk_Spin_Button_New --
+   -------------------------
+
+   function Gtk_Spin_Button_New
+      (Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+       Climb_Rate : Gdouble;
+       The_Digits : Guint := 0) return Gtk_Spin_Button
+   is
+      Spin_Button : constant Gtk_Spin_Button := new Gtk_Spin_Button_Record;
+   begin
+      Gtk.Spin_Button.Initialize (Spin_Button, Adjustment, Climb_Rate, The_Digits);
+      return Spin_Button;
+   end Gtk_Spin_Button_New;
+
+   ------------------------------------
+   -- Gtk_Spin_Button_New_With_Range --
+   ------------------------------------
+
+   function Gtk_Spin_Button_New_With_Range
+      (Min  : Gdouble;
+       Max  : Gdouble;
+       Step : Gdouble) return Gtk_Spin_Button
+   is
+      Spin_Button : constant Gtk_Spin_Button := new Gtk_Spin_Button_Record;
+   begin
+      Gtk.Spin_Button.Initialize (Spin_Button, Min, Max, Step);
+      return Spin_Button;
+   end Gtk_Spin_Button_New_With_Range;
+
    ----------------
    -- Initialize --
    ----------------

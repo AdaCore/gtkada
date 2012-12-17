@@ -165,6 +165,10 @@ package Gtk.Print_Operation is
    --  Creates a new Gtk.Print_Operation.Gtk_Print_Operation.
    --  Since: gtk+ 2.10
 
+   function Gtk_Print_Operation_New return Gtk_Print_Operation;
+   --  Creates a new Gtk.Print_Operation.Gtk_Print_Operation.
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_print_operation_get_type");
 

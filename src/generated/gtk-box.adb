@@ -31,6 +31,34 @@ package body Gtk.Box is
      (Get_Type'Access, Gtk_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Box);
 
+   -----------------
+   -- Gtk_Box_New --
+   -----------------
+
+   function Gtk_Box_New
+      (Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint) return Gtk_Box
+   is
+      Box : constant Gtk_Box := new Gtk_Box_Record;
+   begin
+      Gtk.Box.Initialize (Box, Orientation, Spacing);
+      return Box;
+   end Gtk_Box_New;
+
+   ------------------
+   -- Gtk_Hbox_New --
+   ------------------
+
+   function Gtk_Hbox_New
+      (Homogeneous : Boolean := False;
+       Spacing     : Gint := 0) return Gtk_Hbox
+   is
+      Box : constant Gtk_Hbox := new Gtk_Hbox_Record;
+   begin
+      Gtk.Box.Initialize_Hbox (Box, Homogeneous, Spacing);
+      return Box;
+   end Gtk_Hbox_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -72,6 +100,20 @@ package body Gtk.Box is
       Box := new Gtk_Vbox_Record;
       Gtk.Box.Initialize_Vbox (Box, Homogeneous, Spacing);
    end Gtk_New_Vbox;
+
+   ------------------
+   -- Gtk_Vbox_New --
+   ------------------
+
+   function Gtk_Vbox_New
+      (Homogeneous : Boolean := False;
+       Spacing     : Gint := 0) return Gtk_Vbox
+   is
+      Box : constant Gtk_Vbox := new Gtk_Vbox_Record;
+   begin
+      Gtk.Box.Initialize_Vbox (Box, Homogeneous, Spacing);
+      return Box;
+   end Gtk_Vbox_New;
 
    ----------------
    -- Initialize --

@@ -132,6 +132,15 @@ package Gtk.File_Filter is
    --  gtk_file_filter_new (); gtk_file_filter_add_pattern (filter, "*"); ]|
    --  Since: gtk+ 2.4
 
+   function Gtk_File_Filter_New return Gtk_File_Filter;
+   --  Creates a new Gtk.File_Filter.Gtk_File_Filter with no rules added to
+   --  it. Such a filter doesn't accept any files, so is not particularly
+   --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
+   --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
+   --  filter that accepts any file, use: |[ GtkFileFilter *filter =
+   --  gtk_file_filter_new (); gtk_file_filter_add_pattern (filter, "*"); ]|
+   --  Since: gtk+ 2.4
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_filter_get_type");
 

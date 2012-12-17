@@ -169,6 +169,17 @@ package body Gtk.Menu is
      (Get_Type'Access, Gtk_Menu_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Menu);
 
+   ------------------
+   -- Gtk_Menu_New --
+   ------------------
+
+   function Gtk_Menu_New return Gtk_Menu is
+      Menu : constant Gtk_Menu := new Gtk_Menu_Record;
+   begin
+      Gtk.Menu.Initialize (Menu);
+      return Menu;
+   end Gtk_Menu_New;
+
    -------------
    -- Gtk_New --
    -------------

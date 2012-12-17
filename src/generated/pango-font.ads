@@ -48,6 +48,10 @@ package Pango.Font is
    --  Creates a new font description structure with all fields unset.
    --  should be freed using pango_font_description_free.
 
+   function Pango_Font_Description_New return Pango_Font_Description;
+   --  Creates a new font description structure with all fields unset.
+   --  should be freed using pango_font_description_free.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_font_description_get_type");
 

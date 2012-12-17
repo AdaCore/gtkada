@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Toggle is
      (Get_Type'Access, Gtk_Cell_Renderer_Toggle_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Toggle);
 
+   ----------------------------------
+   -- Gtk_Cell_Renderer_Toggle_New --
+   ----------------------------------
+
+   function Gtk_Cell_Renderer_Toggle_New return Gtk_Cell_Renderer_Toggle is
+      Self : constant Gtk_Cell_Renderer_Toggle := new Gtk_Cell_Renderer_Toggle_Record;
+   begin
+      Gtk.Cell_Renderer_Toggle.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Toggle_New;
+
    -------------
    -- Gtk_New --
    -------------

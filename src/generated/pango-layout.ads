@@ -91,6 +91,15 @@ package Pango.Layout is
    --  count of one, which should be freed with g_object_unref.
    --  "context": a Pango.Context.Pango_Context
 
+   function Pango_Layout_New
+      (Context : not null access Pango.Context.Pango_Context_Record'Class)
+       return Pango_Layout;
+   --  Create a new Pango.Layout.Pango_Layout object with attributes
+   --  initialized to default values for a particular
+   --  Pango.Context.Pango_Context.
+   --  count of one, which should be freed with g_object_unref.
+   --  "context": a Pango.Context.Pango_Context
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_layout_get_type");
 

@@ -66,6 +66,11 @@ package Gtk.Offscreen_Window is
    --  of widgets without showing them on the screen.
    --  Since: gtk+ 2.20
 
+   function Gtk_Offscreen_Window_New return Gtk_Offscreen_Window;
+   --  Creates a toplevel container widget that is used to retrieve snapshots
+   --  of widgets without showing them on the screen.
+   --  Since: gtk+ 2.20
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_offscreen_window_get_type");
 

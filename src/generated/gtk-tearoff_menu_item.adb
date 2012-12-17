@@ -41,6 +41,17 @@ package body Gtk.Tearoff_Menu_Item is
       Gtk.Tearoff_Menu_Item.Initialize (Menu_Item);
    end Gtk_New;
 
+   -------------------------------
+   -- Gtk_Tearoff_Menu_Item_New --
+   -------------------------------
+
+   function Gtk_Tearoff_Menu_Item_New return Gtk_Tearoff_Menu_Item is
+      Menu_Item : constant Gtk_Tearoff_Menu_Item := new Gtk_Tearoff_Menu_Item_Record;
+   begin
+      Gtk.Tearoff_Menu_Item.Initialize (Menu_Item);
+      return Menu_Item;
+   end Gtk_Tearoff_Menu_Item_New;
+
    ----------------
    -- Initialize --
    ----------------

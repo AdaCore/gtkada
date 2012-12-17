@@ -165,6 +165,44 @@ package body Gtk.Icon_View is
      (Get_Type'Access, Gtk_Icon_View_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Icon_View);
 
+   -----------------------
+   -- Gtk_Icon_View_New --
+   -----------------------
+
+   function Gtk_Icon_View_New return Gtk_Icon_View is
+      Icon_View : constant Gtk_Icon_View := new Gtk_Icon_View_Record;
+   begin
+      Gtk.Icon_View.Initialize (Icon_View);
+      return Icon_View;
+   end Gtk_Icon_View_New;
+
+   ---------------------------------
+   -- Gtk_Icon_View_New_With_Area --
+   ---------------------------------
+
+   function Gtk_Icon_View_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Icon_View
+   is
+      Icon_View : constant Gtk_Icon_View := new Gtk_Icon_View_Record;
+   begin
+      Gtk.Icon_View.Initialize_With_Area (Icon_View, Area);
+      return Icon_View;
+   end Gtk_Icon_View_New_With_Area;
+
+   ----------------------------------
+   -- Gtk_Icon_View_New_With_Model --
+   ----------------------------------
+
+   function Gtk_Icon_View_New_With_Model
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Icon_View
+   is
+      Icon_View : constant Gtk_Icon_View := new Gtk_Icon_View_Record;
+   begin
+      Gtk.Icon_View.Initialize_With_Model (Icon_View, Model);
+      return Icon_View;
+   end Gtk_Icon_View_New_With_Model;
+
    -------------
    -- Gtk_New --
    -------------

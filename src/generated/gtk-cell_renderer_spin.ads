@@ -63,6 +63,10 @@ package Gtk.Cell_Renderer_Spin is
    --  Creates a new Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin.
    --  Since: gtk+ 2.10
 
+   function Gtk_Cell_Renderer_Spin_New return Gtk_Cell_Renderer_Spin;
+   --  Creates a new Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin.
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_spin_get_type");
 

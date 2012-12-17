@@ -65,6 +65,9 @@ package Gtk.Font_Selection is
       (Fontsel : not null access Gtk_Font_Selection_Record'Class);
    --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
 
+   function Gtk_Font_Selection_New return Gtk_Font_Selection;
+   --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_selection_get_type");
 

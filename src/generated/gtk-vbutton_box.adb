@@ -41,6 +41,17 @@ package body Gtk.Vbutton_Box is
       Gtk.Vbutton_Box.Initialize (Widget);
    end Gtk_New;
 
+   -------------------------
+   -- Gtk_Vbutton_Box_New --
+   -------------------------
+
+   function Gtk_Vbutton_Box_New return Gtk_Vbutton_Box is
+      Widget : constant Gtk_Vbutton_Box := new Gtk_Vbutton_Box_Record;
+   begin
+      Gtk.Vbutton_Box.Initialize (Widget);
+      return Widget;
+   end Gtk_Vbutton_Box_New;
+
    ----------------
    -- Initialize --
    ----------------

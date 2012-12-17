@@ -62,6 +62,9 @@ package Gtk.Style_Properties is
       (Self : not null access Gtk_Style_Properties_Record'Class);
    --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties
 
+   function Gtk_Style_Properties_New return Gtk_Style_Properties;
+   --  Returns a newly created Gtk.Style_Properties.Gtk_Style_Properties
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_style_properties_get_type");
 

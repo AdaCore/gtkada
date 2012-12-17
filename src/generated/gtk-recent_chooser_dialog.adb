@@ -109,6 +109,37 @@ package body Gtk.Recent_Chooser_Dialog is
       Gtk.Recent_Chooser_Dialog.Initialize_For_Manager (Widget, Title, Parent, Manager);
    end Gtk_New_For_Manager;
 
+   -----------------------------------
+   -- Gtk_Recent_Chooser_Dialog_New --
+   -----------------------------------
+
+   function Gtk_Recent_Chooser_Dialog_New
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
+       return Gtk_Recent_Chooser_Dialog
+   is
+      Widget : constant Gtk_Recent_Chooser_Dialog := new Gtk_Recent_Chooser_Dialog_Record;
+   begin
+      Gtk.Recent_Chooser_Dialog.Initialize (Widget, Title, Parent);
+      return Widget;
+   end Gtk_Recent_Chooser_Dialog_New;
+
+   -----------------------------------------------
+   -- Gtk_Recent_Chooser_Dialog_New_For_Manager --
+   -----------------------------------------------
+
+   function Gtk_Recent_Chooser_Dialog_New_For_Manager
+      (Title   : UTF8_String := "";
+       Parent  : access Gtk.Window.Gtk_Window_Record'Class;
+       Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+       return Gtk_Recent_Chooser_Dialog
+   is
+      Widget : constant Gtk_Recent_Chooser_Dialog := new Gtk_Recent_Chooser_Dialog_Record;
+   begin
+      Gtk.Recent_Chooser_Dialog.Initialize_For_Manager (Widget, Title, Parent, Manager);
+      return Widget;
+   end Gtk_Recent_Chooser_Dialog_New_For_Manager;
+
    ----------------
    -- Initialize --
    ----------------

@@ -42,6 +42,17 @@ package body Gtk.Tool_Item is
       Gtk.Tool_Item.Initialize (Tool_Item);
    end Gtk_New;
 
+   -----------------------
+   -- Gtk_Tool_Item_New --
+   -----------------------
+
+   function Gtk_Tool_Item_New return Gtk_Tool_Item is
+      Tool_Item : constant Gtk_Tool_Item := new Gtk_Tool_Item_Record;
+   begin
+      Gtk.Tool_Item.Initialize (Tool_Item);
+      return Tool_Item;
+   end Gtk_Tool_Item_New;
+
    ----------------
    -- Initialize --
    ----------------

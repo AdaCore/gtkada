@@ -207,6 +207,20 @@ package body Gtk.Text_Buffer is
       Gtk.Text_Buffer.Initialize (Buffer, Table);
    end Gtk_New;
 
+   -------------------------
+   -- Gtk_Text_Buffer_New --
+   -------------------------
+
+   function Gtk_Text_Buffer_New
+      (Table : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null)
+       return Gtk_Text_Buffer
+   is
+      Buffer : constant Gtk_Text_Buffer := new Gtk_Text_Buffer_Record;
+   begin
+      Gtk.Text_Buffer.Initialize (Buffer, Table);
+      return Buffer;
+   end Gtk_Text_Buffer_New;
+
    ----------------
    -- Initialize --
    ----------------

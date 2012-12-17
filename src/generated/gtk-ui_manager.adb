@@ -43,6 +43,17 @@ package body Gtk.UI_Manager is
       Gtk.UI_Manager.Initialize (Self);
    end Gtk_New;
 
+   ------------------------
+   -- Gtk_UI_Manager_New --
+   ------------------------
+
+   function Gtk_UI_Manager_New return Gtk_UI_Manager is
+      Self : constant Gtk_UI_Manager := new Gtk_UI_Manager_Record;
+   begin
+      Gtk.UI_Manager.Initialize (Self);
+      return Self;
+   end Gtk_UI_Manager_New;
+
    ----------------
    -- Initialize --
    ----------------

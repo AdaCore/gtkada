@@ -101,6 +101,19 @@ package body Pango.Attributes is
       Self.Set_Object (Internal);
    end Gdk_New;
 
+   -------------------------
+   -- Pango_Attr_List_New --
+   -------------------------
+
+   function Pango_Attr_List_New return Pango_Attr_List is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "pango_attr_list_new");
+      Self : Pango_Attr_List;
+   begin
+      Self.Set_Object (Internal);
+      return Self;
+   end Pango_Attr_List_New;
+
    ------------
    -- Change --
    ------------

@@ -160,6 +160,17 @@ package Gtk.Recent_Manager is
    --  Gtk.Recent_Manager.Get_Default instead.
    --  Since: gtk+ 2.10
 
+   function Gtk_Recent_Manager_New return Gtk_Recent_Manager;
+   --  Creates a new recent manager object. Recent manager objects are used to
+   --  handle the list of recently used resources. A
+   --  Gtk.Recent_Manager.Gtk_Recent_Manager object monitors the recently used
+   --  resources list, and emits the "changed" signal each time something
+   --  inside the list changes.
+   --  Gtk.Recent_Manager.Gtk_Recent_Manager objects are expensive: be sure to
+   --  create them only when needed. You should use
+   --  Gtk.Recent_Manager.Get_Default instead.
+   --  Since: gtk+ 2.10
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_recent_manager_get_type");
 

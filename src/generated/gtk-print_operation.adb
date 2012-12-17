@@ -43,6 +43,17 @@ package body Gtk.Print_Operation is
       Gtk.Print_Operation.Initialize (Self);
    end Gtk_New;
 
+   -----------------------------
+   -- Gtk_Print_Operation_New --
+   -----------------------------
+
+   function Gtk_Print_Operation_New return Gtk_Print_Operation is
+      Self : constant Gtk_Print_Operation := new Gtk_Print_Operation_Record;
+   begin
+      Gtk.Print_Operation.Initialize (Self);
+      return Self;
+   end Gtk_Print_Operation_New;
+
    ----------------
    -- Initialize --
    ----------------

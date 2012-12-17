@@ -33,6 +33,43 @@ package body Gtk.Menu_Item is
      (Get_Type'Access, Gtk_Menu_Item_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Menu_Item);
 
+   -----------------------
+   -- Gtk_Menu_Item_New --
+   -----------------------
+
+   function Gtk_Menu_Item_New return Gtk_Menu_Item is
+      Menu_Item : constant Gtk_Menu_Item := new Gtk_Menu_Item_Record;
+   begin
+      Gtk.Menu_Item.Initialize (Menu_Item);
+      return Menu_Item;
+   end Gtk_Menu_Item_New;
+
+   ----------------------------------
+   -- Gtk_Menu_Item_New_With_Label --
+   ----------------------------------
+
+   function Gtk_Menu_Item_New_With_Label
+      (Label : UTF8_String) return Gtk_Menu_Item
+   is
+      Menu_Item : constant Gtk_Menu_Item := new Gtk_Menu_Item_Record;
+   begin
+      Gtk.Menu_Item.Initialize_With_Label (Menu_Item, Label);
+      return Menu_Item;
+   end Gtk_Menu_Item_New_With_Label;
+
+   -------------------------------------
+   -- Gtk_Menu_Item_New_With_Mnemonic --
+   -------------------------------------
+
+   function Gtk_Menu_Item_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Menu_Item
+   is
+      Menu_Item : constant Gtk_Menu_Item := new Gtk_Menu_Item_Record;
+   begin
+      Gtk.Menu_Item.Initialize_With_Mnemonic (Menu_Item, Label);
+      return Menu_Item;
+   end Gtk_Menu_Item_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

@@ -52,11 +52,49 @@ package Gtk.Tree_Row_Reference is
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
    --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
 
+   function Gtk_Tree_Row_Reference_New
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Path  : Gtk.Tree_Model.Gtk_Tree_Path) return Gtk_Tree_Row_Reference;
+   --  Creates a row reference based on Path.
+   --  This reference will keep pointing to the node pointed to by Path, so
+   --  long as it exists. It listens to all signals emitted by Model, and
+   --  updates its path appropriately. If Path isn't a valid path in Model,
+   --  then null is returned.
+   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+
    procedure Gtk_New_Proxy
       (Reference : out Gtk_Tree_Row_Reference;
        Proxy     : not null access Glib.Object.GObject_Record'Class;
        Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+   --  You do not need to use this function.
+   --  Creates a row reference based on Path.
+   --  This reference will keep pointing to the node pointed to by Path, so
+   --  long as it exists. If Path isn't a valid path in Model, then null is
+   --  returned. However, unlike references created with
+   --  gtk_tree_row_reference_new, it does not listen to the model for changes.
+   --  The creator of the row reference must do this explicitly using
+   --  Gtk.Tree_Row_Reference.Inserted, Gtk.Tree_Row_Reference.Deleted,
+   --  Gtk.Tree_Row_Reference.Reordered.
+   --  These functions must be called exactly once per proxy when the
+   --  corresponding signal on the model is emitted. This single call updates
+   --  all row references for that proxy. Since built-in GTK+ objects like
+   --  Gtk.Tree_View.Gtk_Tree_View already use this mechanism internally, using
+   --  them as the proxy object will produce unpredictable results. Further
+   --  more, passing the same object as Model and Proxy doesn't work for
+   --  reasons of internal implementation.
+   --  This type of row reference is primarily meant by structures that need
+   --  to carefully monitor exactly when a row reference updates itself, and is
+   --  not generally needed by most applications.
+   --  "proxy": a proxy Glib.Object.GObject
+   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+
+   function Gtk_Tree_Row_Reference_New_Proxy
+      (Proxy : not null access Glib.Object.GObject_Record'Class;
+       Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Path  : Gtk.Tree_Model.Gtk_Tree_Path) return Gtk_Tree_Row_Reference;
    --  You do not need to use this function.
    --  Creates a row reference based on Path.
    --  This reference will keep pointing to the node pointed to by Path, so

@@ -42,6 +42,31 @@ package body Gtk.GEntry is
      (Get_Type'Access, Gtk_Entry_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Entry);
 
+   -------------------
+   -- Gtk_Entry_New --
+   -------------------
+
+   function Gtk_Entry_New return Gtk_Entry is
+      The_Entry : constant Gtk_Entry := new Gtk_Entry_Record;
+   begin
+      Gtk.GEntry.Initialize (The_Entry);
+      return The_Entry;
+   end Gtk_Entry_New;
+
+   -------------------------------
+   -- Gtk_Entry_New_With_Buffer --
+   -------------------------------
+
+   function Gtk_Entry_New_With_Buffer
+      (Buffer : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
+       return Gtk_Entry
+   is
+      The_Entry : constant Gtk_Entry := new Gtk_Entry_Record;
+   begin
+      Gtk.GEntry.Initialize_With_Buffer (The_Entry, Buffer);
+      return The_Entry;
+   end Gtk_Entry_New_With_Buffer;
+
    -------------
    -- Gtk_New --
    -------------

@@ -99,6 +99,18 @@ package Gtk.Scrolled_Window is
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 
+   function Gtk_Scrolled_Window_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Scrolled_Window;
+   --  Creates a new scrolled window.
+   --  The two arguments are the scrolled window's adjustments; these will be
+   --  shared with the scrollbars and the child widget to keep the bars in sync
+   --  with the child. Usually you want to pass null for the adjustments, which
+   --  will cause the scrolled window to create them for you.
+   --  "hadjustment": horizontal adjustment
+   --  "vadjustment": vertical adjustment
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_scrolled_window_get_type");
 

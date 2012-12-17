@@ -49,6 +49,9 @@ package Gtk.Menu_Bar is
       (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class);
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
 
+   function Gtk_Menu_Bar_New return Gtk_Menu_Bar;
+   --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_bar_get_type");
 

@@ -69,6 +69,16 @@ package Gtk.File_Chooser_Widget is
    --  Since: gtk+ 2.4
    --  "action": Open or save mode for the widget
 
+   function Gtk_File_Chooser_Widget_New
+      (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Widget;
+   --  Creates a new Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget. This is
+   --  a file chooser widget that can be embedded in custom windows, and it is
+   --  the same widget that is used by
+   --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog.
+   --  Since: gtk+ 2.4
+   --  "action": Open or save mode for the widget
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_chooser_widget_get_type");
 

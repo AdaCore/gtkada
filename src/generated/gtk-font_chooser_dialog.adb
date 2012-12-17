@@ -79,6 +79,21 @@ package body Gtk.Font_Chooser_Dialog is
      (Get_Type'Access, Gtk_Font_Chooser_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Font_Chooser_Dialog);
 
+   ---------------------------------
+   -- Gtk_Font_Chooser_Dialog_New --
+   ---------------------------------
+
+   function Gtk_Font_Chooser_Dialog_New
+      (Title  : UTF8_String;
+       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+       return Gtk_Font_Chooser_Dialog
+   is
+      Self : constant Gtk_Font_Chooser_Dialog := new Gtk_Font_Chooser_Dialog_Record;
+   begin
+      Gtk.Font_Chooser_Dialog.Initialize (Self, Title, Window);
+      return Self;
+   end Gtk_Font_Chooser_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

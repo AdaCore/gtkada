@@ -63,6 +63,10 @@ package Gtk.Font_Chooser_Widget is
    --  Creates a new Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget.
    --  Since: gtk+ 3.2
 
+   function Gtk_Font_Chooser_Widget_New return Gtk_Font_Chooser_Widget;
+   --  Creates a new Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget.
+   --  Since: gtk+ 3.2
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_chooser_widget_get_type");
 

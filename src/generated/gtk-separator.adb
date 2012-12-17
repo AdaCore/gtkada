@@ -31,6 +31,17 @@ package body Gtk.Separator is
      (Get_Type'Access, Gtk_Separator_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Separator);
 
+   ------------------------
+   -- Gtk_Hseparator_New --
+   ------------------------
+
+   function Gtk_Hseparator_New return Gtk_Hseparator is
+      Separator : constant Gtk_Hseparator := new Gtk_Hseparator_Record;
+   begin
+      Gtk.Separator.Initialize_Hseparator (Separator);
+      return Separator;
+   end Gtk_Hseparator_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -63,6 +74,30 @@ package body Gtk.Separator is
       Separator := new Gtk_Vseparator_Record;
       Gtk.Separator.Initialize_Vseparator (Separator);
    end Gtk_New_Vseparator;
+
+   -----------------------
+   -- Gtk_Separator_New --
+   -----------------------
+
+   function Gtk_Separator_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Separator
+   is
+      Separator : constant Gtk_Separator := new Gtk_Separator_Record;
+   begin
+      Gtk.Separator.Initialize (Separator, Orientation);
+      return Separator;
+   end Gtk_Separator_New;
+
+   ------------------------
+   -- Gtk_Vseparator_New --
+   ------------------------
+
+   function Gtk_Vseparator_New return Gtk_Vseparator is
+      Separator : constant Gtk_Vseparator := new Gtk_Vseparator_Record;
+   begin
+      Gtk.Separator.Initialize_Vseparator (Separator);
+      return Separator;
+   end Gtk_Vseparator_New;
 
    ----------------
    -- Initialize --

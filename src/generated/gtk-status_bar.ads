@@ -82,6 +82,9 @@ package Gtk.Status_Bar is
       (Statusbar : not null access Gtk_Status_Bar_Record'Class);
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
 
+   function Gtk_Status_Bar_New return Gtk_Status_Bar;
+   --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_statusbar_get_type");
 

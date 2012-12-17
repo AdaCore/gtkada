@@ -51,6 +51,23 @@ package body Gtk.Scale_Button is
       Gtk.Scale_Button.Initialize (Button, Size, Min, Max, Step, Icons);
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Scale_Button_New --
+   --------------------------
+
+   function Gtk_Scale_Button_New
+      (Size  : Gtk.Enums.Gtk_Icon_Size;
+       Min   : Gdouble;
+       Max   : Gdouble;
+       Step  : Gdouble;
+       Icons : GNAT.Strings.String_List) return Gtk_Scale_Button
+   is
+      Button : constant Gtk_Scale_Button := new Gtk_Scale_Button_Record;
+   begin
+      Gtk.Scale_Button.Initialize (Button, Size, Min, Max, Step, Icons);
+      return Button;
+   end Gtk_Scale_Button_New;
+
    ----------------
    -- Initialize --
    ----------------

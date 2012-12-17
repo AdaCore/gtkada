@@ -41,6 +41,17 @@ package body Gtk.Text_Child_Anchor is
       Gtk.Text_Child_Anchor.Initialize (Anchor);
    end Gtk_New;
 
+   -------------------------------
+   -- Gtk_Text_Child_Anchor_New --
+   -------------------------------
+
+   function Gtk_Text_Child_Anchor_New return Gtk_Text_Child_Anchor is
+      Anchor : constant Gtk_Text_Child_Anchor := new Gtk_Text_Child_Anchor_Record;
+   begin
+      Gtk.Text_Child_Anchor.Initialize (Anchor);
+      return Anchor;
+   end Gtk_Text_Child_Anchor_New;
+
    ----------------
    -- Initialize --
    ----------------

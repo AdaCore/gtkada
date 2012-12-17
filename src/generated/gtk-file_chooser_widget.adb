@@ -33,6 +33,20 @@ package body Gtk.File_Chooser_Widget is
      (Get_Type'Access, Gtk_File_Chooser_Widget_Record);
    pragma Unreferenced (Type_Conversion_Gtk_File_Chooser_Widget);
 
+   ---------------------------------
+   -- Gtk_File_Chooser_Widget_New --
+   ---------------------------------
+
+   function Gtk_File_Chooser_Widget_New
+      (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Widget
+   is
+      Self : constant Gtk_File_Chooser_Widget := new Gtk_File_Chooser_Widget_Record;
+   begin
+      Gtk.File_Chooser_Widget.Initialize (Self, Action);
+      return Self;
+   end Gtk_File_Chooser_Widget_New;
+
    -------------
    -- Gtk_New --
    -------------

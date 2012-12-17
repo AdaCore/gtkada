@@ -110,6 +110,14 @@ package Gtk.Action_Group is
    --  Since: gtk+ 2.4
    --  "name": the name of the action group.
 
+   function Gtk_Action_Group_New
+      (Name : UTF8_String) return Gtk_Action_Group;
+   --  Creates a new Gtk.Action_Group.Gtk_Action_Group object. The name of the
+   --  action group is used when associating <link
+   --  linkend="Action-Accel">keybindings</link> with the actions.
+   --  Since: gtk+ 2.4
+   --  "name": the name of the action group.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_action_group_get_type");
 

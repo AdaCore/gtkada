@@ -59,6 +59,33 @@ package body Gtk.Radio_Tool_Button is
       Gtk.Radio_Tool_Button.Initialize_From_Stock (Self, Group, Stock_Id);
    end Gtk_New_From_Stock;
 
+   -------------------------------
+   -- Gtk_Radio_Tool_Button_New --
+   -------------------------------
+
+   function Gtk_Radio_Tool_Button_New
+      (Group : Gtk.Widget.Widget_SList.GSlist) return Gtk_Radio_Tool_Button
+   is
+      Self : constant Gtk_Radio_Tool_Button := new Gtk_Radio_Tool_Button_Record;
+   begin
+      Gtk.Radio_Tool_Button.Initialize (Self, Group);
+      return Self;
+   end Gtk_Radio_Tool_Button_New;
+
+   ------------------------------------------
+   -- Gtk_Radio_Tool_Button_New_From_Stock --
+   ------------------------------------------
+
+   function Gtk_Radio_Tool_Button_New_From_Stock
+      (Group    : Gtk.Widget.Widget_SList.GSlist;
+       Stock_Id : UTF8_String) return Gtk_Radio_Tool_Button
+   is
+      Self : constant Gtk_Radio_Tool_Button := new Gtk_Radio_Tool_Button_Record;
+   begin
+      Gtk.Radio_Tool_Button.Initialize_From_Stock (Self, Group, Stock_Id);
+      return Self;
+   end Gtk_Radio_Tool_Button_New_From_Stock;
+
    ----------------
    -- Initialize --
    ----------------

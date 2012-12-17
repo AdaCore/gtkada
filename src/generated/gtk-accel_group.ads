@@ -112,6 +112,10 @@ package Gtk.Accel_Group is
    --  Creates a new Gtk.Accel_Group.Gtk_Accel_Group. Remember to call
    --  Gtk.Window.Add_Accel_Group to active the group.
 
+   function Gtk_Accel_Group_New return Gtk_Accel_Group;
+   --  Creates a new Gtk.Accel_Group.Gtk_Accel_Group. Remember to call
+   --  Gtk.Window.Add_Accel_Group to active the group.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_accel_group_get_type");
 

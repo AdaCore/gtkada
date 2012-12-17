@@ -32,6 +32,19 @@ package body Gtk.Color_Selection_Dialog is
      (Get_Type'Access, Gtk_Color_Selection_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Color_Selection_Dialog);
 
+   ------------------------------------
+   -- Gtk_Color_Selection_Dialog_New --
+   ------------------------------------
+
+   function Gtk_Color_Selection_Dialog_New
+      (Title : UTF8_String) return Gtk_Color_Selection_Dialog
+   is
+      Color_Selection_Dialog : constant Gtk_Color_Selection_Dialog := new Gtk_Color_Selection_Dialog_Record;
+   begin
+      Gtk.Color_Selection_Dialog.Initialize (Color_Selection_Dialog, Title);
+      return Color_Selection_Dialog;
+   end Gtk_Color_Selection_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

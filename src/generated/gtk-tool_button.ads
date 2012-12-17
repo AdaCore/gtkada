@@ -83,12 +83,31 @@ package Gtk.Tool_Button is
    --  widget, or null
    --  "label": a string that will be used as label, or null
 
+   function Gtk_Tool_Button_New
+      (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
+       Label       : UTF8_String := "") return Gtk_Tool_Button;
+   --  Creates a new GtkToolButton using Icon_Widget as icon and Label as
+   --  label.
+   --  Since: gtk+ 2.4
+   --  "icon_widget": a Gtk.Misc.Gtk_Misc widget that will be used as icon
+   --  widget, or null
+   --  "label": a string that will be used as label, or null
+
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Tool_Button;
        Stock_Id : UTF8_String);
    procedure Initialize_From_Stock
       (Button   : not null access Gtk_Tool_Button_Record'Class;
        Stock_Id : UTF8_String);
+   --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button containing the image and
+   --  text from a stock item. Some stock ids have preprocessor macros like
+   --  GTK_STOCK_OK and GTK_STOCK_APPLY.
+   --  It is an error if Stock_Id is not a name of a stock item.
+   --  Since: gtk+ 2.4
+   --  "stock_id": the name of the stock item
+
+   function Gtk_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Tool_Button;
    --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button containing the image and
    --  text from a stock item. Some stock ids have preprocessor macros like
    --  GTK_STOCK_OK and GTK_STOCK_APPLY.

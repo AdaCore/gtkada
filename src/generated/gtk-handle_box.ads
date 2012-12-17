@@ -66,6 +66,9 @@ package Gtk.Handle_Box is
       (Handle_Box : not null access Gtk_Handle_Box_Record'Class);
    --  Create a new handle box.
 
+   function Gtk_Handle_Box_New return Gtk_Handle_Box;
+   --  Create a new handle box.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_handle_box_get_type");
 

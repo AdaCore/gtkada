@@ -65,6 +65,17 @@ package Gtk.Paper_Size is
    --  Since: gtk+ 2.10
    --  "name": a paper size name, or null
 
+   function Gtk_Paper_Size_New
+      (Name : UTF8_String := "") return Gtk_Paper_Size;
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by parsing a <ulink
+   --  url="ftp://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn10-20020226-5101.1.pdf">PWG
+   --  5101.1-2002</ulink> paper name.
+   --  If Name is null, the default paper size is returned, see
+   --  Gtk.Paper_Size.Get_Default.
+   --  to free it
+   --  Since: gtk+ 2.10
+   --  "name": a paper size name, or null
+
    procedure Gtk_New_Custom
       (Widget       : out Gtk_Paper_Size;
        Name         : UTF8_String;
@@ -72,6 +83,22 @@ package Gtk.Paper_Size is
        Width        : Gdouble;
        Height       : Gdouble;
        Unit         : Gtk.Enums.Gtk_Unit);
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object with the given
+   --  parameters.
+   --  to free it
+   --  Since: gtk+ 2.10
+   --  "name": the paper name
+   --  "display_name": the human-readable name
+   --  "width": the paper width, in units of Unit
+   --  "height": the paper height, in units of Unit
+   --  "unit": the unit for Width and Height
+
+   function Gtk_Paper_Size_New_Custom
+      (Name         : UTF8_String;
+       Display_Name : UTF8_String;
+       Width        : Gdouble;
+       Height       : Gdouble;
+       Unit         : Gtk.Enums.Gtk_Unit) return Gtk_Paper_Size;
    --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object with the given
    --  parameters.
    --  to free it
@@ -93,12 +120,39 @@ package Gtk.Paper_Size is
    --  "group_name": the name ofthe group in the key file to read, or null to
    --  read the first group
 
+   function Gtk_Paper_Size_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String) return Gtk_Paper_Size;
+   --  Reads a paper size from the group Group_Name in the key file Key_File.
+   --  paper size, or null if an error occurred
+   --  Since: gtk+ 2.12
+   --  "key_file": the GKey_File to retrieve the papersize from
+   --  "group_name": the name ofthe group in the key file to read, or null to
+   --  read the first group
+
    procedure Gtk_New_From_Ppd
       (Widget           : out Gtk_Paper_Size;
        Ppd_Name         : UTF8_String;
        Ppd_Display_Name : UTF8_String;
        Width            : Gdouble;
        Height           : Gdouble);
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by using PPD
+   --  information.
+   --  If Ppd_Name is not a recognized PPD paper name, Ppd_Display_Name, Width
+   --  and Height are used to construct a custom Gtk.Paper_Size.Gtk_Paper_Size
+   --  object.
+   --  to free it
+   --  Since: gtk+ 2.10
+   --  "ppd_name": a PPD paper name
+   --  "ppd_display_name": the corresponding human-readable name
+   --  "width": the paper width, in points
+   --  "height": the paper height in points
+
+   function Gtk_Paper_Size_New_From_Ppd
+      (Ppd_Name         : UTF8_String;
+       Ppd_Display_Name : UTF8_String;
+       Width            : Gdouble;
+       Height           : Gdouble) return Gtk_Paper_Size;
    --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by using PPD
    --  information.
    --  If Ppd_Name is not a recognized PPD paper name, Ppd_Display_Name, Width

@@ -39,6 +39,19 @@ package body Gtk.Style is
      (Get_Type'Access, Gtk_Style_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Style);
 
+   --------------------
+   -- Gtk_Border_New --
+   --------------------
+
+   function Gtk_Border_New return Gtk_Border is
+      function Internal return Gtk_Border;
+      pragma Import (C, Internal, "gtk_border_new");
+      Self : Gtk_Border;
+   begin
+      Self := Internal;
+      return Self;
+   end Gtk_Border_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -59,6 +72,17 @@ package body Gtk.Style is
    begin
       Self := Internal;
    end Gtk_New;
+
+   -------------------
+   -- Gtk_Style_New --
+   -------------------
+
+   function Gtk_Style_New return Gtk_Style is
+      Style : constant Gtk_Style := new Gtk_Style_Record;
+   begin
+      Gtk.Style.Initialize (Style);
+      return Style;
+   end Gtk_Style_New;
 
    ----------------
    -- Initialize --

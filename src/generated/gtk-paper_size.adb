@@ -142,6 +142,111 @@ package body Gtk.Paper_Size is
       Widget.Set_Object (Tmp_Return);
    end Gtk_New_From_Ppd;
 
+   ------------------------
+   -- Gtk_Paper_Size_New --
+   ------------------------
+
+   function Gtk_Paper_Size_New
+      (Name : UTF8_String := "") return Gtk_Paper_Size
+   is
+      function Internal
+         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new");
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return : System.Address;
+      Widget     : Gtk_Paper_Size;
+   begin
+      if Name = "" then
+         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Name := New_String (Name);
+      end if;
+      Tmp_Return := Internal (Tmp_Name);
+      Free (Tmp_Name);
+      Widget.Set_Object (Tmp_Return);
+      return Widget;
+   end Gtk_Paper_Size_New;
+
+   -------------------------------
+   -- Gtk_Paper_Size_New_Custom --
+   -------------------------------
+
+   function Gtk_Paper_Size_New_Custom
+      (Name         : UTF8_String;
+       Display_Name : UTF8_String;
+       Width        : Gdouble;
+       Height       : Gdouble;
+       Unit         : Gtk.Enums.Gtk_Unit) return Gtk_Paper_Size
+   is
+      function Internal
+         (Name         : Interfaces.C.Strings.chars_ptr;
+          Display_Name : Interfaces.C.Strings.chars_ptr;
+          Width        : Gdouble;
+          Height       : Gdouble;
+          Unit         : Gtk.Enums.Gtk_Unit) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_custom");
+      Tmp_Name         : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Display_Name);
+      Tmp_Return       : System.Address;
+      Widget           : Gtk_Paper_Size;
+   begin
+      Tmp_Return := Internal (Tmp_Name, Tmp_Display_Name, Width, Height, Unit);
+      Free (Tmp_Display_Name);
+      Free (Tmp_Name);
+      Widget.Set_Object (Tmp_Return);
+      return Widget;
+   end Gtk_Paper_Size_New_Custom;
+
+   --------------------------------------
+   -- Gtk_Paper_Size_New_From_Key_File --
+   --------------------------------------
+
+   function Gtk_Paper_Size_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String) return Gtk_Paper_Size
+   is
+      function Internal
+         (Key_File   : Glib.Key_File.G_Key_File;
+          Group_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_key_file");
+      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Return     : System.Address;
+      Widget         : Gtk_Paper_Size;
+   begin
+      Tmp_Return := Internal (Key_File, Tmp_Group_Name);
+      Free (Tmp_Group_Name);
+      Widget.Set_Object (Tmp_Return);
+      return Widget;
+   end Gtk_Paper_Size_New_From_Key_File;
+
+   ---------------------------------
+   -- Gtk_Paper_Size_New_From_Ppd --
+   ---------------------------------
+
+   function Gtk_Paper_Size_New_From_Ppd
+      (Ppd_Name         : UTF8_String;
+       Ppd_Display_Name : UTF8_String;
+       Width            : Gdouble;
+       Height           : Gdouble) return Gtk_Paper_Size
+   is
+      function Internal
+         (Ppd_Name         : Interfaces.C.Strings.chars_ptr;
+          Ppd_Display_Name : Interfaces.C.Strings.chars_ptr;
+          Width            : Gdouble;
+          Height           : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_ppd");
+      Tmp_Ppd_Name         : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Name);
+      Tmp_Ppd_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Display_Name);
+      Tmp_Return           : System.Address;
+      Widget               : Gtk_Paper_Size;
+   begin
+      Tmp_Return := Internal (Tmp_Ppd_Name, Tmp_Ppd_Display_Name, Width, Height);
+      Free (Tmp_Ppd_Display_Name);
+      Free (Tmp_Ppd_Name);
+      Widget.Set_Object (Tmp_Return);
+      return Widget;
+   end Gtk_Paper_Size_New_From_Ppd;
+
    ----------
    -- Copy --
    ----------

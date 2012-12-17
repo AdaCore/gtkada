@@ -33,6 +33,17 @@ package body Gtk.Font_Selection is
      (Get_Type'Access, Gtk_Font_Selection_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Font_Selection);
 
+   ----------------------------
+   -- Gtk_Font_Selection_New --
+   ----------------------------
+
+   function Gtk_Font_Selection_New return Gtk_Font_Selection is
+      Fontsel : constant Gtk_Font_Selection := new Gtk_Font_Selection_Record;
+   begin
+      Gtk.Font_Selection.Initialize (Fontsel);
+      return Fontsel;
+   end Gtk_Font_Selection_New;
+
    -------------
    -- Gtk_New --
    -------------

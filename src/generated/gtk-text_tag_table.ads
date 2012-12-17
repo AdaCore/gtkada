@@ -71,6 +71,10 @@ package Gtk.Text_Tag_Table is
    --  Creates a new Gtk.Text_Tag_Table.Gtk_Text_Tag_Table. The table contains
    --  no tags by default.
 
+   function Gtk_Text_Tag_Table_New return Gtk_Text_Tag_Table;
+   --  Creates a new Gtk.Text_Tag_Table.Gtk_Text_Tag_Table. The table contains
+   --  no tags by default.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_tag_table_get_type");
 

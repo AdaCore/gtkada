@@ -79,6 +79,17 @@ package body Gtk.Font_Chooser_Widget is
      (Get_Type'Access, Gtk_Font_Chooser_Widget_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Font_Chooser_Widget);
 
+   ---------------------------------
+   -- Gtk_Font_Chooser_Widget_New --
+   ---------------------------------
+
+   function Gtk_Font_Chooser_Widget_New return Gtk_Font_Chooser_Widget is
+      Self : constant Gtk_Font_Chooser_Widget := new Gtk_Font_Chooser_Widget_Record;
+   begin
+      Gtk.Font_Chooser_Widget.Initialize (Self);
+      return Self;
+   end Gtk_Font_Chooser_Widget_New;
+
    -------------
    -- Gtk_New --
    -------------

@@ -60,6 +60,33 @@ package body Gtk.Tool_Button is
       Gtk.Tool_Button.Initialize_From_Stock (Button, Stock_Id);
    end Gtk_New_From_Stock;
 
+   -------------------------
+   -- Gtk_Tool_Button_New --
+   -------------------------
+
+   function Gtk_Tool_Button_New
+      (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
+       Label       : UTF8_String := "") return Gtk_Tool_Button
+   is
+      Button : constant Gtk_Tool_Button := new Gtk_Tool_Button_Record;
+   begin
+      Gtk.Tool_Button.Initialize (Button, Icon_Widget, Label);
+      return Button;
+   end Gtk_Tool_Button_New;
+
+   ------------------------------------
+   -- Gtk_Tool_Button_New_From_Stock --
+   ------------------------------------
+
+   function Gtk_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Tool_Button
+   is
+      Button : constant Gtk_Tool_Button := new Gtk_Tool_Button_Record;
+   begin
+      Gtk.Tool_Button.Initialize_From_Stock (Button, Stock_Id);
+      return Button;
+   end Gtk_Tool_Button_New_From_Stock;
+
    ----------------
    -- Initialize --
    ----------------

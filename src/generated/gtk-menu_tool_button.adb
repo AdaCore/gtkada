@@ -32,6 +32,33 @@ package body Gtk.Menu_Tool_Button is
      (Get_Type'Access, Gtk_Menu_Tool_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Menu_Tool_Button);
 
+   ------------------------------
+   -- Gtk_Menu_Tool_Button_New --
+   ------------------------------
+
+   function Gtk_Menu_Tool_Button_New
+      (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
+       Label       : UTF8_String := "") return Gtk_Menu_Tool_Button
+   is
+      Menu : constant Gtk_Menu_Tool_Button := new Gtk_Menu_Tool_Button_Record;
+   begin
+      Gtk.Menu_Tool_Button.Initialize (Menu, Icon_Widget, Label);
+      return Menu;
+   end Gtk_Menu_Tool_Button_New;
+
+   -----------------------------------------
+   -- Gtk_Menu_Tool_Button_New_From_Stock --
+   -----------------------------------------
+
+   function Gtk_Menu_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Menu_Tool_Button
+   is
+      Menu : constant Gtk_Menu_Tool_Button := new Gtk_Menu_Tool_Button_Record;
+   begin
+      Gtk.Menu_Tool_Button.Initialize_From_Stock (Menu, Stock_Id);
+      return Menu;
+   end Gtk_Menu_Tool_Button_New_From_Stock;
+
    -------------
    -- Gtk_New --
    -------------

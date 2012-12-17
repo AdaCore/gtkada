@@ -52,6 +52,13 @@ package Gtk.Text_Child_Anchor is
    --  insertion in one step, use the convenience function
    --  Gtk.Text_Buffer.Create_Child_Anchor.
 
+   function Gtk_Text_Child_Anchor_New return Gtk_Text_Child_Anchor;
+   --  Creates a new Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor. Usually you
+   --  would then insert it into a Gtk.Text_Buffer.Gtk_Text_Buffer with
+   --  Gtk.Text_Buffer.Insert_Child_Anchor. To perform the creation and
+   --  insertion in one step, use the convenience function
+   --  Gtk.Text_Buffer.Create_Child_Anchor.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_child_anchor_get_type");
 

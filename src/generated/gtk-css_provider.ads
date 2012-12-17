@@ -779,6 +779,9 @@ package Gtk.Css_Provider is
       (Self : not null access Gtk_Css_Provider_Record'Class);
    --  Returns a newly created Gtk.Css_Provider.Gtk_Css_Provider.
 
+   function Gtk_Css_Provider_New return Gtk_Css_Provider;
+   --  Returns a newly created Gtk.Css_Provider.Gtk_Css_Provider.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_css_provider_get_type");
 

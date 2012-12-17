@@ -163,6 +163,82 @@ package body Gtk.Combo_Box is
      (Get_Type'Access, Gtk_Combo_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Combo_Box);
 
+   -----------------------
+   -- Gtk_Combo_Box_New --
+   -----------------------
+
+   function Gtk_Combo_Box_New return Gtk_Combo_Box is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize (Combo_Box);
+      return Combo_Box;
+   end Gtk_Combo_Box_New;
+
+   ---------------------------------
+   -- Gtk_Combo_Box_New_With_Area --
+   ---------------------------------
+
+   function Gtk_Combo_Box_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Combo_Box
+   is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize_With_Area (Combo_Box, Area);
+      return Combo_Box;
+   end Gtk_Combo_Box_New_With_Area;
+
+   -------------------------------------------
+   -- Gtk_Combo_Box_New_With_Area_And_Entry --
+   -------------------------------------------
+
+   function Gtk_Combo_Box_New_With_Area_And_Entry
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Combo_Box
+   is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize_With_Area_And_Entry (Combo_Box, Area);
+      return Combo_Box;
+   end Gtk_Combo_Box_New_With_Area_And_Entry;
+
+   ----------------------------------
+   -- Gtk_Combo_Box_New_With_Entry --
+   ----------------------------------
+
+   function Gtk_Combo_Box_New_With_Entry return Gtk_Combo_Box is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize_With_Entry (Combo_Box);
+      return Combo_Box;
+   end Gtk_Combo_Box_New_With_Entry;
+
+   ----------------------------------
+   -- Gtk_Combo_Box_New_With_Model --
+   ----------------------------------
+
+   function Gtk_Combo_Box_New_With_Model
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box
+   is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize_With_Model (Combo_Box, Model);
+      return Combo_Box;
+   end Gtk_Combo_Box_New_With_Model;
+
+   --------------------------------------------
+   -- Gtk_Combo_Box_New_With_Model_And_Entry --
+   --------------------------------------------
+
+   function Gtk_Combo_Box_New_With_Model_And_Entry
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box
+   is
+      Combo_Box : constant Gtk_Combo_Box := new Gtk_Combo_Box_Record;
+   begin
+      Gtk.Combo_Box.Initialize_With_Model_And_Entry (Combo_Box, Model);
+      return Combo_Box;
+   end Gtk_Combo_Box_New_With_Model_And_Entry;
+
    -------------
    -- Gtk_New --
    -------------

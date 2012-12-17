@@ -32,6 +32,32 @@ package body Gtk.Check_Button is
      (Get_Type'Access, Gtk_Check_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Check_Button);
 
+   -------------------------------------
+   -- Gtk_Check_Button_New_With_Label --
+   -------------------------------------
+
+   function Gtk_Check_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Check_Button
+   is
+      Check_Button : constant Gtk_Check_Button := new Gtk_Check_Button_Record;
+   begin
+      Gtk.Check_Button.Initialize (Check_Button, Label);
+      return Check_Button;
+   end Gtk_Check_Button_New_With_Label;
+
+   ----------------------------------------
+   -- Gtk_Check_Button_New_With_Mnemonic --
+   ----------------------------------------
+
+   function Gtk_Check_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Check_Button
+   is
+      Check_Button : constant Gtk_Check_Button := new Gtk_Check_Button_Record;
+   begin
+      Gtk.Check_Button.Initialize_With_Mnemonic (Check_Button, Label);
+      return Check_Button;
+   end Gtk_Check_Button_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

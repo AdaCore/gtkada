@@ -41,6 +41,17 @@ package body Gtk.Tool_Palette is
       Gtk.Tool_Palette.Initialize (Self);
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Tool_Palette_New --
+   --------------------------
+
+   function Gtk_Tool_Palette_New return Gtk_Tool_Palette is
+      Self : constant Gtk_Tool_Palette := new Gtk_Tool_Palette_Record;
+   begin
+      Gtk.Tool_Palette.Initialize (Self);
+      return Self;
+   end Gtk_Tool_Palette_New;
+
    ----------------
    -- Initialize --
    ----------------

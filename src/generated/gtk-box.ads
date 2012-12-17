@@ -116,6 +116,14 @@ package Gtk.Box is
    --  "orientation": the box's orientation.
    --  "spacing": the number of pixels to place by default between children.
 
+   function Gtk_Box_New
+      (Orientation : Gtk.Enums.Gtk_Orientation;
+       Spacing     : Gint) return Gtk_Box;
+   --  Creates a new Gtk.Box.Gtk_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box's orientation.
+   --  "spacing": the number of pixels to place by default between children.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_box_get_type");
 
@@ -135,6 +143,17 @@ package Gtk.Box is
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
 
+   function Gtk_Hbox_New
+      (Homogeneous : Boolean := False;
+       Spacing     : Gint := 0) return Gtk_Hbox;
+   --  Creates a new Gtk.Box.Gtk_Hbox.
+   --  wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
+   --  "homogeneous": True if all children are to be given equal space
+   --  allotments.
+   --  "spacing": the number of pixels to place by default between children.
+
    function Get_Hbox_Type return Glib.GType;
    pragma Import (C, Get_Hbox_Type, "gtk_hbox_get_type");
 
@@ -146,6 +165,17 @@ package Gtk.Box is
       (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
+   --  Creates a new Gtk.Box.Gtk_Vbox.
+   --  wich is a very quick and easy change. But the recommendation is to
+   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
+   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
+   --  "homogeneous": True if all children are to be given equal space
+   --  allotments.
+   --  "spacing": the number of pixels to place by default between children.
+
+   function Gtk_Vbox_New
+      (Homogeneous : Boolean := False;
+       Spacing     : Gint := 0) return Gtk_Vbox;
    --  Creates a new Gtk.Box.Gtk_Vbox.
    --  wich is a very quick and easy change. But the recommendation is to
    --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away

@@ -87,6 +87,17 @@ package body Gtk.File_Filter is
      (Get_Type'Access, Gtk_File_Filter_Record);
    pragma Unreferenced (Type_Conversion_Gtk_File_Filter);
 
+   -------------------------
+   -- Gtk_File_Filter_New --
+   -------------------------
+
+   function Gtk_File_Filter_New return Gtk_File_Filter is
+      Self : constant Gtk_File_Filter := new Gtk_File_Filter_Record;
+   begin
+      Gtk.File_Filter.Initialize (Self);
+      return Self;
+   end Gtk_File_Filter_New;
+
    -------------
    -- Gtk_New --
    -------------

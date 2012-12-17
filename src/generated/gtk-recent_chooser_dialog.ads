@@ -96,6 +96,11 @@ package Gtk.Recent_Chooser_Dialog is
        Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class);
 
+   function Gtk_Recent_Chooser_Dialog_New
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
+       return Gtk_Recent_Chooser_Dialog;
+
    procedure Gtk_New_For_Manager
       (Widget  : out Gtk_Recent_Chooser_Dialog;
        Title   : UTF8_String := "";
@@ -106,6 +111,12 @@ package Gtk.Recent_Chooser_Dialog is
        Title   : UTF8_String := "";
        Parent  : access Gtk.Window.Gtk_Window_Record'Class;
        Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
+
+   function Gtk_Recent_Chooser_Dialog_New_For_Manager
+      (Title   : UTF8_String := "";
+       Parent  : access Gtk.Window.Gtk_Window_Record'Class;
+       Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+       return Gtk_Recent_Chooser_Dialog;
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_recent_chooser_dialog_get_type");

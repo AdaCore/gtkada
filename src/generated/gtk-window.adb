@@ -60,6 +60,31 @@ package body Gtk.Window is
       Gtk.Window.Initialize (Window_Group);
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Window_Group_New --
+   --------------------------
+
+   function Gtk_Window_Group_New return Gtk_Window_Group is
+      Window_Group : constant Gtk_Window_Group := new Gtk_Window_Group_Record;
+   begin
+      Gtk.Window.Initialize (Window_Group);
+      return Window_Group;
+   end Gtk_Window_Group_New;
+
+   --------------------
+   -- Gtk_Window_New --
+   --------------------
+
+   function Gtk_Window_New
+      (The_Type : Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel)
+       return Gtk_Window
+   is
+      Window : constant Gtk_Window := new Gtk_Window_Record;
+   begin
+      Gtk.Window.Initialize (Window, The_Type);
+      return Window;
+   end Gtk_Window_New;
+
    ----------------
    -- Initialize --
    ----------------

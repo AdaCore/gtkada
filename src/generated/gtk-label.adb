@@ -33,6 +33,28 @@ package body Gtk.Label is
      (Get_Type'Access, Gtk_Label_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Label);
 
+   -------------------
+   -- Gtk_Label_New --
+   -------------------
+
+   function Gtk_Label_New (Str : UTF8_String := "") return Gtk_Label is
+      Label : constant Gtk_Label := new Gtk_Label_Record;
+   begin
+      Gtk.Label.Initialize (Label, Str);
+      return Label;
+   end Gtk_Label_New;
+
+   ---------------------------------
+   -- Gtk_Label_New_With_Mnemonic --
+   ---------------------------------
+
+   function Gtk_Label_New_With_Mnemonic (Str : UTF8_String) return Gtk_Label is
+      Label : constant Gtk_Label := new Gtk_Label_Record;
+   begin
+      Gtk.Label.Initialize_With_Mnemonic (Label, Str);
+      return Label;
+   end Gtk_Label_New_With_Mnemonic;
+
    -------------
    -- Gtk_New --
    -------------

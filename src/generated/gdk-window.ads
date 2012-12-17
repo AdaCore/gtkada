@@ -343,6 +343,19 @@ package Gdk.Window is
    --  "attributes": attributes of the new window
    --  "attributes_mask": mask indicating which fields in Attributes are valid
 
+   function Gdk_Window_New
+      (Parent          : Gdk.Gdk_Window;
+       Attributes      : Gdk.Gdk_Window_Attr;
+       Attributes_Mask : Gint) return Gdk_Window;
+   --  Creates a new Gdk.Gdk_Window using the attributes from Attributes. See
+   --  Gdk_Window_Attr and Gdk.Window.Gdk_Window_Attributes_Type for more
+   --  details. Note: to use this on displays other than the default display,
+   --  Parent must be specified.
+   --  "parent": a Gdk.Gdk_Window, or null to create the window as a child of
+   --  the default root window for the default display.
+   --  "attributes": attributes of the new window
+   --  "attributes_mask": mask indicating which fields in Attributes are valid
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_window_get_type");
 

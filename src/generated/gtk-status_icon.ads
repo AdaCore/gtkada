@@ -74,12 +74,24 @@ package Gtk.Status_Icon is
    --  Creates an empty status icon object.
    --  Since: gtk+ 2.10
 
+   function Gtk_Status_Icon_New return Gtk_Status_Icon;
+   --  Creates an empty status icon object.
+   --  Since: gtk+ 2.10
+
    procedure Gtk_New_From_File
       (Status_Icon : out Gtk_Status_Icon;
        Filename    : UTF8_String);
    procedure Initialize_From_File
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Filename    : UTF8_String);
+   --  Creates a status icon displaying the file Filename.
+   --  The image will be scaled down to fit in the available space in the
+   --  notification area, if necessary.
+   --  Since: gtk+ 2.10
+   --  "filename": a filename
+
+   function Gtk_Status_Icon_New_From_File
+      (Filename : UTF8_String) return Gtk_Status_Icon;
    --  Creates a status icon displaying the file Filename.
    --  The image will be scaled down to fit in the available space in the
    --  notification area, if necessary.
@@ -97,12 +109,27 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.14
    --  "icon": a Glib.G_Icon.G_Icon
 
+   function Gtk_Status_Icon_New_From_Gicon
+      (Icon : Glib.G_Icon.G_Icon) return Gtk_Status_Icon;
+   --  Creates a status icon displaying a Glib.G_Icon.G_Icon. If the icon is a
+   --  themed icon, it will be updated when the theme changes.
+   --  Since: gtk+ 2.14
+   --  "icon": a Glib.G_Icon.G_Icon
+
    procedure Gtk_New_From_Icon_Name
       (Status_Icon : out Gtk_Status_Icon;
        Icon_Name   : UTF8_String);
    procedure Initialize_From_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Icon_Name   : UTF8_String);
+   --  Creates a status icon displaying an icon from the current icon theme.
+   --  If the current icon theme is changed, the icon will be updated
+   --  appropriately.
+   --  Since: gtk+ 2.10
+   --  "icon_name": an icon name
+
+   function Gtk_Status_Icon_New_From_Icon_Name
+      (Icon_Name : UTF8_String) return Gtk_Status_Icon;
    --  Creates a status icon displaying an icon from the current icon theme.
    --  If the current icon theme is changed, the icon will be updated
    --  appropriately.
@@ -121,12 +148,29 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.10
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
 
+   function Gtk_Status_Icon_New_From_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gtk_Status_Icon;
+   --  Creates a status icon displaying Pixbuf.
+   --  The image will be scaled down to fit in the available space in the
+   --  notification area, if necessary.
+   --  Since: gtk+ 2.10
+   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+
    procedure Gtk_New_From_Stock
       (Status_Icon : out Gtk_Status_Icon;
        Stock_Id    : UTF8_String);
    procedure Initialize_From_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class;
        Stock_Id    : UTF8_String);
+   --  Creates a status icon displaying a stock icon. Sample stock icon names
+   --  are GTK_STOCK_OPEN, GTK_STOCK_QUIT. You can register your own stock icon
+   --  names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
+   --  Since: gtk+ 2.10
+   --  "stock_id": a stock icon id
+
+   function Gtk_Status_Icon_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Status_Icon;
    --  Creates a status icon displaying a stock icon. Sample stock icon names
    --  are GTK_STOCK_OPEN, GTK_STOCK_QUIT. You can register your own stock icon
    --  names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.

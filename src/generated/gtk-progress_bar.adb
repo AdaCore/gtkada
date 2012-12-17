@@ -43,6 +43,17 @@ package body Gtk.Progress_Bar is
       Gtk.Progress_Bar.Initialize (Progress_Bar);
    end Gtk_New;
 
+   --------------------------
+   -- Gtk_Progress_Bar_New --
+   --------------------------
+
+   function Gtk_Progress_Bar_New return Gtk_Progress_Bar is
+      Progress_Bar : constant Gtk_Progress_Bar := new Gtk_Progress_Bar_Record;
+   begin
+      Gtk.Progress_Bar.Initialize (Progress_Bar);
+      return Progress_Bar;
+   end Gtk_Progress_Bar_New;
+
    ----------------
    -- Initialize --
    ----------------

@@ -307,6 +307,17 @@ package body Gtk.Tree_Store is
       Gtk.Tree_Store.Initialize (Tree_Store, Types);
    end Gtk_New;
 
+   -------------------------
+   -- Gtk_Tree_Store_Newv --
+   -------------------------
+
+   function Gtk_Tree_Store_Newv (Types : GType_Array) return Gtk_Tree_Store is
+      Tree_Store : constant Gtk_Tree_Store := new Gtk_Tree_Store_Record;
+   begin
+      Gtk.Tree_Store.Initialize (Tree_Store, Types);
+      return Tree_Store;
+   end Gtk_Tree_Store_Newv;
+
    ----------------
    -- Initialize --
    ----------------

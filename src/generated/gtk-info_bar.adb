@@ -32,6 +32,17 @@ package body Gtk.Info_Bar is
      (Get_Type'Access, Gtk_Info_Bar_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Info_Bar);
 
+   ----------------------
+   -- Gtk_Info_Bar_New --
+   ----------------------
+
+   function Gtk_Info_Bar_New return Gtk_Info_Bar is
+      Self : constant Gtk_Info_Bar := new Gtk_Info_Bar_Record;
+   begin
+      Gtk.Info_Bar.Initialize (Self);
+      return Self;
+   end Gtk_Info_Bar_New;
+
    -------------
    -- Gtk_New --
    -------------

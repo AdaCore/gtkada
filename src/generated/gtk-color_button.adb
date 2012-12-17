@@ -33,6 +33,43 @@ package body Gtk.Color_Button is
      (Get_Type'Access, Gtk_Color_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Color_Button);
 
+   --------------------------
+   -- Gtk_Color_Button_New --
+   --------------------------
+
+   function Gtk_Color_Button_New return Gtk_Color_Button is
+      Button : constant Gtk_Color_Button := new Gtk_Color_Button_Record;
+   begin
+      Gtk.Color_Button.Initialize (Button);
+      return Button;
+   end Gtk_Color_Button_New;
+
+   -------------------------------------
+   -- Gtk_Color_Button_New_With_Color --
+   -------------------------------------
+
+   function Gtk_Color_Button_New_With_Color
+      (Color : Gdk.Color.Gdk_Color) return Gtk_Color_Button
+   is
+      Button : constant Gtk_Color_Button := new Gtk_Color_Button_Record;
+   begin
+      Gtk.Color_Button.Initialize_With_Color (Button, Color);
+      return Button;
+   end Gtk_Color_Button_New_With_Color;
+
+   ------------------------------------
+   -- Gtk_Color_Button_New_With_Rgba --
+   ------------------------------------
+
+   function Gtk_Color_Button_New_With_Rgba
+      (Rgba : Gdk.RGBA.Gdk_RGBA) return Gtk_Color_Button
+   is
+      Button : constant Gtk_Color_Button := new Gtk_Color_Button_Record;
+   begin
+      Gtk.Color_Button.Initialize_With_Rgba (Button, Rgba);
+      return Button;
+   end Gtk_Color_Button_New_With_Rgba;
+
    -------------
    -- Gtk_New --
    -------------

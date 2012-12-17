@@ -401,6 +401,30 @@ package body Gtk.Tree_View is
       Gtk.Tree_View.Initialize (Tree_View, Model);
    end Gtk_New;
 
+   -----------------------
+   -- Gtk_Tree_View_New --
+   -----------------------
+
+   function Gtk_Tree_View_New return Gtk_Tree_View is
+      Tree_View : constant Gtk_Tree_View := new Gtk_Tree_View_Record;
+   begin
+      Gtk.Tree_View.Initialize (Tree_View);
+      return Tree_View;
+   end Gtk_Tree_View_New;
+
+   ----------------------------------
+   -- Gtk_Tree_View_New_With_Model --
+   ----------------------------------
+
+   function Gtk_Tree_View_New_With_Model
+      (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Tree_View
+   is
+      Tree_View : constant Gtk_Tree_View := new Gtk_Tree_View_Record;
+   begin
+      Gtk.Tree_View.Initialize (Tree_View, Model);
+      return Tree_View;
+   end Gtk_Tree_View_New_With_Model;
+
    ----------------
    -- Initialize --
    ----------------

@@ -209,6 +209,17 @@ package body Gtk.List_Store is
      (Get_Type'Access, Gtk_List_Store_Record);
    pragma Unreferenced (Type_Conversion_Gtk_List_Store);
 
+   -------------------------
+   -- Gtk_List_Store_Newv --
+   -------------------------
+
+   function Gtk_List_Store_Newv (Types : GType_Array) return Gtk_List_Store is
+      List_Store : constant Gtk_List_Store := new Gtk_List_Store_Record;
+   begin
+      Gtk.List_Store.Initialize (List_Store, Types);
+      return List_Store;
+   end Gtk_List_Store_Newv;
+
    -------------
    -- Gtk_New --
    -------------

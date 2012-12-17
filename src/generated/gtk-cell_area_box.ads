@@ -88,6 +88,10 @@ package Gtk.Cell_Area_Box is
    --  Creates a new Gtk.Cell_Area_Box.Gtk_Cell_Area_Box.
    --  Since: gtk+ 3.0
 
+   function Gtk_Cell_Area_Box_New return Gtk_Cell_Area_Box;
+   --  Creates a new Gtk.Cell_Area_Box.Gtk_Cell_Area_Box.
+   --  Since: gtk+ 3.0
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_area_box_get_type");
 

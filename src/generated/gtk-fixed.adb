@@ -31,6 +31,17 @@ package body Gtk.Fixed is
      (Get_Type'Access, Gtk_Fixed_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Fixed);
 
+   -------------------
+   -- Gtk_Fixed_New --
+   -------------------
+
+   function Gtk_Fixed_New return Gtk_Fixed is
+      Fixed : constant Gtk_Fixed := new Gtk_Fixed_Record;
+   begin
+      Gtk.Fixed.Initialize (Fixed);
+      return Fixed;
+   end Gtk_Fixed_New;
+
    -------------
    -- Gtk_New --
    -------------

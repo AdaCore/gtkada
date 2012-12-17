@@ -66,6 +66,10 @@ package Gtk.Tool_Item is
    --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
    --  Since: gtk+ 2.4
 
+   function Gtk_Tool_Item_New return Gtk_Tool_Item;
+   --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
+   --  Since: gtk+ 2.4
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tool_item_get_type");
 

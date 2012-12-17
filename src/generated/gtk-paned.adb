@@ -31,6 +31,17 @@ package body Gtk.Paned is
      (Get_Type'Access, Gtk_Paned_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Paned);
 
+   --------------------
+   -- Gtk_Hpaned_New --
+   --------------------
+
+   function Gtk_Hpaned_New return Gtk_Hpaned is
+      Paned : constant Gtk_Hpaned := new Gtk_Hpaned_Record;
+   begin
+      Gtk.Paned.Initialize_Hpaned (Paned);
+      return Paned;
+   end Gtk_Hpaned_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -63,6 +74,30 @@ package body Gtk.Paned is
       Paned := new Gtk_Vpaned_Record;
       Gtk.Paned.Initialize_Vpaned (Paned);
    end Gtk_New_Vpaned;
+
+   -------------------
+   -- Gtk_Paned_New --
+   -------------------
+
+   function Gtk_Paned_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Paned
+   is
+      Paned : constant Gtk_Paned := new Gtk_Paned_Record;
+   begin
+      Gtk.Paned.Initialize (Paned, Orientation);
+      return Paned;
+   end Gtk_Paned_New;
+
+   --------------------
+   -- Gtk_Vpaned_New --
+   --------------------
+
+   function Gtk_Vpaned_New return Gtk_Vpaned is
+      Paned : constant Gtk_Vpaned := new Gtk_Vpaned_Record;
+   begin
+      Gtk.Paned.Initialize_Vpaned (Paned);
+      return Paned;
+   end Gtk_Vpaned_New;
 
    ----------------
    -- Initialize --

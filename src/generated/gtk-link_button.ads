@@ -67,6 +67,11 @@ package Gtk.Link_Button is
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
+   function Gtk_Link_Button_New (URI : UTF8_String) return Gtk_Link_Button;
+   --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
+   --  Since: gtk+ 2.10
+   --  "uri": a valid URI
+
    procedure Gtk_New_With_Label
       (Widget : out Gtk_Link_Button;
        URI    : UTF8_String;
@@ -75,6 +80,14 @@ package Gtk.Link_Button is
       (Widget : not null access Gtk_Link_Button_Record'Class;
        URI    : UTF8_String;
        Label  : UTF8_String := "");
+   --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
+   --  Since: gtk+ 2.10
+   --  "uri": a valid URI
+   --  "label": the text of the button
+
+   function Gtk_Link_Button_New_With_Label
+      (URI   : UTF8_String;
+       Label : UTF8_String := "") return Gtk_Link_Button;
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI

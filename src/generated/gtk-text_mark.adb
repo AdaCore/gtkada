@@ -69,6 +69,20 @@ package body Gtk.Text_Mark is
       Gtk.Text_Mark.Initialize (Mark, Name, Left_Gravity);
    end Gtk_New;
 
+   -----------------------
+   -- Gtk_Text_Mark_New --
+   -----------------------
+
+   function Gtk_Text_Mark_New
+      (Name         : UTF8_String := "";
+       Left_Gravity : Boolean) return Gtk_Text_Mark
+   is
+      Mark : constant Gtk_Text_Mark := new Gtk_Text_Mark_Record;
+   begin
+      Gtk.Text_Mark.Initialize (Mark, Name, Left_Gravity);
+      return Mark;
+   end Gtk_Text_Mark_New;
+
    ----------------
    -- Initialize --
    ----------------

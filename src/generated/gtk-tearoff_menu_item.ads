@@ -60,6 +60,9 @@ package Gtk.Tearoff_Menu_Item is
       (Menu_Item : not null access Gtk_Tearoff_Menu_Item_Record'Class);
    --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.
 
+   function Gtk_Tearoff_Menu_Item_New return Gtk_Tearoff_Menu_Item;
+   --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tearoff_menu_item_get_type");
 

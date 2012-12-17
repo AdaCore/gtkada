@@ -109,6 +109,9 @@ package Gtk.Calendar is
       (Calendar : not null access Gtk_Calendar_Record'Class);
    --  Creates a new calendar, with the current date being selected.
 
+   function Gtk_Calendar_New return Gtk_Calendar;
+   --  Creates a new calendar, with the current date being selected.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_calendar_get_type");
 

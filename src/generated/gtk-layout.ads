@@ -92,6 +92,16 @@ package Gtk.Layout is
    --  "hadjustment": horizontal scroll adjustment, or null
    --  "vadjustment": vertical scroll adjustment, or null
 
+   function Gtk_Layout_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Layout;
+   --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
+   --  adjustment you'd like the layout to use for scrolling, pass null for
+   --  Hadjustment and Vadjustment.
+   --  "hadjustment": horizontal scroll adjustment, or null
+   --  "vadjustment": vertical scroll adjustment, or null
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_layout_get_type");
 

@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Progress is
      (Get_Type'Access, Gtk_Cell_Renderer_Progress_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Progress);
 
+   ------------------------------------
+   -- Gtk_Cell_Renderer_Progress_New --
+   ------------------------------------
+
+   function Gtk_Cell_Renderer_Progress_New return Gtk_Cell_Renderer_Progress is
+      Self : constant Gtk_Cell_Renderer_Progress := new Gtk_Cell_Renderer_Progress_Record;
+   begin
+      Gtk.Cell_Renderer_Progress.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Progress_New;
+
    -------------
    -- Gtk_New --
    -------------

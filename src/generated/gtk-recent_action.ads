@@ -85,6 +85,21 @@ package Gtk.Recent_Action is
    --  "stock_id": the stock icon to display in widgets representing the
    --  action, or null
 
+   function Gtk_Recent_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "") return Gtk_Recent_Action;
+   --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.12
+   --  "name": a unique name for the action
+   --  "label": the label displayed in menu items and on buttons, or null
+   --  "tooltip": a tooltip for the action, or null
+   --  "stock_id": the stock icon to display in widgets representing the
+   --  action, or null
+
    procedure Gtk_New_For_Manager
       (Widget   : out Gtk_Recent_Action;
        Name     : UTF8_String;
@@ -101,6 +116,25 @@ package Gtk.Recent_Action is
        Stock_Id : UTF8_String := "";
        Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
       ;
+   --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
+   --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
+   --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
+   --  Since: gtk+ 2.12
+   --  "name": a unique name for the action
+   --  "label": the label displayed in menu items and on buttons, or null
+   --  "tooltip": a tooltip for the action, or null
+   --  "stock_id": the stock icon to display in widgets representing the
+   --  action, or null
+   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager, or null for using
+   --  the default Gtk.Recent_Manager.Gtk_Recent_Manager
+
+   function Gtk_Recent_Action_New_For_Manager
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "";
+       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
+       return Gtk_Recent_Action;
    --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.

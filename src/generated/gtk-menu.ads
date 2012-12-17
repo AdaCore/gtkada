@@ -138,6 +138,9 @@ package Gtk.Menu is
    procedure Initialize (Menu : not null access Gtk_Menu_Record'Class);
    --  Creates a new Gtk.Menu.Gtk_Menu
 
+   function Gtk_Menu_New return Gtk_Menu;
+   --  Creates a new Gtk.Menu.Gtk_Menu
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_get_type");
 

@@ -33,6 +33,19 @@ package body Gtk.Font_Selection_Dialog is
      (Get_Type'Access, Gtk_Font_Selection_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Font_Selection_Dialog);
 
+   -----------------------------------
+   -- Gtk_Font_Selection_Dialog_New --
+   -----------------------------------
+
+   function Gtk_Font_Selection_Dialog_New
+      (Title : UTF8_String) return Gtk_Font_Selection_Dialog
+   is
+      Dialog : constant Gtk_Font_Selection_Dialog := new Gtk_Font_Selection_Dialog_Record;
+   begin
+      Gtk.Font_Selection_Dialog.Initialize (Dialog, Title);
+      return Dialog;
+   end Gtk_Font_Selection_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

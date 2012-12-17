@@ -31,6 +31,17 @@ package body Gtk.Menu_Bar is
      (Get_Type'Access, Gtk_Menu_Bar_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Menu_Bar);
 
+   ----------------------
+   -- Gtk_Menu_Bar_New --
+   ----------------------
+
+   function Gtk_Menu_Bar_New return Gtk_Menu_Bar is
+      Menu_Bar : constant Gtk_Menu_Bar := new Gtk_Menu_Bar_Record;
+   begin
+      Gtk.Menu_Bar.Initialize (Menu_Bar);
+      return Menu_Bar;
+   end Gtk_Menu_Bar_New;
+
    -------------
    -- Gtk_New --
    -------------

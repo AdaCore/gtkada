@@ -77,6 +77,41 @@ package body Gtk.Symbolic_Color is
       Self.Set_Object (Tmp_Return);
    end Gtk_New_Name;
 
+   ------------------------------------
+   -- Gtk_Symbolic_Color_New_Literal --
+   ------------------------------------
+
+   function Gtk_Symbolic_Color_New_Literal
+      (Color : Gdk.RGBA.Gdk_RGBA) return Gtk_Symbolic_Color
+   is
+      function Internal (Color : Gdk.RGBA.Gdk_RGBA) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_literal");
+      Self : Gtk_Symbolic_Color;
+   begin
+      Self.Set_Object (Internal (Color));
+      return Self;
+   end Gtk_Symbolic_Color_New_Literal;
+
+   ---------------------------------
+   -- Gtk_Symbolic_Color_New_Name --
+   ---------------------------------
+
+   function Gtk_Symbolic_Color_New_Name
+      (Name : UTF8_String) return Gtk_Symbolic_Color
+   is
+      function Internal
+         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_name");
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Return : System.Address;
+      Self       : Gtk_Symbolic_Color;
+   begin
+      Tmp_Return := Internal (Tmp_Name);
+      Free (Tmp_Name);
+      Self.Set_Object (Tmp_Return);
+      return Self;
+   end Gtk_Symbolic_Color_New_Name;
+
    ---------------
    -- New_Alpha --
    ---------------

@@ -33,6 +33,20 @@ package body Gtk.Entry_Buffer is
      (Get_Type'Access, Gtk_Entry_Buffer_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Entry_Buffer);
 
+   --------------------------
+   -- Gtk_Entry_Buffer_New --
+   --------------------------
+
+   function Gtk_Entry_Buffer_New
+      (Initial_Chars   : UTF8_String := "";
+       N_Initial_Chars : Gint) return Gtk_Entry_Buffer
+   is
+      Self : constant Gtk_Entry_Buffer := new Gtk_Entry_Buffer_Record;
+   begin
+      Gtk.Entry_Buffer.Initialize (Self, Initial_Chars, N_Initial_Chars);
+      return Self;
+   end Gtk_Entry_Buffer_New;
+
    -------------
    -- Gtk_New --
    -------------

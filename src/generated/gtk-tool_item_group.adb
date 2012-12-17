@@ -43,6 +43,19 @@ package body Gtk.Tool_Item_Group is
       Gtk.Tool_Item_Group.Initialize (Self, Label);
    end Gtk_New;
 
+   -----------------------------
+   -- Gtk_Tool_Item_Group_New --
+   -----------------------------
+
+   function Gtk_Tool_Item_Group_New
+      (Label : UTF8_String) return Gtk_Tool_Item_Group
+   is
+      Self : constant Gtk_Tool_Item_Group := new Gtk_Tool_Item_Group_Record;
+   begin
+      Gtk.Tool_Item_Group.Initialize (Self, Label);
+      return Self;
+   end Gtk_Tool_Item_Group_New;
+
    ----------------
    -- Initialize --
    ----------------

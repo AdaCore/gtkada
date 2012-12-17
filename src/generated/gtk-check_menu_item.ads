@@ -59,12 +59,25 @@ package Gtk.Check_Menu_Item is
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
    --  "label": the string to use for the label.
 
+   function Gtk_Check_Menu_Item_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Check_Menu_Item;
+   --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
+   --  "label": the string to use for the label.
+
    procedure Gtk_New_With_Mnemonic
       (Check_Menu_Item : out Gtk_Check_Menu_Item;
        Label           : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record'Class;
        Label           : UTF8_String);
+   --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item containing a
+   --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
+   --  so underscores in Label indicate the mnemonic for the menu item.
+   --  "label": The text of the button, with an underscore in front of the
+   --  character
+
+   function Gtk_Check_Menu_Item_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Check_Menu_Item;
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.

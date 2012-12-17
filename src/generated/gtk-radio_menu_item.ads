@@ -79,6 +79,13 @@ package Gtk.Radio_Menu_Item is
    --  simple Gtk.Label.Gtk_Label.
    --  "label": the text for the label
 
+   function Gtk_Radio_Menu_Item_New_With_Label
+      (Group : Gtk.Widget.Widget_SList.GSlist;
+       Label : UTF8_String := "") return Gtk_Radio_Menu_Item;
+   --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose child is a
+   --  simple Gtk.Label.Gtk_Label.
+   --  "label": the text for the label
+
    procedure Gtk_New_With_Mnemonic
       (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
        Group           : Gtk.Widget.Widget_SList.GSlist;
@@ -87,6 +94,16 @@ package Gtk.Radio_Menu_Item is
       (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record'Class;
        Group           : Gtk.Widget.Widget_SList.GSlist;
        Label           : UTF8_String);
+   --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
+   --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
+   --  so underscores in Label indicate the mnemonic for the menu item.
+   --  "group": group the radio menu item is inside
+   --  "label": the text of the button, with an underscore in front of the
+   --  mnemonic character
+
+   function Gtk_Radio_Menu_Item_New_With_Mnemonic
+      (Group : Gtk.Widget.Widget_SList.GSlist;
+       Label : UTF8_String) return Gtk_Radio_Menu_Item;
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.

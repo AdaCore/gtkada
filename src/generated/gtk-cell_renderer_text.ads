@@ -65,6 +65,16 @@ package Gtk.Cell_Renderer_Text is
    --  thus rendering a different string in each row of the
    --  Gtk.Tree_View.Gtk_Tree_View
 
+   function Gtk_Cell_Renderer_Text_New return Gtk_Cell_Renderer_Text;
+   --  Creates a new Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text. Adjust how
+   --  text is drawn using object properties. Object properties can be set
+   --  globally (with g_object_set). Also, with
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column, you can bind a property to a
+   --  value in a Gtk.Tree_Model.Gtk_Tree_Model. For example, you can bind the
+   --  "text" property on the cell renderer to a string value in the model,
+   --  thus rendering a different string in each row of the
+   --  Gtk.Tree_View.Gtk_Tree_View
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_text_get_type");
 

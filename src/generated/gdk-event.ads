@@ -779,6 +779,12 @@ package Gdk.Event is
    --  Since: gtk+ 2.2
    --  "type": a Gdk.Event.Gdk_Event_Type
 
+   function Gdk_Event_New (The_Type : Gdk_Event_Type) return Gdk_Event;
+   --  Creates a new event of the given type. All fields are set to 0.
+   --  should be freed with Gdk.Event.Free.
+   --  Since: gtk+ 2.2
+   --  "type": a Gdk.Event.Gdk_Event_Type
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_event_get_type");
 

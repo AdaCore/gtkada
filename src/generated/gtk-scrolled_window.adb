@@ -45,6 +45,21 @@ package body Gtk.Scrolled_Window is
       Gtk.Scrolled_Window.Initialize (Scrolled_Window, Hadjustment, Vadjustment);
    end Gtk_New;
 
+   -----------------------------
+   -- Gtk_Scrolled_Window_New --
+   -----------------------------
+
+   function Gtk_Scrolled_Window_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Scrolled_Window
+   is
+      Scrolled_Window : constant Gtk_Scrolled_Window := new Gtk_Scrolled_Window_Record;
+   begin
+      Gtk.Scrolled_Window.Initialize (Scrolled_Window, Hadjustment, Vadjustment);
+      return Scrolled_Window;
+   end Gtk_Scrolled_Window_New;
+
    ----------------
    -- Initialize --
    ----------------

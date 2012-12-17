@@ -72,6 +72,14 @@ package Gtk.Viewport is
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 
+   function Gtk_Viewport_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Viewport;
+   --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.
+   --  "hadjustment": horizontal adjustment
+   --  "vadjustment": vertical adjustment
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_viewport_get_type");
 

@@ -66,6 +66,10 @@ package Gtk.Overlay is
    --  Creates a new Gtk.Overlay.Gtk_Overlay.
    --  Since: gtk+ 3.2
 
+   function Gtk_Overlay_New return Gtk_Overlay;
+   --  Creates a new Gtk.Overlay.Gtk_Overlay.
+   --  Since: gtk+ 3.2
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_overlay_get_type");
 

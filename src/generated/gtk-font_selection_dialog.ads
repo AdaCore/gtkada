@@ -55,6 +55,11 @@ package Gtk.Font_Selection_Dialog is
    --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
    --  "title": the title of the dialog window
 
+   function Gtk_Font_Selection_Dialog_New
+      (Title : UTF8_String) return Gtk_Font_Selection_Dialog;
+   --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
+   --  "title": the title of the dialog window
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_selection_dialog_get_type");
 

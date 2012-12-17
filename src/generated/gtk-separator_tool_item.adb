@@ -41,6 +41,17 @@ package body Gtk.Separator_Tool_Item is
       Gtk.Separator_Tool_Item.Initialize (Item);
    end Gtk_New;
 
+   ---------------------------------
+   -- Gtk_Separator_Tool_Item_New --
+   ---------------------------------
+
+   function Gtk_Separator_Tool_Item_New return Gtk_Separator_Tool_Item is
+      Item : constant Gtk_Separator_Tool_Item := new Gtk_Separator_Tool_Item_Record;
+   begin
+      Gtk.Separator_Tool_Item.Initialize (Item);
+      return Item;
+   end Gtk_Separator_Tool_Item_New;
+
    ----------------
    -- Initialize --
    ----------------

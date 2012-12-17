@@ -107,6 +107,44 @@ package body Gtk.Print_Settings is
       Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name);
    end Gtk_New_From_Key_File;
 
+   ----------------------------
+   -- Gtk_Print_Settings_New --
+   ----------------------------
+
+   function Gtk_Print_Settings_New return Gtk_Print_Settings is
+      Self : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
+   begin
+      Gtk.Print_Settings.Initialize (Self);
+      return Self;
+   end Gtk_Print_Settings_New;
+
+   --------------------------------------
+   -- Gtk_Print_Settings_New_From_File --
+   --------------------------------------
+
+   function Gtk_Print_Settings_New_From_File
+      (File_Name : UTF8_String) return Gtk_Print_Settings
+   is
+      Self : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
+   begin
+      Gtk.Print_Settings.Initialize_From_File (Self, File_Name);
+      return Self;
+   end Gtk_Print_Settings_New_From_File;
+
+   ------------------------------------------
+   -- Gtk_Print_Settings_New_From_Key_File --
+   ------------------------------------------
+
+   function Gtk_Print_Settings_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String := "") return Gtk_Print_Settings
+   is
+      Self : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
+   begin
+      Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name);
+      return Self;
+   end Gtk_Print_Settings_New_From_Key_File;
+
    ----------------
    -- Initialize --
    ----------------

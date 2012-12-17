@@ -48,6 +48,22 @@ package body Gtk.Toggle_Action is
       Gtk.Toggle_Action.Initialize (Action, Name, Label, Tooltip, Stock_Id);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_Toggle_Action_New --
+   ---------------------------
+
+   function Gtk_Toggle_Action_New
+      (Name     : UTF8_String;
+       Label    : UTF8_String := "";
+       Tooltip  : UTF8_String := "";
+       Stock_Id : UTF8_String := "") return Gtk_Toggle_Action
+   is
+      Action : constant Gtk_Toggle_Action := new Gtk_Toggle_Action_Record;
+   begin
+      Gtk.Toggle_Action.Initialize (Action, Name, Label, Tooltip, Stock_Id);
+      return Action;
+   end Gtk_Toggle_Action_New;
+
    ----------------
    -- Initialize --
    ----------------

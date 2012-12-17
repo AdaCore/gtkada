@@ -31,6 +31,17 @@ package body Gtk.Drawing_Area is
      (Get_Type'Access, Gtk_Drawing_Area_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Drawing_Area);
 
+   --------------------------
+   -- Gtk_Drawing_Area_New --
+   --------------------------
+
+   function Gtk_Drawing_Area_New return Gtk_Drawing_Area is
+      Drawing_Area : constant Gtk_Drawing_Area := new Gtk_Drawing_Area_Record;
+   begin
+      Gtk.Drawing_Area.Initialize (Drawing_Area);
+      return Drawing_Area;
+   end Gtk_Drawing_Area_New;
+
    -------------
    -- Gtk_New --
    -------------

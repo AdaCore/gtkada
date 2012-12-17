@@ -70,6 +70,20 @@ package Pango.Context is
    --  those instead.
    --  be freed with g_object_unref.
 
+   function Pango_Context_New return Pango_Context;
+   --  Creates a new Pango.Context.Pango_Context initialized to default
+   --  values.
+   --  This function is not particularly useful as it should always be
+   --  followed by a pango_context_set_font_map call, and the function
+   --  Pango.Font_Map.Create_Context does these two steps together and hence
+   --  users are recommended to use that.
+   --  If you are using Pango as part of a higher-level system, that system
+   --  may have it's own way of create a Pango.Context.Pango_Context. For
+   --  instance, the GTK+ toolkit has, among others,
+   --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
+   --  those instead.
+   --  be freed with g_object_unref.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_context_get_type");
 

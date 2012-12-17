@@ -109,6 +109,17 @@ package body Gtk.Recent_Filter is
       Gtk.Recent_Filter.Initialize (Filter);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_Recent_Filter_New --
+   ---------------------------
+
+   function Gtk_Recent_Filter_New return Gtk_Recent_Filter is
+      Filter : constant Gtk_Recent_Filter := new Gtk_Recent_Filter_Record;
+   begin
+      Gtk.Recent_Filter.Initialize (Filter);
+      return Filter;
+   end Gtk_Recent_Filter_New;
+
    ----------------
    -- Initialize --
    ----------------

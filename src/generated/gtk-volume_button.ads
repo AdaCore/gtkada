@@ -56,6 +56,12 @@ package Gtk.Volume_Button is
    --  modified using the functions from Gtk.Scale_Button.Gtk_Scale_Button.
    --  Since: gtk+ 2.12
 
+   function Gtk_Volume_Button_New return Gtk_Volume_Button;
+   --  Creates a Gtk.Volume_Button.Gtk_Volume_Button, with a range between 0.0
+   --  and 1.0, with a stepping of 0.02. Volume values can be obtained and
+   --  modified using the functions from Gtk.Scale_Button.Gtk_Scale_Button.
+   --  Since: gtk+ 2.12
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_volume_button_get_type");
 

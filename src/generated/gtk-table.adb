@@ -46,6 +46,21 @@ package body Gtk.Table is
       Gtk.Table.Initialize (Table, Rows, Columns, Homogeneous);
    end Gtk_New;
 
+   -------------------
+   -- Gtk_Table_New --
+   -------------------
+
+   function Gtk_Table_New
+      (Rows        : Guint;
+       Columns     : Guint;
+       Homogeneous : Boolean) return Gtk_Table
+   is
+      Table : constant Gtk_Table := new Gtk_Table_Record;
+   begin
+      Gtk.Table.Initialize (Table, Rows, Columns, Homogeneous);
+      return Table;
+   end Gtk_Table_New;
+
    ----------------
    -- Initialize --
    ----------------

@@ -273,11 +273,29 @@ package Gtk.Tree_Model is
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path. This structure refers to a
    --  row.
 
+   function Gtk_Tree_Path_New return Gtk_Tree_Path;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path. This structure refers to a
+   --  row.
+
    procedure Gtk_New_First (Path : out Gtk_Tree_Path);
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path.
    --  The string representation of this path is "0".
 
+   function Gtk_Tree_Path_New_First return Gtk_Tree_Path;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path.
+   --  The string representation of this path is "0".
+
    procedure Gtk_New (Self : out Gtk_Tree_Path; Path : UTF8_String);
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path initialized to Path.
+   --  Path is expected to be a colon separated list of numbers. For example,
+   --  the string "10:4:0" would create a path of depth 3 pointing to the 11th
+   --  child of the root node, the 5th child of that 11th child, and the 1st
+   --  child of that 5th child. If an invalid path string is passed in, null is
+   --  returned.
+   --  "path": The string representation of a path
+
+   function Gtk_Tree_Path_New_From_String
+      (Path : UTF8_String) return Gtk_Tree_Path;
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path initialized to Path.
    --  Path is expected to be a colon separated list of numbers. For example,
    --  the string "10:4:0" would create a path of depth 3 pointing to the 11th

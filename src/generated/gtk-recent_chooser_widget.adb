@@ -104,6 +104,31 @@ package body Gtk.Recent_Chooser_Widget is
       Gtk.Recent_Chooser_Widget.Initialize_For_Manager (Widget, Manager);
    end Gtk_New_For_Manager;
 
+   -----------------------------------
+   -- Gtk_Recent_Chooser_Widget_New --
+   -----------------------------------
+
+   function Gtk_Recent_Chooser_Widget_New return Gtk_Recent_Chooser_Widget is
+      Widget : constant Gtk_Recent_Chooser_Widget := new Gtk_Recent_Chooser_Widget_Record;
+   begin
+      Gtk.Recent_Chooser_Widget.Initialize (Widget);
+      return Widget;
+   end Gtk_Recent_Chooser_Widget_New;
+
+   -----------------------------------------------
+   -- Gtk_Recent_Chooser_Widget_New_For_Manager --
+   -----------------------------------------------
+
+   function Gtk_Recent_Chooser_Widget_New_For_Manager
+      (Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+       return Gtk_Recent_Chooser_Widget
+   is
+      Widget : constant Gtk_Recent_Chooser_Widget := new Gtk_Recent_Chooser_Widget_Record;
+   begin
+      Gtk.Recent_Chooser_Widget.Initialize_For_Manager (Widget, Manager);
+      return Widget;
+   end Gtk_Recent_Chooser_Widget_New_For_Manager;
+
    ----------------
    -- Initialize --
    ----------------

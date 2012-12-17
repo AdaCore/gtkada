@@ -32,6 +32,19 @@ package body Gtk.Accel_Label is
      (Get_Type'Access, Gtk_Accel_Label_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Accel_Label);
 
+   -------------------------
+   -- Gtk_Accel_Label_New --
+   -------------------------
+
+   function Gtk_Accel_Label_New
+      (String : UTF8_String) return Gtk_Accel_Label
+   is
+      Accel_Label : constant Gtk_Accel_Label := new Gtk_Accel_Label_Record;
+   begin
+      Gtk.Accel_Label.Initialize (Accel_Label, String);
+      return Accel_Label;
+   end Gtk_Accel_Label_New;
+
    -------------
    -- Gtk_New --
    -------------

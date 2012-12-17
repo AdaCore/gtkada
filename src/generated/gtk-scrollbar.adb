@@ -31,6 +31,20 @@ package body Gtk.Scrollbar is
      (Get_Type'Access, Gtk_Scrollbar_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Scrollbar);
 
+   ------------------------
+   -- Gtk_Hscrollbar_New --
+   ------------------------
+
+   function Gtk_Hscrollbar_New
+      (Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       return Gtk_Hscrollbar
+   is
+      Scrollbar : constant Gtk_Hscrollbar := new Gtk_Hscrollbar_Record;
+   begin
+      Gtk.Scrollbar.Initialize_Hscrollbar (Scrollbar, Adjustment);
+      return Scrollbar;
+   end Gtk_Hscrollbar_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -70,6 +84,35 @@ package body Gtk.Scrollbar is
       Scrollbar := new Gtk_Vscrollbar_Record;
       Gtk.Scrollbar.Initialize_Vscrollbar (Scrollbar, Adjustment);
    end Gtk_New_Vscrollbar;
+
+   -----------------------
+   -- Gtk_Scrollbar_New --
+   -----------------------
+
+   function Gtk_Scrollbar_New
+      (Orientation : Gtk.Enums.Gtk_Orientation;
+       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       return Gtk_Scrollbar
+   is
+      Scrollbar : constant Gtk_Scrollbar := new Gtk_Scrollbar_Record;
+   begin
+      Gtk.Scrollbar.Initialize (Scrollbar, Orientation, Adjustment);
+      return Scrollbar;
+   end Gtk_Scrollbar_New;
+
+   ------------------------
+   -- Gtk_Vscrollbar_New --
+   ------------------------
+
+   function Gtk_Vscrollbar_New
+      (Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       return Gtk_Vscrollbar
+   is
+      Scrollbar : constant Gtk_Vscrollbar := new Gtk_Vscrollbar_Record;
+   begin
+      Gtk.Scrollbar.Initialize_Vscrollbar (Scrollbar, Adjustment);
+      return Scrollbar;
+   end Gtk_Vscrollbar_New;
 
    ----------------
    -- Initialize --

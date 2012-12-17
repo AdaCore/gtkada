@@ -31,6 +31,17 @@ package body Gtk.Cell_Renderer_Accel is
      (Get_Type'Access, Gtk_Cell_Renderer_Accel_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer_Accel);
 
+   ---------------------------------
+   -- Gtk_Cell_Renderer_Accel_New --
+   ---------------------------------
+
+   function Gtk_Cell_Renderer_Accel_New return Gtk_Cell_Renderer_Accel is
+      Self : constant Gtk_Cell_Renderer_Accel := new Gtk_Cell_Renderer_Accel_Record;
+   begin
+      Gtk.Cell_Renderer_Accel.Initialize (Self);
+      return Self;
+   end Gtk_Cell_Renderer_Accel_New;
+
    -------------
    -- Gtk_New --
    -------------

@@ -136,6 +136,31 @@ package body Gtk.Entry_Completion is
      (Get_Type'Access, Gtk_Entry_Completion_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Entry_Completion);
 
+   ------------------------------
+   -- Gtk_Entry_Completion_New --
+   ------------------------------
+
+   function Gtk_Entry_Completion_New return Gtk_Entry_Completion is
+      Completion : constant Gtk_Entry_Completion := new Gtk_Entry_Completion_Record;
+   begin
+      Gtk.Entry_Completion.Initialize (Completion);
+      return Completion;
+   end Gtk_Entry_Completion_New;
+
+   ----------------------------------------
+   -- Gtk_Entry_Completion_New_With_Area --
+   ----------------------------------------
+
+   function Gtk_Entry_Completion_New_With_Area
+      (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
+       return Gtk_Entry_Completion
+   is
+      Completion : constant Gtk_Entry_Completion := new Gtk_Entry_Completion_Record;
+   begin
+      Gtk.Entry_Completion.Initialize_With_Area (Completion, Area);
+      return Completion;
+   end Gtk_Entry_Completion_New_With_Area;
+
    -------------
    -- Gtk_New --
    -------------

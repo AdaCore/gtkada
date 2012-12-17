@@ -220,6 +220,12 @@ package Gdk.Cursor is
    --  To make the cursor invisible, use Gdk.Blank_Cursor.
    --  "cursor_type": cursor to create
 
+   function Gdk_Cursor_New (Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
+   --  Creates a new cursor from the set of builtin cursors for the default
+   --  display. See gdk_cursor_new_for_display.
+   --  To make the cursor invisible, use Gdk.Blank_Cursor.
+   --  "cursor_type": cursor to create
+
    procedure Gdk_New_For_Display
       (Self        : out Gdk_Cursor;
        Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
@@ -276,10 +282,75 @@ package Gdk.Cursor is
    --  created
    --  "cursor_type": cursor to create
 
+   function Gdk_Cursor_New_For_Display
+      (Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
+   --  Creates a new cursor from the set of builtin cursors. Some useful ones
+   --  are:
+   --     * <inlinegraphic format="PNG"
+   --  fileref="right_ptr.png"></inlinegraphic> GDK_RIGHT_PTR (right-facing
+   --  arrow)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="crosshair.png"></inlinegraphic> GDK_CROSSHAIR (crosshair)
+   --     * <inlinegraphic format="PNG" fileref="xterm.png"></inlinegraphic>
+   --  GDK_XTERM (I-beam)
+   --     * <inlinegraphic format="PNG" fileref="watch.png"></inlinegraphic>
+   --  GDK_WATCH (busy)
+   --     * <inlinegraphic format="PNG" fileref="fleur.png"></inlinegraphic>
+   --  GDK_FLEUR (for moving objects)
+   --     * <inlinegraphic format="PNG" fileref="hand1.png"></inlinegraphic>
+   --  GDK_HAND1 (a right-pointing hand)
+   --     * <inlinegraphic format="PNG" fileref="hand2.png"></inlinegraphic>
+   --  GDK_HAND2 (a left-pointing hand)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="left_side.png"></inlinegraphic> GDK_LEFT_SIDE (resize left
+   --  side)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="right_side.png"></inlinegraphic> GDK_RIGHT_SIDE (resize right
+   --  side)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="top_left_corner.png"></inlinegraphic> GDK_TOP_LEFT_CORNER
+   --  (resize northwest corner)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="top_right_corner.png"></inlinegraphic> GDK_TOP_RIGHT_CORNER
+   --  (resize northeast corner)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="bottom_left_corner.png"></inlinegraphic> GDK_BOTTOM_LEFT_CORNER
+   --  (resize southwest corner)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="bottom_right_corner.png"></inlinegraphic>
+   --  GDK_BOTTOM_RIGHT_CORNER (resize southeast corner)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="top_side.png"></inlinegraphic> GDK_TOP_SIDE (resize top side)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="bottom_side.png"></inlinegraphic> GDK_BOTTOM_SIDE (resize
+   --  bottom side)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="sb_h_double_arrow.png"></inlinegraphic> GDK_SB_H_DOUBLE_ARROW
+   --  (move vertical splitter)
+   --     * <inlinegraphic format="PNG"
+   --  fileref="sb_v_double_arrow.png"></inlinegraphic> GDK_SB_V_DOUBLE_ARROW
+   --  (move horizontal splitter)
+   --     * GDK_BLANK_CURSOR (Blank cursor). Since 2.16
+   --  Since: gtk+ 2.2
+   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  created
+   --  "cursor_type": cursor to create
+
    procedure Gdk_New_From_Name
       (Self    : out Gdk_Cursor;
        Display : not null access Gdk.Display.Gdk_Display_Record'Class;
        Name    : UTF8_String);
+   --  Creates a new cursor by looking up Name in the current cursor theme.
+   --  the given name
+   --  Since: gtk+ 2.8
+   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  created
+   --  "name": the name of the cursor
+
+   function Gdk_Cursor_New_From_Name
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Name    : UTF8_String) return Gdk_Cursor;
    --  Creates a new cursor by looking up Name in the current cursor theme.
    --  the given name
    --  Since: gtk+ 2.8

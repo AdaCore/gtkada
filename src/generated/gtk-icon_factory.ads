@@ -131,6 +131,22 @@ package Gtk.Icon_Factory is
    --  icons, which will allow themes to override the icons for the
    --  application.
 
+   function Gtk_Icon_Factory_New return Gtk_Icon_Factory;
+   --  Creates a new Gtk.Icon_Factory.Gtk_Icon_Factory. An icon factory
+   --  manages a collection of Gtk.Icon_Set.Gtk_Icon_Set<!-- -->s; a
+   --  Gtk.Icon_Set.Gtk_Icon_Set manages a set of variants of a particular icon
+   --  (i.e. a Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes
+   --  and widget states). Icons in an icon factory are named by a stock ID,
+   --  which is a simple string identifying the icon. Each Gtk.Style.Gtk_Style
+   --  has a list of Gtk.Icon_Factory.Gtk_Icon_Factory<!-- -->s derived from
+   --  the current theme; those icon factories are consulted first when
+   --  searching for an icon. If the theme doesn't set a particular icon, GTK+
+   --  looks for the icon in a list of default icon factories, maintained by
+   --  Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Remove_Default.
+   --  Applications with icons should add a default icon factory with their
+   --  icons, which will allow themes to override the icons for the
+   --  application.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_icon_factory_get_type");
 

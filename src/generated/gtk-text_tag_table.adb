@@ -79,6 +79,17 @@ package body Gtk.Text_Tag_Table is
       Gtk.Text_Tag_Table.Initialize (Table);
    end Gtk_New;
 
+   ----------------------------
+   -- Gtk_Text_Tag_Table_New --
+   ----------------------------
+
+   function Gtk_Text_Tag_Table_New return Gtk_Text_Tag_Table is
+      Table : constant Gtk_Text_Tag_Table := new Gtk_Text_Tag_Table_Record;
+   begin
+      Gtk.Text_Tag_Table.Initialize (Table);
+      return Table;
+   end Gtk_Text_Tag_Table_New;
+
    ----------------
    -- Initialize --
    ----------------

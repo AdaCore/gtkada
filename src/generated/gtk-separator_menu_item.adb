@@ -41,6 +41,17 @@ package body Gtk.Separator_Menu_Item is
       Gtk.Separator_Menu_Item.Initialize (Widget);
    end Gtk_New;
 
+   ---------------------------------
+   -- Gtk_Separator_Menu_Item_New --
+   ---------------------------------
+
+   function Gtk_Separator_Menu_Item_New return Gtk_Separator_Menu_Item is
+      Widget : constant Gtk_Separator_Menu_Item := new Gtk_Separator_Menu_Item_Record;
+   begin
+      Gtk.Separator_Menu_Item.Initialize (Widget);
+      return Widget;
+   end Gtk_Separator_Menu_Item_New;
+
    ----------------
    -- Initialize --
    ----------------

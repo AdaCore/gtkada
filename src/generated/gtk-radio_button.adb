@@ -88,6 +88,62 @@ package body Gtk.Radio_Button is
       Gtk.Radio_Button.Initialize_With_Mnemonic (Radio_Button, Group, Label);
    end Gtk_New_With_Mnemonic;
 
+   -------------------------------------
+   -- Gtk_Radio_Button_New_With_Label --
+   -------------------------------------
+
+   function Gtk_Radio_Button_New_With_Label
+      (Group : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
+       Label : UTF8_String := "") return Gtk_Radio_Button
+   is
+      Radio_Button : constant Gtk_Radio_Button := new Gtk_Radio_Button_Record;
+   begin
+      Gtk.Radio_Button.Initialize (Radio_Button, Group, Label);
+      return Radio_Button;
+   end Gtk_Radio_Button_New_With_Label;
+
+   -------------------------------------------------
+   -- Gtk_Radio_Button_New_With_Label_From_Widget --
+   -------------------------------------------------
+
+   function Gtk_Radio_Button_New_With_Label_From_Widget
+      (Group : access Gtk_Radio_Button_Record'Class;
+       Label : UTF8_String := "") return Gtk_Radio_Button
+   is
+      Radio_Button : constant Gtk_Radio_Button := new Gtk_Radio_Button_Record;
+   begin
+      Gtk.Radio_Button.Initialize (Radio_Button, Group, Label);
+      return Radio_Button;
+   end Gtk_Radio_Button_New_With_Label_From_Widget;
+
+   ----------------------------------------
+   -- Gtk_Radio_Button_New_With_Mnemonic --
+   ----------------------------------------
+
+   function Gtk_Radio_Button_New_With_Mnemonic
+      (Group : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
+       Label : UTF8_String) return Gtk_Radio_Button
+   is
+      Radio_Button : constant Gtk_Radio_Button := new Gtk_Radio_Button_Record;
+   begin
+      Gtk.Radio_Button.Initialize_With_Mnemonic (Radio_Button, Group, Label);
+      return Radio_Button;
+   end Gtk_Radio_Button_New_With_Mnemonic;
+
+   ----------------------------------------------------
+   -- Gtk_Radio_Button_New_With_Mnemonic_From_Widget --
+   ----------------------------------------------------
+
+   function Gtk_Radio_Button_New_With_Mnemonic_From_Widget
+      (Group : access Gtk_Radio_Button_Record'Class;
+       Label : UTF8_String) return Gtk_Radio_Button
+   is
+      Radio_Button : constant Gtk_Radio_Button := new Gtk_Radio_Button_Record;
+   begin
+      Gtk.Radio_Button.Initialize_With_Mnemonic (Radio_Button, Group, Label);
+      return Radio_Button;
+   end Gtk_Radio_Button_New_With_Mnemonic_From_Widget;
+
    ----------------
    -- Initialize --
    ----------------

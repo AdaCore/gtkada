@@ -41,6 +41,17 @@ package body Gtk.Offscreen_Window is
       Gtk.Offscreen_Window.Initialize (Self);
    end Gtk_New;
 
+   ------------------------------
+   -- Gtk_Offscreen_Window_New --
+   ------------------------------
+
+   function Gtk_Offscreen_Window_New return Gtk_Offscreen_Window is
+      Self : constant Gtk_Offscreen_Window := new Gtk_Offscreen_Window_Record;
+   begin
+      Gtk.Offscreen_Window.Initialize (Self);
+      return Self;
+   end Gtk_Offscreen_Window_New;
+
    ----------------
    -- Initialize --
    ----------------

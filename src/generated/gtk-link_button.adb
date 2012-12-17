@@ -33,6 +33,31 @@ package body Gtk.Link_Button is
      (Get_Type'Access, Gtk_Link_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Link_Button);
 
+   -------------------------
+   -- Gtk_Link_Button_New --
+   -------------------------
+
+   function Gtk_Link_Button_New (URI : UTF8_String) return Gtk_Link_Button is
+      Widget : constant Gtk_Link_Button := new Gtk_Link_Button_Record;
+   begin
+      Gtk.Link_Button.Initialize (Widget, URI);
+      return Widget;
+   end Gtk_Link_Button_New;
+
+   ------------------------------------
+   -- Gtk_Link_Button_New_With_Label --
+   ------------------------------------
+
+   function Gtk_Link_Button_New_With_Label
+      (URI   : UTF8_String;
+       Label : UTF8_String := "") return Gtk_Link_Button
+   is
+      Widget : constant Gtk_Link_Button := new Gtk_Link_Button_Record;
+   begin
+      Gtk.Link_Button.Initialize_With_Label (Widget, URI, Label);
+      return Widget;
+   end Gtk_Link_Button_New_With_Label;
+
    -------------
    -- Gtk_New --
    -------------

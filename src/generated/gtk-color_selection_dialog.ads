@@ -55,6 +55,11 @@ package Gtk.Color_Selection_Dialog is
    --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
    --  "title": a string containing the title text for the dialog.
 
+   function Gtk_Color_Selection_Dialog_New
+      (Title : UTF8_String) return Gtk_Color_Selection_Dialog;
+   --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
+   --  "title": a string containing the title text for the dialog.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_selection_dialog_get_type");
 

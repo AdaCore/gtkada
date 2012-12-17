@@ -31,6 +31,17 @@ package body Gtk.Hbutton_Box is
      (Get_Type'Access, Gtk_Hbutton_Box_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Hbutton_Box);
 
+   -------------------------
+   -- Gtk_Hbutton_Box_New --
+   -------------------------
+
+   function Gtk_Hbutton_Box_New return Gtk_Hbutton_Box is
+      Widget : constant Gtk_Hbutton_Box := new Gtk_Hbutton_Box_Record;
+   begin
+      Gtk.Hbutton_Box.Initialize (Widget);
+      return Widget;
+   end Gtk_Hbutton_Box_New;
+
    -------------
    -- Gtk_New --
    -------------

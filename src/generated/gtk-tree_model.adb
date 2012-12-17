@@ -353,6 +353,52 @@ package body Gtk.Tree_Model is
       Path.Set_Object (Internal);
    end Gtk_New_First;
 
+   -----------------------
+   -- Gtk_Tree_Path_New --
+   -----------------------
+
+   function Gtk_Tree_Path_New return Gtk_Tree_Path is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_new");
+      Path : Gtk_Tree_Path;
+   begin
+      Path.Set_Object (Internal);
+      return Path;
+   end Gtk_Tree_Path_New;
+
+   -----------------------------
+   -- Gtk_Tree_Path_New_First --
+   -----------------------------
+
+   function Gtk_Tree_Path_New_First return Gtk_Tree_Path is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_new_first");
+      Path : Gtk_Tree_Path;
+   begin
+      Path.Set_Object (Internal);
+      return Path;
+   end Gtk_Tree_Path_New_First;
+
+   -----------------------------------
+   -- Gtk_Tree_Path_New_From_String --
+   -----------------------------------
+
+   function Gtk_Tree_Path_New_From_String
+      (Path : UTF8_String) return Gtk_Tree_Path
+   is
+      function Internal
+         (Path : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_new_from_string");
+      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Return : System.Address;
+      Self       : Gtk_Tree_Path;
+   begin
+      Tmp_Return := Internal (Tmp_Path);
+      Free (Tmp_Path);
+      Self.Set_Object (Tmp_Return);
+      return Self;
+   end Gtk_Tree_Path_New_From_String;
+
    ------------------
    -- Append_Index --
    ------------------

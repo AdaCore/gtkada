@@ -69,6 +69,44 @@ package body Gtk.Page_Setup is
       Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name);
    end Gtk_New_From_Key_File;
 
+   ------------------------
+   -- Gtk_Page_Setup_New --
+   ------------------------
+
+   function Gtk_Page_Setup_New return Gtk_Page_Setup is
+      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+   begin
+      Gtk.Page_Setup.Initialize (Self);
+      return Self;
+   end Gtk_Page_Setup_New;
+
+   ----------------------------------
+   -- Gtk_Page_Setup_New_From_File --
+   ----------------------------------
+
+   function Gtk_Page_Setup_New_From_File
+      (File_Name : UTF8_String) return Gtk_Page_Setup
+   is
+      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+   begin
+      Gtk.Page_Setup.Initialize_From_File (Self, File_Name);
+      return Self;
+   end Gtk_Page_Setup_New_From_File;
+
+   --------------------------------------
+   -- Gtk_Page_Setup_New_From_Key_File --
+   --------------------------------------
+
+   function Gtk_Page_Setup_New_From_Key_File
+      (Key_File   : Glib.Key_File.G_Key_File;
+       Group_Name : UTF8_String := "") return Gtk_Page_Setup
+   is
+      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+   begin
+      Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name);
+      return Self;
+   end Gtk_Page_Setup_New_From_Key_File;
+
    ----------------
    -- Initialize --
    ----------------

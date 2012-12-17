@@ -67,6 +67,13 @@ package Gtk.Arrow is
    --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
    --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 
+   function Gtk_Arrow_New
+      (Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+       Shadow_Type : Gtk.Enums.Gtk_Shadow_Type) return Gtk_Arrow;
+   --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
+   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_arrow_get_type");
 

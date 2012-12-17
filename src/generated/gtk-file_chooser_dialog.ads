@@ -192,6 +192,18 @@ package Gtk.File_Chooser_Dialog is
    --  "parent": Transient parent of the dialog, or null
    --  "action": Open or save mode for the dialog
 
+   function Gtk_File_Chooser_Dialog_New
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class;
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Dialog;
+   --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This
+   --  function is analogous to gtk_dialog_new_with_buttons.
+   --  Since: gtk+ 2.4
+   --  "title": Title of the dialog, or null
+   --  "parent": Transient parent of the dialog, or null
+   --  "action": Open or save mode for the dialog
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_chooser_dialog_get_type");
 

@@ -136,6 +136,17 @@ package body Gtk.Recent_Manager is
       Gtk.Recent_Manager.Initialize (Self);
    end Gtk_New;
 
+   ----------------------------
+   -- Gtk_Recent_Manager_New --
+   ----------------------------
+
+   function Gtk_Recent_Manager_New return Gtk_Recent_Manager is
+      Self : constant Gtk_Recent_Manager := new Gtk_Recent_Manager_Record;
+   begin
+      Gtk.Recent_Manager.Initialize (Self);
+      return Self;
+   end Gtk_Recent_Manager_New;
+
    ----------------
    -- Initialize --
    ----------------

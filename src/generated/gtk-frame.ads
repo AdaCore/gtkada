@@ -85,6 +85,11 @@ package Gtk.Frame is
    --  is null, the label is omitted.
    --  "label": the text to use as the label of the frame
 
+   function Gtk_Frame_New (Label : UTF8_String := "") return Gtk_Frame;
+   --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
+   --  is null, the label is omitted.
+   --  "label": the text to use as the label of the frame
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_frame_get_type");
 

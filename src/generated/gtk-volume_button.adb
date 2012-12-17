@@ -41,6 +41,17 @@ package body Gtk.Volume_Button is
       Gtk.Volume_Button.Initialize (Widget);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_Volume_Button_New --
+   ---------------------------
+
+   function Gtk_Volume_Button_New return Gtk_Volume_Button is
+      Widget : constant Gtk_Volume_Button := new Gtk_Volume_Button_Record;
+   begin
+      Gtk.Volume_Button.Initialize (Widget);
+      return Widget;
+   end Gtk_Volume_Button_New;
+
    ----------------
    -- Initialize --
    ----------------

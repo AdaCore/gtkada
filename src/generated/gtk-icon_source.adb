@@ -44,6 +44,19 @@ package body Gtk.Icon_Source is
       return S;
    end From_Object;
 
+   -------------------------
+   -- Gtk_Icon_Source_New --
+   -------------------------
+
+   function Gtk_Icon_Source_New return Gtk_Icon_Source is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_icon_source_new");
+      Self : Gtk_Icon_Source;
+   begin
+      Self.Set_Object (Internal);
+      return Self;
+   end Gtk_Icon_Source_New;
+
    -------------
    -- Gtk_New --
    -------------

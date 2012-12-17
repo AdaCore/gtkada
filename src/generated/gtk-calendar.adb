@@ -91,6 +91,17 @@ package body Gtk.Calendar is
      (Get_Type'Access, Gtk_Calendar_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Calendar);
 
+   ----------------------
+   -- Gtk_Calendar_New --
+   ----------------------
+
+   function Gtk_Calendar_New return Gtk_Calendar is
+      Calendar : constant Gtk_Calendar := new Gtk_Calendar_Record;
+   begin
+      Gtk.Calendar.Initialize (Calendar);
+      return Calendar;
+   end Gtk_Calendar_New;
+
    -------------
    -- Gtk_New --
    -------------

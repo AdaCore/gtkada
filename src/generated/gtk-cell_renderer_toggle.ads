@@ -55,6 +55,15 @@ package Gtk.Cell_Renderer_Toggle is
    --  "active" property on the cell renderer to a boolean value in the model,
    --  thus causing the check button to reflect the state of the model.
 
+   function Gtk_Cell_Renderer_Toggle_New return Gtk_Cell_Renderer_Toggle;
+   --  Creates a new Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle. Adjust
+   --  rendering parameters using object properties. Object properties can be
+   --  set globally (with g_object_set). Also, with
+   --  Gtk.Tree_View_Column.Gtk_Tree_View_Column, you can bind a property to a
+   --  value in a Gtk.Tree_Model.Gtk_Tree_Model. For example, you can bind the
+   --  "active" property on the cell renderer to a boolean value in the model,
+   --  thus causing the check button to reflect the state of the model.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_renderer_toggle_get_type");
 

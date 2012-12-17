@@ -59,6 +59,24 @@ package body Pango.Tabs is
       Self.Set_Object (Internal (Initial_Size, Boolean'Pos (Positions_In_Pixels)));
    end Gdk_New;
 
+   -------------------------
+   -- Pango_Tab_Array_New --
+   -------------------------
+
+   function Pango_Tab_Array_New
+      (Initial_Size        : Gint;
+       Positions_In_Pixels : Boolean) return Pango_Tab_Array
+   is
+      function Internal
+         (Initial_Size        : Gint;
+          Positions_In_Pixels : Integer) return System.Address;
+      pragma Import (C, Internal, "pango_tab_array_new");
+      Self : Pango_Tab_Array;
+   begin
+      Self.Set_Object (Internal (Initial_Size, Boolean'Pos (Positions_In_Pixels)));
+      return Self;
+   end Pango_Tab_Array_New;
+
    ----------
    -- Copy --
    ----------

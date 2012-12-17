@@ -71,12 +71,22 @@ package Gtk.Font_Button is
    --  Creates a new font picker widget.
    --  Since: gtk+ 2.4
 
+   function Gtk_Font_Button_New return Gtk_Font_Button;
+   --  Creates a new font picker widget.
+   --  Since: gtk+ 2.4
+
    procedure Gtk_New_With_Font
       (Font_Button : out Gtk_Font_Button;
        Fontname    : UTF8_String);
    procedure Initialize_With_Font
       (Font_Button : not null access Gtk_Font_Button_Record'Class;
        Fontname    : UTF8_String);
+   --  Creates a new font picker widget.
+   --  Since: gtk+ 2.4
+   --  "fontname": Name of font to display in font chooser dialog
+
+   function Gtk_Font_Button_New_With_Font
+      (Fontname : UTF8_String) return Gtk_Font_Button;
    --  Creates a new font picker widget.
    --  Since: gtk+ 2.4
    --  "fontname": Name of font to display in font chooser dialog

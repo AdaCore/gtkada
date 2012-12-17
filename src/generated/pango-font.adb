@@ -121,6 +121,19 @@ package body Pango.Font is
       Self := Internal;
    end Gdk_New;
 
+   --------------------------------
+   -- Pango_Font_Description_New --
+   --------------------------------
+
+   function Pango_Font_Description_New return Pango_Font_Description is
+      function Internal return Pango_Font_Description;
+      pragma Import (C, Internal, "pango_font_description_new");
+      Self : Pango_Font_Description;
+   begin
+      Self := Internal;
+      return Self;
+   end Pango_Font_Description_New;
+
    ------------------
    -- Better_Match --
    ------------------

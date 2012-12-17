@@ -41,6 +41,17 @@ package body Gtk.Spinner is
       Gtk.Spinner.Initialize (Spinner);
    end Gtk_New;
 
+   ---------------------
+   -- Gtk_Spinner_New --
+   ---------------------
+
+   function Gtk_Spinner_New return Gtk_Spinner is
+      Spinner : constant Gtk_Spinner := new Gtk_Spinner_Record;
+   begin
+      Gtk.Spinner.Initialize (Spinner);
+      return Spinner;
+   end Gtk_Spinner_New;
+
    ----------------
    -- Initialize --
    ----------------

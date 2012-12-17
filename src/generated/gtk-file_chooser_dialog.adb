@@ -33,6 +33,22 @@ package body Gtk.File_Chooser_Dialog is
      (Get_Type'Access, Gtk_File_Chooser_Dialog_Record);
    pragma Unreferenced (Type_Conversion_Gtk_File_Chooser_Dialog);
 
+   ---------------------------------
+   -- Gtk_File_Chooser_Dialog_New --
+   ---------------------------------
+
+   function Gtk_File_Chooser_Dialog_New
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class;
+       Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
+       return Gtk_File_Chooser_Dialog
+   is
+      Dialog : constant Gtk_File_Chooser_Dialog := new Gtk_File_Chooser_Dialog_Record;
+   begin
+      Gtk.File_Chooser_Dialog.Initialize (Dialog, Title, Parent, Action);
+      return Dialog;
+   end Gtk_File_Chooser_Dialog_New;
+
    -------------
    -- Gtk_New --
    -------------

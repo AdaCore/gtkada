@@ -55,6 +55,30 @@ package body Gtk.Toggle_Tool_Button is
       Gtk.Toggle_Tool_Button.Initialize_From_Stock (Button, Stock_Id);
    end Gtk_New_From_Stock;
 
+   --------------------------------
+   -- Gtk_Toggle_Tool_Button_New --
+   --------------------------------
+
+   function Gtk_Toggle_Tool_Button_New return Gtk_Toggle_Tool_Button is
+      Button : constant Gtk_Toggle_Tool_Button := new Gtk_Toggle_Tool_Button_Record;
+   begin
+      Gtk.Toggle_Tool_Button.Initialize (Button);
+      return Button;
+   end Gtk_Toggle_Tool_Button_New;
+
+   -------------------------------------------
+   -- Gtk_Toggle_Tool_Button_New_From_Stock --
+   -------------------------------------------
+
+   function Gtk_Toggle_Tool_Button_New_From_Stock
+      (Stock_Id : UTF8_String) return Gtk_Toggle_Tool_Button
+   is
+      Button : constant Gtk_Toggle_Tool_Button := new Gtk_Toggle_Tool_Button_Record;
+   begin
+      Gtk.Toggle_Tool_Button.Initialize_From_Stock (Button, Stock_Id);
+      return Button;
+   end Gtk_Toggle_Tool_Button_New_From_Stock;
+
    ----------------
    -- Initialize --
    ----------------
