@@ -202,6 +202,16 @@ package body Gtkada.MDI is
    type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
 
+   type MDI_Menu_Item_Record is new Gtk_Menu_Item_Record with record
+      Child : MDI_Child;
+   end record;
+   type MDI_Menu_Item is access all MDI_Menu_Item_Record'Class;
+   --  A menu item used in a contextual menu, to switch to an existing notebook
+   --  page.
+
+   procedure Menu_Switch_Page (Item : access Gtk_Widget_Record'Class);
+   --  Called when a MDI_Menu_Item is activated
+
    package Child_User_Data is new Glib.Object.User_Data (MDI_Child);
 
    type Children_Array is array (Natural range <>) of Widget_List.Glist;
@@ -903,10 +913,6 @@ package body Gtkada.MDI is
          Widget_Callback.To_Marshaller (Destroy_MDI'Access));
       Widget_Callback.Connect
         (MDI, Signal_Set_Focus_Child, Set_Focus_Child_MDI'Access);
-
---        Return_Callback.Object_Connect
---          (MDI, Signal_Draw,
---           Return_Callback.To_Marshaller (Draw_MDI'Access));
    end Initialize;
 
    -----------------------
@@ -2281,6 +2287,7 @@ package body Gtkada.MDI is
            or Button_Motion_Mask
            or Button_Release_Mask
            or Pointer_Motion_Mask);
+
       Return_Callback.Connect
         (Child, Signal_Button_Press_Event,
          Return_Callback.To_Marshaller (Button_Pressed'Access));
@@ -3406,15 +3413,26 @@ package body Gtkada.MDI is
       Note : constant Gtk_Notebook := Get_Notebook (C);
       Menu : Gtk_Menu;
       Submenu : Gtk_Menu;
+      Sep  : Gtk_Separator_Menu_Item;
       Item : Gtk_Menu_Item;
+      MItem : MDI_Menu_Item;
+      Widget : MDI_Child;
    begin
       if Get_Button (Event) = 3 then
          Gtk_New (Menu);
 
-         Gtk_New (Item, "Close");
-         Widget_Callback.Object_Connect
-           (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
-         Append (Menu, Item);
+         for P in 1 .. Note.Get_N_Pages loop
+            Widget := MDI_Child (Note.Get_Nth_Page (P - 1));
+            MItem := new MDI_Menu_Item_Record;
+            MItem.Child := Widget;
+            Initialize_With_Label (MItem, Widget.Short_Title.all);
+            Menu.Append (MItem);
+            Widget_Callback.Connect
+              (MItem, Gtk.Menu_Item.Signal_Activate, Menu_Switch_Page'Access);
+         end loop;
+
+         Gtk_New (Sep);
+         Menu.Append (Sep);
 
          Gtk_New (Item, "Tabs location");
          Append (Menu, Item);
@@ -3446,6 +3464,14 @@ package body Gtkada.MDI is
             On_Tab_Pos'Access, Note, Pos_Right);
          Append (Submenu, Item);
 
+         Gtk_New (Sep);
+         Menu.Append (Sep);
+
+         Gtk_New (Item, "Close");
+         Widget_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
+         Append (Menu, Item);
+
          if C.MDI.Tab_Factory /= null then
             C.MDI.Tab_Factory (C, Menu);
          end if;
@@ -3458,6 +3484,16 @@ package body Gtkada.MDI is
       end if;
       return False;
    end On_Notebook_Button_Press;
+
+   ----------------------
+   -- Menu_Switch_Page --
+   ----------------------
+
+   procedure Menu_Switch_Page (Item : access Gtk_Widget_Record'Class) is
+      It : constant MDI_Menu_Item := MDI_Menu_Item (Item);
+   begin
+      It.Child.Set_Focus_Child;
+   end Menu_Switch_Page;
 
    ---------------------
    -- Create_Notebook --
@@ -3474,6 +3510,8 @@ package body Gtkada.MDI is
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
+      Notebook.Set_Group_Name ("MDI");
+      Notebook.Popup_Enable;
 
       Widget_Callback.Connect
         (Notebook, Signal_Remove, Removed_From_Notebook'Access);
@@ -3829,6 +3867,8 @@ package body Gtkada.MDI is
       Set_State (Child, Normal);
 
       Append_Page (Note, Child);
+      Note.Set_Menu_Label_Text (Child, Child.Short_Title.all);
+      Note.Set_Tab_Detachable (Child, True);
       Set_Tab_Reorderable (Note, Child, Reorderable => True);
 
       Configure_Notebook_Tabs (MDI, Note);
