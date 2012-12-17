@@ -5791,7 +5791,7 @@ package body Gtkada.MDI is
 
                --  Do not force closure, we want to keep desktop-independent
                --  views
-               Close_Child (MDI_Child (Get_Data (Tmp)), Force => False);
+               Close (MDI, MDI_Child (Get_Data (Tmp)), Force => False);
                Tmp := Tmp2;
             end loop;
 
