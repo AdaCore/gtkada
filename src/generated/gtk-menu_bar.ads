@@ -117,21 +117,14 @@ package Gtk.Menu_Bar is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Child_Pack_Direction_Property
-   --  Type: Gtk.Enums.Gtk_Pack_Direction
-   --  Flags: read-write
-   --  The child pack direction of the menubar. It determines how the widgets
-   --  contained in child menuitems are arranged.
-   --
-   --  Name: Pack_Direction_Property
-   --  Type: Gtk.Enums.Gtk_Pack_Direction
-   --  Flags: read-write
-   --  The pack direction of the menubar. It determines how menuitems are
-   --  arranged in the menubar.
 
    Child_Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
+   --  The child pack direction of the menubar. It determines how the widgets
+   --  contained in child menuitems are arranged.
+
    Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
+   --  The pack direction of the menubar. It determines how menuitems are
+   --  arranged in the menubar.
 
 private
    Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=

@@ -212,31 +212,19 @@ package Gtk.Font_Chooser is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Font_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The font description as a string, e.g. "Sans Italic 12".
-   --
-   --  Name: Font_Desc_Property
-   --  Type: Pango.Font.Pango_Font_Description
-   --  Flags: read-write
-   --  The font description as a Pango.Font.Pango_Font_Description.
-   --
-   --  Name: Preview_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The string with which to preview the font.
-   --
-   --  Name: Show_Preview_Entry_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether to show an entry to change the preview text.
 
    Font_Property : constant Glib.Properties.Property_String;
+   --  The font description as a string, e.g. "Sans Italic 12".
+
    Font_Desc_Property : constant Pango.Font.Property_Font_Description;
+   --  Type: Pango.Font.Pango_Font_Description
+   --  The font description as a Pango.Font.Pango_Font_Description.
+
    Preview_Text_Property : constant Glib.Properties.Property_String;
+   --  The string with which to preview the font.
+
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether to show an entry to change the preview text.
 
    -------------
    -- Signals --

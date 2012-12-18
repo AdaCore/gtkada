@@ -3533,7 +3533,6 @@ package body Gtkada.MDI is
       Set_Scrollable (Notebook);
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
       Notebook.Set_Group_Name ("MDI");
-      Notebook.Popup_Enable;
 
       Widget_Callback.Connect
         (Notebook, Signal_Remove, Removed_From_Notebook'Access);

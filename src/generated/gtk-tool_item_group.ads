@@ -269,32 +269,18 @@ package Gtk.Tool_Item_Group is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Collapsed_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Ellipsize_Property
-   --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  Flags: read-write
-   --
-   --  Name: Header_Relief_Property
-   --  Type: Gtk.Enums.Gtk_Relief_Style
-   --  Flags: read-write
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Label_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
 
    Collapsed_Property : constant Glib.Properties.Property_Boolean;
+
    Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
+   --  Type: Pango.Layout.Pango_Ellipsize_Mode
+
    Header_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
+
    Label_Property : constant Glib.Properties.Property_String;
+
    Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
 
 private
    Label_Widget_Property : constant Glib.Properties.Property_Object :=

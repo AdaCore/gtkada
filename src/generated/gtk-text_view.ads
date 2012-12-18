@@ -765,87 +765,43 @@ package Gtk.Text_View is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accepts_Tab_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Buffer_Property
+
+   Accepts_Tab_Property : constant Glib.Properties.Property_Boolean;
+
+   Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Text_Buffer.Gtk_Text_Buffer
-   --  Flags: read-write
-   --
-   --  Name: Cursor_Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Editable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Im_Module_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Cursor_Visible_Property : constant Glib.Properties.Property_Boolean;
+
+   Editable_Property : constant Glib.Properties.Property_Boolean;
+
+   Im_Module_Property : constant Glib.Properties.Property_String;
    --  Which IM (input method) module should be used for this entry. See
    --  Gtk.Imcontext.Gtk_Imcontext.
    --
    --  Setting this to a non-null value overrides the system-wide IM module
    --  setting. See the GtkSettings Gtk.Settings.Gtk_Settings:gtk-im-module
    --  property.
-   --
-   --  Name: Indent_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Justification_Property
-   --  Type: Gtk.Enums.Gtk_Justification
-   --  Flags: read-write
-   --
-   --  Name: Left_Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Overwrite_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Above_Lines_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Below_Lines_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Inside_Wrap_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Right_Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Tabs_Property
-   --  Type: Pango.Tab_Array
-   --  Flags: read-write
-   --
-   --  Name: Wrap_Mode_Property
-   --  Type: Gtk.Enums.Gtk_Wrap_Mode
-   --  Flags: read-write
 
-   Accepts_Tab_Property : constant Glib.Properties.Property_Boolean;
-   Buffer_Property : constant Glib.Properties.Property_Object;
-   Cursor_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Editable_Property : constant Glib.Properties.Property_Boolean;
-   Im_Module_Property : constant Glib.Properties.Property_String;
    Indent_Property : constant Glib.Properties.Property_Int;
+
    Justification_Property : constant Gtk.Enums.Property_Gtk_Justification;
+
    Left_Margin_Property : constant Glib.Properties.Property_Int;
+
    Overwrite_Property : constant Glib.Properties.Property_Boolean;
+
    Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int;
+
    Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int;
+
    Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int;
+
    Right_Margin_Property : constant Glib.Properties.Property_Int;
+
    Tabs_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Pango.Tab_Array
+
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode;
 
    -------------

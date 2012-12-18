@@ -111,351 +111,176 @@ package Gtk.Text_Tag is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accumulative_Margin_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Accumulative_Margin_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the margins accumulate or override each other.
    --
    --  When set to True the margins of this tag are added to the margins of
    --  any other non-accumulative margins present. When set to False the
    --  margins override one another (the default).
-   --
-   --  Name: Background_Property
-   --  Type: UTF8_String
+
+   Background_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Background_Full_Height_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Background_Full_Height_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Background_Gdk_Property
+
+   Background_Full_Height_Property : constant Glib.Properties.Property_Boolean;
+
+   Background_Full_Height_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Background_Rgba_Property
+
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  Background color as a Gdk.RGBA.Gdk_RGBA.
-   --
-   --  Name: Background_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Direction_Property
-   --  Type: Gtk.Enums.Gtk_Text_Direction
-   --  Flags: read-write
-   --
-   --  Name: Editable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Editable_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Family_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Family_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Font_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Background_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction;
+
+   Editable_Property : constant Glib.Properties.Property_Boolean;
+
+   Editable_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Family_Property : constant Glib.Properties.Property_String;
+
+   Family_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Font_Property : constant Glib.Properties.Property_String;
    --  Font description as string, e.g. \"Sans Italic 12\".
    --
    --  Note that the initial value of this property depends on the internals
    --  of Pango.Font.Pango_Font_Description.
-   --
-   --  Name: Font_Desc_Property
+
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description;
    --  Type: Pango.Font.Pango_Font_Description
-   --  Flags: read-write
-   --
-   --  Name: Foreground_Property
-   --  Type: UTF8_String
+
+   Foreground_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Foreground_Gdk_Property
+
+   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Foreground_Rgba_Property
+
+   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  Foreground color as a Gdk.RGBA.Gdk_RGBA.
-   --
-   --  Name: Foreground_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Indent_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Indent_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Invisible_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Foreground_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Indent_Property : constant Glib.Properties.Property_Int;
+
+   Indent_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Invisible_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this text is hidden.
    --
    --  Note that there may still be problems with the support for invisible
    --  text, in particular when navigating programmatically inside a buffer
    --  containing invisible segments.
-   --
-   --  Name: Invisible_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Justification_Property
-   --  Type: Gtk.Enums.Gtk_Justification
-   --  Flags: read-write
-   --
-   --  Name: Justification_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Language_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Invisible_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Justification_Property : constant Gtk.Enums.Property_Gtk_Justification;
+
+   Justification_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Language_Property : constant Glib.Properties.Property_String;
    --  The language this text is in, as an ISO code. Pango can use this as a
    --  hint when rendering the text. If not set, an appropriate default will be
    --  used.
    --
    --  Note that the initial value of this property depends on the current
    --  locale, see also Gtk.Main.Get_Default_Language.
-   --
-   --  Name: Language_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Left_Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Left_Margin_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Paragraph_Background_Property
-   --  Type: UTF8_String
+
+   Language_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Left_Margin_Property : constant Glib.Properties.Property_Int;
+
+   Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Name_Property : constant Glib.Properties.Property_String;
+
+   Paragraph_Background_Property : constant Glib.Properties.Property_String;
    --  Flags: write
    --  The paragraph background color as a string.
-   --
-   --  Name: Paragraph_Background_Gdk_Property
-   --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --  The paragraph background color as a as a Gdk.Color.Gdk_Color.
-   --
-   --  Name: Paragraph_Background_Rgba_Property
-   --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
-   --  The paragraph background color as a as a Gdk.RGBA.Gdk_RGBA.
-   --
-   --  Name: Paragraph_Background_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Above_Lines_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Above_Lines_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Below_Lines_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Below_Lines_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Inside_Wrap_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixels_Inside_Wrap_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Right_Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Right_Margin_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Rise_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Rise_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Scale_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Scale_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Size_Points_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Size_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Stretch_Property
-   --  Type: Pango.Enums.Stretch
-   --  Flags: read-write
-   --
-   --  Name: Stretch_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Strikethrough_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Strikethrough_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Style_Property
-   --  Type: Pango.Enums.Style
-   --  Flags: read-write
-   --
-   --  Name: Style_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Tabs_Property
-   --  Type: Pango.Tab_Array
-   --  Flags: read-write
-   --
-   --  Name: Tabs_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Underline_Property
-   --  Type: Pango.Enums.Underline
-   --  Flags: read-write
-   --
-   --  Name: Underline_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Variant_Property
-   --  Type: Pango.Enums.Variant
-   --  Flags: read-write
-   --
-   --  Name: Variant_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Weight_Property
-   --  Type: Pango.Enums.Weight
-   --  Flags: read-write
-   --
-   --  Name: Weight_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Wrap_Mode_Property
-   --  Type: Gtk.Enums.Gtk_Wrap_Mode
-   --  Flags: read-write
-   --
-   --  Name: Wrap_Mode_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
-   Accumulative_Margin_Property : constant Glib.Properties.Property_Boolean;
-   Background_Property : constant Glib.Properties.Property_String;
-   Background_Full_Height_Property : constant Glib.Properties.Property_Boolean;
-   Background_Full_Height_Set_Property : constant Glib.Properties.Property_Boolean;
-   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Background_Set_Property : constant Glib.Properties.Property_Boolean;
-   Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction;
-   Editable_Property : constant Glib.Properties.Property_Boolean;
-   Editable_Set_Property : constant Glib.Properties.Property_Boolean;
-   Family_Property : constant Glib.Properties.Property_String;
-   Family_Set_Property : constant Glib.Properties.Property_Boolean;
-   Font_Property : constant Glib.Properties.Property_String;
-   Font_Desc_Property : constant Pango.Font.Property_Font_Description;
-   Foreground_Property : constant Glib.Properties.Property_String;
-   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Foreground_Set_Property : constant Glib.Properties.Property_Boolean;
-   Indent_Property : constant Glib.Properties.Property_Int;
-   Indent_Set_Property : constant Glib.Properties.Property_Boolean;
-   Invisible_Property : constant Glib.Properties.Property_Boolean;
-   Invisible_Set_Property : constant Glib.Properties.Property_Boolean;
-   Justification_Property : constant Gtk.Enums.Property_Gtk_Justification;
-   Justification_Set_Property : constant Glib.Properties.Property_Boolean;
-   Language_Property : constant Glib.Properties.Property_String;
-   Language_Set_Property : constant Glib.Properties.Property_Boolean;
-   Left_Margin_Property : constant Glib.Properties.Property_Int;
-   Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean;
-   Name_Property : constant Glib.Properties.Property_String;
-   Paragraph_Background_Property : constant Glib.Properties.Property_String;
    Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
+   --  Type: Gdk.Color.Gdk_Color
+   --  The paragraph background color as a as a Gdk.Color.Gdk_Color.
+
    Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
+   --  Type: Gdk.RGBA.Gdk_RGBA
+   --  The paragraph background color as a as a Gdk.RGBA.Gdk_RGBA.
+
    Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Pixels_Above_Lines_Property : constant Glib.Properties.Property_Int;
+
    Pixels_Above_Lines_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int;
+
    Pixels_Below_Lines_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int;
+
    Pixels_Inside_Wrap_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Right_Margin_Property : constant Glib.Properties.Property_Int;
+
    Right_Margin_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Rise_Property : constant Glib.Properties.Property_Int;
+
    Rise_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Scale_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    Scale_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Size_Property : constant Glib.Properties.Property_Int;
+
    Size_Points_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    Size_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Stretch_Property : constant Pango.Enums.Property_Stretch;
+   --  Type: Pango.Enums.Stretch
+
    Stretch_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Strikethrough_Property : constant Glib.Properties.Property_Boolean;
+
    Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Style_Property : constant Pango.Enums.Property_Style;
+   --  Type: Pango.Enums.Style
+
    Style_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Tabs_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Pango.Tab_Array
+
    Tabs_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Underline_Property : constant Pango.Enums.Property_Underline;
+   --  Type: Pango.Enums.Underline
+
    Underline_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Variant_Property : constant Pango.Enums.Property_Variant;
+   --  Type: Pango.Enums.Variant
+
    Variant_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Weight_Property : constant Pango.Enums.Property_Weight;
+   --  Type: Pango.Enums.Weight
+
    Weight_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode;
+
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

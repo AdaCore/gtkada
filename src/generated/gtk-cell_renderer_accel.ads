@@ -64,36 +64,25 @@ package Gtk.Cell_Renderer_Accel is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accel_Key_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Accel_Key_Property : constant Glib.Properties.Property_Uint;
    --  The keyval of the accelerator.
-   --
-   --  Name: Accel_Mode_Property
+
+   Accel_Mode_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Cell_Renderer_Accel_Mode
-   --  Flags: read-write
    --  Determines if the edited accelerators are GTK+ accelerators. If they
    --  are, consumed modifiers are suppressed, only accelerators accepted by
    --  GTK+ are allowed, and the accelerators are rendered in the same way as
    --  they are in menus.
-   --
-   --  Name: Accel_Mods_Property
+
+   Accel_Mods_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gdk.Types.Gdk_Modifier_Type
-   --  Flags: read-write
    --  The modifier mask of the accelerator.
-   --
-   --  Name: Keycode_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Keycode_Property : constant Glib.Properties.Property_Uint;
    --  The hardware keycode of the accelerator. Note that the hardware keycode
    --  is only relevant if the key does not have a keyval. Normally, the
    --  keyboard configuration should assign keyvals to all keys.
-
-   Accel_Key_Property : constant Glib.Properties.Property_Uint;
-   Accel_Mode_Property : constant Glib.Properties.Property_Boxed;
-   Accel_Mods_Property : constant Glib.Properties.Property_Boxed;
-   Keycode_Property : constant Glib.Properties.Property_Uint;
 
    -------------
    -- Signals --

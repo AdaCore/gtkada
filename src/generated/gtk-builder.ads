@@ -501,16 +501,12 @@ package Gtk.Builder is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Translation_Domain_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Translation_Domain_Property : constant Glib.Properties.Property_String;
    --  The translation domain used when translating property values that have
    --  been marked as translatable in interface descriptions. If the
    --  translation domain is null, Gtk.Builder.Gtk_Builder uses gettext,
    --  otherwise g_dgettext.
-
-   Translation_Domain_Property : constant Glib.Properties.Property_String;
 
 private
    Translation_Domain_Property : constant Glib.Properties.Property_String :=

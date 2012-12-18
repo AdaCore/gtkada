@@ -325,61 +325,41 @@ package Gtk.Message_Dialog is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Buttons_Property
+
+   Buttons_Property : constant Gtk.Message_Dialog.Property_Gtk_Buttons_Type;
    --  Type: Gtk_Buttons_Type
    --  Flags: write
-   --
-   --  Name: Image_Property
+
+   Image_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
    --  The image for this dialog.
-   --
-   --  Name: Message_Area_Property
+
+   Message_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
    --  The Gtk.Box.Gtk_Vbox that corresponds to the message area of this
    --  dialog. See Gtk.Message_Dialog.Get_Message_Area for a detailed
    --  description of this area.
-   --
-   --  Name: Message_Type_Property
+
+   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
    --  Type: Gtk_Message_Type
-   --  Flags: read-write
    --  The type of the message. The type is used to determine the image that
    --  is shown in the dialog, unless the image is explicitly set by the
    --  ::image property.
-   --
-   --  Name: Secondary_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Secondary_Text_Property : constant Glib.Properties.Property_String;
    --  The secondary text of the message dialog.
-   --
-   --  Name: Secondary_Use_Markup_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean;
    --  True if the secondary text of the dialog includes Pango markup. See
    --  pango_parse_markup.
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Text_Property : constant Glib.Properties.Property_String;
    --  The primary text of the message dialog. If the dialog has a secondary
    --  text, this will appear as the title.
-   --
-   --  Name: Use_Markup_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean;
    --  True if the primary text of the dialog includes Pango markup. See
    --  pango_parse_markup.
-
-   Buttons_Property : constant Gtk.Message_Dialog.Property_Gtk_Buttons_Type;
-   Image_Property : constant Glib.Properties.Property_Object;
-   Message_Area_Property : constant Glib.Properties.Property_Object;
-   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
-   Secondary_Text_Property : constant Glib.Properties.Property_String;
-   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean;
-   Text_Property : constant Glib.Properties.Property_String;
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Use_Markup_Property : constant Glib.Properties.Property_Boolean :=

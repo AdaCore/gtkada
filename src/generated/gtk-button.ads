@@ -353,60 +353,33 @@ package Gtk.Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Focus_On_Click_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Image_Property
+
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+
+   Image_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
    --  The child widget to appear next to the button text.
-   --
-   --  Name: Image_Position_Property
-   --  Type: Gtk.Enums.Gtk_Position_Type
-   --  Flags: read-write
+
+   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
    --  The position of the image relative to the text inside the button.
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Relief_Property
-   --  Type: Gtk.Enums.Gtk_Relief_Style
-   --  Flags: read-write
-   --
-   --  Name: Use_Stock_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Use_Underline_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
+
+   Label_Property : constant Glib.Properties.Property_String;
+
+   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
+
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
+
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
+
+   Xalign_Property : constant Glib.Properties.Property_Float;
    --  If the child of the button is a Gtk.Misc.Gtk_Misc or
    --  Gtk.Alignment.Gtk_Alignment, this property can be used to control its
    --  horizontal alignment. 0.0 is left aligned, 1.0 is right aligned.
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
+
+   Yalign_Property : constant Glib.Properties.Property_Float;
    --  If the child of the button is a Gtk.Misc.Gtk_Misc or
    --  Gtk.Alignment.Gtk_Alignment, this property can be used to control its
    --  vertical alignment. 0.0 is top aligned, 1.0 is bottom aligned.
-
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
-   Image_Property : constant Glib.Properties.Property_Object;
-   Image_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
-   Label_Property : constant Glib.Properties.Property_String;
-   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
-   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
-   Xalign_Property : constant Glib.Properties.Property_Float;
-   Yalign_Property : constant Glib.Properties.Property_Float;
 
    -------------
    -- Signals --

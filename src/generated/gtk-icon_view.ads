@@ -901,123 +901,78 @@ package Gtk.Icon_View is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Cell_Area_Property
+
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers for this
    --  view.
    --
    --  If no area is specified when creating the icon view with
    --  Gtk.Icon_View.Gtk_New_With_Area a Gtk.Cell_Area_Box.Gtk_Cell_Area_Box
    --  will be used.
-   --
-   --  Name: Column_Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Column_Spacing_Property : constant Glib.Properties.Property_Int;
    --  The column-spacing property specifies the space which is inserted
    --  between the columns of the icon view.
-   --
-   --  Name: Columns_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Columns_Property : constant Glib.Properties.Property_Int;
    --  The columns property contains the number of the columns in which the
    --  items should be displayed. If it is -1, the number of columns will be
    --  chosen automatically to fill the available area.
-   --
-   --  Name: Item_Orientation_Property
-   --  Type: Gtk.Enums.Gtk_Orientation
-   --  Flags: read-write
+
+   Item_Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
    --  The item-orientation property specifies how the cells (i.e. the icon
    --  and the text) of the item are positioned relative to each other.
-   --
-   --  Name: Item_Padding_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Item_Padding_Property : constant Glib.Properties.Property_Int;
    --  The item-padding property specifies the padding around each of the icon
    --  view's item.
-   --
-   --  Name: Item_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Item_Width_Property : constant Glib.Properties.Property_Int;
    --  The item-width property specifies the width to use for each item. If it
    --  is set to -1, the icon view will automatically determine a suitable item
    --  size.
-   --
-   --  Name: Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Margin_Property : constant Glib.Properties.Property_Int;
    --  The margin property specifies the space which is inserted at the edges
    --  of the icon view.
-   --
-   --  Name: Markup_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Markup_Column_Property : constant Glib.Properties.Property_Int;
    --  The ::markup-column property contains the number of the model column
    --  containing markup information to be displayed. The markup column must be
    --  of type G_TYPE_STRING. If this property and the :text-column property
    --  are both set to column numbers, it overrides the text column. If both
    --  are set to -1, no texts are displayed.
-   --
-   --  Name: Pixbuf_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Pixbuf_Column_Property : constant Glib.Properties.Property_Int;
    --  The ::pixbuf-column property contains the number of the model column
    --  containing the pixbufs which are displayed. The pixbuf column must be of
    --  type GDK_TYPE_PIXBUF. Setting this property to -1 turns off the display
    --  of pixbufs.
-   --
-   --  Name: Reorderable_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Reorderable_Property : constant Glib.Properties.Property_Boolean;
    --  The reorderable property specifies if the items can be reordered by
    --  DND.
-   --
-   --  Name: Row_Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Row_Spacing_Property : constant Glib.Properties.Property_Int;
    --  The row-spacing property specifies the space which is inserted between
    --  the rows of the icon view.
-   --
-   --  Name: Selection_Mode_Property
-   --  Type: Gtk.Enums.Gtk_Selection_Mode
-   --  Flags: read-write
+
+   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode;
    --  The ::selection-mode property specifies the selection mode of icon
    --  view. If the mode is GTK_SELECTION_MULTIPLE, rubberband selection is
    --  enabled, for the other modes, only keyboard selection is possible.
-   --
-   --  Name: Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Spacing_Property : constant Glib.Properties.Property_Int;
    --  The spacing property specifies the space which is inserted between the
    --  cells (i.e. the icon and the text) of an item.
-   --
-   --  Name: Text_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Text_Column_Property : constant Glib.Properties.Property_Int;
    --  The ::text-column property contains the number of the model column
    --  containing the texts which are displayed. The text column must be of
    --  type G_TYPE_STRING. If this property and the :markup-column property are
    --  both set to -1, no texts are displayed.
-   --
-   --  Name: Tooltip_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
 
-   Cell_Area_Property : constant Glib.Properties.Property_Object;
-   Column_Spacing_Property : constant Glib.Properties.Property_Int;
-   Columns_Property : constant Glib.Properties.Property_Int;
-   Item_Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
-   Item_Padding_Property : constant Glib.Properties.Property_Int;
-   Item_Width_Property : constant Glib.Properties.Property_Int;
-   Margin_Property : constant Glib.Properties.Property_Int;
-   Markup_Column_Property : constant Glib.Properties.Property_Int;
-   Pixbuf_Column_Property : constant Glib.Properties.Property_Int;
-   Reorderable_Property : constant Glib.Properties.Property_Boolean;
-   Row_Spacing_Property : constant Glib.Properties.Property_Int;
-   Selection_Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode;
-   Spacing_Property : constant Glib.Properties.Property_Int;
-   Text_Column_Property : constant Glib.Properties.Property_Int;
    Tooltip_Column_Property : constant Glib.Properties.Property_Int;
 
    -------------

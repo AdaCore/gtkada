@@ -147,22 +147,15 @@ package Gtk.Toggle_Action is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the toggle action should be active.
-   --
-   --  Name: Draw_As_Radio_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the proxies for this action look like radio action proxies.
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

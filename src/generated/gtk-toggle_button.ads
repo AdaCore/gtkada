@@ -262,21 +262,11 @@ package Gtk.Toggle_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Draw_Indicator_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Inconsistent_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Active_Property : constant Glib.Properties.Property_Boolean;
+
    Draw_Indicator_Property : constant Glib.Properties.Property_Boolean;
+
    Inconsistent_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

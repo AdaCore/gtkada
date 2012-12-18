@@ -517,68 +517,44 @@ package Gtk.Entry_Completion is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Cell_Area_Property
+
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers in the
    --  treeview column.
    --
    --  If no area is specified when creating the entry completion with
    --  Gtk.Entry_Completion.Gtk_New_With_Area a horizontally oriented
    --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
-   --
-   --  Name: Inline_Completion_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Inline_Completion_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the common prefix of the possible completions should
    --  be inserted automatically in the entry. Note that this requires
    --  text-column to be set, even if you are using a custom match function.
-   --
-   --  Name: Inline_Selection_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Inline_Selection_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the possible completions on the popup will appear in
    --  the entry as you navigate through them.
-   --
-   --  Name: Minimum_Key_Length_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Popup_Completion_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
+
+   Popup_Completion_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the possible completions should be shown in a popup
    --  window.
-   --
-   --  Name: Popup_Set_Width_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Popup_Set_Width_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the completions popup window will be resized to the
    --  width of the entry.
-   --
-   --  Name: Popup_Single_Match_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the completions popup window will shown for a single
    --  possible completion. You probably want to set this to False if you are
    --  using <link linkend="GtkEntryCompletion--inline-completion">inline
    --  completion</link>.
-   --
-   --  Name: Text_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Text_Column_Property : constant Glib.Properties.Property_Int;
    --  The column of the model containing the strings. Note that the strings
    --  must be UTF-8.
-
-   Cell_Area_Property : constant Glib.Properties.Property_Object;
-   Inline_Completion_Property : constant Glib.Properties.Property_Boolean;
-   Inline_Selection_Property : constant Glib.Properties.Property_Boolean;
-   Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
-   Popup_Completion_Property : constant Glib.Properties.Property_Boolean;
-   Popup_Set_Width_Property : constant Glib.Properties.Property_Boolean;
-   Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean;
-   Text_Column_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

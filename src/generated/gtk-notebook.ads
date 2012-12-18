@@ -523,42 +523,20 @@ package Gtk.Notebook is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Enable_Popup_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Group_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  Group name for tab drag and drop.
-   --
-   --  Name: Page_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Scrollable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Show_Border_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Show_Tabs_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Tab_Pos_Property
-   --  Type: Gtk.Enums.Gtk_Position_Type
-   --  Flags: read-write
 
    Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
+
    Group_Name_Property : constant Glib.Properties.Property_String;
+   --  Group name for tab drag and drop.
+
    Page_Property : constant Glib.Properties.Property_Int;
+
    Scrollable_Property : constant Glib.Properties.Property_Boolean;
+
    Show_Border_Property : constant Glib.Properties.Property_Boolean;
+
    Show_Tabs_Property : constant Glib.Properties.Property_Boolean;
+
    Tab_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
 
    -------------

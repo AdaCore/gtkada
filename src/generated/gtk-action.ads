@@ -440,24 +440,20 @@ package Gtk.Action is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Action_Group_Property
+
+   Action_Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Action_Group.Gtk_Action_Group
-   --  Flags: read-write
-   --
-   --  Name: Always_Show_Image_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the action's menu item proxies will ignore the
    --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show their
    --  image, if available.
    --
    --  Use this property if the menu item would be useless or hard to use
    --  without their image.
-   --
-   --  Name: G_Icon_Property
+
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
    --  The Glib.G_Icon.G_Icon displayed in the Gtk.Action.Gtk_Action.
    --
    --  Note that the stock icon is preferred, if the
@@ -466,14 +462,10 @@ package Gtk.Action is
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-   --
-   --  Name: Hide_If_Empty_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean;
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the icon from the icon theme.
    --
    --  Note that the stock icon is preferred, if the
@@ -483,82 +475,43 @@ package Gtk.Action is
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-   --
-   --  Name: Is_Important_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Is_Important_Property : constant Glib.Properties.Property_Boolean;
+
+   Label_Property : constant Glib.Properties.Property_String;
    --  The label used for menu items and buttons that activate this action. If
    --  the label is null, GTK+ uses the stock label specified via the stock-id
    --  property.
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Short_Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Name_Property : constant Glib.Properties.Property_String;
+
+   Sensitive_Property : constant Glib.Properties.Property_Boolean;
+
+   Short_Label_Property : constant Glib.Properties.Property_String;
    --  A shorter label that may be used on toolbar buttons.
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-   --
-   --  Name: Stock_Id_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Stock_Id_Property : constant Glib.Properties.Property_String;
    --  The stock icon displayed in widgets representing this action.
    --
    --  This is an appearance property and thus only applies if
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance is True.
-   --
-   --  Name: Tooltip_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Horizontal_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Overflown_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Tooltip_Property : constant Glib.Properties.Property_String;
+
+   Visible_Property : constant Glib.Properties.Property_Boolean;
+
+   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean;
+
+   Visible_Overflown_Property : constant Glib.Properties.Property_Boolean;
    --  When True, toolitem proxies for this action are represented in the
    --  toolbar overflow menu.
-   --
-   --  Name: Visible_Vertical_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
-   Action_Group_Property : constant Glib.Properties.Property_Object;
-   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
-   G_Icon_Property : constant Glib.Properties.Property_Boxed;
-   Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean;
-   Icon_Name_Property : constant Glib.Properties.Property_String;
-   Is_Important_Property : constant Glib.Properties.Property_Boolean;
-   Label_Property : constant Glib.Properties.Property_String;
-   Name_Property : constant Glib.Properties.Property_String;
-   Sensitive_Property : constant Glib.Properties.Property_Boolean;
-   Short_Label_Property : constant Glib.Properties.Property_String;
-   Stock_Id_Property : constant Glib.Properties.Property_String;
-   Tooltip_Property : constant Glib.Properties.Property_String;
-   Visible_Property : constant Glib.Properties.Property_Boolean;
-   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean;
-   Visible_Overflown_Property : constant Glib.Properties.Property_Boolean;
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

@@ -223,16 +223,9 @@ package Gtk.Font_Selection is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Font_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Preview_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
 
    Font_Name_Property : constant Glib.Properties.Property_String;
+
    Preview_Text_Property : constant Glib.Properties.Property_String;
 
 private

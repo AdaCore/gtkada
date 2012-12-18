@@ -367,10 +367,6 @@ package Gtk.Recent_Action is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Show_Numbers_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
 

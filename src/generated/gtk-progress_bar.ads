@@ -237,10 +237,9 @@ package Gtk.Progress_Bar is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Ellipsize_Property
+
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  Flags: read-write
    --  The preferred place to ellipsize the string, if the progressbar does
    --  not have enough room to display the entire string, specified as a
    --  Pango_Ellisize_Mode.
@@ -248,33 +247,18 @@ package Gtk.Progress_Bar is
    --  Note that setting this property to a value other than
    --  Pango.Layout.Ellipsize_None has the side-effect that the progressbar
    --  requests only enough space to display the ellipsis "...". Another means
-   --  to set a progressbar's width is gtk_widget_set_size_request.
-   --
-   --  Name: Fraction_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Inverted_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pulse_Step_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Show_Text_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+   --  to set a progressbar's width is Gtk.Widget.Set_Size_Request.
 
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    Fraction_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    Inverted_Property : constant Glib.Properties.Property_Boolean;
+
    Pulse_Step_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    Show_Text_Property : constant Glib.Properties.Property_Boolean;
+
    Text_Property : constant Glib.Properties.Property_String;
 
 private

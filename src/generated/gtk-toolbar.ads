@@ -280,10 +280,8 @@ package Gtk.Toolbar is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Icon_Size_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Icon_Size_Property : constant Glib.Properties.Property_Int;
    --  The size of the icons in a toolbar is normally determined by the
    --  toolbar-icon-size setting. When this property is set, it overrides the
    --  setting.
@@ -291,23 +289,12 @@ package Gtk.Toolbar is
    --  This should only be used for special-purpose toolbars, normal
    --  application toolbars should respect the user preferences for the size of
    --  icons.
-   --
-   --  Name: Icon_Size_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Is True if the icon-size property has been set.
-   --
-   --  Name: Show_Arrow_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Toolbar_Style_Property
-   --  Type: Gtk.Enums.Gtk_Toolbar_Style
-   --  Flags: read-write
 
-   Icon_Size_Property : constant Glib.Properties.Property_Int;
    Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
+   --  Is True if the icon-size property has been set.
+
    Show_Arrow_Property : constant Glib.Properties.Property_Boolean;
+
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
 
    -------------

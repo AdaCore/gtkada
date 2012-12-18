@@ -875,59 +875,42 @@ package Gtk.GEntry is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Activates_Default_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Buffer_Property
+
+   Activates_Default_Property : constant Glib.Properties.Property_Boolean;
+
+   Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Entry_Buffer.Gtk_Entry_Buffer
-   --  Flags: read-write
-   --
-   --  Name: Caps_Lock_Warning_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean;
    --  Whether password entries will show a warning when Caps Lock is on.
    --
    --  Note that the warning is shown using a secondary icon, and thus does
    --  not work if you are using the secondary icon position for some other
    --  purpose.
-   --
-   --  Name: Completion_Property
+
+   Completion_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Entry_Completion.Gtk_Entry_Completion
-   --  Flags: read-write
    --  The auxiliary completion object to use with the entry.
-   --
-   --  Name: Cursor_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Editable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Has_Frame_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Im_Module_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Cursor_Position_Property : constant Glib.Properties.Property_Int;
+
+   Editable_Property : constant Glib.Properties.Property_Boolean;
+
+   Has_Frame_Property : constant Glib.Properties.Property_Boolean;
+
+   Im_Module_Property : constant Glib.Properties.Property_String;
    --  Which IM (input method) module should be used for this entry. See
    --  Gtk.Imcontext.Gtk_Imcontext.
    --
    --  Setting this to a non-null value overrides the system-wide IM module
    --  setting. See the GtkSettings Gtk.Settings.Gtk_Settings:gtk-im-module
    --  property.
-   --
-   --  Name: Inner_Border_Property
+
+   Inner_Border_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gtk.Style.Gtk_Border
-   --  Flags: read-write
    --  Sets the text area's border between the text and the frame.
-   --
-   --  Name: Invisible_Char_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Invisible_Char_Property : constant Glib.Properties.Property_Uint;
    --  The invisible character is used when masking entry contents (in
    --  \"password mode\")"). When it is not explicitly set with the
    --  Gtk.GEntry.Gtk_Entry::invisible-char property, GTK+ determines the
@@ -936,30 +919,20 @@ package Gtk.GEntry is
    --
    --  This style property allows the theme to prepend a character to the list
    --  of candidates.
-   --
-   --  Name: Invisible_Char_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the invisible char has been set for the Gtk.GEntry.Gtk_Entry.
-   --
-   --  Name: Max_Length_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Overwrite_Mode_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Max_Length_Property : constant Glib.Properties.Property_Int;
+
+   Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean;
    --  If text is overwritten when typing in the Gtk.GEntry.Gtk_Entry.
-   --
-   --  Name: Placeholder_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Placeholder_Text_Property : constant Glib.Properties.Property_String;
    --  The text that will be displayed in the Gtk.GEntry.Gtk_Entry when it is
    --  empty and unfocused.
-   --
-   --  Name: Primary_Icon_Activatable_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the primary icon is activatable.
    --
    --  GTK+ emits the Gtk.GEntry.Gtk_Entry::icon-press and
@@ -968,25 +941,19 @@ package Gtk.GEntry is
    --
    --  Sensitive, but non-activatable icons can be used for purely
    --  informational purposes.
-   --
-   --  Name: Primary_Icon_Gicon_Property
+
+   Primary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
    --  The Glib.G_Icon.G_Icon to use for the primary icon for the entry.
-   --
-   --  Name: Primary_Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Primary_Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The icon name to use for the primary icon for the entry.
-   --
-   --  Name: Primary_Icon_Pixbuf_Property
+
+   Primary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
    --  A pixbuf to use as the primary icon for the entry.
-   --
-   --  Name: Primary_Icon_Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Primary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the primary icon is sensitive.
    --
    --  An insensitive icon appears grayed out. GTK+ does not emit the
@@ -995,51 +962,38 @@ package Gtk.GEntry is
    --
    --  An icon should be set insensitive if the action that would trigger when
    --  clicked is currently not available.
-   --
-   --  Name: Primary_Icon_Stock_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Primary_Icon_Stock_Property : constant Glib.Properties.Property_String;
    --  The stock id to use for the primary icon for the entry.
-   --
-   --  Name: Primary_Icon_Storage_Type_Property
+
+   Primary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    --  Type: Gtk.Image.Gtk_Image_Type
-   --  Flags: read-write
    --  The representation which is used for the primary icon of the entry.
-   --
-   --  Name: Primary_Icon_Tooltip_Markup_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Primary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the primary icon, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
    --  language</link>.
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Markup.
-   --
-   --  Name: Primary_Icon_Tooltip_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Primary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the primary icon.
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Text.
-   --
-   --  Name: Progress_Fraction_Property
+
+   Progress_Fraction_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The current fraction of the task that's been completed.
-   --
-   --  Name: Progress_Pulse_Step_Property
+
+   Progress_Pulse_Step_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The fraction of total entry width to move the progress bouncing block
    --  for each call to Gtk.GEntry.Progress_Pulse.
-   --
-   --  Name: Scroll_Offset_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Secondary_Icon_Activatable_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Scroll_Offset_Property : constant Glib.Properties.Property_Int;
+
+   Secondary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the secondary icon is activatable.
    --
    --  GTK+ emits the Gtk.GEntry.Gtk_Entry::icon-press and
@@ -1048,25 +1002,19 @@ package Gtk.GEntry is
    --
    --  Sensitive, but non-activatable icons can be used for purely
    --  informational purposes.
-   --
-   --  Name: Secondary_Icon_Gicon_Property
+
+   Secondary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
    --  The Glib.G_Icon.G_Icon to use for the secondary icon for the entry.
-   --
-   --  Name: Secondary_Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Secondary_Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The icon name to use for the secondary icon for the entry.
-   --
-   --  Name: Secondary_Icon_Pixbuf_Property
+
+   Secondary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
    --  An pixbuf to use as the secondary icon for the entry.
-   --
-   --  Name: Secondary_Icon_Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Secondary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the secondary icon is sensitive.
    --
    --  An insensitive icon appears grayed out. GTK+ does not emit the
@@ -1075,114 +1023,47 @@ package Gtk.GEntry is
    --
    --  An icon should be set insensitive if the action that would trigger when
    --  clicked is currently not available.
-   --
-   --  Name: Secondary_Icon_Stock_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Secondary_Icon_Stock_Property : constant Glib.Properties.Property_String;
    --  The stock id to use for the secondary icon for the entry.
-   --
-   --  Name: Secondary_Icon_Storage_Type_Property
+
+   Secondary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    --  Type: Gtk.Image.Gtk_Image_Type
-   --  Flags: read-write
    --  The representation which is used for the secondary icon of the entry.
-   --
-   --  Name: Secondary_Icon_Tooltip_Markup_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Secondary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the secondary icon, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
    --  language</link>.
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Markup.
-   --
-   --  Name: Secondary_Icon_Tooltip_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Secondary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the secondary icon.
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Text.
-   --
-   --  Name: Selection_Bound_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Shadow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Shadow_Type
-   --  Flags: read-write
+
+   Selection_Bound_Property : constant Glib.Properties.Property_Int;
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    --  Which kind of shadow to draw around the entry when
    --  Gtk.GEntry.Gtk_Entry:has-frame is set to True.
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Text_Length_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Text_Property : constant Glib.Properties.Property_String;
+
+   Text_Length_Property : constant Glib.Properties.Property_Uint;
    --  The length of the text in the Gtk.GEntry.Gtk_Entry.
-   --
-   --  Name: Truncate_Multiline_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Truncate_Multiline_Property : constant Glib.Properties.Property_Boolean;
    --  When True, pasted multi-line text is truncated to the first line.
-   --
-   --  Name: Visibility_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
+
+   Visibility_Property : constant Glib.Properties.Property_Boolean;
+
+   Width_Chars_Property : constant Glib.Properties.Property_Int;
+
+   Xalign_Property : constant Glib.Properties.Property_Float;
    --  The horizontal alignment, from 0 (left) to 1 (right). Reversed for RTL
    --  layouts.
-
-   Activates_Default_Property : constant Glib.Properties.Property_Boolean;
-   Buffer_Property : constant Glib.Properties.Property_Object;
-   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean;
-   Completion_Property : constant Glib.Properties.Property_Object;
-   Cursor_Position_Property : constant Glib.Properties.Property_Int;
-   Editable_Property : constant Glib.Properties.Property_Boolean;
-   Has_Frame_Property : constant Glib.Properties.Property_Boolean;
-   Im_Module_Property : constant Glib.Properties.Property_String;
-   Inner_Border_Property : constant Glib.Properties.Property_Boxed;
-   Invisible_Char_Property : constant Glib.Properties.Property_Uint;
-   Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean;
-   Max_Length_Property : constant Glib.Properties.Property_Int;
-   Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean;
-   Placeholder_Text_Property : constant Glib.Properties.Property_String;
-   Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
-   Primary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed;
-   Primary_Icon_Name_Property : constant Glib.Properties.Property_String;
-   Primary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object;
-   Primary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean;
-   Primary_Icon_Stock_Property : constant Glib.Properties.Property_String;
-   Primary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
-   Primary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
-   Primary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String;
-   Progress_Fraction_Property : constant Glib.Properties.Property_Double;
-   Progress_Pulse_Step_Property : constant Glib.Properties.Property_Double;
-   Scroll_Offset_Property : constant Glib.Properties.Property_Int;
-   Secondary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
-   Secondary_Icon_Gicon_Property : constant Glib.Properties.Property_Boxed;
-   Secondary_Icon_Name_Property : constant Glib.Properties.Property_String;
-   Secondary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object;
-   Secondary_Icon_Sensitive_Property : constant Glib.Properties.Property_Boolean;
-   Secondary_Icon_Stock_Property : constant Glib.Properties.Property_String;
-   Secondary_Icon_Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
-   Secondary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
-   Secondary_Icon_Tooltip_Text_Property : constant Glib.Properties.Property_String;
-   Selection_Bound_Property : constant Glib.Properties.Property_Int;
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
-   Text_Property : constant Glib.Properties.Property_String;
-   Text_Length_Property : constant Glib.Properties.Property_Uint;
-   Truncate_Multiline_Property : constant Glib.Properties.Property_Boolean;
-   Visibility_Property : constant Glib.Properties.Property_Boolean;
-   Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Xalign_Property : constant Glib.Properties.Property_Float;
 
    -------------
    -- Signals --

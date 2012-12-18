@@ -140,13 +140,9 @@ package Gtk.Switch is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether the Gtk.Switch.Gtk_Switch widget is in its on or off state.
 
    Active_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the Gtk.Switch.Gtk_Switch widget is in its on or off state.
 
    -------------
    -- Signals --

@@ -866,46 +866,30 @@ package Gtk.Text_Buffer is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Copy_Target_List_Property
-   --  Type: Gtk.Target_List.Gtk_Target_List
-   --  Flags: read-write
-   --  The list of targets this buffer supports for clipboard copying and as
-   --  DND source.
-   --
-   --  Name: Cursor_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The position of the insert mark (as offset from the beginning of the
-   --  buffer). It is useful for getting notified when the cursor moves.
-   --
-   --  Name: Has_Selection_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether the buffer has some text currently selected.
-   --
-   --  Name: Paste_Target_List_Property
-   --  Type: Gtk.Target_List.Gtk_Target_List
-   --  Flags: read-write
-   --  The list of targets this buffer supports for clipboard pasting and as
-   --  DND destination.
-   --
-   --  Name: Tag_Table_Property
-   --  Type: Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
-   --  Flags: read-write
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The text content of the buffer. Without child widgets and images, see
-   --  Gtk.Text_Buffer.Get_Text for more information.
 
    Copy_Target_List_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Target_List.Gtk_Target_List
+   --  The list of targets this buffer supports for clipboard copying and as
+   --  DND source.
+
    Cursor_Position_Property : constant Glib.Properties.Property_Int;
+   --  The position of the insert mark (as offset from the beginning of the
+   --  buffer). It is useful for getting notified when the cursor moves.
+
    Has_Selection_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the buffer has some text currently selected.
+
    Paste_Target_List_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Target_List.Gtk_Target_List
+   --  The list of targets this buffer supports for clipboard pasting and as
+   --  DND destination.
+
    Tag_Table_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
+
    Text_Property : constant Glib.Properties.Property_String;
+   --  The text content of the buffer. Without child widgets and images, see
+   --  Gtk.Text_Buffer.Get_Text for more information.
 
    -------------
    -- Signals --

@@ -196,50 +196,25 @@ package Gtk.Alignment is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Bottom_Padding_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The padding to insert at the bottom of the widget.
-   --
-   --  Name: Left_Padding_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The padding to insert at the left of the widget.
-   --
-   --  Name: Right_Padding_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The padding to insert at the right of the widget.
-   --
-   --  Name: Top_Padding_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The padding to insert at the top of the widget.
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Xscale_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Yscale_Property
-   --  Type: Gfloat
-   --  Flags: read-write
 
    Bottom_Padding_Property : constant Glib.Properties.Property_Uint;
+   --  The padding to insert at the bottom of the widget.
+
    Left_Padding_Property : constant Glib.Properties.Property_Uint;
+   --  The padding to insert at the left of the widget.
+
    Right_Padding_Property : constant Glib.Properties.Property_Uint;
+   --  The padding to insert at the right of the widget.
+
    Top_Padding_Property : constant Glib.Properties.Property_Uint;
+   --  The padding to insert at the top of the widget.
+
    Xalign_Property : constant Glib.Properties.Property_Float;
+
    Xscale_Property : constant Glib.Properties.Property_Float;
+
    Yalign_Property : constant Glib.Properties.Property_Float;
+
    Yscale_Property : constant Glib.Properties.Property_Float;
 
 private

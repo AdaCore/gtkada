@@ -124,12 +124,9 @@ package Gtk.Invisible is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Screen_Property
-   --  Type: Gdk.Screen
-   --  Flags: read-write
 
    Screen_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Gdk.Screen
 
 private
    Screen_Property : constant Glib.Properties.Property_Boxed :=

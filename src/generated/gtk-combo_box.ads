@@ -645,97 +645,70 @@ package Gtk.Combo_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Active_Property : constant Glib.Properties.Property_Int;
    --  The item which is currently active. If the model is a non-flat
    --  treemodel, and the active item is not an immediate child of the root of
    --  the tree, this property has the value 'gtk_tree_path_get_indices
    --  (path)[0]', where 'path' is the Gtk.Tree_Model.Gtk_Tree_Path of the
    --  active item.
-   --
-   --  Name: Active_Id_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Active_Id_Property : constant Glib.Properties.Property_String;
    --  The value of the ID column of the active row.
-   --
-   --  Name: Add_Tearoffs_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean;
    --  The add-tearoffs property controls whether generated menus have tearoff
    --  menu items.
    --
    --  Note that this only affects menu style combo boxes.
-   --
-   --  Name: Button_Sensitivity_Property
-   --  Type: Gtk.Enums.Gtk_Sensitivity_Type
-   --  Flags: read-write
+
+   Button_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
    --  Whether the dropdown button is sensitive when the model is empty.
-   --
-   --  Name: Cell_Area_Property
+
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers for this
    --  combo box.
    --
    --  If no area is specified when creating the combo box with
    --  Gtk.Combo_Box.Gtk_New_With_Area a horizontally oriented
    --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
-   --
-   --  Name: Column_Span_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Column_Span_Column_Property : constant Glib.Properties.Property_Int;
    --  If this is set to a non-negative value, it must be the index of a
    --  column of type G_TYPE_INT in the model.
    --
    --  The values of that column are used to determine how many columns a
    --  value in the list will span.
-   --
-   --  Name: Entry_Text_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Entry_Text_Column_Property : constant Glib.Properties.Property_Int;
    --  The column in the combo box's model to associate with strings from the
    --  entry if the combo was created with
    --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry = True.
-   --
-   --  Name: Focus_On_Click_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Has_Entry_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+
+   Has_Entry_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the combo box has an entry.
-   --
-   --  Name: Has_Frame_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Frame_Property : constant Glib.Properties.Property_Boolean;
    --  The has-frame property controls whether a frame is drawn around the
    --  entry.
-   --
-   --  Name: Id_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Id_Column_Property : constant Glib.Properties.Property_Int;
    --  The column in the combo box's model that provides string IDs for the
    --  values in the model, if != -1.
-   --
-   --  Name: Popup_Fixed_Width_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the popup's width should be a fixed width matching the
    --  allocated width of the combo box.
-   --
-   --  Name: Popup_Shown_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Popup_Shown_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the combo boxes dropdown is popped up. Note that this property
    --  is mainly useful, because it allows you to connect to
    --  notify::popup-shown.
-   --
-   --  Name: Row_Span_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Row_Span_Column_Property : constant Glib.Properties.Property_Int;
    --  If this is set to a non-negative value, it must be the index of a
    --  column of type G_TYPE_INT in the model.
    --
@@ -743,35 +716,14 @@ package Gtk.Combo_Box is
    --  in the list will span. Therefore, the values in the model column pointed
    --  to by this property must be greater than zero and not larger than
    --  wrap-width.
-   --
-   --  Name: Tearoff_Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Tearoff_Title_Property : constant Glib.Properties.Property_String;
    --  A title that may be displayed by the window manager when the popup is
    --  torn-off.
-   --
-   --  Name: Wrap_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Wrap_Width_Property : constant Glib.Properties.Property_Int;
    --  If wrap-width is set to a positive value, the list will be displayed in
    --  multiple columns, the number of columns is determined by wrap-width.
-
-   Active_Property : constant Glib.Properties.Property_Int;
-   Active_Id_Property : constant Glib.Properties.Property_String;
-   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean;
-   Button_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
-   Cell_Area_Property : constant Glib.Properties.Property_Object;
-   Column_Span_Column_Property : constant Glib.Properties.Property_Int;
-   Entry_Text_Column_Property : constant Glib.Properties.Property_Int;
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
-   Has_Entry_Property : constant Glib.Properties.Property_Boolean;
-   Has_Frame_Property : constant Glib.Properties.Property_Boolean;
-   Id_Column_Property : constant Glib.Properties.Property_Int;
-   Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean;
-   Popup_Shown_Property : constant Glib.Properties.Property_Boolean;
-   Row_Span_Column_Property : constant Glib.Properties.Property_Int;
-   Tearoff_Title_Property : constant Glib.Properties.Property_String;
-   Wrap_Width_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

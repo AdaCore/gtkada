@@ -298,48 +298,24 @@ package Gtk.Expander is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Expanded_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Label_Fill_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Label_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Resize_Toplevel_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  When this property is True, the expander will resize the toplevel
-   --  widget containing the expander upon expanding and collapsing.
-   --
-   --  Name: Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Use_Markup_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Use_Underline_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Expanded_Property : constant Glib.Properties.Property_Boolean;
+
    Label_Property : constant Glib.Properties.Property_String;
+
    Label_Fill_Property : constant Glib.Properties.Property_Boolean;
+
    Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Resize_Toplevel_Property : constant Glib.Properties.Property_Boolean;
+   --  When this property is True, the expander will resize the toplevel
+   --  widget containing the expander upon expanding and collapsing.
+
    Spacing_Property : constant Glib.Properties.Property_Int;
+
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
+
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

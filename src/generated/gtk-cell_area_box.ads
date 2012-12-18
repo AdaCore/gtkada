@@ -291,13 +291,9 @@ package Gtk.Cell_Area_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The amount of space to reserve between cells.
 
    Spacing_Property : constant Glib.Properties.Property_Int;
+   --  The amount of space to reserve between cells.
 
 private
    Spacing_Property : constant Glib.Properties.Property_Int :=

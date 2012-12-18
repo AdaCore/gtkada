@@ -526,72 +526,43 @@ package Gtk.Image is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: File_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: G_Icon_Property
+
+   File_Property : constant Glib.Properties.Property_String;
+
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
    --  The GIcon displayed in the GtkImage. For themed icons, If the icon
    --  theme is changed, the image will be updated automatically.
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the icon in the icon theme. If the icon theme is changed,
    --  the image will be updated automatically.
-   --
-   --  Name: Icon_Set_Property
+
+   Icon_Set_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Icon_Set.Gtk_Icon_Set
-   --  Flags: read-write
-   --
-   --  Name: Icon_Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Pixbuf_Property
+
+   Icon_Size_Property : constant Glib.Properties.Property_Int;
+
+   Pixbuf_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Pixbuf_Animation_Property
+
+   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf_Animation
-   --  Flags: read-write
-   --
-   --  Name: Pixel_Size_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Pixel_Size_Property : constant Glib.Properties.Property_Int;
    --  The "pixel-size" property can be used to specify a fixed size
    --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
    --  Gtk.Image.Image_Icon_Name.
-   --
-   --  Name: Stock_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Storage_Type_Property
+
+   Stock_Property : constant Glib.Properties.Property_String;
+
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    --  Type: Gtk_Image_Type
-   --  Flags: read-write
-   --
-   --  Name: Use_Fallback_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the icon displayed in the GtkImage will use standard icon names
    --  fallback. The value of this property is only relevant for images of type
    --  Gtk.Image.Image_Icon_Name and Gtk.Image.Image_Gicon.
-
-   File_Property : constant Glib.Properties.Property_String;
-   G_Icon_Property : constant Glib.Properties.Property_Boxed;
-   Icon_Name_Property : constant Glib.Properties.Property_String;
-   Icon_Set_Property : constant Glib.Properties.Property_Object;
-   Icon_Size_Property : constant Glib.Properties.Property_Int;
-   Pixbuf_Property : constant Glib.Properties.Property_Object;
-   Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed;
-   Pixel_Size_Property : constant Glib.Properties.Property_Int;
-   Stock_Property : constant Glib.Properties.Property_String;
-   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
-   Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=

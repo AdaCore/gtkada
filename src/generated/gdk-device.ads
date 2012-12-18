@@ -227,65 +227,43 @@ package Gdk.Device is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Associated_Device_Property
+
+   Associated_Device_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Device
-   --  Flags: read-write
    --  Associated pointer or keyboard with this device, if any. Devices of
    --  type GDK_DEVICE_TYPE_MASTER always come in keyboard/pointer pairs. Other
    --  device types will have a null associated device.
-   --
-   --  Name: Device_Manager_Property
+
+   Device_Manager_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Device_Manager
-   --  Flags: read-write
    --  The Gdk.Device_Manager.Gdk_Device_Manager the Gdk.Device.Gdk_Device
    --  pertains to.
-   --
-   --  Name: Display_Property
+
+   Display_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Display
-   --  Flags: read-write
    --  The Gdk.Display.Gdk_Display the Gdk.Device.Gdk_Device pertains to.
-   --
-   --  Name: Has_Cursor_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Cursor_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the device is represented by a cursor on the screen. Devices of
    --  type Gdk.Device.Gdk_Device_Type_Master will have True here.
-   --
-   --  Name: Input_Mode_Property
-   --  Type: Input_Mode
-   --  Flags: read-write
-   --  Input mode for the device.
-   --
-   --  Name: Input_Source_Property
-   --  Type: Input_Source
-   --  Flags: read-write
-   --  Source type for the device.
-   --
-   --  Name: N_Axes_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  Number of axes in the device.
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The device name.
-   --
-   --  Name: The_Type_Property
-   --  Type: Device_Type
-   --  Flags: read-write
-   --  Device role in the device manager.
 
-   Associated_Device_Property : constant Glib.Properties.Property_Boxed;
-   Device_Manager_Property : constant Glib.Properties.Property_Boxed;
-   Display_Property : constant Glib.Properties.Property_Boxed;
-   Has_Cursor_Property : constant Glib.Properties.Property_Boolean;
    Input_Mode_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Input_Mode
+   --  Input mode for the device.
+
    Input_Source_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Input_Source
+   --  Source type for the device.
+
    N_Axes_Property : constant Glib.Properties.Property_Uint;
+   --  Number of axes in the device.
+
    Name_Property : constant Glib.Properties.Property_String;
+   --  The device name.
+
    The_Type_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Device_Type
+   --  Device role in the device manager.
 
    -------------
    -- Signals --

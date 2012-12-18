@@ -231,19 +231,13 @@ package Gtk.Size_Group is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Ignore_Hidden_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  If True, unmapped widgets are ignored when determining the size of the
-   --  group.
-   --
-   --  Name: Mode_Property
-   --  Type: Size_Group_Mode
-   --  Flags: read-write
 
    Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean;
+   --  If True, unmapped widgets are ignored when determining the size of the
+   --  group.
+
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode;
+   --  Type: Size_Group_Mode
 
 private
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode :=

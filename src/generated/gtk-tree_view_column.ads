@@ -586,110 +586,55 @@ package Gtk.Tree_View_Column is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Alignment_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Cell_Area_Property
+
+   Alignment_Property : constant Glib.Properties.Property_Float;
+
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers for this
    --  column.
    --
    --  If no area is specified when creating the tree view column with
    --  Gtk.Tree_View_Column.Gtk_New_With_Area a horizontally oriented
    --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
-   --
-   --  Name: Clickable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Expand_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Fixed_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Max_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Min_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Reorderable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Resizable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Sizing_Property
+
+   Clickable_Property : constant Glib.Properties.Property_Boolean;
+
+   Expand_Property : constant Glib.Properties.Property_Boolean;
+
+   Fixed_Width_Property : constant Glib.Properties.Property_Int;
+
+   Max_Width_Property : constant Glib.Properties.Property_Int;
+
+   Min_Width_Property : constant Glib.Properties.Property_Int;
+
+   Reorderable_Property : constant Glib.Properties.Property_Boolean;
+
+   Resizable_Property : constant Glib.Properties.Property_Boolean;
+
+   Sizing_Property : constant Gtk.Tree_View_Column.Property_Gtk_Tree_View_Column_Sizing;
    --  Type: Gtk_Tree_View_Column_Sizing
-   --  Flags: read-write
-   --
-   --  Name: Sort_Column_Id_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Sort_Column_Id_Property : constant Glib.Properties.Property_Int;
    --  Logical sort column ID this column sorts on when selected for sorting.
    --  Setting the sort column ID makes the column header clickable. Set to %-1
    --  to make the column unsortable.
-   --
-   --  Name: Sort_Indicator_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Sort_Order_Property
-   --  Type: Gtk.Enums.Gtk_Sort_Type
-   --  Flags: read-write
-   --
-   --  Name: Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: X_Offset_Property
-   --  Type: Gint
-   --  Flags: read-write
 
-   Alignment_Property : constant Glib.Properties.Property_Float;
-   Cell_Area_Property : constant Glib.Properties.Property_Object;
-   Clickable_Property : constant Glib.Properties.Property_Boolean;
-   Expand_Property : constant Glib.Properties.Property_Boolean;
-   Fixed_Width_Property : constant Glib.Properties.Property_Int;
-   Max_Width_Property : constant Glib.Properties.Property_Int;
-   Min_Width_Property : constant Glib.Properties.Property_Int;
-   Reorderable_Property : constant Glib.Properties.Property_Boolean;
-   Resizable_Property : constant Glib.Properties.Property_Boolean;
-   Sizing_Property : constant Gtk.Tree_View_Column.Property_Gtk_Tree_View_Column_Sizing;
-   Sort_Column_Id_Property : constant Glib.Properties.Property_Int;
    Sort_Indicator_Property : constant Glib.Properties.Property_Boolean;
+
    Sort_Order_Property : constant Gtk.Enums.Property_Gtk_Sort_Type;
+
    Spacing_Property : constant Glib.Properties.Property_Int;
+
    Title_Property : constant Glib.Properties.Property_String;
+
    Visible_Property : constant Glib.Properties.Property_Boolean;
+
    Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Width_Property : constant Glib.Properties.Property_Int;
+
    X_Offset_Property : constant Glib.Properties.Property_Int;
 
    -------------

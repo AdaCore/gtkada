@@ -1899,14 +1899,11 @@ package Gdk.Window is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Cursor_Property
-   --  Type: Cursor
-   --  Flags: read-write
-   --  The mouse pointer for a Gdk.Gdk_Window. See Gdk.Window.Set_Cursor and
-   --  Gdk.Window.Get_Cursor for details.
 
    Cursor_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Cursor
+   --  The mouse pointer for a Gdk.Gdk_Window. See Gdk.Window.Set_Cursor and
+   --  Gdk.Window.Get_Cursor for details.
 
    -------------
    -- Signals --

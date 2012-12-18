@@ -2786,55 +2786,35 @@ package Gtk.Widget is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: App_Paintable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Can_Default_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Can_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Composite_Child_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Double_Buffered_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   App_Paintable_Property : constant Glib.Properties.Property_Boolean;
+
+   Can_Default_Property : constant Glib.Properties.Property_Boolean;
+
+   Can_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Composite_Child_Property : constant Glib.Properties.Property_Boolean;
+
+   Double_Buffered_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the widget is double buffered.
-   --
-   --  Name: Events_Property
+
+   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask;
    --  Type: Gdk.Event.Gdk_Event_Mask
-   --  Flags: read-write
-   --
-   --  Name: Expand_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Expand_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to expand in both directions. Setting this sets both
    --  Gtk.Widget.Gtk_Widget:hexpand and Gtk.Widget.Gtk_Widget:vexpand
-   --
-   --  Name: Halign_Property
+
+   Halign_Property : constant Gtk.Widget.Property_Gtk_Align;
    --  Type: Gtk_Align
-   --  Flags: read-write
    --  How to distribute horizontal space if widget gets extra space, see
    --  Gtk.Widget.Gtk_Align
-   --
-   --  Name: Has_Default_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Has_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Has_Tooltip_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Default_Property : constant Glib.Properties.Property_Boolean;
+
+   Has_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
    --  Enables or disables the emission of
    --  Gtk.Widget.Gtk_Widget::query-tooltip on Widget. A value of True
    --  indicates that Widget can have a tooltip, in this case the widget will
@@ -2845,95 +2825,65 @@ package Gtk.Widget is
    --  the event masks of the GdkWindows of this widget to include leave-notify
    --  and motion-notify events. This cannot and will not be undone when the
    --  property is set to False again.
-   --
-   --  Name: Height_Request_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Hexpand_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Height_Request_Property : constant Glib.Properties.Property_Int;
+
+   Hexpand_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to expand horizontally. See Gtk.Widget.Set_Hexpand.
-   --
-   --  Name: Hexpand_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Hexpand_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to use the Gtk.Widget.Gtk_Widget:hexpand property. See
    --  Gtk.Widget.Get_Hexpand_Set.
-   --
-   --  Name: Is_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Margin_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Is_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Margin_Property : constant Glib.Properties.Property_Int;
    --  Sets all four sides' margin at once. If read, returns max margin on any
    --  side.
-   --
-   --  Name: Margin_Bottom_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Margin_Bottom_Property : constant Glib.Properties.Property_Int;
    --  Margin on bottom side of widget.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
    --  Gtk.Widget.Set_Size_Request for example.
-   --
-   --  Name: Margin_Left_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Margin_Left_Property : constant Glib.Properties.Property_Int;
    --  Margin on left side of widget.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
    --  Gtk.Widget.Set_Size_Request for example.
-   --
-   --  Name: Margin_Right_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Margin_Right_Property : constant Glib.Properties.Property_Int;
    --  Margin on right side of widget.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
    --  Gtk.Widget.Set_Size_Request for example.
-   --
-   --  Name: Margin_Top_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Margin_Top_Property : constant Glib.Properties.Property_Int;
    --  Margin on top side of widget.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
    --  Gtk.Widget.Set_Size_Request for example.
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: No_Show_All_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Parent_Property
+
+   Name_Property : constant Glib.Properties.Property_String;
+
+   No_Show_All_Property : constant Glib.Properties.Property_Boolean;
+
+   Parent_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Container.Gtk_Container
-   --  Flags: read-write
-   --
-   --  Name: Receives_Default_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Style_Property
+
+   Receives_Default_Property : constant Glib.Properties.Property_Boolean;
+
+   Sensitive_Property : constant Glib.Properties.Property_Boolean;
+
+   Style_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Style.Gtk_Style
-   --  Flags: read-write
-   --
-   --  Name: Tooltip_Markup_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  Sets the text of tooltip to be the given string, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
    --  language</link>. Also see Gtk.Tooltip.Set_Markup.
@@ -2943,10 +2893,8 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget:has-tooltip will automatically be set to True and
    --  there will be taken care of Gtk.Widget.Gtk_Widget::query-tooltip in the
    --  default signal handler.
-   --
-   --  Name: Tooltip_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Tooltip_Text_Property : constant Glib.Properties.Property_String;
    --  Sets the text of tooltip to be the given string.
    --
    --  Also see Gtk.Tooltip.Set_Text.
@@ -2956,71 +2904,26 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget:has-tooltip will automatically be set to True and
    --  there will be taken care of Gtk.Widget.Gtk_Widget::query-tooltip in the
    --  default signal handler.
-   --
-   --  Name: Valign_Property
+
+   Valign_Property : constant Gtk.Widget.Property_Gtk_Align;
    --  Type: Gtk_Align
-   --  Flags: read-write
    --  How to distribute vertical space if widget gets extra space, see
    --  Gtk.Widget.Gtk_Align
-   --
-   --  Name: Vexpand_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Vexpand_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to expand vertically. See Gtk.Widget.Set_Vexpand.
-   --
-   --  Name: Vexpand_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Vexpand_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to use the Gtk.Widget.Gtk_Widget:vexpand property. See
    --  Gtk.Widget.Get_Vexpand_Set.
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Width_Request_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Window_Property
-   --  Type: Gdk.Window
-   --  Flags: read-write
-   --  The widget's window if it is realized, null otherwise.
 
-   App_Paintable_Property : constant Glib.Properties.Property_Boolean;
-   Can_Default_Property : constant Glib.Properties.Property_Boolean;
-   Can_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Composite_Child_Property : constant Glib.Properties.Property_Boolean;
-   Double_Buffered_Property : constant Glib.Properties.Property_Boolean;
-   Events_Property : constant Gdk.Event.Property_Gdk_Event_Mask;
-   Expand_Property : constant Glib.Properties.Property_Boolean;
-   Halign_Property : constant Gtk.Widget.Property_Gtk_Align;
-   Has_Default_Property : constant Glib.Properties.Property_Boolean;
-   Has_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
-   Height_Request_Property : constant Glib.Properties.Property_Int;
-   Hexpand_Property : constant Glib.Properties.Property_Boolean;
-   Hexpand_Set_Property : constant Glib.Properties.Property_Boolean;
-   Is_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Margin_Property : constant Glib.Properties.Property_Int;
-   Margin_Bottom_Property : constant Glib.Properties.Property_Int;
-   Margin_Left_Property : constant Glib.Properties.Property_Int;
-   Margin_Right_Property : constant Glib.Properties.Property_Int;
-   Margin_Top_Property : constant Glib.Properties.Property_Int;
-   Name_Property : constant Glib.Properties.Property_String;
-   No_Show_All_Property : constant Glib.Properties.Property_Boolean;
-   Parent_Property : constant Glib.Properties.Property_Object;
-   Receives_Default_Property : constant Glib.Properties.Property_Boolean;
-   Sensitive_Property : constant Glib.Properties.Property_Boolean;
-   Style_Property : constant Glib.Properties.Property_Object;
-   Tooltip_Markup_Property : constant Glib.Properties.Property_String;
-   Tooltip_Text_Property : constant Glib.Properties.Property_String;
-   Valign_Property : constant Gtk.Widget.Property_Gtk_Align;
-   Vexpand_Property : constant Glib.Properties.Property_Boolean;
-   Vexpand_Set_Property : constant Glib.Properties.Property_Boolean;
    Visible_Property : constant Glib.Properties.Property_Boolean;
+
    Width_Request_Property : constant Glib.Properties.Property_Int;
+
    Window_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Gdk.Window
+   --  The widget's window if it is realized, null otherwise.
 
    -------------
    -- Signals --

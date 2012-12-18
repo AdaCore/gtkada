@@ -1539,18 +1539,23 @@ See Glib.Properties for more information on properties)""")
                 adaprops.sort(lambda x,y: x["name"] <> y["name"])
 
                 for p in adaprops:
-                    section.add_comment("")
-                    section.add_comment("Name:  %(name)s_Property" % p)
-                    section.add_comment("Type:  %(type)s" % p)
-                    section.add_comment("Flags: %(flags)s" % p)
+                    section.add(
+                       '   %(name)s_Property : constant %(ptype)s;' % p)
+
+                    # Only display the type if it isn't obvious from the actual
+                    # type of the property.
+                    if p["type"] not in ("Boolean", "UTF8_String", "Gfloat",
+                                         "Gint", "Guint") \
+                       and not p["type"].startswith("Gtk.Enums."):
+                        section.add(
+                            Code("Type:  %(type)s" % p, iscomment=True))
+
+                    if p["flags"] != "read-write":
+                        section.add(
+                            Code("Flags: %(flags)s" % p, iscomment=True))
                     if p["doc"]:
-                        section.add_comment("%s\n" % p["doc"])
+                        section.add(Code("%s\n" % p["doc"], iscomment=True))
 
-                section.add("\n".join(
-                        '   %(name)s_Property : constant %(ptype)s;' % p
-                        for p in adaprops))
-
-                for p in adaprops:
                     d = '   %(name)s_Property : constant %(ptype)s' % p
                     self.pkg.add_private(
                         d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)

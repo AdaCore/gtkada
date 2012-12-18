@@ -378,22 +378,16 @@ package Gtk.About_Dialog is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Comments_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Comments_Property : constant Glib.Properties.Property_String;
    --  Comments about the program. This string is displayed in a label in the
    --  main dialog, thus it should be a short explanation of the main purpose
    --  of the program, not a detailed list of features.
-   --
-   --  Name: Copyright_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Copyright_Property : constant Glib.Properties.Property_String;
    --  Copyright information for the program.
-   --
-   --  Name: License_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   License_Property : constant Glib.Properties.Property_String;
    --  The license of the program. This string is displayed in a text view in
    --  a secondary dialog, therefore it is fine to use a long multi-paragraph
    --  text. Note that the text is only wrapped in the text view if the
@@ -401,10 +395,9 @@ package Gtk.About_Dialog is
    --  contain the intended linebreaks. When setting this property to a
    --  non-null value, the Gtk.About_Dialog.Gtk_About_Dialog:license-type
    --  property is set to Gtk.About_Dialog.License_Custom as a side effect.
-   --
-   --  Name: License_Type_Property
+
+   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License;
    --  Type: Gtk_License
-   --  Flags: read-write
    --  The license of the program, as a value of the GtkLicense enumeration.
    --
    --  The Gtk.About_Dialog.Gtk_About_Dialog will automatically fill out a
@@ -421,65 +414,37 @@ package Gtk.About_Dialog is
    --  For any other Gtk.About_Dialog.Gtk_License value, the contents of the
    --  Gtk.About_Dialog.Gtk_About_Dialog:license property are also set by this
    --  property as a side effect.
-   --
-   --  Name: Logo_Property
+
+   Logo_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
    --  A logo for the about box. If this is not set, it defaults to
-   --  gtk_window_get_default_icon_list.
-   --
-   --  Name: Logo_Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+   --  Gtk.Window.Get_Default_Icon_List.
+
+   Logo_Icon_Name_Property : constant Glib.Properties.Property_String;
    --  A named icon to use as the logo for the about box. This property
    --  overrides the Gtk.About_Dialog.Gtk_About_Dialog:logo property.
-   --
-   --  Name: Program_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Program_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the program. If this is not set, it defaults to
    --  g_get_application_name.
-   --
-   --  Name: Translator_Credits_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Translator_Credits_Property : constant Glib.Properties.Property_String;
    --  Credits to the translators. This string should be marked as
    --  translatable. The string may contain email addresses and URLs, which
    --  will be displayed as links, see the introduction for more details.
-   --
-   --  Name: Version_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Version_Property : constant Glib.Properties.Property_String;
    --  The version of the program.
-   --
-   --  Name: Website_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Website_Property : constant Glib.Properties.Property_String;
    --  The URL for the link to the website of the program. This should be a
    --  string starting with "http://.
-   --
-   --  Name: Website_Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The label for the link to the website of the program.
-   --
-   --  Name: Wrap_License_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether to wrap the text in the license dialog.
 
-   Comments_Property : constant Glib.Properties.Property_String;
-   Copyright_Property : constant Glib.Properties.Property_String;
-   License_Property : constant Glib.Properties.Property_String;
-   License_Type_Property : constant Gtk.About_Dialog.Property_Gtk_License;
-   Logo_Property : constant Glib.Properties.Property_Object;
-   Logo_Icon_Name_Property : constant Glib.Properties.Property_String;
-   Program_Name_Property : constant Glib.Properties.Property_String;
-   Translator_Credits_Property : constant Glib.Properties.Property_String;
-   Version_Property : constant Glib.Properties.Property_String;
-   Website_Property : constant Glib.Properties.Property_String;
    Website_Label_Property : constant Glib.Properties.Property_String;
+   --  The label for the link to the website of the program.
+
    Wrap_License_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether to wrap the text in the license dialog.
 
    -------------
    -- Signals --

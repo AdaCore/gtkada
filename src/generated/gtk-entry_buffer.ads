@@ -186,25 +186,15 @@ package Gtk.Entry_Buffer is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Length_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The length (in characters) of the text in buffer.
-   --
-   --  Name: Max_Length_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The maximum length (in characters) of the text in the buffer.
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The contents of the buffer.
 
    Length_Property : constant Glib.Properties.Property_Uint;
+   --  The length (in characters) of the text in buffer.
+
    Max_Length_Property : constant Glib.Properties.Property_Int;
+   --  The maximum length (in characters) of the text in the buffer.
+
    Text_Property : constant Glib.Properties.Property_String;
+   --  The contents of the buffer.
 
    -------------
    -- Signals --

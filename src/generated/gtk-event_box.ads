@@ -149,16 +149,9 @@ package Gtk.Event_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Above_Child_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Window_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Above_Child_Property : constant Glib.Properties.Property_Boolean;
+
    Visible_Window_Property : constant Glib.Properties.Property_Boolean;
 
 private

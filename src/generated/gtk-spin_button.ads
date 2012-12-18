@@ -483,46 +483,25 @@ package Gtk.Spin_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Adjustment_Property
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
-   --  Name: Climb_Rate_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: The_Digits_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Numeric_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Snap_To_Ticks_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Update_Policy_Property
-   --  Type: Gtk_Spin_Button_Update_Policy
-   --  Flags: read-write
-   --
-   --  Name: Value_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Wrap_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Adjustment_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
+
    Climb_Rate_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    The_Digits_Property : constant Glib.Properties.Property_Uint;
+
    Numeric_Property : constant Glib.Properties.Property_Boolean;
+
    Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean;
+
    Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy;
+   --  Type: Gtk_Spin_Button_Update_Policy
+
    Value_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    Wrap_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

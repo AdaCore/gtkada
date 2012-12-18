@@ -316,20 +316,13 @@ package Gtk.Recent_Manager is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Filename_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The full path to the file to be used to store and read the recently
-   --  used resources list
-   --
-   --  Name: Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The size of the recently used resources list.
 
    Filename_Property : constant Glib.Properties.Property_String;
+   --  The full path to the file to be used to store and read the recently
+   --  used resources list
+
    Size_Property : constant Glib.Properties.Property_Int;
+   --  The size of the recently used resources list.
 
    -------------
    -- Signals --

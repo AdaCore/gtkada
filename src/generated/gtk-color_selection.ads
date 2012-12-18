@@ -277,32 +277,18 @@ package Gtk.Color_Selection is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Current_Alpha_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Current_Color_Property
-   --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Current_Rgba_Property
-   --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
-   --  The current RGBA color.
-   --
-   --  Name: Has_Opacity_Control_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Has_Palette_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Current_Alpha_Property : constant Glib.Properties.Property_Uint;
+
    Current_Color_Property : constant Gdk.Color.Property_Gdk_Color;
+   --  Type: Gdk.Color.Gdk_Color
+
    Current_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
+   --  Type: Gdk.RGBA.Gdk_RGBA
+   --  The current RGBA color.
+
    Has_Opacity_Control_Property : constant Glib.Properties.Property_Boolean;
+
    Has_Palette_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

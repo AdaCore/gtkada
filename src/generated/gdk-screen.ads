@@ -345,12 +345,9 @@ package Gdk.Screen is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Resolution_Property
-   --  Type: Gdouble
-   --  Flags: read-write
 
    Resolution_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
 
    -------------
    -- Signals --

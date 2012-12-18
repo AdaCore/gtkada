@@ -71,30 +71,20 @@ package Gtk.Cell_Renderer_Spinner is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pulse_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+
+   Pulse_Property : constant Glib.Properties.Property_Uint;
    --  Pulse of the spinner. Increment this value to draw the next frame of
    --  the spinner animation. Usually, you would update this value in a
    --  timeout.
    --
    --  By default, the Gtk.Spinner.Gtk_Spinner widget draws one full cycle of
    --  the animation, consisting of 12 frames, in 750 milliseconds.
-   --
-   --  Name: Size_Property
-   --  Type: Gtk.Enums.Gtk_Icon_Size
-   --  Flags: read-write
+
+   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The Gtk.Enums.Gtk_Icon_Size value that specifies the size of the
    --  rendered spinner.
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-   Pulse_Property : constant Glib.Properties.Property_Uint;
-   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
 
 private
    Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=

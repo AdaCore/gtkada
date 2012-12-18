@@ -153,37 +153,26 @@ package Gtk.Scrollable is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Hadjustment_Property
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
    --  Horizontal Gtk.Adjustment.Gtk_Adjustment of the scrollable widget. This
    --  adjustment is shared between the scrollable widget and its parent.
-   --
-   --  Name: Hscroll_Policy_Property
-   --  Type: Gtk.Enums.Gtk_Scrollable_Policy
-   --  Flags: read-write
+
+   Hscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy;
    --  Determines whether horizontal scrolling should start once the
    --  scrollable widget is allocated less than its minimum width or less than
    --  its natural width.
-   --
-   --  Name: Vadjustment_Property
+
+   Vadjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
    --  Verical Gtk.Adjustment.Gtk_Adjustment of the scrollable widget. This
    --  adjustment is shared between the scrollable widget and its parent.
-   --
-   --  Name: Vscroll_Policy_Property
-   --  Type: Gtk.Enums.Gtk_Scrollable_Policy
-   --  Flags: read-write
+
+   Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy;
    --  Determines whether vertical scrolling should start once the scrollable
    --  widget is allocated less than its minimum height or less than its
    --  natural height.
-
-   Hadjustment_Property : constant Glib.Properties.Property_Object;
-   Hscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy;
-   Vadjustment_Property : constant Glib.Properties.Property_Object;
-   Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy;
 
 private
    Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=

@@ -159,31 +159,15 @@ package Gtk.Handle_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Child_Detached_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Handle_Position_Property
-   --  Type: Gtk.Enums.Gtk_Position_Type
-   --  Flags: read-write
-   --
-   --  Name: Shadow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Shadow_Type
-   --  Flags: read-write
-   --
-   --  Name: Snap_Edge_Property
-   --  Type: Gtk.Enums.Gtk_Position_Type
-   --  Flags: read-write
-   --
-   --  Name: Snap_Edge_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Child_Detached_Property : constant Glib.Properties.Property_Boolean;
+
    Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
+
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
    Snap_Edge_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
+
    Snap_Edge_Set_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

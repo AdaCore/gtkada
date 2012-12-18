@@ -445,27 +445,17 @@ package Gtk.File_Chooser_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Focus_On_Click_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Whether the Gtk.File_Chooser_Button.Gtk_File_Chooser_Button button
-   --  grabs focus when it is clicked with the mouse.
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
-   --  associated with the button.
-   --
-   --  Name: Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The width of the entry and label inside the button, in characters.
 
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the Gtk.File_Chooser_Button.Gtk_File_Chooser_Button button
+   --  grabs focus when it is clicked with the mouse.
+
    Title_Property : constant Glib.Properties.Property_String;
+   --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
+   --  associated with the button.
+
    Width_Chars_Property : constant Glib.Properties.Property_Int;
+   --  The width of the entry and label inside the button, in characters.
 
    -------------
    -- Signals --

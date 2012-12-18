@@ -936,66 +936,36 @@ package Gtk.File_Chooser is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Action_Property
+
+   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action;
    --  Type: Gtk_File_Chooser_Action
-   --  Flags: read-write
-   --
-   --  Name: Create_Folders_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Create_Folders_Property : constant Glib.Properties.Property_Boolean;
    --  Whether a file chooser not in Gtk.File_Chooser.Action_Open mode will
    --  offer the user to create new folders.
-   --
-   --  Name: Do_Overwrite_Confirmation_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean;
    --  Whether a file chooser in Gtk.File_Chooser.Action_Save mode will
    --  present an overwrite confirmation dialog if the user selects a file name
    --  that already exists.
-   --
-   --  Name: Extra_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Filter_Property
-   --  Type: Gtk.File_Filter.Gtk_File_Filter
-   --  Flags: read-write
-   --
-   --  Name: Local_Only_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Preview_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Preview_Widget_Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Select_Multiple_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Show_Hidden_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Use_Preview_Label_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
-   Action_Property : constant Gtk.File_Chooser.Property_Gtk_File_Chooser_Action;
-   Create_Folders_Property : constant Glib.Properties.Property_Boolean;
-   Do_Overwrite_Confirmation_Property : constant Glib.Properties.Property_Boolean;
    Extra_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Filter_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.File_Filter.Gtk_File_Filter
+
    Local_Only_Property : constant Glib.Properties.Property_Boolean;
+
    Preview_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Preview_Widget_Active_Property : constant Glib.Properties.Property_Boolean;
+
    Select_Multiple_Property : constant Glib.Properties.Property_Boolean;
+
    Show_Hidden_Property : constant Glib.Properties.Property_Boolean;
+
    Use_Preview_Label_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

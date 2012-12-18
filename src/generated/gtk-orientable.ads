@@ -84,13 +84,9 @@ package Gtk.Orientable is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Orientation_Property
-   --  Type: Gtk.Enums.Gtk_Orientation
-   --  Flags: read-write
-   --  The orientation of the orientable.
 
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
+   --  The orientation of the orientable.
 
 private
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=

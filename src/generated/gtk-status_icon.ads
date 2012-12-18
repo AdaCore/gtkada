@@ -436,26 +436,20 @@ package Gtk.Status_Icon is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Embedded_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Embedded_Property : constant Glib.Properties.Property_Boolean;
    --  True if the statusicon is embedded in a notification area.
-   --
-   --  Name: File_Property
-   --  Type: UTF8_String
+
+   File_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: G_Icon_Property
+
+   G_Icon_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
    --  The Glib.G_Icon.G_Icon displayed in the
    --  Gtk.Status_Icon.Gtk_Status_Icon. For themed icons, the image will be
    --  updated automatically if the theme changes.
-   --
-   --  Name: Has_Tooltip_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
    --  Enables or disables the emission of
    --  Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip on Status_Icon. A value
    --  of True indicates that Status_Icon can have a tooltip, in this case the
@@ -471,49 +465,34 @@ package Gtk.Status_Icon is
    --  Whether this property is respected is platform dependent. For plain
    --  text tooltips, use Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text in
    --  preference.
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Orientation_Property
-   --  Type: Gtk.Enums.Gtk_Orientation
-   --  Flags: read-write
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
+
+   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
    --  The orientation of the tray in which the statusicon is embedded.
-   --
-   --  Name: Pixbuf_Property
+
+   Pixbuf_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Screen_Property
+
+   Screen_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gdk.Screen
-   --  Flags: read-write
-   --
-   --  Name: Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Stock_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Storage_Type_Property
+
+   Size_Property : constant Glib.Properties.Property_Int;
+
+   Stock_Property : constant Glib.Properties.Property_String;
+
+   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    --  Type: Gtk.Image.Gtk_Image_Type
-   --  Flags: read-write
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Title_Property : constant Glib.Properties.Property_String;
    --  The title of this tray icon. This should be a short, human-readable,
    --  localized string describing the tray icon. It may be used by tools like
    --  screen readers to render the tray icon.
-   --
-   --  Name: Tooltip_Markup_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  Sets the text of tooltip to be the given string, which is marked up
    --  with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>. Also see gtk_tooltip_set_markup.
+   --  language</link>. Also see Gtk.Tooltip.Set_Markup.
    --
    --  This is a convenience property which will take care of getting the
    --  tooltip shown if the given string is not null.
@@ -523,13 +502,11 @@ package Gtk.Status_Icon is
    --  displaying the tooltip.
    --
    --  On some platforms, embedded markup will be ignored.
-   --
-   --  Name: Tooltip_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Tooltip_Text_Property : constant Glib.Properties.Property_String;
    --  Sets the text of tooltip to be the given string.
    --
-   --  Also see gtk_tooltip_set_text.
+   --  Also see Gtk.Tooltip.Set_Text.
    --
    --  This is a convenience property which will take care of getting the
    --  tooltip shown if the given string is not null.
@@ -541,25 +518,7 @@ package Gtk.Status_Icon is
    --  Note that some platforms have limitations on the length of tooltips
    --  that they allow on status icons, e.g. Windows only shows the first 64
    --  characters.
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
-   Embedded_Property : constant Glib.Properties.Property_Boolean;
-   File_Property : constant Glib.Properties.Property_String;
-   G_Icon_Property : constant Glib.Properties.Property_Boxed;
-   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean;
-   Icon_Name_Property : constant Glib.Properties.Property_String;
-   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
-   Pixbuf_Property : constant Glib.Properties.Property_Object;
-   Screen_Property : constant Glib.Properties.Property_Boxed;
-   Size_Property : constant Glib.Properties.Property_Int;
-   Stock_Property : constant Glib.Properties.Property_String;
-   Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
-   Title_Property : constant Glib.Properties.Property_String;
-   Tooltip_Markup_Property : constant Glib.Properties.Property_String;
-   Tooltip_Text_Property : constant Glib.Properties.Property_String;
    Visible_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

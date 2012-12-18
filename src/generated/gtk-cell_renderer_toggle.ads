@@ -119,31 +119,15 @@ package Gtk.Cell_Renderer_Toggle is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Activatable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Inconsistent_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Indicator_Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Radio_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Activatable_Property : constant Glib.Properties.Property_Boolean;
+
    Active_Property : constant Glib.Properties.Property_Boolean;
+
    Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+
    Indicator_Size_Property : constant Glib.Properties.Property_Int;
+
    Radio_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

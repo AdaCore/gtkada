@@ -96,14 +96,10 @@ package Gtk.Cell_Renderer_Progress is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Inverted_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Pulse_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Inverted_Property : constant Glib.Properties.Property_Boolean;
+
+   Pulse_Property : constant Glib.Properties.Property_Int;
    --  Setting this to a non-negative value causes the cell renderer to enter
    --  "activity mode", where a block bounces back and forth to indicate that
    --  some progress is made, without specifying exactly how much.
@@ -113,40 +109,25 @@ package Gtk.Cell_Renderer_Progress is
    --
    --  To indicate that the activity has not started yet, set the property to
    --  zero. To indicate completion, set the property to G_MAXINT.
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Text_Property : constant Glib.Properties.Property_String;
    --  The "text" property determines the label which will be drawn over the
    --  progress bar. Setting this property to null causes the default label to
    --  be displayed. Setting this property to an empty string causes no label
    --  to be displayed.
-   --
-   --  Name: Text_Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
+
+   Text_Xalign_Property : constant Glib.Properties.Property_Float;
    --  The "text-xalign" property controls the horizontal alignment of the
    --  text in the progress bar. Valid values range from 0 (left) to 1 (right).
    --  Reserved for RTL layouts.
-   --
-   --  Name: Text_Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
+
+   Text_Yalign_Property : constant Glib.Properties.Property_Float;
    --  The "text-yalign" property controls the vertical alignment of the text
    --  in the progress bar. Valid values range from 0 (top) to 1 (bottom).
-   --
-   --  Name: Value_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Value_Property : constant Glib.Properties.Property_Int;
    --  The "value" property determines the percentage to which the progress
    --  bar will be "filled in".
-
-   Inverted_Property : constant Glib.Properties.Property_Boolean;
-   Pulse_Property : constant Glib.Properties.Property_Int;
-   Text_Property : constant Glib.Properties.Property_String;
-   Text_Xalign_Property : constant Glib.Properties.Property_Float;
-   Text_Yalign_Property : constant Glib.Properties.Property_Float;
-   Value_Property : constant Glib.Properties.Property_Int;
 
 private
    Value_Property : constant Glib.Properties.Property_Int :=

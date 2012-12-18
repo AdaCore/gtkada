@@ -447,27 +447,21 @@ package Gtk.Cell_View is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Background_Property
-   --  Type: UTF8_String
+
+   Background_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Background_Gdk_Property
+
+   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Background_Rgba_Property
+
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  The background color as a Gdk.RGBA.Gdk_RGBA
-   --
-   --  Name: Background_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Cell_Area_Property
+
+   Background_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area rendering cells
    --
    --  If no area is specified when creating the cell view with
@@ -475,10 +469,9 @@ package Gtk.Cell_View is
    --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box will be used.
    --
    --  since 3.0
-   --
-   --  Name: Cell_Area_Context_Property
+
+   Cell_Area_Context_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area_Context.Gtk_Cell_Area_Context
-   --  Flags: read-write
    --  The Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to compute the
    --  geometry of the cell view.
    --
@@ -492,33 +485,20 @@ package Gtk.Cell_View is
    --  on parent or sibling menus).
    --
    --  since 3.0
-   --
-   --  Name: Draw_Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Draw_Sensitive_Property : constant Glib.Properties.Property_Boolean;
    --  Whether all cells should be draw as sensitive for this view regardless
    --  of the actual cell properties (used to make menus with submenus appear
    --  sensitive when the items in submenus might be insensitive).
    --
    --  since 3.0
-   --
-   --  Name: Fit_Model_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Fit_Model_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the view should request enough space to always fit the size of
    --  every row in the model (used by the combo box to ensure the combo box
    --  size doesnt change when different items are selected).
    --
    --  since 3.0
-
-   Background_Property : constant Glib.Properties.Property_String;
-   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Background_Set_Property : constant Glib.Properties.Property_Boolean;
-   Cell_Area_Property : constant Glib.Properties.Property_Object;
-   Cell_Area_Context_Property : constant Glib.Properties.Property_Object;
-   Draw_Sensitive_Property : constant Glib.Properties.Property_Boolean;
-   Fit_Model_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Fit_Model_Property : constant Glib.Properties.Property_Boolean :=

@@ -336,49 +336,30 @@ package Gtk.Font_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Font_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Font_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the currently selected font.
-   --
-   --  Name: Show_Size_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Size_Property : constant Glib.Properties.Property_Boolean;
    --  If this property is set to True, the selected font size will be shown
    --  in the label. For a more WYSIWYG way to show the selected size, see the
    --  ::use-size property.
-   --
-   --  Name: Show_Style_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Style_Property : constant Glib.Properties.Property_Boolean;
    --  If this property is set to True, the name of the selected font style
    --  will be shown in the label. For a more WYSIWYG way to show the selected
    --  style, see the ::use-font property.
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Title_Property : constant Glib.Properties.Property_String;
    --  The title of the font chooser dialog.
-   --
-   --  Name: Use_Font_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Font_Property : constant Glib.Properties.Property_Boolean;
    --  If this property is set to True, the label will be drawn in the
    --  selected font.
-   --
-   --  Name: Use_Size_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Size_Property : constant Glib.Properties.Property_Boolean;
    --  If this property is set to True, the label will be drawn with the
    --  selected font size.
-
-   Font_Name_Property : constant Glib.Properties.Property_String;
-   Show_Size_Property : constant Glib.Properties.Property_Boolean;
-   Show_Style_Property : constant Glib.Properties.Property_Boolean;
-   Title_Property : constant Glib.Properties.Property_String;
-   Use_Font_Property : constant Glib.Properties.Property_Boolean;
-   Use_Size_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

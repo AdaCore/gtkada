@@ -406,87 +406,42 @@ package Gtk.Cell_Renderer is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Cell_Background_Property
-   --  Type: UTF8_String
-   --  Flags: write
-   --
-   --  Name: Cell_Background_Gdk_Property
-   --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Cell_Background_Rgba_Property
-   --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
-   --  Cell background as a Gdk.RGBA.Gdk_RGBA
-   --
-   --  Name: Cell_Background_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Editing_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Height_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Is_Expanded_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Is_Expander_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Mode_Property
-   --  Type: Gtk_Cell_Renderer_Mode
-   --  Flags: read-write
-   --
-   --  Name: Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Xpad_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Ypad_Property
-   --  Type: Guint
-   --  Flags: read-write
 
    Cell_Background_Property : constant Glib.Properties.Property_String;
+   --  Flags: write
+
    Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
+   --  Type: Gdk.Color.Gdk_Color
+
    Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
+   --  Type: Gdk.RGBA.Gdk_RGBA
+   --  Cell background as a Gdk.RGBA.Gdk_RGBA
+
    Cell_Background_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Editing_Property : constant Glib.Properties.Property_Boolean;
+
    Height_Property : constant Glib.Properties.Property_Int;
+
    Is_Expanded_Property : constant Glib.Properties.Property_Boolean;
+
    Is_Expander_Property : constant Glib.Properties.Property_Boolean;
+
    Mode_Property : constant Gtk.Cell_Renderer.Property_Gtk_Cell_Renderer_Mode;
+   --  Type: Gtk_Cell_Renderer_Mode
+
    Sensitive_Property : constant Glib.Properties.Property_Boolean;
+
    Visible_Property : constant Glib.Properties.Property_Boolean;
+
    Width_Property : constant Glib.Properties.Property_Int;
+
    Xalign_Property : constant Glib.Properties.Property_Float;
+
    Xpad_Property : constant Glib.Properties.Property_Uint;
+
    Yalign_Property : constant Glib.Properties.Property_Float;
+
    Ypad_Property : constant Glib.Properties.Property_Uint;
 
    -------------

@@ -164,28 +164,21 @@ package Gtk.Settings is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Color_Hash_Property
+
+   Color_Hash_Property : constant Glib.Properties.Property_Boxed;
    --  Type: GLib.Hash_Table
-   --  Flags: read-write
    --  Holds a hash table representation of the
    --  Gtk.Settings.Gtk_Settings:gtk-color-scheme setting, mapping color names
    --  to Gdk.Color.Gdk_Color<!-- -->s.
-   --
-   --  Name: Gtk_Alternative_Button_Order_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Alternative_Sort_Arrows_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Alternative_Button_Order_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Alternative_Sort_Arrows_Property : constant Glib.Properties.Property_Boolean;
    --  Controls the direction of the sort indicators in sorted list and tree
    --  views. By default an arrow pointing down means the column is sorted in
    --  ascending order. When set to True, this order will be inverted.
-   --
-   --  Name: Gtk_Application_Prefer_Dark_Theme_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Application_Prefer_Dark_Theme_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the application prefers to use a dark theme. If a GTK+ theme
    --  includes a dark variant, it will be used instead of the configured
    --  theme.
@@ -198,28 +191,18 @@ package Gtk.Settings is
    --  Dark themes should not be used for documents, where large spaces are
    --  white/light and the dark chrome creates too much contrast (web browser,
    --  text editor...).
-   --
-   --  Name: Gtk_Auto_Mnemonics_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Auto_Mnemonics_Property : constant Glib.Properties.Property_Boolean;
    --  Whether mnemonics should be automatically shown and hidden when the
    --  user presses the mnemonic activator.
-   --
-   --  Name: Gtk_Button_Images_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Can_Change_Accels_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Color_Palette_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Color_Scheme_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Color_Palette_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String;
    --  A palette of named colors for use in themes. The format of the string
    --  is
    --
@@ -240,61 +223,39 @@ package Gtk.Settings is
    --
    --    name1: color1; name2: color2; ...
    --
-   --
-   --  Name: Gtk_Cursor_Blink_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the cursor should blink.
    --
    --  Also see the Gtk.Settings.Gtk_Settings:gtk-cursor-blink-timeout
    --  setting, which allows more flexible control over cursor blinking.
-   --
-   --  Name: Gtk_Cursor_Blink_Time_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Cursor_Blink_Timeout_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Cursor_Blink_Time_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Cursor_Blink_Timeout_Property : constant Glib.Properties.Property_Int;
    --  Time after which the cursor stops blinking, in seconds. The timer is
    --  reset after each user interaction.
    --
    --  Setting this to zero has the same effect as setting
    --  Gtk.Settings.Gtk_Settings:gtk-cursor-blink to False.
-   --
-   --  Name: Gtk_Cursor_Theme_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Cursor_Theme_Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Dnd_Drag_Threshold_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Double_Click_Distance_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Double_Click_Time_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Enable_Accels_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Cursor_Theme_Name_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Double_Click_Distance_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Double_Click_Time_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Enable_Accels_Property : constant Glib.Properties.Property_Boolean;
    --  Whether menu items should have visible accelerators which can be
    --  activated.
-   --
-   --  Name: Gtk_Enable_Animations_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Enable_Event_Sounds_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Enable_Animations_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Enable_Event_Sounds_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to play any event sounds at all.
    --
    --  See the <ulink
@@ -304,10 +265,8 @@ package Gtk.Settings is
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
-   --
-   --  Name: Gtk_Enable_Input_Feedback_Sounds_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to play event sounds as feedback to user input.
    --
    --  See the <ulink
@@ -317,56 +276,36 @@ package Gtk.Settings is
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
-   --
-   --  Name: Gtk_Enable_Mnemonics_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Enable_Mnemonics_Property : constant Glib.Properties.Property_Boolean;
    --  Whether labels and menu items should have visible mnemonics which can
    --  be activated.
-   --
-   --  Name: Gtk_Enable_Tooltips_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean;
    --  Whether tooltips should be shown on widgets.
-   --
-   --  Name: Gtk_Entry_Password_Hint_Timeout_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Gtk_Entry_Password_Hint_Timeout_Property : constant Glib.Properties.Property_Uint;
    --  How long to show the last input character in hidden entries. This value
    --  is in milliseconds. 0 disables showing the last char. 600 is a good
    --  value for enabling it.
-   --
-   --  Name: Gtk_Entry_Select_On_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Error_Bell_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Entry_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Error_Bell_Property : constant Glib.Properties.Property_Boolean;
    --  When True, keyboard navigation and other input-related errors will
    --  cause a beep. Since the error bell is implemented using Gdk.Window.Beep,
    --  the windowing system may offer ways to configure the error bell in many
    --  ways, such as flashing the window or similar visual effects.
-   --
-   --  Name: Gtk_Fallback_Icon_Theme_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_File_Chooser_Backend_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Font_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Fontconfig_Timestamp_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Icon_Sizes_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Fallback_Icon_Theme_Property : constant Glib.Properties.Property_String;
+
+   Gtk_File_Chooser_Backend_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Font_Name_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Fontconfig_Timestamp_Property : constant Glib.Properties.Property_Uint;
+
+   Gtk_Icon_Sizes_Property : constant Glib.Properties.Property_String;
    --  A list of icon sizes. The list is separated by colons, and item has the
    --  form:
    --
@@ -377,84 +316,54 @@ package Gtk.Settings is
    --  gtk-small-toolbar, gtk-large-toolbar, gtk-dnd, gtk-dialog. Applications
    --  can register their own named icon sizes with
    --  Gtk.Icon_Factory.Icon_Size_Register.
-   --
-   --  Name: Gtk_Icon_Theme_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Im_Module_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Icon_Theme_Name_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Im_Module_Property : constant Glib.Properties.Property_String;
    --  Which IM (input method) module should be used by default. This is the
    --  input method that will be used if the user has not explicitly chosen
    --  another input method from the IM context menu.
    --
    --  See Gtk.Imcontext.Gtk_Imcontext and see the
    --  Gtk.Settings.Gtk_Settings:gtk-show-input-method-menu property.
-   --
-   --  Name: Gtk_Im_Preedit_Style_Property
+
+   Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed;
    --  Type: IMPreedit_Style
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Im_Status_Style_Property
+
+   Gtk_Im_Status_Style_Property : constant Glib.Properties.Property_Boxed;
    --  Type: IMStatus_Style
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Key_Theme_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Keynav_Cursor_Only_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Keynav_Cursor_Only_Property : constant Glib.Properties.Property_Boolean;
    --  When True, keyboard navigation should be able to reach all widgets by
    --  using the cursor keys only. Tab, Shift etc. keys can't be expected to be
    --  present on the used input device.
-   --
-   --  Name: Gtk_Keynav_Wrap_Around_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean;
    --  When True, some widgets will wrap around when doing keyboard
    --  navigation, such as menus, menubars and notebooks.
-   --
-   --  Name: Gtk_Label_Select_On_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Menu_Bar_Accel_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Menu_Bar_Popup_Delay_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Menu_Images_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Menu_Popdown_Delay_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Menu_Popup_Delay_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Modules_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Print_Backends_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Menu_Bar_Popup_Delay_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Modules_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Print_Backends_Property : constant Glib.Properties.Property_String;
    --  A comma-separated list of print backends to use in the print dialog.
    --  Available print backends depend on the GTK+ installation, and may
    --  include "file", "cups", "lpr" or "papi".
-   --
-   --  Name: Gtk_Print_Preview_Command_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String;
    --  A command to run for displaying the print preview. The command should
    --  contain a %f placeholder, which will get replaced by the path to the pdf
    --  file. The command may also contain a %s placeholder, which will get
@@ -463,40 +372,28 @@ package Gtk.Settings is
    --
    --  The preview application is responsible for removing the pdf file and
    --  the print settings file when it is done.
-   --
-   --  Name: Gtk_Recent_Files_Limit_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int;
    --  The number of recently used files that should be displayed by default
    --  by Gtk.Recent_Chooser.Gtk_Recent_Chooser implementations and by the
    --  Gtk.File_Chooser.Gtk_File_Chooser. A value of -1 means every recently
    --  used file stored.
-   --
-   --  Name: Gtk_Recent_Files_Max_Age_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Recent_Files_Max_Age_Property : constant Glib.Properties.Property_Int;
    --  The maximum age, in days, of the items inside the recently used
    --  resources list. Items older than this setting will be excised from the
    --  list. If set to 0, the list will always be empty; if set to -1, no item
    --  will be removed.
-   --
-   --  Name: Gtk_Scrolled_Window_Placement_Property
-   --  Type: Gtk.Enums.Gtk_Corner_Type
-   --  Flags: read-write
+
+   Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type;
    --  Where the contents of scrolled windows are located with respect to the
    --  scrollbars, if not overridden by the scrolled window's own placement.
-   --
-   --  Name: Gtk_Show_Input_Method_Menu_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Show_Unicode_Menu_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Sound_Theme_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Show_Unicode_Menu_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Sound_Theme_Name_Property : constant Glib.Properties.Property_String;
    --  The XDG sound theme to use for event sounds.
    --
    --  See the <ulink
@@ -506,49 +403,31 @@ package Gtk.Settings is
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
-   --
-   --  Name: Gtk_Split_Cursor_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Theme_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Timeout_Expand_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Timeout_Initial_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Timeout_Repeat_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Toolbar_Icon_Size_Property
-   --  Type: Gtk.Enums.Gtk_Icon_Size
-   --  Flags: read-write
+
+   Gtk_Split_Cursor_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Theme_Name_Property : constant Glib.Properties.Property_String;
+
+   Gtk_Timeout_Expand_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of icons in default toolbars.
-   --
-   --  Name: Gtk_Toolbar_Style_Property
-   --  Type: Gtk.Enums.Gtk_Toolbar_Style
-   --  Flags: read-write
+
+   Gtk_Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
    --  The size of icons in default toolbars.
-   --
-   --  Name: Gtk_Tooltip_Browse_Mode_Timeout_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Tooltip_Browse_Mode_Timeout_Property : constant Glib.Properties.Property_Int;
    --  Amount of time, in milliseconds, after which the browse mode will be
    --  disabled.
    --
    --  See Gtk.Settings.Gtk_Settings:gtk-tooltip-browse-timeout for more
    --  information about browse mode.
-   --
-   --  Name: Gtk_Tooltip_Browse_Timeout_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Tooltip_Browse_Timeout_Property : constant Glib.Properties.Property_Int;
    --  Controls the time after which tooltips will appear when browse mode is
    --  enabled, in milliseconds.
    --
@@ -558,115 +437,28 @@ package Gtk.Settings is
    --  Gtk.Settings.Gtk_Settings:gtk-tooltip-browse-mode-timeout), it will take
    --  the amount of milliseconds specified by this setting to popup the
    --  tooltip for the new object.
-   --
-   --  Name: Gtk_Tooltip_Timeout_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Gtk_Tooltip_Timeout_Property : constant Glib.Properties.Property_Int;
    --  Time, in milliseconds, after which a tooltip could appear if the cursor
    --  is hovering on top of a widget.
-   --
-   --  Name: Gtk_Touchscreen_Mode_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Gtk_Touchscreen_Mode_Property : constant Glib.Properties.Property_Boolean;
    --  When True, there are no motion notify events delivered on this screen,
    --  and widgets can't use the pointer hovering them for any essential
    --  functionality.
-   --
-   --  Name: Gtk_Visible_Focus_Property
-   --  Type: Gtk.Enums.Gtk_Policy_Type
-   --  Flags: read-write
+
+   Gtk_Visible_Focus_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
    --  Whether 'focus rectangles' should be always visible, never visible, or
    --  hidden until the user starts to use the keyboard.
-   --
-   --  Name: Gtk_Xft_Antialias_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Xft_Dpi_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Xft_Hinting_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Xft_Hintstyle_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Gtk_Xft_Rgba_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
 
-   Color_Hash_Property : constant Glib.Properties.Property_Boxed;
-   Gtk_Alternative_Button_Order_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Alternative_Sort_Arrows_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Application_Prefer_Dark_Theme_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Auto_Mnemonics_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Color_Palette_Property : constant Glib.Properties.Property_String;
-   Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String;
-   Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Cursor_Blink_Time_Property : constant Glib.Properties.Property_Int;
-   Gtk_Cursor_Blink_Timeout_Property : constant Glib.Properties.Property_Int;
-   Gtk_Cursor_Theme_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int;
-   Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int;
-   Gtk_Double_Click_Distance_Property : constant Glib.Properties.Property_Int;
-   Gtk_Double_Click_Time_Property : constant Glib.Properties.Property_Int;
-   Gtk_Enable_Accels_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Enable_Animations_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Enable_Event_Sounds_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Enable_Mnemonics_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Entry_Password_Hint_Timeout_Property : constant Glib.Properties.Property_Uint;
-   Gtk_Entry_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Error_Bell_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Fallback_Icon_Theme_Property : constant Glib.Properties.Property_String;
-   Gtk_File_Chooser_Backend_Property : constant Glib.Properties.Property_String;
-   Gtk_Font_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Fontconfig_Timestamp_Property : constant Glib.Properties.Property_Uint;
-   Gtk_Icon_Sizes_Property : constant Glib.Properties.Property_String;
-   Gtk_Icon_Theme_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Im_Module_Property : constant Glib.Properties.Property_String;
-   Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed;
-   Gtk_Im_Status_Style_Property : constant Glib.Properties.Property_Boxed;
-   Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Keynav_Cursor_Only_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String;
-   Gtk_Menu_Bar_Popup_Delay_Property : constant Glib.Properties.Property_Int;
-   Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int;
-   Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int;
-   Gtk_Modules_Property : constant Glib.Properties.Property_String;
-   Gtk_Print_Backends_Property : constant Glib.Properties.Property_String;
-   Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String;
-   Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int;
-   Gtk_Recent_Files_Max_Age_Property : constant Glib.Properties.Property_Int;
-   Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type;
-   Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Show_Unicode_Menu_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Sound_Theme_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Split_Cursor_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Theme_Name_Property : constant Glib.Properties.Property_String;
-   Gtk_Timeout_Expand_Property : constant Glib.Properties.Property_Int;
-   Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int;
-   Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int;
-   Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
-   Gtk_Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
-   Gtk_Tooltip_Browse_Mode_Timeout_Property : constant Glib.Properties.Property_Int;
-   Gtk_Tooltip_Browse_Timeout_Property : constant Glib.Properties.Property_Int;
-   Gtk_Tooltip_Timeout_Property : constant Glib.Properties.Property_Int;
-   Gtk_Touchscreen_Mode_Property : constant Glib.Properties.Property_Boolean;
-   Gtk_Visible_Focus_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
    Gtk_Xft_Antialias_Property : constant Glib.Properties.Property_Int;
+
    Gtk_Xft_Dpi_Property : constant Glib.Properties.Property_Int;
+
    Gtk_Xft_Hinting_Property : constant Glib.Properties.Property_Int;
+
    Gtk_Xft_Hintstyle_Property : constant Glib.Properties.Property_String;
+
    Gtk_Xft_Rgba_Property : constant Glib.Properties.Property_String;
 
 private

@@ -231,16 +231,9 @@ package Gtk.Layout is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Height_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Width_Property
-   --  Type: Guint
-   --  Flags: read-write
 
    Height_Property : constant Glib.Properties.Property_Uint;
+
    Width_Property : constant Glib.Properties.Property_Uint;
 
 private

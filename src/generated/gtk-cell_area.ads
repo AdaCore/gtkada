@@ -1143,22 +1143,17 @@ package Gtk.Cell_Area is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Edited_Cell_Property
+
+   Edited_Cell_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  Flags: read-write
    --  The cell in the area that is currently edited
    --
    --  This property is read-only and only changes as a result of a call
    --  Gtk.Cell_Area.Activate_Cell.
-   --
-   --  Name: Focus_Cell_Property
-   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  Flags: read-write
-   --  The cell in the area that currently has focus
 
-   Edited_Cell_Property : constant Glib.Properties.Property_Object;
    Focus_Cell_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  The cell in the area that currently has focus
 
    -------------
    -- Signals --

@@ -435,21 +435,11 @@ package Gtk.Action_Group is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Sensitive_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Name_Property : constant Glib.Properties.Property_String;
+
    Sensitive_Property : constant Glib.Properties.Property_Boolean;
+
    Visible_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

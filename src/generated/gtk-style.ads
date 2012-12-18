@@ -181,12 +181,9 @@ package Gtk.Style is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Context_Property
-   --  Type: Gtk.Style_Context.Gtk_Style_Context
-   --  Flags: read-write
 
    Context_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Style_Context.Gtk_Style_Context
 
    -------------
    -- Signals --

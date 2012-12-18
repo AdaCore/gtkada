@@ -184,10 +184,6 @@ package Gtk.Viewport is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Shadow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Shadow_Type
-   --  Flags: read-write
 
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 

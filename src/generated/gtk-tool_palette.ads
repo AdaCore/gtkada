@@ -417,10 +417,8 @@ package Gtk.Tool_Palette is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Icon_Size_Property
-   --  Type: Gtk.Enums.Gtk_Icon_Size
-   --  Flags: read-write
+
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of the icons in a tool palette is normally determined by the
    --  Gtk.Settings.Gtk_Settings:toolbar-icon-size setting. When this property
    --  is set, it overrides the setting.
@@ -428,21 +426,13 @@ package Gtk.Tool_Palette is
    --  This should only be used for special-purpose tool palettes, normal
    --  application tool palettes should respect the user preferences for the
    --  size of icons.
-   --
-   --  Name: Icon_Size_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Is True if the Gtk.Tool_Palette.Gtk_Tool_Palette:icon-size property has
    --  been set.
-   --
-   --  Name: Toolbar_Style_Property
-   --  Type: Gtk.Enums.Gtk_Toolbar_Style
-   --  Flags: read-write
-   --  The style of items in the tool palette.
 
-   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
-   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
+   --  The style of items in the tool palette.
 
 private
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=

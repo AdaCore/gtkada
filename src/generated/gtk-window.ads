@@ -1335,15 +1335,12 @@ package Gtk.Window is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accept_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Accept_Focus_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window should receive the input focus.
-   --
-   --  Name: Application_Property
+
+   Application_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Application.Gtk_Application
-   --  Flags: read-write
    --  The Gtk.Application.Gtk_Application associated with the window.
    --
    --  The application will be kept alive for at least as long as it has any
@@ -1353,183 +1350,100 @@ package Gtk.Window is
    --  Normally, the connection between the application and the window will
    --  remain until the window is destroyed, but you can explicitly remove it
    --  by setting the ::application property to null.
-   --
-   --  Name: Decorated_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Decorated_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window should be decorated by the window manager.
-   --
-   --  Name: Default_Height_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Default_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Deletable_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Default_Height_Property : constant Glib.Properties.Property_Int;
+
+   Default_Width_Property : constant Glib.Properties.Property_Int;
+
+   Deletable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window frame should have a close button.
-   --
-   --  Name: Destroy_With_Parent_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Focus_On_Map_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean;
+
+   Focus_On_Map_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window should receive the input focus when mapped.
-   --
-   --  Name: Focus_Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Focus_Visible_Property : constant Glib.Properties.Property_Boolean;
    --  Whether 'focus rectangles' are currently visible in this window.
    --
    --  This property is maintained by GTK+ based on the
    --  Gtk.Settings.Gtk_Settings:gtk-visible-focus setting and user input and
    --  should not be set by applications.
-   --
-   --  Name: Gravity_Property
+
+   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity;
    --  Type: Gdk.Window.Gdk_Gravity
-   --  Flags: read-write
    --  The window gravity of the window. See Gtk.Window.Move and
    --  Gdk.Window.Gdk_Gravity for more details about window gravity.
-   --
-   --  Name: Has_Resize_Grip_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window has a corner resize grip.
    --
    --  Note that the resize grip is only shown if the window is actually
    --  resizable and not maximized. Use
    --  Gtk.Window.Gtk_Window:resize-grip-visible to find out if the resize grip
    --  is currently shown.
-   --
-   --  Name: Has_Toplevel_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Icon_Property
+
+   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
+
+   Icon_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The :icon-name property specifies the name of the themed icon to use as
    --  the window icon. See Gtk.Icon_Theme.Gtk_Icon_Theme for more details.
-   --
-   --  Name: Is_Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Mnemonics_Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Is_Active_Property : constant Glib.Properties.Property_Boolean;
+
+   Mnemonics_Visible_Property : constant Glib.Properties.Property_Boolean;
    --  Whether mnemonics are currently visible in this window.
    --
    --  This property is maintained by GTK+ based on the
    --  Gtk.Settings.Gtk_Settings:gtk-auto-mnemonics setting and user input, and
    --  should not be set by applications.
-   --
-   --  Name: Modal_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Opacity_Property
+
+   Modal_Property : constant Glib.Properties.Property_Boolean;
+
+   Opacity_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The requested opacity of the window. See Gtk.Window.Set_Opacity for
    --  more details about window opacity.
-   --
-   --  Name: Resizable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Resize_Grip_Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Resizable_Property : constant Glib.Properties.Property_Boolean;
+
+   Resize_Grip_Visible_Property : constant Glib.Properties.Property_Boolean;
    --  Whether a corner resize grip is currently shown.
-   --
-   --  Name: Role_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Screen_Property
+
+   Role_Property : constant Glib.Properties.Property_String;
+
+   Screen_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gdk.Screen
-   --  Flags: read-write
-   --
-   --  Name: Skip_Pager_Hint_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Skip_Taskbar_Hint_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Startup_Id_Property
-   --  Type: UTF8_String
+
+   Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean;
+
+   Skip_Taskbar_Hint_Property : constant Glib.Properties.Property_Boolean;
+
+   Startup_Id_Property : constant Glib.Properties.Property_String;
    --  Flags: write
    --  The :startup-id is a write-only property for setting window's startup
    --  notification identifier. See Gtk.Window.Set_Startup_Id for more details.
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Transient_For_Property
+
+   Title_Property : constant Glib.Properties.Property_String;
+
+   Transient_For_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk_Window
-   --  Flags: read-write
    --  The transient parent of the window. See Gtk.Window.Set_Transient_For
    --  for more details about transient windows.
-   --
-   --  Name: The_Type_Property
-   --  Type: Gtk.Enums.Gtk_Window_Type
-   --  Flags: read-write
-   --
-   --  Name: Type_Hint_Property
-   --  Type: Gdk.Window.Gdk_Window_Type_Hint
-   --  Flags: read-write
-   --
-   --  Name: Urgency_Hint_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Window_Position_Property
-   --  Type: Gtk.Enums.Gtk_Window_Position
-   --  Flags: read-write
 
-   Accept_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Application_Property : constant Glib.Properties.Property_Object;
-   Decorated_Property : constant Glib.Properties.Property_Boolean;
-   Default_Height_Property : constant Glib.Properties.Property_Int;
-   Default_Width_Property : constant Glib.Properties.Property_Int;
-   Deletable_Property : constant Glib.Properties.Property_Boolean;
-   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean;
-   Focus_On_Map_Property : constant Glib.Properties.Property_Boolean;
-   Focus_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Gravity_Property : constant Gdk.Window.Property_Gdk_Gravity;
-   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
-   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Icon_Property : constant Glib.Properties.Property_Object;
-   Icon_Name_Property : constant Glib.Properties.Property_String;
-   Is_Active_Property : constant Glib.Properties.Property_Boolean;
-   Mnemonics_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Modal_Property : constant Glib.Properties.Property_Boolean;
-   Opacity_Property : constant Glib.Properties.Property_Double;
-   Resizable_Property : constant Glib.Properties.Property_Boolean;
-   Resize_Grip_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Role_Property : constant Glib.Properties.Property_String;
-   Screen_Property : constant Glib.Properties.Property_Boxed;
-   Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean;
-   Skip_Taskbar_Hint_Property : constant Glib.Properties.Property_Boolean;
-   Startup_Id_Property : constant Glib.Properties.Property_String;
-   Title_Property : constant Glib.Properties.Property_String;
-   Transient_For_Property : constant Glib.Properties.Property_Object;
    The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type;
+
    Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint;
+   --  Type: Gdk.Window.Gdk_Window_Type_Hint
+
    Urgency_Hint_Property : constant Glib.Properties.Property_Boolean;
+
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position;
 
    -------------

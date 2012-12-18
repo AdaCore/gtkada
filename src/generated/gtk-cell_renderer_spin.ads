@@ -75,26 +75,18 @@ package Gtk.Cell_Renderer_Spin is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Adjustment_Property
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --  The adjustment that holds the value of the spinbutton. This must be
-   --  non-null for the cell renderer to be editable.
-   --
-   --  Name: Climb_Rate_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --  The acceleration rate when you hold down a button.
-   --
-   --  Name: The_Digits_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --  The number of decimal places to display.
 
    Adjustment_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
+   --  The adjustment that holds the value of the spinbutton. This must be
+   --  non-null for the cell renderer to be editable.
+
    Climb_Rate_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+   --  The acceleration rate when you hold down a button.
+
    The_Digits_Property : constant Glib.Properties.Property_Uint;
+   --  The number of decimal places to display.
 
 private
    The_Digits_Property : constant Glib.Properties.Property_Uint :=

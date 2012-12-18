@@ -172,13 +172,9 @@ package Gtk.Toggle_Tool_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  If the toggle tool button should be pressed in.
 
    Active_Property : constant Glib.Properties.Property_Boolean;
+   --  If the toggle tool button should be pressed in.
 
    -------------
    -- Signals --

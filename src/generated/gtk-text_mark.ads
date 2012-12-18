@@ -161,16 +161,9 @@ package Gtk.Text_Mark is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Left_Gravity_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
 
    Left_Gravity_Property : constant Glib.Properties.Property_Boolean;
+
    Name_Property : constant Glib.Properties.Property_String;
 
 private

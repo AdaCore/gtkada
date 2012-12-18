@@ -573,21 +573,13 @@ package Gtk.Container is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Border_Width_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Child_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: write
-   --
-   --  Name: Resize_Mode_Property
-   --  Type: Gtk.Enums.Gtk_Resize_Mode
-   --  Flags: read-write
 
    Border_Width_Property : constant Glib.Properties.Property_Uint;
+
    Child_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+   --  Flags: write
+
    Resize_Mode_Property : constant Gtk.Enums.Property_Gtk_Resize_Mode;
 
    -------------

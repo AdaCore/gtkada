@@ -339,56 +339,33 @@ package Gtk.GRange is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Adjustment_Property
+
+   Adjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
-   --  Name: Fill_Level_Property
+
+   Fill_Level_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The fill level (e.g. prebuffering of a network stream). See
    --  Gtk.GRange.Set_Fill_Level.
-   --
-   --  Name: Inverted_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Lower_Stepper_Sensitivity_Property
-   --  Type: Gtk.Enums.Gtk_Sensitivity_Type
-   --  Flags: read-write
-   --
-   --  Name: Restrict_To_Fill_Level_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Inverted_Property : constant Glib.Properties.Property_Boolean;
+
+   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
+
+   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
    --  The restrict-to-fill-level property controls whether slider movement is
    --  restricted to an upper boundary set by the fill level. See
    --  Gtk.GRange.Set_Restrict_To_Fill_Level.
-   --
-   --  Name: Round_Digits_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Round_Digits_Property : constant Glib.Properties.Property_Int;
    --  The number of digits to round the value to when it changes, or -1. See
    --  Gtk.GRange.Gtk_Range::change-value.
-   --
-   --  Name: Show_Fill_Level_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
    --  The show-fill-level property controls whether fill level indicator
    --  graphics are displayed on the trough. See
    --  Gtk.GRange.Set_Show_Fill_Level.
-   --
-   --  Name: Upper_Stepper_Sensitivity_Property
-   --  Type: Gtk.Enums.Gtk_Sensitivity_Type
-   --  Flags: read-write
 
-   Adjustment_Property : constant Glib.Properties.Property_Object;
-   Fill_Level_Property : constant Glib.Properties.Property_Double;
-   Inverted_Property : constant Glib.Properties.Property_Boolean;
-   Lower_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
-   Restrict_To_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
-   Round_Digits_Property : constant Glib.Properties.Property_Int;
-   Show_Fill_Level_Property : constant Glib.Properties.Property_Boolean;
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type;
 
    -------------

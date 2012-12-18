@@ -524,10 +524,8 @@ package Gtk.Print_Operation is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Allow_Async_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Allow_Async_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the print operation may run asynchronously or not.
    --
    --  Some systems don't support asynchronous printing, but those that do
@@ -538,43 +536,34 @@ package Gtk.Print_Operation is
    --  The Windows port does not support asynchronous operation at all (this
    --  is unlikely to change). On other platforms, all actions except for
    --  Gtk.Print_Operation.Action_Export support asynchronous operation.
-   --
-   --  Name: Current_Page_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Current_Page_Property : constant Glib.Properties.Property_Int;
    --  The current page in the document.
    --
    --  If this is set before Gtk.Print_Operation.Run, the user will be able to
    --  select to print only the current page.
    --
    --  Note that this only makes sense for pre-paginated documents.
-   --
-   --  Name: Custom_Tab_Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Custom_Tab_Label_Property : constant Glib.Properties.Property_String;
    --  Used as the label of the tab containing custom widgets. Note that this
    --  property may be ignored on some platforms.
    --
    --  If this is null, GTK+ uses a default label.
-   --
-   --  Name: Default_Page_Setup_Property
+
+   Default_Page_Setup_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Page_Setup.Gtk_Page_Setup
-   --  Flags: read-write
    --  The Gtk.Page_Setup.Gtk_Page_Setup used by default.
    --
    --  This page setup will be used by Gtk.Print_Operation.Run, but it can be
    --  overridden on a per-page basis by connecting to the
    --  Gtk.Print_Operation.Gtk_Print_Operation::request-page-setup signal.
-   --
-   --  Name: Embed_Page_Setup_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Embed_Page_Setup_Property : constant Glib.Properties.Property_Boolean;
    --  If True, page size combo box and orientation combo box are embedded
    --  into page setup page.
-   --
-   --  Name: Export_Filename_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Export_Filename_Property : constant Glib.Properties.Property_String;
    --  The name of a file to generate instead of showing the print dialog.
    --  Currently, PDF is the only supported format.
    --
@@ -584,26 +573,20 @@ package Gtk.Print_Operation is
    --  "Print to PDF" support is independent of this and is done by letting
    --  the user pick the "Print to PDF" item from the list of printers in the
    --  print dialog.
-   --
-   --  Name: Has_Selection_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Selection_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether there is a selection in your application. This can
    --  allow your application to print the selection. This is typically used to
    --  make a "Selection" button sensitive.
-   --
-   --  Name: Job_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Job_Name_Property : constant Glib.Properties.Property_String;
    --  A string used to identify the job (e.g. in monitoring applications like
    --  eggcups).
    --
    --  If you don't set a job name, GTK+ picks a default one by numbering
    --  successive print jobs.
-   --
-   --  Name: N_Pages_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   N_Pages_Property : constant Glib.Properties.Property_Int;
    --  The number of pages in the document.
    --
    --  This *must* be set to a positive number before the rendering starts. It
@@ -615,10 +598,8 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Gtk_Print_Operation::draw-page signals are 0-based,
    --  i.e. if the user chooses to print all pages, the last ::draw-page signal
    --  will be for page N_Pages - 1.
-   --
-   --  Name: N_Pages_To_Print_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   N_Pages_To_Print_Property : constant Glib.Properties.Property_Int;
    --  The number of pages that will be printed.
    --
    --  Note that this value is set during print preparation phase
@@ -629,87 +610,54 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Get_N_Pages_To_Print when print status is
    --  Gtk.Print_Operation.Status_Generating_Data. This is typically used to
    --  track the progress of print operation.
-   --
-   --  Name: Print_Settings_Property
+
+   Print_Settings_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Print_Settings.Gtk_Print_Settings
-   --  Flags: read-write
    --  The Gtk.Print_Settings.Gtk_Print_Settings used for initializing the
    --  dialog.
    --
    --  Setting this property is typically used to re-establish print settings
    --  from a previous print operation, see Gtk.Print_Operation.Run.
-   --
-   --  Name: Show_Progress_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Progress_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether to show a progress dialog during the print
    --  operation.
-   --
-   --  Name: Status_Property
+
+   Status_Property : constant Gtk.Print_Operation.Property_Gtk_Print_Status;
    --  Type: Gtk_Print_Status
-   --  Flags: read-write
    --  The status of the print operation.
-   --
-   --  Name: Status_String_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Status_String_Property : constant Glib.Properties.Property_String;
    --  A string representation of the status of the print operation. The
    --  string is translated and suitable for displaying the print status e.g.
    --  in a Gtk.Status_Bar.Gtk_Status_Bar.
    --
    --  See the Gtk.Print_Operation.Gtk_Print_Operation:status property for a
    --  status value that is suitable for programmatic use.
-   --
-   --  Name: Support_Selection_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Support_Selection_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the print operation will support print of selection. This
    --  allows the print dialog to show a "Selection" button.
-   --
-   --  Name: Track_Print_Status_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Track_Print_Status_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the print operation will try to continue report on the status
    --  of the print job in the printer queues and printer. This can allow your
    --  application to show things like "out of paper" issues, and when the
    --  print job actually reaches the printer. However, this is often
    --  implemented using polling, and should not be enabled unless needed.
-   --
-   --  Name: Unit_Property
-   --  Type: Gtk.Enums.Gtk_Unit
-   --  Flags: read-write
+
+   Unit_Property : constant Gtk.Enums.Property_Gtk_Unit;
    --  The transformation for the cairo context obtained from
    --  Gtk.Print_Context.Gtk_Print_Context is set up in such a way that
    --  distances are measured in units of Unit.
-   --
-   --  Name: Use_Full_Page_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Full_Page_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the transformation for the cairo context obtained from
    --  Gtk.Print_Context.Gtk_Print_Context puts the origin at the top left
    --  corner of the page (which may not be the top left corner of the sheet,
    --  depending on page orientation and the number of pages per sheet).
    --  Otherwise, the origin is at the top left corner of the imageable area
    --  (i.e. inside the margins).
-
-   Allow_Async_Property : constant Glib.Properties.Property_Boolean;
-   Current_Page_Property : constant Glib.Properties.Property_Int;
-   Custom_Tab_Label_Property : constant Glib.Properties.Property_String;
-   Default_Page_Setup_Property : constant Glib.Properties.Property_Object;
-   Embed_Page_Setup_Property : constant Glib.Properties.Property_Boolean;
-   Export_Filename_Property : constant Glib.Properties.Property_String;
-   Has_Selection_Property : constant Glib.Properties.Property_Boolean;
-   Job_Name_Property : constant Glib.Properties.Property_String;
-   N_Pages_Property : constant Glib.Properties.Property_Int;
-   N_Pages_To_Print_Property : constant Glib.Properties.Property_Int;
-   Print_Settings_Property : constant Glib.Properties.Property_Object;
-   Show_Progress_Property : constant Glib.Properties.Property_Boolean;
-   Status_Property : constant Gtk.Print_Operation.Property_Gtk_Print_Status;
-   Status_String_Property : constant Glib.Properties.Property_String;
-   Support_Selection_Property : constant Glib.Properties.Property_Boolean;
-   Track_Print_Status_Property : constant Glib.Properties.Property_Boolean;
-   Unit_Property : constant Gtk.Enums.Property_Gtk_Unit;
-   Use_Full_Page_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

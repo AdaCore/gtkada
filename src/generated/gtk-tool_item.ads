@@ -396,21 +396,11 @@ package Gtk.Tool_Item is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Is_Important_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Horizontal_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Vertical_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Is_Important_Property : constant Glib.Properties.Property_Boolean;
+
    Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean;
+
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

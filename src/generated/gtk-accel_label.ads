@@ -172,12 +172,9 @@ package Gtk.Accel_Label is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accel_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
 
    Accel_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
 
 private
    Accel_Widget_Property : constant Glib.Properties.Property_Object :=

@@ -197,45 +197,30 @@ package Gtk.Cell_Area_Context is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Area_Property
+
+   Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
-   --  Flags: read-write
    --  The Gtk.Cell_Area.Gtk_Cell_Area this context was created by
-   --
-   --  Name: Minimum_Height_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Minimum_Height_Property : constant Glib.Properties.Property_Int;
    --  The minimum height for the Gtk.Cell_Area.Gtk_Cell_Area in this context
    --  for all Gtk.Tree_Model.Gtk_Tree_Model rows that this context was
    --  requested for using Gtk.Cell_Area.Get_Preferred_Height.
-   --
-   --  Name: Minimum_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Minimum_Width_Property : constant Glib.Properties.Property_Int;
    --  The minimum width for the Gtk.Cell_Area.Gtk_Cell_Area in this context
    --  for all Gtk.Tree_Model.Gtk_Tree_Model rows that this context was
    --  requested for using Gtk.Cell_Area.Get_Preferred_Width.
-   --
-   --  Name: Natural_Height_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Natural_Height_Property : constant Glib.Properties.Property_Int;
    --  The natural height for the Gtk.Cell_Area.Gtk_Cell_Area in this context
    --  for all Gtk.Tree_Model.Gtk_Tree_Model rows that this context was
    --  requested for using Gtk.Cell_Area.Get_Preferred_Height.
-   --
-   --  Name: Natural_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Natural_Width_Property : constant Glib.Properties.Property_Int;
    --  The natural width for the Gtk.Cell_Area.Gtk_Cell_Area in this context
    --  for all Gtk.Tree_Model.Gtk_Tree_Model rows that this context was
    --  requested for using Gtk.Cell_Area.Get_Preferred_Width.
-
-   Area_Property : constant Glib.Properties.Property_Object;
-   Minimum_Height_Property : constant Glib.Properties.Property_Int;
-   Minimum_Width_Property : constant Glib.Properties.Property_Int;
-   Natural_Height_Property : constant Glib.Properties.Property_Int;
-   Natural_Width_Property : constant Glib.Properties.Property_Int;
 
 private
    Natural_Width_Property : constant Glib.Properties.Property_Int :=

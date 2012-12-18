@@ -182,10 +182,6 @@ package Gtk.Button_Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Layout_Style_Property
-   --  Type: Gtk.Enums.Gtk_Button_Box_Style
-   --  Flags: read-write
 
    Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
 

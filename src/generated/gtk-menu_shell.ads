@@ -192,15 +192,11 @@ package Gtk.Menu_Shell is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Take_Focus_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Take_Focus_Property : constant Glib.Properties.Property_Boolean;
    --  A boolean that determines whether the menu and its submenus grab the
    --  keyboard focus. See Gtk.Menu_Shell.Set_Take_Focus and
    --  Gtk.Menu_Shell.Get_Take_Focus.
-
-   Take_Focus_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

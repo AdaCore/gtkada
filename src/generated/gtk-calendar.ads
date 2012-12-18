@@ -298,75 +298,44 @@ package Gtk.Calendar is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Day_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Day_Property : constant Glib.Properties.Property_Int;
    --  The selected day (as a number between 1 and 31, or 0 to unselect the
    --  currently selected day). This property gets initially set to the current
    --  day.
-   --
-   --  Name: Detail_Height_Rows_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int;
    --  Height of a detail cell, in rows. A value of 0 allows any width. See
    --  Gtk.Calendar.Set_Detail_Func.
-   --
-   --  Name: Detail_Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  Width of a detail cell, in characters. A value of 0 allows any width.
    --  See Gtk.Calendar.Set_Detail_Func.
-   --
-   --  Name: Month_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Month_Property : constant Glib.Properties.Property_Int;
    --  The selected month (as a number between 0 and 11). This property gets
    --  initially set to the current month.
-   --
-   --  Name: No_Month_Change_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   No_Month_Change_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the selected month can be changed.
-   --
-   --  Name: Show_Day_Names_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether day names are displayed.
-   --
-   --  Name: Show_Details_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Details_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether details are shown directly in the widget, or if they
    --  are available only as tooltip. When this property is set days with
    --  details are marked.
-   --
-   --  Name: Show_Heading_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Heading_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether a heading is displayed.
-   --
-   --  Name: Show_Week_Numbers_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether week numbers are displayed.
-   --
-   --  Name: Year_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Year_Property : constant Glib.Properties.Property_Int;
    --  The selected year. This property gets initially set to the current
    --  year.
-
-   Day_Property : constant Glib.Properties.Property_Int;
-   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int;
-   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Month_Property : constant Glib.Properties.Property_Int;
-   No_Month_Change_Property : constant Glib.Properties.Property_Boolean;
-   Show_Day_Names_Property : constant Glib.Properties.Property_Boolean;
-   Show_Details_Property : constant Glib.Properties.Property_Boolean;
-   Show_Heading_Property : constant Glib.Properties.Property_Boolean;
-   Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean;
-   Year_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

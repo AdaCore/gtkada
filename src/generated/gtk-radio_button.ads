@@ -315,13 +315,11 @@ package Gtk.Radio_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Group_Property
+
+   Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk_Radio_Button
    --  Flags: write
    --  Sets a new group for a radio button.
-
-   Group_Property : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --

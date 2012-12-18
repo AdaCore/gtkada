@@ -296,39 +296,22 @@ package Gtk.Tool_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the themed icon displayed on the item. This property only
    --  has an effect if not overridden by "label", "icon_widget" or "stock_id"
    --  properties.
-   --
-   --  Name: Icon_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Label_Widget_Property
-   --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Stock_Id_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Use_Underline_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
-   Icon_Name_Property : constant Glib.Properties.Property_String;
    Icon_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Label_Property : constant Glib.Properties.Property_String;
+
    Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
    Stock_Id_Property : constant Glib.Properties.Property_String;
+
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

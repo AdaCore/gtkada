@@ -277,46 +277,33 @@ package Gtk.Adjustment is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Lower_Property
+
+   Lower_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The minimum value of the adjustment.
-   --
-   --  Name: Page_Increment_Property
+
+   Page_Increment_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The page increment of the adjustment.
-   --
-   --  Name: Page_Size_Property
+
+   Page_Size_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The page size of the adjustment. Note that the page-size is irrelevant
    --  and should be set to zero if the adjustment is used for a simple scalar
    --  value, e.g. in a Gtk.Spin_Button.Gtk_Spin_Button.
-   --
-   --  Name: Step_Increment_Property
+
+   Step_Increment_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The step increment of the adjustment.
-   --
-   --  Name: Upper_Property
+
+   Upper_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The maximum value of the adjustment. Note that values will be
    --  restricted by 'upper - page-size' if the page-size property is nonzero.
-   --
-   --  Name: Value_Property
-   --  Type: Gdouble
-   --  Flags: read-write
-   --  The value of the adjustment.
 
-   Lower_Property : constant Glib.Properties.Property_Double;
-   Page_Increment_Property : constant Glib.Properties.Property_Double;
-   Page_Size_Property : constant Glib.Properties.Property_Double;
-   Step_Increment_Property : constant Glib.Properties.Property_Double;
-   Upper_Property : constant Glib.Properties.Property_Double;
    Value_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+   --  The value of the adjustment.
 
    -------------
    -- Signals --

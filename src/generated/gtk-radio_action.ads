@@ -187,30 +187,22 @@ package Gtk.Radio_Action is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Current_Value_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Current_Value_Property : constant Glib.Properties.Property_Int;
    --  The value property of the currently active member of the group to which
    --  this action belongs.
-   --
-   --  Name: Group_Property
+
+   Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk_Radio_Action
    --  Flags: write
    --  Sets a new group for a radio action.
-   --
-   --  Name: Value_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Value_Property : constant Glib.Properties.Property_Int;
    --  The value is an arbitrary integer which can be used as a convenient way
    --  to determine which action in the group is currently active in an
    --  ::activate or ::changed signal handler. See
    --  Gtk.Radio_Action.Get_Current_Value and Gtk_Radio_Action_Entry for
    --  convenient ways to get and set this property.
-
-   Current_Value_Property : constant Glib.Properties.Property_Int;
-   Group_Property : constant Glib.Properties.Property_Object;
-   Value_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

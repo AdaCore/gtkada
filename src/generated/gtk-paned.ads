@@ -263,30 +263,17 @@ package Gtk.Paned is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Max_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The largest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-   --
-   --  Name: Min_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The smallest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-   --
-   --  Name: Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Position_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Max_Position_Property : constant Glib.Properties.Property_Int;
+   --  The largest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
    Min_Position_Property : constant Glib.Properties.Property_Int;
+   --  The smallest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
    Position_Property : constant Glib.Properties.Property_Int;
+
    Position_Set_Property : constant Glib.Properties.Property_Boolean;
 
    -------------

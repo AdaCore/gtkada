@@ -207,13 +207,11 @@ package Gtk.Radio_Menu_Item is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Group_Property
+
+   Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk_Radio_Menu_Item
    --  Flags: write
    --  The radio menu item whose group this widget belongs to.
-
-   Group_Property : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --

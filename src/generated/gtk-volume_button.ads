@@ -152,15 +152,11 @@ package Gtk.Volume_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Use_Symbolic_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Symbolic_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to use symbolic icons as the icons. Note that if the symbolic
    --  icons are not available in your installed theme, then the normal
    --  (potentially colorful) icons will be used.
-
-   Use_Symbolic_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Use_Symbolic_Property : constant Glib.Properties.Property_Boolean :=

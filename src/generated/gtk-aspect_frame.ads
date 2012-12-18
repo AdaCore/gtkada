@@ -147,26 +147,13 @@ package Gtk.Aspect_Frame is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Obey_Child_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Ratio_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
 
    Obey_Child_Property : constant Glib.Properties.Property_Boolean;
+
    Ratio_Property : constant Glib.Properties.Property_Float;
+
    Xalign_Property : constant Glib.Properties.Property_Float;
+
    Yalign_Property : constant Glib.Properties.Property_Float;
 
 private

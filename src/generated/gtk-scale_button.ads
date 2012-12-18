@@ -249,22 +249,14 @@ package Gtk.Scale_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Adjustment_Property
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
-   --  Name: Size_Property
-   --  Type: Gtk.Enums.Gtk_Icon_Size
-   --  Flags: read-write
-   --
-   --  Name: Value_Property
-   --  Type: Gdouble
-   --  Flags: read-write
 
    Adjustment_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
+
    Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
+
    Value_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
 
    -------------
    -- Signals --

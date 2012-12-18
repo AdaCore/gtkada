@@ -325,40 +325,25 @@ package Gtk.Menu_Item is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accel_Path_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Accel_Path_Property : constant Glib.Properties.Property_String;
    --  Sets the accelerator path of the menu item, through which runtime
    --  changes of the menu item's accelerator caused by the user can be
    --  identified and saved to persistant storage.
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Label_Property : constant Glib.Properties.Property_String;
    --  The text for the child label.
-   --
-   --  Name: Right_Justified_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Right_Justified_Property : constant Glib.Properties.Property_Boolean;
    --  Sets whether the menu item appears justified at the right side of a
    --  menu bar.
-   --
-   --  Name: Submenu_Property
-   --  Type: Gtk.Menu.Gtk_Menu
-   --  Flags: read-write
-   --  The submenu attached to the menu item, or null if it has none.
-   --
-   --  Name: Use_Underline_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  True if underlines in the text indicate mnemonics.
 
-   Accel_Path_Property : constant Glib.Properties.Property_String;
-   Label_Property : constant Glib.Properties.Property_String;
-   Right_Justified_Property : constant Glib.Properties.Property_Boolean;
    Submenu_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Menu.Gtk_Menu
+   --  The submenu attached to the menu item, or null if it has none.
+
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
+   --  True if underlines in the text indicate mnemonics.
 
    -------------
    -- Signals --

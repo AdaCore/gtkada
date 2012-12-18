@@ -86,57 +86,33 @@ package Gtk.Cell_Renderer_Pixbuf is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Follow_State_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Specifies whether the rendered pixbuf should be colorized according to
-   --  the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State.
-   --
-   --  Name: G_Icon_Property
-   --  Type: Glib.G_Icon.G_Icon
-   --  Flags: read-write
-   --  The GIcon representing the icon to display. If the icon theme is
-   --  changed, the image will be updated automatically.
-   --
-   --  Name: Icon_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The name of the themed icon to display. This property only has an
-   --  effect if not overridden by "stock_id" or "pixbuf" properties.
-   --
-   --  Name: Pixbuf_Property
-   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Pixbuf_Expander_Closed_Property
-   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Pixbuf_Expander_Open_Property
-   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  Flags: read-write
-   --
-   --  Name: Stock_Detail_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Stock_Id_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Stock_Size_Property
-   --  Type: Guint
-   --  Flags: read-write
 
    Follow_State_Property : constant Glib.Properties.Property_Boolean;
+   --  Specifies whether the rendered pixbuf should be colorized according to
+   --  the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State.
+
    G_Icon_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Glib.G_Icon.G_Icon
+   --  The GIcon representing the icon to display. If the icon theme is
+   --  changed, the image will be updated automatically.
+
    Icon_Name_Property : constant Glib.Properties.Property_String;
+   --  The name of the themed icon to display. This property only has an
+   --  effect if not overridden by "stock_id" or "pixbuf" properties.
+
    Pixbuf_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
+
    Pixbuf_Expander_Closed_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
+
    Pixbuf_Expander_Open_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Pixbuf.Gdk_Pixbuf
+
    Stock_Detail_Property : constant Glib.Properties.Property_String;
+
    Stock_Id_Property : constant Glib.Properties.Property_String;
+
    Stock_Size_Property : constant Glib.Properties.Property_Uint;
 
 private

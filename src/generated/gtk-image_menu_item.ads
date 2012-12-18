@@ -263,36 +263,26 @@ package Gtk.Image_Menu_Item is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accel_Group_Property
+
+   Accel_Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Accel_Group.Gtk_Accel_Group
    --  Flags: write
    --  The Accel Group to use for stock accelerator keys
-   --
-   --  Name: Always_Show_Image_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the menu item will ignore the
    --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
    --  image, if available.
    --
    --  Use this property if the menuitem would be useless or hard to use
    --  without the image.
-   --
-   --  Name: Image_Property
+
+   Image_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Use_Stock_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the label set in the menuitem is used as a stock id to select
    --  the stock item for the item.
-
-   Accel_Group_Property : constant Glib.Properties.Property_Object;
-   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
-   Image_Property : constant Glib.Properties.Property_Object;
-   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Use_Stock_Property : constant Glib.Properties.Property_Boolean :=

@@ -241,26 +241,13 @@ package Gtk.Grid is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Column_Homogeneous_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Column_Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Row_Homogeneous_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Row_Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
 
    Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
    Column_Spacing_Property : constant Glib.Properties.Property_Int;
+
    Row_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
    Row_Spacing_Property : constant Glib.Properties.Property_Int;
 
 private

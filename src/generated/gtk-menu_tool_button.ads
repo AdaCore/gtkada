@@ -219,12 +219,9 @@ package Gtk.Menu_Tool_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Menu_Property
-   --  Type: Gtk.Menu.Gtk_Menu
-   --  Flags: read-write
 
    Menu_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Menu.Gtk_Menu
 
    -------------
    -- Signals --

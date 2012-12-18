@@ -101,111 +101,76 @@ package Gtk.Cell_Renderer_Text is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Align_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Alignment_Property
+
+   Align_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Alignment_Property : constant Pango.Enums.Property_Alignment;
    --  Type: Pango.Enums.Alignment
-   --  Flags: read-write
    --  Specifies how to align the lines of text with respect to each other.
    --
    --  Note that this property describes how to align the lines of text in
    --  case there are several of them. The "xalign" property of
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer, on the other hand, sets the
    --  horizontal alignment of the whole text.
-   --
-   --  Name: Attributes_Property
+
+   Attributes_Property : constant Glib.Properties.Property_Object;
    --  Type: Pango.Attributes.Pango_Attr_List
-   --  Flags: read-write
-   --
-   --  Name: Background_Property
-   --  Type: UTF8_String
+
+   Background_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Background_Gdk_Property
+
+   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Background_Rgba_Property
+
+   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  Background color as a Gdk.RGBA.Gdk_RGBA
-   --
-   --  Name: Background_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Editable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Editable_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Ellipsize_Property
+
+   Background_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Editable_Property : constant Glib.Properties.Property_Boolean;
+
+   Editable_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  Flags: read-write
    --  Specifies the preferred place to ellipsize the string, if the cell
    --  renderer does not have enough room to display the entire string. Setting
    --  it to Pango.Layout.Ellipsize_None turns off ellipsizing. See the
    --  wrap-width property for another way of making the text fit into a given
    --  width.
-   --
-   --  Name: Ellipsize_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Family_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Family_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Font_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Font_Desc_Property
+
+   Ellipsize_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Family_Property : constant Glib.Properties.Property_String;
+
+   Family_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Font_Property : constant Glib.Properties.Property_String;
+
+   Font_Desc_Property : constant Pango.Font.Property_Font_Description;
    --  Type: Pango.Font.Pango_Font_Description
-   --  Flags: read-write
-   --
-   --  Name: Foreground_Property
-   --  Type: UTF8_String
+
+   Foreground_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Foreground_Gdk_Property
+
+   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
-   --
-   --  Name: Foreground_Rgba_Property
+
+   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  Foreground color as a Gdk.RGBA.Gdk_RGBA
-   --
-   --  Name: Foreground_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Language_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Language_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Markup_Property
-   --  Type: UTF8_String
+
+   Foreground_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Language_Property : constant Glib.Properties.Property_String;
+
+   Language_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Markup_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Max_Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  The desired maximum width of the cell, in characters. If this property
    --  is set to -1, the width will be calculated automatically.
    --
@@ -214,160 +179,71 @@ package Gtk.Cell_Renderer_Text is
    --  greater allocation unless it is set to expand in its
    --  Gtk.Cell_Layout.Gtk_Cell_Layout and all of the cell's siblings have
    --  received their natural width.
-   --
-   --  Name: Rise_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Rise_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Scale_Property
+
+   Rise_Property : constant Glib.Properties.Property_Int;
+
+   Rise_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Scale_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Scale_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Single_Paragraph_Mode_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Size_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Size_Points_Property
+
+   Scale_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Single_Paragraph_Mode_Property : constant Glib.Properties.Property_Boolean;
+
+   Size_Property : constant Glib.Properties.Property_Int;
+
+   Size_Points_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
-   --
-   --  Name: Size_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Stretch_Property
+
+   Size_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Stretch_Property : constant Pango.Enums.Property_Stretch;
    --  Type: Pango.Enums.Stretch
-   --  Flags: read-write
-   --
-   --  Name: Stretch_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Strikethrough_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Strikethrough_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Style_Property
+
+   Stretch_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Strikethrough_Property : constant Glib.Properties.Property_Boolean;
+
+   Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Style_Property : constant Pango.Enums.Property_Style;
    --  Type: Pango.Enums.Style
-   --  Flags: read-write
-   --
-   --  Name: Style_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Underline_Property
+
+   Style_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Text_Property : constant Glib.Properties.Property_String;
+
+   Underline_Property : constant Pango.Enums.Property_Underline;
    --  Type: Pango.Enums.Underline
-   --  Flags: read-write
-   --
-   --  Name: Underline_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Variant_Property
+
+   Underline_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Variant_Property : constant Pango.Enums.Property_Variant;
    --  Type: Pango.Enums.Variant
-   --  Flags: read-write
-   --
-   --  Name: Variant_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Weight_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Weight_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Variant_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Weight_Property : constant Glib.Properties.Property_Int;
+
+   Weight_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  The desired width of the cell, in characters. If this property is set
    --  to -1, the width will be calculated automatically, otherwise the cell
    --  will request either 3 characters or the property value, whichever is
    --  greater.
-   --
-   --  Name: Wrap_Mode_Property
+
+   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode;
    --  Type: Pango.Enums.Wrap_Mode
-   --  Flags: read-write
    --  Specifies how to break the string into multiple lines, if the cell
    --  renderer does not have enough room to display the entire string. This
    --  property has no effect unless the wrap-width property is set.
-   --
-   --  Name: Wrap_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Wrap_Width_Property : constant Glib.Properties.Property_Int;
    --  Specifies the minimum width at which the text is wrapped. The wrap-mode
    --  property can be used to influence at what character positions the line
    --  breaks can be placed. Setting wrap-width to -1 turns wrapping off.
-
-   Align_Set_Property : constant Glib.Properties.Property_Boolean;
-   Alignment_Property : constant Pango.Enums.Property_Alignment;
-   Attributes_Property : constant Glib.Properties.Property_Object;
-   Background_Property : constant Glib.Properties.Property_String;
-   Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Background_Set_Property : constant Glib.Properties.Property_Boolean;
-   Editable_Property : constant Glib.Properties.Property_Boolean;
-   Editable_Set_Property : constant Glib.Properties.Property_Boolean;
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
-   Ellipsize_Set_Property : constant Glib.Properties.Property_Boolean;
-   Family_Property : constant Glib.Properties.Property_String;
-   Family_Set_Property : constant Glib.Properties.Property_Boolean;
-   Font_Property : constant Glib.Properties.Property_String;
-   Font_Desc_Property : constant Pango.Font.Property_Font_Description;
-   Foreground_Property : constant Glib.Properties.Property_String;
-   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
-   Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Foreground_Set_Property : constant Glib.Properties.Property_Boolean;
-   Language_Property : constant Glib.Properties.Property_String;
-   Language_Set_Property : constant Glib.Properties.Property_Boolean;
-   Markup_Property : constant Glib.Properties.Property_String;
-   Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Rise_Property : constant Glib.Properties.Property_Int;
-   Rise_Set_Property : constant Glib.Properties.Property_Boolean;
-   Scale_Property : constant Glib.Properties.Property_Double;
-   Scale_Set_Property : constant Glib.Properties.Property_Boolean;
-   Single_Paragraph_Mode_Property : constant Glib.Properties.Property_Boolean;
-   Size_Property : constant Glib.Properties.Property_Int;
-   Size_Points_Property : constant Glib.Properties.Property_Double;
-   Size_Set_Property : constant Glib.Properties.Property_Boolean;
-   Stretch_Property : constant Pango.Enums.Property_Stretch;
-   Stretch_Set_Property : constant Glib.Properties.Property_Boolean;
-   Strikethrough_Property : constant Glib.Properties.Property_Boolean;
-   Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean;
-   Style_Property : constant Pango.Enums.Property_Style;
-   Style_Set_Property : constant Glib.Properties.Property_Boolean;
-   Text_Property : constant Glib.Properties.Property_String;
-   Underline_Property : constant Pango.Enums.Property_Underline;
-   Underline_Set_Property : constant Glib.Properties.Property_Boolean;
-   Variant_Property : constant Pango.Enums.Property_Variant;
-   Variant_Set_Property : constant Glib.Properties.Property_Boolean;
-   Weight_Property : constant Glib.Properties.Property_Int;
-   Weight_Set_Property : constant Glib.Properties.Property_Boolean;
-   Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode;
-   Wrap_Width_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

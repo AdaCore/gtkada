@@ -349,17 +349,11 @@ package Gtk.Accel_Group is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Is_Locked_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Modifier_Mask_Property
-   --  Type: Gdk.Types.Gdk_Modifier_Type
-   --  Flags: read-write
 
    Is_Locked_Property : constant Glib.Properties.Property_Boolean;
+
    Modifier_Mask_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Gdk.Types.Gdk_Modifier_Type
 
    -------------
    -- Signals --

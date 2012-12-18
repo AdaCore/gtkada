@@ -83,13 +83,9 @@ package Gtk.Cell_Editable is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Editing_Canceled_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  Indicates whether editing on the cell has been canceled.
 
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean;
+   --  Indicates whether editing on the cell has been canceled.
 
    -------------
    -- Signals --

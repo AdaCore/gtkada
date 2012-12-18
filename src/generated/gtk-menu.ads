@@ -582,39 +582,29 @@ package Gtk.Menu is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Accel_Group_Property
+
+   Accel_Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Accel_Group.Gtk_Accel_Group
-   --  Flags: read-write
    --  The accel group holding accelerators for the menu.
-   --
-   --  Name: Accel_Path_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Accel_Path_Property : constant Glib.Properties.Property_String;
    --  An accel path used to conveniently construct accel paths of child
    --  items.
-   --
-   --  Name: Active_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Active_Property : constant Glib.Properties.Property_Int;
    --  The index of the currently selected menu item, or -1 if no menu item is
    --  selected.
-   --
-   --  Name: Attach_Widget_Property
+
+   Attach_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
    --  The widget the menu is attached to. Setting this property attaches the
    --  menu without a Gtk_Menu_Detach_Func. If you need to use a detacher, use
    --  Gtk.Menu.Attach_To_Widget directly.
-   --
-   --  Name: Monitor_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Monitor_Property : constant Glib.Properties.Property_Int;
    --  The monitor the menu will be popped up on.
-   --
-   --  Name: Reserve_Toggle_Size_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean;
    --  A boolean that indicates whether the menu reserves space for toggles
    --  and icons, regardless of their actual presence.
    --
@@ -622,23 +612,10 @@ package Gtk.Menu is
    --  special-purposes such as tabular menus. Regular menus that are connected
    --  to a menu bar or context menus should reserve toggle space for
    --  consistency.
-   --
-   --  Name: Tearoff_State_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  A boolean that indicates whether the menu is torn-off.
-   --
-   --  Name: Tearoff_Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
 
-   Accel_Group_Property : constant Glib.Properties.Property_Object;
-   Accel_Path_Property : constant Glib.Properties.Property_String;
-   Active_Property : constant Glib.Properties.Property_Int;
-   Attach_Widget_Property : constant Glib.Properties.Property_Object;
-   Monitor_Property : constant Glib.Properties.Property_Int;
-   Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean;
    Tearoff_State_Property : constant Glib.Properties.Property_Boolean;
+   --  A boolean that indicates whether the menu is torn-off.
+
    Tearoff_Title_Property : constant Glib.Properties.Property_String;
 
    -------------

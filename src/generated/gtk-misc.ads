@@ -137,26 +137,13 @@ package Gtk.Misc is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Xpad_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Ypad_Property
-   --  Type: Gint
-   --  Flags: read-write
 
    Xalign_Property : constant Glib.Properties.Property_Float;
+
    Xpad_Property : constant Glib.Properties.Property_Int;
+
    Yalign_Property : constant Glib.Properties.Property_Float;
+
    Ypad_Property : constant Glib.Properties.Property_Int;
 
 private

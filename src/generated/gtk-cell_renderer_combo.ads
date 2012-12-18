@@ -89,16 +89,12 @@ package Gtk.Cell_Renderer_Combo is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Has_Entry_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Has_Entry_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the cell renderer will include an entry and allow to enter
    --  values other than the ones in the popup list.
-   --
-   --  Name: Text_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Text_Column_Property : constant Glib.Properties.Property_Int;
    --  Specifies the model column which holds the possible values for the
    --  combo box.
    --
@@ -108,9 +104,6 @@ package Gtk.Cell_Renderer_Combo is
    --
    --  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo automatically adds a
    --  text cell renderer for this column to its combo box.
-
-   Has_Entry_Property : constant Glib.Properties.Property_Boolean;
-   Text_Column_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --

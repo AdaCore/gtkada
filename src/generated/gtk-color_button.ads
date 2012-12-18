@@ -242,39 +242,25 @@ package Gtk.Color_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Alpha_Property
-   --  Type: Guint
-   --  Flags: read-write
+
+   Alpha_Property : constant Glib.Properties.Property_Uint;
    --  The selected opacity value (0 fully transparent, 65535 fully opaque).
-   --
-   --  Name: Color_Property
+
+   Color_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  Flags: read-write
    --  The selected color.
-   --
-   --  Name: Rgba_Property
+
+   Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  Flags: read-write
    --  The RGBA color.
-   --
-   --  Name: Title_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
+
+   Title_Property : constant Glib.Properties.Property_String;
    --  The title of the color selection dialog
-   --
-   --  Name: Use_Alpha_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Use_Alpha_Property : constant Glib.Properties.Property_Boolean;
    --  If this property is set to True, the color swatch on the button is
    --  rendered against a checkerboard background to show its opacity and the
    --  opacity slider is displayed in the color selection dialog.
-
-   Alpha_Property : constant Glib.Properties.Property_Uint;
-   Color_Property : constant Gdk.Color.Property_Gdk_Color;
-   Rgba_Property : constant Gdk.RGBA.Property_RGBA;
-   Title_Property : constant Glib.Properties.Property_String;
-   Use_Alpha_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

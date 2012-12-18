@@ -390,17 +390,12 @@ package Gdk.Cursor is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Cursor_Type_Property
-   --  Type: Cursor_Type
-   --  Flags: read-write
-   --
-   --  Name: Display_Property
-   --  Type: Display
-   --  Flags: read-write
 
    Cursor_Type_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Cursor_Type
+
    Display_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Display
 
 private
    Display_Property : constant Glib.Properties.Property_Boxed :=

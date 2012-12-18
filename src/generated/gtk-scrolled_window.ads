@@ -307,57 +307,31 @@ package Gtk.Scrolled_Window is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Hadjustment_Property
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
-   --  Name: Hscrollbar_Policy_Property
-   --  Type: Gtk.Enums.Gtk_Policy_Type
-   --  Flags: read-write
-   --
-   --  Name: Min_Content_Height_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
+
+   Min_Content_Height_Property : constant Glib.Properties.Property_Int;
    --  The minimum content height of Scrolled_Window, or -1 if not set.
-   --
-   --  Name: Min_Content_Width_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Min_Content_Width_Property : constant Glib.Properties.Property_Int;
    --  The minimum content width of Scrolled_Window, or -1 if not set.
-   --
-   --  Name: Shadow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Shadow_Type
-   --  Flags: read-write
-   --
-   --  Name: Vadjustment_Property
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
+   Vadjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
-   --  Flags: read-write
-   --
-   --  Name: Vscrollbar_Policy_Property
-   --  Type: Gtk.Enums.Gtk_Policy_Type
-   --  Flags: read-write
-   --
-   --  Name: Window_Placement_Property
-   --  Type: Gtk.Enums.Gtk_Corner_Type
-   --  Flags: read-write
-   --
-   --  Name: Window_Placement_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
+
+   Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type;
+
+   Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Whether "window-placement" should be used to determine the location of
    --  the contents with respect to the scrollbars. Otherwise, the
    --  "gtk-scrolled-window-placement" setting is used.
-
-   Hadjustment_Property : constant Glib.Properties.Property_Object;
-   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
-   Min_Content_Height_Property : constant Glib.Properties.Property_Int;
-   Min_Content_Width_Property : constant Glib.Properties.Property_Int;
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
-   Vadjustment_Property : constant Glib.Properties.Property_Object;
-   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
-   Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type;
-   Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --

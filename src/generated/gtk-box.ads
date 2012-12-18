@@ -368,16 +368,9 @@ package Gtk.Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Homogeneous_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Spacing_Property
-   --  Type: Gint
-   --  Flags: read-write
 
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
    Spacing_Property : constant Glib.Properties.Property_Int;
 
 private

@@ -119,16 +119,9 @@ package Gtk.Arrow is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Arrow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Arrow_Type
-   --  Flags: read-write
-   --
-   --  Name: Shadow_Type_Property
-   --  Type: Gtk.Enums.Gtk_Shadow_Type
-   --  Flags: read-write
 
    Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
+
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private

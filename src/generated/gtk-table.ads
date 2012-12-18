@@ -278,31 +278,15 @@ package Gtk.Table is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Column_Spacing_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Homogeneous_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: N_Columns_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: N_Rows_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Row_Spacing_Property
-   --  Type: Guint
-   --  Flags: read-write
 
    Column_Spacing_Property : constant Glib.Properties.Property_Uint;
+
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
    N_Columns_Property : constant Glib.Properties.Property_Uint;
+
    N_Rows_Property : constant Glib.Properties.Property_Uint;
+
    Row_Spacing_Property : constant Glib.Properties.Property_Uint;
 
 private

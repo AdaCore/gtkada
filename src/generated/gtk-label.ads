@@ -639,26 +639,21 @@ package Gtk.Label is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Angle_Property
+
+   Angle_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
-   --  Flags: read-write
    --  The angle that the baseline of the label makes with the horizontal, in
    --  degrees, measured counterclockwise. An angle of 90 reads from from
    --  bottom to top, an angle of 270, from top to bottom. Ignored if the label
    --  is selectable, wrapped, or ellipsized.
-   --
-   --  Name: Attributes_Property
+
+   Attributes_Property : constant Glib.Properties.Property_Object;
    --  Type: Pango.Attributes.Pango_Attr_List
-   --  Flags: read-write
-   --
-   --  Name: Cursor_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Ellipsize_Property
+
+   Cursor_Position_Property : constant Glib.Properties.Property_Int;
+
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  Flags: read-write
    --  The preferred place to ellipsize the string, if the label does not have
    --  enough room to display the entire string, specified as a
    --  Pango_Ellisize_Mode.
@@ -668,20 +663,14 @@ package Gtk.Label is
    --  only enough space to display the ellipsis "...". In particular, this
    --  means that ellipsizing labels do not work well in notebook tabs, unless
    --  the tab's Gtk.Notebook.Gtk_Notebook:tab-expand property is set to True.
-   --  Other ways to set a label's width are gtk_widget_set_size_request and
+   --  Other ways to set a label's width are Gtk.Widget.Set_Size_Request and
    --  Gtk.Label.Set_Width_Chars.
-   --
-   --  Name: Justify_Property
-   --  Type: Gtk.Enums.Gtk_Justification
-   --  Flags: read-write
-   --
-   --  Name: Label_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Max_Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
+
+   Label_Property : constant Glib.Properties.Property_String;
+
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  The desired maximum width of the label, in characters. If this property
    --  is set to -1, the width will be calculated automatically.
    --
@@ -689,54 +678,36 @@ package Gtk.Label is
    --  for details of how Gtk.Label.Gtk_Label:width-chars and
    --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
    --  and wrapped labels.
-   --
-   --  Name: Mnemonic_Keyval_Property
-   --  Type: Guint
-   --  Flags: read-write
-   --
-   --  Name: Mnemonic_Widget_Property
+
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint;
+
+   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  Flags: read-write
-   --
-   --  Name: Pattern_Property
-   --  Type: UTF8_String
+
+   Pattern_Property : constant Glib.Properties.Property_String;
    --  Flags: write
-   --
-   --  Name: Selectable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Selection_Bound_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Single_Line_Mode_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Selectable_Property : constant Glib.Properties.Property_Boolean;
+
+   Selection_Bound_Property : constant Glib.Properties.Property_Int;
+
+   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the label is in single line mode. In single line mode, the
    --  height of the label does not depend on the actual text, it is always set
    --  to ascent + descent of the font. This can be an advantage in situations
    --  where resizing the label because of text changes would be distracting,
    --  e.g. in a statusbar.
-   --
-   --  Name: Track_Visited_Links_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean;
    --  Set this property to True to make the label track which links have been
    --  clicked. It will then apply the ::visited-link-color color, instead of
    --  ::link-color.
-   --
-   --  Name: Use_Markup_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Use_Underline_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Width_Chars_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean;
+
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
+
+   Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  The desired width of the label, in characters. If this property is set
    --  to -1, the width will be calculated automatically.
    --
@@ -744,37 +715,14 @@ package Gtk.Label is
    --  for details of how Gtk.Label.Gtk_Label:width-chars and
    --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
    --  and wrapped labels.
-   --
-   --  Name: Wrap_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Wrap_Mode_Property
+
+   Wrap_Property : constant Glib.Properties.Property_Boolean;
+
+   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode;
    --  Type: Pango.Enums.Wrap_Mode
-   --  Flags: read-write
    --  If line wrapping is on (see the Gtk.Label.Gtk_Label:wrap property) this
    --  controls how the line wrapping is done. The default is
    --  Pango.Enums.Pango_Wrap_Word, which means wrap on word boundaries.
-
-   Angle_Property : constant Glib.Properties.Property_Double;
-   Attributes_Property : constant Glib.Properties.Property_Object;
-   Cursor_Position_Property : constant Glib.Properties.Property_Int;
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
-   Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
-   Label_Property : constant Glib.Properties.Property_String;
-   Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint;
-   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object;
-   Pattern_Property : constant Glib.Properties.Property_String;
-   Selectable_Property : constant Glib.Properties.Property_Boolean;
-   Selection_Bound_Property : constant Glib.Properties.Property_Int;
-   Single_Line_Mode_Property : constant Glib.Properties.Property_Boolean;
-   Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean;
-   Use_Markup_Property : constant Glib.Properties.Property_Boolean;
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
-   Width_Chars_Property : constant Glib.Properties.Property_Int;
-   Wrap_Property : constant Glib.Properties.Property_Boolean;
-   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode;
 
    -------------
    -- Signals --

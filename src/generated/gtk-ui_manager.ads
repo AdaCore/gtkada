@@ -503,21 +503,14 @@ package Gtk.UI_Manager is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Add_Tearoffs_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean;
    --  The "add-tearoffs" property controls whether generated menus have
    --  tearoff menu items.
    --
    --  Note that this only affects regular menus. Generated popup menus never
    --  have tearoff menu items.
-   --
-   --  Name: Ui_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
 
-   Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean;
    Ui_Property : constant Glib.Properties.Property_String;
 
    -------------

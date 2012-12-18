@@ -351,79 +351,52 @@ package Gtk.Recent_Chooser is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Filter_Property
+
+   Filter_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Recent_Filter.Gtk_Recent_Filter
-   --  Flags: read-write
    --  The Gtk.Recent_Filter.Gtk_Recent_Filter object to be used when
    --  displaying the recently used resources.
-   --
-   --  Name: Limit_Property
-   --  Type: Gint
-   --  Flags: read-write
+
+   Limit_Property : constant Glib.Properties.Property_Int;
    --  The maximum number of recently used resources to be displayed, or -1 to
    --  display all items. By default, the GtkSetting:gtk-recent-files-limit
    --  setting is respected: you can override that limit on a particular
    --  instance of Gtk.Recent_Chooser.Gtk_Recent_Chooser by setting this
    --  property.
-   --
-   --  Name: Local_Only_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Local_Only_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display only
    --  local (file:) resources.
-   --
-   --  Name: Recent_Manager_Property
+
+   Recent_Manager_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Recent_Manager.Gtk_Recent_Manager
    --  Flags: write
    --  The Gtk.Recent_Manager.Gtk_Recent_Manager instance used by the
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser to display the list of recently
    --  used resources.
-   --
-   --  Name: Select_Multiple_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Select_Multiple_Property : constant Glib.Properties.Property_Boolean;
    --  Allow the user to select multiple resources.
-   --
-   --  Name: Show_Icons_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Icons_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display an
    --  icon near the item.
-   --
-   --  Name: Show_Not_Found_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Not_Found_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display the
    --  recently used resources even if not present anymore. Setting this to
    --  False will perform a potentially expensive check on every local resource
    --  (every remote resource will always be displayed).
-   --
-   --  Name: Show_Private_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Show_Tips_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Show_Private_Property : constant Glib.Properties.Property_Boolean;
+
+   Show_Tips_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display a
    --  tooltip containing the full path of the recently used resources.
-   --
-   --  Name: Sort_Type_Property
-   --  Type: Gtk_Recent_Sort_Type
-   --  Flags: read-write
-   --  Sorting order to be used when displaying the recently used resources.
 
-   Filter_Property : constant Glib.Properties.Property_Object;
-   Limit_Property : constant Glib.Properties.Property_Int;
-   Local_Only_Property : constant Glib.Properties.Property_Boolean;
-   Recent_Manager_Property : constant Glib.Properties.Property_Object;
-   Select_Multiple_Property : constant Glib.Properties.Property_Boolean;
-   Show_Icons_Property : constant Glib.Properties.Property_Boolean;
-   Show_Not_Found_Property : constant Glib.Properties.Property_Boolean;
-   Show_Private_Property : constant Glib.Properties.Property_Boolean;
-   Show_Tips_Property : constant Glib.Properties.Property_Boolean;
    Sort_Type_Property : constant Gtk.Recent_Chooser.Property_Gtk_Recent_Sort_Type;
+   --  Type: Gtk_Recent_Sort_Type
+   --  Sorting order to be used when displaying the recently used resources.
 
    -------------
    -- Signals --

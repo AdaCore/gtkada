@@ -1525,53 +1525,36 @@ package Gtk.Tree_View is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Enable_Grid_Lines_Property
-   --  Type: Gtk.Enums.Gtk_Tree_View_Grid_Lines
-   --  Flags: read-write
-   --
-   --  Name: Enable_Search_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Enable_Tree_Lines_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Expander_Column_Property
+
+   Enable_Grid_Lines_Property : constant Gtk.Enums.Property_Gtk_Tree_View_Grid_Lines;
+
+   Enable_Search_Property : constant Glib.Properties.Property_Boolean;
+
+   Enable_Tree_Lines_Property : constant Glib.Properties.Property_Boolean;
+
+   Expander_Column_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Tree_View_Column.Gtk_Tree_View_Column
-   --  Flags: read-write
-   --
-   --  Name: Fixed_Height_Mode_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean;
    --  Setting the ::fixed-height-mode property to True speeds up
    --  Gtk.Tree_View.Gtk_Tree_View by assuming that all rows have the same
    --  height. Only enable this option if all rows are the same height. Please
    --  see Gtk.Tree_View.Set_Fixed_Height_Mode for more information on this
    --  option.
-   --
-   --  Name: Headers_Clickable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Headers_Visible_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Hover_Expand_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Headers_Clickable_Property : constant Glib.Properties.Property_Boolean;
+
+   Headers_Visible_Property : constant Glib.Properties.Property_Boolean;
+
+   Hover_Expand_Property : constant Glib.Properties.Property_Boolean;
    --  Enables or disables the hover expansion mode of Tree_View. Hover
    --  expansion makes rows expand or collapse if the pointer moves over them.
    --
    --  This mode is primarily intended for treeviews in popups, e.g. in
    --  Gtk.Combo_Box.Gtk_Combo_Box or
    --  Gtk.Entry_Completion.Gtk_Entry_Completion.
-   --
-   --  Name: Hover_Selection_Property
-   --  Type: Boolean
-   --  Flags: read-write
+
+   Hover_Selection_Property : constant Glib.Properties.Property_Boolean;
    --  Enables or disables the hover selection mode of Tree_View. Hover
    --  selection makes the selected row follow the pointer. Currently, this
    --  works only for the selection modes Gtk.Enums.Selection_Single and
@@ -1580,52 +1563,21 @@ package Gtk.Tree_View is
    --  This mode is primarily intended for treeviews in popups, e.g. in
    --  Gtk.Combo_Box.Gtk_Combo_Box or
    --  Gtk.Entry_Completion.Gtk_Entry_Completion.
-   --
-   --  Name: Level_Indentation_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  Extra indentation for each level.
-   --
-   --  Name: Reorderable_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Rubber_Banding_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Rules_Hint_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Search_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Show_Expanders_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  True if the view has expanders.
-   --
-   --  Name: Tooltip_Column_Property
-   --  Type: Gint
-   --  Flags: read-write
 
-   Enable_Grid_Lines_Property : constant Gtk.Enums.Property_Gtk_Tree_View_Grid_Lines;
-   Enable_Search_Property : constant Glib.Properties.Property_Boolean;
-   Enable_Tree_Lines_Property : constant Glib.Properties.Property_Boolean;
-   Expander_Column_Property : constant Glib.Properties.Property_Object;
-   Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean;
-   Headers_Clickable_Property : constant Glib.Properties.Property_Boolean;
-   Headers_Visible_Property : constant Glib.Properties.Property_Boolean;
-   Hover_Expand_Property : constant Glib.Properties.Property_Boolean;
-   Hover_Selection_Property : constant Glib.Properties.Property_Boolean;
    Level_Indentation_Property : constant Glib.Properties.Property_Int;
+   --  Extra indentation for each level.
+
    Reorderable_Property : constant Glib.Properties.Property_Boolean;
+
    Rubber_Banding_Property : constant Glib.Properties.Property_Boolean;
+
    Rules_Hint_Property : constant Glib.Properties.Property_Boolean;
+
    Search_Column_Property : constant Glib.Properties.Property_Int;
+
    Show_Expanders_Property : constant Glib.Properties.Property_Boolean;
+   --  True if the view has expanders.
+
    Tooltip_Column_Property : constant Glib.Properties.Property_Int;
 
    -------------

@@ -248,10 +248,9 @@ package Gtk.Info_Bar is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Message_Type_Property
+
+   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
    --  Type: Gtk.Message_Dialog.Gtk_Message_Type
-   --  Flags: read-write
    --  The type of the message.
    --
    --  The type is used to determine the colors to use in the info bar. The
@@ -262,8 +261,6 @@ package Gtk.Info_Bar is
    --
    --  If the type is GTK_MESSAGE_OTHER, no info bar is painted but the colors
    --  are still set.
-
-   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
 
    -------------
    -- Signals --

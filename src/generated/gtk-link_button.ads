@@ -198,20 +198,13 @@ package Gtk.Link_Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: URI_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --  The URI bound to this button.
-   --
-   --  Name: Visited_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  The 'visited' state of this button. A visited link is drawn in a
-   --  different color.
 
    URI_Property : constant Glib.Properties.Property_String;
+   --  The URI bound to this button.
+
    Visited_Property : constant Glib.Properties.Property_Boolean;
+   --  The 'visited' state of this button. A visited link is drawn in a
+   --  different color.
 
    -------------
    -- Signals --

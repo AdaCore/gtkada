@@ -315,14 +315,10 @@ package Gtk.Tree_Selection is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Mode_Property
-   --  Type: Gtk.Enums.Gtk_Selection_Mode
-   --  Flags: read-write
-   --  Selection mode. See Gtk.Tree_Selection.Set_Mode for more information on
-   --  this property.
 
    Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode;
+   --  Selection mode. See Gtk.Tree_Selection.Set_Mode for more information on
+   --  this property.
 
    -------------
    -- Signals --
