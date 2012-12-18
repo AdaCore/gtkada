@@ -87,6 +87,7 @@ with Gtk.Event_Box;           use Gtk.Event_Box;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
 with Gtk.Image;               use Gtk.Image;
+with Gtk.Image_Menu_Item;     use Gtk.Image_Menu_Item;
 with Gtk.Label;               use Gtk.Label;
 with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Menu_Item;           use Gtk.Menu_Item;
@@ -202,7 +203,7 @@ package body Gtkada.MDI is
    type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
 
-   type MDI_Menu_Item_Record is new Gtk_Menu_Item_Record with record
+   type MDI_Menu_Item_Record is new Gtk_Image_Menu_Item_Record with record
       Child : MDI_Child;
    end record;
    type MDI_Menu_Item is access all MDI_Menu_Item_Record'Class;
@@ -3421,15 +3422,32 @@ package body Gtkada.MDI is
       Item : Gtk_Menu_Item;
       MItem : MDI_Menu_Item;
       Widget : MDI_Child;
+      Image  : Gtk_Image;
+      Current : Gint;
    begin
       if Get_Button (Event) = 3 then
          Gtk_New (Menu);
+
+         Current := Note.Get_Current_Page;
 
          for P in 1 .. Note.Get_N_Pages loop
             Widget := MDI_Child (Note.Get_Nth_Page (P - 1));
             MItem := new MDI_Menu_Item_Record;
             MItem.Child := Widget;
-            Initialize_With_Label (MItem, Widget.Short_Title.all);
+            Gtk.Image_Menu_Item.Initialize
+              (MItem, Label => Widget.Short_Title.all);
+
+            if P - 1 = Current then
+               Gtk_Label (MItem.Get_Child).Set_Markup
+                 ("<b>" & Widget.Short_Title.all & "</b>");
+            end if;
+
+            if Widget.Tab_Icon /= null then
+               Gtk_New (Image, Gdk_Pixbuf'(Widget.Tab_Icon.Get));
+               MItem.Set_Image (Image);
+               MItem.Set_Always_Show_Image (True);
+            end if;
+
             Menu.Append (MItem);
             Widget_Callback.Connect
               (MItem, Gtk.Menu_Item.Signal_Activate, Menu_Switch_Page'Access);
