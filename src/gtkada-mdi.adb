@@ -1276,6 +1276,10 @@ package body Gtkada.MDI is
 
       Set_Opaque_Resizing (MDI, Opaque_Resize);
 
+      if MDI.Central /= null then
+         MDI.Central.Set_Opaque_Resizing (Opaque_Resize);
+      end if;
+
       if MDI.Title_Font /= null then
          Free (MDI.Title_Font);
       end if;
