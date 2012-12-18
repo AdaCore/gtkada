@@ -1158,9 +1158,10 @@ package Gtk.Cell_Area is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "add-editable"
+
+   Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
+   --  Indicates that editing has started on Renderer and that Editable should
+   --  be added to the owning cell-layouting widget at Cell_Area.
    --     procedure Handler
    --       (Self      : access Gtk_Cell_Area_Record'Class;
    --        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
@@ -1174,10 +1175,9 @@ package Gtk.Cell_Area is
    --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
    --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
    --    --  for
-   --  Indicates that editing has started on Renderer and that Editable should
-   --  be added to the owning cell-layouting widget at Cell_Area.
-   --
-   --  "apply-attributes"
+
+   Signal_Apply_Attributes : constant Glib.Signal_Name := "apply-attributes";
+   --  This signal is emitted whenever applying attributes to Area from Model
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Area_Record'Class;
    --        Model       : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -1190,23 +1190,24 @@ package Gtk.Cell_Area is
    --    --  "is_expander": whether the view shows children for this row
    --    --  "is_expanded": whether the view is currently showing the children of
    --    --  this row
-   --  This signal is emitted whenever applying attributes to Area from Model
-   --
-   --  "focus-changed"
-   --     procedure Handler
-   --       (Self     : access Gtk_Cell_Area_Record'Class;
-   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-   --        Path     : UTF8_String);
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
-   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
+
+   Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
    --  Indicates that focus changed on this Area. This signal is emitted
    --  either as a result of focus handling or event handling.
    --
    --  It's possible that the signal is emitted even if the currently focused
    --  renderer did not change, this is because focus may change to the same
    --  renderer in the same cell area for a different row of data.
-   --
-   --  "remove-editable"
+   --     procedure Handler
+   --       (Self     : access Gtk_Cell_Area_Record'Class;
+   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+   --        Path     : UTF8_String);
+   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
+   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
+
+   Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
+   --  Indicates that editing finished on Renderer and that Editable should be
+   --  removed from the owning cell-layouting widget.
    --     procedure Handler
    --       (Self     : access Gtk_Cell_Area_Record'Class;
    --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
@@ -1214,13 +1215,6 @@ package Gtk.Cell_Area is
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
    --    --  editeding
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to remove
-   --  Indicates that editing finished on Renderer and that Editable should be
-   --  removed from the owning cell-layouting widget.
-
-   Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
-   Signal_Apply_Attributes : constant Glib.Signal_Name := "apply-attributes";
-   Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
-   Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
 
 private
    Focus_Cell_Property : constant Glib.Properties.Property_Object :=

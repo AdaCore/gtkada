@@ -406,11 +406,8 @@ package Gtk.Tool_Item is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "create-menu-proxy"
-   --     function Handler
-   --       (Self : access Gtk_Tool_Item_Record'Class) return Boolean;
+
+   Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";
    --  This signal is emitted when the toolbar needs information from
    --  Tool_Item about whether the item should appear in the toolbar overflow
    --  menu. In response the tool item should either
@@ -432,9 +429,10 @@ package Gtk.Tool_Item is
    --  toolbar rebuilds its overflow menu.
    --
    --  Returns True if the signal was handled, False if not
-   --
-   --  "toolbar-reconfigured"
-   --     procedure Handler (Self : access Gtk_Tool_Item_Record'Class);
+   --     function Handler
+   --       (Self : access Gtk_Tool_Item_Record'Class) return Boolean;
+
+   Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
    --  This signal is emitted when some property of the toolbar that the item
    --  is a child of changes. For custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the
@@ -450,9 +448,7 @@ package Gtk.Tool_Item is
    --
    --  to find out what the toolbar should look like and change themselves
    --  accordingly.
-
-   Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";
-   Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
+   --     procedure Handler (Self : access Gtk_Tool_Item_Record'Class);
 
 private
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=

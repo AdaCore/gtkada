@@ -384,41 +384,33 @@ package Gtk.Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Button_Record'Class);
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
    --  never connect to this signal, but use the Gtk.Button.Gtk_Button::clicked
    --  signal.
-   --
-   --  "clicked"
    --     procedure Handler (Self : access Gtk_Button_Record'Class);
-   --  Emitted when the button has been activated (pressed and released).
-   --
-   --  "enter"
-   --     procedure Handler (Self : access Gtk_Button_Record'Class);
-   --  Emitted when the pointer enters the button.
-   --
-   --  "leave"
-   --     procedure Handler (Self : access Gtk_Button_Record'Class);
-   --  Emitted when the pointer leaves the button.
-   --
-   --  "pressed"
-   --     procedure Handler (Self : access Gtk_Button_Record'Class);
-   --  Emitted when the button is pressed.
-   --
-   --  "released"
-   --     procedure Handler (Self : access Gtk_Button_Record'Class);
-   --  Emitted when the button is released.
 
-   Signal_Activate : constant Glib.Signal_Name := "activate";
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
+   --  Emitted when the button has been activated (pressed and released).
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
+
    Signal_Enter : constant Glib.Signal_Name := "enter";
+   --  Emitted when the pointer enters the button.
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
+
    Signal_Leave : constant Glib.Signal_Name := "leave";
+   --  Emitted when the pointer leaves the button.
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
+
    Signal_Pressed : constant Glib.Signal_Name := "pressed";
+   --  Emitted when the button is pressed.
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
+
    Signal_Released : constant Glib.Signal_Name := "released";
+   --  Emitted when the button is released.
+   --     procedure Handler (Self : access Gtk_Button_Record'Class);
 
 private
    Yalign_Property : constant Glib.Properties.Property_Float :=

@@ -394,13 +394,8 @@ package Gtk.Scale is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "format-value"
-   --     function Handler
-   --       (Self  : access Gtk_Scale_Record'Class;
-   --        Value : Gdouble) return UTF8_String;
-   --    --  "value": the value to format
+
+   Signal_Format_Value : constant Glib.Signal_Name := "format-value";
    --  Signal which allows you to change how the scale value is displayed.
    --  Connect a signal handler which returns an allocated string representing
    --  Value. That string will then be used to display the scale's value.
@@ -411,8 +406,10 @@ package Gtk.Scale is
    --  gtk_scale_get_digits (scale), value); } ]|
    --
    --  Returns allocated string representing Value
-
-   Signal_Format_Value : constant Glib.Signal_Name := "format-value";
+   --     function Handler
+   --       (Self  : access Gtk_Scale_Record'Class;
+   --        Value : Gdouble) return UTF8_String;
+   --    --  "value": the value to format
 
 private
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=

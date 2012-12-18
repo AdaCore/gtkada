@@ -286,9 +286,14 @@ package Gtk.Text_Tag is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
+
+   Signal_Event : constant Glib.Signal_Name := "event";
+   --  The ::event signal is emitted when an event occurs on a region of the
+   --  buffer marked with this tag.
    --
-   --  "event"
+   --  event. False to propagate the event further.
+   --
+   --  Returns True to stop other handlers from being invoked for the
    --     function Handler
    --       (Self   : access Gtk_Text_Tag_Record'Class;
    --        Object : not null access Glib.Object.GObject_Record'Class;
@@ -299,14 +304,6 @@ package Gtk.Text_Tag is
    --    --  "event": the event which triggered the signal
    --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occured
-   --  The ::event signal is emitted when an event occurs on a region of the
-   --  buffer marked with this tag.
-   --
-   --  event. False to propagate the event further.
-   --
-   --  Returns True to stop other handlers from being invoked for the
-
-   Signal_Event : constant Glib.Signal_Name := "event";
 
 private
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=

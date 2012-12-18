@@ -188,24 +188,20 @@ package Gtk.Style is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "realize"
-   --     procedure Handler (Self : access Gtk_Style_Record'Class);
+
+   Signal_Realize : constant Glib.Signal_Name := "realize";
    --  Emitted when the style has been initialized for a particular visual.
    --  Connecting to this signal is probably seldom useful since most of the
    --  time applications and widgets only deal with styles that have been
    --  already realized.
-   --
-   --  "unrealize"
    --     procedure Handler (Self : access Gtk_Style_Record'Class);
+
+   Signal_Unrealize : constant Glib.Signal_Name := "unrealize";
    --  Emitted when the aspects of the style specific to a particular visual
    --  is being cleaned up. A connection to this signal can be useful if a
    --  widget wants to cache objects as object data on Gtk.Style.Gtk_Style.
    --  This signal provides a convenient place to free such cached objects.
-
-   Signal_Realize : constant Glib.Signal_Name := "realize";
-   Signal_Unrealize : constant Glib.Signal_Name := "unrealize";
+   --     procedure Handler (Self : access Gtk_Style_Record'Class);
 
 private
    Context_Property : constant Glib.Properties.Property_Object :=

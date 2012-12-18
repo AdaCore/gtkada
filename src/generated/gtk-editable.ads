@@ -209,10 +209,8 @@ package Gtk.Editable is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Editable);
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --  The ::changed signal is emitted at the end of a single user-visible
    --  operation on the contents of the Gtk.Editable.Gtk_Editable.
    --
@@ -220,14 +218,9 @@ package Gtk.Editable is
    --  will cause only one signal emission (even though it is implemented by
    --  first deleting the selection, then inserting the new content, and may
    --  cause multiple ::notify::text signals to be emitted).
-   --
-   --  "delete-text"
-   --     procedure Handler
-   --       (Self      : access Gtk_Editable;
-   --        Start_Pos : Gint;
-   --        End_Pos   : Gint);
-   --    --  "start_pos": the starting position
-   --    --  "end_pos": the end position
+   --     procedure Handler (Self : access Gtk_Editable);
+
+   Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
    --  This signal is emitted when text is deleted from the widget by the
    --  user. The default handler for this signal will normally be responsible
    --  for deleting the text, so by connecting to this signal and then stopping
@@ -235,8 +228,19 @@ package Gtk.Editable is
    --  range of deleted text, or prevent it from being deleted entirely. The
    --  Start_Pos and End_Pos parameters are interpreted as for
    --  Gtk.Editable.Delete_Text.
-   --
-   --  "insert-text"
+   --     procedure Handler
+   --       (Self      : access Gtk_Editable;
+   --        Start_Pos : Gint;
+   --        End_Pos   : Gint);
+   --    --  "start_pos": the starting position
+   --    --  "end_pos": the end position
+
+   Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
+   --  This signal is emitted when text is inserted into the widget by the
+   --  user. The default handler for this signal will normally be responsible
+   --  for inserting the text, so by connecting to this signal and then
+   --  stopping the signal with g_signal_stop_emission, it is possible to
+   --  modify the inserted text, or prevent it from being inserted entirely.
    --     procedure Handler
    --       (Self            : access Gtk_Editable;
    --        New_Text        : UTF8_String;
@@ -248,15 +252,6 @@ package Gtk.Editable is
    --    --  "position": the position, in characters, at which to insert the new
    --    --  text. this is an in-out parameter. After the signal emission is
    --    --  finished, it should point after the newly inserted text.
-   --  This signal is emitted when text is inserted into the widget by the
-   --  user. The default handler for this signal will normally be responsible
-   --  for inserting the text, so by connecting to this signal and then
-   --  stopping the signal with g_signal_stop_emission, it is possible to
-   --  modify the inserted text, or prevent it from being inserted entirely.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
-   Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
-   Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
 
 private
 

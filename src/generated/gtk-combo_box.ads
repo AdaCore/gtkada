@@ -728,43 +728,37 @@ package Gtk.Combo_Box is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --  The changed signal is emitted when the active item is changed. The can
    --  be due to the user selecting a different item from the list, or due to a
    --  call to Gtk.Combo_Box.Set_Active_Iter. It will also be emitted while
    --  typing into the entry of a combo box with an entry.
-   --
-   --  "move-active"
+   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
+
+   Signal_Move_Active : constant Glib.Signal_Name := "move-active";
+   --  The ::move-active signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to move the active selection.
    --     procedure Handler
    --       (Self        : access Gtk_Combo_Box_Record'Class;
    --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
    --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
-   --  The ::move-active signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to move the active selection.
-   --
-   --  "popdown"
-   --     function Handler
-   --       (Self : access Gtk_Combo_Box_Record'Class) return Boolean;
+
+   Signal_Popdown : constant Glib.Signal_Name := "popdown";
    --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popdown the combo box list.
    --
    --  The default bindings for this signal are Alt+Up and Escape.
-   --
-   --  "popup"
-   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
+   --     function Handler
+   --       (Self : access Gtk_Combo_Box_Record'Class) return Boolean;
+
+   Signal_Popup : constant Glib.Signal_Name := "popup";
    --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popup the combo box list.
    --
    --  The default binding for this signal is Alt+Down.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
-   Signal_Move_Active : constant Glib.Signal_Name := "move-active";
-   Signal_Popdown : constant Glib.Signal_Name := "popdown";
-   Signal_Popup : constant Glib.Signal_Name := "popup";
+   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
 
 private
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=

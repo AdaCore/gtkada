@@ -1068,10 +1068,8 @@ package Gtk.GEntry is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates the entry.
    --
@@ -1080,38 +1078,33 @@ package Gtk.GEntry is
    --  programmatically.
    --
    --  The default bindings for this signal are all forms of the Enter key.
-   --
-   --  "backspace"
    --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Backspace : constant Glib.Signal_Name := "backspace";
    --  The ::backspace signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
-   --
-   --  "copy-clipboard"
    --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
-   --
-   --  "cut-clipboard"
    --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
    --  The ::cut-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
-   --
-   --  "delete-from-cursor"
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Record'Class;
-   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
-   --        Count    : Gint);
-   --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
-   --    --  "count": the number of Type units to delete
+   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
    --  The ::delete-from-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a text deletion.
@@ -1121,46 +1114,44 @@ package Gtk.GEntry is
    --
    --  The default bindings for this signal are Delete for deleting a
    --  character and Ctrl-Delete for deleting a word.
-   --
-   --  "icon-press"
+   --     procedure Handler
+   --       (Self     : access Gtk_Entry_Record'Class;
+   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
+   --        Count    : Gint);
+   --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
+   --    --  "count": the number of Type units to delete
+
+   Signal_Icon_Press : constant Glib.Signal_Name := "icon-press";
+   --  The ::icon-press signal is emitted when an activatable icon is clicked.
    --     procedure Handler
    --       (Self     : access Gtk_Entry_Record'Class;
    --        Icon_Pos : Gtk_Entry_Icon_Position;
    --        Event    : Gdk.Event_Button);
    --    --  "icon_pos": The position of the clicked icon
    --    --  "event": the button press event
-   --  The ::icon-press signal is emitted when an activatable icon is clicked.
-   --
-   --  "icon-release"
+
+   Signal_Icon_Release : constant Glib.Signal_Name := "icon-release";
+   --  The ::icon-release signal is emitted on the button release from a mouse
+   --  click over an activatable icon.
    --     procedure Handler
    --       (Self     : access Gtk_Entry_Record'Class;
    --        Icon_Pos : Gtk_Entry_Icon_Position;
    --        Event    : Gdk.Event_Button);
    --    --  "icon_pos": The position of the clicked icon
    --    --  "event": the button release event
-   --  The ::icon-release signal is emitted on the button release from a mouse
-   --  click over an activatable icon.
-   --
-   --  "insert-at-cursor"
-   --     procedure Handler
-   --       (Self   : access Gtk_Entry_Record'Class;
-   --        String : UTF8_String);
-   --    --  "string": the string to insert
+
+   Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
    --  The ::insert-at-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates the insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
-   --
-   --  "move-cursor"
    --     procedure Handler
-   --       (Self             : access Gtk_Entry_Record'Class;
-   --        Step             : Gtk.Enums.Gtk_Movement_Step;
-   --        Count            : Gint;
-   --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
-   --    --  "count": the number of Step units to move
-   --    --  "extend_selection": True if the move should extend the selection
+   --       (Self   : access Gtk_Entry_Record'Class;
+   --        String : UTF8_String);
+   --    --  "string": the string to insert
+
+   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -1180,56 +1171,50 @@ package Gtk.GEntry is
    --     * Ctrl-arrow key combinations move by words/paragraphs
    --
    --     * Home/End keys move to the ends of the buffer
-   --
-   --  "paste-clipboard"
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+   --     procedure Handler
+   --       (Self             : access Gtk_Entry_Record'Class;
+   --        Step             : Gtk.Enums.Gtk_Movement_Step;
+   --        Count            : Gint;
+   --        Extend_Selection : Boolean);
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
+   --    --  "count": the number of Step units to move
+   --    --  "extend_selection": True if the move should extend the selection
+
+   Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
    --  The ::paste-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to paste the contents of the clipboard into the text view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
-   --
-   --  "populate-popup"
-   --     procedure Handler
-   --       (Self : access Gtk_Entry_Record'Class;
-   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-   --    --  "menu": the menu that is being populated
+   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the entry.
    --
    --  If you need to add items to the context menu, connect to this signal
    --  and append your menuitems to the Menu.
-   --
-   --  "preedit-changed"
+   --     procedure Handler
+   --       (Self : access Gtk_Entry_Record'Class;
+   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   --    --  "menu": the menu that is being populated
+
+   Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
+   --  If an input method is used, the typed text will not immediately be
+   --  committed to the buffer. So if you are interested in the text, connect
+   --  to this signal.
    --     procedure Handler
    --       (Self    : access Gtk_Entry_Record'Class;
    --        Preedit : UTF8_String);
    --    --  "preedit": the current preedit string
-   --  If an input method is used, the typed text will not immediately be
-   --  committed to the buffer. So if you are interested in the text, connect
-   --  to this signal.
-   --
-   --  "toggle-overwrite"
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
    --  The ::toggle-overwrite signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the overwrite mode of the entry.
    --
    --  The default bindings for this signal is Insert.
-
-   Signal_Activate : constant Glib.Signal_Name := "activate";
-   Signal_Backspace : constant Glib.Signal_Name := "backspace";
-   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
-   Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
-   Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
-   Signal_Icon_Press : constant Glib.Signal_Name := "icon-press";
-   Signal_Icon_Release : constant Glib.Signal_Name := "icon-release";
-   Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
-   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
-   Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
-   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
-   Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
-   Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
+   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
 private
    Xalign_Property : constant Glib.Properties.Property_Float :=

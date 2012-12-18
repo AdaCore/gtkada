@@ -971,12 +971,8 @@ package Gtk.File_Chooser is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "confirm-overwrite"
-   --     function Handler
-   --       (Self : access Gtk_File_Chooser)
-   --        return Gtk_File_Chooser_Confirmation;
+
+   Signal_Confirm_Overwrite : constant Glib.Signal_Name := "confirm-overwrite";
    --  This signal gets emitted whenever it is appropriate to present a
    --  confirmation dialog when the user has selected a file name that already
    --  exists. The signal only gets emitted when the file chooser is in
@@ -1029,9 +1025,11 @@ package Gtk.File_Chooser is
    --
    --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that
    --  indicates which
-   --
-   --  "current-folder-changed"
-   --     procedure Handler (Self : access Gtk_File_Chooser);
+   --     function Handler
+   --       (Self : access Gtk_File_Chooser)
+   --        return Gtk_File_Chooser_Confirmation;
+
+   Signal_Current_Folder_Changed : constant Glib.Signal_Name := "current-folder-changed";
    --  This signal is emitted when the current folder in a
    --  Gtk.File_Chooser.Gtk_File_Chooser changes. This can happen due to the
    --  user performing some action that changes folders, such as selecting a
@@ -1046,9 +1044,9 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Get_Current_Folder,
    --  Gtk.File_Chooser.Set_Current_Folder_Uri,
    --  Gtk.File_Chooser.Get_Current_Folder_Uri.
-   --
-   --  "file-activated"
    --     procedure Handler (Self : access Gtk_File_Chooser);
+
+   Signal_File_Activated : constant Glib.Signal_Name := "file-activated";
    --  This signal is emitted when the user "activates" a file in the file
    --  chooser. This can happen by double-clicking on a file in the file list,
    --  or by pressing 'Enter'.
@@ -1060,9 +1058,9 @@ package Gtk.File_Chooser is
    --  See also: Gtk.File_Chooser.Get_Filename,
    --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Get_Uri,
    --  Gtk.File_Chooser.Get_Uris.
-   --
-   --  "selection-changed"
    --     procedure Handler (Self : access Gtk_File_Chooser);
+
+   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    --  This signal is emitted when there is a change in the set of selected
    --  files in a Gtk.File_Chooser.Gtk_File_Chooser. This can happen when the
    --  user modifies the selection with the mouse or the keyboard, or when
@@ -1077,9 +1075,9 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Select_Uri,
    --  Gtk.File_Chooser.Unselect_Uri, Gtk.File_Chooser.Get_Uri,
    --  Gtk.File_Chooser.Get_Uris.
-   --
-   --  "update-preview"
    --     procedure Handler (Self : access Gtk_File_Chooser);
+
+   Signal_Update_Preview : constant Glib.Signal_Name := "update-preview";
    --  This signal is emitted when the preview in a file chooser should be
    --  regenerated. For example, this can happen when the currently selected
    --  file changes. You should use this signal if you want your file chooser
@@ -1101,12 +1099,7 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Set_Preview_Widget_Active,
    --  Gtk.File_Chooser.Set_Use_Preview_Label,
    --  Gtk.File_Chooser.Get_Preview_Filename, Gtk.File_Chooser.Get_Preview_Uri.
-
-   Signal_Confirm_Overwrite : constant Glib.Signal_Name := "confirm-overwrite";
-   Signal_Current_Folder_Changed : constant Glib.Signal_Name := "current-folder-changed";
-   Signal_File_Activated : constant Glib.Signal_Name := "file-activated";
-   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
-   Signal_Update_Preview : constant Glib.Signal_Name := "update-preview";
+   --     procedure Handler (Self : access Gtk_File_Chooser);
 
 private
    Use_Preview_Label_Property : constant Glib.Properties.Property_Boolean :=

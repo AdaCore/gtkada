@@ -300,34 +300,25 @@ package Gtk.Toolbar is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "focus-home-or-end"
-   --     function Handler
-   --       (Self       : access Gtk_Toolbar_Record'Class;
-   --        Focus_Home : Boolean) return Boolean;
-   --    --  "focus_home": True if the first item should be focused
+
+   Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
    --  A keybinding signal used internally by GTK+. This signal can't be used
    --  in application code
    --
    --  Returns True if the signal was handled, False if not
-   --
-   --  "orientation-changed"
+   --     function Handler
+   --       (Self       : access Gtk_Toolbar_Record'Class;
+   --        Focus_Home : Boolean) return Boolean;
+   --    --  "focus_home": True if the first item should be focused
+
+   Signal_Orientation_Changed : constant Glib.Signal_Name := "orientation-changed";
+   --  Emitted when the orientation of the toolbar changes.
    --     procedure Handler
    --       (Self        : access Gtk_Toolbar_Record'Class;
    --        Orientation : Gtk.Enums.Gtk_Orientation);
    --    --  "orientation": the new Gtk.Enums.Gtk_Orientation of the toolbar
-   --  Emitted when the orientation of the toolbar changes.
-   --
-   --  "popup-context-menu"
-   --     function Handler
-   --       (Self   : access Gtk_Toolbar_Record'Class;
-   --        X      : Gint;
-   --        Y      : Gint;
-   --        Button : Gint) return Boolean;
-   --    --  "x": the x coordinate of the point where the menu should appear
-   --    --  "y": the y coordinate of the point where the menu should appear
-   --    --  "button": the mouse button the user pressed, or -1
+
+   Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
    --  Emitted when the user right-clicks the toolbar or uses the keybinding
    --  to display a popup menu.
    --
@@ -338,18 +329,21 @@ package Gtk.Toolbar is
    --  Button is -1.
    --
    --  Returns return True if the signal was handled, False if not
-   --
-   --  "style-changed"
+   --     function Handler
+   --       (Self   : access Gtk_Toolbar_Record'Class;
+   --        X      : Gint;
+   --        Y      : Gint;
+   --        Button : Gint) return Boolean;
+   --    --  "x": the x coordinate of the point where the menu should appear
+   --    --  "y": the y coordinate of the point where the menu should appear
+   --    --  "button": the mouse button the user pressed, or -1
+
+   Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
+   --  Emitted when the style of the toolbar changes.
    --     procedure Handler
    --       (Self  : access Gtk_Toolbar_Record'Class;
    --        Style : Gtk.Enums.Gtk_Toolbar_Style);
    --    --  "style": the new Gtk.Enums.Gtk_Toolbar_Style of the toolbar
-   --  Emitted when the style of the toolbar changes.
-
-   Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
-   Signal_Orientation_Changed : constant Glib.Signal_Name := "orientation-changed";
-   Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
-   Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
 
 private
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=

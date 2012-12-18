@@ -585,30 +585,24 @@ package Gtk.Container is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "add"
-   --     procedure Handler
-   --       (Self   : access Gtk_Container_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --
-   --  "check-resize"
-   --     procedure Handler (Self : access Gtk_Container_Record'Class);
-   --
-   --  "remove"
-   --     procedure Handler
-   --       (Self   : access Gtk_Container_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --
-   --  "set-focus-child"
+
+   Signal_Add : constant Glib.Signal_Name := "add";
    --     procedure Handler
    --       (Self   : access Gtk_Container_Record'Class;
    --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   Signal_Add : constant Glib.Signal_Name := "add";
    Signal_Check_Resize : constant Glib.Signal_Name := "check-resize";
+   --     procedure Handler (Self : access Gtk_Container_Record'Class);
+
    Signal_Remove : constant Glib.Signal_Name := "remove";
+   --     procedure Handler
+   --       (Self   : access Gtk_Container_Record'Class;
+   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Set_Focus_Child : constant Glib.Signal_Name := "set-focus-child";
+   --     procedure Handler
+   --       (Self   : access Gtk_Container_Record'Class;
+   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
 private
    Resize_Mode_Property : constant Gtk.Enums.Property_Gtk_Resize_Mode :=

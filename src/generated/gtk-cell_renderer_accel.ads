@@ -87,16 +87,16 @@ package Gtk.Cell_Renderer_Accel is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "accel-cleared"
+
+   Signal_Accel_Cleared : constant Glib.Signal_Name := "accel-cleared";
+   --  Gets emitted when the user has removed the accelerator.
    --     procedure Handler
    --       (Self        : access Gtk_Cell_Renderer_Accel_Record'Class;
    --        Path_String : UTF8_String);
    --    --  "path_string": the path identifying the row of the edited cell
-   --  Gets emitted when the user has removed the accelerator.
-   --
-   --  "accel-edited"
+
+   Signal_Accel_Edited : constant Glib.Signal_Name := "accel-edited";
+   --  Gets emitted when the user has selected a new accelerator.
    --     procedure Handler
    --       (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
    --        Path_String      : UTF8_String;
@@ -107,10 +107,6 @@ package Gtk.Cell_Renderer_Accel is
    --    --  "accel_key": the new accelerator keyval
    --    --  "accel_mods": the new acclerator modifier mask
    --    --  "hardware_keycode": the keycode of the new accelerator
-   --  Gets emitted when the user has selected a new accelerator.
-
-   Signal_Accel_Cleared : constant Glib.Signal_Name := "accel-cleared";
-   Signal_Accel_Edited : constant Glib.Signal_Name := "accel-edited";
 
 private
    Keycode_Property : constant Glib.Properties.Property_Uint :=

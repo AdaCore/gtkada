@@ -516,74 +516,66 @@ package Gtk.UI_Manager is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "actions-changed"
-   --     procedure Handler (Self : access Gtk_UI_Manager_Record'Class);
+
+   Signal_Actions_Changed : constant Glib.Signal_Name := "actions-changed";
    --  The ::actions-changed signal is emitted whenever the set of actions
    --  changes.
-   --
-   --  "add-widget"
+   --     procedure Handler (Self : access Gtk_UI_Manager_Record'Class);
+
+   Signal_Add_Widget : constant Glib.Signal_Name := "add-widget";
+   --  The ::add-widget signal is emitted for each generated menubar and
+   --  toolbar. It is not emitted for generated popup menus, which can be
+   --  obtained by Gtk.UI_Manager.Get_Widget.
    --     procedure Handler
    --       (Self   : access Gtk_UI_Manager_Record'Class;
    --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "widget": the added widget
-   --  The ::add-widget signal is emitted for each generated menubar and
-   --  toolbar. It is not emitted for generated popup menus, which can be
-   --  obtained by Gtk.UI_Manager.Get_Widget.
-   --
-   --  "connect-proxy"
-   --     procedure Handler
-   --       (Self   : access Gtk_UI_Manager_Record'Class;
-   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-   --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+
+   Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";
    --  The ::connect-proxy signal is emitted after connecting a proxy to an
    --  action in the group.
    --
    --  This is intended for simple customizations for which a custom action
    --  class would be too clumsy, e.g. showing tooltips for menuitems in the
    --  statusbar.
-   --
-   --  "disconnect-proxy"
    --     procedure Handler
    --       (Self   : access Gtk_UI_Manager_Record'Class;
    --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
    --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "action": the action
    --    --  "proxy": the proxy
+
+   Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
    --  The ::disconnect-proxy signal is emitted after disconnecting a proxy
    --  from an action in the group.
-   --
-   --  "post-activate"
    --     procedure Handler
    --       (Self   : access Gtk_UI_Manager_Record'Class;
-   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+   --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "action": the action
+   --    --  "proxy": the proxy
+
+   Signal_Post_Activate : constant Glib.Signal_Name := "post-activate";
    --  The ::post-activate signal is emitted just after the Action is
    --  activated.
    --
    --  This is intended for applications to get notification just after any
    --  action is activated.
-   --
-   --  "pre-activate"
    --     procedure Handler
    --       (Self   : access Gtk_UI_Manager_Record'Class;
    --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
    --    --  "action": the action
+
+   Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
    --  The ::pre-activate signal is emitted just before the Action is
    --  activated.
    --
    --  This is intended for applications to get notification just before any
    --  action is activated.
-
-   Signal_Actions_Changed : constant Glib.Signal_Name := "actions-changed";
-   Signal_Add_Widget : constant Glib.Signal_Name := "add-widget";
-   Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";
-   Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
-   Signal_Post_Activate : constant Glib.Signal_Name := "post-activate";
-   Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
+   --     procedure Handler
+   --       (Self   : access Gtk_UI_Manager_Record'Class;
+   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   --    --  "action": the action
 
 private
    Ui_Property : constant Glib.Properties.Property_String :=

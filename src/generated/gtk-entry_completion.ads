@@ -559,22 +559,15 @@ package Gtk.Entry_Completion is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "action-activated"
+
+   Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
+   --  Gets emitted when an action is activated.
    --     procedure Handler
    --       (Self  : access Gtk_Entry_Completion_Record'Class;
    --        Index : Gint);
    --    --  "index": the index of the activated action
-   --  Gets emitted when an action is activated.
-   --
-   --  "cursor-on-match"
-   --     function Handler
-   --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+
+   Signal_Cursor_On_Match : constant Glib.Signal_Name := "cursor-on-match";
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
@@ -583,12 +576,14 @@ package Gtk.Entry_Completion is
    --  Gtk.Entry_Completion.Set_Model.
    --
    --  Returns True if the signal has been handled
-   --
-   --  "insert-prefix"
    --     function Handler
-   --       (Self   : access Gtk_Entry_Completion_Record'Class;
-   --        Prefix : UTF8_String) return Boolean;
-   --    --  "prefix": the common prefix of all possible completions
+   --       (Self  : access Gtk_Entry_Completion_Record'Class;
+   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
+   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+
+   Signal_Insert_Prefix : constant Glib.Signal_Name := "insert-prefix";
    --  Gets emitted when the inline autocompletion is triggered. The default
    --  behaviour is to make the entry display the whole prefix and select the
    --  newly inserted part.
@@ -599,14 +594,12 @@ package Gtk.Entry_Completion is
    --  to the next '/'.
    --
    --  Returns True if the signal has been handled
-   --
-   --  "match-selected"
    --     function Handler
-   --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+   --       (Self   : access Gtk_Entry_Completion_Record'Class;
+   --        Prefix : UTF8_String) return Boolean;
+   --    --  "prefix": the common prefix of all possible completions
+
+   Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.
@@ -615,11 +608,12 @@ package Gtk.Entry_Completion is
    --  Gtk.Entry_Completion.Set_Model.
    --
    --  Returns True if the signal has been handled
-
-   Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
-   Signal_Cursor_On_Match : constant Glib.Signal_Name := "cursor-on-match";
-   Signal_Insert_Prefix : constant Glib.Signal_Name := "insert-prefix";
-   Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
+   --     function Handler
+   --       (Self  : access Gtk_Entry_Completion_Record'Class;
+   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
+   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
+   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
 
 private
    Text_Column_Property : constant Glib.Properties.Property_Int :=

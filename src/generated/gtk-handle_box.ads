@@ -173,28 +173,24 @@ package Gtk.Handle_Box is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "child-attached"
-   --     procedure Handler
-   --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "widget": the child widget of the handlebox. (this argument provides no
-   --    --  extra information and is here only for backwards-compatibility)
-   --  This signal is emitted when the contents of the handlebox are
-   --  reattached to the main window.
-   --
-   --  "child-detached"
-   --     procedure Handler
-   --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "widget": the child widget of the handlebox. (this argument provides no
-   --    --  extra information and is here only for backwards-compatibility)
-   --  This signal is emitted when the contents of the handlebox are detached
-   --  from the main window.
 
    Signal_Child_Attached : constant Glib.Signal_Name := "child-attached";
+   --  This signal is emitted when the contents of the handlebox are
+   --  reattached to the main window.
+   --     procedure Handler
+   --       (Self   : access Gtk_Handle_Box_Record'Class;
+   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   --    --  "widget": the child widget of the handlebox. (this argument provides no
+   --    --  extra information and is here only for backwards-compatibility)
+
    Signal_Child_Detached : constant Glib.Signal_Name := "child-detached";
+   --  This signal is emitted when the contents of the handlebox are detached
+   --  from the main window.
+   --     procedure Handler
+   --       (Self   : access Gtk_Handle_Box_Record'Class;
+   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   --    --  "widget": the child widget of the handlebox. (this argument provides no
+   --    --  extra information and is here only for backwards-compatibility)
 
 private
    Snap_Edge_Set_Property : constant Glib.Properties.Property_Boolean :=

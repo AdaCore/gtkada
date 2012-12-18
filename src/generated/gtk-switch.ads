@@ -147,15 +147,12 @@ package Gtk.Switch is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Switch_Record'Class);
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
    --  The ::activate signal on GtkSwitch is an action signal and emitting it
    --  causes the switch to animate. Applications should never connect to this
    --  signal, but use the notify::active signal.
-
-   Signal_Activate : constant Glib.Signal_Name := "activate";
+   --     procedure Handler (Self : access Gtk_Switch_Record'Class);
 
 private
    Active_Property : constant Glib.Properties.Property_Boolean :=

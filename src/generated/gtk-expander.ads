@@ -321,12 +321,9 @@ package Gtk.Expander is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Expander_Record'Class);
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
+   --     procedure Handler (Self : access Gtk_Expander_Record'Class);
 
 private
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=

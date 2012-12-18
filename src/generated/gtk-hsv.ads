@@ -162,17 +162,13 @@ package Gtk.Hsv is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --     procedure Handler (Self : access Gtk_Hsv_Record'Class);
-   --
-   --  "move"
+
+   Signal_Move : constant Glib.Signal_Name := "move";
    --     procedure Handler
    --       (Self   : access Gtk_Hsv_Record'Class;
    --        Object : Gtk.Enums.Gtk_Direction_Type);
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
-   Signal_Move : constant Glib.Signal_Name := "move";
 
 end Gtk.Hsv;

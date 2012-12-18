@@ -226,11 +226,8 @@ package Gtk.Menu_Tool_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "show-menu"
-   --     procedure Handler
-   --       (Self : access Gtk_Menu_Tool_Button_Record'Class);
+
+   Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
    --  The ::show-menu signal is emitted before the menu is shown.
    --
    --  It can be used to populate the menu on demand, using
@@ -238,8 +235,8 @@ package Gtk.Menu_Tool_Button is
    --  dynamically in this way, you must set an empty menu on the
    --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button beforehand, since the arrow is
    --  made insensitive if the menu is not set.
-
-   Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
+   --     procedure Handler
+   --       (Self : access Gtk_Menu_Tool_Button_Record'Class);
 
 private
    Menu_Property : constant Glib.Properties.Property_Object :=

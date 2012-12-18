@@ -207,19 +207,16 @@ package Gtk.Radio_Action is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
+   --  The ::changed signal is emitted on every member of a radio group when
+   --  the active member is changed. The signal gets emitted after the
+   --  ::activate signals for the previous and current active members.
    --     procedure Handler
    --       (Self    : access Gtk_Radio_Action_Record'Class;
    --        Current : not null access Gtk_Radio_Action_Record'Class);
    --    --  "current": the member of Action<!-- -->s group which has just been
    --    --  activated
-   --  The ::changed signal is emitted on every member of a radio group when
-   --  the active member is changed. The signal gets emitted after the
-   --  ::activate signals for the previous and current active members.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
    Value_Property : constant Glib.Properties.Property_Int :=

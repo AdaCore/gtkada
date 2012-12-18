@@ -445,15 +445,8 @@ package Gtk.Action_Group is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "connect-proxy"
-   --     procedure Handler
-   --       (Self   : access Gtk_Action_Group_Record'Class;
-   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-   --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+
+   Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";
    --  The ::connect-proxy signal is emitted after connecting a proxy to an
    --  action in the group. Note that the proxy may have been connected to a
    --  different action before.
@@ -465,47 +458,48 @@ package Gtk.Action_Group is
    --  Gtk.UI_Manager.Gtk_UI_Manager proxies the signal and provides global
    --  notification just before any action is connected to a proxy, which is
    --  probably more convenient to use.
-   --
-   --  "disconnect-proxy"
    --     procedure Handler
    --       (Self   : access Gtk_Action_Group_Record'Class;
    --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
    --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "action": the action
    --    --  "proxy": the proxy
+
+   Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
    --  The ::disconnect-proxy signal is emitted after disconnecting a proxy
    --  from an action in the group.
    --
    --  Gtk.UI_Manager.Gtk_UI_Manager proxies the signal and provides global
    --  notification just before any action is connected to a proxy, which is
    --  probably more convenient to use.
-   --
-   --  "post-activate"
    --     procedure Handler
    --       (Self   : access Gtk_Action_Group_Record'Class;
-   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+   --        Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --    --  "action": the action
+   --    --  "proxy": the proxy
+
+   Signal_Post_Activate : constant Glib.Signal_Name := "post-activate";
    --  The ::post-activate signal is emitted just after the Action in the
    --  Action_Group is activated
    --
    --  This is intended for Gtk.UI_Manager.Gtk_UI_Manager to proxy the signal
    --  and provide global notification just after any action is activated.
-   --
-   --  "pre-activate"
    --     procedure Handler
    --       (Self   : access Gtk_Action_Group_Record'Class;
    --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
    --    --  "action": the action
+
+   Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
    --  The ::pre-activate signal is emitted just before the Action in the
    --  Action_Group is activated
    --
    --  This is intended for Gtk.UI_Manager.Gtk_UI_Manager to proxy the signal
    --  and provide global notification just before any action is activated.
-
-   Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";
-   Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
-   Signal_Post_Activate : constant Glib.Signal_Name := "post-activate";
-   Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
+   --     procedure Handler
+   --       (Self   : access Gtk_Action_Group_Record'Class;
+   --        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   --    --  "action": the action
 
 private
    Visible_Property : constant Glib.Properties.Property_Boolean :=

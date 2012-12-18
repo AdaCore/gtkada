@@ -308,20 +308,16 @@ package Gtk.Adjustment is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
-   --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment fields
-   --  have been changed, other than the value field.
-   --
-   --  "value-changed"
-   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
-   --  Emitted when the Gtk.Adjustment.Gtk_Adjustment value field has been
-   --  changed.
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment fields
+   --  have been changed, other than the value field.
+   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
+
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
+   --  Emitted when the Gtk.Adjustment.Gtk_Adjustment value field has been
+   --  changed.
+   --     procedure Handler (Self : access Gtk_Adjustment_Record'Class);
 
 private
    Value_Property : constant Glib.Properties.Property_Double :=

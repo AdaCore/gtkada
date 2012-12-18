@@ -316,9 +316,11 @@ package Gtk.Accel_Map is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
+   --  Notifies of a change in the global accelerator map. The path is also
+   --  used as the detail for the signal, so it is possible to connect to
+   --  changed::<replaceable>accel_path</replaceable>.
    --     procedure Handler
    --       (Self       : access Gtk_Accel_Map_Record'Class;
    --        Accel_Path : UTF8_String;
@@ -327,10 +329,5 @@ package Gtk.Accel_Map is
    --    --  "accel_path": the path of the accelerator that changed
    --    --  "accel_key": the key value for the new accelerator
    --    --  "accel_mods": the modifier mask for the new accelerator
-   --  Notifies of a change in the global accelerator map. The path is also
-   --  used as the detail for the signal, so it is possible to connect to
-   --  changed::<replaceable>accel_path</replaceable>.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
 
 end Gtk.Accel_Map;

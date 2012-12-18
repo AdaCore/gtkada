@@ -199,18 +199,18 @@ package Gtk.Entry_Buffer is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "deleted-text"
+
+   Signal_Deleted_Text : constant Glib.Signal_Name := "deleted-text";
+   --  This signal is emitted after text is deleted from the buffer.
    --     procedure Handler
    --       (Self     : access Gtk_Entry_Buffer_Record'Class;
    --        Position : Guint;
    --        N_Chars  : Guint);
    --    --  "position": the position the text was deleted at.
    --    --  "n_chars": The number of characters that were deleted.
-   --  This signal is emitted after text is deleted from the buffer.
-   --
-   --  "inserted-text"
+
+   Signal_Inserted_Text : constant Glib.Signal_Name := "inserted-text";
+   --  This signal is emitted after text is inserted into the buffer.
    --     procedure Handler
    --       (Self     : access Gtk_Entry_Buffer_Record'Class;
    --        Position : Guint;
@@ -219,10 +219,6 @@ package Gtk.Entry_Buffer is
    --    --  "position": the position the text was inserted at.
    --    --  "chars": The text that was inserted.
    --    --  "n_chars": The number of characters that were inserted.
-   --  This signal is emitted after text is inserted into the buffer.
-
-   Signal_Deleted_Text : constant Glib.Signal_Name := "deleted-text";
-   Signal_Inserted_Text : constant Glib.Signal_Name := "inserted-text";
 
 private
    Text_Property : constant Glib.Properties.Property_String :=

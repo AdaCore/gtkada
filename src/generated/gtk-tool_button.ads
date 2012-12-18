@@ -317,14 +317,11 @@ package Gtk.Tool_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "clicked"
-   --     procedure Handler (Self : access Gtk_Tool_Button_Record'Class);
-   --  This signal is emitted when the tool button is clicked with the mouse
-   --  or activated with the keyboard.
 
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
+   --  This signal is emitted when the tool button is clicked with the mouse
+   --  or activated with the keyboard.
+   --     procedure Handler (Self : access Gtk_Tool_Button_Record'Class);
 
 private
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=

@@ -663,17 +663,14 @@ package Gtk.Clipboard is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "owner-change"
+
+   Signal_Owner_Change : constant Glib.Signal_Name := "owner-change";
+   --  The ::owner-change signal is emitted when GTK+ receives an event that
+   --  indicates that the ownership of the selection associated with Clipboard
+   --  has changed.
    --     procedure Handler
    --       (Self  : access Gtk_Clipboard_Record'Class;
    --        Event : Gdk.Event_Owner_Change);
    --    --  "event": the Gdkeventownerchange event
-   --  The ::owner-change signal is emitted when GTK+ receives an event that
-   --  indicates that the ownership of the selection associated with Clipboard
-   --  has changed.
-
-   Signal_Owner_Change : constant Glib.Signal_Name := "owner-change";
 
 end Gtk.Clipboard;

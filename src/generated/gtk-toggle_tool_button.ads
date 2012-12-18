@@ -179,14 +179,11 @@ package Gtk.Toggle_Tool_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
-   --     procedure Handler
-   --       (Self : access Gtk_Toggle_Tool_Button_Record'Class);
-   --  Emitted whenever the toggle tool button changes state.
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   --  Emitted whenever the toggle tool button changes state.
+   --     procedure Handler
+   --       (Self : access Gtk_Toggle_Tool_Button_Record'Class);
 
 private
    Active_Property : constant Glib.Properties.Property_Boolean :=

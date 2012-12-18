@@ -327,15 +327,12 @@ package Gtk.Recent_Manager is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Recent_Manager_Record'Class);
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --  Emitted when the current recently used resources manager changes its
    --  contents, either by calling Gtk.Recent_Manager.Add_Item or by another
    --  application.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
+   --     procedure Handler (Self : access Gtk_Recent_Manager_Record'Class);
 
 private
    Size_Property : constant Glib.Properties.Property_Int :=

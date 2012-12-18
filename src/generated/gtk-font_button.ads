@@ -364,10 +364,8 @@ package Gtk.Font_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "font-set"
-   --     procedure Handler (Self : access Gtk_Font_Button_Record'Class);
+
+   Signal_Font_Set : constant Glib.Signal_Name := "font-set";
    --  The ::font-set signal is emitted when the user selects a font. When
    --  handling this signal, use Gtk.Font_Button.Get_Font_Name to find out
    --  which font was just selected.
@@ -375,8 +373,7 @@ package Gtk.Font_Button is
    --  Note that this signal is only emitted when the *user* changes the font.
    --  If you need to react to programmatic font changes as well, use the
    --  notify::font-name signal.
-
-   Signal_Font_Set : constant Glib.Signal_Name := "font-set";
+   --     procedure Handler (Self : access Gtk_Font_Button_Record'Class);
 
 private
    Use_Size_Property : constant Glib.Properties.Property_Boolean :=

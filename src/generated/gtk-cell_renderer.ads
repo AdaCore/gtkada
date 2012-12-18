@@ -447,23 +447,16 @@ package Gtk.Cell_Renderer is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "editing-canceled"
-   --     procedure Handler (Self : access Gtk_Cell_Renderer_Record'Class);
+
+   Signal_Editing_Canceled : constant Glib.Signal_Name := "editing-canceled";
    --  This signal gets emitted when the user cancels the process of editing a
    --  cell. For example, an editable cell renderer could be written to cancel
    --  editing when the user presses Escape.
    --
    --  See also: Gtk.Cell_Renderer.Stop_Editing.
-   --
-   --  "editing-started"
-   --     procedure Handler
-   --       (Self     : access Gtk_Cell_Renderer_Record'Class;
-   --        Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
-   --        Path     : UTF8_String);
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable
-   --    --  "path": the path identifying the edited cell
+   --     procedure Handler (Self : access Gtk_Cell_Renderer_Record'Class);
+
+   Signal_Editing_Started : constant Glib.Signal_Name := "editing-started";
    --  This signal gets emitted when a cell starts to be edited. The intended
    --  use of this signal is to do special setup on Editable, e.g. adding a
    --  Gtk.Entry_Completion.Gtk_Entry_Completion or setting up additional
@@ -480,9 +473,12 @@ package Gtk.Cell_Renderer is
    --  /* ... create a GtkEntryCompletion */
    --
    --  gtk_entry_set_completion (entry, completion); } } ]|
-
-   Signal_Editing_Canceled : constant Glib.Signal_Name := "editing-canceled";
-   Signal_Editing_Started : constant Glib.Signal_Name := "editing-started";
+   --     procedure Handler
+   --       (Self     : access Gtk_Cell_Renderer_Record'Class;
+   --        Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
+   --        Path     : UTF8_String);
+   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable
+   --    --  "path": the path identifying the edited cell
 
 private
    Ypad_Property : constant Glib.Properties.Property_Uint :=

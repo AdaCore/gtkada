@@ -460,16 +460,13 @@ package Gtk.File_Chooser_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "file-set"
-   --     procedure Handler
-   --       (Self : access Gtk_File_Chooser_Button_Record'Class);
+
+   Signal_File_Set : constant Glib.Signal_Name := "file-set";
    --  The ::file-set signal is emitted when the user selects a file.
    --
    --  Note that this signal is only emitted when the *user* changes the file.
-
-   Signal_File_Set : constant Glib.Signal_Name := "file-set";
+   --     procedure Handler
+   --       (Self : access Gtk_File_Chooser_Button_Record'Class);
 
 private
    Width_Chars_Property : constant Glib.Properties.Property_Int :=

@@ -1069,12 +1069,9 @@ package Gtk.Style_Context is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Style_Context_Record'Class);
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   --     procedure Handler (Self : access Gtk_Style_Context_Record'Class);
 
 private
    Screen_Property : constant Glib.Properties.Property_Boxed :=

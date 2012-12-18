@@ -1449,34 +1449,28 @@ package Gtk.Window is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-default"
-   --     procedure Handler (Self : access Gtk_Window_Record'Class);
+
+   Signal_Activate_Default : constant Glib.Signal_Name := "activate-default";
    --  The ::activate-default signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the default widget of Window.
-   --
-   --  "activate-focus"
    --     procedure Handler (Self : access Gtk_Window_Record'Class);
+
+   Signal_Activate_Focus : constant Glib.Signal_Name := "activate-focus";
    --  The ::activate-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the currently focused widget of Window.
-   --
-   --  "keys-changed"
    --     procedure Handler (Self : access Gtk_Window_Record'Class);
+
+   Signal_Keys_Changed : constant Glib.Signal_Name := "keys-changed";
    --  The ::keys-changed signal gets emitted when the set of accelerators or
    --  mnemonics that are associated with Window changes.
-   --
-   --  "set-focus"
+   --     procedure Handler (Self : access Gtk_Window_Record'Class);
+
+   Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
    --     procedure Handler
    --       (Self   : access Gtk_Window_Record'Class;
    --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-
-   Signal_Activate_Default : constant Glib.Signal_Name := "activate-default";
-   Signal_Activate_Focus : constant Glib.Signal_Name := "activate-focus";
-   Signal_Keys_Changed : constant Glib.Signal_Name := "keys-changed";
-   Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
 
 private
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position :=

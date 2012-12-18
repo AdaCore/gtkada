@@ -1908,15 +1908,8 @@ package Gdk.Window is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "create-surface"
-   --     function Handler
-   --       (Self   : access Gdk_Window;
-   --        Width  : Gint;
-   --        Height : Gint) return cairo.Surface;
-   --    --  "width": the width of the offscreen surface to create
-   --    --  "height": the height of the offscreen surface to create
+
+   Signal_Create_Surface : constant Glib.Signal_Name := "create-surface";
    --  The ::create-surface signal is emitted when an offscreen window needs
    --  its surface (re)created, which happens either when the the window is
    --  first drawn to, or when the window is being resized. The first signal
@@ -1928,8 +1921,18 @@ package Gdk.Window is
    --  gdk_offscreen_window_get_surface will lead to a crash.
    --
    --  Returns the newly created cairo_surface_t for the offscreen window
+   --     function Handler
+   --       (Self   : access Gdk_Window;
+   --        Width  : Gint;
+   --        Height : Gint) return cairo.Surface;
+   --    --  "width": the width of the offscreen surface to create
+   --    --  "height": the height of the offscreen surface to create
+
+   Signal_From_Embedder : constant Glib.Signal_Name := "from-embedder";
+   --  The ::from-embedder signal is emitted to translate coordinates in the
+   --  embedder of an offscreen window to the offscreen window.
    --
-   --  "from-embedder"
+   --  See also Gtk.Window.Gtk_Window::to-embedder.
    --     procedure Handler
    --       (Self        : access Gdk_Window;
    --        Embedder_X  : Gdouble;
@@ -1942,26 +1945,26 @@ package Gdk.Window is
    --    --  window
    --    --  "offscreen-y": return location for the y coordinate in the offscreen
    --    --  window
-   --  The ::from-embedder signal is emitted to translate coordinates in the
-   --  embedder of an offscreen window to the offscreen window.
-   --
-   --  See also Gtk.Window.Gtk_Window::to-embedder.
-   --
-   --  "pick-embedded-child"
-   --     function Handler
-   --       (Self : access Gdk_Window;
-   --        X    : Gdouble;
-   --        Y    : Gdouble) return Gtk.Window.Gtk_Window;
-   --    --  "x": x coordinate in the window
-   --    --  "y": y coordinate in the window
+
+   Signal_Pick_Embedded_Child : constant Glib.Signal_Name := "pick-embedded-child";
    --  The ::pick-embedded-child signal is emitted to find an embedded child
    --  at the given position.
    --
    --  X, Y, or null
    --
    --  Returns the Gdk.Gdk_Window of the embedded child at
+   --     function Handler
+   --       (Self : access Gdk_Window;
+   --        X    : Gdouble;
+   --        Y    : Gdouble) return Gtk.Window.Gtk_Window;
+   --    --  "x": x coordinate in the window
+   --    --  "y": y coordinate in the window
+
+   Signal_To_Embedder : constant Glib.Signal_Name := "to-embedder";
+   --  The ::to-embedder signal is emitted to translate coordinates in an
+   --  offscreen window to its embedder.
    --
-   --  "to-embedder"
+   --  See also Gtk.Window.Gtk_Window::from-embedder.
    --     procedure Handler
    --       (Self        : access Gdk_Window;
    --        Offscreen_X : Gdouble;
@@ -1974,15 +1977,6 @@ package Gdk.Window is
    --    --  window
    --    --  "embedder-y": return location for the y coordinate in the embedder
    --    --  window
-   --  The ::to-embedder signal is emitted to translate coordinates in an
-   --  offscreen window to its embedder.
-   --
-   --  See also Gtk.Window.Gtk_Window::from-embedder.
-
-   Signal_Create_Surface : constant Glib.Signal_Name := "create-surface";
-   Signal_From_Embedder : constant Glib.Signal_Name := "from-embedder";
-   Signal_Pick_Embedded_Child : constant Glib.Signal_Name := "pick-embedded-child";
-   Signal_To_Embedder : constant Glib.Signal_Name := "to-embedder";
 
 private
    Cursor_Property : constant Glib.Properties.Property_Boxed :=

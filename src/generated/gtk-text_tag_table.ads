@@ -166,30 +166,25 @@ package Gtk.Text_Tag_Table is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "tag-added"
+
+   Signal_Tag_Added : constant Glib.Signal_Name := "tag-added";
    --     procedure Handler
    --       (Self : access Gtk_Text_Tag_Table_Record'Class;
    --        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
    --    --  "tag": the added tag.
-   --
-   --  "tag-changed"
+
+   Signal_Tag_Changed : constant Glib.Signal_Name := "tag-changed";
    --     procedure Handler
    --       (Self         : access Gtk_Text_Tag_Table_Record'Class;
    --        Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
    --        Size_Changed : Boolean);
    --    --  "tag": the changed tag.
    --    --  "size_changed": whether the size has been changed.
-   --
-   --  "tag-removed"
+
+   Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
    --     procedure Handler
    --       (Self : access Gtk_Text_Tag_Table_Record'Class;
    --        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
    --    --  "tag": the removed tag.
-
-   Signal_Tag_Added : constant Glib.Signal_Name := "tag-added";
-   Signal_Tag_Changed : constant Glib.Signal_Name := "tag-changed";
-   Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
 
 end Gtk.Text_Tag_Table;

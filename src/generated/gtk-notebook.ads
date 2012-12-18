@@ -542,22 +542,13 @@ package Gtk.Notebook is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "change-current-page"
+
+   Signal_Change_Current_Page : constant Glib.Signal_Name := "change-current-page";
    --     function Handler
    --       (Self   : access Gtk_Notebook_Record'Class;
    --        Object : Gint) return Boolean;
-   --
-   --  "create-window"
-   --     function Handler
-   --       (Self : access Gtk_Notebook_Record'Class;
-   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        X    : Gint;
-   --        Y    : Gint) return Gtk_Notebook;
-   --    --  "page": the tab of Notebook that is being detached
-   --    --  "x": the X coordinate where the drop happens
-   --    --  "y": the Y coordinate where the drop happens
+
+   Signal_Create_Window : constant Glib.Signal_Name := "create-window";
    --  The ::create-window signal is emitted when a detachable tab is dropped
    --  on the root window.
    --
@@ -569,77 +560,74 @@ package Gtk.Notebook is
    --  added to, or null.
    --
    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
-   --
-   --  "focus-tab"
+   --     function Handler
+   --       (Self : access Gtk_Notebook_Record'Class;
+   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+   --        X    : Gint;
+   --        Y    : Gint) return Gtk_Notebook;
+   --    --  "page": the tab of Notebook that is being detached
+   --    --  "x": the X coordinate where the drop happens
+   --    --  "y": the Y coordinate where the drop happens
+
+   Signal_Focus_Tab : constant Glib.Signal_Name := "focus-tab";
    --     function Handler
    --       (Self   : access Gtk_Notebook_Record'Class;
    --        Object : Notebook_Tab) return Boolean;
-   --
-   --  "move-focus-out"
+
+   Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
    --     procedure Handler
    --       (Self   : access Gtk_Notebook_Record'Class;
    --        Object : Gtk.Enums.Gtk_Direction_Type);
-   --
-   --  "page-added"
+
+   Signal_Page_Added : constant Glib.Signal_Name := "page-added";
+   --  the ::page-added signal is emitted in the notebook right after a page
+   --  is added to the notebook.
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
    --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
-   --  the ::page-added signal is emitted in the notebook right after a page
-   --  is added to the notebook.
-   --
-   --  "page-removed"
+
+   Signal_Page_Removed : constant Glib.Signal_Name := "page-removed";
+   --  the ::page-removed signal is emitted in the notebook right after a page
+   --  is removed from the notebook.
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
    --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the Child page number
-   --  the ::page-removed signal is emitted in the notebook right after a page
-   --  is removed from the notebook.
-   --
-   --  "page-reordered"
+
+   Signal_Page_Reordered : constant Glib.Signal_Name := "page-reordered";
+   --  the ::page-reordered signal is emitted in the notebook right after a
+   --  page has been reordered.
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
    --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
-   --  the ::page-reordered signal is emitted in the notebook right after a
-   --  page has been reordered.
-   --
-   --  "reorder-tab"
+
+   Signal_Reorder_Tab : constant Glib.Signal_Name := "reorder-tab";
    --     function Handler
    --       (Self   : access Gtk_Notebook_Record'Class;
    --        Object : Gtk.Enums.Gtk_Direction_Type;
    --        P0     : Boolean) return Boolean;
-   --
-   --  "select-page"
+
+   Signal_Select_Page : constant Glib.Signal_Name := "select-page";
    --     function Handler
    --       (Self   : access Gtk_Notebook_Record'Class;
    --        Object : Boolean) return Boolean;
-   --
-   --  "switch-page"
+
+   Signal_Switch_Page : constant Glib.Signal_Name := "switch-page";
+   --  Emitted when the user or a function changes the current page.
    --     procedure Handler
    --       (Self     : access Gtk_Notebook_Record'Class;
    --        Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
    --        Page_Num : Guint);
    --    --  "page": the new current page
    --    --  "page_num": the index of the page
-   --  Emitted when the user or a function changes the current page.
-
-   Signal_Change_Current_Page : constant Glib.Signal_Name := "change-current-page";
-   Signal_Create_Window : constant Glib.Signal_Name := "create-window";
-   Signal_Focus_Tab : constant Glib.Signal_Name := "focus-tab";
-   Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
-   Signal_Page_Added : constant Glib.Signal_Name := "page-added";
-   Signal_Page_Removed : constant Glib.Signal_Name := "page-removed";
-   Signal_Page_Reordered : constant Glib.Signal_Name := "page-reordered";
-   Signal_Reorder_Tab : constant Glib.Signal_Name := "reorder-tab";
-   Signal_Select_Page : constant Glib.Signal_Name := "select-page";
-   Signal_Switch_Page : constant Glib.Signal_Name := "switch-page";
 
 private
    Tab_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=

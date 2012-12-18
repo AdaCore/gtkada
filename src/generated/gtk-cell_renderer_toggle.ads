@@ -133,17 +133,14 @@ package Gtk.Cell_Renderer_Toggle is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
+
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   --  The ::toggled signal is emitted when the cell is toggled.
    --     procedure Handler
    --       (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
    --        Path : UTF8_String);
    --    --  "path": string representation of Gtk.Tree_Model.Gtk_Tree_Path
    --    --  describing the event location
-   --  The ::toggled signal is emitted when the cell is toggled.
-
-   Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
 private
    Radio_Property : constant Glib.Properties.Property_Boolean :=

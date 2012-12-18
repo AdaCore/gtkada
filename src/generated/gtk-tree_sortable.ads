@@ -245,15 +245,12 @@ package Gtk.Tree_Sortable is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "sort-column-changed"
-   --     procedure Handler (Self : access Gtk_Tree_Sortable);
+
+   Signal_Sort_Column_Changed : constant Glib.Signal_Name := "sort-column-changed";
    --  The ::sort-column-changed signal is emitted when the sort column or
    --  sort order of Sortable is changed. The signal is emitted before the
    --  contents of Sortable are resorted.
-
-   Signal_Sort_Column_Changed : constant Glib.Signal_Name := "sort-column-changed";
+   --     procedure Handler (Self : access Gtk_Tree_Sortable);
 
 private
 

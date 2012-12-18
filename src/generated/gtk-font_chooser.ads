@@ -229,14 +229,11 @@ package Gtk.Font_Chooser is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "font-activated"
+
+   Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
    --     procedure Handler
    --       (Self   : access Gtk_Font_Chooser;
    --        Object : UTF8_String);
-
-   Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
 
 private
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=

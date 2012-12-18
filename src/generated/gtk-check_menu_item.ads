@@ -217,16 +217,13 @@ package Gtk.Check_Menu_Item is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
-   --     procedure Handler (Self : access Gtk_Check_Menu_Item_Record'Class);
+
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
    --  This signal is emitted when the state of the check box is changed.
    --
    --  A signal handler can use Gtk.Check_Menu_Item.Get_Active to discover the
    --  new state.
-
-   Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   --     procedure Handler (Self : access Gtk_Check_Menu_Item_Record'Class);
 
 private
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=

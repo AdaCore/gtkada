@@ -90,10 +90,8 @@ package Gtk.Cell_Editable is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "editing-done"
-   --     procedure Handler (Self : access Gtk_Cell_Editable);
+
+   Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
    --  This signal is a sign for the cell renderer to update its value from
    --  the Cell_Editable.
    --
@@ -103,9 +101,9 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
-   --
-   --  "remove-widget"
    --     procedure Handler (Self : access Gtk_Cell_Editable);
+
+   Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
    --  This signal is meant to indicate that the cell is finished editing, and
    --  the widget may now be destroyed.
    --
@@ -117,9 +115,7 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Remove_Widget is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget.
-
-   Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
-   Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
+   --     procedure Handler (Self : access Gtk_Cell_Editable);
 
 private
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=

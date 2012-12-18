@@ -352,29 +352,24 @@ package Gdk.Screen is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "composited-changed"
-   --     procedure Handler (Self : access Gdk_Screen_Record'Class);
+
+   Signal_Composited_Changed : constant Glib.Signal_Name := "composited-changed";
    --  The ::composited-changed signal is emitted when the composited status
    --  of the screen changes
-   --
-   --  "monitors-changed"
    --     procedure Handler (Self : access Gdk_Screen_Record'Class);
+
+   Signal_Monitors_Changed : constant Glib.Signal_Name := "monitors-changed";
    --  The ::monitors-changed signal is emitted when the number, size or
    --  position of the monitors attached to the screen change.
    --
    --  Only for X11 and OS X for now. A future implementation for Win32 may be
    --  a possibility.
-   --
-   --  "size-changed"
    --     procedure Handler (Self : access Gdk_Screen_Record'Class);
+
+   Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
    --  The ::size-changed signal is emitted when the pixel width or height of
    --  a screen changes.
-
-   Signal_Composited_Changed : constant Glib.Signal_Name := "composited-changed";
-   Signal_Monitors_Changed : constant Glib.Signal_Name := "monitors-changed";
-   Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
+   --     procedure Handler (Self : access Gdk_Screen_Record'Class);
 
 private
    Resolution_Property : constant Glib.Properties.Property_Double :=

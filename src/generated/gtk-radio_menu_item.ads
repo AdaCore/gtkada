@@ -216,12 +216,9 @@ package Gtk.Radio_Menu_Item is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "group-changed"
-   --     procedure Handler (Self : access Gtk_Radio_Menu_Item_Record'Class);
 
    Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
+   --     procedure Handler (Self : access Gtk_Radio_Menu_Item_Record'Class);
 
 private
    Group_Property : constant Glib.Properties.Property_Object :=

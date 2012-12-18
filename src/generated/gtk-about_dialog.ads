@@ -449,20 +449,17 @@ package Gtk.About_Dialog is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-link"
-   --     function Handler
-   --       (Self : access Gtk_About_Dialog_Record'Class;
-   --        URI  : UTF8_String) return Boolean;
-   --    --  "uri": the URI that is activated
+
+   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
    --
    --  Returns True if the link has been activated
-
-   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
+   --     function Handler
+   --       (Self : access Gtk_About_Dialog_Record'Class;
+   --        URI  : UTF8_String) return Boolean;
+   --    --  "uri": the URI that is activated
 
 private
    Wrap_License_Property : constant Glib.Properties.Property_Boolean :=

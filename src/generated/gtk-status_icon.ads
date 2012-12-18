@@ -524,21 +524,16 @@ package Gtk.Status_Icon is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Status_Icon_Record'Class);
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
    --  Gets emitted when the user activates the status icon. If and how status
    --  icons can activated is platform-dependent.
    --
    --  Unlike most G_SIGNAL_ACTION signals, this signal is meant to be used by
    --  applications and should be wrapped by language bindings.
-   --
-   --  "button-press-event"
-   --     function Handler
-   --       (Self  : access Gtk_Status_Icon_Record'Class;
-   --        Event : Gdk.Event_Button) return Boolean;
-   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
+   --     procedure Handler (Self : access Gtk_Status_Icon_Record'Class);
+
+   Signal_Button_Press_Event : constant Glib.Signal_Name := "button-press-event";
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
@@ -548,12 +543,12 @@ package Gtk.Status_Icon is
    --  for the event. False to propagate the event further.
    --
    --  Returns True to stop other handlers from being invoked
-   --
-   --  "button-release-event"
    --     function Handler
    --       (Self  : access Gtk_Status_Icon_Record'Class;
    --        Event : Gdk.Event_Button) return Boolean;
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
+
+   Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
@@ -563,16 +558,12 @@ package Gtk.Status_Icon is
    --  for the event. False to propagate the event further.
    --
    --  Returns True to stop other handlers from being invoked
-   --
-   --  "popup-menu"
-   --     procedure Handler
-   --       (Self          : access Gtk_Status_Icon_Record'Class;
-   --        Button        : Guint;
-   --        Activate_Time : Guint);
-   --    --  "button": the button that was pressed, or 0 if the signal is not
-   --    --  emitted in response to a button press event
-   --    --  "activate_time": the timestamp of the event that triggered the signal
-   --    --  emission
+   --     function Handler
+   --       (Self  : access Gtk_Status_Icon_Record'Class;
+   --        Event : Gdk.Event_Button) return Boolean;
+   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
+
+   Signal_Popup_Menu : constant Glib.Signal_Name := "popup-menu";
    --  Gets emitted when the user brings up the context menu of the status
    --  icon. Whether status icons can have context menus and how these are
    --  activated is platform-dependent.
@@ -582,21 +573,16 @@ package Gtk.Status_Icon is
    --
    --  Unlike most G_SIGNAL_ACTION signals, this signal is meant to be used by
    --  applications and should be wrapped by language bindings.
-   --
-   --  "query-tooltip"
-   --     function Handler
+   --     procedure Handler
    --       (Self          : access Gtk_Status_Icon_Record'Class;
-   --        X             : Gint;
-   --        Y             : Gint;
-   --        Keyboard_Mode : Boolean;
-   --        Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
-   --        return Boolean;
-   --    --  "x": the x coordinate of the cursor position where the request has been
-   --    --  emitted, relative to Status_Icon
-   --    --  "y": the y coordinate of the cursor position where the request has been
-   --    --  emitted, relative to Status_Icon
-   --    --  "keyboard_mode": True if the tooltip was trigged using the keyboard
-   --    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
+   --        Button        : Guint;
+   --        Activate_Time : Guint);
+   --    --  "button": the button that was pressed, or 0 if the signal is not
+   --    --  emitted in response to a button press event
+   --    --  "activate_time": the timestamp of the event that triggered the signal
+   --    --  emission
+
+   Signal_Query_Tooltip : constant Glib.Signal_Name := "query-tooltip";
    --  Emitted when the Gtk.Settings.Gtk_Settings:gtk-tooltip-timeout has
    --  expired with the cursor hovering above Status_Icon; or emitted when
    --  Status_Icon got focus in keyboard mode.
@@ -614,12 +600,21 @@ package Gtk.Status_Icon is
    --  preference.
    --
    --  Returns True if Tooltip should be shown right now, False otherwise.
-   --
-   --  "scroll-event"
    --     function Handler
-   --       (Self  : access Gtk_Status_Icon_Record'Class;
-   --        Event : Gdk.Event_Scroll) return Boolean;
-   --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
+   --       (Self          : access Gtk_Status_Icon_Record'Class;
+   --        X             : Gint;
+   --        Y             : Gint;
+   --        Keyboard_Mode : Boolean;
+   --        Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   --        return Boolean;
+   --    --  "x": the x coordinate of the cursor position where the request has been
+   --    --  emitted, relative to Status_Icon
+   --    --  "y": the y coordinate of the cursor position where the request has been
+   --    --  emitted, relative to Status_Icon
+   --    --  "keyboard_mode": True if the tooltip was trigged using the keyboard
+   --    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
+
+   Signal_Scroll_Event : constant Glib.Signal_Name := "scroll-event";
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
@@ -629,26 +624,22 @@ package Gtk.Status_Icon is
    --  False to propagate the event further.
    --
    --  Returns True to stop other handlers from being invoked for the event.
-   --
-   --  "size-changed"
    --     function Handler
-   --       (Self : access Gtk_Status_Icon_Record'Class;
-   --        Size : Gint) return Boolean;
-   --    --  "size": the new size
+   --       (Self  : access Gtk_Status_Icon_Record'Class;
+   --        Event : Gdk.Event_Scroll) return Boolean;
+   --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
+
+   Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
    --  Gets emitted when the size available for the image changes, e.g.
    --  because the notification area got resized.
    --
    --  size. Otherwise, GTK+ will scale the icon as necessary.
    --
    --  Returns True if the icon was updated for the new
-
-   Signal_Activate : constant Glib.Signal_Name := "activate";
-   Signal_Button_Press_Event : constant Glib.Signal_Name := "button-press-event";
-   Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
-   Signal_Popup_Menu : constant Glib.Signal_Name := "popup-menu";
-   Signal_Query_Tooltip : constant Glib.Signal_Name := "query-tooltip";
-   Signal_Scroll_Event : constant Glib.Signal_Name := "scroll-event";
-   Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
+   --     function Handler
+   --       (Self : access Gtk_Status_Icon_Record'Class;
+   --        Size : Gint) return Boolean;
+   --    --  "size": the new size
 
 private
    Visible_Property : constant Glib.Properties.Property_Boolean :=

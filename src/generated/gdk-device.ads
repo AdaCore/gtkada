@@ -268,18 +268,15 @@ package Gdk.Device is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gdk_Device_Record'Class);
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --  The ::changed signal is emitted either when the Gdk.Device.Gdk_Device
    --  has changed the number of either axes or keys. For example In X this
    --  will normally happen when the slave device routing events through the
    --  master device changes (for example, user switches from the USB mouse to
    --  a tablet), in that case the master device will change to reflect the new
    --  slave device axes and keys.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
+   --     procedure Handler (Self : access Gdk_Device_Record'Class);
 
 private
    The_Type_Property : constant Glib.Properties.Property_Boxed :=

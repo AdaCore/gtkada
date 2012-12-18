@@ -336,14 +336,8 @@ package Gtk.Scrolled_Window is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "move-focus-out"
-   --     procedure Handler
-   --       (Self           : access Gtk_Scrolled_Window_Record'Class;
-   --        Direction_Type : Gtk.Enums.Gtk_Direction_Type);
-   --    --  "direction_type": either Gtk.Enums.Dir_Tab_Forward or
-   --    --  Gtk.Enums.Dir_Tab_Backward
+
+   Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
    --  The ::move-focus-out signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when focus is moved away from the scrolled window by a keybinding. The
@@ -351,8 +345,18 @@ package Gtk.Scrolled_Window is
    --  on this scrolled windows toplevel parent in the container hierarchy. The
    --  default bindings for this signal are ['Tab''Ctrl'] and
    --  ['Tab''Ctrl''Shift'].
-   --
-   --  "scroll-child"
+   --     procedure Handler
+   --       (Self           : access Gtk_Scrolled_Window_Record'Class;
+   --        Direction_Type : Gtk.Enums.Gtk_Direction_Type);
+   --    --  "direction_type": either Gtk.Enums.Dir_Tab_Forward or
+   --    --  Gtk.Enums.Dir_Tab_Backward
+
+   Signal_Scroll_Child : constant Glib.Signal_Name := "scroll-child";
+   --  The ::scroll-child signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  when a keybinding that scrolls is pressed. The horizontal or vertical
+   --  adjustment is updated which triggers a signal that the scrolled windows
+   --  child may listen to and scroll itself.
    --     function Handler
    --       (Self       : access Gtk_Scrolled_Window_Record'Class;
    --        Scroll     : Gtk.Enums.Gtk_Scroll_Type;
@@ -360,14 +364,6 @@ package Gtk.Scrolled_Window is
    --    --  "scroll": a Gtk.Enums.Gtk_Scroll_Type describing how much to scroll
    --    --  "horizontal": whether the keybinding scrolls the child horizontally or
    --    --  not
-   --  The ::scroll-child signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when a keybinding that scrolls is pressed. The horizontal or vertical
-   --  adjustment is updated which triggers a signal that the scrolled windows
-   --  child may listen to and scroll itself.
-
-   Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
-   Signal_Scroll_Child : constant Glib.Signal_Name := "scroll-child";
 
 private
    Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean :=

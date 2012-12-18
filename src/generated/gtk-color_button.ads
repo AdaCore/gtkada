@@ -265,10 +265,8 @@ package Gtk.Color_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "color-set"
-   --     procedure Handler (Self : access Gtk_Color_Button_Record'Class);
+
+   Signal_Color_Set : constant Glib.Signal_Name := "color-set";
    --  The ::color-set signal is emitted when the user selects a color. When
    --  handling this signal, use Gtk.Color_Button.Get_Color and
    --  Gtk.Color_Button.Get_Alpha (or Gtk.Color_Button.Get_Rgba) to find out
@@ -277,8 +275,7 @@ package Gtk.Color_Button is
    --  Note that this signal is only emitted when the *user* changes the
    --  color. If you need to react to programmatic color changes as well, use
    --  the notify::color signal.
-
-   Signal_Color_Set : constant Glib.Signal_Name := "color-set";
+   --     procedure Handler (Self : access Gtk_Color_Button_Record'Class);
 
 private
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=

@@ -272,14 +272,11 @@ package Gtk.Toggle_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
-   --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
-   --  Should be connected if you wish to perform an action whenever the
-   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   --  Should be connected if you wish to perform an action whenever the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
+   --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
 
 private
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=

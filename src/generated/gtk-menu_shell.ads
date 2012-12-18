@@ -201,78 +201,68 @@ package Gtk.Menu_Shell is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-current"
+
+   Signal_Activate_Current : constant Glib.Signal_Name := "activate-current";
+   --  An action signal that activates the current menu item within the menu
+   --  shell.
    --     procedure Handler
    --       (Self       : access Gtk_Menu_Shell_Record'Class;
    --        Force_Hide : Boolean);
    --    --  "force_hide": if True, hide the menu after activating the menu item
-   --  An action signal that activates the current menu item within the menu
-   --  shell.
-   --
-   --  "cancel"
-   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
+
+   Signal_Cancel : constant Glib.Signal_Name := "cancel";
    --  An action signal which cancels the selection within the menu shell.
    --  Causes the Gtk.Menu_Shell.Gtk_Menu_Shell::selection-done signal to be
    --  emitted.
-   --
-   --  "cycle-focus"
+   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
+
+   Signal_Cycle_Focus : constant Glib.Signal_Name := "cycle-focus";
+   --  A keybinding signal which moves the focus in the given Direction.
    --     procedure Handler
    --       (Self      : access Gtk_Menu_Shell_Record'Class;
    --        Direction : Gtk.Enums.Gtk_Direction_Type);
    --    --  "direction": the direction to cycle in
-   --  A keybinding signal which moves the focus in the given Direction.
-   --
-   --  "deactivate"
-   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
+
+   Signal_Deactivate : constant Glib.Signal_Name := "deactivate";
    --  This signal is emitted when a menu shell is deactivated.
-   --
-   --  "insert"
-   --     procedure Handler
-   --       (Self     : access Gtk_Menu_Shell_Record'Class;
-   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Position : Gint);
-   --    --  "child": the Gtk.Menu_Item.Gtk_Menu_Item that is being inserted
-   --    --  "position": the position at which the insert occurs
+   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
+
+   Signal_Insert : constant Glib.Signal_Name := "insert";
    --  The ::insert signal is emitted when a new Gtk.Menu_Item.Gtk_Menu_Item
    --  is added to a Gtk.Menu_Shell.Gtk_Menu_Shell. A separate signal is used
    --  instead of GtkContainer::add because of the need for an additional
    --  position parameter.
    --
    --  The inverse of this signal is the GtkContainer::removed signal.
-   --
-   --  "move-current"
+   --     procedure Handler
+   --       (Self     : access Gtk_Menu_Shell_Record'Class;
+   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+   --        Position : Gint);
+   --    --  "child": the Gtk.Menu_Item.Gtk_Menu_Item that is being inserted
+   --    --  "position": the position at which the insert occurs
+
+   Signal_Move_Current : constant Glib.Signal_Name := "move-current";
+   --  An keybinding signal which moves the current menu item in the direction
+   --  specified by Direction.
    --     procedure Handler
    --       (Self      : access Gtk_Menu_Shell_Record'Class;
    --        Direction : Gtk.Enums.Gtk_Menu_Direction_Type);
    --    --  "direction": the direction to move
-   --  An keybinding signal which moves the current menu item in the direction
-   --  specified by Direction.
-   --
-   --  "move-selected"
-   --     function Handler
-   --       (Self     : access Gtk_Menu_Shell_Record'Class;
-   --        Distance : Gint) return Boolean;
-   --    --  "distance": +1 to move to the next item, -1 to move to the previous
+
+   Signal_Move_Selected : constant Glib.Signal_Name := "move-selected";
    --  The ::move-selected signal is emitted to move the selection to another
    --  item.
    --
    --  Returns True to stop the signal emission, False to continue
-   --
-   --  "selection-done"
-   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
+   --     function Handler
+   --       (Self     : access Gtk_Menu_Shell_Record'Class;
+   --        Distance : Gint) return Boolean;
+   --    --  "distance": +1 to move to the next item, -1 to move to the previous
+
+   Signal_Selection_Done : constant Glib.Signal_Name := "selection-done";
    --  This signal is emitted when a selection has been completed within a
    --  menu shell.
-
-   Signal_Activate_Current : constant Glib.Signal_Name := "activate-current";
-   Signal_Cancel : constant Glib.Signal_Name := "cancel";
-   Signal_Cycle_Focus : constant Glib.Signal_Name := "cycle-focus";
-   Signal_Deactivate : constant Glib.Signal_Name := "deactivate";
-   Signal_Insert : constant Glib.Signal_Name := "insert";
-   Signal_Move_Current : constant Glib.Signal_Name := "move-current";
-   Signal_Move_Selected : constant Glib.Signal_Name := "move-selected";
-   Signal_Selection_Done : constant Glib.Signal_Name := "selection-done";
+   --     procedure Handler (Self : access Gtk_Menu_Shell_Record'Class);
 
 private
    Take_Focus_Property : constant Glib.Properties.Property_Boolean :=

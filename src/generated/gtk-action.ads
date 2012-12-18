@@ -517,13 +517,10 @@ package Gtk.Action is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Action_Record'Class);
-   --  The "activate" signal is emitted when the action is activated.
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
+   --  The "activate" signal is emitted when the action is activated.
+   --     procedure Handler (Self : access Gtk_Action_Record'Class);
 
 private
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=

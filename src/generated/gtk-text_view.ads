@@ -807,39 +807,32 @@ package Gtk.Text_View is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "backspace"
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Backspace : constant Glib.Signal_Name := "backspace";
    --  The ::backspace signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
-   --
-   --  "copy-clipboard"
    --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
-   --
-   --  "cut-clipboard"
    --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
    --  The ::cut-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
-   --
-   --  "delete-from-cursor"
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_View_Record'Class;
-   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
-   --        Count    : Gint);
-   --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
-   --    --  "count": the number of Type units to delete
+   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
    --  The ::delete-from-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a text deletion.
@@ -850,27 +843,25 @@ package Gtk.Text_View is
    --  The default bindings for this signal are Delete for deleting a
    --  character, Ctrl-Delete for deleting a word and Ctrl-Backspace for
    --  deleting a word backwords.
-   --
-   --  "insert-at-cursor"
    --     procedure Handler
-   --       (Self   : access Gtk_Text_View_Record'Class;
-   --        String : UTF8_String);
-   --    --  "string": the string to insert
+   --       (Self     : access Gtk_Text_View_Record'Class;
+   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
+   --        Count    : Gint);
+   --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
+   --    --  "count": the number of Type units to delete
+
+   Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
    --  The ::insert-at-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates the insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
-   --
-   --  "move-cursor"
    --     procedure Handler
-   --       (Self             : access Gtk_Text_View_Record'Class;
-   --        Step             : Gtk.Enums.Gtk_Movement_Step;
-   --        Count            : Gint;
-   --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
-   --    --  "count": the number of Step units to move
-   --    --  "extend_selection": True if the move should extend the selection
+   --       (Self   : access Gtk_Text_View_Record'Class;
+   --        String : UTF8_String);
+   --    --  "string": the string to insert
+
+   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -894,103 +885,96 @@ package Gtk.Text_View is
    --     * PageUp/PageDown keys move vertically by pages
    --
    --     * Ctrl-PageUp/PageDown keys move horizontally by pages
-   --
-   --  "move-viewport"
    --     procedure Handler
-   --       (Self  : access Gtk_Text_View_Record'Class;
-   --        Step  : Gtk.Enums.Gtk_Scroll_Step;
-   --        Count : Gint);
+   --       (Self             : access Gtk_Text_View_Record'Class;
+   --        Step             : Gtk.Enums.Gtk_Movement_Step;
+   --        Count            : Gint;
+   --        Extend_Selection : Boolean);
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
+   --    --  "extend_selection": True if the move should extend the selection
+
+   Signal_Move_Viewport : constant Glib.Signal_Name := "move-viewport";
    --  The ::move-viewport signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which can be bound
    --  to key combinations to allow the user to move the viewport, i.e. change
    --  what part of the text view is visible in a containing scrolled window.
    --
    --  There are no default bindings for this signal.
-   --
-   --  "paste-clipboard"
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+   --     procedure Handler
+   --       (Self  : access Gtk_Text_View_Record'Class;
+   --        Step  : Gtk.Enums.Gtk_Scroll_Step;
+   --        Count : Gint);
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
+   --    --  "count": the number of Step units to move
+
+   Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
    --  The ::paste-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to paste the contents of the clipboard into the text view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
-   --
-   --  "populate-popup"
-   --     procedure Handler
-   --       (Self : access Gtk_Text_View_Record'Class;
-   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-   --    --  "menu": the menu that is being populated
+   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the text view.
    --
    --  If you need to add items to the context menu, connect to this signal
    --  and append your menuitems to the Menu.
-   --
-   --  "preedit-changed"
    --     procedure Handler
-   --       (Self    : access Gtk_Text_View_Record'Class;
-   --        Preedit : UTF8_String);
-   --    --  "preedit": the current preedit string
+   --       (Self : access Gtk_Text_View_Record'Class;
+   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   --    --  "menu": the menu that is being populated
+
+   Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
    --  If an input method is used, the typed text will not immediately be
    --  committed to the buffer. So if you are interested in the text, connect
    --  to this signal.
    --
    --  This signal is only emitted if the text at the given position is
    --  actually editable.
-   --
-   --  "select-all"
    --     procedure Handler
-   --       (Self       : access Gtk_Text_View_Record'Class;
-   --        Gtk_Select : Boolean);
-   --    --  "select": True to select, False to unselect
+   --       (Self    : access Gtk_Text_View_Record'Class;
+   --        Preedit : UTF8_String);
+   --    --  "preedit": the current preedit string
+
+   Signal_Select_All : constant Glib.Signal_Name := "select-all";
    --  The ::select-all signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to select or unselect the complete contents of the text view.
    --
    --  The default bindings for this signal are Ctrl-a and Ctrl-/ for
    --  selecting and Shift-Ctrl-a and Ctrl-\ for unselecting.
-   --
-   --  "set-anchor"
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+   --     procedure Handler
+   --       (Self       : access Gtk_Text_View_Record'Class;
+   --        Gtk_Select : Boolean);
+   --    --  "select": True to select, False to unselect
+
+   Signal_Set_Anchor : constant Glib.Signal_Name := "set-anchor";
    --  The ::set-anchor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates setting the "anchor" mark. The "anchor" mark
    --  gets placed at the same position as the "insert" mark.
    --
    --  This signal has no default bindings.
-   --
-   --  "toggle-cursor-visible"
    --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Toggle_Cursor_Visible : constant Glib.Signal_Name := "toggle-cursor-visible";
    --  The ::toggle-cursor-visible signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the visibility of the cursor.
    --
    --  The default binding for this signal is F7.
-   --
-   --  "toggle-overwrite"
    --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
    --  The ::toggle-overwrite signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the overwrite mode of the text view.
    --
    --  The default bindings for this signal is Insert.
-
-   Signal_Backspace : constant Glib.Signal_Name := "backspace";
-   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
-   Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
-   Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
-   Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
-   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
-   Signal_Move_Viewport : constant Glib.Signal_Name := "move-viewport";
-   Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
-   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
-   Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
-   Signal_Select_All : constant Glib.Signal_Name := "select-all";
-   Signal_Set_Anchor : constant Glib.Signal_Name := "set-anchor";
-   Signal_Toggle_Cursor_Visible : constant Glib.Signal_Name := "toggle-cursor-visible";
-   Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
+   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=

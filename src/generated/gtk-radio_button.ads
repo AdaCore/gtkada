@@ -324,18 +324,15 @@ package Gtk.Radio_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "group-changed"
-   --     procedure Handler (Self : access Gtk_Radio_Button_Record'Class);
+
+   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
    --  Emitted when the group of radio buttons that a radio button belongs to
    --  changes. This is emitted when a radio button switches from being alone
    --  to being part of a group of 2 or more buttons, or vice-versa, and when a
    --  button is moved from one group of 2 or more buttons to a different one,
    --  but not when the composition of the group that a button belongs to
    --  changes.
-
-   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
+   --     procedure Handler (Self : access Gtk_Radio_Button_Record'Class);
 
 private
    Group_Property : constant Glib.Properties.Property_Object :=

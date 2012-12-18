@@ -596,14 +596,11 @@ package Gtk.Icon_Theme is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Icon_Theme_Record'Class);
-   --  Emitted when the current icon theme is switched or GTK+ detects that a
-   --  change has occurred in the contents of the current icon theme.
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   --  Emitted when the current icon theme is switched or GTK+ detects that a
+   --  change has occurred in the contents of the current icon theme.
+   --     procedure Handler (Self : access Gtk_Icon_Theme_Record'Class);
 
 private
 

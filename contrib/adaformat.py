@@ -1695,14 +1695,17 @@ class Code(object):
        comment will be automatically formatted (and C names substituted as appropriate).
     """
 
-    def __init__(self, content, iscomment=False):
+    def __init__(self, content, iscomment=False, fill=True):
+        """:param:`fill` whether to reflow the text if this is a comment."""
         self.content = content
         self.iscomment = iscomment
+        self.fill = fill
 
     def format(self, indent=""):
         """Return the code that should be written into a package"""
         if self.iscomment:
-            return format_doc(self.content, indent=indent) + "\n"
+            return format_doc(
+                self.content, indent=indent, fill=self.fill) + "\n"
         else:
             return indent_code(self.content, indent=len(indent), addnewlines=False)
 

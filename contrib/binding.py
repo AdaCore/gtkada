@@ -1565,8 +1565,6 @@ See Glib.Properties for more information on properties)""")
         if signals:
             adasignals = []
             section = self.pkg.section("Signals")
-            section.add_comment(
-                "The following new signals are defined for this widget:")
 
             for s in signals:
                 gtkmethod = self.gtkpkg.get_method(
@@ -1601,16 +1599,13 @@ See Glib.Properties for more information on properties)""")
             adasignals.sort(lambda x,y: x["name"] <> y["name"])
 
             for s in adasignals:
-                section.add_comment("")
-                section.add_comment('"%(name)s"' % s)
-                section.add_comment(" %(profile)s""" % s, fill=False)
-                if s["doc"]:
-                    section.add_comment("  %s""" % s["doc"])
-
-            section.add("\n".join(
+                section.add(
                     '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                        naming.case(s["name"]), s["name"])
-                    for s in adasignals))
+                    naming.case(s["name"]), s["name"]))
+                if s["doc"]:
+                    section.add(Code("  %s""" % s["doc"], iscomment=True))
+                section.add(
+                    Code(" %(profile)s""" % s, fill=False, iscomment=True))
 
     def _implements(self):
         """Bind the interfaces that a class implements"""

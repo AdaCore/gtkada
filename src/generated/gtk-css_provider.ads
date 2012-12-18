@@ -863,15 +863,8 @@ package Gtk.Css_Provider is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "parsing-error"
-   --     procedure Handler
-   --       (Self    : access Gtk_Css_Provider_Record'Class;
-   --        Section : Gtk.Css_Section.Gtk_Css_Section;
-   --        Error   : GLib.Error);
-   --    --  "section": section the error happened in
-   --    --  "error": The parsing error
+
+   Signal_Parsing_Error : constant Glib.Signal_Name := "parsing-error";
    --  Signals that a parsing error occured. the Path, Line and Position
    --  describe the actual location of the error as accurately as possible.
    --
@@ -883,7 +876,11 @@ package Gtk.Css_Provider is
    --  Note that this signal may be emitted at any time as the css provider
    --  may opt to defer parsing parts or all of the input to a later time than
    --  when a loading function was called.
-
-   Signal_Parsing_Error : constant Glib.Signal_Name := "parsing-error";
+   --     procedure Handler
+   --       (Self    : access Gtk_Css_Provider_Record'Class;
+   --        Section : Gtk.Css_Section.Gtk_Css_Section;
+   --        Error   : GLib.Error);
+   --    --  "section": section the error happened in
+   --    --  "error": The parsing error
 
 end Gtk.Css_Provider;

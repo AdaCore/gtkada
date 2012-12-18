@@ -401,23 +401,19 @@ package Gtk.Recent_Chooser is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "item-activated"
-   --     procedure Handler (Self : access Gtk_Recent_Chooser);
+
+   Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
    --  This signal is emitted when the user "activates" a recent item in the
    --  recent chooser. This can happen by double-clicking on an item in the
    --  recently used resources list, or by pressing 'Enter'.
-   --
-   --  "selection-changed"
    --     procedure Handler (Self : access Gtk_Recent_Chooser);
+
+   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    --  This signal is emitted when there is a change in the set of selected
    --  recently used resources. This can happen when a user modifies the
    --  selection with the mouse or the keyboard, or when explicitely calling
    --  functions to change the selection.
-
-   Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
-   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
+   --     procedure Handler (Self : access Gtk_Recent_Chooser);
 
 private
    Sort_Type_Property : constant Gtk.Recent_Chooser.Property_Gtk_Recent_Sort_Type :=

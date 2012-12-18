@@ -978,11 +978,8 @@ package Gtk.Icon_View is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-cursor-item"
-   --     function Handler
-   --       (Self : access Gtk_Icon_View_Record'Class) return Boolean;
+
+   Signal_Activate_Cursor_Item : constant Glib.Signal_Name := "activate-cursor-item";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates the currently focused item.
    --
@@ -991,24 +988,20 @@ package Gtk.Icon_View is
    --  programmatically.
    --
    --  The default bindings for this signal are Space, Return and Enter.
-   --
-   --  "item-activated"
-   --     procedure Handler
-   --       (Self : access Gtk_Icon_View_Record'Class;
-   --        Path : Gtk.Tree_Model.Gtk_Tree_Path);
-   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated item
+   --     function Handler
+   --       (Self : access Gtk_Icon_View_Record'Class) return Boolean;
+
+   Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
    --  The ::item-activated signal is emitted when the method
    --  Gtk.Icon_View.Item_Activated is called or the user double clicks an
    --  item. It is also emitted when a non-editable item is selected and one of
    --  the keys: Space, Return or Enter is pressed.
-   --
-   --  "move-cursor"
-   --     function Handler
-   --       (Self  : access Gtk_Icon_View_Record'Class;
-   --        Step  : Gtk.Enums.Gtk_Movement_Step;
-   --        Count : Gint) return Boolean;
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
-   --    --  "count": the number of Step units to move
+   --     procedure Handler
+   --       (Self : access Gtk_Icon_View_Record'Class;
+   --        Path : Gtk.Tree_Model.Gtk_Tree_Path);
+   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated item
+
+   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement.
@@ -1027,9 +1020,14 @@ package Gtk.Icon_View is
    --
    --  All of these will extend the selection when combined with the Shift
    --  modifier.
-   --
-   --  "select-all"
-   --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
+   --     function Handler
+   --       (Self  : access Gtk_Icon_View_Record'Class;
+   --        Step  : Gtk.Enums.Gtk_Movement_Step;
+   --        Count : Gint) return Boolean;
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
+   --    --  "count": the number of Step units to move
+
+   Signal_Select_All : constant Glib.Signal_Name := "select-all";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user selects all items.
    --
@@ -1038,9 +1036,9 @@ package Gtk.Icon_View is
    --  programmatically.
    --
    --  The default binding for this signal is Ctrl-a.
-   --
-   --  "select-cursor-item"
    --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
+
+   Signal_Select_Cursor_Item : constant Glib.Signal_Name := "select-cursor-item";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user selects the item that is currently focused.
    --
@@ -1049,14 +1047,14 @@ package Gtk.Icon_View is
    --  programmatically.
    --
    --  There is no default binding for this signal.
-   --
-   --  "selection-changed"
    --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
+
+   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    --  The ::selection-changed signal is emitted when the selection (i.e. the
    --  set of selected items) changes.
-   --
-   --  "toggle-cursor-item"
    --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
+
+   Signal_Toggle_Cursor_Item : constant Glib.Signal_Name := "toggle-cursor-item";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user toggles whether the currently focused item is
    --  selected or not. The exact effect of this depend on the selection mode.
@@ -1066,9 +1064,9 @@ package Gtk.Icon_View is
    --  programmatically.
    --
    --  There is no default binding for this signal is Ctrl-Space.
-   --
-   --  "unselect-all"
    --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
+
+   Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user unselects all items.
    --
@@ -1077,15 +1075,7 @@ package Gtk.Icon_View is
    --  programmatically.
    --
    --  The default binding for this signal is Ctrl-Shift-a.
-
-   Signal_Activate_Cursor_Item : constant Glib.Signal_Name := "activate-cursor-item";
-   Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
-   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
-   Signal_Select_All : constant Glib.Signal_Name := "select-all";
-   Signal_Select_Cursor_Item : constant Glib.Signal_Name := "select-cursor-item";
-   Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
-   Signal_Toggle_Cursor_Item : constant Glib.Signal_Name := "toggle-cursor-item";
-   Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
+   --     procedure Handler (Self : access Gtk_Icon_View_Record'Class);
 
 private
    Tooltip_Column_Property : constant Glib.Properties.Property_Int :=

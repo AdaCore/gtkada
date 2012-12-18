@@ -294,14 +294,11 @@ package Gtk.Color_Selection is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "color-changed"
-   --     procedure Handler (Self : access Gtk_Color_Selection_Record'Class);
-   --  This signal is emitted when the color changes in the
-   --  Gtk.Color_Selection.Gtk_Color_Selection according to its update policy.
 
    Signal_Color_Changed : constant Glib.Signal_Name := "color-changed";
+   --  This signal is emitted when the color changes in the
+   --  Gtk.Color_Selection.Gtk_Color_Selection according to its update policy.
+   --     procedure Handler (Self : access Gtk_Color_Selection_Record'Class);
 
 private
    Has_Palette_Property : constant Glib.Properties.Property_Boolean :=

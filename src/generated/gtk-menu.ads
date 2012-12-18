@@ -621,15 +621,12 @@ package Gtk.Menu is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "move-scroll"
+
+   Signal_Move_Scroll : constant Glib.Signal_Name := "move-scroll";
    --     procedure Handler
    --       (Self        : access Gtk_Menu_Record'Class;
    --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
    --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
-
-   Signal_Move_Scroll : constant Glib.Signal_Name := "move-scroll";
 
 private
    Tearoff_Title_Property : constant Glib.Properties.Property_String :=

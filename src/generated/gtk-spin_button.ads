@@ -507,18 +507,13 @@ package Gtk.Spin_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "change-value"
+
+   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
    --     procedure Handler
    --       (Self   : access Gtk_Spin_Button_Record'Class;
    --        Object : Gtk.Enums.Gtk_Scroll_Type);
-   --
-   --  "input"
-   --     function Handler
-   --       (Self      : access Gtk_Spin_Button_Record'Class;
-   --        New_Value : access Gdouble) return Gint;
-   --    --  "new_value": return location for the new value
+
+   Signal_Input : constant Glib.Signal_Name := "input";
    --  The ::input signal can be used to influence the conversion of the users
    --  input into a double value. The signal handler is expected to use
    --  Gtk.GEntry.Get_Text to retrieve the text of the entry and set New_Value
@@ -529,10 +524,12 @@ package Gtk.Spin_Button is
    --  was not handled, and GTK_INPUT_ERROR if the conversion failed.
    --
    --  Returns True for a successful conversion, False if the input
-   --
-   --  "output"
    --     function Handler
-   --       (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
+   --       (Self      : access Gtk_Spin_Button_Record'Class;
+   --        New_Value : access Gdouble) return Gint;
+   --    --  "new_value": return location for the new value
+
+   Signal_Output : constant Glib.Signal_Name := "output";
    --  The ::output signal can be used to change to formatting of the value
    --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
    --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
@@ -546,20 +543,16 @@ package Gtk.Spin_Button is
    --  return TRUE; } ]|
    --
    --  Returns True if the value has been displayed
-   --
-   --  "value-changed"
+   --     function Handler
+   --       (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
+
+   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);
-   --
-   --  "wrapped"
-   --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);
+
+   Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
    --  The wrapped signal is emitted right after the spinbutton wraps from its
    --  maximum to minimum value or vice-versa.
-
-   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
-   Signal_Input : constant Glib.Signal_Name := "input";
-   Signal_Output : constant Glib.Signal_Name := "output";
-   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
-   Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
+   --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);
 
 private
    Wrap_Property : constant Glib.Properties.Property_Boolean :=

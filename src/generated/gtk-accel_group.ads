@@ -358,9 +358,13 @@ package Gtk.Accel_Group is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
+
+   Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
+   --  The accel-activate signal is an implementation detail of
+   --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
+   --  applications.
    --
-   --  "accel-activate"
+   --  Returns True if the accelerator was activated
    --     function Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
    --        Acceleratable : not null access Glib.Object.GObject_Record'Class;
@@ -369,13 +373,14 @@ package Gtk.Accel_Group is
    --    --  "acceleratable": the object on which the accelerator was activated
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
-   --  The accel-activate signal is an implementation detail of
-   --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
-   --  applications.
+
+   Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
+   --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
+   --  added to or removed from the accel group.
    --
-   --  Returns True if the accelerator was activated
-   --
-   --  "accel-changed"
+   --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an
+   --  associated accelerator should connect to this signal, and rebuild their
+   --  visual representation if the Accel_Closure is theirs.
    --     procedure Handler
    --       (Self          : access Gtk_Accel_Group_Record'Class;
    --        Keyval        : Guint;
@@ -384,15 +389,6 @@ package Gtk.Accel_Group is
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
    --    --  "accel_closure": the GClosure of the accelerator
-   --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
-   --  added to or removed from the accel group.
-   --
-   --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an
-   --  associated accelerator should connect to this signal, and rebuild their
-   --  visual representation if the Accel_Closure is theirs.
-
-   Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
-   Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
 
 private
    Modifier_Mask_Property : constant Glib.Properties.Property_Boxed :=

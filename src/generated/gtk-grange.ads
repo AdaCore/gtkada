@@ -371,23 +371,16 @@ package Gtk.GRange is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "adjust-bounds"
+
+   Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust-bounds";
+   --  Emitted before clamping a value, to give the application a chance to
+   --  adjust the bounds.
    --     procedure Handler
    --       (Self  : access Gtk_Range_Record'Class;
    --        Value : Gdouble);
    --    --  "value": the value before we clamp
-   --  Emitted before clamping a value, to give the application a chance to
-   --  adjust the bounds.
-   --
-   --  "change-value"
-   --     function Handler
-   --       (Self   : access Gtk_Range_Record'Class;
-   --        Scroll : Gtk.Enums.Gtk_Scroll_Type;
-   --        Value  : Gdouble) return Boolean;
-   --    --  "scroll": the type of scroll action that was performed
-   --    --  "value": the new value resulting from the scroll action
+
+   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
    --  The Gtk.GRange.Gtk_Range::change-value signal is emitted when a scroll
    --  action is performed on a range. It allows an application to determine
    --  the type of scroll event that occurred and the resultant new value. The
@@ -405,22 +398,23 @@ package Gtk.GRange is
    --
    --  Returns True to prevent other handlers from being invoked for the
    --  signal, False to propagate the signal further
-   --
-   --  "move-slider"
+   --     function Handler
+   --       (Self   : access Gtk_Range_Record'Class;
+   --        Scroll : Gtk.Enums.Gtk_Scroll_Type;
+   --        Value  : Gdouble) return Boolean;
+   --    --  "scroll": the type of scroll action that was performed
+   --    --  "value": the new value resulting from the scroll action
+
+   Signal_Move_Slider : constant Glib.Signal_Name := "move-slider";
+   --  Virtual function that moves the slider. Used for keybindings.
    --     procedure Handler
    --       (Self : access Gtk_Range_Record'Class;
    --        Step : Gtk.Enums.Gtk_Scroll_Type);
    --    --  "step": how to move the slider
-   --  Virtual function that moves the slider. Used for keybindings.
-   --
-   --  "value-changed"
-   --     procedure Handler (Self : access Gtk_Range_Record'Class);
-   --  Emitted when the range value changes.
 
-   Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust-bounds";
-   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
-   Signal_Move_Slider : constant Glib.Signal_Name := "move-slider";
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
+   --  Emitted when the range value changes.
+   --     procedure Handler (Self : access Gtk_Range_Record'Class);
 
 private
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=

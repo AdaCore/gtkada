@@ -348,40 +348,32 @@ package Gtk.Menu_Item is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate"
-   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
    --  Emitted when the item is activated.
-   --
-   --  "activate-item"
    --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
+
+   Signal_Activate_Item : constant Glib.Signal_Name := "activate-item";
    --  Emitted when the item is activated, but also if the menu item has a
    --  submenu. For normal applications, the relevant signal is
    --  Gtk.Menu_Item.Gtk_Menu_Item::activate.
-   --
-   --  "deselect"
    --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
-   --
-   --  "select"
+
+   Signal_Deselect : constant Glib.Signal_Name := "deselect";
    --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
-   --
-   --  "toggle-size-allocate"
+
+   Signal_Gtk_Select : constant Glib.Signal_Name := "select";
+   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
+
+   Signal_Toggle_Size_Allocate : constant Glib.Signal_Name := "toggle-size-allocate";
    --     procedure Handler
    --       (Self   : access Gtk_Menu_Item_Record'Class;
    --        Object : Gint);
-   --
-   --  "toggle-size-request"
+
+   Signal_Toggle_Size_Request : constant Glib.Signal_Name := "toggle-size-request";
    --     procedure Handler
    --       (Self   : access Gtk_Menu_Item_Record'Class;
    --        Object : System.Address);
-
-   Signal_Activate : constant Glib.Signal_Name := "activate";
-   Signal_Activate_Item : constant Glib.Signal_Name := "activate-item";
-   Signal_Deselect : constant Glib.Signal_Name := "deselect";
-   Signal_Gtk_Select : constant Glib.Signal_Name := "select";
-   Signal_Toggle_Size_Allocate : constant Glib.Signal_Name := "toggle-size-allocate";
-   Signal_Toggle_Size_Request : constant Glib.Signal_Name := "toggle-size-request";
 
 private
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=

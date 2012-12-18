@@ -248,21 +248,18 @@ package Gtk.Cell_Renderer_Text is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
+
+   Signal_Edited : constant Glib.Signal_Name := "edited";
+   --  This signal is emitted after Renderer has been edited.
    --
-   --  "edited"
+   --  It is the responsibility of the application to update the model and
+   --  store New_Text at the position indicated by Path.
    --     procedure Handler
    --       (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
    --        Path     : UTF8_String;
    --        New_Text : UTF8_String);
    --    --  "path": the path identifying the edited cell
    --    --  "new_text": the new text
-   --  This signal is emitted after Renderer has been edited.
-   --
-   --  It is the responsibility of the application to update the model and
-   --  store New_Text at the position indicated by Path.
-
-   Signal_Edited : constant Glib.Signal_Name := "edited";
 
 private
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=

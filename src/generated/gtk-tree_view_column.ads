@@ -640,13 +640,10 @@ package Gtk.Tree_View_Column is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "clicked"
-   --     procedure Handler
-   --       (Self : access Gtk_Tree_View_Column_Record'Class);
 
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
+   --     procedure Handler
+   --       (Self : access Gtk_Tree_View_Column_Record'Class);
 
 private
    X_Offset_Property : constant Glib.Properties.Property_Int :=

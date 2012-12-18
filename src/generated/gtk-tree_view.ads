@@ -1583,38 +1583,29 @@ package Gtk.Tree_View is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "columns-changed"
-   --     procedure Handler (Self : access Gtk_Tree_View_Record'Class);
+
+   Signal_Columns_Changed : constant Glib.Signal_Name := "columns-changed";
    --  The number of columns of the treeview has changed.
-   --
-   --  "cursor-changed"
    --     procedure Handler (Self : access Gtk_Tree_View_Record'Class);
+
+   Signal_Cursor_Changed : constant Glib.Signal_Name := "cursor-changed";
    --  The position of the cursor (focused cell) has changed.
-   --
-   --  "expand-collapse-cursor-row"
+   --     procedure Handler (Self : access Gtk_Tree_View_Record'Class);
+
+   Signal_Expand_Collapse_Cursor_Row : constant Glib.Signal_Name := "expand-collapse-cursor-row";
    --     function Handler
    --       (Self   : access Gtk_Tree_View_Record'Class;
    --        Object : Boolean;
    --        P0     : Boolean;
    --        P1     : Boolean) return Boolean;
-   --
-   --  "move-cursor"
+
+   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    --     function Handler
    --       (Self   : access Gtk_Tree_View_Record'Class;
    --        Object : Gtk.Enums.Gtk_Movement_Step;
    --        P0     : Gint) return Boolean;
-   --
-   --  "row-activated"
-   --     procedure Handler
-   --       (Self   : access Gtk_Tree_View_Record'Class;
-   --        Path   : Gtk.Tree_Model.Gtk_Tree_Path;
-   --        Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-   --       ;
-   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated row
-   --    --  "column": the Gtk.Tree_View_Column.Gtk_Tree_View_Column in which the
-   --    --  activation occurred
+
+   Signal_Row_Activated : constant Glib.Signal_Name := "row-activated";
    --  The "row-activated" signal is emitted when the method
    --  Gtk.Tree_View.Row_Activated is called or the user double clicks a
    --  treeview row. It is also emitted when a non-editable row is selected and
@@ -1623,90 +1614,82 @@ package Gtk.Tree_View is
    --  For selection handling refer to the <link linkend="TreeWidget">tree
    --  widget conceptual overview</link> as well as
    --  Gtk.Tree_Selection.Gtk_Tree_Selection.
-   --
-   --  "row-collapsed"
+   --     procedure Handler
+   --       (Self   : access Gtk_Tree_View_Record'Class;
+   --        Path   : Gtk.Tree_Model.Gtk_Tree_Path;
+   --        Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
+   --       ;
+   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated row
+   --    --  "column": the Gtk.Tree_View_Column.Gtk_Tree_View_Column in which the
+   --    --  activation occurred
+
+   Signal_Row_Collapsed : constant Glib.Signal_Name := "row-collapsed";
+   --  The given row has been collapsed (child nodes are hidden).
    --     procedure Handler
    --       (Self : access Gtk_Tree_View_Record'Class;
    --        Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
    --        Path : Gtk.Tree_Model.Gtk_Tree_Path);
    --    --  "iter": the tree iter of the collapsed row
    --    --  "path": a tree path that points to the row
-   --  The given row has been collapsed (child nodes are hidden).
-   --
-   --  "row-expanded"
+
+   Signal_Row_Expanded : constant Glib.Signal_Name := "row-expanded";
+   --  The given row has been expanded (child nodes are shown).
    --     procedure Handler
    --       (Self : access Gtk_Tree_View_Record'Class;
    --        Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
    --        Path : Gtk.Tree_Model.Gtk_Tree_Path);
    --    --  "iter": the tree iter of the expanded row
    --    --  "path": a tree path that points to the row
-   --  The given row has been expanded (child nodes are shown).
-   --
-   --  "select-all"
+
+   Signal_Select_All : constant Glib.Signal_Name := "select-all";
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
-   --
-   --  "select-cursor-parent"
+
+   Signal_Select_Cursor_Parent : constant Glib.Signal_Name := "select-cursor-parent";
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
-   --
-   --  "select-cursor-row"
+
+   Signal_Select_Cursor_Row : constant Glib.Signal_Name := "select-cursor-row";
    --     function Handler
    --       (Self   : access Gtk_Tree_View_Record'Class;
    --        Object : Boolean) return Boolean;
-   --
-   --  "start-interactive-search"
+
+   Signal_Start_Interactive_Search : constant Glib.Signal_Name := "start-interactive-search";
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
+
+   Signal_Test_Collapse_Row : constant Glib.Signal_Name := "test-collapse-row";
+   --  The given row is about to be collapsed (hide its children nodes). Use
+   --  this signal if you need to control the collapsibility of individual
+   --  rows.
    --
-   --  "test-collapse-row"
+   --  Returns False to allow collapsing, True to reject
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class;
    --        Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
    --        Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --    --  "iter": the tree iter of the row to collapse
    --    --  "path": a tree path that points to the row
-   --  The given row is about to be collapsed (hide its children nodes). Use
-   --  this signal if you need to control the collapsibility of individual
-   --  rows.
+
+   Signal_Test_Expand_Row : constant Glib.Signal_Name := "test-expand-row";
+   --  The given row is about to be expanded (show its children nodes). Use
+   --  this signal if you need to control the expandability of individual rows.
    --
-   --  Returns False to allow collapsing, True to reject
-   --
-   --  "test-expand-row"
+   --  Returns False to allow expansion, True to reject
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class;
    --        Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
    --        Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --    --  "iter": the tree iter of the row to expand
    --    --  "path": a tree path that points to the row
-   --  The given row is about to be expanded (show its children nodes). Use
-   --  this signal if you need to control the expandability of individual rows.
-   --
-   --  Returns False to allow expansion, True to reject
-   --
-   --  "toggle-cursor-row"
-   --     function Handler
-   --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
-   --
-   --  "unselect-all"
+
+   Signal_Toggle_Cursor_Row : constant Glib.Signal_Name := "toggle-cursor-row";
    --     function Handler
    --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
 
-   Signal_Columns_Changed : constant Glib.Signal_Name := "columns-changed";
-   Signal_Cursor_Changed : constant Glib.Signal_Name := "cursor-changed";
-   Signal_Expand_Collapse_Cursor_Row : constant Glib.Signal_Name := "expand-collapse-cursor-row";
-   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
-   Signal_Row_Activated : constant Glib.Signal_Name := "row-activated";
-   Signal_Row_Collapsed : constant Glib.Signal_Name := "row-collapsed";
-   Signal_Row_Expanded : constant Glib.Signal_Name := "row-expanded";
-   Signal_Select_All : constant Glib.Signal_Name := "select-all";
-   Signal_Select_Cursor_Parent : constant Glib.Signal_Name := "select-cursor-parent";
-   Signal_Select_Cursor_Row : constant Glib.Signal_Name := "select-cursor-row";
-   Signal_Start_Interactive_Search : constant Glib.Signal_Name := "start-interactive-search";
-   Signal_Test_Collapse_Row : constant Glib.Signal_Name := "test-collapse-row";
-   Signal_Test_Expand_Row : constant Glib.Signal_Name := "test-expand-row";
-   Signal_Toggle_Cursor_Row : constant Glib.Signal_Name := "toggle-cursor-row";
    Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
+   --     function Handler
+   --       (Self : access Gtk_Tree_View_Record'Class) return Boolean;
 
 private
    Tooltip_Column_Property : constant Glib.Properties.Property_Int :=

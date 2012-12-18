@@ -770,9 +770,9 @@ package Gtk.Tree_Model is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "row-changed"
+
+   Signal_Row_Changed : constant Glib.Signal_Name := "row-changed";
+   --  This signal is emitted when a row in the model has changed.
    --     procedure Handler
    --       (Self : access Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
@@ -780,13 +780,8 @@ package Gtk.Tree_Model is
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the changed row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the changed
    --    --  row
-   --  This signal is emitted when a row in the model has changed.
-   --
-   --  "row-deleted"
-   --     procedure Handler
-   --       (Self : access Gtk_Tree_Model;
-   --        Path : Gtk_Tree_Path);
-   --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
+
+   Signal_Row_Deleted : constant Glib.Signal_Name := "row-deleted";
    --  This signal is emitted when a row has been deleted.
    --
    --  Note that no iterator is passed to the signal handler, since the row is
@@ -795,31 +790,40 @@ package Gtk.Tree_Model is
    --  This should be called by models after a row has been removed. The
    --  location pointed to by Path should be the location that the row
    --  previously was at. It may not be a valid location anymore.
-   --
-   --  "row-has-child-toggled"
+   --     procedure Handler
+   --       (Self : access Gtk_Tree_Model;
+   --        Path : Gtk_Tree_Path);
+   --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
+
+   Signal_Row_Has_Child_Toggled : constant Glib.Signal_Name := "row-has-child-toggled";
+   --  This signal is emitted when a row has gotten the first child row or
+   --  lost its last child row.
    --     procedure Handler
    --       (Self : access Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
    --        Iter : Gtk_Tree_Iter);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row
-   --  This signal is emitted when a row has gotten the first child row or
-   --  lost its last child row.
+
+   Signal_Row_Inserted : constant Glib.Signal_Name := "row-inserted";
+   --  This signal is emitted when a new row has been inserted in the model.
    --
-   --  "row-inserted"
+   --  Note that the row may still be empty at this point, since it is a
+   --  common pattern to first insert an empty row, and then fill it with the
+   --  desired values.
    --     procedure Handler
    --       (Self : access Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
    --        Iter : Gtk_Tree_Iter);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the new row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the new row
-   --  This signal is emitted when a new row has been inserted in the model.
+
+   Signal_Rows_Reordered : constant Glib.Signal_Name := "rows-reordered";
+   --  This signal is emitted when the children of a node in the
+   --  Gtk.Tree_Model.Gtk_Tree_Model have been reordered.
    --
-   --  Note that the row may still be empty at this point, since it is a
-   --  common pattern to first insert an empty row, and then fill it with the
-   --  desired values.
-   --
-   --  "rows-reordered"
+   --  Note that this signal is *not* emitted when rows are reordered by DND,
+   --  since this is implemented by removing and then reinserting the row.
    --     procedure Handler
    --       (Self      : access Gtk_Tree_Model;
    --        Path      : Gtk_Tree_Path;
@@ -831,17 +835,6 @@ package Gtk.Tree_Model is
    --    --  "new_order": an array of integers mapping the current position of each
    --    --  child to its old position before the re-ordering, i.e.
    --    --  New_Order'[newpos] = oldpos'
-   --  This signal is emitted when the children of a node in the
-   --  Gtk.Tree_Model.Gtk_Tree_Model have been reordered.
-   --
-   --  Note that this signal is *not* emitted when rows are reordered by DND,
-   --  since this is implemented by removing and then reinserting the row.
-
-   Signal_Row_Changed : constant Glib.Signal_Name := "row-changed";
-   Signal_Row_Deleted : constant Glib.Signal_Name := "row-deleted";
-   Signal_Row_Has_Child_Toggled : constant Glib.Signal_Name := "row-has-child-toggled";
-   Signal_Row_Inserted : constant Glib.Signal_Name := "row-inserted";
-   Signal_Rows_Reordered : constant Glib.Signal_Name := "rows-reordered";
 
 private
 type Gtk_Tree_Iter is record

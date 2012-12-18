@@ -323,16 +323,13 @@ package Gtk.Tree_Selection is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "changed"
-   --     procedure Handler (Self : access Gtk_Tree_Selection_Record'Class);
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
    --  Emitted whenever the selection has (possibly) changed. Please note that
    --  this signal is mostly a hint. It may only be emitted once when a range
    --  of rows are selected, and it may occasionally be emitted when nothing
    --  has happened.
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
+   --     procedure Handler (Self : access Gtk_Tree_Selection_Record'Class);
 
 private
    Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode :=

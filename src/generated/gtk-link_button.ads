@@ -209,11 +209,8 @@ package Gtk.Link_Button is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-link"
-   --     function Handler
-   --       (Self : access Gtk_Link_Button_Record'Class) return Boolean;
+
+   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    --  The ::activate-link signal is emitted each time the
    --  Gtk.Link_Button.Gtk_Link_Button has been clicked.
    --
@@ -223,8 +220,8 @@ package Gtk.Link_Button is
    --  To override the default behavior, you can connect to the
    --  ::activate-link signal and stop the propagation of the signal by
    --  returning True from your handler.
-
-   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
+   --     function Handler
+   --       (Self : access Gtk_Link_Button_Record'Class) return Boolean;
 
 private
    Visited_Property : constant Glib.Properties.Property_Boolean :=

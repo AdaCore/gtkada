@@ -727,10 +727,8 @@ package Gtk.Label is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "activate-current-link"
-   --     procedure Handler (Self : access Gtk_Label_Record'Class);
+
+   Signal_Activate_Current_Link : constant Glib.Signal_Name := "activate-current-link";
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates a link in the label.
    --
@@ -738,35 +736,28 @@ package Gtk.Label is
    --  they need to control activation of URIs programmatically.
    --
    --  The default bindings for this signal are all forms of the Enter key.
-   --
-   --  "activate-link"
-   --     function Handler
-   --       (Self : access Gtk_Label_Record'Class;
-   --        URI  : UTF8_String) return Boolean;
-   --    --  "uri": the URI that is activated
+   --     procedure Handler (Self : access Gtk_Label_Record'Class);
+
+   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
    --
    --  Returns True if the link has been activated
-   --
-   --  "copy-clipboard"
-   --     procedure Handler (Self : access Gtk_Label_Record'Class);
+   --     function Handler
+   --       (Self : access Gtk_Label_Record'Class;
+   --        URI  : UTF8_String) return Boolean;
+   --    --  "uri": the URI that is activated
+
+   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default binding for this signal is Ctrl-c.
-   --
-   --  "move-cursor"
-   --     procedure Handler
-   --       (Self             : access Gtk_Label_Record'Class;
-   --        Step             : Gtk.Enums.Gtk_Movement_Step;
-   --        Count            : Gint;
-   --        Extend_Selection : Boolean);
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
-   --    --  "count": the number of Step units to move
-   --    --  "extend_selection": True if the move should extend the selection
+   --     procedure Handler (Self : access Gtk_Label_Record'Class);
+
+   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -786,23 +777,25 @@ package Gtk.Label is
    --     * Ctrl-arrow key combinations move by words/paragraphs
    --
    --     * Home/End keys move to the ends of the buffer
-   --
-   --  "populate-popup"
    --     procedure Handler
-   --       (Self : access Gtk_Label_Record'Class;
-   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-   --    --  "menu": the menu that is being populated
+   --       (Self             : access Gtk_Label_Record'Class;
+   --        Step             : Gtk.Enums.Gtk_Movement_Step;
+   --        Count            : Gint;
+   --        Extend_Selection : Boolean);
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
+   --    --  "count": the number of Step units to move
+   --    --  "extend_selection": True if the move should extend the selection
+
+   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the label. Note that only selectable labels have context menus.
    --
    --  If you need to add items to the context menu, connect to this signal
    --  and append your menuitems to the Menu.
-
-   Signal_Activate_Current_Link : constant Glib.Signal_Name := "activate-current-link";
-   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
-   Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
-   Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
-   Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
+   --     procedure Handler
+   --       (Self : access Gtk_Label_Record'Class;
+   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   --    --  "menu": the menu that is being populated
 
 private
    Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode :=

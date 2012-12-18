@@ -191,27 +191,23 @@ package Gtk.Status_Bar is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "text-popped"
+
+   Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
+   --  Is emitted whenever a new message is popped off a statusbar's stack.
    --     procedure Handler
    --       (Self    : access Gtk_Status_Bar_Record'Class;
    --        Context : Context_Id;
    --        Text    : UTF8_String);
    --    --  "context": the context id of the relevant message/statusbar
    --    --  "text": the message that was just popped
-   --  Is emitted whenever a new message is popped off a statusbar's stack.
-   --
-   --  "text-pushed"
+
+   Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
+   --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
    --     procedure Handler
    --       (Self    : access Gtk_Status_Bar_Record'Class;
    --        Context : Context_Id;
    --        Text    : UTF8_String);
    --    --  "context": the context id of the relevant message/statusbar
    --    --  "text": the message that was pushed
-   --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
-
-   Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
-   Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
 
 end Gtk.Status_Bar;

@@ -340,44 +340,35 @@ package Gtk.Calendar is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "day-selected"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when the user selects a day.
-   --
-   --  "day-selected-double-click"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when the user double-clicks a day.
-   --
-   --  "month-changed"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when the user clicks a button to change the selected month on a
-   --  calendar.
-   --
-   --  "next-month"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when the user switched to the next month.
-   --
-   --  "next-year"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when user switched to the next year.
-   --
-   --  "prev-month"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when the user switched to the previous month.
-   --
-   --  "prev-year"
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
-   --  Emitted when user switched to the previous year.
 
    Signal_Day_Selected : constant Glib.Signal_Name := "day-selected";
+   --  Emitted when the user selects a day.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Day_Selected_Double_Click : constant Glib.Signal_Name := "day-selected-double-click";
+   --  Emitted when the user double-clicks a day.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Month_Changed : constant Glib.Signal_Name := "month-changed";
+   --  Emitted when the user clicks a button to change the selected month on a
+   --  calendar.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Next_Month : constant Glib.Signal_Name := "next-month";
+   --  Emitted when the user switched to the next month.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Next_Year : constant Glib.Signal_Name := "next-year";
+   --  Emitted when user switched to the next year.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Prev_Month : constant Glib.Signal_Name := "prev-month";
+   --  Emitted when the user switched to the previous month.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
    Signal_Prev_Year : constant Glib.Signal_Name := "prev-year";
+   --  Emitted when user switched to the previous year.
+   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
 private
    Year_Property : constant Glib.Properties.Property_Int :=

@@ -160,14 +160,11 @@ package Gtk.Toggle_Action is
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
-   --     procedure Handler (Self : access Gtk_Toggle_Action_Record'Class);
-   --  Should be connected if you wish to perform an action whenever the
-   --  Gtk.Toggle_Action.Gtk_Toggle_Action state is changed.
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   --  Should be connected if you wish to perform an action whenever the
+   --  Gtk.Toggle_Action.Gtk_Toggle_Action state is changed.
+   --     procedure Handler (Self : access Gtk_Toggle_Action_Record'Class);
 
 private
    Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean :=
