@@ -1566,6 +1566,8 @@ See Glib.Properties for more information on properties)""")
             adasignals = []
             section = self.pkg.section("Signals")
 
+            signals.sort(key=lambda x: x.get("name"))
+
             for s in signals:
                 gtkmethod = self.gtkpkg.get_method(
                     cname="%s::%s" % (self.name, s.get("name")))
@@ -1586,26 +1588,19 @@ See Glib.Properties for more information on properties)""")
                     code="null",
                     returns=profile.returns)
 
-                spec = sub.spec(pkg=self.pkg, maxlen=69)
+                name = s.get("name")
+                section.add(
+                    '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
+                    naming.case(name), name))
+
                 doc = s.findtext(ndoc, "")
                 if profile.returns_doc:
                     doc += "\n\n%s" % profile.returns_doc
+                if doc:
+                    section.add(Code("  %s""" % doc, iscomment=True))
 
-                adasignals.append({
-                    "name": s.get("name"),
-                    "profile": spec,
-                    "doc": doc})
-
-            adasignals.sort(lambda x,y: x["name"] <> y["name"])
-
-            for s in adasignals:
-                section.add(
-                    '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                    naming.case(s["name"]), s["name"]))
-                if s["doc"]:
-                    section.add(Code("  %s""" % s["doc"], iscomment=True))
-                section.add(
-                    Code(" %(profile)s""" % s, fill=False, iscomment=True))
+                spec = sub.spec(pkg=self.pkg, maxlen=69)
+                section.add(Code(" %s""" % spec, fill=False, iscomment=True))
 
     def _implements(self):
         """Bind the interfaces that a class implements"""
