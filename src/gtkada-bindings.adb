@@ -23,11 +23,17 @@
 
 with Ada.Unchecked_Conversion;
 with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with GNAT.IO;
 with GNAT.Strings;         use GNAT.Strings;
 with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtkada.Bindings is
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+   On_Exception : Exception_Handler := Default_Exception_Handler'Access;
 
    --------------------
    -- String_Or_Null --
@@ -204,5 +210,121 @@ package body Gtkada.Bindings is
 
       return Interfaces.C.Strings.Value (Str);
    end Value_Allowing_Null;
+
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null)
+   is
+      function Internal
+        (Instance : System.Address;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
+
+      use type System.Address;
+      Id : Gulong;
+      Closure : GClosure;
+      Func_Data : constant System.Address := Get_Object (Slot_Object);
+      pragma Unreferenced (Id);
+
+   begin
+      Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Closure, Marshaller);
+      Id := Internal
+        (Get_Object (Object),
+         C_Name,
+         Closure => Closure,
+         After   => Boolean'Pos (After));
+
+      if Slot_Object /= null then
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      end if;
+   end Unchecked_Do_Signal_Connect;
+
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null)
+   is
+      function Internal
+        (Instance : Glib.Types.GType_Interface;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
+
+      use type System.Address;
+      Id      : Gulong;
+      Closure : GClosure;
+      pragma Unreferenced (Id);
+
+      Func_Data : constant System.Address := Get_Object (Slot_Object);
+
+   begin
+      Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Closure, Marshaller);
+      Id := Internal
+        (Object,
+         C_Name,
+         Closure => Closure,
+         After   => Boolean'Pos (After));
+
+      if Slot_Object /= null then
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      end if;
+   end Unchecked_Do_Signal_Connect;
+
+   -----------------------
+   -- Process_Exception --
+   -----------------------
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence) is
+   begin
+      On_Exception (E);
+   exception
+      when E : others =>
+         --  never propagate the exception to C
+         Default_Exception_Handler (E);
+   end Process_Exception;
+
+   -------------------------------
+   -- Default_Exception_Handler --
+   -------------------------------
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence)
+   is
+   begin
+      GNAT.IO.Put_Line
+         (GNAT.IO.Standard_Error,
+          Ada.Exceptions.Exception_Information (Occurrence));
+   end Default_Exception_Handler;
+
+   ----------------------
+   -- Set_On_Exception --
+   ----------------------
+
+   procedure Set_On_Exception (Handler : Exception_Handler) is
+   begin
+      On_Exception := Handler;
+   end Set_On_Exception;
 
 end Gtkada.Bindings;

@@ -27,7 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Toolbar is
 
@@ -653,7 +653,7 @@ package body Gtk.Toolbar is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -674,7 +674,7 @@ package body Gtk.Toolbar is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Orientation_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -695,7 +695,7 @@ package body Gtk.Toolbar is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gint_Gint_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -716,7 +716,7 @@ package body Gtk.Toolbar is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Toolbar_Style_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -732,9 +732,9 @@ package body Gtk.Toolbar is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -753,9 +753,9 @@ package body Gtk.Toolbar is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gint_Gint_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3));
    begin
       Set_Value (Return_Value, V'Address);
@@ -774,9 +774,9 @@ package body Gtk.Toolbar is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Orientation_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Orientation (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -794,9 +794,9 @@ package body Gtk.Toolbar is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Toolbar_Style_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Toolbar_Style (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -816,7 +816,7 @@ package body Gtk.Toolbar is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Toolbar_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Toolbar_Record'Class := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Toolbar := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -837,7 +837,7 @@ package body Gtk.Toolbar is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Toolbar_Gint_Gint_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Toolbar_Record'Class := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Toolbar := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3));
    begin
       Set_Value (Return_Value, V'Address);
@@ -858,7 +858,7 @@ package body Gtk.Toolbar is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Toolbar_Gtk_Orientation_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Toolbar_Record'Class := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Toolbar := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Orientation (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -878,7 +878,7 @@ package body Gtk.Toolbar is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Toolbar_Gtk_Toolbar_Style_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Toolbar_Record'Class := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Toolbar := Gtk_Toolbar (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Toolbar_Style (Params, 1));
       exception when E : others => Process_Exception (E);

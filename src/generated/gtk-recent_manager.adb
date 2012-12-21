@@ -27,7 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Recent_Manager is
@@ -393,7 +392,7 @@ package body Gtk.Recent_Manager is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -409,9 +408,9 @@ package body Gtk.Recent_Manager is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -431,7 +430,7 @@ package body Gtk.Recent_Manager is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Recent_Manager_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Recent_Manager_Record'Class := Gtk_Recent_Manager (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Recent_Manager := Gtk_Recent_Manager (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

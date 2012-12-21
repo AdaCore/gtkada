@@ -27,7 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -1733,7 +1732,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1754,7 +1753,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Delete_Type_Gint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1775,7 +1774,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1796,7 +1795,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_UTF8_String_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1817,7 +1816,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1838,7 +1837,7 @@ package body Gtk.GEntry is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Menu_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1854,9 +1853,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Delete_Type_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -1874,9 +1873,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1), Unchecked_To_Gdk_Event_Button (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -1894,9 +1893,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -1914,9 +1913,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -1934,9 +1933,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -1954,9 +1953,9 @@ package body Gtk.GEntry is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -1976,7 +1975,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -1996,7 +1995,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1), Unchecked_To_Gdk_Event_Button (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -2016,7 +2015,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -2036,7 +2035,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -2056,7 +2055,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -2076,7 +2075,7 @@ package body Gtk.GEntry is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

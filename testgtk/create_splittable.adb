@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Glib.Object;        use Glib.Object;
 with Gtk;                use Gtk;
 with Gtk.Box;            use Gtk.Box;
 with Gtk.Button;         use Gtk.Button;
@@ -38,7 +39,7 @@ package body Create_Splittable is
 
    function Create_Child
       (Bar : Gtk_Toolbar; Title : String) return Gtk_Widget;
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class);
+   procedure On_Destroy (Button : access GObject_Record'Class);
    procedure On_Toggle  (Button : access Gtk_Widget_Record'Class);
    procedure On_Resize  (Button : access Gtk_Widget_Record'Class);
    procedure On_Split_V (Button : access Gtk_Widget_Record'Class);
@@ -88,9 +89,9 @@ package body Create_Splittable is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Button : access GObject_Record'Class) is
    begin
-      Destroy (Button);
+      Destroy (Gtk_Widget (Button));
    end On_Destroy;
 
    ---------------
@@ -169,8 +170,7 @@ package body Create_Splittable is
 
       Gtk_New (Button, "Destroy_" & Title);
       Pack_Start (Box, Button, Expand => False);
-      Widget_Callback.Object_Connect
-        (Button, "clicked", On_Destroy'Unrestricted_Access, Frame);
+      Button.On_Clicked (On_Destroy'Access, Slot => Frame);
 
       Gtk_New (Button, "Resize_" & Title);
       Pack_Start (Box, Button, Expand => False);

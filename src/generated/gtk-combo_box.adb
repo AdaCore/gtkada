@@ -28,7 +28,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtk.GEntry;                 use Gtk.GEntry;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -1356,7 +1355,7 @@ package body Gtk.Combo_Box is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1377,7 +1376,7 @@ package body Gtk.Combo_Box is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Scroll_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1398,7 +1397,7 @@ package body Gtk.Combo_Box is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1414,9 +1413,9 @@ package body Gtk.Combo_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -1435,9 +1434,9 @@ package body Gtk.Combo_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Scroll_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -1455,9 +1454,9 @@ package body Gtk.Combo_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -1477,7 +1476,7 @@ package body Gtk.Combo_Box is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Combo_Box_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Combo_Box_Record'Class := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Combo_Box := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -1498,7 +1497,7 @@ package body Gtk.Combo_Box is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Combo_Box_Record'Class := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Combo_Box := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -1518,7 +1517,7 @@ package body Gtk.Combo_Box is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Combo_Box_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Combo_Box_Record'Class := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Combo_Box := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

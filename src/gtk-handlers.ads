@@ -164,12 +164,11 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
-with Ada.Exceptions;
 with Cairo;
 with Glib.Values;
 with Gdk.Event;
 with Glib.Object;
-with Glib.Types;
+with Gtkada.Bindings;   use Gtkada.Bindings;
 with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
@@ -184,8 +183,6 @@ package Gtk.Handlers is
 
    pragma Elaborate_Body;
 
-   type GClosure is new Glib.C_Proxy;
-
    Null_Handler_Id : constant Gulong := 0;
 
    type Handler_Id is record
@@ -198,36 +195,14 @@ package Gtk.Handlers is
    function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
       return System.Address;
 
-   type Exception_Handler is not null access procedure
-      (Occurrence : Ada.Exceptions.Exception_Occurrence);
-
-   procedure Set_On_Exception (Handler : Exception_Handler);
+   procedure Set_On_Exception (Handler : Gtkada.Bindings.Exception_Handler)
+     renames Gtkada.Bindings.Set_On_Exception;
    --  Set the handler that catch all exceptions occurring in a a callback. An
    --  exception should never be propagated to C to avoid undefined behavior.
    --  By default, unhandled exceptions are printed to stderr.
    --  This function can be used to provide your own global exception handler,
    --  which presumably will simply log the exception in application-specific
    --  manner.
-
-   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence);
-   --  Process the exception through the handler set by Set_On_Exception.
-   --  This procedure never raises an exception.
-
-   type C_Marshaller is access procedure
-     (Closure         : GClosure;
-      Return_Value    : Glib.Values.GValue;  --  Will contain returned value
-      N_Params        : Glib.Guint;          --  Number of entries in Params
-      Params          : Glib.Values.C_GValues;
-      Invocation_Hint : System.Address;
-      User_Data       : System.Address);
-   pragma Convention (C, C_Marshaller);
-   --  A function called directly from gtk+ when dispatching signals to
-   --  handlers. This procedure is in charge of converting the parameters from
-   --  the array of GValues in Params to suitable formats for calling the
-   --  proper Ada handler given by the user. This handler is encoded in the
-   --  user_data, which has an actual type specific to each of the generic
-   --  packages below.
-   --  This is meant for internal GtkAda use only.
 
    ---------------------------------------------------------
    --  These handlers should return a value
@@ -457,6 +432,10 @@ package Gtk.Handlers is
       First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
+      --
+      --  If you get an error here while compiling, this is because you are not
+      --  instantiating this package at library-level.
+      --
       --  </doc_ignore>
 
    end Return_Callback;
@@ -1487,11 +1466,6 @@ package Gtk.Handlers is
       Id  : Handler_Id);
    --  See Handler_Block.
 
-   function Get_Callback (C : GClosure) return System.Address;
-   pragma Import (C, Get_Callback, "ada_cclosure_get_callback");
-   --  Return the user handler set in the closure. This is the procedure that
-   --  should process the signal.
-
    --------------
    -- Internal --
    --------------
@@ -1528,36 +1502,6 @@ package Gtk.Handlers is
    --  * Expect_Return_Value should be true if the user is connecting a
    --    function to the signal, False if he is connecting a procedure. This is
    --    used to check that the user has used the proper form of handler.
-
-   procedure Unchecked_Do_Signal_Connect
-     (Object              : not null access Glib.Object.GObject_Record'Class;
-      C_Name              : Glib.Signal_Name;
-      Marshaller          : C_Marshaller;
-      Handler             : System.Address;
-      Func_Data           : System.Address := System.Null_Address;
-      Destroy             : System.Address := System.Null_Address;
-      After               : Boolean := False;
-      Slot_Object         : System.Address := System.Null_Address);
-   procedure Unchecked_Do_Signal_Connect
-     (Object              : Glib.Types.GType_Interface;
-      C_Name              : Glib.Signal_Name;
-      Marshaller          : C_Marshaller;
-      Handler             : System.Address;
-      Func_Data           : System.Address := System.Null_Address;
-      Destroy             : System.Address := System.Null_Address;
-      After               : Boolean := False;
-      Slot_Object         : System.Address := System.Null_Address);
-   --  Same as above, but this removes a number of check, like whether the
-   --  signal exists, and whether the user has properly passed a procedure or
-   --  function depending on the signal type.
-   --
-   --  * C_Name must be NUL-terminated.
-
-   procedure Set_Value (Value : Glib.Values.GValue; Val : System.Address);
-   pragma Import (C, Set_Value, "ada_gvalue_set");
-   --  Function used internally to specify the value returned by a callback.
-   --  Val will be dereferenced as appropriate, depending on the type expected
-   --  by Value.
 
    --  </doc_ignore>
 

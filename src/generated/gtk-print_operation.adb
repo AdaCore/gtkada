@@ -27,7 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -1158,7 +1157,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Context_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1179,7 +1178,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_GObject'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1200,7 +1199,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1221,7 +1220,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Operation_Result_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1242,7 +1241,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Context_Gint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1263,7 +1262,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Context_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1284,7 +1283,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1305,7 +1304,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1326,7 +1325,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1347,7 +1346,7 @@ package body Gtk.Print_Operation is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -1363,9 +1362,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_GObject := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -1384,9 +1383,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
@@ -1405,9 +1404,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 3)));
       exception when E : others => Process_Exception (E);
@@ -1425,9 +1424,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Context_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -1445,9 +1444,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Context_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -1465,9 +1464,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
    begin
       Set_Value (Return_Value, V'Address);
@@ -1486,9 +1485,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Operation_Result_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Print_Operation_Result (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -1506,9 +1505,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 2)), Gtk.Print_Settings.Gtk_Print_Settings (Unchecked_To_Object (Params, 3)));
       exception when E : others => Process_Exception (E);
@@ -1526,9 +1525,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -1546,9 +1545,9 @@ package body Gtk.Print_Operation is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -1568,7 +1567,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_GObject := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
       V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -1589,7 +1588,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
@@ -1610,7 +1609,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 3)));
       exception when E : others => Process_Exception (E);
@@ -1630,7 +1629,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -1650,7 +1649,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -1670,7 +1669,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
    begin
       Set_Value (Return_Value, V'Address);
@@ -1691,7 +1690,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Print_Operation_Result (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -1711,7 +1710,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 2)), Gtk.Print_Settings.Gtk_Print_Settings (Unchecked_To_Object (Params, 3)));
       exception when E : others => Process_Exception (E);
@@ -1731,7 +1730,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -1751,7 +1750,7 @@ package body Gtk.Print_Operation is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

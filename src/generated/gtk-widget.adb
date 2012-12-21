@@ -26,7 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -5949,7 +5948,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -5970,7 +5969,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Button_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -5991,7 +5990,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Guint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6012,7 +6011,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Param_Spec_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6033,7 +6032,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Configure_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6054,7 +6053,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Expose_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6075,7 +6074,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6096,7 +6095,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Direction_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6117,7 +6116,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6138,7 +6137,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6159,7 +6158,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6180,7 +6179,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Gint_Gint_Guint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6201,7 +6200,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Gtk_Drag_Result_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6222,7 +6221,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Drag_Context_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6243,7 +6242,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Cairo_Context_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6264,7 +6263,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Crossing_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6285,7 +6284,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6306,7 +6305,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Direction_Type_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6327,7 +6326,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Focus_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6348,7 +6347,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Grab_Broken_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6369,7 +6368,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6390,7 +6389,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6411,7 +6410,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Key_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6432,7 +6431,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Any_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6453,7 +6452,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6474,7 +6473,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Motion_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6495,7 +6494,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Direction_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6516,7 +6515,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6537,7 +6536,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Property_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6558,7 +6557,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Proximity_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6579,7 +6578,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Screen_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6600,7 +6599,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Scroll_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6621,7 +6620,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Selection_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6642,7 +6641,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Selection_Data_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6663,7 +6662,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Selection_Data_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6684,7 +6683,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Widget_Help_Type_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6705,7 +6704,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Cairo_Rectangle_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6726,7 +6725,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_State_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6747,7 +6746,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_State_Flags_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6768,7 +6767,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Style_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6789,7 +6788,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Visibility_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6810,7 +6809,7 @@ package body Gtk.Widget is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gdk_Event_Window_State_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -6826,9 +6825,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -6847,9 +6846,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -6868,9 +6867,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -6888,9 +6887,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Cairo_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Cairo_Context (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -6909,9 +6908,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Cairo_Rectangle_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Cairo_Rectangle (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -6929,9 +6928,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3), Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 4)), Unchecked_To_Guint (Params, 5), Unchecked_To_Guint (Params, 6));
       exception when E : others => Process_Exception (E);
@@ -6949,9 +6948,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3), Unchecked_To_Guint (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
@@ -6970,9 +6969,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Gtk_Drag_Result_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Drag_Result (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
@@ -6991,9 +6990,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 2)), Unchecked_To_Guint (Params, 3), Unchecked_To_Guint (Params, 4));
       exception when E : others => Process_Exception (E);
@@ -7011,9 +7010,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -7031,9 +7030,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Drag_Context_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -7051,9 +7050,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Any_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Any (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7072,9 +7071,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7093,9 +7092,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Button_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Button (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7114,9 +7113,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Configure_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Configure (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7135,9 +7134,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Crossing_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Crossing (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7156,9 +7155,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Expose_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Expose (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7177,9 +7176,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Focus_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Focus (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7198,9 +7197,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Grab_Broken_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Grab_Broken (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7219,9 +7218,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Key_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Key (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7240,9 +7239,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Motion_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Motion (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7261,9 +7260,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Property_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Property (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7282,9 +7281,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Proximity_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Proximity (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7303,9 +7302,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Scroll_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Scroll (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7324,9 +7323,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Selection_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Selection (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7345,9 +7344,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Visibility_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Visibility (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7366,9 +7365,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gdk_Event (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7386,9 +7385,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Window_State_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Window_State (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7407,9 +7406,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Screen_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Screen.Gdk_Screen (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -7427,9 +7426,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Direction_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7448,9 +7447,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7468,9 +7467,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -7488,9 +7487,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Selection_Data_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -7508,9 +7507,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_State_Flags_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_State_Flags (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7528,9 +7527,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_State_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_State_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7548,9 +7547,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Style_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Style.Gtk_Style (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -7568,9 +7567,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Direction_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Direction (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7588,9 +7587,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Help_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Widget_Help_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7609,9 +7608,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -7629,9 +7628,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Guint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Guint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7650,9 +7649,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Param_Spec_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Param_Spec (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7670,9 +7669,9 @@ package body Gtk.Widget is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -7692,7 +7691,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -7713,7 +7712,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7734,7 +7733,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7754,7 +7753,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Cairo_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Cairo_Context (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7775,7 +7774,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Cairo_Rectangle_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Cairo_Rectangle (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -7795,7 +7794,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3), Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 4)), Unchecked_To_Guint (Params, 5), Unchecked_To_Guint (Params, 6));
       exception when E : others => Process_Exception (E);
@@ -7815,7 +7814,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3), Unchecked_To_Guint (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7836,7 +7835,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Gtk_Drag_Result_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Drag_Result (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7857,7 +7856,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 2)), Unchecked_To_Guint (Params, 3), Unchecked_To_Guint (Params, 4));
       exception when E : others => Process_Exception (E);
@@ -7877,7 +7876,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -7897,7 +7896,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Drag_Context_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Drag_Contexts.Drag_Context (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -7917,7 +7916,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Any_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Any (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7938,7 +7937,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7959,7 +7958,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Button_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Button (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -7980,7 +7979,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Configure_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Configure (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8001,7 +8000,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Crossing_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Crossing (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8022,7 +8021,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Expose_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Expose (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8043,7 +8042,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Focus_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Focus (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8064,7 +8063,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Grab_Broken_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Grab_Broken (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8085,7 +8084,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Key_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Key (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8106,7 +8105,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Motion_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Motion (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8127,7 +8126,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Property_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Property (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8148,7 +8147,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Proximity_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Proximity (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8169,7 +8168,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Scroll_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Scroll (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8190,7 +8189,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Selection_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Selection (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8211,7 +8210,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Visibility_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Visibility (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8232,7 +8231,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gdk_Event (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8252,7 +8251,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Event_Window_State_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gdk_Event_Window_State (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8273,7 +8272,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gdk_Screen_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Screen.Gdk_Screen (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -8293,7 +8292,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Direction_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8314,7 +8313,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8334,7 +8333,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -8354,7 +8353,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Selection_Data.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -8374,7 +8373,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_State_Flags_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_State_Flags (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8394,7 +8393,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_State_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_State_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8414,7 +8413,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Style_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Style.Gtk_Style (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -8434,7 +8433,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Text_Direction_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Direction (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8454,7 +8453,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Widget_Help_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Widget_Help_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8475,7 +8474,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -8495,7 +8494,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Guint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Guint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -8516,7 +8515,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Param_Spec_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Param_Spec (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -8536,7 +8535,7 @@ package body Gtk.Widget is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Widget_Record'Class := Gtk_Widget (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

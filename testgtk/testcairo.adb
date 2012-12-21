@@ -41,7 +41,6 @@ with Gtk.Label;         use Gtk.Label;
 
 with Gtk.Widget;   use Gtk.Widget;
 with Gtk.Window;   use Gtk.Window;
-with Gtk.Handlers; use Gtk.Handlers;
 
 with Gtk.Print_Operation;    use Gtk.Print_Operation;
 with Gtkada.Printing;        use Gtkada.Printing;
@@ -60,19 +59,6 @@ procedure Testcairo is
 
    --  The tests implemented in this example program
 
-   package Window_Cb is new Gtk.Handlers.Return_Callback
-     (Gtk_Window_Record, Boolean);
-
-   type Doc_Array is array (Test_Type) of Unbounded_String;
-   package Event_Cb is new Gtk.Handlers.Return_Callback
-     (Gtk_Drawing_Area_Record, Boolean);
-
-   package Button_Cb is new Gtk.Handlers.Callback
-     (Gtk_Button_Record);
-
-   package Selection_Cb is new Gtk.Handlers.Callback
-     (Gtk_Tree_Selection_Record);
-
    --  Pi : constant Gdouble := Gdouble (Ada.Numerics.Pi);
 
    Win  : Gtk_Window;
@@ -86,8 +72,8 @@ procedure Testcairo is
    function Pretty (T : Test_Type) return String;
    --  Pretty print T
 
-   function On_Draw (Area  : access Gtk_Drawing_Area_Record'Class;
-                     Cr    : Cairo_Context) return Boolean;
+   function Redraw (Area  : access Gtk_Drawing_Area_Record'Class;
+                    Cr    : Cairo_Context) return Boolean;
    --  Callback on an draw event on Win
 
    procedure On_Print_Cb  (Widget : access Gtk_Button_Record'Class);
@@ -129,18 +115,18 @@ procedure Testcairo is
       return True;
    end On_Main_Window_Delete_Event;
 
-   -------------
-   -- On_Draw --
-   -------------
+   ------------
+   -- Redraw --
+   ------------
 
-   function On_Draw (Area  : access Gtk_Drawing_Area_Record'Class;
+   function Redraw (Area  : access Gtk_Drawing_Area_Record'Class;
                      Cr    : Cairo_Context) return Boolean
    is
       pragma Unreferenced (Area);
    begin
       Draw_On_Context (Cr, Gtk_Widget (Win), Test);
       return False;
-   end On_Draw;
+   end Redraw;
 
    Tree    : Gtk_Tree_View;
    Model   : Gtk_Tree_Store;
@@ -260,7 +246,7 @@ begin
    Selection_Cb.Connect
      (Get_Selection (Tree),
       Gtk.Tree_Selection.Signal_Changed,
-      S_Changed'Access,
+      S_Changed'Unrestricted_Access,
       After => True);
 
    Gtk_New_Hbox (Box);
@@ -283,17 +269,18 @@ begin
    Button_Cb.Connect
      (Button,
       Gtk.Button.Signal_Clicked,
-      On_Print_Cb'Access,
+      On_Print_Cb'Unrestricted_Access,
       After => True);
 
    Box.Pack_Start (Vbox, True, True, 3);
 
    Event_Cb.Connect (Area, Signal_Draw,
-                     Event_Cb.To_Marshaller (On_Draw'Access));
+                     Event_Cb.To_Marshaller (Redraw'Unrestricted_Access));
 
    Window_Cb.Connect
      (Win, "delete_event",
-      Window_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
+      Window_Cb.To_Marshaller
+         (On_Main_Window_Delete_Event'Unrestricted_Access));
 
    Show_All (Win);
    Gtk.Main.Main;

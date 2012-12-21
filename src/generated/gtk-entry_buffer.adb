@@ -27,7 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -401,7 +400,7 @@ package body Gtk.Entry_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -422,7 +421,7 @@ package body Gtk.Entry_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Guint_UTF8_String_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -438,9 +437,9 @@ package body Gtk.Entry_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -458,9 +457,9 @@ package body Gtk.Entry_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Guint_UTF8_String_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -480,7 +479,7 @@ package body Gtk.Entry_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Buffer_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Buffer_Record'Class := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry_Buffer := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -500,7 +499,7 @@ package body Gtk.Entry_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Entry_Buffer_Record'Class := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Entry_Buffer := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
       exception when E : others => Process_Exception (E);

@@ -27,7 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -1986,7 +1985,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2007,7 +2006,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2028,7 +2027,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2049,7 +2048,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2070,7 +2069,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2091,7 +2090,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2112,7 +2111,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Mark_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2133,7 +2132,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2154,7 +2153,7 @@ package body Gtk.Text_Buffer is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Clipboard_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -2170,9 +2169,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Clipboard_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Clipboard.Gtk_Clipboard (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -2190,9 +2189,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Pixbuf.Gdk_Pixbuf (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2210,9 +2209,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2230,9 +2229,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -2250,9 +2249,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2270,9 +2269,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -2290,9 +2289,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -2310,9 +2309,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -2330,9 +2329,9 @@ package body Gtk.Text_Buffer is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -2352,7 +2351,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Clipboard.Gtk_Clipboard (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -2372,7 +2371,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Pixbuf.Gdk_Pixbuf (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2392,7 +2391,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2412,7 +2411,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -2432,7 +2431,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
       exception when E : others => Process_Exception (E);
@@ -2452,7 +2451,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -2472,7 +2471,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
       exception when E : others => Process_Exception (E);
@@ -2492,7 +2491,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
       exception when E : others => Process_Exception (E);
@@ -2512,7 +2511,7 @@ package body Gtk.Text_Buffer is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Text_Buffer_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

@@ -1699,7 +1699,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
          C_Name      => C_Name,
          Marshaller  => %s'Access,
          Handler     => Cb_To_Address (Handler),  --  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After)""" % (obj_in_body, marshname)
 
             marsh_local, marsh_body = self._marshall_gvalue(profile)
@@ -1717,7 +1717,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 code=connect_slot_body)
             section.add(connect_slot, in_spec=False)
 
-            addr_to_obj = "Glib.Object.Convert (User_Data)"
+            addr_to_obj = "Glib.Object.Convert (Get_Data (Closure))"
 
             marsh = Subprogram(
                 name=marshname,
@@ -1730,7 +1730,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 local_vars=[
                        Local_Var("H", "constant %s" % slot_name,
                                  "Address_To_Cb (Get_Callback (Closure))"),
-                       Local_Var("Obj", callback_selftype, constant=True,
+                       Local_Var("Obj", "Glib.Object.GObject", constant=True,
                                  default=addr_to_obj)
                        ] + marsh_local,
                 convention="C",
@@ -1819,7 +1819,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 local_vars=[
                        Local_Var("H", "constant %s" % name,
                                  "Address_To_Cb (Get_Callback (Closure))"),
-                       Local_Var("Obj", selftype, constant=True,
+                       Local_Var("Obj", selftype.ada, constant=True,
                                  default=addr_to_obj)
                        ] + marsh_local,
                 convention="C",
@@ -1840,7 +1840,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                if self.gtkpkg.get_method(
                   cname="::%s" % s.get("name")).bind():
                    section.add(Code("use type System.Address;"), in_spec=False)
-                   self.pkg.add_with("Gtk.Handlers", specs=False)
+                   self.pkg.add_with("Gtkada.Bindings", specs=False)
                    self.pkg.add_with("Glib.Values", specs=False)
                    self.pkg.add_with("Gtk.Arguments", specs=False)
 

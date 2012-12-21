@@ -27,7 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Menu_Shell is
 
@@ -604,7 +604,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -625,7 +625,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -646,7 +646,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Direction_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -667,7 +667,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Widget_Gint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -688,7 +688,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Menu_Direction_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -709,7 +709,7 @@ package body Gtk.Menu_Shell is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -725,9 +725,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -745,9 +745,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -766,9 +766,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -786,9 +786,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Menu_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Menu_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -806,9 +806,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -826,9 +826,9 @@ package body Gtk.Menu_Shell is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);
@@ -848,7 +848,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -868,7 +868,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -889,7 +889,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Gtk_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -909,7 +909,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Gtk_Menu_Direction_Type_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Menu_Direction_Type (Params, 1));
       exception when E : others => Process_Exception (E);
@@ -929,7 +929,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Gtk_Widget_Gint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
@@ -949,7 +949,7 @@ package body Gtk.Menu_Shell is
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Menu_Shell_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Menu_Shell_Record'Class := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Menu_Shell := Gtk_Menu_Shell (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
       exception when E : others => Process_Exception (E);

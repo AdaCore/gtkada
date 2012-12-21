@@ -269,27 +269,14 @@ package Gdk.Device is
    -- Signals --
    -------------
 
-   type Cb_Gdk_Device_Void is not null access procedure (Self : access Gdk_Device_Record'Class);
-
-   type Cb_GObject_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class);
-
    Signal_Changed : constant Glib.Signal_Name := "changed";
-   procedure On_Changed
-      (Self  : not null access Gdk_Device_Record;
-       Call  : Cb_Gdk_Device_Void;
-       After : Boolean := False);
-   procedure On_Changed
-      (Self  : not null access Gdk_Device_Record;
-       Call  : Cb_GObject_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The ::changed signal is emitted either when the Gdk.Device.Gdk_Device
    --  has changed the number of either axes or keys. For example In X this
    --  will normally happen when the slave device routing events through the
    --  master device changes (for example, user switches from the USB mouse to
    --  a tablet), in that case the master device will change to reflect the new
    --  slave device axes and keys.
+   --    procedure Handler (Self : access Gdk_Device_Record'Class)
 
 private
    The_Type_Property : constant Glib.Properties.Property_Boxed :=

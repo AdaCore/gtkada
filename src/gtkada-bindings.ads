@@ -27,9 +27,11 @@
 --  release to release.
 --  See also Gtkada.Types
 
---  with Gdk.Types;
+with Ada.Exceptions;
 with Glib;
---  with Glib.Object;
+with Glib.Object;
+with Glib.Types;
+with Glib.Values;
 with Gtkada.C;
 with GNAT.Strings;
 with Interfaces.C.Strings;
@@ -119,6 +121,87 @@ package Gtkada.Bindings is
      (Arr : Gint_Arrays.Unbounded_Array_Access)
       return Glib.Gint_Array;
    --  Converts Arr, stopping at the first 0 encountered
+
+   -------------
+   -- Signals --
+   -------------
+
+   type GClosure is new Glib.C_Proxy;
+
+   type C_Marshaller is access procedure
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;  --  Will contain returned value
+      N_Params        : Glib.Guint;          --  Number of entries in Params
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
+   pragma Convention (C, C_Marshaller);
+   --  A function called directly from gtk+ when dispatching signals to
+   --  handlers. This procedure is in charge of converting the parameters from
+   --  the array of GValues in Params to suitable formats for calling the
+   --  proper Ada handler given by the user. This handler is encoded in the
+   --  user_data, which has an actual type specific to each of the generic
+   --  packages below.
+   --  This is meant for internal GtkAda use only.
+
+   function CClosure_New
+     (Callback  : System.Address;
+      User_Data : System.Address;
+      Destroy   : System.Address) return GClosure;
+   pragma Import (C, CClosure_New, "g_cclosure_new");
+
+   procedure Set_Marshal (Closure : GClosure; Marshaller : C_Marshaller);
+   pragma Import (C, Set_Marshal, "g_closure_set_marshal");
+
+   function Get_Data (Closure : GClosure) return System.Address;
+   pragma Import (C, Get_Data, "ada_gclosure_get_data");
+
+   function Get_Callback (C : GClosure) return System.Address;
+   pragma Import (C, Get_Callback, "ada_cclosure_get_callback");
+   --  Return the user handler set in the closure. This is the procedure that
+   --  should process the signal.
+
+   procedure Watch_Closure (Object : System.Address; Closure : GClosure);
+   pragma Import (C, Watch_Closure, "g_object_watch_closure");
+   --  The closure will be destroyed when Object is destroyed.
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null);
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null);
+   --  Same as above, but this removes a number of check, like whether the
+   --  signal exists, and whether the user has properly passed a procedure or
+   --  function depending on the signal type.
+   --
+   --  * C_Name must be NUL-terminated.
+
+   procedure Set_Value (Value : Glib.Values.GValue; Val : System.Address);
+   pragma Import (C, Set_Value, "ada_gvalue_set");
+   --  Function used internally to specify the value returned by a callback.
+   --  Val will be dereferenced as appropriate, depending on the type expected
+   --  by Value.
+
+   type Exception_Handler is not null access procedure
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+
+   procedure Set_On_Exception (Handler : Exception_Handler);
+   --  See user documentation in Gtk.Handlers.Set_On_Exception
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence);
+   --  Process the exception through the handler set by Set_On_Exception.
+   --  This procedure never raises an exception.
 
 private
    pragma Import (C, g_strfreev, "g_strfreev");

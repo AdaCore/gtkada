@@ -21,9 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Cairo; use Cairo;
-
+with Gtk.Button; use Gtk.Button;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Tree_Selection; use Gtk.Tree_Selection;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 
 package Testcairo_Drawing is
 
@@ -31,6 +36,19 @@ package Testcairo_Drawing is
                       Transformations, Paths, Patterns, Clip_And_Paint,
                       Surface_And_Png, Toy_Text, Pango_Text, Image);
    --  The supported drawing types
+
+   package Window_Cb is new Gtk.Handlers.Return_Callback
+      (Gtk_Window_Record, Boolean);
+
+   type Doc_Array is array (Test_Type) of Unbounded_String;
+   package Event_Cb is new Gtk.Handlers.Return_Callback
+     (Gtk_Drawing_Area_Record, Boolean);
+
+   package Button_Cb is new Gtk.Handlers.Callback
+     (Gtk_Button_Record);
+
+   package Selection_Cb is new Gtk.Handlers.Callback
+     (Gtk_Tree_Selection_Record);
 
    procedure Draw_On_Context
      (Cr : Cairo_Context;

@@ -27,7 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtk.Handlers;               use Gtk.Handlers;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Paned is
 
@@ -512,7 +512,7 @@ package body Gtk.Paned is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -533,7 +533,7 @@ package body Gtk.Paned is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -554,7 +554,7 @@ package body Gtk.Paned is
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Scroll_Type_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Func_Data   => Get_Object (Slot),
+         Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
@@ -570,9 +570,9 @@ package body Gtk.Paned is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -591,9 +591,9 @@ package body Gtk.Paned is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -612,9 +612,9 @@ package body Gtk.Paned is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (N_Params, Invocation_Hint);
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Scroll_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -635,7 +635,7 @@ package body Gtk.Paned is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Paned_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Paned_Record'Class := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
@@ -656,7 +656,7 @@ package body Gtk.Paned is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Paned_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Paned_Record'Class := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
@@ -677,7 +677,7 @@ package body Gtk.Paned is
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant access Gtk_Paned_Record'Class := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);

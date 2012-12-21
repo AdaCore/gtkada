@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib;         use Glib;
+with Glib.Object;  use Glib.Object;
 with Gtk;          use Gtk;
 with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
@@ -29,11 +30,10 @@ with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
 with Gtk.Table;    use Gtk.Table;
 with Gtk.Widget;   use Gtk.Widget;
-with Common;       use Common;
 
 package body Create_Buttons is
 
-   procedure Button_Window (Widget : access Gtk_Button_Record'Class);
+   procedure Button_Window (Widget : access GObject_Record'Class);
    --  Toggles the visibility of Widget
 
    ----------
@@ -51,13 +51,13 @@ package body Create_Buttons is
    -- Button_Window --
    -------------------
 
-   procedure Button_Window
-      (Widget : access Gtk_Button_Record'Class) is
+   procedure Button_Window (Widget : access GObject_Record'Class) is
+      W : constant Gtk_Widget := Gtk_Widget (Widget);
    begin
-      if Widget.Get_Visible then
-         Hide (Widget);
+      if W.Get_Visible then
+         W.Hide;
       else
-         Show (Widget);
+         W.Show;
       end if;
    end Button_Window;
 
@@ -93,9 +93,8 @@ package body Create_Buttons is
       end loop;
 
       for J in Button'Range loop
-         Button_Handler.Object_Connect
-           (Button (J), "clicked", Button_Window'Access,
-            Button ((J + 1) mod Button'Length));
+         Button (J).On_Clicked
+            (Button_Window'Access, Button ((J + 1) mod Button'Length));
          Attach (Table, Button (J),
                  Left_A (J), Right_A (J),
                  Top_A (J), Bott_A (J),

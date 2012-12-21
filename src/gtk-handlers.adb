@@ -27,14 +27,8 @@ with System.Assertions;       use System.Assertions;
 with Unchecked_Deallocation;
 
 with Glib.Values;             use Glib.Values;
-with GNAT.IO;
 
 package body Gtk.Handlers is
-
-   procedure Default_Exception_Handler
-      (Occurrence : Ada.Exceptions.Exception_Occurrence);
-
-   On_Exception : Exception_Handler := Default_Exception_Handler'Access;
 
    function Count_Arguments
      (Object : access GObject_Record'Class; Signal : Glib.Signal_Name)
@@ -65,48 +59,6 @@ package body Gtk.Handlers is
    function Signal_Lookup
      (Name : Glib.Signal_Name; IType : GType) return Signal_Id;
    pragma Import (C, Signal_Lookup, "g_signal_lookup");
-
-   --------------------------------
-   -- Glib.Closure small binding --
-   --------------------------------
-
-   function CClosure_New
-     (Callback  : System.Address;
-      User_Data : System.Address;
-      Destroy   : System.Address) return GClosure;
-   pragma Import (C, CClosure_New, "g_cclosure_new");
-
-   procedure Set_Marshal (Closure : GClosure; Marshaller : C_Marshaller);
-   pragma Import (C, Set_Marshal, "g_closure_set_marshal");
-
-   function Get_Data (Closure : GClosure) return System.Address;
-   pragma Import (C, Get_Data, "ada_gclosure_get_data");
-
-   procedure Watch_Closure (Object : System.Address; Closure : GClosure);
-   pragma Import (C, Watch_Closure, "g_object_watch_closure");
-   --  The closure will be destroyed when Object is destroyed.
-
-   -------------------------------
-   -- Default_Exception_Handler --
-   -------------------------------
-
-   procedure Default_Exception_Handler
-      (Occurrence : Ada.Exceptions.Exception_Occurrence)
-   is
-   begin
-      GNAT.IO.Put_Line
-         (GNAT.IO.Standard_Error,
-          Ada.Exceptions.Exception_Information (Occurrence));
-   end Default_Exception_Handler;
-
-   ----------------------
-   -- Set_On_Exception --
-   ----------------------
-
-   procedure Set_On_Exception (Handler : Exception_Handler) is
-   begin
-      On_Exception := Handler;
-   end Set_On_Exception;
 
    ---------------------
    -- Count_Arguments --
@@ -210,82 +162,6 @@ package body Gtk.Handlers is
 
       return Id;
    end Do_Signal_Connect;
-
-   ---------------------------------
-   -- Unchecked_Do_Signal_Connect --
-   ---------------------------------
-
-   procedure Unchecked_Do_Signal_Connect
-     (Object              : not null access Glib.Object.GObject_Record'Class;
-      C_Name              : Glib.Signal_Name;
-      Marshaller          : C_Marshaller;
-      Handler             : System.Address;
-      Func_Data           : System.Address := System.Null_Address;
-      Destroy             : System.Address := System.Null_Address;
-      After               : Boolean := False;
-      Slot_Object         : System.Address := System.Null_Address)
-   is
-      function Internal
-        (Instance : System.Address;
-         Detailed_Signal : Glib.Signal_Name;
-         Closure  : GClosure;
-         After    : Gint := 0) return Gulong;
-      pragma Import (C, Internal, "g_signal_connect_closure");
-
-      use type System.Address;
-      Id      : Handler_Id;
-
-   begin
-      Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
-      Set_Marshal (Id.Closure, Marshaller);
-      Id.Id := Internal
-        (Get_Object (Object),
-         C_Name,
-         Closure => Id.Closure,
-         After   => Boolean'Pos (After));
-
-      if Slot_Object /= System.Null_Address then
-         Watch_Closure (Slot_Object, Id.Closure);
-      end if;
-   end Unchecked_Do_Signal_Connect;
-
-   ---------------------------------
-   -- Unchecked_Do_Signal_Connect --
-   ---------------------------------
-
-   procedure Unchecked_Do_Signal_Connect
-     (Object              : Glib.Types.GType_Interface;
-      C_Name              : Glib.Signal_Name;
-      Marshaller          : C_Marshaller;
-      Handler             : System.Address;
-      Func_Data           : System.Address := System.Null_Address;
-      Destroy             : System.Address := System.Null_Address;
-      After               : Boolean := False;
-      Slot_Object         : System.Address := System.Null_Address)
-   is
-      function Internal
-        (Instance : Glib.Types.GType_Interface;
-         Detailed_Signal : Glib.Signal_Name;
-         Closure  : GClosure;
-         After    : Gint := 0) return Gulong;
-      pragma Import (C, Internal, "g_signal_connect_closure");
-
-      use type System.Address;
-      Id      : Handler_Id;
-
-   begin
-      Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
-      Set_Marshal (Id.Closure, Marshaller);
-      Id.Id := Internal
-        (Object,
-         C_Name,
-         Closure => Id.Closure,
-         After   => Boolean'Pos (After));
-
-      if Slot_Object /= System.Null_Address then
-         Watch_Closure (Slot_Object, Id.Closure);
-      end if;
-   end Unchecked_Do_Signal_Connect;
 
    ---------------
    -- Add_Watch --
@@ -2112,19 +1988,6 @@ package body Gtk.Handlers is
    begin
       return Get_Object (Path);
    end To_Address;
-
-   -----------------------
-   -- Process_Exception --
-   -----------------------
-
-   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence) is
-   begin
-      On_Exception (E);
-   exception
-      when E : others =>
-         --  never propagate the exception to C
-         Default_Exception_Handler (E);
-   end Process_Exception;
 
 end Gtk.Handlers;
 

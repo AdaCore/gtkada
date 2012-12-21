@@ -11,6 +11,7 @@
 
    <package id="GdkDevice">
       <enum ctype="GdkDeviceType" />
+      <method id="::changed" bind="False" /> <!-- elaboration circularity -->
       <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
       <method id="gdk_device_get_axis_value" bind="False" /><!-- need support for array of gdoubles -->
       <method id="gdk_device_get_history" bind="False" /><!-- need support for array of Gdk_Time_Coord -->
@@ -85,6 +86,9 @@
      <doc group="Gdk, the low-level API"/>
      <parameter name="self" ada="Screen"/>
      <method id="gdk_screen_get_setting" bind="False" />
+     <method id="::composited-changed" bind="False" /> <!-- elaboration circularity -->
+     <method id="::monitors-changed" bind="False" /> <!-- elaboration circularity -->
+     <method id="::size-changed" bind="False" /> <!-- elaboration circularity -->
 
      <method id="gdk_screen_get_toplevel_windows" return="WindowList" bind="False"/>  <!--  circular dep -->
      <method id="gdk_screen_get_window_stack" return="WindowList" bind="False"/> <!-- circular dep with GdkWindow-->
